@@ -1,0 +1,83 @@
+<template>
+  <q-drawer
+    v-model="leftDrawerOpen"
+    show-if-above
+    :mini="drawerState"
+    bordered
+    content-class="bg-grey-2"
+    :width="250"
+  >
+    <q-list>
+      <q-item-label header>Меню по доступу</q-item-label>
+      <div v-for="(menus, index) in menu" :key="index">
+        <q-expansion-item
+          expand-separator
+          :icon="menus.icon"
+          :label="menus.name"
+          caption="Описание"
+          group="somegroup"
+          :to="menus.url"
+          exact-active-class="icon-style"
+        >
+          <div
+            v-for="(menuss, index) in menus.children"
+            :key="index"
+            style="background-color:#D6DBDF;"
+          >
+            <q-item clickable :to="menuss.url">
+              <q-item-section avatar>
+                <q-icon :name="menuss.icon" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ menuss.name }}</q-item-label>
+                <q-item-label caption>Описание</q-item-label>
+              </q-item-section>
+            </q-item>
+          </div>
+        </q-expansion-item>
+      </div>
+    </q-list>
+    <q-page-sticky position="bottom-right" :offset="[-15, 55]">
+      <q-btn
+        fab
+        color="blue"
+        style="width: 30px; height: 30px;"
+        @click="drawerState = !drawerState"
+      >
+        <q-icon
+          :name="drawerState ? 'keyboard_arrow_right' : 'keyboard_arrow_left'"
+          class="absolute-center"
+        />
+      </q-btn>
+    </q-page-sticky>
+  </q-drawer>
+</template>
+
+<script>
+export default {
+  name: "Leftbar",
+  props: ["menu"],
+  computed: {
+    drawerState: {
+      get() {
+        return this.$store.state.example.drawerHidden;
+      },
+      set(val) {
+        this.$store.commit("example/updateDrawerHidden", val);
+      }
+    }
+  },
+  data() {
+    return {
+      leftDrawerOpen: false
+    };
+  }
+};
+</script>
+
+<style>
+.button1 {
+  position: fixed;
+  background-color: red;
+}
+</style>
