@@ -9,7 +9,7 @@
   >
     <q-list>
       <q-item-label header>Меню по доступу</q-item-label>
-      <div v-for="(menus, index) in menu" :key="index">
+      <div v-for="(menus, index) in menusList" :key="index">
         <q-expansion-item
           expand-separator
           :icon="menus.icon"
@@ -56,8 +56,8 @@
 <script>
 export default {
   name: "Leftbar",
-  props: ["menu"],
   computed: {
+    //menu: this.$store.getters["dicts/getMenuList"],
     drawerState: {
       get() {
         return this.$store.state.example.drawerHidden;
@@ -65,8 +65,12 @@ export default {
       set(val) {
         this.$store.commit("example/updateDrawerHidden", val);
       }
+    },
+    menusList() {
+      return this.$store.getters["dicts/getMenuList"];
     }
   },
+  created() {},
   data() {
     return {
       leftDrawerOpen: false

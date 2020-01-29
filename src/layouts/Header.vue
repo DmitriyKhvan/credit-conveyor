@@ -35,8 +35,8 @@
         class="icon-color"
         dense
         icon="exit_to_app"
-        to="/login"
         size="16px"
+        @click="logout()"
       />
     </q-toolbar>
   </q-header>
@@ -44,6 +44,8 @@
 
 <script>
 import jwt from "jsonwebtoken";
+import { AuthService } from "./../services/auth.service";
+
 export default {
   name: "Header",
   data() {
@@ -53,6 +55,11 @@ export default {
       emps: jwt.decode(localStorage.getItem("access_token")),
       url2: "https://www.svgrepo.com/show/275245/man-profile.svg"
     };
+  },
+  methods: {
+    logout() {
+      AuthService.logout();
+    }
   },
   beforeCreate: function() {
     let date = "";

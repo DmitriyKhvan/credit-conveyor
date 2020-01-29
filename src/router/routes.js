@@ -1,118 +1,138 @@
+const MainContainer = () => import("layouts/Main");
+const LoginPage = () => import("pages/main/auth/Login");
+const HomePage = () => import("pages/main/home/Home");
+const Page404 = () => import("pages/Error404");
 
-const routes = [
-  {
-    path: '/',
-    component: () => import('layouts/Main.vue'),
-    meta: { requiresAuth: true },
-    children: [
-      {
-        path: '/home',
-        name: 'home',
-        component: () => import('pages/main/home/Home')
+// Admin
+const AdminPage = () => import("pages/main/admin/admin");
+const Users = () => import("pages/main/admin/modules/Users");
+const Roles = () => import("pages/main/admin/modules/roles");
+const Menus = () => import("pages/main/admin/modules/menus");
+
+// Work
+const WorkPage = () => import("pages/main/work/Work");
+const Assistant = () => import("pages/main/work/modules/pages/assistant/Assistant.vue");
+const Chancellary = () => import("pages/main/work/modules/pages/kanselariya/Index.vue");
+const ChanReg = () => import("pages/main/work/modules/pages/kanselariya/modules/pages/registration/index.vue");
+const Tasks = () => import("pages/main/work/modules/pages/task/index.vue");
+const TasksList = () => import("pages/main/work/modules/pages/task/modules/pages/tasklist/List");
+const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
+const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
+// Tools
+const Tools = () => import("pages/main/tools/Tools");
+const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
+
+
+const routes = [{
+    path: "/",
+    redirect: "/home",
+    component: MainContainer,
+    name: "Home",
+    meta: {
+      requiresAuth: true
+    },
+    children: [{
+        path: "home",
+        name: "Home",
+        component: HomePage
       },
       {
-        path: '/work',
-        name: 'Work',
-        component: () => import('pages/main/work/Work'),
-        children:[
-            {
-                path: '/work/assistant',
-                name: 'Assistant',
-                component: () => import('pages/main/work/modules/pages/assistant/Assistant.vue')
-            },
-            {
-                path: '/work/kanselariya',
-                name: 'kanselariya',
-                component: () => import('pages/main/work/modules/pages/kanselariya/Index.vue'),
-                children:[
-                  {
-                    path: '/work/kanselariya/registration',
-                    name: 'kregistration',
-                    component: () => import('pages/main/work/modules/pages/kanselariya/modules/pages/registration/index.vue')
-                  }
-                ]
-            },
-            {
-              path: '/work/task',
-              name: 'mytask',
-              component: () => import('pages/main/work/modules/pages/task/index.vue'),
-              children:[
-                  {
-                      path: '/work/task/list',
-                      name: 'tasklist',
-                      component: () => import('pages/main/work/modules/pages/task/modules/pages/tasklist/List')
-                  }
-                  // {
-                  //  path: '/work/task/boards',
-                  //  name: 'boards',
-                  //  component: () => import('@/modules/main/work/mytask/modules/boards/boards')
-                  // }
-              ]
-            },
-            {
-              path: '/work/credit',
-              name: 'Credit',
-              component: () => import('pages/main/work/modules/pages/credit/Credit'),
-              children:[
-                {
-                  path: '/work/credit/registration',
-                  name: 'registration',
-                  component: () => import('pages/main/work/modules/pages/credit/pages/registration/Registration.vue'),
-                }
-              ]
+        path: "work",
+        name: "Work",
+        component: WorkPage,
+        children: [{
+            path: "assistant",
+            name: "Assistant",
+            component: Assistant
+          },
+          {
+            path: "chancellary",
+            name: "Kanselariya",
+            component: Chancellary,
+            children: [{
+              path: "registration",
+              name: "Kanselariya Registration",
+              component: ChanReg
+            }]
+          },
+          {
+            path: "task",
+            name: "my tasks",
+            component: Tasks,
+            children: [{
+              path: "list",
+              name: "tasklist",
+              component: TasksList
+            }]
+          },
+          {
+            path: "credit",
+            name: "Credit",
+            component: Credit,
+            children: [{
+              path: "registration",
+              name: "registration",
+              component: CreditReg
+            }]
           }
         ]
       },
       {
-        path: '/admin',
-        name: 'admin',
-        component: () => import('pages/main/admin/admin'),
-        children:[
-            {
-                path: '/admin/users',
-                name: 'users',
-                component: () => import('pages/main/admin/modules/pages/users/Users'),
-            },
-            {
-                path: '/admin/roles',
-                name: 'roles',
-                component: () => import('pages/main/admin/modules/pages/roles/roles'),
-            },
-            {
-                path: '/admin/menus',
-                name: 'menus',
-                component: () => import('pages/main/admin/modules/pages/menus/menus'),
-            }
+        path: "admin",
+        name: "Admin Page",
+        component: AdminPage,
+        children: [{
+            path: "users",
+            name: "Users List",
+            component: Users
+          },
+          {
+            path: "roles",
+            name: "User Roles",
+            component: Roles
+          },
+          {
+            path: "menus",
+            name: "Menus List",
+            component: Menus
+          }
         ]
       },
       {
-        path: '/tools',
-        name: 'Tools',
-        component: () => import('pages/main/tools/Tools'),
-        children:[
-            {
-                path: '/tools/phones',
-                name: 'phones',
-                component: () => import('pages/main/tools/modules/pages/phones/phones')
-            }
-        ]
-    }
+        path: "tools",
+        name: "Tools",
+        component: Tools,
+        children: [{
+          path: "phones",
+          name: "Phones",
+          component: Phones
+        }]
+      }
     ]
   },
   {
-    path: '/login',
-    name: 'login',
-    component: () => import('pages/main/auth/Login.vue'),
-    meta: { requiresAuth: false }
+    path: "/login",
+    name: "Login Page",
+    component: LoginPage,
+    meta: {
+      public: true, // Allow access to even if not logged in
+      onlyWhenLoggedOut: true
+    }
   }
-]
+  // , {
+  //   path: "*",
+  //   name: 'Page Not Found',
+  //   component: Page404
+  // }
+];
 
 // Always leave this as last one
-if (process.env.MODE !== 'ssr') {
+if (process.env.MODE !== "ssr") {
   routes.push({
-    path: '*',
-    component: () => import('pages/Error404.vue')
-  })
+    path: "*",
+    component: Page404
+  });
 }
 
-export default routes
+
+export default routes;

@@ -9,57 +9,6 @@
       :breakpoint="500"
       bordered
     >
-      <!-- <div class="row justify-center">
-        <div class="column self-center" v-if="!drawer">
-          <q-card class="my-card" style="width: 360px" flat>
-            <q-card-section class="row justify-center">
-              <span>ВХОД В ПРОГРАММУ</span>
-            </q-card-section>
-            <q-form>
-              <q-card-section>
-                <q-input
-                  dense
-                  square
-                  outlined
-                  v-model="username"
-                  placeholder="Логин"
-                  v-on:keyup.enter="auth()"
-                />
-              </q-card-section>
-              <q-card-section>
-                <q-input
-                  dense
-                  square
-                  outlined
-                  v-model="password"
-                  placeholder="Пароль"
-                  v-on:keyup.enter="auth()"
-                  :type="showPass ? 'text' : 'password'"
-                >
-                  <template v-slot:append>
-                    <q-btn
-                      round
-                      dense
-                      flat
-                      :icon="showPass ? 'o_visibility' : 'o_visibility_off'"
-                      @click="showPass = !showPass"
-                    />
-                  </template>
-                </q-input>
-              </q-card-section>
-              <q-card-section>
-                <q-btn
-                  class="full-width"
-                  color="primary"
-                  @click="auth()"
-                  v-on:keyup.enter="auth()"
-                  >Войти</q-btn
-                >
-              </q-card-section>
-            </q-form>
-          </q-card>
-        </div>
-      </div> -->
       <div v-if="!drawer">
         <div class="block">
           <q-img src="statics/logoNew.png" style="color:red; width: 100px" />
@@ -77,9 +26,9 @@
                       dense
                       square
                       outlined
-                      v-model="username"
+                      v-model="credentials.username"
                       placeholder="Логин"
-                      v-on:keyup.enter="auth()"
+                      v-on:keyup.enter="handleSubmit()"
                     />
                   </q-card-section>
                   <q-card-section>
@@ -87,9 +36,9 @@
                       dense
                       square
                       outlined
-                      v-model="password"
+                      v-model="credentials.password"
                       placeholder="Пароль"
-                      v-on:keyup.enter="auth()"
+                      v-on:keyup.enter="handleSubmit()"
                       :type="showPass ? 'text' : 'password'"
                     >
                       <template v-slot:append>
@@ -107,8 +56,8 @@
                     <q-btn
                       class="full-width"
                       color="primary"
-                      @click="auth()"
-                      v-on:keyup.enter="auth()"
+                      @click="handleSubmit()"
+                      v-on:keyup.enter="handleSubmit()"
                       >Войти</q-btn
                     >
                   </q-card-section>
@@ -154,6 +103,8 @@
 </template>
 <script>
 import axios from "axios";
+import { AuthService } from "../../../services/auth.service";
+
 export default {
   name: "names",
   data() {
@@ -161,8 +112,7 @@ export default {
       drawer: false,
       leftDrawerOpen: false,
       showPass: false,
-      username: "",
-      password: "",
+      credentials: { username: null, password: null },
       message: ""
     };
   },
@@ -176,35 +126,53 @@ export default {
         position: "top"
       });
     },
-    auth() {
-      axios({
-        method: "POST",
-        url: "auth/login",
-        data: {
-          username: this.username,
-          password: this.password
-        }
-      })
-        .then(res => {
-          localStorage.setItem("access_token", res.data.access_token);
-          this.$router.push({ path: "/home", redirect: { name: "login" } });
-        })
-        // eslint-disable-next-line
-        .catch(error => {
-          this.showNotif(this.formCheck()[0], this.formCheck()[1]);
+    handleSubmit() {
+      // Perform a simple validation that email and password have been typed in
+      if (!!this.credentials.username && !!this.credentials.password) {
+        console.log(this.credentials);
+        AuthService.login(this.credentials, res => {
+          if (res) {
+            this.clearForm();
+            this.showNotif("Successfully logged in", "green");
+          } else return;
         });
-    },
-    formCheck() {
-      if (!this.username && !this.password) {
-        return ["Поля логин и пароль должны быт заполнены", "info"];
-      } else if (!this.username) {
-        return ["Поля логин должно быт заполнено", "info"];
-      } else if (!this.password) {
-        return ["Поля пароль должно быт заполнено", "info"];
       } else {
-        return ["Проверти в правильности логина или паролья", "negative"];
+        this.showNotif("Enter credentials correctly", "red");
       }
+    },
+    clearForm() {
+      this.credentials.username = "";
+      this.credentials.password = "";
     }
+    // auth() {
+    //   axios({
+    //     method: "POST",
+    //     url: "auth/login",
+    //     data: {
+    //       username: this.username,
+    //       password: this.password
+    //     }
+    //   })
+    //     .then(res => {
+    //       localStorage.setItem("access_token", res.data.access_token);
+    //       this.$router.push({ path: "/home", redirect: { name: "login" } });
+    //     })
+    //     // eslint-disable-next-line
+    //     .catch(error => {
+    //       this.showNotif(this.formCheck()[0], this.formCheck()[1]);
+    //     });
+    // },
+    // formCheck() {
+    //   if (!this.username && !this.password) {
+    //     return ["Поля логин и пароль должны быт заполнены", "info"];
+    //   } else if (!this.username) {
+    //     return ["Поля логин должно быт заполнено", "info"];
+    //   } else if (!this.password) {
+    //     return ["Поля пароль должно быт заполнено", "info"];
+    //   } else {
+    //     return ["Проверти в правильности логина или паролья", "negative"];
+    //   }
+    // }
   },
   beforeCreate: function() {
     localStorage.removeItem("access_token");

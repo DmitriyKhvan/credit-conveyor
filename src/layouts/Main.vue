@@ -1,13 +1,14 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <s-header />
-    <s-leftbar v-bind:menu="menu" />
+    <s-leftbar />
     <s-content />
   </q-layout>
 </template>
 
 <script>
 import axios from "axios";
+import store from "../store/index";
 export default {
   components: {
     SHeader: () => import("./Header"),
@@ -16,23 +17,20 @@ export default {
   },
 
   data() {
-    return {
-      menu: null
-    };
+    return {};
   },
   beforeCreate: function() {
-    //console.log(decoded)
-    axios({
-      method: "GET",
-      url: "menus/list?lang=2",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("access_token")
-      }
-    }).then(res => {
-      this.menu = res.data[0].items;
-      // eslint-disable-next-line
-      //console.log(this.menu)
-    });
+    //    console.log({ men: this.$store.getters["dicts/getMenuList"] });
+    // axios({
+    //   method: "GET",
+    //   url: "menus/list?lang=2",
+    //   headers: {
+    //     Authorization: "Bearer " + localStorage.getItem("access_token")
+    //   }
+    // }).then(res => {
+    //   this.menu = res.data[0].items;
+    //   // eslint-disable-next-line
+    // });
   }
 };
 </script>

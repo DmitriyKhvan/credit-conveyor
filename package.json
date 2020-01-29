@@ -1,22 +1,25 @@
 {
   "name": "personal",
   "version": "0.0.1",
-  "description": "DESKTOP,MOBILE AND WEB PLATFORM",
-  "productName": "NBU_PERSONAL_APP",
+  "description": "Pesonal System for all Platform",
+  "productName": "Personal Plus",
   "cordovaId": "org.cordova.quasar.app",
   "capacitorId": "",
-  "author": "siroj <strel00k7533@gmail.com>",
+  "author": "NBU DIT",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
-    "start": "quasar dev"
+    "start": "quasar dev",
+    "build": "quasar build"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^2.2.0",
     "quasar": "^1.0.0",
+    "socket.io-client": "^2.3.0",
     "vanta": "^0.5.10",
     "vue-google-charts": "^0.3.2",
     "vue-i18n": "^8.0.0",
