@@ -9,6 +9,9 @@ const MENU_LIST = "menu_list";
  **/
 
 import jwt_decode from 'jwt-decode';
+import {
+  Cookies
+} from 'quasar'
 
 const TokenService = {
 
@@ -22,21 +25,33 @@ const TokenService = {
     localStorage.removeItem(key)
   },
 
+  getKeyFromCookies(key) {
+    return Cookies.get(key)
+  },
+  setKeyToCookies(key, value) {
+    Cookies.set(key, value);
+  },
+  removeKeyFromCookies(key) {
+    Cookies.remove(key)
+  },
+  isCookieExist(key) {
+    return (Boolean)(Cookies.has(key));
+  },
   getToken() {
-    return localStorage.getItem(TOKEN_KEY);
+    return Cookies.get(TOKEN_KEY);
   },
-
   saveToken(accessToken) {
-    localStorage.setItem(TOKEN_KEY, accessToken);
+    Cookies.set(TOKEN_KEY, accessToken);
   },
-
   removeToken() {
-    localStorage.removeItem(TOKEN_KEY);
+    Cookies.remove(TOKEN_KEY);
+  },
+  isTokenExist() {
+    return (Boolean)(Cookies.has(TOKEN_KEY));
   },
 
   isTokenExpired() {
-    let isTokenExist = !!this.getToken();
-    if (isTokenExist) {
+    if (this.isTokenExist()) {
       let decodedToken = jwt_decode(this.getToken());
       if (Math.floor(Date.now() / 1000) > (decodedToken.iat + decodedToken.life_time)) {
         return true;
