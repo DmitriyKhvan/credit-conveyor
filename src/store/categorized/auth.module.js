@@ -52,6 +52,9 @@ const getters = {
   },
   refreshTokenPromise: state => {
     return state.refreshTokenPromise;
+  },
+  token: state => {
+    return state.accessToken;
   }
 };
 
@@ -149,7 +152,7 @@ const actions = {
 };
 
 /**
- *  Mutations 
+ *  Mutations
  */
 const mutations = {
 

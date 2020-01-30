@@ -15,7 +15,6 @@ class AuthenticationError extends Error {
 }
 const AuthService = {
   login: async function (credentials, callback) {
-    console.log("authservice login..")
     store.dispatch("auth/loginRequest");
     try {
       const token = await this.authenticate(
@@ -67,7 +66,7 @@ const AuthService = {
       try {
         const response = await ApiService.customRequest(requestData);
         TokenService.saveToken(response.data.access_token); // REVIEW  store it to cookie
-        TokenService.saveRefreshToken(response.data.refresh_token); //REVIEW store it to redis
+        //TokenService.saveRefreshToken(response.data.refresh_token); //REVIEW store it to redis
         ApiService.setHeader(response.data.access_token);
         resolve(response.data.access_token);
       } catch (error) {
@@ -81,8 +80,9 @@ const AuthService = {
   },
 
   logout: function () {
+    this.clearTokenFromCache(store.getters['auth/token']);
     TokenService.removeToken();
-    TokenService.removeRefreshToken();
+    //TokenService.removeRefreshToken();
     ApiService.removeHeader();
     TokenService.removeMenuList();
     ApiService.unmount401Interceptor();
@@ -120,14 +120,13 @@ const AuthService = {
   },
 
   refreshAccessToken: function () {
-
     return new Promise(async (resolve, reject) => {
-      const refreshToken = TokenService.getRefreshToken(); // REVIEW  get it from redis
+      const accessToken = TokenService.getToken(); // REVIEW  get it from redis
       const requestData = {
         method: "post",
         url: "auth/token",
         data: {
-          refreshToken: refreshToken
+          accessToken: accessToken
         }
       };
 
@@ -146,7 +145,28 @@ const AuthService = {
         );
       }
     });
+  },
+  clearTokenFromCache(token) {
+    return new Promise(async (resolve, reject) => {
+      const requestData = {
+        method: "delete",
+        url: "auth/token",
+        data: {
+          token: token
+        }
+      };
+      try {
+        const response = await ApiService.customRequest(requestData);
+        resolve(response.status);
+      } catch (error) {
+        reject(null);
+        throw new AuthenticationError(
+          error.response.status,
+          error.response.data.detail
+        );
+      }
 
+    });
   }
 };
 

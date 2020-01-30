@@ -1,5 +1,4 @@
 const TOKEN_KEY = "access_token";
-const REFRESH_TOKEN_KEY = "refresh_token";
 const MENU_LIST = "menu_list";
 
 /**
@@ -35,25 +34,14 @@ const TokenService = {
     localStorage.removeItem(TOKEN_KEY);
   },
 
-  getRefreshToken() {
-    return localStorage.getItem(REFRESH_TOKEN_KEY);
-  },
-
-  saveRefreshToken(refreshToken) {
-    localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-  },
-
-  removeRefreshToken() {
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
-  },
-
   isTokenExpired() {
-    let isTokenExist = !!this.getRefreshToken();
+    let isTokenExist = !!this.getToken();
     if (isTokenExist) {
-      let decodedToken = jwt_decode(this.getRefreshToken());
-      if (Math.floor(Date.now() / 1000) > decodedToken.exp) {
+      let decodedToken = jwt_decode(this.getToken());
+      if (Math.floor(Date.now() / 1000) > (decodedToken.iat + decodedToken.life_time)) {
         return true;
       } else return false;
+
     } else return true;
   },
 
