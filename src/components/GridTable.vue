@@ -1,16 +1,14 @@
 <template>
   <div class="q-pa-md">
     <q-card class="primary">
-      <q-card-section>
-        hey Sup
-      </q-card-section>
+      <q-card-section>{{caption}}</q-card-section>
 
       <q-card-section>
         <q-table
-          title="My table"
+          :title="caption"
           :data="itemsArray"
           :columns="fields"
-          :selection="selectionType"
+          :selection="selectMode"
           :selected.sync="selectedRows"
           :row-key="rowId"
           :visible-columns="visibleColumns"
@@ -32,9 +30,7 @@
                 transition-hide="scale"
                 anchor="top middle"
                 self="bottom middle"
-              >
-                Add a new record to table
-              </q-tooltip>
+              >Add a new record to table</q-tooltip>
             </q-btn>
             <q-btn
               class="q-ml-sm"
@@ -49,9 +45,7 @@
                 transition-hide="scale"
                 anchor="top middle"
                 self="bottom middle"
-              >
-                Edit and Update table record
-              </q-tooltip>
+              >Edit and Update table record</q-tooltip>
             </q-btn>
             <q-btn
               class="q-ml-sm"
@@ -66,9 +60,7 @@
                 transition-hide="scale"
                 anchor="top middle"
                 self="bottom middle"
-              >
-                Remove selected rows
-              </q-tooltip>
+              >Remove selected rows</q-tooltip>
             </q-btn>
             <q-btn
               class="q-ml-sm"
@@ -83,19 +75,11 @@
                 transition-hide="scale"
                 anchor="top middle"
                 self="bottom middle"
-              >
-                View data
-              </q-tooltip>
+              >View data</q-tooltip>
             </q-btn>
 
             <q-space />
-            <q-input
-              borderless
-              dense
-              debounce="300"
-              color="primary"
-              v-model="filter"
-            >
+            <q-input borderless dense debounce="300" color="primary" v-model="filter">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
@@ -117,18 +101,79 @@ export default {
   async created() {
     await this.initialize();
   },
-  computed: {},
+  props: {
+    caption: {
+      type: String,
+      default: "Table"
+    },
+    tablePath: {
+      type: String,
+      default: "auth/users"
+    }, // url,
+    rowId: {
+      type: String,
+      default: "user_id"
+    },
+    addEdit: {
+      type: String,
+      default: "span"
+    }, // url
+    delete: {
+      type: String,
+      default: "auth/users/delete"
+    }, //
+    defaultSort: {
+      type: [Array, Object],
+      default: () => []
+    },
+    excludedColumns: {
+      type: Array,
+      default: () => []
+    },
+    excludeSortingColoumns: {
+      type: Array,
+      default: () => []
+    },
+    enableAddEdit: {
+      type: Boolean,
+      default: true
+    },
+    enableDelete: {
+      type: Boolean,
+      default: true
+    },
+    enableRead: {
+      type: Boolean,
+      default: true
+    },
+    enableView: {
+      type: Boolean,
+      default: true
+    },
+    enableSelect: {
+      type: Boolean,
+      default: true
+    },
+    selectMode: {
+      type: String,
+      default: "single"
+    },
+    pageSize: {
+      type: Number,
+      default: 5
+    },
+    extraButtons: {
+      type: [Array, Object],
+      default: () => []
+    }
+  },
   data() {
     return {
       isBusy: false,
-      tablePath: "auth/users",
-      rowId: null,
       itemsArray: [],
       fields: [],
-      selectionType: "single",
       selectedRows: [],
       visibleColumns: [],
-      excludedColumns: ["state"],
       paginationConfig: {
         sortBy: "desc",
         descending: false,
@@ -157,9 +202,6 @@ export default {
             this.itemsArray.push(element);
           });
           Object.keys(data[0]).map(async (k, index) => {
-            if (index == 0) {
-              this.rowId = k;
-            }
             this.fields.push({
               name: k,
               required: false,
