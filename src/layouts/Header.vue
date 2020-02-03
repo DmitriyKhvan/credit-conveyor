@@ -45,6 +45,7 @@
 <script>
 import jwt from "jsonwebtoken";
 import { AuthService } from "./../services/auth.service";
+import TokenService from "./../services/storage.service";
 
 export default {
   name: "Header",
@@ -52,7 +53,7 @@ export default {
     return {
       imageUrl:
         "http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=",
-      emps: jwt.decode(localStorage.getItem("access_token")),
+      emps: jwt.decode(TokenService.getToken()),
       url2: "https://www.svgrepo.com/show/275245/man-profile.svg"
     };
   },
