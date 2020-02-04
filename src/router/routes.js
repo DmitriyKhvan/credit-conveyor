@@ -5,7 +5,7 @@ const Page404 = () => import("pages/Error404");
 
 // Admin
 const AdminPage = () => import("pages/main/admin/admin");
-const Users = () => import("components/GridTable");
+const Users = () => import("pages/main/admin/modules/users");
 const Roles = () => import("pages/main/admin/modules/roles");
 const Menus = () => import("pages/main/admin/modules/menus");
 
