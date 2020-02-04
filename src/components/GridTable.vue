@@ -150,6 +150,7 @@ export default {
   async created() {
     await this.initialize();
   },
+  mixins: [],
   props: {
     caption: {
       type: String,
