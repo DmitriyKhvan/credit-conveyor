@@ -1,7 +1,5 @@
 <template>
-  <dir>
-    ROLES PAGE
-  </dir>
+  <dir>ROLES PAGE</dir>
 </template>
 
 <script>

@@ -2,28 +2,29 @@
   <div class="q-pa-md">
     <q-card class="primary">
       <q-card-section>{{caption}}</q-card-section>
-
       <q-card-section>
         <q-table
+          :dense="$q.screen.lt.md"
+          :grid="$q.screen.xs"
           :title="caption"
           :data="itemsArray"
           :columns="fields"
-          :selection="selectMode"
+          :[selectionKey]="selectMode"
           :selected.sync="selectedRows"
           :row-key="rowId"
           :visible-columns="visibleColumns"
-          :pagination.sync="paginationConfig"
+          :pagination.sync="defaultPaginationConfig"
           :filter="filter"
           :loading="loading"
         >
-          <template v-slot:top>
+          <template v-slot:top="props">
             <q-btn
               class="q-ml-sm"
               color="primary"
               :disable="loading"
-              label="Add"
               @click="addRow"
               :icon="'add'"
+              :disabled="enableAddEdit"
             >
               <q-tooltip
                 transition-show="scale"
@@ -36,9 +37,9 @@
               class="q-ml-sm"
               color="primary"
               :disable="loading"
-              label="Edit"
               @click="updateRow"
               :icon="'edit'"
+              :disabled="enableAddEdit"
             >
               <q-tooltip
                 transition-show="scale"
@@ -50,10 +51,10 @@
             <q-btn
               class="q-ml-sm"
               color="primary"
-              label="Delete"
               :disable="loading"
               @click="removeRow"
               :icon="'delete'"
+              :disabled="enableDelete"
             >
               <q-tooltip
                 transition-show="scale"
@@ -65,10 +66,10 @@
             <q-btn
               class="q-ml-sm"
               color="primary"
-              label="View"
               :disable="loading"
               @click="viewRow"
               :icon="'remove_red_eye'"
+              v-if="enableView"
             >
               <q-tooltip
                 transition-show="scale"
@@ -77,16 +78,64 @@
                 self="bottom middle"
               >View data</q-tooltip>
             </q-btn>
+            <q-btn
+              class="q-ml-sm"
+              color="primary"
+              :disable="loading"
+              @click="refreshTable"
+              :icon="'refresh'"
+              v-if="enableView"
+            >
+              <q-tooltip
+                transition-show="scale"
+                transition-hide="scale"
+                anchor="top middle"
+                self="bottom middle"
+              >Refresh Table</q-tooltip>
+            </q-btn>
+            <!-- Dynamic Buttons -->
+            <q-btn
+              v-for="i in extraButtons"
+              :key="i.functionName"
+              class="q-ml-sm"
+              color="primary"
+              :icon="i.icon"
+              @click="$emit(`${i.functionName}`)"
+            >
+              <q-tooltip
+                transition-show="scale"
+                transition-hide="scale"
+                anchor="top middle"
+                self="bottom middle"
+              >{{i.tooltip}}</q-tooltip>
+            </q-btn>
+            <!--  -->
 
             <q-space />
+
             <q-input borderless dense debounce="300" color="primary" v-model="filter">
               <template v-slot:append>
                 <q-icon name="search" />
               </template>
             </q-input>
+            <q-btn
+              flat
+              round
+              dense
+              :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              @click="props.toggleFullscreen"
+              class="q-ml-md"
+            />
           </template>
           <template v-slot:loading>
             <q-inner-loading showing color="primary" />
+          </template>
+          <template v-slot:no-data="{ icon, message, filter }">
+            <div class="full-width row flex-center text-accent q-gutter-sm">
+              <q-icon size="2em" name="sentiment_dissatisfied" />
+              <span>Well this is sad... {{ message }}</span>
+              <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+            </div>
           </template>
         </q-table>
       </q-card-section>
@@ -158,42 +207,49 @@ export default {
       type: String,
       default: "single"
     },
-    pageSize: {
-      type: Number,
-      default: 5
-    },
     extraButtons: {
-      type: [Array, Object],
+      type: [Array, Object], // name, i18n, icon, functionName
       default: () => []
+    },
+    paginationConfig: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
-  data() {
+  data: function() {
     return {
-      isBusy: false,
       itemsArray: [],
       fields: [],
       selectedRows: [],
       visibleColumns: [],
-      paginationConfig: {
-        sortBy: "desc",
-        descending: false,
-        page: 1,
-        rowsPerPage: 100
-        //rowsNumber: 4 // if getting data from a server
-      },
       filter: "",
-      loading: false
+      loading: false,
+      defaultPaginationConfig: this.paginationConfig
     };
   },
+  computed: {
+    selectionKey() {
+      return this.enableSelect ? "selection" : "";
+    }
+  },
   methods: {
-    async initialize() {
+    callMethod() {
+      console.log(this.extraButtons);
+      let fn = this.extraButtons[0].functionName;
+      console.log(this);
+      this.saveFile();
+    },
+    initialize() {
       return new Promise(async (res, rej) => {
-        this.isBusy = !this.isBusy;
+        this.loading = !this.loading;
         await this.allTableData();
-        this.isBusy = !this.isBusy;
+        this.loading = !this.loading;
         res(true);
       });
     },
+
     allTableData: function() {
       return ApiService.get(this.tablePath)
         .then(res => {
@@ -202,14 +258,18 @@ export default {
             this.itemsArray.push(element);
           });
           Object.keys(data[0]).map(async (k, index) => {
+            let sortable = this.excludeSortingColoumns.includes(k) //sortable filter
+              ? false
+              : true;
             this.fields.push({
               name: k,
               required: false,
-              label: k,
+              label: k.replace("_", " ").toUpperCase(),
               align: "center",
-              sortable: true,
+              sortable: sortable,
               field: k
             });
+            // exluding check filter
             if (!this.excludedColumns.includes(k)) {
               this.visibleColumns.push(k);
             }
@@ -219,20 +279,7 @@ export default {
           console.error(err);
         });
     },
-    async removeExcludedFields() {
-      return new Promise(resolve => {
-        //let index = this.fields.indexOf(el);
-        this.fields.forEach(el => {
-          this.excludeColoumns.forEach(element => {
-            if (el.key == element) {
-              let index = this.fields.indexOf(el);
-              this.fields.splice(index, 1);
-            }
-          });
-        });
-        resolve();
-      });
-    },
+
     addRow() {
       console.log("add Row");
     },
@@ -244,6 +291,18 @@ export default {
     },
     viewRow() {
       console.log("view Row");
+    },
+    async refreshTable() {
+      this.loading = true;
+      this.clearTableData();
+      await this.allTableData().then(_ => {
+        this.loading = false;
+      });
+    },
+    clearTableData() {
+      this.itemsArray = [];
+      this.fields = [];
+      this.visibleColumns = [];
     }
   }
 };
