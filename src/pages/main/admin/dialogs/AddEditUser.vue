@@ -1,24 +1,51 @@
 <template>
-  <q-dialog v-model="prompt" persistent>
-    <q-card style="min-width: 350px">
-      <q-card-section>
-        <div class="text-h6">Your address</div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-none">
-        <q-input dense v-model="address" autofocus @keyup.enter="prompt = false" />
-      </q-card-section>
-
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup />
-        <q-btn flat label="Add address" v-close-popup />
+  <q-dialog ref="dialog" @hide="onDialogHide">
+    <q-card class="q-dialog-plugin">
+      <q-card-section>hey this is a section</q-card-section>
+      <!-- buttons example -->
+      <q-card-actions align="right">
+        <q-btn color="primary" label="OK" @click="onOKClick" />
+        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    // ...your custom props
+  },
+
+  methods: {
+    // NOTE don't change
+    show() {
+      this.$refs.dialog.show();
+    },
+
+    // NOTE don't change
+    hide() {
+      this.$refs.dialog.hide();
+    },
+
+    // NOTE don't change
+    onDialogHide() {
+      this.$emit("hide");
+    },
+
+    onOKClick() {
+      this.$emit("ok", 2);
+
+      // then hiding dialog
+      this.hide();
+    },
+
+    onCancelClick() {
+      // we just need to hide dialog
+      this.hide();
+    }
+  }
+};
 </script>
 
 <style>

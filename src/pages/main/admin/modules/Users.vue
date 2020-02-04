@@ -6,6 +6,9 @@
 
 <script>
 import GridTable from "./../../../../components/GridTable";
+import AddEditUser from "./../dialogs/AddEditUser";
+
+import { Dialog } from "quasar";
 
 export default {
   created() {},
@@ -46,11 +49,27 @@ export default {
     };
   },
   components: {
-    GridTable
+    GridTable,
+    AddEditUser
   },
   methods: {
     saveFile() {
-      console.log("Parent method (saveFile) is called from Child");
+      this.$q
+        .dialog({
+          component: AddEditUser,
+          parent: this,
+          message: "some text"
+        })
+        .onOk(res => {
+          console.log("OK");
+          console.log(res);
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        })
+        .onDismiss(() => {
+          console.log("Called on OK or Cancel");
+        });
     }
   }
 };
