@@ -1,6 +1,6 @@
 <template>
   <dir>
-    ADMIN PAGE
+    <h4>ADMIN PAGE</h4>
     <router-view />
   </dir>
 </template>

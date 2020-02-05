@@ -1,11 +1,15 @@
 <template>
   <div>
-    <grid-table v-bind="props" @saveFile="saveFile()"></grid-table>
+    <grid-table v-bind="props" @saveFile="saveFile" @addEdit="addEdit"></grid-table>
   </div>
 </template>
 
 <script>
 import GridTable from "./../../../../components/GridTable";
+import AddEditUser from "./../dialogs/AddEditUser";
+
+import { Dialog } from "quasar";
+import ApiService from "../../../../services/api.service";
 
 export default {
   created() {},
@@ -49,8 +53,48 @@ export default {
     GridTable
   },
   methods: {
+    addEdit(selected) {
+      //      console.log({ userSelected: selected });
+      this.$q
+        .dialog({
+          component: AddEditUser,
+          parent: this,
+          selectedRow: selected
+        })
+        .onOk(res => {
+          console.log("OK");
+          ApiService.post("auth/register", res)
+            .then(response => {
+              console.log(response);
+              if (response.data[0].response.status == 1) {
+                this.$q.notify({
+                  message: response.data[0].response.message,
+                  color: "green",
+                  actions: [{ icon: "close", color: "white" }],
+                  timeout: 1000,
+                  position: "top"
+                });
+              } else {
+                this.$q.notify({
+                  message: response.data[0].response.message,
+                  color: "red",
+                  actions: [{ icon: "close", color: "white" }],
+                  timeout: 1000,
+                  position: "top"
+                });
+              }
+            })
+            .catch(error => {
+              console.error(error);
+              throw error;
+            });
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        });
+    },
     saveFile() {
-      console.log("Parent method (saveFile) is called from Child");
+      console.log("save File emitted");
     }
   }
 };
