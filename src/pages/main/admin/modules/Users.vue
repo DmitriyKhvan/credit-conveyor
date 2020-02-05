@@ -54,7 +54,6 @@ export default {
   },
   methods: {
     addEdit(selected) {
-      //      console.log({ userSelected: selected });
       this.$q
         .dialog({
           component: AddEditUser,
@@ -62,26 +61,12 @@ export default {
           selectedRow: selected
         })
         .onOk(res => {
-          console.log("OK");
           ApiService.post("auth/register", res)
             .then(response => {
-              console.log(response);
-              if (response.data[0].response.status == 1) {
-                this.$q.notify({
-                  message: response.data[0].response.message,
-                  color: "green",
-                  actions: [{ icon: "close", color: "white" }],
-                  timeout: 1000,
-                  position: "top"
-                });
+              if (response.data.status == 1) {
+                NotifyService.showSuccessMessage(response.data.message);
               } else {
-                this.$q.notify({
-                  message: response.data[0].response.message,
-                  color: "red",
-                  actions: [{ icon: "close", color: "white" }],
-                  timeout: 1000,
-                  position: "top"
-                });
+                NotifyService.showErrorMessage(response.data.message);
               }
             })
             .catch(error => {

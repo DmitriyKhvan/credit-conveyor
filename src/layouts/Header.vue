@@ -1,11 +1,8 @@
 <template>
-  <q-header
-    elevated
-    style="background:linear-gradient(145deg,#FDFEFE 20%,#014a88 75%);"
-  >
+  <q-header elevated style="background:linear-gradient(145deg,#FDFEFE 20%,#014a88 75%);">
     <q-toolbar>
       <q-toolbar-title>
-        <q-img src="statics/logo.svg" style="width:25px" class="titleLogo" />
+        <q-img src="./../assets/statics/logo.svg" style="width:25px" class="titleLogo" />
         <span class="titleOrg">O'ZMILLIYBANK</span>
       </q-toolbar-title>
 
@@ -19,25 +16,14 @@
       <span class="titleName">{{ emps.full_name }}</span>
 
       <q-btn class="icon-color" flat dense icon="o_notifications" size="16px">
-        <q-badge color="red" floating transparent>
-          12
-        </q-badge>
+        <q-badge color="red" floating transparent>12</q-badge>
       </q-btn>
 
       <q-btn class="icon-color" flat dense icon="o_email" size="16px">
-        <q-badge color="red" floating transparent>
-          4
-        </q-badge>
+        <q-badge color="red" floating transparent>4</q-badge>
       </q-btn>
 
-      <q-btn
-        flat
-        class="icon-color"
-        dense
-        icon="exit_to_app"
-        size="16px"
-        @click="logout()"
-      />
+      <q-btn flat class="icon-color" dense icon="exit_to_app" size="16px" @click="logout()" />
     </q-toolbar>
   </q-header>
 </template>
