@@ -24,7 +24,7 @@
               :disable="loading"
               @click="addRow"
               :icon="'add'"
-              :disabled="enableAddEdit"
+              :disabled="!enableAddEdit"
             >
               <q-tooltip
                 transition-show="scale"
@@ -36,10 +36,9 @@
             <q-btn
               class="q-ml-sm"
               color="primary"
-              :disable="loading"
+              :disable="!enableAddEdit || !isSelected"
               @click="updateRow"
               :icon="'edit'"
-              :disabled="enableAddEdit"
             >
               <q-tooltip
                 transition-show="scale"
@@ -51,10 +50,9 @@
             <q-btn
               class="q-ml-sm"
               color="primary"
-              :disable="loading"
+              :disable="!enableDelete || !isSelected"
               @click="removeRow"
               :icon="'delete'"
-              :disabled="enableDelete"
             >
               <q-tooltip
                 transition-show="scale"
@@ -66,7 +64,7 @@
             <q-btn
               class="q-ml-sm"
               color="primary"
-              :disable="loading"
+              :disable="!isSelected"
               @click="viewRow"
               :icon="'remove_red_eye'"
               v-if="enableView"
@@ -84,7 +82,7 @@
               :disable="loading"
               @click="refreshTable"
               :icon="'refresh'"
-              v-if="enableView"
+              v-if="enableView "
             >
               <q-tooltip
                 transition-show="scale"
@@ -233,6 +231,9 @@ export default {
   computed: {
     selectionKey() {
       return this.enableSelect ? "selection" : "";
+    },
+    isSelected() {
+      return this.selectedRows.length > 0 ? true : false;
     }
   },
   methods: {
@@ -283,6 +284,7 @@ export default {
 
     addRow() {
       console.log("add Row");
+      this.$emit("addEdit", this.selectedRows);
     },
     removeRow() {
       console.log("remove Row");
@@ -293,6 +295,7 @@ export default {
     viewRow() {
       console.log("view Row");
     },
+
     async refreshTable() {
       this.loading = true;
       this.clearTableData();

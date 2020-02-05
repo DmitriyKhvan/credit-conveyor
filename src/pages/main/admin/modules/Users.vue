@@ -1,6 +1,6 @@
 <template>
   <div>
-    <grid-table v-bind="props" @saveFile="saveFile()"></grid-table>
+    <grid-table v-bind="props" @saveFile="saveFile" @addEdit="addEdit"></grid-table>
   </div>
 </template>
 
@@ -9,6 +9,7 @@ import GridTable from "./../../../../components/GridTable";
 import AddEditUser from "./../dialogs/AddEditUser";
 
 import { Dialog } from "quasar";
+import ApiService from "../../../../services/api.service";
 
 export default {
   created() {},
@@ -49,27 +50,51 @@ export default {
     };
   },
   components: {
-    GridTable,
-    AddEditUser
+    GridTable
   },
   methods: {
-    saveFile() {
+    addEdit(selected) {
+      //      console.log({ userSelected: selected });
       this.$q
         .dialog({
           component: AddEditUser,
           parent: this,
-          message: "some text"
+          selectedRow: selected
         })
         .onOk(res => {
           console.log("OK");
-          console.log(res);
+          ApiService.post("auth/register", res)
+            .then(response => {
+              console.log(response);
+              if (response.data[0].response.status == 1) {
+                this.$q.notify({
+                  message: response.data[0].response.message,
+                  color: "green",
+                  actions: [{ icon: "close", color: "white" }],
+                  timeout: 1000,
+                  position: "top"
+                });
+              } else {
+                this.$q.notify({
+                  message: response.data[0].response.message,
+                  color: "red",
+                  actions: [{ icon: "close", color: "white" }],
+                  timeout: 1000,
+                  position: "top"
+                });
+              }
+            })
+            .catch(error => {
+              console.error(error);
+              throw error;
+            });
         })
         .onCancel(() => {
           console.log("Cancel");
-        })
-        .onDismiss(() => {
-          console.log("Called on OK or Cancel");
         });
+    },
+    saveFile() {
+      console.log("save File emitted");
     }
   }
 };
