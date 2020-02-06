@@ -1,6 +1,6 @@
 <template>
   <div>
-    <grid-table v-bind="props" @saveFile="saveFile" @addEdit="addEdit"></grid-table>
+    <grid-table v-bind="props" @saveFile="saveFile" @addEdit="addEditRow" @delRow="deleteRow"></grid-table>
   </div>
 </template>
 
@@ -10,6 +10,8 @@ import AddEditUser from "./../dialogs/AddEditUser";
 
 import { Dialog } from "quasar";
 import ApiService from "../../../../services/api.service";
+import NotifyService from "../../../../services/notify.service";
+import GridService from "../../../../services/grid.service";
 
 export default {
   created() {},
@@ -19,8 +21,8 @@ export default {
         caption: "Users Table",
         tablePath: "auth/users",
         rowId: "user_id",
-        addEdit: "span", // url
-        delete: "auth/users/delete", //
+        addEdit: "auth/users", // url
+        delete: "auth/users", //
         defaultSort: [], // TODO
         excludedColumns: [],
         excludeSortingColoumns: [],
@@ -53,33 +55,64 @@ export default {
     GridTable
   },
   methods: {
-    addEdit(selected) {
+    addEditRow(selected) {
+      this.addEditRecord(AddEditUser, selected, this.props);
+    },
+
+    deleteRow(row) {
+      this.deleteRecord(row, this.props);
+    },
+
+    saveFile() {
+      console.log("save File emitted");
+    },
+    addEditRecord(dialogComponent, selected, props) {
       this.$q
         .dialog({
           component: AddEditUser,
           parent: this,
-          selectedRow: selected
+          data: {
+            selectedRow: selected,
+            props: props
+          }
         })
         .onOk(res => {
-          ApiService.post("auth/register", res)
-            .then(response => {
-              if (response.data.status == 1) {
-                NotifyService.showSuccessMessage(response.data.message);
-              } else {
-                NotifyService.showErrorMessage(response.data.message);
-              }
-            })
-            .catch(error => {
-              console.error(error);
-              throw error;
-            });
+          if (res.data.status == 1) {
+            NotifyService.showSuccessMessage(res.data.message);
+          } else {
+            NotifyService.showErrorMessage(res.data.message);
+          }
         })
         .onCancel(() => {
           console.log("Cancel");
         });
     },
-    saveFile() {
-      console.log("save File emitted");
+    deleteRecord(row, props) {
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: "Do you really want to delete?",
+          cancel: true,
+          persistent: true
+        })
+        .onOk(() => {
+          ApiService.delete(props.delete + "?id=" + row.id).then(
+            res => {
+              if (res.data.status == 1) {
+                NotifyService.showSuccessMessage(res.data.message);
+              } else {
+                NotifyService.showErrorMessage(res.data.message);
+              }
+            },
+            err => {
+              //console.log(err);
+              NotifyService.showErrorMessage(err.toString());
+            }
+          );
+        })
+        .onCancel(() => {
+          // console.log('>>>> Cancel')
+        });
     }
   }
 };

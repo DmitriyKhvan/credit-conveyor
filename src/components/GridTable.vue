@@ -37,7 +37,7 @@
               class="q-ml-sm"
               color="primary"
               :disable="!enableAddEdit || !isSelected"
-              @click="updateRow"
+              @click="editRow"
               :icon="'edit'"
             >
               <q-tooltip
@@ -238,9 +238,7 @@ export default {
   },
   methods: {
     callMethod() {
-      console.log(this.extraButtons);
       let fn = this.extraButtons[0].functionName;
-      console.log(this);
       this.saveFile();
     },
     initialize() {
@@ -251,7 +249,6 @@ export default {
         res(true);
       });
     },
-
     allTableData: function() {
       return ApiService.get(this.tablePath)
         .then(res => {
@@ -281,21 +278,18 @@ export default {
           console.error(err);
         });
     },
-
     addRow() {
-      console.log("add Row");
+      this.$emit("addEdit");
+    },
+    editRow() {
       this.$emit("addEdit", this.selectedRows);
     },
     removeRow() {
-      console.log("remove Row");
-    },
-    updateRow() {
-      console.log("update Row");
+      this.$emit("delRow", { id: this.selectedRows[0][this.rowId] });
     },
     viewRow() {
       console.log("view Row");
     },
-
     async refreshTable() {
       this.loading = true;
       this.clearTableData();

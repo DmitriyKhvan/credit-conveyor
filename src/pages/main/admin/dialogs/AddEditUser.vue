@@ -18,7 +18,7 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.username"
+              v-model="details.username"
               label="Username"
             />
             <q-input
@@ -26,7 +26,7 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.first_name"
+              v-model="details.first_name"
               label="First Name"
             />
           </div>
@@ -36,7 +36,7 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.last_name"
+              v-model="details.last_name"
               label="Last Name"
             />
             <q-input
@@ -44,7 +44,7 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.middle_name"
+              v-model="details.middle_name"
               label="Middle Name"
             />
           </div>
@@ -54,7 +54,7 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.email"
+              v-model="details.email"
               label="Email"
               type="email"
             >
@@ -67,7 +67,7 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.password"
+              v-model="details.password"
               label="Password"
               :type="isPwd ? 'password' : 'text'"
             >
@@ -89,7 +89,7 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.phone"
+              v-model="details.phone"
               label="Phone"
               mask="(+998) ##-###-##-##"
               fill-mask
@@ -99,7 +99,7 @@
               outlined
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.state"
+              v-model="details.state"
               :options="stateList"
               option-value="value"
               option-label="key"
@@ -112,7 +112,7 @@
             <q-select
               outlined
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.roles"
+              v-model="details.roles"
               multiple
               :options="rolesList"
               use-chips
@@ -128,7 +128,7 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="userDetails.emp_id"
+              v-model="details.emp_id"
               label="Employee Id"
               type="number"
             />
@@ -137,7 +137,9 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="!isValidated" label="Submit" @click="submitForm" />
+        <q-btn color="primary" :disable="isLoading" label="Submit" @click="submitForm">
+          <q-spinner color="white" size="1em" v-show="isLoading" />
+        </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
@@ -145,17 +147,22 @@
 </template>
 
 <script>
+import NotifyService from "./../../../../services/notify.service";
+import dialogMix from "./../../../../shared/mixins/dialogMix";
+
 export default {
   data() {
     return {
       isPwd: true,
+      isLoading: this.$store.getters["common/getLoading"],
       stateList: [
         { key: "Active", value: "A" },
         { key: "Passive", value: "P" }
       ],
       isValidated: true,
       rolesList: this.$store.getters["dicts/getRolesDict"],
-      userDetails: {
+      // !!! Dont change. Functions in dialogMixin depends on name "details"
+      details: {
         user_id: null,
         username: null,
         first_name: null,
@@ -171,63 +178,18 @@ export default {
     };
   },
   props: {
-    selectedRow: {
-      type: Array,
-      default: () => []
-    },
-    details: {
+    data: {
       type: Object,
       default: () => {
         return {};
       }
     }
   },
+  mixins: [dialogMix],
   created() {
-    console.log(this.selectedRow);
-    if (this.selectedRow.length > 0) {
-      this.userDetails = this.selectedRow[0];
-      console.log(this.userDetails);
-    } else {
-    }
+    console.log(this.data.props.addEdit);
   },
-  methods: {
-    // !!! Don't change
-    show() {
-      this.$refs.dialog.show();
-    },
-
-    // !!! Don't change
-    hide() {
-      this.$refs.dialog.hide();
-    },
-
-    // !!! Don't change
-    onDialogHide() {
-      this.$emit("hide");
-    },
-
-    submitForm() {
-      this.$emit("ok", this.userDetails);
-      // then hiding dialog
-      this.hide();
-    },
-
-    onCancelClick() {
-      this.$q
-        .dialog({
-          title: "Confirm",
-          message: "Do you want to close the window?",
-          cancel: true,
-          persistent: true
-        })
-        .onOk(() => {
-          this.hide();
-        })
-        .onCancel(() => {
-          // console.log('>>>> Cancel')
-        });
-    }
-  }
+  methods: {}
 };
 </script>
 

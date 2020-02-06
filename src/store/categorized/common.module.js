@@ -4,6 +4,7 @@ const state = {
 
   lang: 1 // 1-ru, 2- uzkr, 3-ru, 4-uzkr   --> 3-uz, 4-en
 */
+  isLoading: false
 };
 
 const getters = {
@@ -13,18 +14,29 @@ const getters = {
     return state.lang
   }
 */
+  isLoading(state) {
+    return state.isLoading;
+  }
 };
 
 const mutations = {
   /*
-
   setLang(lang) {
     state.lang = lang;
   }
-*/
+  */
+  setLoading(state, isLoading) {
+    state.isLoading = isLoading;
+  }
+
 };
 
 const actions = {
+  setLoading({
+    commit
+  }, isLoading) {
+    commit("setLoading", isLoading);
+  }
   /*
   setLang({
     commit
