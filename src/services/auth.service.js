@@ -69,11 +69,18 @@ const AuthService = {
         ApiService.setHeader(response.data.access_token);
         resolve(response.data.access_token);
       } catch (error) {
-        reject(null);
-        throw new AuthenticationError(
-          error.response.status,
-          error.response.data.detail
-        );
+        reject(error);
+        if (error.response) {
+          throw new AuthenticationError(
+            error.response.status,
+            error.response.data.detail
+          );
+        } else {
+          throw new AuthenticationError(
+            401,
+            error.message
+          );
+        }
       }
     });
   },

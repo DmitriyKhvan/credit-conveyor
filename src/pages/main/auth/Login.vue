@@ -11,7 +11,7 @@
     >
       <div v-if="!drawer">
         <div class="block">
-          <q-img src="statics/logoNew.png" style="color:red; width: 100px" />
+          <q-img src="./../../../assets/statics/logoNew.png" style="color:red; width: 100px" />
         </div>
         <div class="block2">
           <div class="row justify-center">
@@ -58,34 +58,17 @@
                       color="primary"
                       @click="handleSubmit()"
                       v-on:keyup.enter="handleSubmit()"
-                      >Войти</q-btn
-                    >
+                    >Войти</q-btn>
                   </q-card-section>
                 </q-form>
               </q-card>
             </div>
           </div>
         </div>
-        <!-- <div class="block3">
-          <div class="item">
-            1
-          </div>
-          <div class="item">
-            2
-          </div>
-          <div class="item">
-            3
-          </div>
-        </div> -->
       </div>
 
       <q-page-sticky position="bottom-right" :offset="[-15, 55]">
-        <q-btn
-          fab
-          color="blue"
-          style="width: 30px; height: 30px;"
-          @click="drawer = !drawer"
-        >
+        <q-btn fab color="blue" style="width: 30px; height: 30px;" @click="drawer = !drawer">
           <q-icon
             :name="drawer ? 'keyboard_arrow_left' : 'keyboard_arrow_right'"
             class="absolute-center"
@@ -94,17 +77,17 @@
       </q-page-sticky>
     </q-drawer>
 
-    <q-page-container
-      ><q-img
+    <q-page-container>
+      <q-img
         src="http://imkoniyat.uz/wp-content/uploads/2014/11/tashkent.jpg"
         style="width: 100%; height: 100vh; filter: blur(5px);"
-    /></q-page-container>
+      />
+    </q-page-container>
   </q-layout>
 </template>
 <script>
 import axios from "axios";
 import { AuthService } from "../../../services/auth.service";
-
 export default {
   name: "names",
   data() {
@@ -129,7 +112,6 @@ export default {
     handleSubmit() {
       // Perform a simple validation that email and password have been typed in
       if (!!this.credentials.username && !!this.credentials.password) {
-        console.log(this.credentials);
         AuthService.login(this.credentials, res => {
           if (res) {
             this.clearForm();
@@ -144,35 +126,6 @@ export default {
       this.credentials.username = "";
       this.credentials.password = "";
     }
-    // auth() {
-    //   axios({
-    //     method: "POST",
-    //     url: "auth/login",
-    //     data: {
-    //       username: this.username,
-    //       password: this.password
-    //     }
-    //   })
-    //     .then(res => {
-    //       localStorage.setItem("access_token", res.data.access_token);
-    //       this.$router.push({ path: "/home", redirect: { name: "login" } });
-    //     })
-    //     // eslint-disable-next-line
-    //     .catch(error => {
-    //       this.showNotif(this.formCheck()[0], this.formCheck()[1]);
-    //     });
-    // },
-    // formCheck() {
-    //   if (!this.username && !this.password) {
-    //     return ["Поля логин и пароль должны быт заполнены", "info"];
-    //   } else if (!this.username) {
-    //     return ["Поля логин должно быт заполнено", "info"];
-    //   } else if (!this.password) {
-    //     return ["Поля пароль должно быт заполнено", "info"];
-    //   } else {
-    //     return ["Проверти в правильности логина или паролья", "negative"];
-    //   }
-    // }
   },
   beforeCreate: function() {
     localStorage.removeItem("access_token");
