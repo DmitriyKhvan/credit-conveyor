@@ -13,102 +13,74 @@
       <q-card-section>
         <div class="q-gutter-y-sm q-gutter-x-md column">
           <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.username"
-              label="Username"
-            />
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.first_name"
-              label="First Name"
-            />
-          </div>
-          <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.last_name"
-              label="Last Name"
-            />
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.middle_name"
-              label="Middle Name"
-            />
-          </div>
-          <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.email"
-              label="Email"
-              type="email"
-            >
-              <template v-slot:prepend>
-                <q-icon name="mail" />
-              </template>
-            </q-input>
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.password"
-              label="Password"
-              :type="isPwd ? 'password' : 'text'"
-            >
-              <template v-slot:prepend>
-                <q-icon name="vpn_key" />
-              </template>
-              <template v-slot:append>
-                <q-icon
-                  :name="isPwd ? 'visibility_off' : 'visibility'"
-                  class="cursor-pointer"
-                  @click="isPwd = !isPwd"
-                />
-              </template>
-            </q-input>
-          </div>
-          <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.phone"
-              label="Phone"
-              mask="(+998) ##-###-##-##"
-              fill-mask
-            />
-
             <q-select
               outlined
-              color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.status"
-              :options="stateList"
+              v-model="details.parent_id"
+              :options="parentMenusList"
+              stack-label
               option-value="value"
-              option-label="key"
+              option-label="text"
               emit-value
               map-options
-              label="State"
+              label="Parent Menu"
+            />
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.name[0]"
+              label="Name Uz"
             />
           </div>
           <div class="row">
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.name[1]"
+              label="Name Ru"
+            />
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.name[2]"
+              label="Name En"
+            />
+          </div>
+          <div class="row">
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.url"
+              label="Url"
+            />
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.ord"
+              label="Order"
+              type="number"
+            />
+          </div>
+
+          <div class="row">
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.icon"
+              label="Icon Class Name"
+            />
             <q-select
               outlined
               class="col-xs-12 col-sm-6 col-md-6"
@@ -123,14 +95,19 @@
               map-options
               label="Roles"
             />
-            <q-input
+          </div>
+          <div class="row">
+            <q-select
               outlined
-              clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.emp_id"
-              label="Employee Id"
-              type="number"
+              v-model="details.status"
+              :options="stateList"
+              option-value="value"
+              option-label="key"
+              emit-value
+              map-options
+              label="Status"
             />
           </div>
         </div>
@@ -153,7 +130,6 @@ import dialogMix from "./../../../../shared/mixins/dialogMix";
 export default {
   data() {
     return {
-      isPwd: true,
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
         { key: "Active", value: 0 },
@@ -161,19 +137,17 @@ export default {
       ],
       isValidated: true,
       rolesList: this.$store.getters["dicts/getRolesDict"],
+      parentMenusList: this.$store.getters["dicts/getParentMenus"],
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
-        user_id: null,
-        username: null,
-        first_name: null,
-        last_name: null,
-        middle_name: null,
-        email: null,
-        password: null,
-        phone: null,
+        menu_id: null,
+        parent_id: null,
+        name: [],
+        url: null, // '/home' formatda
+        ord: null,
         status: null,
-        roles: [],
-        emp_id: null
+        icon: null,
+        roles: []
       }
     };
   },

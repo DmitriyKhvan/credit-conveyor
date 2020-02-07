@@ -1,12 +1,12 @@
 <template>
   <div>
-    <grid-table v-bind="props" @saveFile="saveFile" @addEdit="addEditRow" @delRow="deleteRow"></grid-table>
+    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow"></grid-table>
   </div>
 </template>
 
 <script>
 import GridTable from "./../../../../components/GridTable";
-import AddEditUser from "./../dialogs/AddEditUser";
+import AddEditRole from "./../dialogs/AddEditRole";
 
 import { Dialog } from "quasar";
 import ApiService from "../../../../services/api.service";
@@ -19,12 +19,19 @@ export default {
     return {
       props: {
         caption: "Roles Table",
-        tablePath: "auth/users",
-        rowId: "user_id",
-        addEdit: "auth/users", // url
-        delete: "auth/users", //
+        tablePath: "roles",
+        rowId: "role_id",
+        addEdit: "roles", // url
+        delete: "roles", //
         defaultSort: [], // TODO
-        excludedColumns: [],
+        excludedColumns: [
+          "name",
+          "status",
+          "created_by",
+          "creation_date",
+          "updated_by",
+          "update_date"
+        ],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,
@@ -32,17 +39,9 @@ export default {
         enableView: true,
         enableSelect: true,
         selectMode: "single",
-        extraButtons: [
-          {
-            name: "download",
-            i18n: "",
-            icon: "save",
-            functionName: "saveFile",
-            tooltip: "Saves  SVG File"
-          }
-        ],
+        extraButtons: [],
         paginationConfig: {
-          sortBy: "username",
+          sortBy: "name",
           descending: false,
           page: 1,
           rowsPerPage: 5
@@ -56,21 +55,18 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      this.addEditRecord(AddEditUser, selected, this.props);
+      this.addEditRecord(AddEditRole, selected, this.props);
     },
 
     deleteRow(row) {
       this.deleteRecord(row, this.props);
     },
 
-    saveFile() {
-      console.log("save File emitted");
-    },
-
+    //
     addEditRecord(dialogComponent, selected, props) {
       this.$q
         .dialog({
-          component: AddEditUser,
+          component: dialogComponent,
           parent: this,
           data: {
             selectedRow: selected,
@@ -88,6 +84,7 @@ export default {
           console.log("Cancel");
         });
     },
+
     deleteRecord(row, props) {
       this.$q
         .dialog({

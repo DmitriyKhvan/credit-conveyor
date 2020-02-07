@@ -8,6 +8,7 @@ const AdminPage = () => import("pages/main/admin/admin");
 const Users = () => import("pages/main/admin/modules/users");
 const Roles = () => import("pages/main/admin/modules/roles");
 const Menus = () => import("pages/main/admin/modules/menus");
+const Icons = () => import("pages/main/admin/modules/icons");
 
 // Work
 const WorkPage = () => import("pages/main/work/Work");
@@ -95,6 +96,11 @@ const routes = [{
             path: "menus",
             name: "Menus List",
             component: Menus
+          },
+          {
+            path: "icons",
+            name: "Icons List",
+            component: Icons
           }
         ]
       },

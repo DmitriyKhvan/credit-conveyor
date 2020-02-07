@@ -45,7 +45,7 @@ const DictService = {
 
   allRoles() {
     return new Promise((resolve, reject) => {
-      ApiService.get("roles/all")
+      ApiService.get("roles")
         .then(res => {
           resolve(res.data);
         })
@@ -97,7 +97,7 @@ const DictService = {
 
   menuList() {
     return new Promise((resolve, reject) => {
-      ApiService.get("menus/list?lang=2")
+      ApiService.get("menus/nav")
         .then(res => {
           resolve(res.data[0]);
         })
