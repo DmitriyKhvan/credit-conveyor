@@ -56,16 +56,17 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      this.addEditRecord(AddEditUser, selected, this.props);
+      GridService.addEditRecord(AddEditUser, selected, this.props);
     },
 
     deleteRow(row) {
-      this.deleteRecord(row, this.props);
+      GridService.deleteRecord(row, this.props);
     },
 
     saveFile() {
       console.log("save File emitted");
     },
+
     addEditRecord(dialogComponent, selected, props) {
       this.$q
         .dialog({
@@ -87,6 +88,7 @@ export default {
           console.log("Cancel");
         });
     },
+
     deleteRecord(row, props) {
       this.$q
         .dialog({

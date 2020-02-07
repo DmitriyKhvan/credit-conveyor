@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide">
+  <q-dialog ref="dialog" @hide="onDialogHide" persistent>
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
