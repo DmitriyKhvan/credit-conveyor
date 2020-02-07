@@ -1,6 +1,6 @@
 <template>
   <div>
-    <grid-table v-bind="props" @saveFile="saveFile" @addEdit="addEditRow" @delRow="deleteRow"></grid-table>
+    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow"></grid-table>
   </div>
 </template>
 
@@ -18,19 +18,13 @@ export default {
   data() {
     return {
       props: {
-        caption: "Users Table",
-        tablePath: "auth/users",
-        rowId: "user_id",
-        addEdit: "auth/users", // url
-        delete: "auth/users", //
+        caption: "Icons Table",
+        tablePath: "dicts/icons",
+        rowId: "icon_id",
+        addEdit: "dicts/icons", // url
+        delete: "roles", //
         defaultSort: [], // TODO
-        excludedColumns: [
-          "status",
-          "created_by",
-          "creation_date",
-          "updated_by",
-          "update_date"
-        ],
+        excludedColumns: [],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,
@@ -38,17 +32,9 @@ export default {
         enableView: true,
         enableSelect: true,
         selectMode: "single",
-        extraButtons: [
-          {
-            name: "download",
-            i18n: "",
-            icon: "save",
-            functionName: "saveFile",
-            tooltip: "Saves  SVG File"
-          }
-        ],
+        extraButtons: [],
         paginationConfig: {
-          sortBy: "username",
+          sortBy: "name",
           descending: false,
           page: 1,
           rowsPerPage: 5
@@ -69,10 +55,7 @@ export default {
       this.deleteRecord(row, this.props);
     },
 
-    saveFile() {
-      console.log("save File emitted");
-    },
-
+    //
     addEditRecord(dialogComponent, selected, props) {
       this.$q
         .dialog({

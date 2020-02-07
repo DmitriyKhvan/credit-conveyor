@@ -65,24 +65,29 @@ const AuthService = {
       };
       try {
         const response = await ApiService.customRequest(requestData);
-        TokenService.saveToken(response.data.access_token); // REVIEW  store it to cookie
-        //TokenService.saveRefreshToken(response.data.refresh_token); //REVIEW store it to redis
+        TokenService.saveToken(response.data.access_token);
         ApiService.setHeader(response.data.access_token);
         resolve(response.data.access_token);
       } catch (error) {
-        reject(null);
-        throw new AuthenticationError(
-          error.response.status,
-          error.response.data.detail
-        );
+        reject(error);
+        if (error.response) {
+          throw new AuthenticationError(
+            error.response.status,
+            error.response.data.detail
+          );
+        } else {
+          throw new AuthenticationError(
+            401,
+            error.message
+          );
+        }
       }
     });
   },
 
-  logout: function () {
-    this.clearTokenFromCache(store.getters['auth/token']);
+  logout: async function () {
+    await this.clearTokenFromCache(store.getters['auth/token']);
     TokenService.removeToken();
-    //TokenService.removeRefreshToken();
     ApiService.removeHeader();
     TokenService.removeMenuList();
     ApiService.unmount401Interceptor();
