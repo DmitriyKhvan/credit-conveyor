@@ -12,7 +12,7 @@ export default {
     // !!! Don't change
     if (!!this.data.selectedRow) {
       this.details = this.data.selectedRow[0];
-    } else {}
+    } else { }
   },
   computed: {
 
@@ -38,13 +38,11 @@ export default {
       ApiService.post(this.data.props.addEdit, this.details)
         .then(
           response => {
-            console.log(response);
             this.$store.dispatch("common/setLoading", false);
             this.$emit("ok", response);
             this.hide();
           },
           err => {
-            console.log(err);
             NotifyService.showErrorMessage(err.toString());
             this.$store.dispatch("common/setLoading", false);
           }

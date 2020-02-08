@@ -301,6 +301,7 @@ export default {
       this.itemsArray = [];
       this.fields = [];
       this.visibleColumns = [];
+      this.selectedRows = [];
     }
   }
 };

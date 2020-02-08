@@ -5,33 +5,26 @@
 </template>
 
 <script>
-import GridTable from "./../../../../components/GridTable";
-import AddEditRole from "./../dialogs/AddEditRole";
+import GridTable from "./../../../../../components/GridTable";
+import AddEditIcon from "./../../dialogs/AddEditIcon";
 
 import { Dialog } from "quasar";
-import ApiService from "../../../../services/api.service";
-import NotifyService from "../../../../services/notify.service";
-import GridService from "../../../../services/grid.service";
+import ApiService from "../../../../../services/api.service";
+import NotifyService from "../../../../../services/notify.service";
+import GridService from "../../../../../services/grid.service";
 
 export default {
   created() {},
   data() {
     return {
       props: {
-        caption: "Roles Table",
-        tablePath: "roles",
-        rowId: "role_id",
-        addEdit: "roles", // url
-        delete: "roles", //
+        caption: "Icons Table",
+        tablePath: "dicts/icons",
+        rowId: "icon_id",
+        addEdit: "dicts/icons", // url
+        delete: "dicts/icons", //
         defaultSort: [], // TODO
-        excludedColumns: [
-          "name",
-          "status",
-          "created_by",
-          "creation_date",
-          "updated_by",
-          "update_date"
-        ],
+        excludedColumns: [],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,
@@ -55,7 +48,7 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      this.addEditRecord(AddEditRole, selected, this.props);
+      this.addEditRecord(AddEditIcon, selected, this.props);
     },
 
     deleteRow(row) {
@@ -74,7 +67,6 @@ export default {
           }
         })
         .onOk(res => {
-          console.log(res.data);
           if (res.data.status == 1) {
             NotifyService.showSuccessMessage(res.data.message);
             this.$refs.gridTable.refreshTable();
@@ -98,7 +90,6 @@ export default {
         .onOk(() => {
           ApiService.delete(props.delete + "?id=" + row.id).then(
             res => {
-              console.log(res);
               if (res.data.status == 1) {
                 NotifyService.showSuccessMessage(res.data.message);
                 this.$refs.gridTable.refreshTable();

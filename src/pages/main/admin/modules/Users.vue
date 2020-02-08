@@ -1,6 +1,12 @@
 <template>
   <div>
-    <grid-table v-bind="props" @saveFile="saveFile" @addEdit="addEditRow" @delRow="deleteRow"></grid-table>
+    <grid-table
+      v-bind="props"
+      @saveFile="saveFile"
+      @addEdit="addEditRow"
+      @delRow="deleteRow"
+      ref="gridTable"
+    ></grid-table>
   </div>
 </template>
 
@@ -86,6 +92,7 @@ export default {
         .onOk(res => {
           if (res.data.status == 1) {
             NotifyService.showSuccessMessage(res.data.message);
+            this.$refs.gridTable.refreshTable();
           } else {
             NotifyService.showErrorMessage(res.data.message);
           }
@@ -108,6 +115,7 @@ export default {
             res => {
               if (res.data.status == 1) {
                 NotifyService.showSuccessMessage(res.data.message);
+                this.$refs.gridTable.refreshTable();
               } else {
                 NotifyService.showErrorMessage(res.data.message);
               }
