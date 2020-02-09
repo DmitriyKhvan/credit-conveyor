@@ -11,9 +11,7 @@
           aria-label="Menu"
         />
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+        <q-toolbar-title>Quasar App</q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
@@ -79,17 +77,17 @@ export default {
   },
   beforeCreate: function() {
     //console.log(decoded)
-    axios({
-      method: "GET",
-      url: "menus/list?lang=2",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("access_token")
-      }
-    }).then(res => {
-      this.menu = res.data[0].items;
-      // eslint-disable-next-line
-      //console.log(this.menu)
-    });
+    // axios({
+    //   method: "GET",
+    //   url: "menus/list?lang=2",
+    //   headers: {
+    //     Authorization: "Bearer " + localStorage.getItem("access_token")
+    //   }
+    // }).then(res => {
+    //   this.menu = res.data[0].items;
+    //   // eslint-disable-next-line
+    //   //console.log(this.menu)
+    // });
   }
 };
 </script>

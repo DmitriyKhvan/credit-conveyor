@@ -26,9 +26,16 @@
                       dense
                       square
                       outlined
-                      v-model="credentials.username"
-                      placeholder="Логин"
+                      clearable
+                      v-model.trim="credentials.username"
+                      placeholder="Username"
                       v-on:keyup.enter="handleSubmit()"
+                      @input="$v.credentials.username.$touch()"
+                      :rules="[
+                      val => $v.credentials.username.required || 'Username is required',
+                      val => $v.credentials.username.minLength || 'Length should be at least 3 chars'
+                      ]"
+                      lazy-rules
                     />
                   </q-card-section>
                   <q-card-section>
@@ -36,10 +43,17 @@
                       dense
                       square
                       outlined
+                      clearable
                       v-model="credentials.password"
-                      placeholder="Пароль"
+                      placeholder="Password"
                       v-on:keyup.enter="handleSubmit()"
                       :type="showPass ? 'text' : 'password'"
+                      @input="$v.credentials.password.$touch()"
+                      :rules="[
+                      val => $v.credentials.password.required || 'Password is required',
+                      val => $v.credentials.password.minLength || 'Length should be at least 3 chars'
+                      ]"
+                      lazy-rules
                     >
                       <template v-slot:append>
                         <q-btn
@@ -56,9 +70,10 @@
                     <q-btn
                       class="full-width"
                       color="primary"
+                      :disable="$v.credentials.$invalid"
                       @click="handleSubmit()"
                       v-on:keyup.enter="handleSubmit()"
-                    >Войти</q-btn>
+                    >Login</q-btn>
                   </q-card-section>
                 </q-form>
               </q-card>
@@ -88,6 +103,10 @@
 <script>
 import axios from "axios";
 import { AuthService } from "../../../services/auth.service";
+import { required, minLength, between } from "vuelidate/lib/validators";
+import NotifyService from "../../../services/notify.service";
+import TokenService from "../../../services/storage.service";
+
 export default {
   name: "names",
   data() {
@@ -99,36 +118,42 @@ export default {
       message: ""
     };
   },
+  validations: {
+    credentials: {
+      username: {
+        required,
+        minLength: minLength(3)
+      },
+      password: {
+        required,
+        minLength: minLength(3)
+      }
+    }
+  },
   methods: {
-    showNotif(t, color) {
-      this.$q.notify({
-        message: t,
-        color: color,
-        actions: [{ icon: "close", color: "white" }],
-        timeout: 10000,
-        position: "top"
-      });
-    },
     handleSubmit() {
-      // Perform a simple validation that email and password have been typed in
+      //Perform a simple validation that email and password have been typed in
       if (!!this.credentials.username && !!this.credentials.password) {
         AuthService.login(this.credentials, res => {
           if (res) {
             this.clearForm();
-            this.showNotif("Successfully logged in", "green");
-          } else return;
+            NotifyService.showSuccessMessage("Successfully logged in");
+          } else {
+            NotifyService.showErrorMessage("Error in login");
+          }
         });
       } else {
-        this.showNotif("Enter credentials correctly", "red");
+        NotifyService.showErrorMessage("Enter credentials correctly");
       }
     },
     clearForm() {
       this.credentials.username = "";
       this.credentials.password = "";
+      this.$v.credentials.$reset(); // TODO resetting validation
     }
   },
   beforeCreate: function() {
-    localStorage.removeItem("access_token");
+    //TokenService.removeKey();
   }
 };
 </script>

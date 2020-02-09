@@ -24,7 +24,8 @@
     "vanta": "^0.5.10",
     "vue-google-charts": "^0.3.2",
     "vue-i18n": "^8.0.0",
-    "vue-smooth-dnd": "^0.8.1"
+    "vue-smooth-dnd": "^0.8.1",
+    "vuelidate": "^0.7.5"
   },
   "devDependencies": {
     "@quasar/app": "^1.5.3",

@@ -20,6 +20,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.username"
               label="Username"
+              @input="$v.details.password.$touch()"
+              :rules="[
+                      val => $v.details.username.required || 'Username is required',
+                      val => $v.details.username.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
             <q-input
               outlined
@@ -28,6 +34,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.first_name"
               label="First Name"
+              @input="$v.details.first_name.$touch()"
+              :rules="[
+                      val => $v.details.first_name.required || 'First Name is required',
+                      val => $v.details.first_name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -38,6 +50,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.last_name"
               label="Last Name"
+              @input="$v.details.last_name.$touch()"
+              :rules="[
+                      val => $v.details.last_name.required || 'Last name is required',
+                      val => $v.details.last_name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
             <q-input
               outlined
@@ -46,6 +64,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.middle_name"
               label="Middle Name"
+              @input="$v.details.middle_name.$touch()"
+              :rules="[
+                      val => $v.details.middle_name.required || 'Middle name is required',
+                      val => $v.details.middle_name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -57,6 +81,12 @@
               v-model="details.email"
               label="Email"
               type="email"
+              @input="$v.details.email.$touch()"
+              :rules="[
+                      val => $v.details.email.required || 'Email is required',
+                      val => $v.details.email.email || 'Email is incorrect'
+                      ]"
+              lazy-rules
             >
               <template v-slot:prepend>
                 <q-icon name="mail" />
@@ -70,6 +100,12 @@
               v-model="details.password"
               label="Password"
               :type="isPwd ? 'password' : 'text'"
+              @input="$v.details.password.$touch()"
+              :rules="[
+                      val => $v.details.password.required || 'Password is required',
+                      val => $v.details.password.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             >
               <template v-slot:prepend>
                 <q-icon name="vpn_key" />
@@ -93,6 +129,9 @@
               label="Phone"
               mask="(+998) ##-###-##-##"
               fill-mask
+              @input="$v.details.phone.$touch()"
+              :rules="[]"
+              lazy-rules
             />
 
             <q-select
@@ -106,6 +145,11 @@
               emit-value
               map-options
               label="State"
+              @input="$v.details.status.$touch()"
+              :rules="[
+                      val => $v.details.status.required || 'Status is required'
+                      ]"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -122,6 +166,9 @@
               emit-value
               map-options
               label="Roles"
+              @input="$v.details.roles.$touch()"
+              :rules="[]"
+              lazy-rules
             />
             <q-input
               outlined
@@ -131,13 +178,18 @@
               v-model="details.emp_id"
               label="Employee Id"
               type="number"
+              @input="$v.details.emp_id.$touch()"
+              :rules="[
+                      val => $v.details.emp_id.required || 'Employee Id is required'
+                      ]"
+              lazy-rules
             />
           </div>
         </div>
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="isLoading" label="Submit" @click="submitForm">
+        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -149,6 +201,13 @@
 <script>
 import NotifyService from "./../../../../services/notify.service";
 import dialogMix from "./../../../../shared/mixins/dialogMix";
+import {
+  required,
+  requiredIf,
+  minLength,
+  between,
+  email
+} from "vuelidate/lib/validators";
 
 export default {
   data() {
@@ -176,6 +235,45 @@ export default {
         emp_id: null
       }
     };
+  },
+  validations: {
+    details: {
+      user_id: {},
+      username: {
+        required,
+        minLength: minLength(3)
+      },
+      first_name: {
+        required,
+        minLength: minLength(3)
+      },
+      last_name: {
+        required,
+        minLength: minLength(3)
+      },
+      middle_name: {
+        required,
+        minLength: minLength(3)
+      },
+      email: {
+        required,
+        email
+      },
+      password: {
+        required: requiredIf(val => {
+          return val.user_id == null;
+        }),
+        minLength: minLength(3)
+      },
+      phone: {},
+      status: {
+        required
+      },
+      roles: {},
+      emp_id: {
+        required
+      }
+    }
   },
   props: {
     data: {

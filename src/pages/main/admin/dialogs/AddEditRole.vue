@@ -20,6 +20,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.authority"
               label="Authority"
+              @input="$v.details.authority.$touch()"
+              :rules="[
+                      val => $v.details.authority.required || 'Authority is required',
+                      val => $v.details.authority.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
             <q-input
               outlined
@@ -28,6 +34,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[0]"
               label="Name Uz"
+              @input="$v.details.name.$touch()"
+              :rules="[
+                      val => $v.details.name.required || 'Name Uz is required',
+                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -38,6 +50,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[1]"
               label="Name Ru"
+              @input="$v.details.name.$touch()"
+              :rules="[
+                      val => $v.details.name.required || 'Name Ru is required',
+                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
             <q-input
               outlined
@@ -46,6 +64,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[2]"
               label="Name En"
+              @input="$v.details.name.$touch()"
+              :rules="[
+                      val => $v.details.name.required || 'Name En is required',
+                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
           </div>
 
@@ -61,6 +85,11 @@
               emit-value
               map-options
               label="Status"
+              @input="$v.details.status.$touch()"
+              :rules="[
+                      val => $v.details.status.required || 'Status is required'
+                      ]"
+              lazy-rules
             />
           </div>
         </div>
@@ -79,6 +108,13 @@
 <script>
 import NotifyService from "./../../../../services/notify.service";
 import dialogMix from "./../../../../shared/mixins/dialogMix";
+import {
+  required,
+  requiredIf,
+  minLength,
+  between,
+  email
+} from "vuelidate/lib/validators";
 
 export default {
   data() {
@@ -97,6 +133,25 @@ export default {
         status: null
       }
     };
+  },
+  validations: {
+    details: {
+      role_id: {},
+      authority: {
+        required,
+        minLength: minLength(3)
+      },
+      name: {
+        required,
+        minLength: minLength(3),
+        $each: {
+          minLength: minLength(3)
+        }
+      },
+      status: {
+        required
+      }
+    }
   },
   props: {
     data: {

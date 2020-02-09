@@ -28,7 +28,7 @@ const routes = [{
   path: "/",
   redirect: "/home",
   component: MainContainer,
-  name: "Home",
+  name: "main",
   meta: {
     requiresAuth: true
   },

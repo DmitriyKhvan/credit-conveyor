@@ -20,6 +20,11 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name"
               label="Name"
+              @input="$v.details.name.$touch()"
+              :rules="[
+                      val => $v.details.name.required || 'Name is required'
+                      ]"
+              lazy-rules
             />
             <q-select
               outlined
@@ -32,13 +37,18 @@
               emit-value
               map-options
               label="State"
+              @input="$v.state.class.$touch()"
+              :rules="[
+                      val => $v.details.state.required || 'State is required'
+                      ]"
+              lazy-rules
             />
           </div>
         </div>
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="isLoading" label="Submit" @click="submitForm">
+        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -50,6 +60,13 @@
 <script>
 import NotifyService from "./../../../../services/notify.service";
 import dialogMix from "./../../../../shared/mixins/dialogMix";
+import {
+  required,
+  requiredIf,
+  minLength,
+  between,
+  email
+} from "vuelidate/lib/validators";
 
 export default {
   data() {
@@ -67,6 +84,17 @@ export default {
         state: null
       }
     };
+  },
+  validations: {
+    details: {
+      id: {},
+      name: {
+        required
+      },
+      state: {
+        required
+      }
+    }
   },
   props: {
     data: {
