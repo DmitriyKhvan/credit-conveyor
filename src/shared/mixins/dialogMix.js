@@ -12,7 +12,7 @@ export default {
     // !!! Don't change
     if (!!this.data.selectedRow) {
       this.details = this.data.selectedRow[0];
-    } else { }
+    } else {}
   },
   computed: {
 
@@ -57,7 +57,7 @@ export default {
       this.$q
         .dialog({
           title: "Confirm",
-          message: "Do you want to close the window?",
+          message: this.$t("messages.confirm_exit"),
           cancel: true,
           persistent: true
         })

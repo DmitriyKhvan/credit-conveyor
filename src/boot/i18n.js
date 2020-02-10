@@ -6,7 +6,9 @@ Vue.use(VueI18n)
 
 const i18n = new VueI18n({
   locale: 'ru',
+  //formatter: new CustomFormatter(/* here the constructor options */),
   fallbackLocale: 'ru',
+  silentFallbackWarn: true,
   messages
 })
 
@@ -19,4 +21,4 @@ export default ({
 
 export {
   i18n
-}
+};

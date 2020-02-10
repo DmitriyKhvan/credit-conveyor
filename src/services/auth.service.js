@@ -23,10 +23,8 @@ const AuthService = {
       );
       if (token) {
         store.dispatch("auth/setUserDetails", token);
-
-        //store.dispatch("common/setLang", credentials.lang); // set lang
-        //this.$i18n.locale
-
+        store.dispatch("common/setLang", credentials.lang.value); // set lang
+        TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
         await DictService.loadAll();
         store.dispatch("auth/loginSuccess", token);
 
@@ -89,9 +87,10 @@ const AuthService = {
     await this.clearTokenFromCache(store.getters['auth/token']);
     TokenService.removeToken();
     ApiService.removeHeader();
-    TokenService.removeMenuList();
+    TokenService.removeKeyFromCookies("lang")
     ApiService.unmount401Interceptor();
     store.dispatch("auth/logoutSuccess");
+    store.dispatch("dicts/setIsAllSet", false);
     //SocketService.stopConnection();
     router.push("/login");
   },
@@ -170,7 +169,6 @@ const AuthService = {
           error.response.data.detail
         );
       }
-
     });
   }
 };

@@ -1,0 +1,247 @@
+{
+  "common": {
+    "lang": "Русский",
+    "rn": "№",
+    "select": "Выбор",
+    "true": "Да",
+    "false": "Нет",
+    "children": "Вхождение",
+    "id": "Ид-р",
+    "level": "Уровень",
+    "name": "Наименование",
+    "departments": "Департаменты",
+    "state_name": "Состояние",
+    "selected": "Выбранные",
+    "not_selected": "Не выбранные",
+    "delay": "Задержка",
+    "choose": "- Выберите -",
+    "all": "- Выбрать все -",
+    "not_all": "- Убрать все -"
+  },
+  "actions": {
+    "details": "Реквизиты",
+    "add": "Добавить",
+    "edit": "Изменить",
+    "delete": "Удалить",
+    "copy": "Копировать",
+    "choose": "Выбрать",
+    "view": "Просмотр",
+    "save": "Сохранить",
+    "clear": "Очистить",
+    "exit": "Выход",
+    "close": "Закрыть",
+    "search": "Найти",
+    "filter": "Быстрый поиск",
+    "changePage": "Страница: ",
+    "page": "Страница",
+    "column_sort": "Сортировка колонок",
+    "apply": "Применить",
+    "restore": "Сбросить",
+    "reload": "Перегрузить",
+    "refresh": "Обновить",
+    "select_all": "Выбрать все",
+    "deselect_all": "Убрать все",
+    "advanced_filter": "Детальный поиск",
+    "selected": "Выбрано",
+    "upload": "Загрузить",
+    "download": "Скачать",
+    "expand": "Развернуть",
+    "contract": "Скрыть",
+    "activate": "Активизировать",
+    "deactivate": "Аннулировать",
+    "next": "Далее",
+    "back": "Назад",
+    "dict": "Справочник (F9 / double-click)",
+    "date": "Дата (F9 / double-click)",
+    "log": "Протокол",
+    "created_by": "Автор создание",
+    "creation_date": "Дата создание",
+    "updated_by": "Автор изменение",
+    "update_date": "Дата изменение",
+    "preview": "Просмотр в окне",
+    "pick_color": "Выберите цвет (click)",
+    "pick_icon": "Выберите иконку (click)",
+    "add_row": "Добавить новую запись",
+    "save_row": "Сохранить новую запись",
+    "progress_status": "Статус выполнение",
+    "mandatory_fields": "Основные поля",
+    "optional_fields": "Не обязательные поля",
+    "automatic_value": "Автоматическая генерация",
+    "author": "Автор",
+    "executor": "Исполнитель",
+    "view_type": "Тип отображение"
+  },
+
+  "messages": {
+    "accessDenied": "Доступ запрещен",
+    "authRequired": "Доступ запрешен: Пожалуйста авторизуйтесь",
+    "errorProcedure": "Доступ запрещен: Ошибка авторизации",
+    "save_success": "Данные успешно сохранены",
+    "delete_success": "Данные успегно удалены",
+    "confirm_delete": "Вы действительно хотите удалить?",
+    "confirm_exit": "Вы действительно хотите закрыть?",
+    "confirm_save": "Вы действительно хотите сохранить?",
+    "no_data": "Данные не найдены",
+    "invalid_password": "Несовпадение паролей - повторите попытку ввода пароля заново",
+    "function_not_found": "Функционал не найден или не доступ",
+    "invalid_field": "Ошибка значение",
+    "invalid_required": "Отсутствует обязательное значение",
+    "invalid_minLength": "Ошибка минимальной длины значение",
+    "invalid_maxLength": "Ошибка максимальной длины значение",
+    "invalid_date": "Ошибка формата даты"
+  },
+
+  "states": {
+    "A": "Активен",
+    "P": "Пассивен",
+    "E": "Введен",
+    "C": "Утвержден",
+    "D": "Забракован"
+  },
+
+  "error_404": {
+    "header": "Ошибка 404",
+    "message": "Страница не найдена",
+    "back": "Назад"
+  },
+
+  "error_403": {
+    "header": "Ошибка 403",
+    "message": "Доступ запрещен",
+    "back": "Назад"
+  },
+
+  "auth": {
+    "_self": "Авторизация",
+    "username": "Логин",
+    "password": "Пароль",
+    "language": "Язык",
+    "languageView": "Язык отображение в системе",
+    "usernameError": "Введите логин",
+    "passwordError": "Введите пароль",
+    "usernameMinError": "Длина меньше 2 символов",
+    "passwordMinError": "Длина меньше 3 символов",
+    "languageError": "Выберите язык",
+    "signin": "Вход"
+  },
+
+  "main": {
+    "_self": "Главная",
+    "dashboard": "Мониторинг",
+    "reports": "Отчёты",
+    "settings": "Настройки",
+    "signOut": "Выход",
+    "admin": "Администрирование",
+    "language": "Язык",
+    "languageOptions": "Языковые опции",
+    "showOptions": "Показать опции",
+    "hideOptions": "Скрыть опции",
+    "profile": "Профиль",
+    "secure": "Безопастность",
+    "changeControls": "Изменить опции панели",
+    "controls": "Опции панели навигации",
+    "mode": {
+      "_self": "Режим",
+      "push": "Сдвиг",
+      "side": "Адаптивный",
+      "over": "Перекрывающий"
+    },
+    "backdrop": "Анимации"
+  },
+
+  "users": {
+    "_self": "Пользователи",
+    "addEdit": "Реквизиты пользователя",
+    "user_info": "Реквизиты",
+    "last_name": "Фамилия",
+    "first_name": "Имя",
+    "middle_name": "Отчёство",
+    "name": "ФИО",
+    "username": "Логин",
+    "new_password": "Пароль",
+    "new_password_retry": "Пароль повторный",
+    "email": "Почта (E-Mail)",
+    "language": "Язык",
+    "state": "Состояние",
+    "role_ids": "Роли",
+    "org_id": "Организация",
+    "reactivation_date": "Срок действие",
+    "file_drop": "Файлы пользователя",
+    "files": "Добавить файлы для загрузки",
+    "phone": "Телефон",
+    "state_name": "Состояние",
+    "user_roles": {
+      "_self": "Роли по пользователю",
+      "authority": "Код",
+      "name": "Роль",
+      "state": "Состояние",
+      "state_name": "Состояние"
+    },
+    "user_role_menus": {
+      "_self": "Меню по пользователю",
+      "authority": "Код",
+      "menu_name": "Меню",
+      "url": "Ссылка",
+      "state": "Состояние",
+      "state_name": "Состояние"
+    },
+    "user_files": {
+      "_self": "Файлы по пользователю",
+      "file_size": "Размер",
+      "extension": "Расширение",
+      "url": "Ссылка",
+      "description": "Описание"
+    }
+  },
+  "layout": {
+    "menu_label": "Меню по доступу",
+    "menu_caption": "Описание"
+  },
+  "pages": {
+    "admin_page": "Странитца Админа"
+  },
+  "tables": {
+    "roles": {
+      "_self": "Таблица Роли",
+      "add_edit": "Cоздать/Изменить Рол"
+    },
+    "menus": {
+      "_self": "Таблица Меню",
+      "add_edit": "Cоздать/Изменить Меню"
+    },
+    "users": {
+      "_self": "Таблица Ползователи",
+      "add_edit": "Cоздать/Изменить Ползователь",
+      "first_name": "Имя",
+      "last_name": "Фамилия",
+      "middle_name": "Отчество",
+      "email": "Email",
+      "password": "Парол",
+      "phone": "Телефон",
+      "status": "Статус",
+      "roles": "Роли",
+      "emp_id": "Employee Id",
+      "firstnameError": "First Name is required",
+      "firstnameMinError": "Length is less than 3 letters",
+      "lastnameError": "Last Name is required",
+      "lastnameMinError": "Length is less than 3 letters",
+      "middlenameError": "Middle Name is required",
+      "middlenameMinError": "Middle is less than 3 letters",
+      "emailError": "First Name is required",
+      "emailFormError": "Length is less than 3 letters",
+      "empIdError": "Employee Id is required",
+      "statusError": "Status is requied",
+      "passwordError": "Password is required",
+      "passwordMinError": "Password is less than 3 letters"
+    },
+    "icons": {
+      "_self": "Таблица Иконки",
+      "add_edit": "Cоздать/Изменить Иконка"
+    },
+    "icon_types": {
+      "_self": "Таблица Тип Иконки",
+      "add_edit": "Cоздать/Изменить Тип Иконка"
+    }
+  }
+
+}

@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       props: {
-        caption: "Icons Type Table",
+        caption: this.$t("tables.icon_types._self"),
         tablePath: "dicts/icontype",
         rowId: "id",
         addEdit: "dicts/icontype", // url
@@ -83,7 +83,7 @@ export default {
       this.$q
         .dialog({
           title: "Confirm",
-          message: "Do you really want to delete?",
+          message: $t("messages.confirm_delete"),
           cancel: true,
           persistent: true
         })

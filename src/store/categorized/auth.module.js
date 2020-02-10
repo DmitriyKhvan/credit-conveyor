@@ -110,45 +110,6 @@ const actions = {
     commit("setUserFullname", details.fullName);
   },
 
-  //   logout({
-  //     commit
-  //   }) {
-  //     UserService.logout();
-  //     TokenService.removeMenuList();
-
-  //     commit("logoutSuccess");
-  //     SocketService.stopConnection();
-  //     router.push("/login");
-  //   },
-
-  //   refreshToken({
-  //     commit,
-  //     state
-  //   }) {
-  //     //   const token = UserService.refreshToken();
-  //     if (!state.refreshTokenPromise) {
-  //       const p = UserService.refreshToken();
-  //       commit("refreshTokenPromise", p);
-
-  //       // Wait for the UserService.refreshToken() to resolve. On success set the token and clear promise
-  //       // Clear the promise on error as well.
-  //       p.then(
-  //         response => {
-  //           commit("refreshTokenPromise", null);
-  //           commit("loginSuccess", response);
-  //           SocketService.runConnection(jwtDecode(state.accessToken).user_id); // connects to socket
-  //         },
-  //         error => {
-  //           commit("refreshTokenPromise", null);
-  //           SocketService.stopConnection();
-  //         }
-  //       );
-  //     }
-
-  //     return state.refreshTokenPromise;
-  //     //commit('setToken', token);
-  //   }
-
 };
 
 /**
