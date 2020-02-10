@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Header</div>
+          <div class="text-h6">{{ $t("tables.users.add_edit") }}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -19,12 +19,12 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.username"
-              label="Username"
+              :label="$t('auth.username')"
               @input="$v.details.password.$touch()"
               :rules="[
-                      val => $v.details.username.required || 'Username is required',
-                      val => $v.details.username.minLength || 'Length should be at least 3 chars'
-                      ]"
+                val => $v.details.username.required || $t('auth.usernameError'),
+                val => $v.details.username.minLength || $t('auth.usernameMinError')
+              ]"
               lazy-rules
             />
             <q-input
@@ -33,12 +33,14 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.first_name"
-              label="First Name"
+              :label="$t('tables.users.first_name')"
               @input="$v.details.first_name.$touch()"
               :rules="[
-                      val => $v.details.first_name.required || 'First Name is required',
-                      val => $v.details.first_name.minLength || 'Length should be at least 3 chars'
-                      ]"
+                val =>
+                  $v.details.first_name.required || $t('tables.users.firstnameError'),
+                val =>
+                  $v.details.first_name.minLength || $t('tables.users.firstnameMinError')
+              ]"
               lazy-rules
             />
           </div>
@@ -49,12 +51,14 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.last_name"
-              label="Last Name"
+              :label="$t('tables.users.last_name')"
               @input="$v.details.last_name.$touch()"
               :rules="[
-                      val => $v.details.last_name.required || 'Last name is required',
-                      val => $v.details.last_name.minLength || 'Length should be at least 3 chars'
-                      ]"
+                val => $v.details.last_name.required || $t('tables.users.lastnameError'),
+                val =>
+                  $v.details.last_name.minLength ||
+                  $t('tables.users.lastnameMinError')
+              ]"
               lazy-rules
             />
             <q-input
@@ -63,12 +67,15 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.middle_name"
-              label="Middle Name"
+              :label="$t('tables.users.middle_name')"
               @input="$v.details.middle_name.$touch()"
               :rules="[
-                      val => $v.details.middle_name.required || 'Middle name is required',
-                      val => $v.details.middle_name.minLength || 'Length should be at least 3 chars'
-                      ]"
+                val =>
+                  $v.details.middle_name.required || $t('tables.users.middlenameError'),
+                val =>
+                  $v.details.middle_name.minLength ||
+                  $t('tables.users.middlenameMinError')
+              ]"
               lazy-rules
             />
           </div>
@@ -79,13 +86,13 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.email"
-              label="Email"
+              :label="$t('tables.users.email')"
               type="email"
               @input="$v.details.email.$touch()"
               :rules="[
-                      val => $v.details.email.required || 'Email is required',
-                      val => $v.details.email.email || 'Email is incorrect'
-                      ]"
+                val => $v.details.email.required || $t('tables.users.emailError'),
+                val => $v.details.email.email || $t('tables.users.emailFormError'),
+              ]"
               lazy-rules
             >
               <template v-slot:prepend>
@@ -98,13 +105,14 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.password"
-              label="Password"
+              :label="$t('tables.users.password')"
               :type="isPwd ? 'password' : 'text'"
               @input="$v.details.password.$touch()"
               :rules="[
-                      val => $v.details.password.required || 'Password is required',
-                      val => $v.details.password.minLength || 'Length should be at least 3 chars'
-                      ]"
+                val => $v.details.password.required || $t('tables.users.passwordError'),
+                val =>
+                  $v.details.password.minLength || $t('tables.users.passwordMinError'),
+              ]"
               lazy-rules
             >
               <template v-slot:prepend>
@@ -126,7 +134,7 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.phone"
-              label="Phone"
+              :label="$t('tables.users.phone')"
               mask="(+998) ##-###-##-##"
               fill-mask
               @input="$v.details.phone.$touch()"
@@ -144,11 +152,11 @@
               option-label="key"
               emit-value
               map-options
-              label="State"
+              :label="$t('tables.users.status')"
               @input="$v.details.status.$touch()"
               :rules="[
-                      val => $v.details.status.required || 'Status is required'
-                      ]"
+                val => $v.details.status.required || $t('tables.users.statusError')
+              ]"
               lazy-rules
             />
           </div>
@@ -165,7 +173,7 @@
               option-label="text"
               emit-value
               map-options
-              label="Roles"
+              :label="$t('tables.users.roles')"
               @input="$v.details.roles.$touch()"
               :rules="[]"
               lazy-rules
@@ -176,12 +184,12 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.emp_id"
-              label="Employee Id"
+              :label="$t('tables.users.emp_id')"
               type="number"
               @input="$v.details.emp_id.$touch()"
               :rules="[
-                      val => $v.details.emp_id.required || 'Employee Id is required'
-                      ]"
+                val => $v.details.emp_id.required || $t('tables.users.empIdError')
+              ]"
               lazy-rules
             />
           </div>
@@ -189,10 +197,15 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
+        <q-btn
+          color="primary"
+          :disable="$v.details.$invalid"
+          :label="$t('actions.save')"
+          @click="submitForm"
+        >
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
-        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
+        <q-btn color="primary" :label="$t('actions.close')" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -284,12 +297,9 @@ export default {
     }
   },
   mixins: [dialogMix],
-  created() {
-    console.log(this.data.props.addEdit);
-  },
+  created() {},
   methods: {}
 };
 </script>
 
-<style>
-</style>
+<style></style>

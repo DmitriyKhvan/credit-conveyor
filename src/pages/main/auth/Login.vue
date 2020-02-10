@@ -11,50 +11,68 @@
     >
       <div v-if="!drawer">
         <div class="block">
-          <q-img src="./../../../assets/statics/logoNew.png" style="color:red; width: 100px" />
+          <q-img
+            src="./../../../assets/statics/logoNew.png"
+            style="color:red; width: 100px"
+          />
         </div>
         <div class="block2">
           <div class="row justify-center">
             <div class="column self-center">
               <q-card class="my-card" style="width: 360px" flat>
                 <q-card-section class="row justify-center">
-                  <span>ВХОД В ПРОГРАММУ</span>
+                  <span>{{ $t("auth._self") }}</span>
                 </q-card-section>
                 <q-form>
                   <q-card-section>
+                    <!-- LOGIN -->
                     <q-input
                       dense
                       square
                       outlined
                       clearable
                       v-model.trim="credentials.username"
-                      placeholder="Username"
+                      :placeholder="$t('auth.username')"
                       v-on:keyup.enter="handleSubmit()"
                       @input="$v.credentials.username.$touch()"
                       :rules="[
-                      val => $v.credentials.username.required || 'Username is required',
-                      val => $v.credentials.username.minLength || 'Length should be at least 3 chars'
+                        val =>
+                          $v.credentials.username.required ||
+                          $t('auth.usernameError'),
+                        val =>
+                          $v.credentials.username.minLength ||
+                          $t('auth.usernameMinError')
                       ]"
                       lazy-rules
-                    />
-                  </q-card-section>
-                  <q-card-section>
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="account_circle" />
+                      </template>
+                    </q-input>
+                    <!-- Password -->
                     <q-input
                       dense
                       square
                       outlined
                       clearable
                       v-model="credentials.password"
-                      placeholder="Password"
+                      :placeholder="$t('auth.password')"
                       v-on:keyup.enter="handleSubmit()"
                       :type="showPass ? 'text' : 'password'"
                       @input="$v.credentials.password.$touch()"
                       :rules="[
-                      val => $v.credentials.password.required || 'Password is required',
-                      val => $v.credentials.password.minLength || 'Length should be at least 3 chars'
+                        val =>
+                          $v.credentials.password.required ||
+                          $t('auth.passwordError'),
+                        val =>
+                          $v.credentials.password.minLength ||
+                          $t('auth.passwordMinError')
                       ]"
                       lazy-rules
                     >
+                      <template v-slot:prepend>
+                        <q-icon name="vpn_key" />
+                      </template>
                       <template v-slot:append>
                         <q-btn
                           round
@@ -65,6 +83,30 @@
                         />
                       </template>
                     </q-input>
+                    <q-select
+                      outlined
+                      class="col-xs-12 col-sm-6 col-md-6"
+                      v-model="credentials.lang"
+                      :options="langsList"
+                      option-value="value"
+                      option-label="text"
+                      map-options
+                      @input="
+                        lang => {
+                          onLangChange(lang.value);
+                        }
+                      "
+                      :rules="[
+                        val =>
+                          $v.credentials.lang.required ||
+                          $t('auth.languageError')
+                      ]"
+                      lazy-rules
+                    >
+                      <template v-slot:prepend>
+                        <q-icon name="language" />
+                      </template>
+                    </q-select>
                   </q-card-section>
                   <q-card-section>
                     <q-btn
@@ -73,7 +115,8 @@
                       :disable="$v.credentials.$invalid"
                       @click="handleSubmit()"
                       v-on:keyup.enter="handleSubmit()"
-                    >Login</q-btn>
+                      >{{ $t("auth.signin") }}</q-btn
+                    >
                   </q-card-section>
                 </q-form>
               </q-card>
@@ -83,7 +126,12 @@
       </div>
 
       <q-page-sticky position="bottom-right" :offset="[-15, 55]">
-        <q-btn fab color="blue" style="width: 30px; height: 30px;" @click="drawer = !drawer">
+        <q-btn
+          fab
+          color="blue"
+          style="width: 30px; height: 30px;"
+          @click="drawer = !drawer"
+        >
           <q-icon
             :name="drawer ? 'keyboard_arrow_left' : 'keyboard_arrow_right'"
             class="absolute-center"
@@ -114,8 +162,19 @@ export default {
       drawer: false,
       leftDrawerOpen: false,
       showPass: false,
-      credentials: { username: null, password: null },
-      message: ""
+      credentials: {
+        username: null,
+        password: null,
+        lang: { text: "Русский", value: "ru" }
+      },
+      message: "",
+      langsList: [
+        { text: "Русский", value: "ru" }, // uz, ru, en
+        { text: "Узбек крилл", value: "uzkr" },
+        { text: "English", value: "en" },
+        { text: "O'zbek Lotin", value: "uz" }
+      ],
+      loginError: false
     };
   },
   validations: {
@@ -127,6 +186,9 @@ export default {
       password: {
         required,
         minLength: minLength(3)
+      },
+      lang: {
+        required
       }
     }
   },
@@ -150,6 +212,9 @@ export default {
       this.credentials.username = "";
       this.credentials.password = "";
       this.$v.credentials.$reset(); // TODO resetting validation
+    },
+    onLangChange(lang) {
+      this.$i18n.locale = lang;
     }
   },
   beforeCreate: function() {

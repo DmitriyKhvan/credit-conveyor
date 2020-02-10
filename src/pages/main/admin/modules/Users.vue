@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       props: {
-        caption: "Users Table",
+        caption: this.$t("tables.users._self"),
         tablePath: "auth/users",
         rowId: "user_id",
         addEdit: "auth/users", // url
@@ -50,7 +50,7 @@ export default {
             i18n: "",
             icon: "save",
             functionName: "saveFile",
-            tooltip: "Saves  SVG File"
+            tooltip: this.$t("actions.save")
           }
         ],
         paginationConfig: {
@@ -106,7 +106,7 @@ export default {
       this.$q
         .dialog({
           title: "Confirm",
-          message: "Do you really want to delete?",
+          message: $t("messages.confirm_delete"),
           cancel: true,
           persistent: true
         })

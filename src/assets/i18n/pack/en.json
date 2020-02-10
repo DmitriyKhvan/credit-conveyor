@@ -1,0 +1,242 @@
+{
+  "common": {
+    "lang": "English",
+    "rn": "#",
+    "select": "Select",
+    "true": "True",
+    "false": "False",
+    "children": "Child rows",
+    "id": "Id",
+    "level": "Depth",
+    "name": "Name",
+    "departments": "Departments",
+    "state_name": "Active",
+    "selected": "Selected",
+    "not_selected": "Not Selected",
+    "delay": "Delay",
+    "choose": "- Select -",
+    "all": "- Select all -",
+    "not_all": "- Unselect all -"
+  },
+  "actions": {
+    "details": "Details",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "copy": "Copy",
+    "choose": "Choose",
+    "view": "View",
+    "save": "Save",
+    "clear": "Clear",
+    "exit": "Exit",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Quick filter",
+    "changePage": "Page: ",
+    "page": "Page",
+    "column_sort": "Column sort",
+    "apply": "Apply",
+    "restore": "Restore",
+    "reload": "Reload",
+    "refresh": "Refresh",
+    "select_all": "Select all",
+    "deselect_all": "Deselect all",
+    "advanced_filter": "Advanced filter",
+    "selected": "Selected",
+    "upload": "Upload",
+    "download": "Download",
+    "expand": "Expand",
+    "contract": "Contract",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "next": "Next",
+    "back": "Back",
+    "dict": "List (F9 / double-click)",
+    "date": "Date (F9 / double-click)",
+    "log": "Log",
+    "created_by": "Created by",
+    "creation_date": "Creation date",
+    "updated_by": "Updated by",
+    "update_date": "Update date",
+    "preview": "Preview",
+    "pick_color": "Pick a color (click)",
+    "pick_icon": "Pick an icon (click)",
+    "add_row": "Add new entry",
+    "save_row": "Save new entry",
+    "progress_status": "Progress status",
+    "mandatory_fields": "Main fields",
+    "optional_fields": "Optional fields",
+    "automatic_value": "Generated automatically",
+    "author": "Author",
+    "executor": "Executor",
+    "view_type": "View type"
+  },
+  "messages": {
+    "accessDenied": "Access Denied",
+    "authRequired": "Access Denied: Please authenticate",
+    "errorProcedure": "Access Denied: Error in procedure",
+    "save_success": "Save successul",
+    "delete_success": "Delete successful",
+    "confirm_delete": "Are you sure you want to delete?",
+    "confirm_exit": "Are you sure you want to exit?",
+    "confirm_save": "Are you sure you want to save?",
+    "no_data": "No data found",
+    "invalid_password": "Invalid password - please retry",
+    "function_not_found": "Function not found or inaccessible",
+    "invalid_field": "Invalid field value",
+    "invalid_required": "Required field value not provided",
+    "invalid_minLength": "Invalid minimal length",
+    "invalid_maxLength": "Invalid maximum length",
+    "invalid_date": "Invalid date format"
+  },
+  "states": {
+    "A": "Active",
+    "P": "Passive",
+    "E": "Entered",
+    "C": "Confirmed",
+    "D": "Declined"
+  },
+  "error_404": {
+    "header": "Error 404",
+    "message": "Page not found",
+    "back": "Back"
+  },
+
+  "error_403": {
+    "header": "Error 403",
+    "message": "Access denied",
+    "back": "Back"
+  },
+
+  "auth": {
+    "_self": "Authentication",
+    "username": "Username",
+    "password": "Password",
+    "language": "Language",
+    "languageView": "Display language",
+    "usernameError": "Username is required",
+    "passwordError": "Please input your password",
+    "usernameMinError": "Length is less than 2 letters",
+    "passwordMinError": "Length is less than 3 letters",
+    "languageError": "Please select a language",
+    "signin": "Sign In"
+  },
+
+  "main": {
+    "_self": "Main",
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "settings": "Settings",
+    "signOut": "Sign out",
+    "admin": "Power user",
+    "language": "Language",
+    "languageOptions": "LanguageOptions",
+    "showOptions": "Show options",
+    "hideOptions": "Hide Options",
+    "profile": "Profile",
+    "secure": "Security",
+    "changeControls": "Change sidenav options",
+    "controls": "Sidenav controls",
+    "mode": {
+      "_self": "Mode",
+      "push": "Push",
+      "side": "Side",
+      "over": "Over"
+    },
+    "backdrop": "Backdrop"
+  },
+  "users": {
+    "_self": "Users",
+    "addEdit": "User details",
+    "user_info": "User details",
+    "last_name": "Last name",
+    "first_name": "First name",
+    "middle_name": "Middle name",
+    "name": "Name",
+    "username": "Username",
+    "new_password": "Password",
+    "new_password_retry": "Password retry",
+    "email": "E-Mail",
+    "language": "Language",
+    "state": "State",
+    "role_ids": "Roles",
+    "org_id": "Organization",
+    "reactivation_date": "Reactivation date",
+    "file_drop": "User files",
+    "files": "Drop files here to upload",
+    "phone": "Phone",
+    "state_name": "State",
+    "user_roles": {
+      "_self": "User roles",
+      "authority": "Code",
+      "name": "Role",
+      "state": "State",
+      "state_name": "State"
+    },
+    "user_role_menus": {
+      "_self": "User menus",
+      "authority": "Code",
+      "menu_name": "Menu",
+      "url": "Url",
+      "state": "State",
+      "state_name": "State"
+    },
+    "user_files": {
+      "_self": "User files",
+      "file_size": "Size",
+      "extension": "Extension",
+      "url": "Url",
+      "description": "Description"
+    }
+  },
+  "layout": {
+    "menu_label": "Permitted menus",
+    "menu_caption": "Description"
+  },
+  "pages": {
+    "admin_page": "Admin Page"
+  },
+  "tables": {
+    "roles": {
+      "_self": "Roles Table",
+      "add_edit": "Create/Edit Table"
+    },
+    "menus": {
+      "_self": "Menus Table",
+      "add_edit": "Create/Edit Table"
+    },
+    "users": {
+      "_self": "Users Table",
+      "add_edit": "Create/Edit User",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "middle_name": "Middle Name",
+      "email": "Email",
+      "password": "Password",
+      "phone": "Phone",
+      "status": "Status",
+      "roles": "Roles",
+      "emp_id": "Employee Id",
+      "firstnameError": "First Name is required",
+      "firstnameMinError": "Length is less than 3 letters",
+      "lastnameError": "Last Name is required",
+      "lastnameMinError": "Length is less than 3 letters",
+      "middlenameError": "Middle Name is required",
+      "middlenameMinError": "Middle is less than 3 letters",
+      "emailError": "First Name is required",
+      "emailFormError": "Length is less than 3 letters",
+      "empIdError": "Employee Id is required",
+      "statusError": "Status is requied",
+      "passwordError": "Password is required",
+      "passwordMinError": "Password is less than 3 letters"
+    },
+    "icons": {
+      "_self": "Icons Table",
+      "add_edit": "Create/Edit Icon"
+    },
+    "icon_types": {
+      "_self": "Icon Types Table",
+      "add_edit": "Create/Edit Icon Type"
+    }
+  }
+}

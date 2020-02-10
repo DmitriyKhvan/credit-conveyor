@@ -7,33 +7,23 @@ const DictService = {
 
     return new Promise(async (resolve, reject) => {
 
-      console.log("dicts/setIsAllSet is ", store.getters["dicts/isAllSet"]);
-
       if (!store.getters["dicts/isAllSet"]) {
 
         let allroles = await this.allRoles();
         store.dispatch("dicts/setRolesDict", allroles);
-
         let menuItems = await DictService.menuList();
         store.dispatch("dicts/setMenuList", menuItems.items);
-
         let iconTypes = await this.iconTypes();
         store.dispatch("dicts/setIconTypes", iconTypes);
-
         let icons = await this.icons();
         store.dispatch("dicts/setIconsDict", icons);
-
         let parentMenus = await this.parentMenus();
         store.dispatch("dicts/setParentMenus", parentMenus);
-
         let userList = await this.userList();
         store.dispatch("dicts/setUserList", userList);
-
         let receivedNotifications = await this.receivedNotifications();
         store.dispatch("dicts/setReceivedNotifications", receivedNotifications);
-
         store.dispatch("dicts/setIsAllSet", true);
-
         resolve(true)
 
       } else {
@@ -97,7 +87,8 @@ const DictService = {
 
   menuList() {
     return new Promise((resolve, reject) => {
-      ApiService.get("menus/nav")
+      let lang = store.getters["common/getLang"]; // or get from
+      ApiService.get("menus/nav?lang=" + lang)
         .then(res => {
           resolve(res.data[0]);
         })

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
+    <grid-table
+      v-bind="props"
+      @addEdit="addEditRow"
+      @delRow="deleteRow"
+      ref="gridTable"
+    ></grid-table>
   </div>
 </template>
 
@@ -18,7 +23,7 @@ export default {
   data() {
     return {
       props: {
-        caption: "Menus Table",
+        caption: this.$t("tables.menus._self"),
         tablePath: "menus",
         rowId: "menu_id",
         addEdit: "menus", // url
@@ -90,7 +95,7 @@ export default {
       this.$q
         .dialog({
           title: "Confirm",
-          message: "Do you really want to delete?",
+          message: $t("messages.confirm_delete"),
           cancel: true,
           persistent: true
         })
