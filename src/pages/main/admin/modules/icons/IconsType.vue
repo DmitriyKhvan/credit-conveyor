@@ -1,28 +1,28 @@
 <template>
   <div>
-    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow"></grid-table>
+    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
   </div>
 </template>
 
 <script>
-import GridTable from "./../../../../components/GridTable";
-import AddEditUser from "./../dialogs/AddEditUser";
+import GridTable from "./../../../../../components/GridTable";
+import AddEditIconType from "./../../dialogs/AddEditIconType";
 
 import { Dialog } from "quasar";
-import ApiService from "../../../../services/api.service";
-import NotifyService from "../../../../services/notify.service";
-import GridService from "../../../../services/grid.service";
+import ApiService from "../../../../../services/api.service";
+import NotifyService from "../../../../../services/notify.service";
+import GridService from "../../../../../services/grid.service";
 
 export default {
   created() {},
   data() {
     return {
       props: {
-        caption: "Icons Table",
-        tablePath: "dicts/icons",
-        rowId: "icon_id",
-        addEdit: "dicts/icons", // url
-        delete: "roles", //
+        caption: "Icons Type Table",
+        tablePath: "dicts/icontype",
+        rowId: "id",
+        addEdit: "dicts/icontype", // url
+        delete: "dicts/icontype", //
         defaultSort: [], // TODO
         excludedColumns: [],
         excludeSortingColoumns: [],
@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      this.addEditRecord(AddEditUser, selected, this.props);
+      this.addEditRecord(AddEditIconType, selected, this.props);
     },
 
     deleteRow(row) {
@@ -59,7 +59,7 @@ export default {
     addEditRecord(dialogComponent, selected, props) {
       this.$q
         .dialog({
-          component: AddEditUser,
+          component: dialogComponent,
           parent: this,
           data: {
             selectedRow: selected,
@@ -69,6 +69,7 @@ export default {
         .onOk(res => {
           if (res.data.status == 1) {
             NotifyService.showSuccessMessage(res.data.message);
+            this.$refs.gridTable.refreshTable();
           } else {
             NotifyService.showErrorMessage(res.data.message);
           }
@@ -91,6 +92,7 @@ export default {
             res => {
               if (res.data.status == 1) {
                 NotifyService.showSuccessMessage(res.data.message);
+                this.$refs.gridTable.refreshTable();
               } else {
                 NotifyService.showErrorMessage(res.data.message);
               }

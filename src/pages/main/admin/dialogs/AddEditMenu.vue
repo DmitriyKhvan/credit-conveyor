@@ -24,6 +24,8 @@
               emit-value
               map-options
               label="Parent Menu"
+              :rules="[]"
+              lazy-rules
             />
             <q-input
               outlined
@@ -32,6 +34,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[0]"
               label="Name Uz"
+              @input="$v.details.name.$touch()"
+              :rules="[
+                      val => $v.details.name.required || 'Name Uz is required',
+                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -42,6 +50,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[1]"
               label="Name Ru"
+              @input="$v.details.name.$touch()"
+              :rules="[
+                      val => $v.details.name.required || 'Name Ru is required',
+                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
             <q-input
               outlined
@@ -50,6 +64,12 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[2]"
               label="Name En"
+              @input="$v.details.name.$touch()"
+              :rules="[
+                      val => $v.details.name.required || 'Name En is required',
+                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
+                      ]"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -60,6 +80,11 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.url"
               label="Url"
+              @input="$v.details.url.$touch()"
+              :rules="[
+                      val => $v.details.url.required || 'Url is required'
+                      ]"
+              lazy-rules
             />
             <q-input
               outlined
@@ -69,9 +94,14 @@
               v-model="details.ord"
               label="Order"
               type="number"
+              @input="$v.details.ord.$touch()"
+              :rules="[
+                      val => $v.details.ord.required || 'Order is required',
+                      val => $v.details.ord.numeric || 'Not numeric'
+                      ]"
+              lazy-rules
             />
           </div>
-
           <div class="row">
             <q-input
               outlined
@@ -80,6 +110,8 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.icon"
               label="Icon Class Name"
+              :rules="[]"
+              lazy-rules
             />
             <q-select
               outlined
@@ -94,6 +126,12 @@
               emit-value
               map-options
               label="Roles"
+              @input="$v.details.roles.$touch()"
+              :rules="[
+                      val => $v.details.roles.required || 'Order is required',
+                      val => $v.details.roles.minLength || 'Role is not assigned'
+                      ]"
+              lazy-rules
             />
           </div>
           <div class="row">
@@ -108,13 +146,18 @@
               emit-value
               map-options
               label="Status"
+              @input="$v.details.status.$touch()"
+              :rules="[
+                      val => $v.details.status.required || 'Status is required'
+                      ]"
+              lazy-rules
             />
           </div>
         </div>
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="isLoading" label="Submit" @click="submitForm">
+        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -126,7 +169,14 @@
 <script>
 import NotifyService from "./../../../../services/notify.service";
 import dialogMix from "./../../../../shared/mixins/dialogMix";
-
+import {
+  required,
+  requiredIf,
+  minLength,
+  between,
+  email,
+  numeric
+} from "vuelidate/lib/validators";
 export default {
   data() {
     return {
@@ -150,6 +200,34 @@ export default {
         roles: []
       }
     };
+  },
+  validations: {
+    details: {
+      menu_id: {},
+      parent_id: {},
+      name: {
+        required,
+        minLength: minLength(3),
+        $each: {
+          minLength: minLength(3)
+        }
+      },
+      url: {
+        required
+      }, // '/home' formatda
+      ord: {
+        required,
+        numeric
+      },
+      status: {
+        required
+      },
+      icon: {},
+      roles: {
+        required,
+        minLength: minLength(1)
+      }
+    }
   },
   props: {
     data: {
