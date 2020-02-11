@@ -8,13 +8,13 @@
     :width="250"
   >
     <q-list>
-      <q-item-label header>Меню по доступу</q-item-label>
+      <q-item-label header>{{ $t("layout.menu_label") }}</q-item-label>
       <div v-for="(menus, index) in menusList" :key="index">
         <q-expansion-item
           expand-separator
           :icon="menus.icon"
           :label="menus.name"
-          caption="Описание"
+          :caption="$t('layout.menu_caption')"
           group="somegroup"
           :to="menus.url"
           exact-active-class="icon-style"
@@ -30,7 +30,9 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label>{{ menuss.name }}</q-item-label>
-                <q-item-label caption>Описание</q-item-label>
+                <q-item-label caption>{{
+                  $t("layout.menu_caption")
+                }}</q-item-label>
               </q-item-section>
             </q-item>
           </div>

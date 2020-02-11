@@ -1,6 +1,6 @@
 <template>
   <dir>
-    <h4>ADMIN PAGE</h4>
+    <h4>{{ $t("pages.admin_page") }}</h4>
     <router-view />
   </dir>
 </template>

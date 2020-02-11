@@ -58,18 +58,7 @@ const TokenService = {
       } else return false;
 
     } else return true;
-  },
-
-  getMenuList: function () {
-    return localStorage.getItem(MENU_LIST);
-  },
-  saveMenuList(menu) {
-    localStorage.setItem(MENU_LIST, JSON.stringify(menu));
-  },
-  removeMenuList() {
-    localStorage.removeItem(MENU_LIST);
-  },
-
+  }
 
 };
 

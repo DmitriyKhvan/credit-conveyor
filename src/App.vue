@@ -7,6 +7,8 @@
 <script>
 export default {
   name: "App",
-  created() {}
+  created() {
+    //console.log(this.$i18n.locale);
+  }
 };
 </script>

@@ -19,19 +19,7 @@ export default {
   data() {
     return {};
   },
-  beforeCreate: function() {
-    //    console.log({ men: this.$store.getters["dicts/getMenuList"] });
-    // axios({
-    //   method: "GET",
-    //   url: "menus/list?lang=2",
-    //   headers: {
-    //     Authorization: "Bearer " + localStorage.getItem("access_token")
-    //   }
-    // }).then(res => {
-    //   this.menu = res.data[0].items;
-    //   // eslint-disable-next-line
-    // });
-  }
+  beforeCreate: function() {}
 };
 </script>
 
