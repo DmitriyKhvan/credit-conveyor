@@ -16,6 +16,10 @@ import {
   common
 } from './categorized/common.module';
 
+import credits from './categorized/credits';
+
+import profile from './categorized/profile';
+
 
 Vue.use(Vuex)
 
@@ -26,7 +30,9 @@ const store = new Vuex.Store({
     auth,
     dicts,
     socket,
-    common
+    common,
+    credits,
+    profile
   },
 
   // enable strict mode (adds overhead!)

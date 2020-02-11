@@ -19,6 +19,7 @@ const Tasks = () => import("pages/main/work/modules/pages/task/index.vue");
 const TasksList = () => import("pages/main/work/modules/pages/task/modules/pages/tasklist/List");
 const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
 const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
+const CreditProfile = () => import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
@@ -70,11 +71,18 @@ const routes = [{
       path: "credit",
       name: "Credit",
       component: Credit,
-      children: [{
+      children: [
+        {
         path: "registration",
         name: "registration",
         component: CreditReg
-      }]
+        },
+        {
+          path: '/work/credit/profile',
+          name: 'profile',
+          component: CreditProfile
+        }
+      ]
     }
     ]
   },
