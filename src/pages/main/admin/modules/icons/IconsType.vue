@@ -83,7 +83,7 @@ export default {
       this.$q
         .dialog({
           title: "Confirm",
-          message: $t("messages.confirm_delete"),
+          message: this.$t("messages.confirm_delete"),
           cancel: true,
           persistent: true
         })

@@ -37,7 +37,7 @@
               emit-value
               map-options
               label="State"
-              @input="$v.state.class.$touch()"
+              @input="$v.details.state.$touch()"
               :rules="[
                       val => $v.details.state.required || 'State is required'
                       ]"
