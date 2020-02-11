@@ -21,7 +21,7 @@ module.exports = function (ctx) {
       // 'themify',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      "roboto-font", // optional, you are not bound to it
+      "roboto-font", // optional, you are not bound to itt
       "material-icons", // optional, you are not bound to it
       "material-icons-outlined" // optional, you are not bound to it
     ],
