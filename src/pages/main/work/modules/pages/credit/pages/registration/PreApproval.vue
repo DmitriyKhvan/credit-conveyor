@@ -76,7 +76,8 @@ export default {
   methods: {
     successCredit(val) {
       console.log("successCredit");
-      this.$store.commit('toggleConfirm', val)
+      this.$store.commit('toggleConfirm', val);
+      this.$router.push('/work/credit/profile');
        // const data = {
       //   output: [
       //     {

@@ -471,13 +471,14 @@ export default {
           expense: finExp, // Сколько расходов
           maxPayment: maxPayment, // Сколько может платить в месяц
           maxSum: maxSum, // Сколько максимум кредита можем выдать
-          preApprovalForm: true
+          //preApprovalForm: true
         };
 
         // eslint-disable-next-line
         // console.log("Результаты вычисления", resp);
 
-        this.$store.commit("toggleConfirm", resp);
+        this.$store.commit("toggleConfirm", true);
+        this.$store.commit("creditConfirm", resp);
        
       }
     }

@@ -66,12 +66,17 @@ export default {
   mutations: {
     toggleConfirm(state, payload) {
       //console.log(state, payload);
-      state.confirm = payload.preApprovalForm;
+      //state.confirm = payload.preApprovalForm;
+      state.confirm = payload;
+    },
+
+    creditConfirm(state, payload) {
       state.preApprovalData.income = payload.income;
       state.preApprovalData.expense = payload.expense;
       state.preApprovalData.maxPayment = payload.maxPayment;
       state.preApprovalData.maxSum = payload.maxSum 
     },
+
     toggleSubmitting(state, payload) {
       state.submitting = payload
     },

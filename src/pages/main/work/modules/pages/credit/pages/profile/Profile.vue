@@ -150,7 +150,6 @@
           <div class="row q-col-gutter-md">
             <div class="col-4">
               <q-input
-                class="rrr"
                 ref="pasportDate"
                 square
                 outlined
@@ -226,7 +225,14 @@
               v-if="index > 0"
               color="red"
               label="Удалить"
-              @click="confirmDeleteItem('Телефон ' + (index + 1), removeItem, 'phones', index )"
+              @click="
+                confirmDeleteItem(
+                  'Телефон ' + (index + 1),
+                  removeItem,
+                  'phones',
+                  index
+                )
+              "
               class="removeItem"
             ></q-btn>
           </fieldset>
@@ -381,7 +387,7 @@
               </div>
             </div>
           </fieldset>
-        
+
           <fieldset class="fieldset_block">
             <legend class="legend_title">
               Адрес фактического проживания
@@ -517,158 +523,168 @@
               </div>
             </div>
           </fieldset>
-        
 
-        <div
-          v-if="emptyTemporaryRegistration"
-          class="tab-content"
-          ref="tabContent"
-        >
-          <fieldset class="fieldset_block">
-            <legend class="legend_title">
-              Адрес временной регистрации
-            </legend>
+          <div
+            v-if="emptyTemporaryRegistration"
+            class="tab-content"
+            ref="tabContent"
+          >
+            <fieldset class="fieldset_block">
+              <legend class="legend_title">
+                Адрес временной регистрации
+              </legend>
 
-            <div class="tab-content" ref="tabContent">
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.index"
-                    dense
-                    :hint="loadMessage"
-                    label="Индекс"
-                    mask="######"
-                  />
+              <div class="tab-content" ref="tabContent">
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="personalData.temporaryRegistration.index"
+                      dense
+                      :hint="loadMessage"
+                      label="Индекс"
+                      mask="######"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-select
+                      ref="region3"
+                      square
+                      outlined
+                      v-model="personalData.temporaryRegistration.region"
+                      :options="options.regions"
+                      dense
+                      label="Регион/область"
+                      :rules="[val => !!val || 'Выберите регион/область']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="personalData.temporaryRegistration.city"
+                      dense
+                      :hint="loadMessage"
+                      label="Город / Район"
+                    />
+                  </div>
                 </div>
 
-                <div class="col-4">
-                  <q-select
-                    ref="region3"
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.region"
-                    :options="options.regions"
-                    dense
-                    label="Регион/область"
-                    :rules="[val => !!val || 'Выберите регион/область']"
-                    class="q-pb-sm"
-                  />
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="street3"
+                      square
+                      outlined
+                      v-model="personalData.temporaryRegistration.street"
+                      dense
+                      :hint="loadMessage"
+                      label="Улица / Мкр."
+                      lazy-rules
+                      :rules="[
+                        val => !!val || 'Введите наименование улицы / мкр.'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="houseNumber3"
+                      square
+                      outlined
+                      v-model="personalData.temporaryRegistration.houseNumber"
+                      dense
+                      :hint="loadMessage"
+                      label="Номер дома"
+                      lazy-rules
+                      :rules="[val => val.length || 'Введите номер дома']"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="personalData.temporaryRegistration.housing"
+                      dense
+                      :hint="loadMessage"
+                      label="Корпус"
+                    />
+                  </div>
                 </div>
 
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.city"
-                    dense
-                    :hint="loadMessage"
-                    label="Город / Район"
-                  />
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="personalData.temporaryRegistration.structure"
+                      dense
+                      :hint="loadMessage"
+                      label="Строение"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="
+                        personalData.temporaryRegistration.apartmentNumber
+                      "
+                      dense
+                      :hint="loadMessage"
+                      label="Номер квартиры"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="
+                        personalData.temporaryRegistration.typeOfOwnership
+                      "
+                      dense
+                      :hint="loadMessage"
+                      label="Вид владения"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="street3"
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.street"
-                    dense
-                    :hint="loadMessage"
-                    label="Улица / Мкр."
-                    lazy-rules
-                    :rules="[
-                      val => !!val || 'Введите наименование улицы / мкр.'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="houseNumber3"
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.houseNumber"
-                    dense
-                    :hint="loadMessage"
-                    label="Номер дома"
-                    lazy-rules
-                    :rules="[val => val.length || 'Введите номер дома']"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.housing"
-                    dense
-                    :hint="loadMessage"
-                    label="Корпус"
-                  />
-                </div>
-              </div>
+              <q-btn
+                color="red"
+                label="Удалить"
+                @click="
+                  confirmDeleteItem(
+                    'Адрес временной регистрации',
+                    removeTemporaryRegistration
+                  )
+                "
+                class="removeItem"
+              ></q-btn>
+            </fieldset>
+          </div>
 
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.structure"
-                    dense
-                    :hint="loadMessage"
-                    label="Строение"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.apartmentNumber"
-                    dense
-                    :hint="loadMessage"
-                    label="Номер квартиры"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="personalData.temporaryRegistration.typeOfOwnership"
-                    dense
-                    :hint="loadMessage"
-                    label="Вид владения"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <q-btn
-              color="red"
-              label="Удалить"
-              @click="confirmDeleteItem('Адрес временной регистрации', removeTemporaryRegistration)"
-              class="removeItem"
-            ></q-btn>
-          </fieldset>
+          <q-btn
+            v-if="!emptyTemporaryRegistration"
+            color="primary"
+            label="Добавить адрес временной регистрации"
+            @click="addTemporaryRegistration"
+          ></q-btn>
         </div>
-
-        <q-btn
-          v-if="!emptyTemporaryRegistration"
-          color="primary"
-          label="Добавить адрес временной регистрации"
-          @click="addTemporaryRegistration"
-        ></q-btn>
-      </div>
       </div>
 
       <!-- Family status & relatives-->
       <div class="family-status tab">
-        <h4 
-          class="tab-title" 
+        <h4
+          class="tab-title"
           ref="familyStatus"
           @click="toggleForm('familyStatus')"
-        >Родственники</h4>
+        >
+          Родственники
+        </h4>
         <div class="tab-content" ref="tabContent">
           <div class="row q-col-gutter-md">
             <div class="col-4">
@@ -851,7 +867,14 @@
               v-if="index > 0"
               color="red"
               label="Удалить"
-              @click="confirmDeleteItem('Родственник ' + (index + 1), removeItem, 'relatives', index)"
+              @click="
+                confirmDeleteItem(
+                  'Родственник ' + (index + 1),
+                  removeItem,
+                  'relatives',
+                  index
+                )
+              "
               class="removeItem"
             ></q-btn>
           </fieldset>
@@ -866,11 +889,7 @@
 
       <!-- Information on work -->
       <div class="infoWork tab">
-        <h4 
-          class="tab-title" 
-          ref="infoWork"
-          @click="toggleForm('infoWork')"
-        >
+        <h4 class="tab-title" ref="infoWork" @click="toggleForm('infoWork')">
           Сведения по основной работе
         </h4>
         <div class="tab-content" ref="tabContent">
@@ -1057,10 +1076,10 @@
 
       <!-- Expense/income -->
       <div class="expense-income tab">
-        <h4 
-        class="tab-title" 
-        ref="expenseIncome"
-         @click="toggleForm('expenseIncome')"
+        <h4
+          class="tab-title"
+          ref="expenseIncome"
+          @click="toggleForm('expenseIncome')"
         >
           Ежемесячные расходы/доходы
         </h4>
@@ -1154,11 +1173,17 @@
 
       <!-- Properties -->
       <div class="properties">
-        <h4 class="tab-title" ref="properties" @click="toggleForm('properties')">
+        <h4
+          class="tab-title"
+          ref="properties"
+          @click="toggleForm('properties')"
+        >
           Сведения об имуществе
         </h4>
         <div class="tab-content" ref="tabContent">
-          <h5 v-if="!personalData.properties.length" class="tab-content_title">Данные по недвижимости отсутствуют</h5>
+          <h5 v-if="!personalData.properties.length" class="tab-content_title">
+            Данные по недвижимости отсутствуют
+          </h5>
           <fieldset
             class="fieldset_block"
             v-for="(property, index) of personalData.properties"
@@ -1213,7 +1238,14 @@
             <q-btn
               color="red"
               label="Удалить"
-              @click="confirmDeleteItem('Недвижимость ' + (index + 1), removeItem, 'properties', index)"
+              @click="
+                confirmDeleteItem(
+                  'Недвижимость ' + (index + 1),
+                  removeItem,
+                  'properties',
+                  index
+                )
+              "
               class="removeItem"
             ></q-btn>
           </fieldset>
@@ -1300,7 +1332,14 @@
             <q-btn
               color="red"
               label="Удалить"
-              @click="confirmDeleteItem('Транспортное ' + (index + 1), removeItem, 'vehicles', index)"
+              @click="
+                confirmDeleteItem(
+                  'Транспортное ' + (index + 1),
+                  removeItem,
+                  'vehicles',
+                  index
+                )
+              "
               class="removeItem"
             ></q-btn>
           </fieldset>
@@ -1901,7 +1940,7 @@
                   color="red"
                   label="Удалить"
                   @click="
-                  confirmDeleteItem(
+                    confirmDeleteItem(
                       'Телефон ' + (phoneIndex + 1),
                       removePhoneGuarantee,
                       'entity',
@@ -1976,12 +2015,12 @@
               color="red"
               label="Удалить"
               @click="
-                    confirmDeleteItem(
-                      'Обеспечение ' + (index + 1),
-                      removeItem,
-                      'guarantees',
-                      index
-                    )
+                confirmDeleteItem(
+                  'Обеспечение ' + (index + 1),
+                  removeItem,
+                  'guarantees',
+                  index
+                )
               "
               class="removeItem"
             ></q-btn>
@@ -1998,7 +2037,11 @@
 
       <!-- Info credit -->
       <div class="infoCredit tab">
-        <h4 class="tab-title" ref="infoCredit" @click="toggleForm('infoCredit')">
+        <h4
+          class="tab-title"
+          ref="infoCredit"
+          @click="toggleForm('infoCredit')"
+        >
           Сведения о запрашиваемом кредите
         </h4>
         <div class="tab-content" ref="tabContent">
@@ -2294,10 +2337,14 @@
           </div>
         </div>
       </div>
-      
+
       <!-- loadDocuments -->
       <div class="loadDocuments tab">
-        <h4 class="tab-title" ref="loadDocuments" @click="toggleForm('loadDocuments')"> 
+        <h4
+          class="tab-title"
+          ref="loadDocuments"
+          @click="toggleForm('loadDocuments')"
+        >
           Загрузить документ
         </h4>
         <div class="tab-content" ref="tabContent">
@@ -2316,16 +2363,17 @@
 
       <!-- Comment -->
       <div class="commentCredit tab">
-        <h4 class="tab-title" ref="commentCredit" @click="toggleForm('commentCredit')">
+        <h4
+          class="tab-title"
+          ref="commentCredit"
+          @click="toggleForm('commentCredit')"
+        >
           Комментарии по кредиту
         </h4>
         <div class="tab-content" ref="tabContent">
           <div class="row q-col-gutter-md">
             <div class="col">
-              <q-input
-                v-model="personalData.comment"
-                  type="textarea"
-                />
+              <q-input v-model="personalData.comment" type="textarea" />
             </div>
           </div>
 
@@ -2333,17 +2381,13 @@
             <p>test</p>
           </div>
         </div>
-
-        
       </div>
-
-
 
       <!-- Submit button-->
       <q-btn
         type="submit"
         color="primary"
-        label="Pre Approval"
+        label="Пересчитать"
         class="q-ml-sm"
       />
     </form>
@@ -2353,13 +2397,15 @@
       <q-card>
         <q-card-section class="row items-center">
           <!-- <q-avatar icon="signal_wifi_off" color="primary" text-color="white" /> -->
-          <span class="q-ml-sm">Вы действительно хотите удалить {{itemName}}?</span>
+          <span class="q-ml-sm"
+            >Вы действительно хотите удалить {{ itemName }}?</span
+          >
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn 
-            label="Удалить" 
-            color="primary" 
+          <q-btn
+            label="Удалить"
+            color="primary"
             v-close-popup
             @click="itemFunc(paylod)"
           />
@@ -2368,11 +2414,207 @@
       </q-card>
     </q-dialog>
 
+    <!-- alert -->
+    <q-dialog v-model="bar" persistent>
+      <q-card>
+        <q-bar>
+          <h6>Внимание!!!</h6>
 
+          <q-space />
+
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip>Закрыть</q-tooltip>
+          </q-btn>
+        </q-bar>
+
+        <q-card-section>
+          Заполните все обязательные поля!!!
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <!-- credit result -->
+    <q-dialog v-model="confirmCredit" persistent>
+      <q-card>
+        <q-card-section class="row items-center justify-center">
+          <form @submit.prevent.stop="getCredit" class="creditCalc">
+            <div class="row q-col-gutter-md">
+              <div class="col-3">
+                <q-input
+                  ref="loanSum"
+                  square
+                  outlined
+                  v-model.number="creditCalc.loanSum"
+                  type="number"
+                  dense
+                  label="Сумма кредита"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите сумму кредита']"
+                />
+              </div>
+
+              <div class="col-3">
+                <q-input
+                  ref="loanRate"
+                  square
+                  outlined
+                  v-model.number="creditCalc.loanRate"
+                  type="number"
+                  dense
+                  label="Ставка кредита"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите ставку кредита']"
+                />
+              </div>
+
+              <div class="col-3">
+                <q-input
+                  ref="loanTerm"
+                  square
+                  outlined
+                  v-model.number="creditCalc.loanTerm"
+                  type="number"
+                  dense
+                  label="Срок кредита"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите срок кредита']"
+                />
+              </div>
+
+              <div class="col-3">
+                <q-input
+                  ref="loanDate"
+                  square
+                  outlined
+                  v-model="creditCalc.loanDate"
+                  type="date"
+                  dense
+                  :hint="loadMessage"
+                  label="Дата выдачи кредита"
+                  mask="##.##.####"
+                  lazy-rules
+                  :rules="[
+                    val =>
+                      (val && val.length === 10) ||
+                      'Введите Дату выдачи кредита'
+                  ]"
+                />
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              
+              <div class="col-3">
+                <q-select
+                  ref="paymentType"
+                  square
+                  outlined
+                  v-model="creditCalc.paymentType"
+                  :options="options.paymentType"
+                  dense
+                  label="Тип платежа"
+                  lazy-rules
+                  :rules="[val => !!val || 'Выберите тип платежа']"
+                  class="q-pb-sm"
+                />
+              </div>
+              <div class="col-3">
+                <q-input
+                  ref="preferential"
+                  square
+                  outlined
+                  v-model.number="creditCalc.preferential"
+                  type="number"
+                  dense
+                  label="Льготный период"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите льготный период']"
+                />
+              </div>
+
+              <div class="col-3">
+                <q-input
+                  ref="preTerm"
+                  square
+                  outlined
+                  v-model.number="creditCalc.preTerm"
+                  type="number"
+                  dense
+                  label="Срок льготного периода"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите срок льготного периода']"
+                />
+              </div>
+              <div class="col-3">
+                <q-btn
+                  type="submit"
+                  color="primary"
+                  label="Пересчитать"
+                  class="q-ml-sm full-width"
+                />
+              </div>
+            </div>
+            
+          </form>
+
+          <div class="q-pa-md">
+            <q-markup-table flat bordered separator="cell">
+              <thead class="bg-blue">
+                <tr>
+                  <th colspan="8">
+                    <div class="row no-wrap items-center">
+                      <!-- <q-img
+                        style="width: 70px"
+                        :ratio="1"
+                        class="rounded-borders"
+                        src="https://cdn.quasar.dev/img/donuts.png"
+                      /> -->
+
+                      <div class="text-h4 q-ml-md text-white">
+                        Дифференцированный
+                      </div>
+                    </div>
+                  </th>
+                </tr>
+                <tr class="text-white">
+                  <th class="text-left">Номер</th>
+                  <th class="text-right">Дата</th>
+                  <th class="text-right">Кол-во дней</th>
+                  <th class="text-right">Остаток на начало месяца</th>
+                  <th class="text-right">Проценты</th>
+                  <th class="text-right">Основной долг</th>
+                  <th class="text-right">Всего к оплате</th>
+                  <th class="text-right">Остаток на конец месяца</th>
+                </tr>
+              </thead>
+              <tbody class="bg-grey-3">
+                <tr v-for="(item, index) of paymentCalc.paymentRows" v-bind:key="'pr' + index">
+                  <td class="text-left">{{item.monthNum}}</td>
+                  <td class="text-right">{{item.date}}</td>
+                  <td class="text-right">{{item.daysInMonth}}</td>
+                  <td class="text-right">{{item.balanceAtStart}}</td>
+                  <td class="text-right">{{item.percent}}</td>
+                  <td class="text-right">{{item.mainDebt}}</td>
+                  <td class="text-right">{{item.total}}</td>
+                  <td class="text-right">{{item.balanceAtEnd}}</td>
+                </tr>
+              </tbody>
+            </q-markup-table>
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Распечатать" color="primary" v-close-popup />
+          <q-btn flat label="Закрыть" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
+import * as moment from 'moment'
+
 export default {
   name: "profile",
   data() {
@@ -2381,9 +2623,11 @@ export default {
       sameRegistration: "",
       emptyTemporaryRegistration: false,
       confirm: false,
+      confirmCredit: false,
       itemName: "",
       itemFunc: null,
       paylod: {},
+      bar: false,
       options: {
         sex: ["Мужской", "Женский"],
         residency: ["Да", "Нет"],
@@ -2523,15 +2767,42 @@ export default {
 
         productCredit: ["Тип 1", "Тип 2", "Тип 3"],
 
-        typeRepayment: ["Тип 1", "Тип 2", "Тип 3"],
+        typeRepayment: ["Аннуитетный", "Дифференцированный", "Тип 3"],
 
         periodRepayment: ["Да", "Нет"],
 
         purposeCredit: ["Цель1", "Цель2", "Цель3"],
 
-        sourceFinancs: ["Финансирование1", "Финансирование2", "Финансирование3"]
-      }
+        sourceFinancs: [
+          "Финансирование1",
+          "Финансирование2",
+          "Финансирование3"
+        ],
+
+        paymentType: ["Аннуэтетный", "Дифференцированный"],
+        
+      },
+
+      paymentCalc: {}
     };
+  },
+  mounted() {
+    //this.$store.state.profile.personalData.name = this.$store.state.credits.personalData.name
+     this.$store.state.profile.creditCalc.loanSum = this.$store.state.credits.preApprovalData.maxSum;
+    // this.paymentCalc = this.loanPaymentCalculate(
+    //     this.creditCalc.loanRate,
+    //     this.creditCalc.loanSum,
+    //     this.creditCalc.loanTerm,
+    //     this.creditCalc.loanDate,
+    //     this.creditCalc.paymentType,
+    //     this.creditCalc.preferential,
+    //     this.creditCalc.preTerm,
+    // );
+    //   setTimeout(() => {
+    //       this.confirmCredit = true;
+    //   }, 500);
+
+      //console.log('ggggggggg', this.$store.state.credits)
   },
   computed: {
     loadMessage() {
@@ -2545,6 +2816,12 @@ export default {
     },
     personalData() {
       return this.$store.state.profile.personalData;
+    },
+    preApprovalData() {
+      return this.$store.state.credits.preApprovalData;
+    },
+    creditCalc() {
+      return this.$store.state.profile.creditCalc;
     }
   },
   watch: {
@@ -2563,10 +2840,11 @@ export default {
   },
   methods: {
     onSubmit() {
-      if (!this.$refs.surname.validate()) {
-        console.log(this.$refs.surname.computedErrorMessage)
-      }
-      
+      // if (!this.$refs.surname.validate()) {
+      //   console.log(this.$refs.surname.computedErrorMessage)
+      // }
+
+      this.$refs.surname.validate();
       this.$refs.name.validate();
       this.$refs.mname.validate();
       this.$refs.inn.validate();
@@ -2679,36 +2957,95 @@ export default {
         this.validItems("priceVehiclesValid");
       }
 
+      
+      // if ( this.$refs.typeGuarantees && this.$refs.typeGuarantees !== []) {
+      //   this.validFilter("typeGuaranteesValid", "typeGuarantees");
+      // } 
+      
       if (this.$refs.typeGuarantees) {
-        this.validFilter("typeGuaranteesValid", "typeGuarantees");
-      }
+        if (this.$refs.typeGuarantees.length !== 0) {
+          console.log(this.$refs.typeGuarantees)
+          this.validFilter("typeGuaranteesValid", "typeGuarantees");
 
-      if (
-        this.$refs.typeGuarantees &&
-        this.$refs.typeGuarantees[0].value !== ""
-      ) {
-        this.validFilter("customersAttitudeValid", "customersAttitude");
-        this.validFilter("priceGuaranteesValid", "priceGuarantees");
-        this.validFilter("surnameGuaranteesValid", "surnameGuarantees");
-        this.validFilter("nameGuaranteesValid", "nameGuarantees");
-        this.validFilter("mnameGuaranteesValid", "mnameGuarantees");
-        this.validFilter("birthdayGuaranteesValid", "birthdayGuarantees");
-        this.validFilter("innGuaranteesValid", "innGuarantees");
-        this.validFilter("pinppGuaranteesValid", "pinppGuarantees");
-        this.validFilter(
-          "pasportSeriesGuaranteesValid",
-          "pasportSeriesGuarantees"
-        );
-        this.validFilter(
-          "pasportNumberGuaranteesValid",
-          "pasportNumberGuarantees"
-        );
-        this.validFilter("pasportDateGuaranteesValid", "pasportDateGuarantees");
-        this.validFilter("regionGuaranteesValid", "regionGuarantees");
-        this.validFilter("streetGuaranteesValid", "streetGuarantees");
-        this.validFilter("houseNumberGuaranteesValid", "houseNumberGuarantees");
+          for (let typeGuarante of this.$refs.typeGuarantees) {
 
-        this.validFilter("phonesGuaranteesValid", "phonesGuarantees");
+            if (typeGuarante.value === this.options.guarantees[0]) {
+              this.validFilter("customersAttitudeValid", "customersAttitude");
+              this.validFilter("priceGuaranteesValid", "priceGuarantees");
+              this.validFilter("surnameGuaranteesValid", "surnameGuarantees");
+              this.validFilter("nameGuaranteesValid", "nameGuarantees");
+              this.validFilter("mnameGuaranteesValid", "mnameGuarantees");
+              this.validFilter("birthdayGuaranteesValid", "birthdayGuarantees");
+              this.validFilter("innGuaranteesValid", "innGuarantees");
+              this.validFilter("pinppGuaranteesValid", "pinppGuarantees");
+              this.validFilter(
+                "pasportSeriesGuaranteesValid",
+                "pasportSeriesGuarantees"
+              );
+              this.validFilter(
+                "pasportNumberGuaranteesValid",
+                "pasportNumberGuarantees"
+              );
+              this.validFilter("pasportDateGuaranteesValid", "pasportDateGuarantees");
+              this.validFilter("regionGuaranteesValid", "regionGuarantees");
+              this.validFilter("streetGuaranteesValid", "streetGuarantees");
+              this.validFilter("houseNumberGuaranteesValid", "houseNumberGuarantees");
+              this.validFilter("phonesGuaranteesValid", "phonesGuarantees");
+            } else {
+              this.validItems("customersAttitudeValid");
+              this.validItems("priceGuaranteesValid");
+              this.validItems("surnameGuaranteesValid");
+              this.validItems("nameGuaranteesValid");
+              this.validItems("mnameGuaranteesValid");
+              this.validItems("birthdayGuaranteesValid");
+              this.validItems("innGuaranteesValid");
+              this.validItems("pinppGuaranteesValid");
+              this.validItems("pasportSeriesGuaranteesValid");
+              this.validItems("pasportNumberGuaranteesValid");
+              this.validItems("pasportDateGuaranteesValid");
+              this.validItems("regionGuaranteesValid");
+              this.validItems("streetGuaranteesValid");
+              this.validItems("houseNumberGuaranteesValid");
+              this.validItems("phonesGuaranteesValid");
+            }
+            
+            
+            if (typeGuarante.value === this.options.guarantees[1]) {
+
+              this.validFilter("priceGuaranteesValid", "priceGuarantees");
+              this.validFilter("nameGuaranteesValid", "nameGuarantees");
+              this.validFilter("innGuaranteesValid", "innGuarantees");
+              this.validFilter("regionGuaranteesValid", "regionGuarantees");
+              this.validFilter("streetGuaranteesValid", "streetGuarantees");
+              this.validFilter("houseNumberGuaranteesValid", "houseNumberGuarantees");
+              this.validFilter("phonesGuaranteesValid", "phonesGuarantees");
+
+            } else {
+              
+              this.validItems("priceGuaranteesValid");
+              this.validItems("nameGuaranteesValid");
+              this.validItems("innGuaranteesValid");
+              this.validItems("regionGuaranteesValid");
+              this.validItems("streetGuaranteesValid");
+              this.validItems("houseNumberGuaranteesValid");
+              this.validItems("phonesGuaranteesValid");
+            }
+            
+            if (typeGuarante.value === this.options.guarantees[2]) {
+
+              this.validFilter("nameGuaranteesValid", "nameGuarantees");
+              this.validFilter("innGuaranteesValid", "innGuarantees");
+              this.validFilter("priceGuaranteesValid", "priceGuarantees");
+
+            } else {
+              this.validItems("priceGuaranteesValid");
+              this.validItems("nameGuaranteesValid");
+              this.validItems("innGuaranteesValid");
+            }
+          }
+        } else {
+          this.validItems("typeGuaranteesValid");
+        }
       } else {
         this.validItems("typeGuaranteesValid");
         this.validItems("customersAttitudeValid");
@@ -2728,17 +3065,19 @@ export default {
         this.validItems("phonesGuaranteesValid");
       }
 
-       this.$refs.productCredit.validate();
-       this.$refs.priceCredit.validate();
-       this.$refs.typeRepayment.validate();
-       this.$refs.periodRepayment.validate();
-       this.$refs.comfortablePeriodRepayment.validate();
-       this.$refs.typeCredit.validate();
-       this.$refs.initialFee.validate();
-       this.$refs.purposeCredit.validate();
-       this.$refs.sellerName.validate();
-       this.$refs.productName.validate();
-       this.$refs.sourceFinancs.validate();
+      this.$refs.productCredit.validate();
+      this.$refs.priceCredit.validate();
+      this.$refs.typeRepayment.validate();
+      this.$refs.periodRepayment.validate();
+      this.$refs.comfortablePeriodRepayment.validate();
+      this.$refs.typeCredit.validate();
+      this.$refs.initialFee.validate();
+      this.$refs.purposeCredit.validate();
+      this.$refs.sellerName.validate();
+      this.$refs.productName.validate();
+      this.$refs.sourceFinancs.validate();
+
+      console.log(this.$refs.typeGuaranteesValid)
 
       if (
         this.$refs.surname.hasError ||
@@ -2793,7 +3132,7 @@ export default {
         this.$refs.yearsOfIssueValid.hasError ||
         this.$refs.priceVehiclesValid.hasError ||
         //guarantees
-        this.$refs.guarantees.hasError ||
+        //this.$refs.guarantees.hasError ||
         this.$refs.typeGuaranteesValid.hasError ||
         this.$refs.customersAttitudeValid.hasError ||
         this.$refs.priceGuaranteesValid.hasError ||
@@ -2810,7 +3149,6 @@ export default {
         this.$refs.streetGuaranteesValid.hasError ||
         this.$refs.houseNumberGuaranteesValid.hasError ||
         this.$refs.phonesGuaranteesValid.hasError ||
-
         //info credit
         this.$refs.productCredit.hasError ||
         this.$refs.priceCredit.hasError ||
@@ -2824,12 +3162,154 @@ export default {
         this.$refs.productName.hasError ||
         this.$refs.sourceFinancs.hasError
       ) {
-        
         this.formHasError = true;
+        this.bar = true;
       } else {
-        //alert("Success");
-        console.log(this.$store.state.profile.personalData);
+        //console.log('personalData', this.$store.state.profile.personalData);
+        this.confirmCredit = true;
+        this.paymentCalc = this.loanPaymentCalculate(
+          this.creditCalc.loanRate,
+          this.creditCalc.loanSum,
+          this.creditCalc.loanTerm,
+          this.creditCalc.loanDate,
+          this.creditCalc.paymentType,
+          this.creditCalc.preferential,
+          this.creditCalc.preTerm,
+        )
+
+        // console.log(
+        //   this.loanPaymentCalculate(
+        //     this.creditCalc.loanRate,
+        //     this.creditCalc.loanSum,
+        //     this.creditCalc.loanTerm,
+        //     this.creditCalc.loanDate,
+        //     this.creditCalc.paymentType,
+        //     this.creditCalc.preferential,
+        //     this.creditCalc.preTerm,
+            
+        //   )
+        // )
       }
+    },
+
+    getCredit() {
+      this.paymentCalc = this.loanPaymentCalculate(
+        this.creditCalc.loanRate,
+        this.creditCalc.loanSum,
+        this.creditCalc.loanTerm,
+        this.creditCalc.loanDate,
+        this.creditCalc.paymentType,
+        this.creditCalc.preferential,
+        this.creditCalc.preTerm,
+      )
+    },
+
+    loanPaymentCalculate(
+      loanRate, // Кредитная ставка (26)%
+      loanSum, // Кредитная сумма (1000000)
+      loanTerm, // Срок кредита (24)
+      loanDate, // Дата выдачи
+      paymentType, // Аннуэтетный - 1; Дифференцированный - 2
+      preferential, // true - Льготный период, начисляются только проценты
+      preTerm // Срок льготного периода
+    ) {
+
+        console.log('start', loanRate, loanSum, loanTerm);
+
+        //loanSum = 27800000;
+
+      let totalPercent = 0;
+      let totalPayment = 0;
+      let totalLoan = 0;
+
+      loanDate = moment(loanDate);
+
+      let percent = 0;
+      if (paymentType == 1) {
+        percent = loanRate / 100 / 365;
+      }
+      console.log("Percent " + percent);
+
+      let dayPercent = (percent * 365) / 12;
+
+      let payment = 0,
+        preTermTemp = 0;
+      if (paymentType == 1) {
+        preTermTemp = preferential ? preTerm : 0;
+        payment =
+          loanSum *
+          (dayPercent +
+            dayPercent /
+              (Math.pow(1 + dayPercent, loanTerm - preTermTemp) - 1));
+      } else if (paymentType == 2) {
+        preTermTemp = preferential ? preTerm : 0;
+        payment = loanSum / (loanTerm - preTermTemp);
+      }
+      console.log("Payment " + Math.ceil(payment));
+
+      let loanPaymentReturn = [];
+      for (let i = 0; i < loanTerm; i++) {
+        let curDate = moment(loanDate).month(loanDate.month() + i + 1);
+        let daysInMonth = curDate.daysInMonth();
+
+        let startMonthBalance =
+          i > 0 ? loanPaymentReturn[i - 1].balanceAtEnd : loanSum;
+
+        let monthPercent = 0;
+        if (paymentType == 1) {
+          monthPercent = Math.ceil(startMonthBalance * percent * daysInMonth);
+        } else if (paymentType == 2) {
+          monthPercent = Math.ceil(
+            ((startMonthBalance * loanRate) / 100) * (daysInMonth / 365)
+          );
+        }
+
+        let monthMainDebt = 0;
+        if (!preferential || preTerm - 1 < i) {
+          if (paymentType == 1) {
+            monthMainDebt =
+              payment - monthPercent > startMonthBalance
+                ? startMonthBalance
+                : Math.ceil(payment - monthPercent);
+          } else if (paymentType == 2) {
+            monthMainDebt = Math.ceil(payment);
+          }
+        }
+
+        let monthPayTotal = monthPercent + monthMainDebt;
+
+        let endMonthBalance = Math.ceil(startMonthBalance - monthMainDebt);
+
+        if (i + 1 == loanTerm) {
+          monthMainDebt = startMonthBalance;
+          monthPayTotal = monthMainDebt + monthPercent;
+          endMonthBalance = startMonthBalance - monthMainDebt;
+        }
+
+        loanPaymentReturn.push({
+          date: curDate.format('DD MMM YYYY'),
+          daysInMonth: daysInMonth,
+          monthNum: i + 1,
+          balanceAtStart: startMonthBalance,
+          percent: monthPercent,
+          mainDebt: monthMainDebt,
+          total: monthPayTotal,
+          balanceAtEnd: endMonthBalance
+        });
+
+        totalPercent = totalPercent + monthPercent;
+        totalLoan = totalLoan + monthMainDebt;
+        totalPayment = totalPayment + monthPayTotal;
+      }
+
+      console.log(totalPercent, totalPayment, totalLoan, loanPaymentReturn);
+
+      return {
+        totalPercent: totalPercent,
+        totalPayment: totalPayment,
+        totalLoan: totalLoan,
+        paymentRows: loanPaymentReturn
+      };
     },
 
     //itemValid - флаг текущего поля (true/false)
@@ -2897,7 +3377,7 @@ export default {
         item,
         index,
         index2
-      }
+      };
     },
 
     removeTemporaryRegistration() {
@@ -2917,11 +3397,11 @@ export default {
     },
 
     toggleForm(val) {
-       //console.log(val);
-       this.$refs[val].classList.toggle('active');
+      //console.log(val);
+      this.$refs[val].classList.toggle("active");
 
       const tab_content = this.$refs[val].nextSibling;
-      tab_content.classList.toggle('active2')
+      tab_content.classList.toggle("active2");
       // if (tab_content.style.maxHeight) {
       //   tab_content.style.maxHeight = null;
       // } else {
@@ -2962,8 +3442,8 @@ export default {
   //background-color: rgb(56, 91, 126);
 
   &:after {
-   content: "\002B";
-   //color: #0e3475;
+    content: "\002B";
+    //color: #0e3475;
   }
 }
 
@@ -3030,12 +3510,20 @@ export default {
 .q-field__suffix {
   color: #acacac;
 }
-input[type=date]::-webkit-inner-spin-button,
-  input[type=date]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-  }
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
 
-  input[type=date] {
-    -moz-appearance: textfield;
-  }
+input[type="date"] {
+  -moz-appearance: textfield;
+}
+
+.q-dialog__inner--minimized > div {
+  max-width: 85%;
+}
+
+.creditCalc {
+  min-width: 960px;
+}
 </style>

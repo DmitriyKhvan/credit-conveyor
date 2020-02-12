@@ -134,6 +134,34 @@ export default {
       comment: ""
 
     },
+
+    creditCalc: {
+      loanSum: 51105000,
+      loanRate: 26,
+      loanTerm: 24,
+      loanDate: "2020-02-08",
+      paymentType: 1,
+      preferential: false,
+      preTerm: 0
+    },
+
+    creditResult: {
+      totalPercent: 300000,
+      totalLoan: 1000000,
+      totalPayment: 1300000,
+      paymentRows: [
+        {
+          date: '01.01.2020',
+          daysInMonth: 30,
+          monthNum: 1,
+          balanceAtStart: 1000000,
+          percent: 10000,
+          mainDebt: 20000,
+          total: 30000,
+          balanceAtEnd: 980000
+        }
+      ]
+    },
     
     bpmService: new BpmService(),
     icon: false,
