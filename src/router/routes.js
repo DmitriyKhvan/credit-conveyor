@@ -20,6 +20,8 @@ const TasksList = () => import("pages/main/work/modules/pages/task/modules/pages
 const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
 const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
 const CreditProfile = () => import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
+const Applicaion = () => import("pages/main/work/modules/pages/credit/pages/queue/Application.vue");
+const TaskQueue = () => import("pages/main/work/modules/pages/credit/pages/queue/Task.vue");
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
@@ -72,6 +74,16 @@ const routes = [{
       name: "Credit",
       component: Credit,
       children: [
+        {
+          path: "application",
+          name: "application",
+          component: Applicaion
+        },
+        {
+          path: "taskQueue",
+          name: "taskQueue",
+          component: TaskQueue
+        },
         {
         path: "registration",
         name: "registration",
