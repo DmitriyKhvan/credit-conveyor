@@ -83,16 +83,24 @@ const AuthService = {
     });
   },
 
-  logout: async function () {
-    await this.clearTokenFromCache(store.getters['auth/token']);
-    TokenService.removeToken();
-    ApiService.removeHeader();
-    TokenService.removeKeyFromCookies("lang")
-    ApiService.unmount401Interceptor();
-    store.dispatch("auth/logoutSuccess");
-    store.dispatch("dicts/setIsAllSet", false);
-    //SocketService.stopConnection();
-    router.push("/login");
+  logout: function () {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.clearTokenFromCache(store.getters['auth/token']);
+        TokenService.removeToken();
+        ApiService.removeHeader();
+        TokenService.removeKeyFromCookies("lang")
+        ApiService.unmount401Interceptor();
+
+        store.dispatch("auth/logoutSuccess");
+        store.dispatch("dicts/setIsAllSet", false);
+        //SocketService.stopConnection();
+        await router.push("/login");
+        resolve(true);
+      } catch (err) {
+        reject(null)
+      }
+    });
   },
 
   refreshToken() {
