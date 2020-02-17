@@ -12,14 +12,14 @@
           Форма регистрации клиента
         </q-tooltip>
       </q-btn>
-      <q-toolbar-title style="font-family: 'Lobster', cursive;">
+      <q-toolbar-title>
         Cоздать заявку
       </q-toolbar-title>
 
       <q-btn
         flat
         dense
-        icon="add"
+        icon="list_alt"
         style="background-color: rgba(171, 178, 185, 0.2)"
         to="/work/credit/taskQueue"
       >
@@ -27,14 +27,14 @@
           Список задач
         </q-tooltip>
       </q-btn>
-      <q-toolbar-title style="font-family: 'Lobster', cursive;">
+      <q-toolbar-title >
         Очередь задач
       </q-toolbar-title>
 
     <q-btn
         flat
         dense
-        icon="add"
+        icon="assignment"
         style="background-color: rgba(171, 178, 185, 0.2)"
         to="/work/credit/application"
       >
@@ -42,7 +42,7 @@
           Список заявок
         </q-tooltip>
       </q-btn>
-      <q-toolbar-title style="font-family: 'Lobster', cursive;">
+      <q-toolbar-title >
         Очередь заявок
       </q-toolbar-title>
     </q-toolbar>

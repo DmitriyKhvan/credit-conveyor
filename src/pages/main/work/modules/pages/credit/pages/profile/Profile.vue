@@ -34,7 +34,7 @@
                 dense
                 label="Имя"
                 lazy-rules
-                :rules="[val => val.length || 'Введите имя']"
+                :rules="[val => !!val || 'Введите имя']"
               />
             </div>
             <div class="col-4">
@@ -46,7 +46,7 @@
                 dense
                 label="Отчество"
                 lazy-rules
-                :rules="[val => val.length || 'Введите отчество']"
+                :rules="[val => !!val || 'Введите отчество']"
               />
             </div>
           </div>
@@ -65,8 +65,8 @@
                 lazy-rules
                 :rules="[
                   val =>
-                    (val && val.length >= 9) ||
-                    'Количество символов должно быт больше или ровно 9'
+                    (val && val.length === 9) ||
+                    'Количество цифр должно быть 9'
                 ]"
               />
             </div>
@@ -94,7 +94,7 @@
                 dense
                 label="Пол"
                 lazy-rules
-                :rules="[val => val.length || 'Выберите пол']"
+                :rules="[val => !!val || 'Выберите пол']"
                 class="q-pb-sm"
               />
             </div>
@@ -149,7 +149,7 @@
           </div>
           <div class="row q-col-gutter-md">
             <div class="col-4">
-              <q-input
+              <!-- <q-input
                 ref="pasportDate"
                 square
                 outlined
@@ -164,7 +164,36 @@
                   val =>
                     (val && val.length === 10) || 'Введите Дату выдачи паспорта'
                 ]"
-              />
+              /> -->
+
+              <q-input 
+                ref="pasportDate"
+                outlined
+                square
+                dense
+                label="Дата выдачи паспорта"
+                v-model="personalData.passportData.date"
+                mask="##.##.####"
+                lazy-rules
+                :rules="[
+                  val =>
+                    (val && val.length === 10) || 'Введите дату выдачи паспорта'
+                ]"
+                >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy  
+                    transition-show="scale" transition-hide="scale"
+                    ref="qDatePasportDate"
+                    >
+                      <q-date 
+                        mask="DD.MM.YYYY"
+                        v-model="personalData.passportData.date" 
+                        @input="() => $refs.qDatePasportDate.hide()" />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
             </div>
 
             <div class="col-4">
@@ -177,7 +206,7 @@
                 dense
                 label="Образование"
                 lazy-rules
-                :rules="[val => val.length || 'Выберите образование']"
+                :rules="[val => !!val || 'Выберите образование']"
                 class="q-pb-sm"
               />
             </div>
@@ -338,7 +367,7 @@
                     :hint="loadMessage"
                     label="Номер дома"
                     lazy-rules
-                    :rules="[val => val.length || 'Введите номер дома']"
+                    :rules="[val => !!val || 'Введите номер дома']"
                   />
                 </div>
                 <div class="col-4">
@@ -473,7 +502,7 @@
                       :hint="loadMessage"
                       label="Номер дома"
                       lazy-rules
-                      :rules="[val => val.length || 'Введите номер дома']"
+                      :rules="[val => !!val || 'Введите номер дома']"
                     />
                   </div>
                   <div class="col-4">
@@ -600,7 +629,7 @@
                       :hint="loadMessage"
                       label="Номер дома"
                       lazy-rules
-                      :rules="[val => val.length || 'Введите номер дома']"
+                      :rules="[val => !!val || 'Введите номер дома']"
                     />
                   </div>
                   <div class="col-4">
@@ -789,7 +818,7 @@
 
             <div class="row q-col-gutter-md">
               <div class="col-4">
-                <q-input
+                <!-- <q-input
                   ref="relatives_birthday"
                   square
                   outlined
@@ -803,7 +832,36 @@
                   :rules="[
                     val => (val && val.length === 10) || 'Введите дату рождения'
                   ]"
-                />
+                /> -->
+
+                <q-input 
+                  ref="relatives_birthday"
+                  outlined
+                  square
+                  dense
+                  label="Дата рождения"
+                  v-model="relative.birthday"
+                  mask="##.##.####"
+                  lazy-rules
+                  :rules="[
+                    val =>
+                      (val && val.length === 10) || 'Введите дату рождения'
+                  ]"
+                  >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy  
+                      transition-show="scale" transition-hide="scale"
+                      ref="qDateRelativeBirthday"
+                      >
+                        <q-date 
+                          mask="DD.MM.YYYY"
+                          v-model="relative.birthday" 
+                          @input="() => $refs.qDateRelativeBirthday[index].hide()" />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
               <div class="col-4">
                 <q-input
@@ -842,7 +900,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <div class="col-4">
-                  <q-input
+                  <!-- <q-input
                     ref="relatives_pasportDate"
                     square
                     outlined
@@ -858,7 +916,36 @@
                         (val && val.length === 10) ||
                         'Введите Дату выдачи паспорта'
                     ]"
-                  />
+                  /> -->
+
+                  <q-input 
+                    ref="relatives_pasportDate"
+                    outlined
+                    square
+                    dense
+                    label="Дата выдачи паспорта"
+                    v-model="relative.passportData.date"
+                    mask="##.##.####"
+                    lazy-rules
+                    :rules="[
+                      val =>
+                        (val && val.length === 10) || 'Введите дату выдачи паспорта'
+                    ]"
+                    >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy  
+                        transition-show="scale" transition-hide="scale"
+                        ref="qDateRelativePassportDate"
+                        >
+                          <q-date 
+                            mask="DD.MM.YYYY"
+                            v-model="relative.passportData.date" 
+                            @input="() => $refs.qDateRelativePassportDate[index].hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
                 </div>
               </div>
             </div>
@@ -929,7 +1016,7 @@
                   ref="innOfEmployer"
                   square
                   outlined
-                  v-model="personalData.activity.innOfEmployer"
+                  v-model.number="personalData.activity.innOfEmployer"
                   dense
                   :hint="loadMessage"
                   label="ИНН работодателя"
@@ -1096,8 +1183,7 @@
                 label="Подтвержденный ежемесячный доход"
                 lazy-rules
                 :rules="[
-                  val =>
-                    (val && val.length !== null) || 'Поля должно быт заполнено'
+                  val => !!val || 'Поля должно быт заполнено'
                 ]"
               />
             </div>
@@ -1369,14 +1455,16 @@
             :key="index + 10"
           >
             <legend class="legend_title">Обеспечение {{ index + 1 }}</legend>
+            {{guarantee}}
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
                   ref="typeGuarantees"
                   square
                   outlined
-                  v-model="guarantee.type"
+                  :value="guarantee.type"
                   :options="options.guarantees"
+                   @input="updateField('type', index, $event)"
                   dense
                   label="Вид гарантии"
                   lazy-rules
@@ -1408,7 +1496,8 @@
                     square
                     outlined
                     v-model.number="guarantee.individual.price"
-                    type="number"
+                    
+                    :hint="loadMessage"
                     dense
                     label="Сумма поручительства"
                     lazy-rules
@@ -1461,7 +1550,7 @@
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
-                  <q-input
+                  <!-- <q-input
                     ref="birthdayGuarantees"
                     square
                     outlined
@@ -1476,7 +1565,36 @@
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения'
                     ]"
-                  />
+                  /> -->
+
+                  <q-input 
+                    ref="birthdayGuarantees"
+                    outlined
+                    square
+                    dense
+                    label="Дата рождения"
+                    v-model="guarantee.individual.birthday"
+                    mask="##.##.####"
+                    lazy-rules
+                    :rules="[
+                      val =>
+                        (val && val.length === 10) || 'Введите дату рождения'
+                    ]"
+                    >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy  
+                        transition-show="scale" transition-hide="scale"
+                        ref="qDateBirthdayGuarantees"
+                        >
+                          <q-date 
+                            mask="DD.MM.YYYY"
+                            v-model="guarantee.individual.birthday" 
+                            @input="() => $refs.qDateBirthdayGuarantees[index].hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
                 </div>
               </div>
 
@@ -1494,8 +1612,8 @@
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length >= 9) ||
-                        'Количество символов должно быт больше или ровно 9'
+                        (val && val.length === 9) ||
+                        'Количество цифр должно быть 9'
                     ]"
                   />
                 </div>
@@ -1564,7 +1682,7 @@
                   />
                 </div>
                 <div class="col-4">
-                  <q-input
+                  <!-- <q-input
                     ref="pasportDateGuarantees"
                     square
                     outlined
@@ -1580,7 +1698,36 @@
                         (val && val.length === 10) ||
                         'Введите Дату выдачи паспорта'
                     ]"
-                  />
+                  /> -->
+
+                  <q-input 
+                    ref="pasportDateGuarantees"
+                    outlined
+                    square
+                    dense
+                    label="Дата выдачи паспорта"
+                    v-model="guarantee.individual.passportData.date"
+                    mask="##.##.####"
+                    lazy-rules
+                    :rules="[
+                      val =>
+                        (val && val.length === 10) || 'Введите дату выдачи паспорта'
+                    ]"
+                    >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy  
+                        transition-show="scale" transition-hide="scale"
+                        ref="qDatePasportDateGuarantees"
+                        >
+                          <q-date 
+                            mask="DD.MM.YYYY"
+                            v-model="guarantee.individual.passportData.date" 
+                            @input="() => $refs.qDatePasportDateGuarantees[index].hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
                 </div>
               </div>
 
@@ -1647,7 +1794,7 @@
                     :hint="loadMessage"
                     label="Номер дома"
                     lazy-rules
-                    :rules="[val => val.length || 'Введите номер дома']"
+                    :rules="[val => !!val || 'Введите номер дома']"
                   />
                 </div>
                 <div class="col-4">
@@ -1784,8 +1931,8 @@
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length >= 9) ||
-                        'Количество символов должно быт больше или ровно 9'
+                        (val && val.length === 9) ||
+                        'Количество цифр должно быть 9'
                     ]"
                   />
                 </div>
@@ -1868,7 +2015,7 @@
                     :hint="loadMessage"
                     label="Номер дома"
                     lazy-rules
-                    :rules="[val => val.length || 'Введите номер дома']"
+                    :rules="[val => !!val || 'Введите номер дома']"
                   />
                 </div>
                 <div class="col-4">
@@ -1990,8 +2137,8 @@
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length >= 9) ||
-                        'Количество символов должно быт больше или ровно 9'
+                        (val && val.length === 9) ||
+                        'Количество цифр должно быть 9'
                     ]"
                   />
                 </div>
@@ -2234,7 +2381,7 @@
                 ref="initialFee"
                 square
                 outlined
-                v-model.number="personalData.infoCredit.periodRepaymentMax"
+                v-model.number="personalData.infoCredit.initialFee"
                 type="number"
                 dense
                 label="Первоначальный взнос"
@@ -2482,7 +2629,7 @@
               </div>
 
               <div class="col-3">
-                <q-input
+                <!-- <q-input
                   ref="loanDate"
                   square
                   outlined
@@ -2498,7 +2645,36 @@
                       (val && val.length === 10) ||
                       'Введите Дату выдачи кредита'
                   ]"
-                />
+                /> -->
+
+                <q-input 
+                    ref="loanDate"
+                    outlined
+                    square
+                    dense
+                    label="Дата выдачи кредита"
+                    v-model="creditCalc.loanDate"
+                    mask="##.##.####"
+                    lazy-rules
+                    :rules="[
+                      val =>
+                        (val && val.length === 10) || 'Введите дату выдачи кредита'
+                    ]"
+                    >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy  
+                        transition-show="scale" transition-hide="scale"
+                        ref="qDateLoanDate"
+                        >
+                          <q-date 
+                            mask="DD.MM.YYYY"
+                            v-model="creditCalc.loanDate" 
+                            @input="() => $refs.qDateLoanDate.hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
               </div>
             </div>
 
@@ -2519,7 +2695,7 @@
                 />
               </div>
               <div class="col-3">
-                <q-input
+                <!-- <q-input
                   ref="preferential"
                   square
                   outlined
@@ -2529,6 +2705,19 @@
                   label="Льготный период"
                   lazy-rules
                   :rules="[val => !!val || 'Введите льготный период']"
+                /> -->
+
+                <q-select
+                  ref="preferential"
+                  square
+                  outlined
+                  v-model.number="creditCalc.preferential"
+                  :options="options.preferential"
+                  dense
+                  label="Льготный период"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите льготный период']"
+                  class="q-pb-sm"
                 />
               </div>
 
@@ -2571,7 +2760,7 @@
                       /> -->
 
                       <div class="text-h4 q-ml-md text-white">
-                        Дифференцированный
+                        {{creditCalc.paymentType}}
                       </div>
                     </div>
                   </th>
@@ -2588,7 +2777,7 @@
                 </tr>
               </thead>
               <tbody class="bg-grey-3">
-                <tr v-for="(item, index) of paymentCalc.paymentRows" v-bind:key="'pr' + index">
+                <tr v-for="(item, index) of paymentCalc.paymentRows" :key="'pr' + index">
                   <td class="text-left">{{item.monthNum}}</td>
                   <td class="text-right">{{item.date}}</td>
                   <td class="text-right">{{item.daysInMonth}}</td>
@@ -2781,14 +2970,42 @@ export default {
 
         paymentType: ["Аннуэтетный", "Дифференцированный"],
         
+        preferential:[
+          {
+            label: 'Нет',
+            value: false
+          },
+          {
+            label: 'Да',
+            value: true
+          },
+        ]
+        
       },
 
       paymentCalc: {}
     };
   },
   mounted() {
-    //this.$store.state.profile.personalData.name = this.$store.state.credits.personalData.name
-     this.$store.state.profile.creditCalc.loanSum = this.$store.state.credits.preApprovalData.maxSum;
+    this.$store.state.profile.personalData.name = this.$store.state.credits.personalData.name
+    this.$store.state.profile.personalData.surname = this.$store.state.credits.personalData.surname
+    this.$store.state.profile.personalData.mname = this.$store.state.credits.personalData.mname
+    this.$store.state.profile.personalData.inn = this.$store.state.credits.personalData.inn
+    this.$store.state.profile.personalData.pinpp = this.$store.state.credits.personalData.pinpp
+    this.$store.state.profile.personalData.passportData.series = this.$store.state.credits.personalData.passport.slice(0,2)
+    this.$store.state.profile.personalData.passportData.number = this.$store.state.credits.personalData.passport.slice(2)
+    
+    this.$store.state.profile.personalData.expenseIncome.income = this.$store.state.credits.personalData.income
+    this.$store.state.profile.personalData.expenseIncome.expense = this.$store.state.credits.personalData.expense
+    this.$store.state.profile.personalData.expenseIncome.otherExpenses = this.$store.state.credits.personalData.otherExpenses
+    this.$store.state.profile.personalData.expenseIncome.externalIncome = this.$store.state.credits.personalData.externalIncome
+    this.$store.state.profile.personalData.expenseIncome.externalIncomeSize = this.$store.state.credits.personalData.externalIncomeSize
+    this.$store.state.profile.personalData.expenseIncome.additionalIncomeSource = this.$store.state.credits.personalData.additionalIncomeSource
+    
+    
+    this.$store.state.profile.creditCalc.loanSum = this.$store.state.credits.preApprovalData.maxSum;
+    
+    
     // this.paymentCalc = this.loanPaymentCalculate(
     //     this.creditCalc.loanRate,
     //     this.creditCalc.loanSum,
@@ -2802,7 +3019,6 @@ export default {
     //       this.confirmCredit = true;
     //   }, 500);
 
-      //console.log('ggggggggg', this.$store.state.credits)
   },
   computed: {
     loadMessage() {
@@ -2836,7 +3052,8 @@ export default {
       } else {
         this.isValid = true;
       }
-    }
+    },
+
   },
   methods: {
     onSubmit() {
@@ -3165,7 +3382,7 @@ export default {
         this.formHasError = true;
         this.bar = true;
       } else {
-        //console.log('personalData', this.$store.state.profile.personalData);
+        console.log('personalData', this.$store.state.profile.personalData);
         this.confirmCredit = true;
         this.paymentCalc = this.loanPaymentCalculate(
           this.creditCalc.loanRate,
@@ -3191,6 +3408,65 @@ export default {
         // )
       }
     },
+
+    updateField(field, index, value) {
+      this.$store.commit('updateGuarantee', 
+      {
+        [index]: {
+          [field]: value,
+          individual: {
+            attitude: "",
+            price: 0,
+            surname: "",
+            name: "",
+            mname: "",
+            birthday: "",
+            inn: null,
+            pinpp: null,
+            residency: "",
+            index: "",
+            region: "",
+            city: "",
+            street: "",
+            houseNumber: "",
+            housing: "",
+            structure: "",
+            apartmentNumber: "",
+            passportData: {
+              series: "",
+              number: null,
+              date: ""
+            },
+            phones: [{
+              phone: 998
+            }],
+          },
+          entity: {
+            price: 0,
+            name:"",
+            inn: null,
+            activity: "",
+            index: "",
+            region: "",
+            city: "",
+            street: "",
+            houseNumber: "",
+            housing: "",
+            structure: "",
+            officeNumber: "",
+            phones: [{
+              phone: 998
+            }],
+          },
+          insurance: {
+            name:"",
+            inn: null,
+            price: 0,
+          },
+        }
+        }
+      );
+    }, 
 
     getCredit() {
       this.paymentCalc = this.loanPaymentCalculate(
@@ -3225,7 +3501,7 @@ export default {
       loanDate = moment(loanDate);
 
       let percent = 0;
-      if (paymentType == 1) {
+      if (paymentType == this.options.paymentType[0]) {
         percent = loanRate / 100 / 365;
       }
       console.log("Percent " + percent);
@@ -3234,14 +3510,14 @@ export default {
 
       let payment = 0,
         preTermTemp = 0;
-      if (paymentType == 1) {
+      if (paymentType == this.options.paymentType[0]) {
         preTermTemp = preferential ? preTerm : 0;
         payment =
           loanSum *
           (dayPercent +
             dayPercent /
               (Math.pow(1 + dayPercent, loanTerm - preTermTemp) - 1));
-      } else if (paymentType == 2) {
+      } else if (paymentType == this.options.paymentType[1]) {
         preTermTemp = preferential ? preTerm : 0;
         payment = loanSum / (loanTerm - preTermTemp);
       }
@@ -3256,9 +3532,9 @@ export default {
           i > 0 ? loanPaymentReturn[i - 1].balanceAtEnd : loanSum;
 
         let monthPercent = 0;
-        if (paymentType == 1) {
+        if (paymentType == this.options.paymentType[0]) {
           monthPercent = Math.ceil(startMonthBalance * percent * daysInMonth);
-        } else if (paymentType == 2) {
+        } else if (paymentType == this.options.paymentType[1]) {
           monthPercent = Math.ceil(
             ((startMonthBalance * loanRate) / 100) * (daysInMonth / 365)
           );
@@ -3266,12 +3542,12 @@ export default {
 
         let monthMainDebt = 0;
         if (!preferential || preTerm - 1 < i) {
-          if (paymentType == 1) {
+          if (paymentType == this.options.paymentType[0]) {
             monthMainDebt =
               payment - monthPercent > startMonthBalance
                 ? startMonthBalance
                 : Math.ceil(payment - monthPercent);
-          } else if (paymentType == 2) {
+          } else if (paymentType == this.options.paymentType[1]) {
             monthMainDebt = Math.ceil(payment);
           }
         }
@@ -3506,18 +3782,18 @@ export default {
   padding-bottom: 16px;
 }
 
-.q-field__native .q-field__prefix,
-.q-field__suffix {
-  color: #acacac;
-}
-input[type="date"]::-webkit-inner-spin-button,
-input[type="date"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-}
+// .q-field__native .q-field__prefix,
+// .q-field__suffix {
+//   color: #acacac;
+// }
+// input[type="date"]::-webkit-inner-spin-button,
+// input[type="date"]::-webkit-outer-spin-button {
+//   -webkit-appearance: none;
+// }
 
-input[type="date"] {
-  -moz-appearance: textfield;
-}
+// input[type="date"] {
+//   -moz-appearance: textfield;
+// }
 
 .q-dialog__inner--minimized > div {
   max-width: 85%;

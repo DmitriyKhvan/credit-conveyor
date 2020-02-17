@@ -7,8 +7,8 @@ export default {
       surname: "",
       name: "",
       mname: "",
-      inn: "",
-      pinpp: "",
+      inn: null,
+      pinpp: null,
       sex: "",
       residency: "",
       phones: [{
@@ -139,9 +139,9 @@ export default {
       loanSum: 51105000,
       loanRate: 26,
       loanTerm: 24,
-      loanDate: "2020-02-08",
-      paymentType: 1,
-      preferential: false,
+      loanDate: "08.02.2020",
+      paymentType: "Аннуэтетный",
+      preferential: "Нет",
       preTerm: 0
     },
 
@@ -264,6 +264,10 @@ export default {
           price: 0,
         },
       })
+    },
+
+    updateGuarantee(state, payload) {
+      state.personalData.guarantees = Object.assign([], state.personalData.guarantees, payload);
     },
 
     removeItem(state, payload) {
