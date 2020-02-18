@@ -13,17 +13,34 @@
       <q-card-section>
         <div class="q-gutter-y-sm q-gutter-x-md column">
           <div class="row">
+            <q-select
+              outlined
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.type_id"
+              multiple
+              :options="typesList"
+              use-chips
+              stack-label
+              option-value="value"
+              option-label="text"
+              emit-value
+              map-options
+              :label="$t('tables.users.roles')"
+              @input="$v.details.type_id.$touch()"
+              :rules="[]"
+              lazy-rules
+            />
             <q-input
               outlined
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-12 col-md-12"
               v-model="details.name"
-              label="Device Mark"
+              label="Device Characterestics Name"
               @input="$v.details.name.$touch()"
               :rules="[
                 val =>
-                  $v.details.name.required || 'Device Mark is required'
+                  $v.details.name.required || 'Name is required'
               ]"
               lazy-rules
             />
@@ -51,6 +68,7 @@ import {
   between,
   email
 } from "vuelidate/lib/validators";
+import ApiService from "../../../../../services/api.service";
 export default {
   data() {
     return {
@@ -59,13 +77,17 @@ export default {
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
-        name: null
+        name: null,
+        type_id: null
       }
     };
   },
   validations: {
     details: {
       id: {},
+      name: {
+        required
+      },
       name: {
         required
       }
@@ -80,8 +102,24 @@ export default {
     }
   },
   mixins: [dialogMix],
-  created() {},
-  methods: {}
+  created() {
+    console.log(this.typesList);
+  },
+  methods: {},
+  computed: {
+    typesList() {
+      // TODO add to dict
+      ApiService.get("devices/type")
+        .then(response => {
+          response.data.map(elem => {
+            return { text: elem.name[1], value: elem.id };
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }
 };
 </script>
 

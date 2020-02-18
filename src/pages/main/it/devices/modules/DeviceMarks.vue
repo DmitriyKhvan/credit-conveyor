@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       props: {
-        caption: this.$t("tables.device_types._self"),
+        caption: this.$t("tables.device_marks._self"),
         tablePath: "devices/mark",
         rowId: "id",
         addEdit: "devices/mark", // url
