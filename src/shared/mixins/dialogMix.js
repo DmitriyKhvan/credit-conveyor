@@ -34,7 +34,6 @@ export default {
     },
     submitForm() {
       this.$store.dispatch("common/setLoading", true);
-      console.log(this.data.props.addEdit, this.details);
       ApiService.post(this.data.props.addEdit, this.details)
         .then(
           response => {

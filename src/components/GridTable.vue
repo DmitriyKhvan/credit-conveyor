@@ -256,23 +256,25 @@ export default {
           data.forEach(element => {
             this.itemsArray.push(element);
           });
-          Object.keys(data[0]).map(async (k, index) => {
-            let sortable = this.excludeSortingColoumns.includes(k) //sortable filter
-              ? false
-              : true;
-            this.fields.push({
-              name: k,
-              required: false,
-              label: k.replace("_", " ").toUpperCase(),
-              align: "center",
-              sortable: sortable,
-              field: k
+          if (data.length > 0) {
+            Object.keys(data[0]).map(async (k, index) => {
+              let sortable = this.excludeSortingColoumns.includes(k) //sortable filter
+                ? false
+                : true;
+              this.fields.push({
+                name: k,
+                required: false,
+                label: k.replace("_", " ").toUpperCase(),
+                align: "center",
+                sortable: sortable,
+                field: k
+              });
+              // exluding check filter
+              if (!this.excludedColumns.includes(k)) {
+                this.visibleColumns.push(k);
+              }
             });
-            // exluding check filter
-            if (!this.excludedColumns.includes(k)) {
-              this.visibleColumns.push(k);
-            }
-          });
+          }
         })
         .catch(err => {
           console.error(err);

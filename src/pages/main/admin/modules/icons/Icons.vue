@@ -48,64 +48,11 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      this.addEditRecord(AddEditIcon, selected, this.props);
+      GridService.addEditRecord(AddEditIcon, selected, this.props, this);
     },
 
     deleteRow(row) {
-      this.deleteRecord(row, this.props);
-    },
-
-    //
-    addEditRecord(dialogComponent, selected, props) {
-      this.$q
-        .dialog({
-          component: dialogComponent,
-          parent: this,
-          data: {
-            selectedRow: selected,
-            props: props
-          }
-        })
-        .onOk(res => {
-          if (res.data.status == 1) {
-            NotifyService.showSuccessMessage(res.data.message);
-            this.$refs.gridTable.refreshTable();
-          } else {
-            NotifyService.showErrorMessage(res.data.message);
-          }
-        })
-        .onCancel(() => {
-          console.log("Cancel");
-        });
-    },
-
-    deleteRecord(row, props) {
-      this.$q
-        .dialog({
-          title: "Confirm",
-          message: this.$t("messages.confirm_delete"),
-          cancel: true,
-          persistent: true
-        })
-        .onOk(() => {
-          ApiService.delete(props.delete + "?id=" + row.id).then(
-            res => {
-              if (res.data.status == 1) {
-                NotifyService.showSuccessMessage(res.data.message);
-                this.$refs.gridTable.refreshTable();
-              } else {
-                NotifyService.showErrorMessage(res.data.message);
-              }
-            },
-            err => {
-              //console.log(err);
-              NotifyService.showErrorMessage(err.toString());
-            }
-          );
-        })
-        .onCancel(() => {
-          // console.log('>>>> Cancel')
-        });
+      GridService.deleteRecord(row, this.props);
     }
   }
 };

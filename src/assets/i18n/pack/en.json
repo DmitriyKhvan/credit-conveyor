@@ -237,6 +237,10 @@
     "icon_types": {
       "_self": "Icon Types Table",
       "add_edit": "Create/Edit Icon Type"
+    },
+    "device_types": {
+      "_self": "Device Types Table",
+      "add_edit": "Create/Edit Device Type"
     }
   }
 }

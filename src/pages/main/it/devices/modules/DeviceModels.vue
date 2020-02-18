@@ -6,7 +6,7 @@
 
 <script>
 import GridTable from "./../../../../../components/GridTable";
-import AddEditDevice from "./../dialogs/AddEditDevice";
+import AddEditDeviceModel from "./../dialogs/AddEditDeviceModel";
 
 import { Dialog } from "quasar";
 import ApiService from "./../../../../../services/api.service";
@@ -19,13 +19,12 @@ export default {
     return {
       props: {
         caption: this.$t("tables.device_types._self"),
-        tablePath: "devices/type",
+        tablePath: "devices/model",
         rowId: "id",
-        addEdit: "devices/type", // url
-        delete: "devices/type", //
+        addEdit: "devices/model", // url
+        delete: "devices/model", //
         defaultSort: [], // TODO
         excludedColumns: [
-          "name",
           "created_by",
           "creation_date",
           "updated_by",
@@ -54,7 +53,7 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditDevice, selected, this.props, this)
+      GridService.addEditRecord(AddEditDeviceModel, selected, this.props, this)
         .then(res => {
           if (res) {
             this.$refs.gridTable.refreshTable();
