@@ -1462,9 +1462,9 @@
                   ref="typeGuarantees"
                   square
                   outlined
-                  :value="guarantee.type"
+                  v-model="guarantee.type"
                   :options="options.guarantees"
-                   @input="updateField('type', index, $event)"
+                   
                   dense
                   label="Вид гарантии"
                   lazy-rules
@@ -1734,11 +1734,11 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    ref="indexGuarantees"
                     square
                     outlined
                     v-model="guarantee.individual.index"
                     dense
-                    :hint="loadMessage"
                     label="Индекс"
                     mask="######"
                   />
@@ -1959,7 +1959,6 @@
                     outlined
                     v-model="guarantee.entity.index"
                     dense
-                    :hint="loadMessage"
                     label="Индекс"
                     mask="######"
                   />
@@ -2991,6 +2990,7 @@ export default {
     this.$store.state.profile.personalData.surname = this.$store.state.credits.personalData.surname
     this.$store.state.profile.personalData.mname = this.$store.state.credits.personalData.mname
     this.$store.state.profile.personalData.inn = this.$store.state.credits.personalData.inn
+    this.$store.state.profile.personalData.phones[0].phone = this.$store.state.credits.personalData.phone
     this.$store.state.profile.personalData.pinpp = this.$store.state.credits.personalData.pinpp
     this.$store.state.profile.personalData.passportData.series = this.$store.state.credits.personalData.passport.slice(0,2)
     this.$store.state.profile.personalData.passportData.number = this.$store.state.credits.personalData.passport.slice(2)
@@ -3030,9 +3030,11 @@ export default {
     disableBtn() {
       return this.$store.state.profile.disableBtn;
     },
+    
     personalData() {
       return this.$store.state.profile.personalData;
     },
+
     preApprovalData() {
       return this.$store.state.credits.preApprovalData;
     },
@@ -3409,64 +3411,64 @@ export default {
       }
     },
 
-    updateField(field, index, value) {
-      this.$store.commit('updateGuarantee', 
-      {
-        [index]: {
-          [field]: value,
-          individual: {
-            attitude: "",
-            price: 0,
-            surname: "",
-            name: "",
-            mname: "",
-            birthday: "",
-            inn: null,
-            pinpp: null,
-            residency: "",
-            index: "",
-            region: "",
-            city: "",
-            street: "",
-            houseNumber: "",
-            housing: "",
-            structure: "",
-            apartmentNumber: "",
-            passportData: {
-              series: "",
-              number: null,
-              date: ""
-            },
-            phones: [{
-              phone: 998
-            }],
-          },
-          entity: {
-            price: 0,
-            name:"",
-            inn: null,
-            activity: "",
-            index: "",
-            region: "",
-            city: "",
-            street: "",
-            houseNumber: "",
-            housing: "",
-            structure: "",
-            officeNumber: "",
-            phones: [{
-              phone: 998
-            }],
-          },
-          insurance: {
-            name:"",
-            inn: null,
-            price: 0,
-          },
-        }
-        }
-      );
-    }, 
+    // updateField(field, index, value) {
+    //   this.$store.commit('updateGuarantee', 
+    //   {
+    //     [index]: {
+    //       [field]: value,
+    //       individual: {
+    //         attitude: "",
+    //         price: 0,
+    //         surname: "",
+    //         name: "",
+    //         mname: "",
+    //         birthday: "",
+    //         inn: null,
+    //         pinpp: null,
+    //         residency: "",
+    //         index: "",
+    //         region: "",
+    //         city: "",
+    //         street: "",
+    //         houseNumber: "",
+    //         housing: "",
+    //         structure: "",
+    //         apartmentNumber: "",
+    //         passportData: {
+    //           series: "",
+    //           number: null,
+    //           date: ""
+    //         },
+    //         phones: [{
+    //           phone: 998
+    //         }],
+    //       },
+    //       entity: {
+    //         price: 0,
+    //         name:"",
+    //         inn: null,
+    //         activity: "",
+    //         index: "",
+    //         region: "",
+    //         city: "",
+    //         street: "",
+    //         houseNumber: "",
+    //         housing: "",
+    //         structure: "",
+    //         officeNumber: "",
+    //         phones: [{
+    //           phone: 998
+    //         }],
+    //       },
+    //       insurance: {
+    //         name:"",
+    //         inn: null,
+    //         price: 0,
+    //       },
+    //     }
+    //     }
+    //   );
+    // }, 
 
     getCredit() {
       this.paymentCalc = this.loanPaymentCalculate(
