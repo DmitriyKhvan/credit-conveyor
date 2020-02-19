@@ -198,7 +198,7 @@
     "menu_caption": "Описание"
   },
   "pages": {
-    "admin_page": "Странитца Админа"
+    "admin_page": "Страница Админа"
   },
   "tables": {
     "roles": {
@@ -241,7 +241,12 @@
     "icon_types": {
       "_self": "Таблица Тип Иконки",
       "add_edit": "Cоздать/Изменить Тип Иконка"
+    },
+    "education": {
+      "topicName": "Название Темы",
+      "topicNameError": "Введите Название Темы",
+      "test_amount": "Количество вопросов",
+      "test_amountError": "Введите Количество вопросов"
     }
   }
-
 }

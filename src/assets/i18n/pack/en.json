@@ -199,7 +199,8 @@
   "tables": {
     "roles": {
       "_self": "Roles Table",
-      "add_edit": "Create/Edit Table"
+      "add_edit": "Create/Edit Table",
+      "addTopic": "Добавить/Изменить Тему"
     },
     "menus": {
       "_self": "Menus Table",
@@ -237,6 +238,12 @@
     "icon_types": {
       "_self": "Icon Types Table",
       "add_edit": "Create/Edit Icon Type"
+    },
+    "education": {
+      "topicName": "Topic Name",
+      "topicNameError": "Topic Name is required",
+      "test_amount": "Test amount",
+      "test_amountError": "Test amount is required"
     }
   }
 }
