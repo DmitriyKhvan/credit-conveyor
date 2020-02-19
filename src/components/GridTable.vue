@@ -215,6 +215,10 @@ export default {
       default: () => {
         return {};
       }
+    },
+    filterColumn: {
+      type: [Array, Object],
+      default: () => []
     }
   },
   data: function() {
@@ -225,7 +229,21 @@ export default {
       visibleColumns: [],
       filter: "",
       loading: false,
-      defaultPaginationConfig: this.paginationConfig
+      defaultPaginationConfig: this.paginationConfig,
+      operators: {
+        ">": function(a, b) {
+          return a > b;
+        },
+        "<": function(a, b) {
+          return a < b;
+        },
+        "==": function(a, b) {
+          return a == b;
+        },
+        "!=": function(a, b) {
+          return a != b;
+        }
+      }
     };
   },
   computed: {
@@ -253,26 +271,41 @@ export default {
       return ApiService.get(this.tablePath)
         .then(res => {
           let data = res.data;
+          // Filter step
+          this.filterColumn.forEach(param => {
+            data = data.filter(item => {
+              //console.log(item);
+              return this.operators[param.operator](
+                item[param.column],
+                param.value
+              );
+            });
+          });
+          // data adding step
           data.forEach(element => {
             this.itemsArray.push(element);
           });
-          Object.keys(data[0]).map(async (k, index) => {
-            let sortable = this.excludeSortingColoumns.includes(k) //sortable filter
-              ? false
-              : true;
-            this.fields.push({
-              name: k,
-              required: false,
-              label: k.replace("_", " ").toUpperCase(),
-              align: "center",
-              sortable: sortable,
-              field: k
+
+          // filtering and sorting coloumns of table
+          if (data.length > 0) {
+            Object.keys(data[0]).map(async (k, index) => {
+              let sortable = this.excludeSortingColoumns.includes(k) //sortable filter
+                ? false
+                : true;
+              this.fields.push({
+                name: k,
+                required: false,
+                label: k.replace("_", " ").toUpperCase(),
+                align: "center",
+                sortable: sortable,
+                field: k
+              });
+              // exluding check filter
+              if (!this.excludedColumns.includes(k)) {
+                this.visibleColumns.push(k);
+              }
             });
-            // exluding check filter
-            if (!this.excludedColumns.includes(k)) {
-              this.visibleColumns.push(k);
-            }
-          });
+          }
         })
         .catch(err => {
           console.error(err);

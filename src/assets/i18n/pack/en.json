@@ -101,13 +101,11 @@
     "message": "Page not found",
     "back": "Back"
   },
-
   "error_403": {
     "header": "Error 403",
     "message": "Access denied",
     "back": "Back"
   },
-
   "auth": {
     "_self": "Authentication",
     "username": "Username",
@@ -121,7 +119,6 @@
     "languageError": "Please select a language",
     "signin": "Sign In"
   },
-
   "main": {
     "_self": "Main",
     "dashboard": "Dashboard",
@@ -239,11 +236,30 @@
       "_self": "Icon Types Table",
       "add_edit": "Create/Edit Icon Type"
     },
+<<<<<<< HEAD
     "education": {
       "topicName": "Topic Name",
       "topicNameError": "Topic Name is required",
       "test_amount": "Test amount",
       "test_amountError": "Test amount is required"
+=======
+    "device_types": {
+      "_self": "Device Types Table",
+      "add_edit": "Create/Edit Device Type",
+      "type_id": "Type Device"
+    },
+    "device_marks": {
+      "_self": "Device Marks Table",
+      "add_edit": "Create/Edit Device Mark"
+    },
+    "device_details": {
+      "_self": "Device Details Table",
+      "add_edit": "Create/Edit Device Detail"
+    },
+    "device_models": {
+      "_self": "Device Types Model",
+      "add_edit": "Create/Edit Device Model"
+>>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
     }
   }
 }

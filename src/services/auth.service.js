@@ -93,7 +93,7 @@ const AuthService = {
         ApiService.unmount401Interceptor();
 
         store.dispatch("auth/logoutSuccess");
-        store.dispatch("dicts/setIsAllSet", false);
+        //store.dispatch("dicts/setIsAllSet", false);
         //SocketService.stopConnection();
         await router.push("/login");
         resolve(true);
