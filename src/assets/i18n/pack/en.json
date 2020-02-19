@@ -237,7 +237,8 @@
     },
     "device_types": {
       "_self": "Device Types Table",
-      "add_edit": "Create/Edit Device Type"
+      "add_edit": "Create/Edit Device Type",
+      "type_id": "Type Device"
     },
     "device_marks": {
       "_self": "Device Marks Table",

@@ -46,7 +46,7 @@ const getters = {
   getParentMenus(state) {
     return state.parentMenus.map(val => {
       return {
-        text: val.name[0], // TODO add lang <i class="${val.class}"></i> ${val.name} 
+        text: val.name[0], // TODO add lang <i class="${val.class}"></i> ${val.name}
         value: val.menu_id
       };
     });
@@ -58,7 +58,7 @@ const getters = {
   getUserList: state => {
     return state.userList.map(val => {
       return {
-        text: val.name, // TODO add lang <i class="${val.class}"></i> ${val.name} 
+        text: val.name, // TODO add lang <i class="${val.class}"></i> ${val.name}
         value: val.user_id
       };
     });
