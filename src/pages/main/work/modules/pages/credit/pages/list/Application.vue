@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <h4>Очередь заявок</h4>
+    <h4>Очередь заявок {{tasks}}</h4>
     <q-markup-table>
       <thead>
         <tr>
@@ -45,12 +45,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <!-- <tr>
           <td class="text-left">Frozen Yogurt</td>
           <td class="text-right">159</td>
           <td class="text-right">6</td>
           <td class="text-right">24</td>
-        </tr>
+        </tr> -->
       </tbody>
     </q-markup-table>
   </div>
@@ -58,6 +58,7 @@
 
 <script>
 export default {
+    props: ['tasks'],
     data() {
         return {
             application: '',

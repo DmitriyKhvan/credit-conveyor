@@ -266,9 +266,9 @@ export default {
       })
     },
 
-    // updateGuarantee(state, payload) {
-    //   state.personalData.guarantees = Object.assign([], state.personalData.guarantees, payload);
-    // },
+    updateGuarantee(state, payload) {
+      state.personalData.guarantees = Object.assign([], state.personalData.guarantees, payload);
+    },
 
     removeItem(state, payload) {
       state.personalData[payload.item].splice(payload.index, 1);

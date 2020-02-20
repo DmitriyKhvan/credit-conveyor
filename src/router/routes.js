@@ -20,8 +20,12 @@ const TasksList = () => import("pages/main/work/modules/pages/task/modules/pages
 const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
 const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
 const CreditProfile = () => import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
-const Applicaion = () => import("pages/main/work/modules/pages/credit/pages/queue/Application.vue");
-const TaskQueue = () => import("pages/main/work/modules/pages/credit/pages/queue/Task.vue");
+const Applicaion = () => import("pages/main/work/modules/pages/credit/pages/list/Application.vue");
+const TaskQueue = () => import("pages/main/work/modules/pages/credit/pages/list/Tasks.vue");
+
+//const CreditManagerCabinet = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditManager/TaskList.vue");
+const CreditCommiteeTask = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditCommittee/Task.vue");
+
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
@@ -83,6 +87,11 @@ const routes = [{
           path: "taskQueue",
           name: "taskQueue",
           component: TaskQueue
+        },
+        {
+          path: "creditCommiteeTask",
+          name: "CreditCommiteeTask",
+          component: CreditCommiteeTask
         },
         {
         path: "registration",

@@ -65,8 +65,7 @@
                 lazy-rules
                 :rules="[
                   val =>
-                    (val && val.length === 9) ||
-                    'Количество цифр должно быть 9'
+                    (val && val.length === 9) || 'Количество цифр должно быть 9'
                 ]"
               />
             </div>
@@ -166,7 +165,7 @@
                 ]"
               /> -->
 
-              <q-input 
+              <q-input
                 ref="pasportDate"
                 outlined
                 square
@@ -179,17 +178,19 @@
                   val =>
                     (val && val.length === 10) || 'Введите дату выдачи паспорта'
                 ]"
-                >
+              >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy  
-                    transition-show="scale" transition-hide="scale"
-                    ref="qDatePasportDate"
+                    <q-popup-proxy
+                      transition-show="scale"
+                      transition-hide="scale"
+                      ref="qDatePasportDate"
                     >
-                      <q-date 
+                      <q-date
                         mask="DD.MM.YYYY"
-                        v-model="personalData.passportData.date" 
-                        @input="() => $refs.qDatePasportDate.hide()" />
+                        v-model="personalData.passportData.date"
+                        @input="() => $refs.qDatePasportDate.hide()"
+                      />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -834,7 +835,7 @@
                   ]"
                 /> -->
 
-                <q-input 
+                <q-input
                   ref="relatives_birthday"
                   outlined
                   square
@@ -844,20 +845,23 @@
                   mask="##.##.####"
                   lazy-rules
                   :rules="[
-                    val =>
-                      (val && val.length === 10) || 'Введите дату рождения'
+                    val => (val && val.length === 10) || 'Введите дату рождения'
                   ]"
-                  >
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy  
-                      transition-show="scale" transition-hide="scale"
-                      ref="qDateRelativeBirthday"
+                      <q-popup-proxy
+                        transition-show="scale"
+                        transition-hide="scale"
+                        ref="qDateRelativeBirthday"
                       >
-                        <q-date 
+                        <q-date
                           mask="DD.MM.YYYY"
-                          v-model="relative.birthday" 
-                          @input="() => $refs.qDateRelativeBirthday[index].hide()" />
+                          v-model="relative.birthday"
+                          @input="
+                            () => $refs.qDateRelativeBirthday[index].hide()
+                          "
+                        />
                       </q-popup-proxy>
                     </q-icon>
                   </template>
@@ -918,7 +922,7 @@
                     ]"
                   /> -->
 
-                  <q-input 
+                  <q-input
                     ref="relatives_pasportDate"
                     outlined
                     square
@@ -929,19 +933,25 @@
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length === 10) || 'Введите дату выдачи паспорта'
+                        (val && val.length === 10) ||
+                        'Введите дату выдачи паспорта'
                     ]"
-                    >
+                  >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy  
-                        transition-show="scale" transition-hide="scale"
-                        ref="qDateRelativePassportDate"
+                        <q-popup-proxy
+                          transition-show="scale"
+                          transition-hide="scale"
+                          ref="qDateRelativePassportDate"
                         >
-                          <q-date 
+                          <q-date
                             mask="DD.MM.YYYY"
-                            v-model="relative.passportData.date" 
-                            @input="() => $refs.qDateRelativePassportDate[index].hide()" />
+                            v-model="relative.passportData.date"
+                            @input="
+                              () =>
+                                $refs.qDateRelativePassportDate[index].hide()
+                            "
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
@@ -1182,9 +1192,7 @@
                 dense
                 label="Подтвержденный ежемесячный доход"
                 lazy-rules
-                :rules="[
-                  val => !!val || 'Поля должно быт заполнено'
-                ]"
+                :rules="[val => !!val || 'Поля должно быт заполнено']"
               />
             </div>
 
@@ -1455,16 +1463,16 @@
             :key="index + 10"
           >
             <legend class="legend_title">Обеспечение {{ index + 1 }}</legend>
-            {{guarantee}}
+            {{ guarantee }}
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
                   ref="typeGuarantees"
                   square
                   outlined
-                  v-model="guarantee.type"
+                  :value="guarantee.type"
                   :options="options.guarantees"
-                   
+                  @input="updateField('type', index, $event)"
                   dense
                   label="Вид гарантии"
                   lazy-rules
@@ -1496,7 +1504,6 @@
                     square
                     outlined
                     v-model.number="guarantee.individual.price"
-                    
                     :hint="loadMessage"
                     dense
                     label="Сумма поручительства"
@@ -1567,7 +1574,7 @@
                     ]"
                   /> -->
 
-                  <q-input 
+                  <q-input
                     ref="birthdayGuarantees"
                     outlined
                     square
@@ -1580,17 +1587,19 @@
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения'
                     ]"
-                    >
+                  >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy  
-                        transition-show="scale" transition-hide="scale"
-                        ref="qDateBirthdayGuarantees"
+                        <q-popup-proxy
+                          transition-show="scale"
+                          transition-hide="scale"
+                          ref="qDateBirthdayGuarantees"
                         >
-                          <q-date 
+                          <q-date
                             mask="DD.MM.YYYY"
-                            v-model="guarantee.individual.birthday" 
-                            @input="() => $refs.qDateBirthdayGuarantees[index].hide()" />
+                            v-model="guarantee.individual.birthday"
+                            @input="hideDatepickerBirthdayGuarantees"
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
@@ -1700,7 +1709,7 @@
                     ]"
                   /> -->
 
-                  <q-input 
+                  <q-input
                     ref="pasportDateGuarantees"
                     outlined
                     square
@@ -1711,19 +1720,22 @@
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length === 10) || 'Введите дату выдачи паспорта'
+                        (val && val.length === 10) ||
+                        'Введите дату выдачи паспорта'
                     ]"
-                    >
+                  >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy  
-                        transition-show="scale" transition-hide="scale"
-                        ref="qDatePasportDateGuarantees"
+                        <q-popup-proxy
+                          transition-show="scale"
+                          transition-hide="scale"
+                          ref="qDatePasportDateGuarantees"
                         >
-                          <q-date 
+                          <q-date
                             mask="DD.MM.YYYY"
-                            v-model="guarantee.individual.passportData.date" 
-                            @input="() => $refs.qDatePasportDateGuarantees[index].hide()" />
+                            v-model="guarantee.individual.passportData.date"
+                            @input="hideDatepickerPasportDateGuarantees"
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
@@ -2646,39 +2658,41 @@
                   ]"
                 /> -->
 
-                <q-input 
-                    ref="loanDate"
-                    outlined
-                    square
-                    dense
-                    label="Дата выдачи кредита"
-                    v-model="creditCalc.loanDate"
-                    mask="##.##.####"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 10) || 'Введите дату выдачи кредита'
-                    ]"
-                    >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy  
-                        transition-show="scale" transition-hide="scale"
+                <q-input
+                  ref="loanDate"
+                  outlined
+                  square
+                  dense
+                  label="Дата выдачи кредита"
+                  v-model="creditCalc.loanDate"
+                  mask="##.##.####"
+                  lazy-rules
+                  :rules="[
+                    val =>
+                      (val && val.length === 10) ||
+                      'Введите дату выдачи кредита'
+                  ]"
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        transition-show="scale"
+                        transition-hide="scale"
                         ref="qDateLoanDate"
-                        >
-                          <q-date 
-                            mask="DD.MM.YYYY"
-                            v-model="creditCalc.loanDate" 
-                            @input="() => $refs.qDateLoanDate.hide()" />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
+                      >
+                        <q-date
+                          mask="DD.MM.YYYY"
+                          v-model="creditCalc.loanDate"
+                          @input="() => $refs.qDateLoanDate.hide()"
+                        />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
               </div>
             </div>
 
             <div class="row q-col-gutter-md">
-              
               <div class="col-3">
                 <q-select
                   ref="paymentType"
@@ -2742,7 +2756,6 @@
                 />
               </div>
             </div>
-            
           </form>
 
           <div class="q-pa-md">
@@ -2759,7 +2772,7 @@
                       /> -->
 
                       <div class="text-h4 q-ml-md text-white">
-                        {{creditCalc.paymentType}}
+                        {{ creditCalc.paymentType }}
                       </div>
                     </div>
                   </th>
@@ -2776,15 +2789,18 @@
                 </tr>
               </thead>
               <tbody class="bg-grey-3">
-                <tr v-for="(item, index) of paymentCalc.paymentRows" :key="'pr' + index">
-                  <td class="text-left">{{item.monthNum}}</td>
-                  <td class="text-right">{{item.date}}</td>
-                  <td class="text-right">{{item.daysInMonth}}</td>
-                  <td class="text-right">{{item.balanceAtStart}}</td>
-                  <td class="text-right">{{item.percent}}</td>
-                  <td class="text-right">{{item.mainDebt}}</td>
-                  <td class="text-right">{{item.total}}</td>
-                  <td class="text-right">{{item.balanceAtEnd}}</td>
+                <tr
+                  v-for="(item, index) of paymentCalc.paymentRows"
+                  :key="'pr' + index"
+                >
+                  <td class="text-left">{{ item.monthNum }}</td>
+                  <td class="text-right">{{ item.date }}</td>
+                  <td class="text-right">{{ item.daysInMonth }}</td>
+                  <td class="text-right">{{ item.balanceAtStart }}</td>
+                  <td class="text-right">{{ item.percent }}</td>
+                  <td class="text-right">{{ item.mainDebt }}</td>
+                  <td class="text-right">{{ item.total }}</td>
+                  <td class="text-right">{{ item.balanceAtEnd }}</td>
                 </tr>
               </tbody>
             </q-markup-table>
@@ -2801,7 +2817,7 @@
 </template>
 
 <script>
-import * as moment from 'moment'
+import * as moment from "moment";
 
 export default {
   name: "profile",
@@ -2968,44 +2984,46 @@ export default {
         ],
 
         paymentType: ["Аннуэтетный", "Дифференцированный"],
-        
-        preferential:[
+
+        preferential: [
           {
-            label: 'Нет',
+            label: "Нет",
             value: false
           },
           {
-            label: 'Да',
+            label: "Да",
             value: true
-          },
+          }
         ]
-        
       },
 
       paymentCalc: {}
     };
   },
   mounted() {
-    this.$store.state.profile.personalData.name = this.$store.state.credits.personalData.name
-    this.$store.state.profile.personalData.surname = this.$store.state.credits.personalData.surname
-    this.$store.state.profile.personalData.mname = this.$store.state.credits.personalData.mname
-    this.$store.state.profile.personalData.inn = this.$store.state.credits.personalData.inn
-    this.$store.state.profile.personalData.phones[0].phone = this.$store.state.credits.personalData.phone
-    this.$store.state.profile.personalData.pinpp = this.$store.state.credits.personalData.pinpp
-    this.$store.state.profile.personalData.passportData.series = this.$store.state.credits.personalData.passport.slice(0,2)
-    this.$store.state.profile.personalData.passportData.number = this.$store.state.credits.personalData.passport.slice(2)
-    
-    this.$store.state.profile.personalData.expenseIncome.income = this.$store.state.credits.personalData.income
-    this.$store.state.profile.personalData.expenseIncome.expense = this.$store.state.credits.personalData.expense
-    this.$store.state.profile.personalData.expenseIncome.otherExpenses = this.$store.state.credits.personalData.otherExpenses
-    this.$store.state.profile.personalData.expenseIncome.externalIncome = this.$store.state.credits.personalData.externalIncome
-    this.$store.state.profile.personalData.expenseIncome.externalIncomeSize = this.$store.state.credits.personalData.externalIncomeSize
-    this.$store.state.profile.personalData.expenseIncome.additionalIncomeSource = this.$store.state.credits.personalData.additionalIncomeSource
-    
-    
+    this.$store.state.profile.personalData.name = this.$store.state.credits.personalData.name;
+    this.$store.state.profile.personalData.surname = this.$store.state.credits.personalData.surname;
+    this.$store.state.profile.personalData.mname = this.$store.state.credits.personalData.mname;
+    this.$store.state.profile.personalData.inn = this.$store.state.credits.personalData.inn;
+    this.$store.state.profile.personalData.phones[0].phone = this.$store.state.credits.personalData.phone;
+    this.$store.state.profile.personalData.pinpp = this.$store.state.credits.personalData.pinpp;
+    this.$store.state.profile.personalData.passportData.series = this.$store.state.credits.personalData.passport.slice(
+      0,
+      2
+    );
+    this.$store.state.profile.personalData.passportData.number = this.$store.state.credits.personalData.passport.slice(
+      2
+    );
+
+    this.$store.state.profile.personalData.expenseIncome.income = this.$store.state.credits.personalData.income;
+    this.$store.state.profile.personalData.expenseIncome.expense = this.$store.state.credits.personalData.expense;
+    this.$store.state.profile.personalData.expenseIncome.otherExpenses = this.$store.state.credits.personalData.otherExpenses;
+    this.$store.state.profile.personalData.expenseIncome.externalIncome = this.$store.state.credits.personalData.externalIncome;
+    this.$store.state.profile.personalData.expenseIncome.externalIncomeSize = this.$store.state.credits.personalData.externalIncomeSize;
+    this.$store.state.profile.personalData.expenseIncome.additionalIncomeSource = this.$store.state.credits.personalData.additionalIncomeSource;
+
     this.$store.state.profile.creditCalc.loanSum = this.$store.state.credits.preApprovalData.maxSum;
-    
-    
+
     // this.paymentCalc = this.loanPaymentCalculate(
     //     this.creditCalc.loanRate,
     //     this.creditCalc.loanSum,
@@ -3018,7 +3036,6 @@ export default {
     //   setTimeout(() => {
     //       this.confirmCredit = true;
     //   }, 500);
-
   },
   computed: {
     loadMessage() {
@@ -3030,7 +3047,7 @@ export default {
     disableBtn() {
       return this.$store.state.profile.disableBtn;
     },
-    
+
     personalData() {
       return this.$store.state.profile.personalData;
     },
@@ -3054,8 +3071,7 @@ export default {
       } else {
         this.isValid = true;
       }
-    },
-
+    }
   },
   methods: {
     onSubmit() {
@@ -3082,7 +3098,7 @@ export default {
       this.$refs.street.validate();
       this.$refs.houseNumber.validate();
 
-      if (this.sameRegistration === "Нет" || this.sameRegistration === "") {
+      if (this.sameRegistration === this.options.sameRegistration[1] || this.sameRegistration === "") {
         this.$refs.region2.validate();
         this.$refs.street2.validate();
         this.$refs.houseNumber2.validate();
@@ -3176,18 +3192,16 @@ export default {
         this.validItems("priceVehiclesValid");
       }
 
-      
       // if ( this.$refs.typeGuarantees && this.$refs.typeGuarantees !== []) {
       //   this.validFilter("typeGuaranteesValid", "typeGuarantees");
-      // } 
-      
+      // }
+
       if (this.$refs.typeGuarantees) {
         if (this.$refs.typeGuarantees.length !== 0) {
-          console.log(this.$refs.typeGuarantees)
+          console.log(this.$refs.typeGuarantees);
           this.validFilter("typeGuaranteesValid", "typeGuarantees");
 
           for (let typeGuarante of this.$refs.typeGuarantees) {
-
             if (typeGuarante.value === this.options.guarantees[0]) {
               this.validFilter("customersAttitudeValid", "customersAttitude");
               this.validFilter("priceGuaranteesValid", "priceGuarantees");
@@ -3205,10 +3219,16 @@ export default {
                 "pasportNumberGuaranteesValid",
                 "pasportNumberGuarantees"
               );
-              this.validFilter("pasportDateGuaranteesValid", "pasportDateGuarantees");
+              this.validFilter(
+                "pasportDateGuaranteesValid",
+                "pasportDateGuarantees"
+              );
               this.validFilter("regionGuaranteesValid", "regionGuarantees");
               this.validFilter("streetGuaranteesValid", "streetGuarantees");
-              this.validFilter("houseNumberGuaranteesValid", "houseNumberGuarantees");
+              this.validFilter(
+                "houseNumberGuaranteesValid",
+                "houseNumberGuarantees"
+              );
               this.validFilter("phonesGuaranteesValid", "phonesGuarantees");
             } else {
               this.validItems("customersAttitudeValid");
@@ -3227,20 +3247,19 @@ export default {
               this.validItems("houseNumberGuaranteesValid");
               this.validItems("phonesGuaranteesValid");
             }
-            
-            
-            if (typeGuarante.value === this.options.guarantees[1]) {
 
+            if (typeGuarante.value === this.options.guarantees[1]) {
               this.validFilter("priceGuaranteesValid", "priceGuarantees");
               this.validFilter("nameGuaranteesValid", "nameGuarantees");
               this.validFilter("innGuaranteesValid", "innGuarantees");
               this.validFilter("regionGuaranteesValid", "regionGuarantees");
               this.validFilter("streetGuaranteesValid", "streetGuarantees");
-              this.validFilter("houseNumberGuaranteesValid", "houseNumberGuarantees");
+              this.validFilter(
+                "houseNumberGuaranteesValid",
+                "houseNumberGuarantees"
+              );
               this.validFilter("phonesGuaranteesValid", "phonesGuarantees");
-
             } else {
-              
               this.validItems("priceGuaranteesValid");
               this.validItems("nameGuaranteesValid");
               this.validItems("innGuaranteesValid");
@@ -3249,13 +3268,11 @@ export default {
               this.validItems("houseNumberGuaranteesValid");
               this.validItems("phonesGuaranteesValid");
             }
-            
-            if (typeGuarante.value === this.options.guarantees[2]) {
 
+            if (typeGuarante.value === this.options.guarantees[2]) {
               this.validFilter("nameGuaranteesValid", "nameGuarantees");
               this.validFilter("innGuaranteesValid", "innGuarantees");
               this.validFilter("priceGuaranteesValid", "priceGuarantees");
-
             } else {
               this.validItems("priceGuaranteesValid");
               this.validItems("nameGuaranteesValid");
@@ -3296,7 +3313,7 @@ export default {
       this.$refs.productName.validate();
       this.$refs.sourceFinancs.validate();
 
-      console.log(this.$refs.typeGuaranteesValid)
+      console.log(this.$refs.typeGuaranteesValid);
 
       if (
         this.$refs.surname.hasError ||
@@ -3384,7 +3401,7 @@ export default {
         this.formHasError = true;
         this.bar = true;
       } else {
-        console.log('personalData', this.$store.state.profile.personalData);
+        console.log("personalData", this.$store.state.profile.personalData);
         this.confirmCredit = true;
         this.paymentCalc = this.loanPaymentCalculate(
           this.creditCalc.loanRate,
@@ -3393,8 +3410,8 @@ export default {
           this.creditCalc.loanDate,
           this.creditCalc.paymentType,
           this.creditCalc.preferential,
-          this.creditCalc.preTerm,
-        )
+          this.creditCalc.preTerm
+        );
 
         // console.log(
         //   this.loanPaymentCalculate(
@@ -3405,70 +3422,86 @@ export default {
         //     this.creditCalc.paymentType,
         //     this.creditCalc.preferential,
         //     this.creditCalc.preTerm,
-            
+
         //   )
         // )
       }
     },
 
-    // updateField(field, index, value) {
-    //   this.$store.commit('updateGuarantee', 
-    //   {
-    //     [index]: {
-    //       [field]: value,
-    //       individual: {
-    //         attitude: "",
-    //         price: 0,
-    //         surname: "",
-    //         name: "",
-    //         mname: "",
-    //         birthday: "",
-    //         inn: null,
-    //         pinpp: null,
-    //         residency: "",
-    //         index: "",
-    //         region: "",
-    //         city: "",
-    //         street: "",
-    //         houseNumber: "",
-    //         housing: "",
-    //         structure: "",
-    //         apartmentNumber: "",
-    //         passportData: {
-    //           series: "",
-    //           number: null,
-    //           date: ""
-    //         },
-    //         phones: [{
-    //           phone: 998
-    //         }],
-    //       },
-    //       entity: {
-    //         price: 0,
-    //         name:"",
-    //         inn: null,
-    //         activity: "",
-    //         index: "",
-    //         region: "",
-    //         city: "",
-    //         street: "",
-    //         houseNumber: "",
-    //         housing: "",
-    //         structure: "",
-    //         officeNumber: "",
-    //         phones: [{
-    //           phone: 998
-    //         }],
-    //       },
-    //       insurance: {
-    //         name:"",
-    //         inn: null,
-    //         price: 0,
-    //       },
-    //     }
-    //     }
-    //   );
-    // }, 
+    hideDatepickerBirthdayGuarantees() {
+      for (let datepicker of this.$refs.qDateBirthdayGuarantees) {
+        datepicker.hide();
+      }
+    },
+
+    hideDatepickerPasportDateGuarantees() {
+      for (let datepicker of this.$refs.qDatePasportDateGuarantees) {
+        datepicker.hide();
+      }
+    },
+
+    updateField(field, index, value) {
+      console.log("dddd", this.$refs);
+
+      this.$store.commit("updateGuarantee", {
+        [index]: {
+          [field]: value,
+          individual: {
+            attitude: "",
+            price: 0,
+            surname: "",
+            name: "",
+            mname: "",
+            birthday: "",
+            inn: null,
+            pinpp: null,
+            residency: "",
+            index: "",
+            region: "",
+            city: "",
+            street: "",
+            houseNumber: "",
+            housing: "",
+            structure: "",
+            apartmentNumber: "",
+            passportData: {
+              series: "",
+              number: null,
+              date: ""
+            },
+            phones: [
+              {
+                phone: 998
+              }
+            ]
+          },
+          entity: {
+            price: 0,
+            name: "",
+            inn: null,
+            activity: "",
+            index: "",
+            region: "",
+            city: "",
+            street: "",
+            houseNumber: "",
+            housing: "",
+            structure: "",
+            officeNumber: "",
+            phones: [
+              {
+                phone: 998
+              }
+            ]
+          },
+          insurance: {
+            name: "",
+            inn: null,
+            price: 0
+          }
+        }
+      });
+    },
 
     getCredit() {
       this.paymentCalc = this.loanPaymentCalculate(
@@ -3478,8 +3511,8 @@ export default {
         this.creditCalc.loanDate,
         this.creditCalc.paymentType,
         this.creditCalc.preferential,
-        this.creditCalc.preTerm,
-      )
+        this.creditCalc.preTerm
+      );
     },
 
     loanPaymentCalculate(
@@ -3491,16 +3524,17 @@ export default {
       preferential, // true - Льготный период, начисляются только проценты
       preTerm // Срок льготного периода
     ) {
+      console.log("start", loanRate, loanSum, loanTerm);
 
-        console.log('start', loanRate, loanSum, loanTerm);
-
-        //loanSum = 27800000;
+      //loanSum = 27800000;
 
       let totalPercent = 0;
       let totalPayment = 0;
       let totalLoan = 0;
 
-      loanDate = moment(loanDate);
+      console.log("дата: ", loanDate);
+      loanDate = moment(loanDate, "DD.MM.YYYY");
+      console.log("дата: ", loanDate.month());
 
       let percent = 0;
       if (paymentType == this.options.paymentType[0]) {
@@ -3565,7 +3599,7 @@ export default {
         }
 
         loanPaymentReturn.push({
-          date: curDate.format('DD MMM YYYY'),
+          date: curDate.format("DD MMM YYYY"),
           daysInMonth: daysInMonth,
           monthNum: i + 1,
           balanceAtStart: startMonthBalance,

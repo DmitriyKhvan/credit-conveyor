@@ -21,7 +21,7 @@
                   :disable="disableInput"
                   label="Фамилия"
                   lazy-rules
-                  :rules="[val => (val && val.length > 3) || 'Введите фамилию']"
+                  :rules="[val => (val && val.length > 1) || 'Введите фамилию']"
                 />
                 <q-input
                   ref="name"
@@ -295,7 +295,7 @@
 <script>
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
-import DigIdNetworkError from "./DigIdNetworkError.vue";
+import DigIdNetworkError from "./DigIdNetworkError";
 
 export default {
   data() {
