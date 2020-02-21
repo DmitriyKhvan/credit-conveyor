@@ -9,8 +9,8 @@
               outlined
               v-model="model"
               :options="data"
-              option-label="name"
-              option-value="branch_id"
+              option-label="DEPARTMENT_NAME1"
+              option-value="CODE"
               label="Выберите отделение"
               transition-show="jump-up"
               transition-hide="jump-up"
@@ -25,9 +25,9 @@
                   clickable
                   v-for="(item, index) in model.children"
                   :key="index"
-                  @click="getFillial(item.filial_id)"
+                  @click="getSectors(item.FILIAL, item.CODE)"
                 >
-                  <q-item-section>{{ item.name }}</q-item-section>
+                  <q-item-section>{{ item.DEPARTMENT_NAME1 }}</q-item-section>
                 </q-item>
               </q-list>
             </q-scroll-area>
@@ -148,6 +148,7 @@
                       >
                       </q-card-section>
                     </div>
+                    <!-- Girl CARD END-->
                   </q-card>
                 </div>
               </div>
@@ -161,6 +162,7 @@
 <script>
 import phonesInf from "./test.json";
 import axios from "axios";
+import ApiService from "../../../../../../services/api.service";
 export default {
   data() {
     return {
@@ -175,39 +177,43 @@ export default {
     };
   },
   methods: {
-    getBranch() {
-      axios
-        .get("tree/1/branch")
+    getSectors(mfo, code) {
+      ApiService.get(`structure/departments?mfo=${mfo}&code=${code}`)
         .then(res => {
-          this.data = res.data[0].tree;
+          console.log(res.data[0]);
           // eslint-disable-next-line
           //console.log(this.data)
         })
         .catch(err => {
-          this.data = err;
-        });
-    },
-
-    getFillial(val) {
-      axios
-        .get("tree/1/branch/" + val)
-        .then(res => {
-          this.subData = res.data[0].children;
-          // eslint-disable-next-line
-          //console.log(this.subData)
-        })
-        .catch(err => {
-          this.subData = err;
+          console.log(err);
         });
     }
+    // getFillial(val) {
+    //   axios
+    //     .get("tree/1/branch/" + val)
+    //     .then(res => {
+    //       this.subData = res.data[0].children;
+    //       // eslint-disable-next-line
+    //       //console.log(this.subData)
+    //     })
+    //     .catch(err => {
+    //       this.subData = err;
+    //     });
+    // }
   },
   beforeCreate() {
-    axios
-      .get("tree/1/branch")
+    // ApiService.get("tree/1/branch")
+    //   .then(res => {
+    //     console.log(res.data[0].tree);
+    //     this.data = res.data[0].tree;
+    //   })
+    //   .catch(err => {
+    //     this.data = err;
+    //   });
+    ApiService.get("structure/branches")
       .then(res => {
-        this.data = res.data[0].tree;
-        // eslint-disable-next-line
-        //console.log(this.data)
+        console.log(res.data[0].children);
+        this.data = res.data[0].children;
       })
       .catch(err => {
         this.data = err;

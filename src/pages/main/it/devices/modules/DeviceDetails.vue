@@ -6,23 +6,23 @@
 
 <script>
 import GridTable from "./../../../../../components/GridTable";
-import AddEditIconType from "./../../dialogs/AddEditIconType";
+import AddEditDeviceDetail from "./../dialogs/AddEditDeviceDetail";
 
 import { Dialog } from "quasar";
-import ApiService from "../../../../../services/api.service";
-import NotifyService from "../../../../../services/notify.service";
-import GridService from "../../../../../services/grid.service";
+import ApiService from "./../../../../../services/api.service";
+import NotifyService from "./../../../../../services/notify.service";
+import GridService from "./../../../../../services/grid.service";
 
 export default {
   created() {},
   data() {
     return {
       props: {
-        caption: this.$t("tables.icon_types._self"),
-        tablePath: "dicts/icontype",
+        caption: this.$t("tables.device_details._self"),
+        tablePath: "devices/detail",
         rowId: "id",
-        addEdit: "dicts/icontype", // url
-        delete: "dicts/icontype", //
+        addEdit: "devices/detail", // url
+        delete: "devices/detail", //
         defaultSort: [], // TODO
         excludedColumns: [],
         excludeSortingColoumns: [],
@@ -48,10 +48,29 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditIconType, selected, this.props, this);
+      GridService.addEditRecord(AddEditDeviceDetail, selected, this.props, this)
+        .then(res => {
+          if (res) {
+            this.$refs.gridTable.refreshTable();
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          throw err;
+        });
     },
+
     deleteRow(row) {
-      GridService.deleteRecord(row, this.props);
+      GridService.deleteRecord(row, this.props)
+        .then(res => {
+          if (res) {
+            this.$refs.gridTable.refreshTable();
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          throw err;
+        });
     }
   }
 };

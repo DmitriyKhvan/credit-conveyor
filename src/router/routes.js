@@ -23,113 +23,120 @@ const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/regis
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
 
+const It = () => import("pages/main/it/Index");
+const Devices = () => import("pages/main/it/devices/Index");
 
 const routes = [{
-  path: "/",
-  redirect: "/home",
-  component: MainContainer,
-  name: "main",
-  meta: {
-    requiresAuth: true
-  },
-  children: [{
-    path: "home",
-    name: "Home",
-    component: HomePage
-  },
-  {
-    path: "work",
-    name: "Work",
-    component: WorkPage,
+    path: "/",
+    redirect: "/home",
+    component: MainContainer,
+    name: "main",
+    meta: {
+      requiresAuth: true
+    },
     children: [{
-      path: "assistant",
-      name: "Assistant",
-      component: Assistant
-    },
-    {
-      path: "chancellary",
-      name: "Kanselariya",
-      component: Chancellary,
-      children: [{
-        path: "registration",
-        name: "Kanselariya Registration",
-        component: ChanReg
-      }]
-    },
-    {
-      path: "task",
-      name: "my tasks",
-      component: Tasks,
-      children: [{
-        path: "list",
-        name: "tasklist",
-        component: TasksList
-      }]
-    },
-    {
-      path: "credit",
-      name: "Credit",
-      component: Credit,
-      children: [{
-        path: "registration",
-        name: "registration",
-        component: CreditReg
-      }]
-    }
+        path: "home",
+        name: "Home",
+        component: HomePage
+      },
+      {
+        path: "work",
+        name: "Work",
+        component: WorkPage,
+        children: [{
+            path: "assistant",
+            name: "Assistant",
+            component: Assistant
+          },
+          {
+            path: "chancellary",
+            name: "Kanselariya",
+            component: Chancellary,
+            children: [{
+              path: "registration",
+              name: "Kanselariya Registration",
+              component: ChanReg
+            }]
+          },
+          {
+            path: "task",
+            name: "my tasks",
+            component: Tasks,
+            children: [{
+              path: "list",
+              name: "tasklist",
+              component: TasksList
+            }]
+          },
+          {
+            path: "credit",
+            name: "Credit",
+            component: Credit,
+            children: [{
+              path: "registration",
+              name: "registration",
+              component: CreditReg
+            }]
+          }
+        ]
+      },
+      {
+        path: "admin",
+        name: "Admin Page",
+        component: AdminPage,
+        children: [{
+            path: "users",
+            name: "Users List",
+            component: Users
+          },
+          {
+            path: "roles",
+            name: "User Roles",
+            component: Roles
+          },
+          {
+            path: "menus",
+            name: "Menus List",
+            component: Menus
+          },
+          {
+            path: "dictionaries",
+            name: "Dictionaries",
+            component: Dictionaries
+          }
+        ]
+      },
+      {
+        path: "tools",
+        name: "Tools",
+        component: Tools,
+        children: [{
+          path: "phones",
+          name: "Phones",
+          component: Phones
+        }]
+      },
+      {
+        path: "it",
+        name: "IT section",
+        component: It,
+        children: [{
+          path: "devices",
+          name: "Devices",
+          component: Devices
+        }]
+      }
     ]
   },
   {
-    path: "admin",
-    name: "Admin Page",
-    component: AdminPage,
-    children: [{
-      path: "users",
-      name: "Users List",
-      component: Users
-    },
-    {
-      path: "roles",
-      name: "User Roles",
-      component: Roles
-    },
-    {
-      path: "menus",
-      name: "Menus List",
-      component: Menus
-    },
-    {
-      path: "dictionaries",
-      name: "Dictionaries",
-      component: Dictionaries
+    path: "/login",
+    name: "Login Page",
+    component: LoginPage,
+    meta: {
+      public: true, // Allow access to even if not logged in
+      onlyWhenLoggedOut: true
     }
-    ]
-  },
-  {
-    path: "tools",
-    name: "Tools",
-    component: Tools,
-    children: [{
-      path: "phones",
-      name: "Phones",
-      component: Phones
-    }]
   }
-  ]
-},
-{
-  path: "/login",
-  name: "Login Page",
-  component: LoginPage,
-  meta: {
-    public: true, // Allow access to even if not logged in
-    onlyWhenLoggedOut: true
-  }
-}
-  // , {
-  //   path: "*",
-  //   name: 'Page Not Found',
-  //   component: Page404
-  // }
 ];
 
 // Always leave this as last one
