@@ -77,7 +77,7 @@ export default {
     successCredit(val) {
       console.log("successCredit");
       this.$store.commit('toggleConfirm', val);
-      this.$router.push('/work/credit/profile');
+      this.$router.push('profile');
        // const data = {
       //   output: [
       //     {

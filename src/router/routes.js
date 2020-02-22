@@ -25,6 +25,9 @@ const TaskQueue = () => import("pages/main/work/modules/pages/credit/pages/list/
 
 //const CreditManagerCabinet = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditManager/TaskList.vue");
 const CreditCommiteeTask = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditCommittee/Task.vue");
+const TestList = () => import("pages/main/work/modules/pages/test/TestList.vue");
+const Topic = () => import("pages/main/work/modules/pages/test/Topic.vue");
+const CompleteTest = () => import("pages/main/work/modules/pages/test/CompleteTest.vue");
 
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
@@ -104,6 +107,21 @@ const routes = [{
           component: CreditProfile
         }
       ]
+    },
+    {
+      path: "testList",
+      name: "TestList",
+      component: TestList
+    },
+    {
+      path: "completeTest",
+      name: "CompleteTest",
+      component: CompleteTest
+    },
+    {
+      path: "topic/:id",
+      name: "Topic",
+      component: Topic,
     }
     ]
   },
