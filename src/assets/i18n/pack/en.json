@@ -236,13 +236,6 @@
       "_self": "Icon Types Table",
       "add_edit": "Create/Edit Icon Type"
     },
-<<<<<<< HEAD
-    "education": {
-      "topicName": "Topic Name",
-      "topicNameError": "Topic Name is required",
-      "test_amount": "Test amount",
-      "test_amountError": "Test amount is required"
-=======
     "device_types": {
       "_self": "Device Types Table",
       "add_edit": "Create/Edit Device Type",
@@ -259,7 +252,9 @@
     "device_models": {
       "_self": "Device Types Model",
       "add_edit": "Create/Edit Device Model"
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
+    },
+    "education": {
+      "topicName": "Topic Name"
     }
   }
 }

@@ -1,19 +1,21 @@
 <template>
   <div id="listOfTopics">
+    {{education}}
     <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
     <router-view />
   </div>
 </template>
 
 <script>
-import GridTable from "../../../../../../../components/GridTable";
-import AddEditTopic from "./../../dialogs/AddEditTopic";
+import GridTable from "../../GridTableForTest";
+import AddEditTopic from "./../../dialogs/AddEditTopicDialog";
 import { Dialog } from "quasar";
 import ApiService from "../../../../../../../services/api.service";
 import NotifyService from "../../../../../../../services/notify.service";
 import GridService from "../../../../../../../services/grid.service";
 
 export default {
+  topicId: "",
   name: "listOfTopics",
   data() {
     return {
@@ -52,6 +54,11 @@ export default {
       }
     };
   },
+  computed: {
+    education() {
+      return console.log(this.$store.state.education);
+    }
+  },
   components: {
     GridTable
   },
@@ -87,7 +94,7 @@ export default {
         });
     },
 
-    deleteRecord(row, propsTopiC) {
+    deleteRecord(row, props) {
       this.$q
         .dialog({
           title: "Confirm",
@@ -96,7 +103,7 @@ export default {
           persistent: true
         })
         .onOk(() => {
-          ApiService.delete(propsTopiC.delete + "?id=" + row.id).then(
+          ApiService.delete(props.delete + "?id=" + row.id).then(
             res => {
               if (res.data.status == 1) {
                 NotifyService.showSuccessMessage(res.data.message);

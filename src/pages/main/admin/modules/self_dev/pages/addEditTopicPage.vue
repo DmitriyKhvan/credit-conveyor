@@ -7,7 +7,7 @@
 
 <script>
 import GridTable from "../../../../../../components/GridTable";
-import AddEditTopic from "./../dialogs/AddEditTopic";
+import AddEditTopic from "./../dialogs/AddEditTopicDialog";
 import { Dialog } from "quasar";
 import ApiService from "../../../../../../services/api.service";
 import NotifyService from "../../../../../../services/notify.service";

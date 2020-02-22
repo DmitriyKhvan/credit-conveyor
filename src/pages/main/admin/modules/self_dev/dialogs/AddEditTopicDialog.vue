@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">{{ $t("tables.users.add_edit") }}</div>
+          <div class="text-h6">{{ $t("tables.education.addEditTopic") }}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -27,20 +27,6 @@
               ]"
               lazy-rules
             />
-            <!-- <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="test_amount"
-              :label="$t('test_amount')"
-              @input="$v.test_amount.$touch()"
-              :rules="[
-                val => $v.test_amount.required || $t('test_amountError'),
-                val => $v.test_amount.minLength || $t('test_amountError')
-              ]"
-              lazy-rules
-            />-->
           </div>
         </div>
       </q-card-section>
@@ -84,17 +70,10 @@ export default {
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
-        topic_id: 2,
-        question_text: "",
-        level: 1,
-        variants: [
-          {
-            id: 0,
-            question_id: 0,
-            answer_text: "",
-            answer_status
-          }
-        ]
+        name: null,
+        timer: 1,
+        status: 1,
+        test_amount: 1
       },
       customData: null
     };

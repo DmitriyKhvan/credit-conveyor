@@ -235,13 +235,6 @@
       "_self": "Таблица Тип Иконки",
       "add_edit": "Cоздать/Изменить Тип Иконка"
     },
-<<<<<<< HEAD
-    "education": {
-      "topicName": "Название Темы",
-      "topicNameError": "Введите Название Темы",
-      "test_amount": "Количество вопросов",
-      "test_amountError": "Введите Количество вопросов"
-=======
     "device_types": {
       "_self": "Таблица Тип Оборудование",
       "add_edit": "Cоздать/Изменить Тип Оборудование",
@@ -258,7 +251,20 @@
     "device_models": {
       "_self": "Таблица Models",
       "add_edit": "Create/Edit Device Model"
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
+    },
+    "education": {
+      "topicName": "Названия темы",
+      "topicNameError": "Ошибка при вводе темы",
+      "addEditTopic": "Добавить/Изменить тему",
+      "addEditQuestion": "Добавить/Изменить вопрос",
+      "levelOfQuestion": "Сложность вопроса",
+      "questionName": "Введите вопрос",
+      "textVariant": "Текст варианта",
+      "addEditTest": "Добавить/Изменить тест",
+      "description": "Описание",
+      "duration": "Время теста (в минутах)",
+      "hideStatus": "Показать/Cкрыть тест",
+      "testAmount": "Количество вопросов"
     }
   }
 }

@@ -1,23 +1,16 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-import example from './module-example'
+import example from "./module-example";
 
-import {
-  auth
-} from "./categorized/auth.module";
-import {
-  dicts
-} from "./categorized/dicts.module";
-import {
-  socket
-} from "./categorized/socket.module";
-import {
-  common
-} from './categorized/common.module';
+import { auth } from "./categorized/auth.module";
+import { dicts } from "./categorized/dicts.module";
+import { socket } from "./categorized/socket.module";
+import { common } from "./categorized/common.module";
 
+import { education } from "./categorized/education.module";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
   namespaced: true,
@@ -26,7 +19,8 @@ const store = new Vuex.Store({
     auth,
     dicts,
     socket,
-    common
+    common,
+    education
   },
 
   // enable strict mode (adds overhead!)

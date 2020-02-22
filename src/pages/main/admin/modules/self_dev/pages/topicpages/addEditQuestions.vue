@@ -1,5 +1,6 @@
 <template>
   <div id="addEditQuestionsPage">
+    <div style="display:none">{{topicId}}</div>
     <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
     <router-view />
   </div>
@@ -7,7 +8,7 @@
 
 <script>
 import GridTable from "../../../../../../../components/GridTable";
-import AddEditTopic from "./../../dialogs/AddEditTopic";
+import AddEditTopic from "./../../dialogs/AddEditQuestionDialog";
 import { Dialog } from "quasar";
 import ApiService from "../../../../../../../services/api.service";
 import NotifyService from "../../../../../../../services/notify.service";
@@ -32,7 +33,9 @@ export default {
           "creation_date",
           "updated_by",
           "update_date",
-          "timer"
+          "timer",
+          "topic_id",
+          "variants"
         ],
         excludeSortingColoumns: [],
         enableAddEdit: true,
@@ -50,11 +53,11 @@ export default {
           //rowsNumber: 4 // if getting data from a server
         },
         filterColumn: [
-          {
-            column: "topic",
-            operator: "==",
-            value: "2"
-          }
+          // {
+          //   column: "topic_id",
+          //   operator: "==",
+          //   value: "2"
+          // }
         ]
       }
     };
@@ -62,7 +65,27 @@ export default {
   components: {
     GridTable
   },
+  // mounted() {
+  //   this.tablePath =
+  //     "test/question?topic=" + this.$store.state.education.topicId;
+  // },
+  computed: {
+    topicId() {
+      // return console.log(this.$store.state.education.topicId);
+
+      this.props.tablePath =
+        "test/question?topic=" + this.$store.state.education.topicId;
+      this.refreshContent();
+
+      return this.$store.state.education.topicId;
+    }
+  },
   methods: {
+    refreshContent() {
+      console.log(this.props.tablePath);
+      // console.log(this.$refs.gridTable);
+      //this.$refs.gridTable.refreshTable();
+    },
     addEditRow(selected) {
       this.addEditRecord(AddEditTopic, selected, this.props);
     },
@@ -85,6 +108,7 @@ export default {
           if (res.data.status == 1) {
             NotifyService.showSuccessMessage(res.data.message);
             this.$refs.gridTable.refreshTable();
+            //console.log(this);
           } else {
             NotifyService.showErrorMessage(res.data.message);
           }
@@ -93,8 +117,7 @@ export default {
           console.log("Cancel");
         });
     },
-
-    deleteRecord(row, propsTopiC) {
+    deleteRecord(row, props) {
       this.$q
         .dialog({
           title: "Confirm",
@@ -103,7 +126,7 @@ export default {
           persistent: true
         })
         .onOk(() => {
-          ApiService.delete(propsTopiC.delete + "?id=" + row.id).then(
+          ApiService.delete(props.delete + "?id=" + row.id).then(
             res => {
               if (res.data.status == 1) {
                 NotifyService.showSuccessMessage(res.data.message);

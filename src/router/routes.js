@@ -33,15 +33,21 @@ const CreditReg = () =>
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
 
-<<<<<<< HEAD
-const routes = [
-  {
-=======
 const It = () => import("pages/main/it/Index");
 const Devices = () => import("pages/main/it/devices/Index");
 
-const routes = [{
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
+//education
+const TopicPage = () =>
+  import("pages/main/admin/modules/self_dev/pages/addEditTopicPage");
+const QuestionPage = () =>
+  import("pages/main/admin/modules/self_dev/pages/addEditQuestionPage");
+const TestPage = () =>
+  import("pages/main/admin/modules/self_dev/pages/addEditTestPage");
+const MonitoringPage = () =>
+  import("pages/main/admin/modules/self_dev/pages/addEditMonitoringPage");
+
+const routes = [
+  {
     path: "/",
     redirect: "/home",
     component: MainContainer,
@@ -49,12 +55,8 @@ const routes = [{
     meta: {
       requiresAuth: true
     },
-<<<<<<< HEAD
     children: [
       {
-=======
-    children: [{
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
         path: "home",
         name: "Home",
         component: HomePage
@@ -63,12 +65,8 @@ const routes = [{
         path: "work",
         name: "Work",
         component: WorkPage,
-<<<<<<< HEAD
         children: [
           {
-=======
-        children: [{
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
             path: "assistant",
             name: "Assistant",
             component: Assistant
@@ -77,7 +75,6 @@ const routes = [{
             path: "chancellary",
             name: "Kanselariya",
             component: Chancellary,
-<<<<<<< HEAD
             children: [
               {
                 path: "registration",
@@ -85,19 +82,11 @@ const routes = [{
                 component: ChanReg
               }
             ]
-=======
-            children: [{
-              path: "registration",
-              name: "Kanselariya Registration",
-              component: ChanReg
-            }]
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
           },
           {
             path: "task",
             name: "my tasks",
             component: Tasks,
-<<<<<<< HEAD
             children: [
               {
                 path: "list",
@@ -105,19 +94,11 @@ const routes = [{
                 component: TasksList
               }
             ]
-=======
-            children: [{
-              path: "list",
-              name: "tasklist",
-              component: TasksList
-            }]
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
           },
           {
             path: "credit",
             name: "Credit",
             component: Credit,
-<<<<<<< HEAD
             children: [
               {
                 path: "registration",
@@ -125,13 +106,6 @@ const routes = [{
                 component: CreditReg
               }
             ]
-=======
-            children: [{
-              path: "registration",
-              name: "registration",
-              component: CreditReg
-            }]
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
           }
         ]
       },
@@ -139,12 +113,8 @@ const routes = [{
         path: "admin",
         name: "Admin Page",
         component: AdminPage,
-<<<<<<< HEAD
         children: [
           {
-=======
-        children: [{
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
             path: "users",
             name: "Users List",
             component: Users
@@ -163,7 +133,6 @@ const routes = [{
             path: "dictionaries",
             name: "Dictionaries",
             component: Dictionaries
-<<<<<<< HEAD
           },
           {
             path: "selfdev",
@@ -171,40 +140,26 @@ const routes = [{
             component: SelfDevPage,
             children: [
               {
-                path: "topicpage",
+                path: "topicPage",
                 name: "addEditTopic",
-                component: () =>
-                  import(
-                    "pages/main/admin/modules/self_dev/pages/addEditTopicPage"
-                  )
+                component: TopicPage
               },
               {
                 path: "questionPage",
                 name: "addEditQuestion",
-                component: () =>
-                  import(
-                    "pages/main/admin/modules/self_dev/pages/addEditQuestionPage"
-                  )
+                component: QuestionPage
               },
               {
                 path: "testPage",
                 name: "addEditTest",
-                component: () =>
-                  import(
-                    "pages/main/admin/modules/self_dev/pages/addEditTestPage"
-                  )
+                component: TestPage
               },
               {
                 path: "monitoringPage",
                 name: "addEditMonitoring",
-                component: () =>
-                  import(
-                    "pages/main/admin/modules/self_dev/pages/addEditMonitoringPage"
-                  )
+                component: MonitoringPage
               }
             ]
-=======
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
           }
         ]
       },
@@ -212,7 +167,6 @@ const routes = [{
         path: "tools",
         name: "Tools",
         component: Tools,
-<<<<<<< HEAD
         children: [
           {
             path: "phones",
@@ -220,23 +174,18 @@ const routes = [{
             component: Phones
           }
         ]
-=======
-        children: [{
-          path: "phones",
-          name: "Phones",
-          component: Phones
-        }]
       },
       {
         path: "it",
         name: "IT section",
         component: It,
-        children: [{
-          path: "devices",
-          name: "Devices",
-          component: Devices
-        }]
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
+        children: [
+          {
+            path: "devices",
+            name: "Devices",
+            component: Devices
+          }
+        ]
       }
     ]
   },
@@ -249,14 +198,6 @@ const routes = [{
       onlyWhenLoggedOut: true
     }
   }
-<<<<<<< HEAD
-  // , {
-  //   path: "*",
-  //   name: 'Page Not Found',
-  //   component: Page404
-  // }
-=======
->>>>>>> 8ec4904821b2c103b7cd870d5e8a9559c473af5a
 ];
 
 // Always leave this as last one
