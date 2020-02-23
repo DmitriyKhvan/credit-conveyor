@@ -30,6 +30,38 @@
               outlined
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.type"
+              :options="iconTypeList"
+              option-value="value"
+              option-label="text"
+              emit-value
+              map-options
+              label="Type"
+              @input="$v.details.type.$touch()"
+              :rules="[
+                      val => $v.details.type.required || 'Type is required'
+                      ]"
+              lazy-rules
+            />
+          </div>
+          <div class="row">
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.class"
+              label="Class"
+              @input="$v.details.class.$touch()"
+              :rules="[
+                      val => $v.details.class.required || 'Class is required'
+                      ]"
+              lazy-rules
+            />
+            <q-select
+              outlined
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.state"
               :options="stateList"
               option-value="value"
@@ -39,7 +71,7 @@
               label="State"
               @input="$v.details.state.$touch()"
               :rules="[
-                      val => $v.details.state.required || 'State is required'
+                      val => $v.details.state.required || 'Status is required'
                       ]"
               lazy-rules
             />
@@ -58,8 +90,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../services/notify.service";
-import dialogMix from "./../../../../shared/mixins/dialogMix";
+import NotifyService from "./../../../../../services/notify.service";
+import dialogMix from "./../../../../../shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -67,7 +99,6 @@ import {
   between,
   email
 } from "vuelidate/lib/validators";
-
 export default {
   data() {
     return {
@@ -76,19 +107,28 @@ export default {
         { key: "Active", value: "A" },
         { key: "Passive", value: "P" }
       ],
+      iconTypeList: this.$store.getters["dicts/getIconTypes"],
       isValidated: true,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
-        id: null,
+        icon_id: null,
         name: null,
+        type: null,
+        class: null,
         state: null
       }
     };
   },
   validations: {
     details: {
-      id: {},
+      icon_id: {},
       name: {
+        required
+      },
+      type: {
+        required
+      },
+      class: {
         required
       },
       state: {

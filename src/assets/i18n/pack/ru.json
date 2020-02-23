@@ -258,6 +258,7 @@
       "addEditTopic": "Добавить/Изменить тему",
       "addEditQuestion": "Добавить/Изменить вопрос",
       "levelOfQuestion": "Сложность вопроса",
+      "levelQuestionError": "Ошибка при вводе Сложность",
       "questionName": "Введите вопрос",
       "textVariant": "Текст варианта",
       "addEditTest": "Добавить/Изменить тест",

@@ -12,7 +12,8 @@ const state = {
   isAllSet: false,
   menuList: [],
   userList: [],
-  receivedNotifications: []
+  receivedNotifications: [],
+  testTopicList: []
 };
 
 const getters = {
@@ -51,7 +52,16 @@ const getters = {
       };
     });
   },
-
+  getTestTopicList: state => {
+    return state.testTopicList.map(
+      val => {
+        return {
+          text: val.name,
+          value: val.id
+        }
+      }
+    );
+  },
   getMenuList: state => {
     return state.menuList;
   },
@@ -92,6 +102,9 @@ const mutations = {
   },
   setReceivedNotifications(state, notifications) {
     state.receivedNotifications = notifications;
+  },
+  setTopicList(state, topicList) {
+    state.testTopicList = topicList
   },
   addNotification(state, noty) {
     state.receivedNotifications = [noty, ...state.receivedNotifications];
@@ -134,6 +147,11 @@ const actions = {
     commit
   }, userList) {
     commit("setUserList", userList);
+  },
+  setTestTopicList({
+    commit
+  }, topicList) {
+    commit("setTopicList", topicList);
   },
   setReceivedNotifications({
     commit

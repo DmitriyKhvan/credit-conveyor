@@ -21,6 +21,8 @@ const DictService = {
         store.dispatch("dicts/setParentMenus", parentMenus);
         let userList = await this.userList();
         store.dispatch("dicts/setUserList", userList);
+        let testTopicList = await this.testTopicList();
+        store.dispatch("dicts/setTestTopicList", testTopicList); // 
         let receivedNotifications = await this.receivedNotifications();
         store.dispatch("dicts/setReceivedNotifications", receivedNotifications);
         store.dispatch("dicts/setIsAllSet", true);
@@ -101,6 +103,18 @@ const DictService = {
   userList() {
     return new Promise((resolve, reject) => {
       ApiService.get("auth/users")
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  testTopicList() {
+    return new Promise((resolve, reject) => {
+      ApiService.get("test/topic")
         .then(res => {
           resolve(res.data);
         })

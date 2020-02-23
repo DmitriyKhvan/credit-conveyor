@@ -12,7 +12,7 @@ export default {
     // !!! Don't change
     if (!!this.data.selectedRow) {
       this.details = this.data.selectedRow[0];
-    } else {}
+    } else { }
   },
   computed: {
 
@@ -42,11 +42,13 @@ export default {
             this.hide();
           },
           err => {
+            console.log(err);
             NotifyService.showErrorMessage(err.toString());
             this.$store.dispatch("common/setLoading", false);
           }
         )
         .catch(error => {
+          console.log(error);
           this.$store.dispatch("common/setLoading", false);
           NotifyService.showErrorMessage(error.toString());
           throw error;
