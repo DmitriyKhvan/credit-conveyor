@@ -239,17 +239,18 @@ export default {
       },
       status: {
         required
-      },
-      topic: [
-        {
-          id: {
-            required
-          },
-          easy: {},
-          medium: {},
-          hard: {}
-        }
-      ]
+      }
+      // ,
+      // topic: [
+      //   {
+      //     id: {
+      //       required
+      //     },
+      //     easy: {},
+      //     medium: {},
+      //     hard: {}
+      //   }
+      // ]
     }
   },
   props: {
