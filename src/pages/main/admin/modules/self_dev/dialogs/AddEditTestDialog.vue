@@ -252,7 +252,7 @@ export default {
       });
     },
     removeElement(index) {
-      this.details.topics.splice(index, 1);
+      this.details.topics.slice(index, 1);
     }
   },
   beforeCreate: function() {
