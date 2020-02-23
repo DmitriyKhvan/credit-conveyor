@@ -44,6 +44,16 @@ export default class TestService {
     return responce.data;
   }
 
+  sentTestAnswers = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/test/answer`,
+      data
+    });
+
+    return responce.data;
+  }
+
 //   getUserDataFromReader = async () => {
     
 //     const responce = await axios({

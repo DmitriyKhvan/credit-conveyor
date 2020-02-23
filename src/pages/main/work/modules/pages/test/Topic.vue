@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Topic id {{ id }}</h1>
+    <!-- <h1>Topic id {{ id }}</h1> -->
     <h4>{{time}}</h4>
     <q-card>
       <q-tabs
@@ -13,10 +13,11 @@
         narrow-indicator
       >
         <q-tab
-          v-for="(test, index) of topic.questions"
-          :key="test.id"
+          v-for="(test, index) of answerTest"
+          :key="test.question_id"
           :name="index"
           :label="index + 1"
+          :class="{answered: test.answered}"
         />
         <!-- <q-tab name="alarms" label="Alarms" />
           <q-tab name="movies" label="Movies" /> -->
@@ -41,7 +42,7 @@
               <q-item-section avatar>
                 <q-radio 
                   name="shape" 
-                  v-model="answerTest[index]" 
+                  v-model="answerTest[index].variant_text" 
                   :val="variant.answer_text"  
                   @input="sentAnswer(
                                       index,
@@ -61,6 +62,7 @@
               <q-btn label="Submit" type="submit" color="primary" />
             </div> -->
           <!-- </q-form> -->
+          {{timeCurQuestion}}
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -93,13 +95,13 @@ export default {
       testService: new TestService(),
       id: this.$router.currentRoute.params["id"],
       data: {
-        session_id: "",
-        test_id: 4,
-        start_time: new Date(),
-        end_time: "timestamp"
+        session_id: null,
+        test_id: null,
+        start_time: null,
+        end_time: null,
+        answers: [],
       },
-      answers: [],
-
+      
       topic: {},
       
       tab: 0,
@@ -107,9 +109,12 @@ export default {
       nextDisabled: false,
       prevDisabled: true,
       timer: null,
-      time: '',
+      time: '', // обратный отчет
+      timeCurQuestion: 0,
+      timerCurQuestion: null,
       duration: 0,
       target_date: null,
+      queue: [0],
       //target_date: new Date().getTime() + (1000 * 3600), // установить дату обратного отсчета
       days: null, 
       hours: null, 
@@ -122,18 +127,41 @@ export default {
     this.testService.getTests(this.id)
     .then(res => {
       console.log('ddd', res)
+
+      // this.data = {
+      //   session_id: Math.random() * 100000000,
+      //   test_id: res.data.test_id,
+      //   start_time: null,
+      //   end_time: null,
+      //   ques_amount: res.data.ques_amount,
+      // }
+
+      this.data.session_id = "" + Math.round(Math.random() * 100000000)
+      this.data.test_id = res.data.test_id
+      this.data.start_time = this.curDate()
+      this.data.end_time = null
+      this.data.ques_amount = res.data.ques_amount
+
       this.topic = res
       this.target_date = new Date().getTime() + (1000 * res.data.duration)
 
       this.getCountdown();  
 
       for (let question of this.topic.questions) {
-      this.answers.push(
+      this.data.answers.push(
         {
-          question_id: question.id,
+          ques_id: question.id,
           topic_id: question.topic_id,
           variant_id: null,
           duration: 0
+        }
+      )
+
+      this.answerTest.push(
+        {
+          question_id: question.id,
+          variant_text: "",
+          answered: false
         }
       )
     }
@@ -146,21 +174,42 @@ export default {
   },
   mounted() {
     this.timer = setInterval(() => {this.getCountdown() }, 1000)
+    this.getCountUp()
   },
   beforeDestroy() {
     clearInterval(this.timer)
+    clearInterval(this.timerCurQuestion)
   },
   watch: {
     tab() {
-      if (this.tab < this.answers.length - 1 && this.tab > -1) {
+      if (this.tab < this.data.answers.length-1 && this.tab > 0) {
         this.nextDisabled = false;
         this.prevDisabled = false;
-      } else if (this.tab === this.answers.length - 1) {
+      } else if (this.tab === this.data.answers.length-1) {
         this.nextDisabled = true;
+        this.prevDisabled = false;
       } else if (this.tab === 0) {
         this.prevDisabled = true;
+        this.nextDisabled = false;
       }
-      console.log(this.tab)
+      // нужно оптимизировать!!!
+      this.queue.push(this.tab);
+      const index = this.queue[this.queue.length - 2] // предпоследний элемент
+      const timeAnswer = this.data.answers[index].duration + this.timeCurQuestion
+      console.log('curtime', timeAnswer)
+      const answer = {
+        ...this.data.answers[index],
+        duration: timeAnswer
+      }
+      this.data.answers = [
+        ...this.data.answers.slice(0, index),
+        answer,
+        ...this.data.answers.slice(index + 1)
+      ]
+
+      clearInterval(this.timerCurQuestion)
+      this.getCountUp()
+      
     }
   },
   methods: {
@@ -177,29 +226,47 @@ export default {
     },
     sentAnswer(index, question_id, topic_id, variant_id, variant_text, duration) {
       console.log(this.answerTest)
+      //clearInterval(this.timerCurQuestion)
+      
+      //const timeAnswer = this.answers[index].duration + this.timeCurQuestion
+
       const answer = {
-        question_id,
+        ques_id: question_id,
         topic_id,
         variant_id,
-        duration
+        duration: 0
       }
-      this.answers = [
-        ...this.answers.slice(0, index),
+      this.data.answers = [
+        ...this.data.answers.slice(0, index),
         answer,
-        ...this.answers.slice(index + 1)
+        ...this.data.answers.slice(index + 1)
       ]
 
+      const variantAnswer = {
+        question_id,
+        variant_text,
+        answered: true
+      }
       this.answerTest = [
         ...this.answerTest.slice(0, index),
-        variant_text, 
+        variantAnswer, 
         ...this.answerTest.slice(index + 1)
       ]
 
-      console.log(this.answers)
+      
     },
     completeTest() {
-      this.end_time = new Date()
-      this.$router.push('/work/completeTest');
+      this.data.end_time = this.curDate()
+      console.log(this.data)
+      this.testService.sentTestAnswers(this.data)
+        .then(res => {
+          console.log("ответ", res)
+          this.$store.state.education.message = res.message
+          this.$router.push({ path: '/completeTest'});
+        }).catch (err => {
+          console.log(err)
+        })
+      
     },
     getCountdown() {
       let current_date = new Date().getTime();
@@ -224,6 +291,44 @@ export default {
     },
     pad(n) {
         return (n < 10 ? '0' : '') + n;
+    },
+    getCountUp() {
+      this.timeCurQuestion = 0
+      this.timerCurQuestion = setInterval(() => {
+        this.timeCurQuestion = this.timeCurQuestion + 1
+      }, 1000)
+    },
+
+    curDate() {
+
+        var date = new Date();
+        var aaaa = date.getFullYear();
+        var gg = date.getDate();
+        var mm = (date.getMonth() + 1);
+
+        if (gg < 10)
+            gg = "0" + gg;
+
+        if (mm < 10)
+            mm = "0" + mm;
+
+        var cur_day = aaaa + "-" + mm + "-" + gg;
+
+        var hours = date.getHours()
+        var minutes = date.getMinutes()
+        var seconds = date.getSeconds();
+
+        if (hours < 10)
+            hours = "0" + hours;
+
+        if (minutes < 10)
+            minutes = "0" + minutes;
+
+        if (seconds < 10)
+            seconds = "0" + seconds;
+
+        return cur_day + " " + hours + ":" + minutes + ":" + seconds;
+
     }
   }
 };
@@ -243,5 +348,10 @@ export default {
   width: 30px;
   height: 30px;
   margin-left: 15px;
+}
+
+.answered {
+  background: #00800070;
+  color: white!important;
 }
 </style>

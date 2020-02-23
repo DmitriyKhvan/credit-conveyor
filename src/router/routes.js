@@ -107,23 +107,25 @@ const routes = [{
           component: CreditProfile
         }
       ]
-    },
-    {
-      path: "testList",
-      name: "TestList",
-      component: TestList
-    },
-    {
-      path: "completeTest",
-      name: "CompleteTest",
-      component: CompleteTest
-    },
-    {
-      path: "topic/:id",
-      name: "Topic",
-      component: Topic,
     }
+    
     ]
+  },
+  {
+    path: "selfdev",
+    name: "TestList",
+    component: TestList
+  },
+  {
+    path: "completeTest",
+    name: "CompleteTest",
+    component: CompleteTest,
+    props: true
+  },
+  {
+    path: "topic/:id",
+    name: "Topic",
+    component: Topic,
   },
   {
     path: "admin",

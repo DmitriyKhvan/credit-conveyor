@@ -20,6 +20,8 @@ import credits from './categorized/credits';
 
 import profile from './categorized/profile';
 
+import education from './categorized/education';
+
 
 Vue.use(Vuex)
 
@@ -32,7 +34,8 @@ const store = new Vuex.Store({
     socket,
     common,
     credits,
-    profile
+    profile,
+    education
   },
 
   // enable strict mode (adds overhead!)
