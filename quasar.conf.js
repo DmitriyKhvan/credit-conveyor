@@ -1,13 +1,13 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
-module.exports = function (ctx) {
+module.exports = function(ctx) {
   return {
     supportIE: true,
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ["i18n", "axios", "notify-defaults", "calendar", 'vuelidate'],
+    boot: ["i18n", "axios", "notify-defaults", "calendar", "vuelidate"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass"],
@@ -16,7 +16,7 @@ module.exports = function (ctx) {
     extras: [
       //'ionicons-v4',
       //'mdi-v4',
-      'fontawesome-v5',
+      "fontawesome-v5",
       // 'eva-icons',
       // 'themify',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
@@ -64,9 +64,13 @@ module.exports = function (ctx) {
       showProgress: true,
       gzip: false,
       analyze: false,
+      env: ctx.dev
+        ? {
             VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
-        VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
-      },
+          }
+        : {
+            VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+          },
 
       // Options below are automatically set depending on the env, set them if you want to override
       // preloadChunks: false,
@@ -114,7 +118,8 @@ module.exports = function (ctx) {
         orientation: "portrait",
         background_color: "#ffffff",
         theme_color: "#027be3",
-        icons: [{
+        icons: [
+          {
             src: "statics/icons/icon-128x128.png",
             sizes: "128x128",
             type: "image/png"
