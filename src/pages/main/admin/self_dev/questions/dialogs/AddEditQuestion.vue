@@ -149,7 +149,7 @@ export default {
           value: 3
         }
       ],
-      shape: "line",
+      shape: null,
       isPwd: true,
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
@@ -201,6 +201,15 @@ export default {
   },
   mixins: [dialogMix],
   created() {
+    for (
+      this.counter = 0;
+      this.counter < this.details.variants.length;
+      this.counter++
+    ) {
+      if (this.details.variants[this.counter].answer_status != 0) {
+        this.shape = this.counter;
+      }
+    }
     this.variantAmount = this.details.variants.length;
   },
   methods: {
