@@ -6,7 +6,7 @@
 
 <script>
 import GridTable from "./../../../../../components/GridTable";
-import AddEditIconType from "./../../dialogs/AddEditIconType";
+import AddEditIconType from "./../dialogs/AddEditIconType";
 
 import { Dialog } from "quasar";
 import ApiService from "../../../../../services/api.service";
@@ -48,10 +48,38 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditIconType, selected, this.props, this);
+      GridService.addEditRecord(AddEditIconType, selected, this.props, this)
+        .then(
+          ok => {
+            if (ok) {
+              this.$refs.gridTable.refreshTable();
+            }
+          },
+          err => {
+            console.log(err);
+          }
+        )
+        .catch(error => {
+          console.error(error);
+          throw error;
+        });
     },
     deleteRow(row) {
-      GridService.deleteRecord(row, this.props);
+      GridService.deleteRecord(row, this.props)
+        .then(
+          ok => {
+            if (ok) {
+              this.$refs.gridTable.refreshTable();
+            }
+          },
+          err => {
+            console.log(err);
+          }
+        )
+        .catch(error => {
+          console.error(error);
+          throw error;
+        });
     }
   }
 };

@@ -5,11 +5,11 @@ const Page404 = () => import("pages/Error404");
 
 // Admin
 const AdminPage = () => import("pages/main/admin/admin");
-const SelfDevPage = () => import("pages/main/admin/modules/self_dev/Index");
-const Users = () => import("pages/main/admin/modules/users");
-const Roles = () => import("pages/main/admin/modules/roles");
-const Menus = () => import("pages/main/admin/modules/menus");
-const Dictionaries = () => import("pages/main/admin/modules/Dictionaries");
+const Users = () => import("pages/main/admin/users/Users");
+const Roles = () => import("pages/main/admin/roles/Roles");
+const Menus = () => import("pages/main/admin/menus/Menus");
+const Dictionaries = () => import("pages/main/admin/dictionaries/Dictionaries");
+const SelfDevPage = () => import("pages/main/admin/self_dev/Index");
 
 // Work
 const WorkPage = () => import("pages/main/work/Work");
@@ -38,11 +38,11 @@ const Devices = () => import("pages/main/it/devices/Index");
 
 //education
 const TopicPage = () =>
-  import("pages/main/admin/modules/self_dev/pages/addEditTopicPage");
+  import("pages/main/admin/self_dev/topics/Topics");
 const QuestionPage = () =>
-  import("pages/main/admin/modules/self_dev/pages/addEditQuestionPage");
+  import("pages/main/admin/self_dev/questions/Questions");
 const TestPage = () =>
-  import("pages/main/admin/modules/self_dev/pages/addEditTestPage");
+  import("pages/main/admin/self_dev/tests/Tests");
 const MonitoringPage = () =>
   import("pages/main/admin/modules/self_dev/pages/addEditMonitoringPage");
 

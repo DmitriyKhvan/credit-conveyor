@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">{{ $t("tables.education.addEditTopic") }}</div>
+          <div class="text-h6">Header</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -19,12 +19,28 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name"
-              :label="$t('tables.education.topicName')"
+              label="Name"
               @input="$v.details.name.$touch()"
               :rules="[
-                val => $v.details.name.required || $t('tables.education.topicNameError'),
-                val => $v.details.name.minLength || $t('tables.education.topicNameError')
-              ]"
+                      val => $v.details.name.required || 'Name is required'
+                      ]"
+              lazy-rules
+            />
+            <q-select
+              outlined
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.status"
+              :options="stateList"
+              option-value="value"
+              option-label="key"
+              emit-value
+              map-options
+              label="Status"
+              @input="$v.details.status.$touch()"
+              :rules="[
+                      val => $v.details.status.required || 'Status is required'
+                      ]"
               lazy-rules
             />
           </div>
@@ -32,23 +48,18 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn
-          color="primary"
-          :disable="$v.details.$invalid"
-          :label="$t('actions.save')"
-          @click="submitForm"
-        >
+        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
-        <q-btn color="primary" :label="$t('actions.close')" @click="onCancelClick" />
+        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
-import NotifyService from "../../../../../../services/notify.service";
-import dialogMix from "../../../../../../shared/mixins/dialogMix";
+import NotifyService from "./../../../../../../services/notify.service";
+import dialogMix from "./../../../../../../shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -60,8 +71,7 @@ import {
 export default {
   data() {
     return {
-      isPwd: true,
-      isLoading: this.$store.getters["common/getLoading"],
+      isLoading: this.$store.getters["common/isLoading"],
       stateList: [
         { key: "Active", value: 1 },
         { key: "Passive", value: 0 }
@@ -72,15 +82,14 @@ export default {
         id: null,
         name: null,
         status: null
-      },
-      customData: null
+      }
     };
   },
   validations: {
     details: {
+      id: {},
       name: {
-        required,
-        minLength: minLength(3)
+        required
       },
       status: {
         required
@@ -101,4 +110,5 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+</style>

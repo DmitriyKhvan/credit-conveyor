@@ -6,7 +6,7 @@
 
 <script>
 import GridTable from "./../../../../components/GridTable";
-import AddEditRole from "./../dialogs/AddEditRole";
+import AddEditMenu from "./dialogs/AddEditMenu";
 
 import { Dialog } from "quasar";
 import ApiService from "../../../../services/api.service";
@@ -18,11 +18,11 @@ export default {
   data() {
     return {
       props: {
-        caption: this.$t("tables.roles._self"),
-        tablePath: "roles",
-        rowId: "role_id",
-        addEdit: "roles", // url
-        delete: "roles", //
+        caption: this.$t("tables.menus._self"),
+        tablePath: "menus",
+        rowId: "menu_id",
+        addEdit: "menus", // url
+        delete: "menus", //
         defaultSort: [], // TODO
         excludedColumns: [
           "name",
@@ -55,11 +55,39 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditRole, selected, this.props, this);
+      GridService.addEditRecord(AddEditMenu, selected, this.props, this)
+        .then(
+          ok => {
+            if (ok) {
+              this.$refs.gridTable.refreshTable();
+            }
+          },
+          err => {
+            console.log(err);
+          }
+        )
+        .catch(error => {
+          console.error(error);
+          throw error;
+        });
     },
 
     deleteRow(row) {
-      GridService.deleteRecord(row, this.props);
+      GridService.deleteRecord(row, this.props)
+        .then(
+          ok => {
+            if (ok) {
+              this.$refs.gridTable.refreshTable();
+            }
+          },
+          err => {
+            console.log(err);
+          }
+        )
+        .catch(error => {
+          console.error(error);
+          throw error;
+        });
     }
   }
 };

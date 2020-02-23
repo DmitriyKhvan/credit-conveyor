@@ -12,12 +12,12 @@
 
 <script>
 import GridTable from "./../../../../components/GridTable";
-import AddEditUser from "./../dialogs/AddEditUser";
+import AddEditUser from "./dialogs/AddEditUser";
 
 import { Dialog } from "quasar";
-import ApiService from "../../../../services/api.service";
-import NotifyService from "../../../../services/notify.service";
-import GridService from "../../../../services/grid.service";
+import ApiService from "./../../../../services/api.service";
+import NotifyService from "./../../../../services/notify.service";
+import GridService from "./../../../../services/grid.service";
 
 export default {
   created() {},
@@ -68,13 +68,40 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditUser, selected, this.props, this);
+      GridService.addEditRecord(AddEditUser, selected, this.props, this)
+        .then(
+          ok => {
+            if (ok) {
+              this.$refs.gridTable.refreshTable();
+            }
+          },
+          err => {
+            console.log(err);
+          }
+        )
+        .catch(error => {
+          console.error(error);
+          throw error;
+        });
     },
 
     deleteRow(row) {
-      GridService.deleteRecord(row, this.props);
+      GridService.deleteRecord(row, this.props)
+        .then(
+          ok => {
+            if (ok) {
+              this.$refs.gridTable.refreshTable();
+            }
+          },
+          err => {
+            console.log(err);
+          }
+        )
+        .catch(error => {
+          console.error(error);
+          throw error;
+        });
     },
-
     saveFile() {
       console.log("save File emitted");
     }
