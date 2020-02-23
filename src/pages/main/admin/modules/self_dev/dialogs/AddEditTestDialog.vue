@@ -22,8 +22,7 @@
               :label="$t('tables.education.addEditTest')"
               @input="$v.details.name.$touch()"
               :rules="[
-                val => $v.details.name.required || $t('tables.education.topicNameError'),
-                val => $v.details.name.minLength || $t('tables.education.topicNameError')
+                  $v.details.name.minLength ||
               ]"
               lazy-rules
             />
