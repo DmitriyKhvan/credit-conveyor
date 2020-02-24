@@ -12,7 +12,7 @@ export default {
     // !!! Don't change
     if (!!this.data.selectedRow) {
       this.details = this.data.selectedRow[0];
-    } else { }
+    } else {}
   },
   computed: {
 
