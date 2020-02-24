@@ -3,12 +3,25 @@ import Vuex from "vuex";
 
 import example from "./module-example";
 
-import { auth } from "./categorized/auth.module";
-import { dicts } from "./categorized/dicts.module";
-import { socket } from "./categorized/socket.module";
-import { common } from "./categorized/common.module";
+import {
+  auth
+} from "./categorized/auth.module";
+import {
+  dicts
+} from "./categorized/dicts.module";
+import {
+  socket
+} from "./categorized/socket.module";
+import {
+  common
+} from "./categorized/common.module";
 
-import { education } from "./categorized/education.module";
+import credits from './categorized/credits';
+
+import profile from './categorized/profile';
+
+import education from './categorized/education';
+
 
 Vue.use(Vuex);
 
@@ -20,12 +33,14 @@ const store = new Vuex.Store({
     dicts,
     socket,
     common,
+    credits,
+    profile,
     education
   },
 
   // enable strict mode (adds overhead!)
   // for dev mode only
-  strict: process.env.DEV
+  //strict: process.env.DEV
 });
 
 export default store;

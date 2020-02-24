@@ -25,10 +25,17 @@ const Tasks = () => import("pages/main/work/modules/pages/task/index.vue");
 const TasksList = () =>
   import("pages/main/work/modules/pages/task/modules/pages/tasklist/List");
 const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
-const CreditReg = () =>
-  import(
-    "pages/main/work/modules/pages/credit/pages/registration/Registration.vue"
-  );
+const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
+const CreditProfile = () => import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
+const Applicaion = () => import("pages/main/work/modules/pages/credit/pages/list/Application.vue");
+const TaskQueue = () => import("pages/main/work/modules/pages/credit/pages/list/Tasks.vue");
+
+//const CreditManagerCabinet = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditManager/TaskList.vue");
+const CreditCommiteeTask = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditCommittee/Task.vue");
+const TestList = () => import("pages/main/work/modules/pages/test/TestList.vue");
+const Topic = () => import("pages/main/work/modules/pages/test/Topic.vue");
+const CompleteTest = () => import("pages/main/work/modules/pages/test/CompleteTest.vue");
+
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
@@ -46,8 +53,7 @@ const TestPage = () =>
 const MonitoringPage = () =>
   import("pages/main/admin/modules/self_dev/pages/addEditMonitoringPage");
 
-const routes = [
-  {
+const routes = [{
     path: "/",
     redirect: "/home",
     component: MainContainer,
@@ -55,8 +61,7 @@ const routes = [
     meta: {
       requiresAuth: true
     },
-    children: [
-      {
+    children: [{
         path: "home",
         name: "Home",
         component: HomePage
@@ -65,8 +70,7 @@ const routes = [
         path: "work",
         name: "Work",
         component: WorkPage,
-        children: [
-          {
+        children: [{
             path: "assistant",
             name: "Assistant",
             component: Assistant
@@ -75,35 +79,50 @@ const routes = [
             path: "chancellary",
             name: "Kanselariya",
             component: Chancellary,
-            children: [
-              {
-                path: "registration",
-                name: "Kanselariya Registration",
-                component: ChanReg
-              }
-            ]
+            children: [{
+              path: "registration",
+              name: "Kanselariya Registration",
+              component: ChanReg
+            }]
           },
           {
             path: "task",
             name: "my tasks",
             component: Tasks,
-            children: [
-              {
-                path: "list",
-                name: "tasklist",
-                component: TasksList
-              }
-            ]
+            children: [{
+              path: "list",
+              name: "tasklist",
+              component: TasksList
+            }]
           },
           {
             path: "credit",
             name: "Credit",
             component: Credit,
-            children: [
+            children: [{
+                path: "application",
+                name: "application",
+                component: Applicaion
+              },
+              {
+                path: "taskQueue",
+                name: "taskQueue",
+                component: TaskQueue
+              },
+              {
+                path: "creditCommiteeTask",
+                name: "CreditCommiteeTask",
+                component: CreditCommiteeTask
+              },
               {
                 path: "registration",
                 name: "registration",
                 component: CreditReg
+              },
+              {
+                path: '/work/credit/profile',
+                name: 'profile',
+                component: CreditProfile
               }
             ]
           }
@@ -113,8 +132,7 @@ const routes = [
         path: "admin",
         name: "Admin Page",
         component: AdminPage,
-        children: [
-          {
+        children: [{
             path: "users",
             name: "Users List",
             component: Users
@@ -138,8 +156,7 @@ const routes = [
             path: "selfdev",
             name: "SelfDeveloper",
             component: SelfDevPage,
-            children: [
-              {
+            children: [{
                 path: "topicPage",
                 name: "addEditTopic",
                 component: TopicPage
@@ -167,37 +184,44 @@ const routes = [
         path: "tools",
         name: "Tools",
         component: Tools,
-        children: [
-          {
-            path: "phones",
-            name: "Phones",
-            component: Phones
-          }
-        ]
+        children: [{
+          path: "phones",
+          name: "Phones",
+          component: Phones
+        }]
       },
       {
         path: "it",
         name: "IT section",
         component: It,
-        children: [
-          {
-            path: "devices",
-            name: "Devices",
-            component: Devices
-          }
-        ]
+        children: [{
+          path: "devices",
+          name: "Devices",
+          component: Devices
+        }]
+      },
+      {
+        path: "selfdev",
+        name: "TestList",
+        component: TestList
+      },
+      {
+        path: "completeTest",
+        name: "CompleteTest",
+        component: CompleteTest,
+        props: true
+      },
+      {
+        path: "topic/:id",
+        name: "Topic",
+        component: Topic,
       }
     ]
   },
-  {
-    path: "/login",
-    name: "Login Page",
-    component: LoginPage,
-    meta: {
-      public: true, // Allow access to even if not logged in
-      onlyWhenLoggedOut: true
-    }
-  }
+
+
+
+
 ];
 
 // Always leave this as last one

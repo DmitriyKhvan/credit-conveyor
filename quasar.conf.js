@@ -64,13 +64,11 @@ module.exports = function (ctx) {
       showProgress: true,
       gzip: false,
       analyze: false,
-      env: ctx.dev ?
-        {
-          VUE_APP_BASE_URL: JSON.stringify("http://localhost:4000/")
-        } :
-        {
-          VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
-        },
+      env: ctx.dev ? {
+        VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+      } : {
+        VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+      },
 
       // Options below are automatically set depending on the env, set them if you want to override
       // preloadChunks: false,
