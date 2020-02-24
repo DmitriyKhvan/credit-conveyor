@@ -5,26 +5,53 @@ const Page404 = () => import("pages/Error404");
 
 // Admin
 const AdminPage = () => import("pages/main/admin/admin");
-const Users = () => import("pages/main/admin/modules/users");
-const Roles = () => import("pages/main/admin/modules/roles");
-const Menus = () => import("pages/main/admin/modules/menus");
-const Dictionaries = () => import("pages/main/admin/modules/Dictionaries");
+const Users = () => import("pages/main/admin/users/Users");
+const Roles = () => import("pages/main/admin/roles/Roles");
+const Menus = () => import("pages/main/admin/menus/Menus");
+const Dictionaries = () => import("pages/main/admin/dictionaries/Dictionaries");
+const SelfDevPage = () => import("pages/main/admin/self_dev/Index");
 
 // Work
 const WorkPage = () => import("pages/main/work/Work");
-const Assistant = () => import("pages/main/work/modules/pages/assistant/Assistant.vue");
-const Chancellary = () => import("pages/main/work/modules/pages/kanselariya/Index.vue");
-const ChanReg = () => import("pages/main/work/modules/pages/kanselariya/modules/pages/registration/index.vue");
+const Assistant = () =>
+  import("pages/main/work/modules/pages/assistant/Assistant.vue");
+const Chancellary = () =>
+  import("pages/main/work/modules/pages/kanselariya/Index.vue");
+const ChanReg = () =>
+  import(
+    "pages/main/work/modules/pages/kanselariya/modules/pages/registration/index.vue"
+  );
 const Tasks = () => import("pages/main/work/modules/pages/task/index.vue");
-const TasksList = () => import("pages/main/work/modules/pages/task/modules/pages/tasklist/List");
+const TasksList = () =>
+  import("pages/main/work/modules/pages/task/modules/pages/tasklist/List");
 const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
 const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
+const CreditProfile = () => import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
+const Applicaion = () => import("pages/main/work/modules/pages/credit/pages/list/Application.vue");
+const TaskQueue = () => import("pages/main/work/modules/pages/credit/pages/list/Tasks.vue");
+
+//const CreditManagerCabinet = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditManager/TaskList.vue");
+const CreditCommiteeTask = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditCommittee/Task.vue");
+const TestList = () => import("pages/main/work/modules/pages/test/TestList.vue");
+const Topic = () => import("pages/main/work/modules/pages/test/Topic.vue");
+const CompleteTest = () => import("pages/main/work/modules/pages/test/CompleteTest.vue");
+
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
 
 const It = () => import("pages/main/it/Index");
 const Devices = () => import("pages/main/it/devices/Index");
+
+//education
+const TopicPage = () =>
+  import("pages/main/admin/self_dev/topics/Topics");
+const QuestionPage = () =>
+  import("pages/main/admin/self_dev/questions/Questions");
+const TestPage = () =>
+  import("pages/main/admin/self_dev/tests/Tests");
+const MonitoringPage = () =>
+  import("pages/main/admin/modules/self_dev/pages/addEditMonitoringPage");
 
 const routes = [{
     path: "/",
@@ -73,10 +100,31 @@ const routes = [{
             name: "Credit",
             component: Credit,
             children: [{
-              path: "registration",
-              name: "registration",
-              component: CreditReg
-            }]
+                path: "application",
+                name: "application",
+                component: Applicaion
+              },
+              {
+                path: "taskQueue",
+                name: "taskQueue",
+                component: TaskQueue
+              },
+              {
+                path: "creditCommiteeTask",
+                name: "CreditCommiteeTask",
+                component: CreditCommiteeTask
+              },
+              {
+                path: "registration",
+                name: "registration",
+                component: CreditReg
+              },
+              {
+                path: 'profile',
+                name: 'profile',
+                component: CreditProfile
+              }
+            ]
           }
         ]
       },
@@ -103,6 +151,32 @@ const routes = [{
             path: "dictionaries",
             name: "Dictionaries",
             component: Dictionaries
+          },
+          {
+            path: "selfdev",
+            name: "SelfDeveloper",
+            component: SelfDevPage,
+            children: [{
+                path: "topicPage",
+                name: "addEditTopic",
+                component: TopicPage
+              },
+              {
+                path: "questionPage",
+                name: "addEditQuestion",
+                component: QuestionPage
+              },
+              {
+                path: "testPage",
+                name: "addEditTest",
+                component: TestPage
+              },
+              {
+                path: "monitoringPage",
+                name: "addEditMonitoring",
+                component: MonitoringPage
+              }
+            ]
           }
         ]
       },
@@ -125,7 +199,24 @@ const routes = [{
           name: "Devices",
           component: Devices
         }]
-      }
+      },
+      {
+        path: "selfdev",
+        name: "TestList",
+        component: TestList
+      },
+      {
+        path: "completeTest",
+        name: "CompleteTest",
+        component: CompleteTest,
+        props: true
+      },
+      {
+        path: "topic/:id",
+        name: "Topic",
+        component: Topic,
+      },
+
     ]
   },
   {
@@ -137,6 +228,7 @@ const routes = [{
       onlyWhenLoggedOut: true
     }
   }
+
 ];
 
 // Always leave this as last one
@@ -146,6 +238,5 @@ if (process.env.MODE !== "ssr") {
     component: Page404
   });
 }
-
 
 export default routes;

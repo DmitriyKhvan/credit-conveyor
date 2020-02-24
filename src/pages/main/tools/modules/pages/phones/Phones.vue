@@ -1,6 +1,8 @@
 <template>
   <div class="q-pa-md">
     <div class="row q-gutter-sm">
+      <!-- select box branches-->
+
       <div class="col-2">
         <div class="row q-gutter-sm">
           <div class="col-12">
@@ -27,36 +29,36 @@
                   :key="index"
                   @click="getSectors(item.FILIAL, item.CODE)"
                 >
-                  <q-item-section>{{ item.DEPARTMENT_NAME1 }}</q-item-section>
+                  <q-item-section>{{ decode(item.DEPARTMENT_NAME1) }}</q-item-section>
                 </q-item>
               </q-list>
             </q-scroll-area>
           </div>
         </div>
       </div>
+      <!-- -->
+
       <div class="col test" style="background: #F2F4F4">
         <q-scroll-area style="height: 850px;">
           <q-tree
             :nodes="customize"
-            node-key="id"
-            label-key="name"
+            node-key="CODE"
+            label-key="DEPARTMENT_NAME1"
             default-expand-all
             color="black"
             icon="o_arrow_right"
+            ref="nodes"
           >
             <template v-slot:default-header="prop">
-              <span>{{ prop.node.name }}</span>
+              <span>{{ decode(prop.node.DEPARTMENT_NAME1) }}</span>
             </template>
+
             <template v-slot:default-body="prop">
               <div class="row">
-                <div
-                  class="col-3"
-                  v-for="(item, index) in prop.node.user"
-                  :key="index"
-                >
+                <div class="col-3" v-for="(item, index) in prop.node.emps" :key="index">
                   <q-card>
                     <!-- BOY CARD -->
-                    <div v-if="item.sex === 'M'">
+                    <div v-if="item.GENDER === 'M'">
                       <q-card-section
                         class="bg-primary text-white"
                         style="padding: 5px 5px 5px 10px;"
@@ -66,44 +68,46 @@
                             name="o_star_border"
                             size="25px"
                             color="yellow-14"
-                            v-if="item.work_position === 1"
-                          />&nbsp;{{ item.fio }}&nbsp;
+                            v-if="item.WORK_POSITION === 1"
+                          />
+                          &nbsp;{{ decode(item.LAST_NAME) +' ' + decode(item.FIRST_NAME) + ' '+ decode(item.MIDDLE_NAME)}}&nbsp;
                         </div>
                       </q-card-section>
                       <q-item style="padding: 0 5px 5px 10px;">
                         <q-item-section avatar>
                           <q-avatar square style="width: 80px; height: 100px">
-                            <img :src="image + item.uid" />
+                            <img :src="image + item.EMP_ID" />
                           </q-avatar>
                         </q-item-section>
                         <q-item-section style="padding: 0 5px 5px 10px;">
-                          <q-item-label
-                            ><b>{{ item.position }}</b></q-item-label
-                          >
-                          <q-item-label
-                            ><q-icon name="o_local_phone" />&nbsp;{{
-                              item.phone_work1
-                            }}</q-item-label
-                          >
-                          <q-item-label
-                            ><q-icon name="o_local_phone" />&nbsp;{{
-                              item.phone_work2
-                            }}</q-item-label
-                          >
-                          <q-item-label
-                            ><q-icon name="o_mail" />&nbsp;<a
-                              :href="mail + item.mail"
+                          <q-item-label>
+                            <b>{{ decode(item.WORK_POSITION) }}</b>
+                          </q-item-label>
+                          <q-item-label>
+                            <q-icon name="o_local_phone" />
+                            &nbsp;{{
+                            item.PHONE_WORK
+                            }}
+                          </q-item-label>
+                          <q-item-label>
+                            <q-icon name="o_local_phone" />
+                            &nbsp;{{
+                            item.PHONE_WORK
+                            }}
+                          </q-item-label>
+                          <q-item-label>
+                            <q-icon name="o_mail" />&nbsp;
+                            <a
+                              :href="mail + item.MAIL_ADDRESS"
                               style="text-decoration: none;"
-                              >{{ item.mail }}</a
-                            ></q-item-label
-                          >
+                            >{{ item.MAIL_ADDRESS }}</a>
+                          </q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-card-section
                         class="bg-primary text-white"
                         style="padding: 1px 5px 1px 5px;"
-                      >
-                      </q-card-section>
+                      ></q-card-section>
                     </div>
                     <!-- GIRL CARD -->
                     <div v-else>
@@ -111,42 +115,45 @@
                         class="bg-purple text-white"
                         style="padding: 5px 5px 5px 10px;"
                       >
-                        <div class="text-subtitle1">{{ item.fio }}</div>
+                        <div
+                          class="text-subtitle1"
+                        >{{ decode(item.LAST_NAME) +' ' + decode(item.FIRST_NAME) + ' '+ (item.MIDDLE_NAME) }}</div>
                       </q-card-section>
                       <q-item style="padding: 0 5px 5px 10px;">
                         <q-item-section avatar>
                           <q-avatar square style="width: 80px; height: 100px">
-                            <img :src="image + item.uid" />
+                            <img :src="image + item.EMP_ID" />
                           </q-avatar>
                         </q-item-section>
                         <q-item-section style="padding: 0 5px 5px 10px;">
-                          <q-item-label
-                            ><b>{{ item.position }}</b></q-item-label
-                          >
-                          <q-item-label
-                            ><q-icon name="o_local_phone" />&nbsp;{{
-                              item.phone_work1
-                            }}</q-item-label
-                          >
-                          <q-item-label
-                            ><q-icon name="o_local_phone" />&nbsp;{{
-                              item.phone_work2
-                            }}</q-item-label
-                          >
-                          <q-item-label
-                            ><q-icon name="o_mail" />&nbsp;<a
-                              :href="mail + item.mail"
+                          <q-item-label>
+                            <b>{{ decode(item.WORK_POSITION) }}</b>
+                          </q-item-label>
+                          <q-item-label>
+                            <q-icon name="o_local_phone" />
+                            &nbsp;{{
+                            item.PHONE_WORK
+                            }}
+                          </q-item-label>
+                          <q-item-label>
+                            <q-icon name="o_local_phone" />
+                            &nbsp;{{
+                            item.PHONE_WORK
+                            }}
+                          </q-item-label>
+                          <q-item-label>
+                            <q-icon name="o_mail" />&nbsp;
+                            <a
+                              :href="mail + item.MAIL_ADDRESS"
                               style="text-decoration: none;"
-                              >{{ item.mail }}</a
-                            ></q-item-label
-                          >
+                            >{{ item.MAIL_ADDRESS }}</a>
+                          </q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-card-section
                         class="bg-purple text-white"
                         style="padding: 1px 5px 1px 5px;"
-                      >
-                      </q-card-section>
+                      ></q-card-section>
                     </div>
                     <!-- Girl CARD END-->
                   </q-card>
@@ -160,9 +167,8 @@
   </div>
 </template>
 <script>
-import phonesInf from "./test.json";
-import axios from "axios";
 import ApiService from "../../../../../../services/api.service";
+import CommonUtils from "./../../../../../../shared/utils/CommonUtils";
 export default {
   data() {
     return {
@@ -173,46 +179,31 @@ export default {
       data: [],
       err: "",
       subData: [],
-      customize: phonesInf
+      customize: []
     };
   },
   methods: {
     getSectors(mfo, code) {
       ApiService.get(`structure/departments?mfo=${mfo}&code=${code}`)
         .then(res => {
-          console.log(res.data[0]);
-          // eslint-disable-next-line
-          //console.log(this.data)
+          // set array
+          this.customize = res.data;
+          //this.$refs.nodes.expandAll();
+          this.$nextTick(function() {
+            this.$refs.nodes.expandAll();
+          });
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    decode(param) {
+      return CommonUtils.decoder(param);
     }
-    // getFillial(val) {
-    //   axios
-    //     .get("tree/1/branch/" + val)
-    //     .then(res => {
-    //       this.subData = res.data[0].children;
-    //       // eslint-disable-next-line
-    //       //console.log(this.subData)
-    //     })
-    //     .catch(err => {
-    //       this.subData = err;
-    //     });
-    // }
   },
   beforeCreate() {
-    // ApiService.get("tree/1/branch")
-    //   .then(res => {
-    //     console.log(res.data[0].tree);
-    //     this.data = res.data[0].tree;
-    //   })
-    //   .catch(err => {
-    //     this.data = err;
-    //   });
     ApiService.get("structure/branches")
       .then(res => {
-        console.log(res.data[0].children);
         this.data = res.data[0].children;
       })
       .catch(err => {

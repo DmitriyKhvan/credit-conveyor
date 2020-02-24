@@ -191,7 +191,7 @@
     "menu_caption": "Описание"
   },
   "pages": {
-    "admin_page": "Странитца Админа"
+    "admin_page": "Страница Админа"
   },
   "tables": {
     "roles": {
@@ -251,6 +251,22 @@
     "device_models": {
       "_self": "Таблица Models",
       "add_edit": "Create/Edit Device Model"
+    },
+    "education": {
+      "topicName": "Названия темы",
+      "topicNameError": "Ошибка при вводе темы",
+      "addEditTopic": "Добавить/Изменить тему",
+      "addEditQuestion": "Добавить/Изменить вопрос",
+      "levelOfQuestion": "Сложность вопроса",
+      "levelQuestionError": "Ошибка при вводе Сложность",
+      "questionName": "Введите вопрос",
+      "textVariant": "Текст варианта",
+      "addEditTest": "Добавить/Изменить тест",
+      "description": "Описание",
+      "duration": "Время теста (в минутах)",
+      "hideStatus": "Показать/Cкрыть тест",
+      "testAmount": "Количество вопросов",
+      "addEditTestError": "Ошибка при вводе теста"
     }
   }
 }

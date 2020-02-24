@@ -196,7 +196,8 @@
   "tables": {
     "roles": {
       "_self": "Roles Table",
-      "add_edit": "Create/Edit Table"
+      "add_edit": "Create/Edit Table",
+      "addTopic": "Добавить/Изменить Тему"
     },
     "menus": {
       "_self": "Menus Table",
@@ -251,6 +252,9 @@
     "device_models": {
       "_self": "Device Types Model",
       "add_edit": "Create/Edit Device Model"
+    },
+    "education": {
+      "topicName": "Topic Name"
     }
   }
 }

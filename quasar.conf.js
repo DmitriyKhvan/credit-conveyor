@@ -7,7 +7,7 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ["i18n", "axios", "notify-defaults", "calendar", 'vuelidate'],
+    boot: ["i18n", "axios", "notify-defaults", "calendar", "vuelidate"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass"],
@@ -16,12 +16,12 @@ module.exports = function (ctx) {
     extras: [
       //'ionicons-v4',
       //'mdi-v4',
-      'fontawesome-v5',
+      "fontawesome-v5",
       // 'eva-icons',
       // 'themify',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      "roboto-font", // optional, you are not bound to it
+      "roboto-font", // optional, you are not bound to itt
       "material-icons", // optional, you are not bound to it
       "material-icons-outlined" // optional, you are not bound to it
     ],
@@ -65,7 +65,7 @@ module.exports = function (ctx) {
       gzip: false,
       analyze: false,
       env: ctx.dev ? {
-        VUE_APP_BASE_URL: JSON.stringify("http://localhost:4000/")
+        VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
       } : {
         VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
       },
