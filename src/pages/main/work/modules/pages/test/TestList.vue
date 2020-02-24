@@ -5,10 +5,10 @@
       <div class="row q-col-gutter-md">
         <div class="col-12">
           <ul>
-            <li 
+            <li
               ref="topicLi"
-              v-for="topic of topics" 
-              :key="topic.id" 
+              v-for="topic of topics"
+              :key="topic.id"
               @click="getIdTopic(topic.id, topic.name, $event.target)"
               class="topic"
             >
@@ -21,8 +21,8 @@
       <!-- <router-link v-if="topicId" :to="'topic/' + topicId">
         <q-btn color="green" label="Начать тест"></q-btn>
       </router-link> -->
-      <q-btn 
-        color="green" 
+      <q-btn
+        color="green"
         label="Начать тест"
         :disabled="disabled"
         @click="() => this.$router.push('topic/' + topicId)"
@@ -32,7 +32,7 @@
   </div>
 </template>
 <script>
-import TestService from './test-service'
+import ApiService from "./../../../../../../services/api.service";
 
 export default {
   data() {
@@ -40,50 +40,57 @@ export default {
       topicId: null,
       disabled: true,
       isActive: false,
-      testService: new TestService(),
       topics: []
     };
   },
   created() {
-    //console.log(this.testService)
-    this.testService.getTopics()
-      .then(res => {
-        console.log(res)
-        this.topics = res
-      })
+    Promise.all([this.getTopics()])
+      .then(
+        res => {
+          console.log(res[0]);
+          this.topics = res[0];
+        },
+        err => {
+          console.error(err);
+        }
+      )
       .catch(err => {
-        console.log(err)
-      })
+        console.error(err);
+        throw err;
+      });
   },
   methods: {
     getIdTopic(id, name, event) {
       for (let li of this.$refs.topicLi) {
-        li.classList.remove("selectedTopic")
+        li.classList.remove("selectedTopic");
       }
 
       event.classList.add("selectedTopic");
-      this.isActive=true;
+      this.isActive = true;
 
       this.topicId = id;
       // this.selectedTopic = "selectedTopic"
       this.disabled = false;
 
-      this.$store.commit('setTopicName', name)
+      this.$store.commit("setTopicName", name);
+    },
+    async getTopics() {
+      return (await ApiService.get("/test/cat")).data;
     }
   }
 };
 </script>
 <style scoped>
-  .topic {
-    list-style: none;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    margin-bottom: 5px;
-    padding: 5px 10px;
-  }
+.topic {
+  list-style: none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  padding: 5px 10px;
+}
 
-  .selectedTopic {
-    background: blue;
-    color: white;
-  }
+.selectedTopic {
+  background: blue;
+  color: white;
+}
 </style>

@@ -120,7 +120,7 @@ const routes = [{
                 component: CreditReg
               },
               {
-                path: '/work/credit/profile',
+                path: 'profile',
                 name: 'profile',
                 component: CreditProfile
               }
@@ -215,12 +215,19 @@ const routes = [{
         path: "topic/:id",
         name: "Topic",
         component: Topic,
-      }
+      },
+
     ]
   },
-
-
-
+  {
+    path: "/login",
+    name: "Login Page",
+    component: LoginPage,
+    meta: {
+      public: true, // Allow access to even if not logged in
+      onlyWhenLoggedOut: true
+    }
+  }
 
 ];
 
