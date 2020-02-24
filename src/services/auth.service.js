@@ -133,7 +133,9 @@ const AuthService = {
 
   refreshAccessToken: function () {
     return new Promise(async (resolve, reject) => {
-      const accessToken = TokenService.getToken(); // REVIEW  get it from redis
+
+      const accessToken = TokenService.getToken(); //  get accesToken from cookie
+
       const requestData = {
         method: "post",
         url: "auth/token",
