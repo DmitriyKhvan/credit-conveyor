@@ -47,6 +47,7 @@
             default-expand-all
             color="black"
             icon="o_arrow_right"
+            ref="nodes"
           >
             <template v-slot:default-header="prop">
               <span>{{ decode(prop.node.DEPARTMENT_NAME1) }}</span>
@@ -185,9 +186,12 @@ export default {
     getSectors(mfo, code) {
       ApiService.get(`structure/departments?mfo=${mfo}&code=${code}`)
         .then(res => {
-          console.log(res.data[0]);
-          //TODO set emps array
+          // set array
           this.customize = res.data;
+          //this.$refs.nodes.expandAll();
+          this.$nextTick(function() {
+            this.$refs.nodes.expandAll();
+          });
         })
         .catch(err => {
           console.log(err);
