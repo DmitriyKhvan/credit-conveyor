@@ -1,7 +1,8 @@
 <template>
-    <div>Complete test
+    <div class="">
+        <h4>Тест завершен!</h4>
 
-    <div>{{message}}</div>
+        <div>Ваш результат: {{countTrueAnswers}} правильных ответов из {{quesAmount}}</div>
     </div>
     
 </template>
@@ -14,12 +15,16 @@ export default {
         }
     },
     computed: {
-        message() {
-            return this.$store.state.education.message
+        countTrueAnswers() {
+            return this.$store.state.education.countTrueAnswers
+        },
+        quesAmount() {
+            return this.$store.state.education.quesAmount
         }
     },
     created() {
         console.log("dfsdfsdafsd",this.$router);
+        console.log("store",this.$store.state.education);
     }
 }
 </script>

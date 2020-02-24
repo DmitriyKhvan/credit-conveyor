@@ -9,7 +9,7 @@
               ref="topicLi"
               v-for="topic of topics" 
               :key="topic.id" 
-              @click="getIdTopic(topic.id, $event.target)"
+              @click="getIdTopic(topic.id, topic.name, $event.target)"
               class="topic"
             >
               {{ topic.name }}
@@ -56,7 +56,7 @@ export default {
       })
   },
   methods: {
-    getIdTopic(id, event) {
+    getIdTopic(id, name, event) {
       for (let li of this.$refs.topicLi) {
         li.classList.remove("selectedTopic")
       }
@@ -67,6 +67,8 @@ export default {
       this.topicId = id;
       // this.selectedTopic = "selectedTopic"
       this.disabled = false;
+
+      this.$store.commit('setTopicName', name)
     }
   }
 };

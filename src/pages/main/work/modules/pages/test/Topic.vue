@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <h1>Topic id {{ id }}</h1> -->
+    <h1>{{topicName}}</h1>
     <h4>{{time}}</h4>
     <q-card>
       <q-tabs
@@ -67,23 +67,29 @@
       </q-tab-panels>
     </q-card>
 
-    <q-btn
-      label="Назад"
-      color="primary"
-      @click="prevTest(1)"
-      :disabled="prevDisabled"
-    />
-    <q-btn
-      label="Вперед"
-      color="primary"
-      @click="nextTest(1)"
-      :disabled="nextDisabled"
-    />
-    <q-btn
-      label="Завершить тест"
-      color="primary"
-      @click="completeTest()"
-    />
+    <div class="button_block">
+      <q-btn
+        label="Назад"
+        color="primary"
+        @click="prevTest(1)"
+        :disabled="prevDisabled"
+        class="q-ml-sm"
+      />
+      <q-btn
+        label="Вперед"
+        color="primary"
+        @click="nextTest(1)"
+        :disabled="nextDisabled"
+        class="q-ml-sm"
+      />
+      <q-btn
+        label="Завершить тест"
+        color="primary"
+        @click="completeTest()"
+        class="q-ml-sm"
+      />
+    </div>
+    
   </div>
 </template>
 <script>
@@ -192,24 +198,20 @@ export default {
         this.prevDisabled = true;
         this.nextDisabled = false;
       }
-      // нужно оптимизировать!!!
+      
       this.queue.push(this.tab);
-      const index = this.queue[this.queue.length - 2] // предпоследний элемент
-      const timeAnswer = this.data.answers[index].duration + this.timeCurQuestion
-      console.log('curtime', timeAnswer)
-      const answer = {
-        ...this.data.answers[index],
-        duration: timeAnswer
-      }
-      this.data.answers = [
-        ...this.data.answers.slice(0, index),
-        answer,
-        ...this.data.answers.slice(index + 1)
-      ]
+
+      this.countTimeCurQuestion(2) 
 
       clearInterval(this.timerCurQuestion)
       this.getCountUp()
       
+      console.log("watch", this.data.answers)
+    }
+  },
+  computed: {
+    topicName() {
+      return this.$store.state.education.topicName
     }
   },
   methods: {
@@ -256,17 +258,25 @@ export default {
       
     },
     completeTest() {
+
+      this.countTimeCurQuestion(1)
+
       this.data.end_time = this.curDate()
-      console.log(this.data)
+     
       this.testService.sentTestAnswers(this.data)
         .then(res => {
           console.log("ответ", res)
-          this.$store.state.education.message = res.message
-          this.$router.push({ path: '/completeTest'});
+          const payload = {
+            countTrueAnswers: res.message,
+            quesAmount: this.data.ques_amount
+          }
+          this.$store.commit('sentAnswersTest', payload)
+          
         }).catch (err => {
           console.log(err)
         })
-      
+      console.log("Answers", this.data)
+      this.$router.push({ path: '/completeTest'});
     },
     getCountdown() {
       let current_date = new Date().getTime();
@@ -329,6 +339,23 @@ export default {
 
         return cur_day + " " + hours + ":" + minutes + ":" + seconds;
 
+    },
+
+    countTimeCurQuestion(el) {
+      // нужно оптимизировать!!!
+      const index = this.queue[this.queue.length - el]
+      //
+      const timeAnswer = this.data.answers[index].duration + this.timeCurQuestion
+      console.log('curtime', timeAnswer)
+      const answer = {
+        ...this.data.answers[index],
+        duration: timeAnswer
+      }
+      this.data.answers = [
+        ...this.data.answers.slice(0, index),
+        answer,
+        ...this.data.answers.slice(index + 1)
+      ]
     }
   }
 };
@@ -353,5 +380,9 @@ export default {
 .answered {
   background: #00800070;
   color: white!important;
+}
+
+.button_block {
+  margin: 20px 40px
 }
 </style>

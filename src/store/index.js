@@ -40,7 +40,7 @@ const store = new Vuex.Store({
 
   // enable strict mode (adds overhead!)
   // for dev mode only
-  strict: process.env.DEV
+  //strict: process.env.DEV
 });
 
 export default store;
