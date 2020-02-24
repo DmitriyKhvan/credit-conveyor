@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="creditMenu">
     <!-- <q-toolbar class="bg-grey-3"> -->
     <q-btn 
-      flat dense icon="library_add" 
+      flat icon="library_add" 
       to="/work/credit/registration"
     >
       <q-tooltip anchor="bottom left" self="top left">
@@ -13,7 +13,7 @@
       </q-toolbar-title>
     </q-btn>
 
-    <q-btn flat dense icon="library_books" :to="link">
+    <q-btn flat icon="library_books" :to="link">
       <q-tooltip anchor="bottom left" self="top left">
         Список заявок
       </q-tooltip>
@@ -22,7 +22,7 @@
       </q-toolbar-title>
     </q-btn>
 
-    <q-btn flat dense icon="library_add_check" to="/work/credit/taskQueue">
+    <q-btn flat icon="library_add_check" to="/work/credit/taskQueue">
       <q-tooltip anchor="bottom left" self="top left">
         Список задач
       </q-tooltip>
@@ -52,10 +52,17 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+  .creditMenu {
+    margin: 15px;
+  }
 
-<style lang="scss">
   .q-btn--rectangle {
     background: $blue;
     color: #fff;
+    margin-right: 15px;
+  }
+  .ellipsis {
+    font-size: 1rem
   }
 </style>
