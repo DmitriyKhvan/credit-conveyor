@@ -36,21 +36,26 @@ router.beforeEach(async (to, from, next) => {
       } // Store the full path to redirect the user to after login
     });
   }
-
-  // page refresh call
-  if (!store.getters["dicts/isAllSet"]) {
-    ApiService.mount401Interceptor();//  remount once page refreshes
-
-    if (!TokenService.isTokenExpired()) {
-      await MainService.loadAllPageRefresh();
-    }
-  }
-
   if (isLoggedIn && onlyWhenLoggedOut) {
     //TODO call load functions
 
     return next("/");
   }
+
+  // page refresh call
+  if (isLoggedIn && !store.getters["dicts/isAllSet"]) {
+    console.log({
+      isset: !store.getters["dicts/isAllSet"]
+    })
+
+    ApiService.mount401Interceptor(); //  remount once page refreshes
+
+    if (!TokenService.isTokenExpired()) { // reloads all Dicts
+      await MainService.loadAllPageRefresh();
+    }
+  }
+
+
 
 
   next();

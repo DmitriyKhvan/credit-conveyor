@@ -3,6 +3,4 @@ import axios from 'axios'
 import ApiService from './../services/api.service'
 
 ApiService.init(process.env.VUE_APP_BASE_URL);
-ApiService.mount401Interceptor();
-
 Vue.prototype.$axios = axios
