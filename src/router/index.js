@@ -2,11 +2,11 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import TokenService from "./../services/storage.service";
 import MainService from "./../services/main.service"; //"/services/main.service";
+import ApiService from './../services/api.service';
 import routes from "./routes";
 import store from './../store/index';
 
 Vue.use(VueRouter);
-
 
 const router = new VueRouter({
   scrollBehavior: () => ({
@@ -26,13 +26,7 @@ router.beforeEach(async (to, from, next) => {
   const isPublic = to.matched.some(record => record.meta.public);
   const onlyWhenLoggedOut = to.matched.some(record => record.meta.onlyWhenLoggedOut);
 
-  //const loggedIn = !!TokenService.getToken();
   const isLoggedIn = !TokenService.isTokenExpired();
-
-  // console.log({
-  //   isLogged: isLoggedIn
-  // });
-  // console.log(isPublic, onlyWhenLoggedOut, isLoggedIn);
 
   if (!isPublic && !isLoggedIn) {
     return next({
@@ -47,12 +41,22 @@ router.beforeEach(async (to, from, next) => {
 
     return next("/");
   }
+
   // page refresh call
-  if (!store.getters["dicts/isAllSet"]) {
-    if (!TokenService.isTokenExpired()) {
+  if (isLoggedIn && !store.getters["dicts/isAllSet"]) {
+    console.log({
+      isset: !store.getters["dicts/isAllSet"]
+    })
+
+    ApiService.mount401Interceptor(); //  remount once page refreshes
+
+    if (!TokenService.isTokenExpired()) { // reloads all Dicts
       await MainService.loadAllPageRefresh();
     }
   }
+
+
+
 
   next();
 

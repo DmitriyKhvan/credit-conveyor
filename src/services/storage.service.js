@@ -53,7 +53,7 @@ const TokenService = {
   isTokenExpired() {
     if (this.isTokenExist()) {
       let decodedToken = jwt_decode(this.getToken());
-      if (Math.floor(Date.now() / 1000) > (decodedToken.iat + decodedToken.life_time)) {
+      if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
         return true;
       } else return false;
 

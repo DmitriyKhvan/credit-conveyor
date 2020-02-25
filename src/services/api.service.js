@@ -60,8 +60,8 @@ const ApiService = {
         if (error.request.status == 401) {
           if (error.config.url.includes('auth/token')) {
             // Refresh token has failed. Logout the user
-            AuthService.logout();
-            throw error
+            console.log("Refresh token has failed. Logout the user")
+            await AuthService.logout()
           } else {
             // Refresh the access token
             try {
@@ -77,9 +77,10 @@ const ApiService = {
               throw error
             }
           }
+        } {
+          // If error was not 401 just reject as is
+          throw error
         }
-        // If error was not 401 just reject as is
-        throw error
       }
     )
   },
