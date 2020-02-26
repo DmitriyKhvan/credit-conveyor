@@ -44,17 +44,9 @@ router.beforeEach(async (to, from, next) => {
 
   if (isLoggedIn && onlyWhenLoggedOut) {
     //TODO call load functions
-    return next("/");
+    //return next("/");
   }
 
-  if (!isPublic) {
-    // check roles
-    let isAllowed = CommonUtils.isValueExistInObject(decode(TokenService.getToken()).menus, 'url', to.path)
-    if (!isAllowed) {
-      return next("/404");
-    }
-
-  }
   // page refresh call
   if (isLoggedIn && !store.getters["dicts/isAllSet"]) {
     ApiService.mount401Interceptor(); //  remount once page refreshes
@@ -62,6 +54,7 @@ router.beforeEach(async (to, from, next) => {
       await MainService.loadAllPageRefresh();
     }
   }
+
   next();
 });
 
