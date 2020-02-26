@@ -1,4 +1,6 @@
-import jwt_decode from "jwt-decode";
+import {
+  decode
+} from "jsonwebtoken";
 // import SocketService from "../services/socket.service";
 // import AuthService from "./../services/auth.service";
 
@@ -101,9 +103,9 @@ const actions = {
     commit
   }, token) {
     let details = {
-      username: jwt_decode(token).username,
-      userId: jwt_decode(token).id,
-      fullName: jwt_decode(token).full_name,
+      username: decode(token).username,
+      userId: decode(token).id,
+      fullName: decode(token).full_name,
     }
     commit("setUsername", details.username);
     commit("setUserId", details.userId);
