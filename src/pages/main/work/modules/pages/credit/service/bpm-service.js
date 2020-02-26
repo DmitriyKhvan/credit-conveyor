@@ -2,8 +2,11 @@ import axios from "axios";
 
 export default class BpmService {
   
-  _baseUrl = "https://10.9.1.131:9443/bpm";
-  _digIdUrl = "http://localhost:50000/api/Identification/";
+  //_baseUrl = "https://10.9.1.131:9443/bpm";
+  _baseUrl = "http://10.8.7.71:8070";
+  _digIdUrl = "http://localhost:50000/api/Identification";
+
+  
 
   // data = {
   //   "refresh-groups": true,
@@ -61,4 +64,14 @@ export default class BpmService {
 
     return responce.data;
   }
-}
+
+  getCreditList = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/system/taskList`,
+      data
+    })
+
+    return 
+  }
+ }

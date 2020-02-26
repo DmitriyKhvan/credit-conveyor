@@ -528,9 +528,6 @@ export default {
     margin-bottom: 15px;
   }
 
-</style>
-
-<style lang="scss">
   .q-field__bottom {
     padding: 1px 0 0 10px;
   }
@@ -546,4 +543,23 @@ export default {
   .q-field__native, .q-field__prefix, .q-field__suffix {
     color: #acacac;
   }
+
 </style>
+
+ <style lang="scss">
+//   .q-field__bottom {
+//     padding: 1px 0 0 10px;
+//   }
+
+//   .q-btn--rectangle {
+//     border-radius: 0;
+//   }
+
+//   .q-field--with-bottom, .q-pb-sm {
+//     padding-bottom: 16px;
+//   }
+
+//   .q-field__native, .q-field__prefix, .q-field__suffix {
+//     color: #acacac;
+//   }
+ </style>

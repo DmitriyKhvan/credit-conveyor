@@ -3802,9 +3802,7 @@ export default {
 .addItem {
   margin-bottom: 20px;
 }
-</style>
 
-<style lang="scss">
 .q-field__bottom {
   padding: 1px 0 0 10px;
 }
@@ -3818,19 +3816,6 @@ export default {
   padding-bottom: 16px;
 }
 
-// .q-field__native .q-field__prefix,
-// .q-field__suffix {
-//   color: #acacac;
-// }
-// input[type="date"]::-webkit-inner-spin-button,
-// input[type="date"]::-webkit-outer-spin-button {
-//   -webkit-appearance: none;
-// }
-
-// input[type="date"] {
-//   -moz-appearance: textfield;
-// }
-
 .q-dialog__inner--minimized > div {
   max-width: 85%;
 }
@@ -3838,4 +3823,27 @@ export default {
 .creditCalc {
   min-width: 960px;
 }
+</style>
+
+ <style lang="scss">
+// .q-field__bottom {
+//   padding: 1px 0 0 10px;
+// }
+
+// .q-btn--rectangle {
+//   border-radius: 0;
+// }
+
+// .q-field--with-bottom,
+// .q-pb-sm {
+//   padding-bottom: 16px;
+// }
+
+// .q-dialog__inner--minimized > div {
+//   max-width: 85%;
+// }
+
+// .creditCalc {
+//   min-width: 960px;
+// }
 </style>
