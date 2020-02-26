@@ -227,6 +227,14 @@ const routes = [{
       public: true, // Allow access to even if not logged in
       onlyWhenLoggedOut: true
     }
+  },
+  {
+    path: "/404",
+    name: "Login Page",
+    component: Page404,
+    meta: {
+      public: true
+    }
   }
 
 ];

@@ -5,6 +5,11 @@ import MainService from "./../services/main.service"; //"/services/main.service"
 import ApiService from './../services/api.service';
 import routes from "./routes";
 import store from './../store/index';
+import CommonUtils from "../shared/utils/CommonUtils";
+
+import {
+  decode
+} from "jsonwebtoken";
 
 Vue.use(VueRouter);
 
@@ -36,30 +41,28 @@ router.beforeEach(async (to, from, next) => {
       } // Store the full path to redirect the user to after login
     });
   }
+
   if (isLoggedIn && onlyWhenLoggedOut) {
     //TODO call load functions
-
     return next("/");
   }
 
+  if (!isPublic) {
+    // check roles
+    let isAllowed = CommonUtils.isValueExistInObject(decode(TokenService.getToken()).menus, 'url', to.path)
+    if (!isAllowed) {
+      return next("/404");
+    }
+
+  }
   // page refresh call
   if (isLoggedIn && !store.getters["dicts/isAllSet"]) {
-    console.log({
-      isset: !store.getters["dicts/isAllSet"]
-    })
-
     ApiService.mount401Interceptor(); //  remount once page refreshes
-
     if (!TokenService.isTokenExpired()) { // reloads all Dicts
       await MainService.loadAllPageRefresh();
     }
   }
-
-
-
-
   next();
-
 });
 
 export default router;

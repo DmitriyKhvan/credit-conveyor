@@ -18,8 +18,7 @@ const AuthService = {
     store.dispatch("auth/loginRequest");
     try {
       const token = await this.authenticate(
-        credentials.username,
-        credentials.password
+        credentials
       )
       // .then(data => {
       //     console.log(data)
@@ -59,14 +58,11 @@ const AuthService = {
     }
   },
 
-  authenticate: async function (username, password) {
+  authenticate: async function (credentials) {
     const requestData = {
       method: "post",
       url: "auth/login",
-      data: {
-        username,
-        password
-      }
+      data: credentials
     };
     try {
       const response = await ApiService.customRequest(requestData);
@@ -140,7 +136,8 @@ const AuthService = {
       method: "post",
       url: "auth/token",
       data: {
-        accessToken: accessToken
+        accessToken: accessToken,
+        lang: TokenService.getKeyFromCookies('lang')
       }
     };
 
