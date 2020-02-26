@@ -1,35 +1,38 @@
 <template>
-  <div>
-    <grid-table
-      v-bind="props"
-      @addEdit="addEditRow"
-      @delRow="deleteRow"
-      ref="gridTable"
-    ></grid-table>
+  <div id="AddEditTest">
+    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
+    <router-view />
   </div>
 </template>
 
 <script>
-import GridTable from "./../../../../../components/GridTable";
-import AddEditIcon from "./../../dialogs/AddEditIcon";
-
+import GridTable from "../../../../../../components/GridTable";
+import AddEditTopic from "./../dialogs/AddEditTestDialog";
 import { Dialog } from "quasar";
-import ApiService from "../../../../../services/api.service";
-import NotifyService from "../../../../../services/notify.service";
-import GridService from "../../../../../services/grid.service";
-
+import ApiService from "../../../../../../services/api.service";
+import NotifyService from "../../../../../../services/notify.service";
+import GridService from "../../../../../../services/grid.service";
 export default {
-  created() {},
+  name: "addEditTopicPage",
   data() {
     return {
+      tab: "EditTopic",
       props: {
-        caption: this.$t("tables.icons._self"),
-        tablePath: "dicts/icons",
-        rowId: "icon_id",
-        addEdit: "dicts/icons", // url
-        delete: "dicts/icons", //
+        caption: "Edit Test",
+        tablePath: "test/cat",
+        rowId: "id",
+        addEdit: "test/cat", // url
+        delete: "test/cat", //
         defaultSort: [], // TODO
-        excludedColumns: [],
+        excludedColumns: [
+          "id",
+          "created_by",
+          "creation_date",
+          "updated_by",
+          "update_date",
+          "timer",
+          "topics"
+        ],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,
@@ -53,14 +56,13 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      this.addEditRecord(AddEditIcon, selected, this.props);
+      this.addEditRecord(AddEditTopic, selected, this.props);
     },
 
     deleteRow(row) {
       this.deleteRecord(row, this.props);
     },
 
-    //
     addEditRecord(dialogComponent, selected, props) {
       this.$q
         .dialog({
@@ -84,16 +86,16 @@ export default {
         });
     },
 
-    deleteRecord(row, props) {
+    deleteRecord(row, propsTopiC) {
       this.$q
         .dialog({
           title: "Confirm",
-          message: $t("messages.confirm_delete"),
+          message: this.$t("messages.confirm_delete"),
           cancel: true,
           persistent: true
         })
         .onOk(() => {
-          ApiService.delete(props.delete + "?id=" + row.id).then(
+          ApiService.delete(propsTopiC.delete + "?id=" + row.id).then(
             res => {
               if (res.data.status == 1) {
                 NotifyService.showSuccessMessage(res.data.message);
@@ -115,5 +117,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

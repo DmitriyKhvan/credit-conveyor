@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-import example from './module-example'
+import example from "./module-example";
 
 import {
   auth
@@ -14,7 +14,7 @@ import {
 } from "./categorized/socket.module";
 import {
   common
-} from './categorized/common.module';
+} from "./categorized/common.module";
 
 import credits from './categorized/credits';
 
@@ -23,7 +23,7 @@ import profile from './categorized/profile';
 import education from './categorized/education';
 
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
   namespaced: true,

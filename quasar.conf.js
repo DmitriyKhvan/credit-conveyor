@@ -7,7 +7,7 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ["i18n", "axios", "notify-defaults", "calendar", 'vuelidate'],
+    boot: ["i18n", "axios", "notify-defaults", "calendar", "vuelidate"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass"],
@@ -16,12 +16,12 @@ module.exports = function (ctx) {
     extras: [
       //'ionicons-v4',
       //'mdi-v4',
-      'fontawesome-v5',
+      "fontawesome-v5",
       // 'eva-icons',
       // 'themify',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      "roboto-font", // optional, you are not bound to it
+      "roboto-font", // optional, you are not bound to itt
       "material-icons", // optional, you are not bound to it
       "material-icons-outlined" // optional, you are not bound to it
     ],
@@ -67,8 +67,8 @@ module.exports = function (ctx) {
       env: ctx.dev ? {
         VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
       } : {
-          VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
-        },
+        VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+      },
 
       // Options below are automatically set depending on the env, set them if you want to override
       // preloadChunks: false,
@@ -117,30 +117,30 @@ module.exports = function (ctx) {
         background_color: "#ffffff",
         theme_color: "#027be3",
         icons: [{
-          src: "statics/icons/icon-128x128.png",
-          sizes: "128x128",
-          type: "image/png"
-        },
-        {
-          src: "statics/icons/icon-192x192.png",
-          sizes: "192x192",
-          type: "image/png"
-        },
-        {
-          src: "statics/icons/icon-256x256.png",
-          sizes: "256x256",
-          type: "image/png"
-        },
-        {
-          src: "statics/icons/icon-384x384.png",
-          sizes: "384x384",
-          type: "image/png"
-        },
-        {
-          src: "statics/icons/icon-512x512.png",
-          sizes: "512x512",
-          type: "image/png"
-        }
+            src: "statics/icons/icon-128x128.png",
+            sizes: "128x128",
+            type: "image/png"
+          },
+          {
+            src: "statics/icons/icon-192x192.png",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "statics/icons/icon-256x256.png",
+            sizes: "256x256",
+            type: "image/png"
+          },
+          {
+            src: "statics/icons/icon-384x384.png",
+            sizes: "384x384",
+            type: "image/png"
+          },
+          {
+            src: "statics/icons/icon-512x512.png",
+            sizes: "512x512",
+            type: "image/png"
+          }
         ]
       }
     },

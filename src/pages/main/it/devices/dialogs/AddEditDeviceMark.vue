@@ -17,30 +17,14 @@
               outlined
               clearable
               color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
+              class="col-xs-12 col-sm-12 col-md-12"
               v-model="details.name"
-              label="Name"
+              label="Device Mark"
               @input="$v.details.name.$touch()"
               :rules="[
-                      val => $v.details.name.required || 'Name is required'
-                      ]"
-              lazy-rules
-            />
-            <q-select
-              outlined
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.state"
-              :options="stateList"
-              option-value="value"
-              option-label="key"
-              emit-value
-              map-options
-              label="State"
-              @input="$v.state.class.$touch()"
-              :rules="[
-                      val => $v.details.state.required || 'State is required'
-                      ]"
+                val =>
+                  $v.details.name.required || 'Device Mark is required'
+              ]"
               lazy-rules
             />
           </div>
@@ -58,8 +42,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../services/notify.service";
-import dialogMix from "./../../../../shared/mixins/dialogMix";
+import NotifyService from "./../../../../../services/notify.service";
+import dialogMix from "./../../../../../shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -67,21 +51,15 @@ import {
   between,
   email
 } from "vuelidate/lib/validators";
-
 export default {
   data() {
     return {
       isLoading: this.$store.getters["common/getLoading"],
-      stateList: [
-        { key: "Active", value: "A" },
-        { key: "Passive", value: "P" }
-      ],
       isValidated: true,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
-        name: null,
-        state: null
+        name: null
       }
     };
   },
@@ -89,9 +67,6 @@ export default {
     details: {
       id: {},
       name: {
-        required
-      },
-      state: {
         required
       }
     }
@@ -110,5 +85,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

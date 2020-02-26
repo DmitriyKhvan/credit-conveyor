@@ -71,7 +71,6 @@
     "executor": "Исполнитель",
     "view_type": "Тип отображение"
   },
-
   "messages": {
     "accessDenied": "Доступ запрещен",
     "authRequired": "Доступ запрешен: Пожалуйста авторизуйтесь",
@@ -90,7 +89,6 @@
     "invalid_maxLength": "Ошибка максимальной длины значение",
     "invalid_date": "Ошибка формата даты"
   },
-
   "states": {
     "A": "Активен",
     "P": "Пассивен",
@@ -98,19 +96,16 @@
     "C": "Утвержден",
     "D": "Забракован"
   },
-
   "error_404": {
     "header": "Ошибка 404",
     "message": "Страница не найдена",
     "back": "Назад"
   },
-
   "error_403": {
     "header": "Ошибка 403",
     "message": "Доступ запрещен",
     "back": "Назад"
   },
-
   "auth": {
     "_self": "Авторизация",
     "username": "Логин",
@@ -124,7 +119,6 @@
     "languageError": "Выберите язык",
     "signin": "Вход"
   },
-
   "main": {
     "_self": "Главная",
     "dashboard": "Мониторинг",
@@ -148,7 +142,6 @@
     },
     "backdrop": "Анимации"
   },
-
   "users": {
     "_self": "Пользователи",
     "addEdit": "Реквизиты пользователя",
@@ -198,7 +191,7 @@
     "menu_caption": "Описание"
   },
   "pages": {
-    "admin_page": "Странитца Админа"
+    "admin_page": "Страница Админа"
   },
   "tables": {
     "roles": {
@@ -241,7 +234,39 @@
     "icon_types": {
       "_self": "Таблица Тип Иконки",
       "add_edit": "Cоздать/Изменить Тип Иконка"
+    },
+    "device_types": {
+      "_self": "Таблица Тип Оборудование",
+      "add_edit": "Cоздать/Изменить Тип Оборудование",
+      "type_id": "Тип Оборудование"
+    },
+    "device_marks": {
+      "_self": "Таблица Marks",
+      "add_edit": "Create/Edit Device Mark"
+    },
+    "device_details": {
+      "_self": "Таблица Details",
+      "add_edit": "Create/Edit Device Detail"
+    },
+    "device_models": {
+      "_self": "Таблица Models",
+      "add_edit": "Create/Edit Device Model"
+    },
+    "education": {
+      "topicName": "Названия темы",
+      "topicNameError": "Ошибка при вводе темы",
+      "addEditTopic": "Добавить/Изменить тему",
+      "addEditQuestion": "Добавить/Изменить вопрос",
+      "levelOfQuestion": "Сложность вопроса",
+      "levelQuestionError": "Ошибка при вводе Сложность",
+      "questionName": "Введите вопрос",
+      "textVariant": "Текст варианта",
+      "addEditTest": "Добавить/Изменить тест",
+      "description": "Описание",
+      "duration": "Время теста (в минутах)",
+      "hideStatus": "Показать/Cкрыть тест",
+      "testAmount": "Количество вопросов",
+      "addEditTestError": "Ошибка при вводе теста"
     }
   }
-
 }

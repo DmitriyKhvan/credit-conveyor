@@ -212,8 +212,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../services/notify.service";
-import dialogMix from "./../../../../shared/mixins/dialogMix";
+import NotifyService from "./../../../../../services/notify.service";
+import dialogMix from "./../../../../../shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -228,7 +228,7 @@ export default {
       isPwd: true,
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
-        { key: "Active", value: 0 },
+        { key: "Active", value: 1 },
         { key: "Passive", value: 0 }
       ],
       isValidated: true,

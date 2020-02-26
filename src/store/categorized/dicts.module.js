@@ -12,7 +12,8 @@ const state = {
   isAllSet: false,
   menuList: [],
   userList: [],
-  receivedNotifications: []
+  receivedNotifications: [],
+  testTopicList: []
 };
 
 const getters = {
@@ -46,19 +47,28 @@ const getters = {
   getParentMenus(state) {
     return state.parentMenus.map(val => {
       return {
-        text: val.name[0], // TODO add lang <i class="${val.class}"></i> ${val.name} 
+        text: val.name[0], // TODO add lang <i class="${val.class}"></i> ${val.name}
         value: val.menu_id
       };
     });
   },
-
+  getTestTopicList: state => {
+    return state.testTopicList.map(
+      val => {
+        return {
+          text: val.name,
+          value: val.id
+        }
+      }
+    );
+  },
   getMenuList: state => {
     return state.menuList;
   },
   getUserList: state => {
     return state.userList.map(val => {
       return {
-        text: val.name, // TODO add lang <i class="${val.class}"></i> ${val.name} 
+        text: val.name, // TODO add lang <i class="${val.class}"></i> ${val.name}
         value: val.user_id
       };
     });
@@ -92,6 +102,9 @@ const mutations = {
   },
   setReceivedNotifications(state, notifications) {
     state.receivedNotifications = notifications;
+  },
+  setTopicList(state, topicList) {
+    state.testTopicList = topicList
   },
   addNotification(state, noty) {
     state.receivedNotifications = [noty, ...state.receivedNotifications];
@@ -134,6 +147,11 @@ const actions = {
     commit
   }, userList) {
     commit("setUserList", userList);
+  },
+  setTestTopicList({
+    commit
+  }, topicList) {
+    commit("setTopicList", topicList);
   },
   setReceivedNotifications({
     commit

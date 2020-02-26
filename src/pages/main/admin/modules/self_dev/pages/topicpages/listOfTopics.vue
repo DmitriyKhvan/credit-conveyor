@@ -1,45 +1,44 @@
 <template>
-  <div>
-    <grid-table
-      v-bind="props"
-      @addEdit="addEditRow"
-      @delRow="deleteRow"
-      ref="gridTable"
-    ></grid-table>
+  <div id="listOfTopics">
+    {{education}}
+    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
+    <router-view />
   </div>
 </template>
 
 <script>
-import GridTable from "./../../../../components/GridTable";
-import AddEditMenu from "./../dialogs/AddEditMenu";
-
+import GridTable from "../../GridTableForTest";
+import AddEditTopic from "./../../dialogs/AddEditTopicDialog";
 import { Dialog } from "quasar";
-import ApiService from "../../../../services/api.service";
-import NotifyService from "../../../../services/notify.service";
-import GridService from "../../../../services/grid.service";
+import ApiService from "../../../../../../../services/api.service";
+import NotifyService from "../../../../../../../services/notify.service";
+import GridService from "../../../../../../../services/grid.service";
 
 export default {
-  created() {},
+  topicId: "",
+  name: "listOfTopics",
   data() {
     return {
+      tab: "listOfTopics",
       props: {
-        caption: this.$t("tables.menus._self"),
-        tablePath: "menus",
-        rowId: "menu_id",
-        addEdit: "menus", // url
-        delete: "menus", //
+        caption: "List Of Topics",
+        tablePath: "test/topic",
+        rowId: "id",
+        addEdit: "test/topic", // url
+        delete: "test/topic", //
         defaultSort: [], // TODO
         excludedColumns: [
-          "name",
+          "id",
           "status",
           "created_by",
           "creation_date",
           "updated_by",
-          "update_date"
+          "update_date",
+          "timer"
         ],
         excludeSortingColoumns: [],
-        enableAddEdit: true,
-        enableDelete: true,
+        enableAddEdit: false,
+        enableDelete: false,
         enableRead: true,
         enableView: true,
         enableSelect: true,
@@ -55,19 +54,23 @@ export default {
       }
     };
   },
+  computed: {
+    education() {
+      return console.log(this.$store.state.education);
+    }
+  },
   components: {
     GridTable
   },
   methods: {
     addEditRow(selected) {
-      this.addEditRecord(AddEditMenu, selected, this.props);
+      this.addEditRecord(AddEditTopic, selected, this.props);
     },
 
     deleteRow(row) {
       this.deleteRecord(row, this.props);
     },
 
-    //
     addEditRecord(dialogComponent, selected, props) {
       this.$q
         .dialog({
@@ -95,7 +98,7 @@ export default {
       this.$q
         .dialog({
           title: "Confirm",
-          message: $t("messages.confirm_delete"),
+          message: this.$t("messages.confirm_delete"),
           cancel: true,
           persistent: true
         })
@@ -122,5 +125,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

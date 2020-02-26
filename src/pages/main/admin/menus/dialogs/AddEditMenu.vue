@@ -35,10 +35,7 @@
               v-model="details.name[0]"
               label="Name Uz"
               @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name Uz is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
+              :rules="[]"
               lazy-rules
             />
           </div>
@@ -50,11 +47,7 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[1]"
               label="Name Ru"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name Ru is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
+              :rules="[]"
               lazy-rules
             />
             <q-input
@@ -65,10 +58,7 @@
               v-model="details.name[2]"
               label="Name En"
               @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name En is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
+              :rules="[]"
               lazy-rules
             />
           </div>
@@ -81,9 +71,7 @@
               v-model="details.url"
               label="Url"
               @input="$v.details.url.$touch()"
-              :rules="[
-                      val => $v.details.url.required || 'Url is required'
-                      ]"
+              :rules="[val => $v.details.url.required || 'Url is required']"
               lazy-rules
             />
             <q-input
@@ -96,9 +84,9 @@
               type="number"
               @input="$v.details.ord.$touch()"
               :rules="[
-                      val => $v.details.ord.required || 'Order is required',
-                      val => $v.details.ord.numeric || 'Not numeric'
-                      ]"
+                val => $v.details.ord.required || 'Order is required',
+                val => $v.details.ord.numeric || 'Not numeric'
+              ]"
               lazy-rules
             />
           </div>
@@ -128,9 +116,9 @@
               label="Roles"
               @input="$v.details.roles.$touch()"
               :rules="[
-                      val => $v.details.roles.required || 'Order is required',
-                      val => $v.details.roles.minLength || 'Role is not assigned'
-                      ]"
+                val => $v.details.roles.required || 'Order is required',
+                val => $v.details.roles.minLength || 'Role is not assigned'
+              ]"
               lazy-rules
             />
           </div>
@@ -148,8 +136,8 @@
               label="Status"
               @input="$v.details.status.$touch()"
               :rules="[
-                      val => $v.details.status.required || 'Status is required'
-                      ]"
+                val => $v.details.status.required || 'Status is required'
+              ]"
               lazy-rules
             />
           </div>
@@ -167,8 +155,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../services/notify.service";
-import dialogMix from "./../../../../shared/mixins/dialogMix";
+import NotifyService from "./../../../../../services/notify.service";
+import dialogMix from "./../../../../../shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -245,5 +233,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

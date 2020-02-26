@@ -18,76 +18,60 @@
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.authority"
-              label="Authority"
-              @input="$v.details.authority.$touch()"
-              :rules="[
-                      val => $v.details.authority.required || 'Authority is required',
-                      val => $v.details.authority.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[0]"
-              label="Name Uz"
+              v-model="details.name"
+              label="Name"
               @input="$v.details.name.$touch()"
               :rules="[
-                      val => $v.details.name.required || 'Name Uz is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
+                      val => $v.details.name.required || 'Name is required'
                       ]"
               lazy-rules
             />
-          </div>
-          <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[1]"
-              label="Name Ru"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name Ru is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[2]"
-              label="Name En"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name En is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
-            />
-          </div>
-
-          <div class="row">
             <q-select
               outlined
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.status"
+              v-model="details.type"
+              :options="iconTypeList"
+              option-value="value"
+              option-label="text"
+              emit-value
+              map-options
+              label="Type"
+              @input="$v.details.type.$touch()"
+              :rules="[
+                      val => $v.details.type.required || 'Type is required'
+                      ]"
+              lazy-rules
+            />
+          </div>
+          <div class="row">
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.class"
+              label="Class"
+              @input="$v.details.class.$touch()"
+              :rules="[
+                      val => $v.details.class.required || 'Class is required'
+                      ]"
+              lazy-rules
+            />
+            <q-select
+              outlined
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.state"
               :options="stateList"
               option-value="value"
               option-label="key"
               emit-value
               map-options
-              label="Status"
-              @input="$v.details.status.$touch()"
+              label="State"
+              @input="$v.details.state.$touch()"
               :rules="[
-                      val => $v.details.status.required || 'Status is required'
+                      val => $v.details.state.required || 'Status is required'
                       ]"
               lazy-rules
             />
@@ -96,7 +80,7 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="isLoading" label="Submit" @click="submitForm">
+        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -106,8 +90,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../services/notify.service";
-import dialogMix from "./../../../../shared/mixins/dialogMix";
+import NotifyService from "./../../../../../services/notify.service";
+import dialogMix from "./../../../../../shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -115,40 +99,39 @@ import {
   between,
   email
 } from "vuelidate/lib/validators";
-
 export default {
   data() {
     return {
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
-        { key: "Active", value: 1 },
-        { key: "Passive", value: 0 }
+        { key: "Active", value: "A" },
+        { key: "Passive", value: "P" }
       ],
+      iconTypeList: this.$store.getters["dicts/getIconTypes"],
       isValidated: true,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
-        role_id: null,
-        authority: null,
-        name: [],
-        status: null
+        icon_id: null,
+        name: null,
+        type: null,
+        class: null,
+        state: null
       }
     };
   },
   validations: {
     details: {
-      role_id: {},
-      authority: {
-        required,
-        minLength: minLength(3)
-      },
+      icon_id: {},
       name: {
-        required,
-        minLength: minLength(3),
-        $each: {
-          minLength: minLength(3)
-        }
+        required
       },
-      status: {
+      type: {
+        required
+      },
+      class: {
+        required
+      },
+      state: {
         required
       }
     }
@@ -162,9 +145,7 @@ export default {
     }
   },
   mixins: [dialogMix],
-  created() {
-    console.log(this.data.props.addEdit);
-  },
+  created() {},
   methods: {}
 };
 </script>
