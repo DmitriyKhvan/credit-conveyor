@@ -18,19 +18,26 @@ const AuthService = {
     store.dispatch("auth/loginRequest");
     try {
       const token = await this.authenticate(
-        credentials.username,
-        credentials.password
-      );
+        credentials
+      )
+      // .then(data => {
+      //     console.log(data)
+      //   },
+      //   err => {
+      //     console.log(err)
+      //   })
+      // .catch(err => {
+      //   console.log(err)
+      // })
       if (token) {
+        //console.log(token);
         store.dispatch("auth/setUserDetails", token);
         store.dispatch("common/setLang", credentials.lang.value); // set lang
         TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
-        await DictService.loadAll();
+        //await DictService.loadAll();
         store.dispatch("auth/loginSuccess", token);
-
         //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
-
-        ApiService.mount401Interceptor();
+        //ApiService.mount401Interceptor();
         router.push(router.history.current.query.redirect || "/");
         callback(true);
       } else {
@@ -51,56 +58,39 @@ const AuthService = {
     }
   },
 
-  authenticate: function (username, password) {
-    return new Promise(async (resolve, reject) => {
-      const requestData = {
-        method: "post",
-        url: "auth/login",
-        data: {
-          username,
-          password
-        }
-      };
-      try {
-        const response = await ApiService.customRequest(requestData);
-        TokenService.saveToken(response.data.access_token);
-        ApiService.setHeader(response.data.access_token);
-        resolve(response.data.access_token);
-      } catch (error) {
-        reject(error);
-        if (error.response) {
-          throw new AuthenticationError(
-            error.response.status,
-            error.response.data.detail
-          );
-        } else {
-          throw new AuthenticationError(
-            401,
-            error.message
-          );
-        }
-      }
-    });
+  authenticate: async function (credentials) {
+    const requestData = {
+      method: "post",
+      url: "auth/login",
+      data: credentials
+    };
+    try {
+      const response = await ApiService.customRequest(requestData);
+      TokenService.saveToken(response.data.access_token);
+      ApiService.setHeader(response.data.access_token);
+      return response.data.access_token;
+    } catch (error) {
+      throw new AuthenticationError(
+        error.response.status,
+        error.response.data.detail
+      );
+      //return null;
+    }
   },
 
-  logout: function () {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await this.clearTokenFromCache(store.getters['auth/token']);
-        TokenService.removeToken();
-        ApiService.removeHeader();
-        TokenService.removeKeyFromCookies("lang")
-        ApiService.unmount401Interceptor();
+  logout: async function () {
 
-        store.dispatch("auth/logoutSuccess");
-        //store.dispatch("dicts/setIsAllSet", false);
-        //SocketService.stopConnection();
-        await router.push("/login");
-        resolve(true);
-      } catch (err) {
-        reject(null)
-      }
-    });
+    await this.clearTokenFromCache(store.getters['auth/token']);
+    TokenService.removeToken();
+    ApiService.removeHeader();
+    TokenService.removeKeyFromCookies("lang")
+    ApiService.unmount401Interceptor();
+
+    store.dispatch("dicts/setIsAllSet", false);
+    //SocketService.stopConnection();
+    store.dispatch("auth/logoutSuccess");
+
+    router.push("/login");
   },
 
   refreshToken() {
@@ -120,43 +110,51 @@ const AuthService = {
         error => {
           store.dispatch("auth/refreshTokenPromise", null);
           throw new AuthenticationError(
-            error.response.status,
-            error.response.data.detail
+            error.errorCode,
+            error.message
           );
         }
-      );
+      ).catch(error => {
+        throw new AuthenticationError(
+          error.errorCode,
+          error.message
+        );
+      });
     }
 
     return store.getters["auth/refreshTokenPromise"];
     //commit('setToken', token);
   },
 
-  refreshAccessToken: function () {
-    return new Promise(async (resolve, reject) => {
-      const accessToken = TokenService.getToken(); // REVIEW  get it from redis
-      const requestData = {
-        method: "post",
-        url: "auth/token",
-        data: {
-          accessToken: accessToken
-        }
-      };
 
-      try {
-        const response = await ApiService.customRequest(requestData);
-        TokenService.saveToken(response.data.access_token);
-        //TokenService.saveRefreshToken(response.data.refresh_token)
-        // Update the header in ApiService
-        ApiService.setHeader(response.data.access_token);
-        resolve(response.data.access_token);
-      } catch (error) {
-        reject(null);
-        throw new AuthenticationError(
-          error.response.status,
-          error.response.data.detail
-        );
+  // refresh Token
+  refreshAccessToken: async function () {
+
+    const accessToken = TokenService.getToken(); //  get accesToken from cookie
+
+    const requestData = {
+      method: "post",
+      url: "auth/token",
+      data: {
+        accessToken: accessToken,
+        lang: TokenService.getKeyFromCookies('lang')
       }
-    });
+    };
+
+    try {
+      const response = await ApiService.customRequest(requestData);
+      TokenService.saveToken(response.data.access_token);
+      //TokenService.saveRefreshToken(response.data.refresh_token)
+      // Update the header in ApiService
+      ApiService.setHeader(response.data.access_token);
+      return response.data.access_token;
+    } catch (error) {
+      throw new AuthenticationError(
+        error.response.status,
+        error.response.data.detail
+      );
+    }
+
   },
   clearTokenFromCache(token) {
     return new Promise(async (resolve, reject) => {
