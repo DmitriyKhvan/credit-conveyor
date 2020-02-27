@@ -27,7 +27,7 @@ const TasksList = () =>
 const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
 const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
 const CreditProfile = () => import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
-const Applicaion = () => import("pages/main/work/modules/pages/credit/pages/list/Application.vue");
+const Applications = () => import("pages/main/work/modules/pages/credit/pages/list/Applications.vue");
 const TaskQueue = () => import("pages/main/work/modules/pages/credit/pages/list/Tasks.vue");
 
 //const CreditManagerCabinet = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditManager/TaskList.vue");
@@ -100,9 +100,9 @@ const routes = [{
             name: "Credit",
             component: Credit,
             children: [{
-                path: "application",
-                name: "application",
-                component: Applicaion
+                path: "applications",
+                name: "applications",
+                component: Applications
               },
               {
                 path: "taskQueue",

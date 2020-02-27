@@ -51,9 +51,9 @@ export default {
   },
   created() {
     if (true) {
-      this.link = "/work/credit/application";
+      this.link = "/work/credit/applications";
     } else {
-      this.link = "/work/credit/application2";
+      this.link = "/work/credit/applications2";
     }
   }
 };

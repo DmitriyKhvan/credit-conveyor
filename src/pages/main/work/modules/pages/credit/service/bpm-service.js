@@ -65,9 +65,10 @@ export default class BpmService {
     return responce.data;
   }
 
-  getCreditList = async (data) => {
+  getCreditList = async (data, token) => {
     const responce = await axios({
       method: "post",
+      headers: { 'Authorization': `Bearer "${token}"` },
       url: `${this._baseUrl}/system/taskList`,
       data
     })
