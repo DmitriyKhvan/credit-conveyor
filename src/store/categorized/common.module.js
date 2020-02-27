@@ -1,8 +1,8 @@
 //import i18n from './../assets/i18n/lang'
 const state = {
-
   lang: "ru", // 1-ru, 2- uzkr, 3-ru, 4-uzkr   --> 3-uz, 4-en
-  isLoading: false
+  isLoading: false,
+  isLeftDrawerClosed: false
 };
 
 const getters = {
@@ -11,6 +11,9 @@ const getters = {
   },
   isLoading(state) {
     return state.isLoading;
+  },
+  isLeftDrawerClosed(state) {
+    return state.isLeftDrawerClosed;
   }
 };
 
@@ -21,6 +24,9 @@ const mutations = {
   },
   setLoading(state, isLoading) {
     state.isLoading = isLoading;
+  },
+  setLeftDrawerClosed(state, isClosed) {
+    state.isLeftDrawerClosed = isClosed;
   }
 
 };
@@ -35,6 +41,11 @@ const actions = {
     commit
   }, lang) {
     commit("setLang", lang);
+  },
+  setLeftDrawerClosed({
+    commit
+  }, isClosed) {
+    commit("setLeftDrawerClosed", isClosed)
   }
 };
 
