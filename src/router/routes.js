@@ -110,7 +110,7 @@ const routes = [{
                 component: TaskQueue
               },
               {
-                path: "creditCommiteeTask",
+                path: "creditCommiteeTask/:id",
                 name: "CreditCommiteeTask",
                 component: CreditCommiteeTask
               },
@@ -209,7 +209,6 @@ const routes = [{
         path: "completeTest",
         name: "CompleteTest",
         component: CompleteTest,
-        props: true
       },
       {
         path: "topic/:id",

@@ -4,17 +4,17 @@
     <div class="row infoBlock">
       <div class="infoBlockItem">
         <h6 class="titleCredit">Дата</h6>
-        <span class="creditInfo">2020-02-12</span>
+        <span class="creditInfo">{{date}}</span>
       </div>
 
       <div class="infoBlockItem">
         <h6 class="titleCredit">Номер протокола</h6>
-        <span class="creditInfo">00844/2/2020/7</span>
+        <span class="creditInfo">{{protocolNumber}}</span>
       </div>
 
       <div class="infoBlockItem">
         <h6 class="titleCredit">Номер заявления</h6>
-        <span class="creditInfo">00844/2/2020/7</span>
+        <span class="creditInfo">{{applicationNumber}}</span>
       </div>
     </div>
 
@@ -418,8 +418,14 @@ export default {
     }
   },
   computed: {
-    personalData() {
-      return this.$store.state.profile.personalData;
+    date() {
+      return this.$route.query.date
+    },
+    applicationNumber() {
+      return this.$route.query.applicationNumber
+    },
+    protocolNumber() {
+      return this.$route.query.protocolNumber
     }
   },
   methods: {

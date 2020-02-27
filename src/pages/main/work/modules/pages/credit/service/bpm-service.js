@@ -1,4 +1,5 @@
 import axios from "axios";
+import storegeService from "../../../../../../../services/storage.service"
 
 export default class BpmService {
   
@@ -65,14 +66,17 @@ export default class BpmService {
     return responce.data;
   }
 
-  getCreditList = async (data, token) => {
+  getCreditList = async (data) => {
+
+    console.log('Текущий пользователь', storegeService.getToken())
+    const token = storegeService.getToken();
     const responce = await axios({
       method: "post",
-      headers: { 'Authorization': `Bearer "${token}"` },
+      //headers: { 'Authorization': `Bearer "${token}"` },
       url: `${this._baseUrl}/system/taskList`,
       data
     })
 
-    return 
+    return responce.data
   }
  }
