@@ -24,7 +24,9 @@ const TokenService = {
   removeKey(key) {
     localStorage.removeItem(key)
   },
-
+  isKeyExist(key) {
+    return (Boolean)(localStorage.getItem(key) !== null);
+  },
   getKeyFromCookies(key) {
     return Cookies.get(key)
   },

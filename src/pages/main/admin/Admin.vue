@@ -6,7 +6,10 @@
 </template>
 
 <script>
-export default {};
+import MainService from "../../../services/main.service";
+export default {
+  created() {}
+};
 </script>
 
 <style></style>
