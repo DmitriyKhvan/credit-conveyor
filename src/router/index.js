@@ -7,10 +7,6 @@ import routes from "./routes";
 import store from './../store/index';
 import CommonUtils from "../shared/utils/CommonUtils";
 
-import {
-  decode
-} from "jsonwebtoken";
-
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -42,19 +38,33 @@ router.beforeEach(async (to, from, next) => {
     });
   }
 
-  if (isLoggedIn && onlyWhenLoggedOut) {
-    //TODO call load functions
-    //return next("/");
+  //* Once Logged In
+  if (isLoggedIn && from.path == '/login') {
+    console.log('mount once log in')
+    ApiService.mount401Interceptor();
   }
 
-  // page refresh call
+  //!!! Don't Change
+  if (isLoggedIn && onlyWhenLoggedOut) {
+    return next('/')
+  }
+
+  //* check router path by user role
+  if (isLoggedIn) {
+    let menus = JSON.parse(Buffer.from(TokenService.getKey('menus'), 'base64').toString());
+    if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
+      if (to.path !== '/404')
+        return next('/404')
+    }
+  }
+
+  //* page refresh call
   if (isLoggedIn && !store.getters["dicts/isAllSet"]) {
-    ApiService.mount401Interceptor(); //  remount once page refreshes
+    ApiService.mount401Interceptor(); //
     if (!TokenService.isTokenExpired()) { // reloads all Dicts
       await MainService.loadAllPageRefresh();
     }
   }
-
   next();
 });
 
