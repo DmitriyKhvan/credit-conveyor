@@ -20,15 +20,6 @@ const AuthService = {
       const token = await this.authenticate(
         credentials
       )
-      // .then(data => {
-      //     console.log(data)
-      //   },
-      //   err => {
-      //     console.log(err)
-      //   })
-      // .catch(err => {
-      //   console.log(err)
-      // })
       if (token) {
         //console.log(token);
         store.dispatch("auth/setUserDetails", token);
@@ -66,30 +57,34 @@ const AuthService = {
     };
     try {
       const response = await ApiService.customRequest(requestData);
-      TokenService.saveToken(response.data.access_token);
-      ApiService.setHeader(response.data.access_token);
-      return response.data.access_token;
+      if (response.data.status == 1) {
+        TokenService.saveToken(response.data.access_token);
+        ApiService.setHeader(response.data.access_token);
+        return response.data.access_token;
+      } else {
+        return null;
+      }
     } catch (error) {
       throw new AuthenticationError(
         error.response.status,
         error.response.data.detail
       );
-      //return null;
     }
   },
 
   logout: async function () {
 
-    await this.clearTokenFromCache(store.getters['auth/token']);
+    let response = await this.clearTokenFromCache(store.getters['auth/token']);
+    console.log({
+      "logout clear token": response
+    });
     TokenService.removeToken();
     ApiService.removeHeader();
     TokenService.removeKeyFromCookies("lang")
     ApiService.unmount401Interceptor();
-
     store.dispatch("dicts/setIsAllSet", false);
     //SocketService.stopConnection();
     store.dispatch("auth/logoutSuccess");
-
     router.push("/login");
   },
 
@@ -136,14 +131,14 @@ const AuthService = {
       method: "post",
       url: "auth/token",
       data: {
-        accessToken: accessToken,
-        lang: TokenService.getKeyFromCookies('lang')
+        accessToken: accessToken
       }
     };
 
     try {
       const response = await ApiService.customRequest(requestData);
       TokenService.saveToken(response.data.access_token);
+
       //TokenService.saveRefreshToken(response.data.refresh_token)
       // Update the header in ApiService
       ApiService.setHeader(response.data.access_token);
@@ -156,26 +151,23 @@ const AuthService = {
     }
 
   },
-  clearTokenFromCache(token) {
-    return new Promise(async (resolve, reject) => {
-      const requestData = {
-        method: "delete",
-        url: "auth/token",
-        data: {
-          token: token
-        }
-      };
-      try {
-        const response = await ApiService.customRequest(requestData);
-        resolve(response.status);
-      } catch (error) {
-        reject(null);
-        throw new AuthenticationError(
-          error.response.status,
-          error.response.data.detail
-        );
+  async clearTokenFromCache(token) {
+    const requestData = {
+      method: "delete",
+      url: "auth/token",
+      data: {
+        token: token
       }
-    });
+    };
+    try {
+      const response = await ApiService.customRequest(requestData);
+      return response;
+    } catch (error) {
+      throw new AuthenticationError(
+        error.response.status,
+        error.response.data.detail
+      );
+    }
   }
 };
 

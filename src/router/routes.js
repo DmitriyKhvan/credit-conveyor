@@ -230,7 +230,7 @@ const routes = [{
   },
   {
     path: "/404",
-    name: "Login Page",
+    name: "Page404",
     component: Page404,
     meta: {
       public: true
