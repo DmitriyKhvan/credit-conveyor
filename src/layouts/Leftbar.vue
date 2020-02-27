@@ -1,15 +1,37 @@
 <template>
   <q-drawer
-    v-model="leftDrawerOpen"
     show-if-above
-    :mini="drawerState"
+    :mini="isLeftDrawerClosed"
     bordered
     content-class="bg-grey-2"
     :width="250"
   >
     <q-list>
       <q-item-label header>{{ $t("layout.menu_label") }}</q-item-label>
-      <div v-for="(menus, index) in menusList" :key="index">
+      <div
+        v-for="(menus, index) in menusList"
+        :key="index"
+        @mouseenter="showMenu(index)"
+        @mouseleave="closeMenu(index)"
+      >
+        <q-menu
+          anchor="top right"
+          self="top left"
+          ref="qmenu"
+          @mouseenter="showMenu(index)"
+          @mouseleave="closeMenu(index)"
+        >
+          <q-list style="min-width: 100px">
+            <q-item
+              v-for="(menuss, index) in getChildMenus(menus)"
+              :key="index"
+              clickable
+              :to="menuss.url"
+            >
+              <q-item-section>{{ menuss.name }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
         <q-expansion-item
           expand-separator
           :icon="menus.icon"
@@ -30,9 +52,11 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label>{{ menuss.name }}</q-item-label>
-                <q-item-label caption>{{
+                <q-item-label caption>
+                  {{
                   $t("layout.menu_caption")
-                }}</q-item-label>
+                  }}
+                </q-item-label>
               </q-item-section>
             </q-item>
           </div>
@@ -44,10 +68,10 @@
         fab
         color="blue"
         style="width: 30px; height: 30px;"
-        @click="drawerState = !drawerState"
+        @click="isLeftDrawerClosed = !isLeftDrawerClosed"
       >
         <q-icon
-          :name="drawerState ? 'keyboard_arrow_right' : 'keyboard_arrow_left'"
+          :name="isLeftDrawerClosed ? 'keyboard_arrow_right' : 'keyboard_arrow_left'"
           class="absolute-center"
         />
       </q-btn>
@@ -60,12 +84,12 @@ export default {
   name: "Leftbar",
   computed: {
     //menu: this.$store.getters["dicts/getMenuList"],
-    drawerState: {
+    isLeftDrawerClosed: {
       get() {
-        return this.$store.state.example.drawerHidden;
+        return this.$store.getters["common/isLeftDrawerClosed"];
       },
       set(val) {
-        this.$store.commit("example/updateDrawerHidden", val);
+        this.$store.dispatch("common/setLeftDrawerClosed", val);
       }
     },
     menusList() {
@@ -74,9 +98,43 @@ export default {
   },
   created() {},
   data() {
-    return {
-      leftDrawerOpen: false
-    };
+    return {};
+  },
+  methods: {
+    showMenu(index) {
+      this.$refs.qmenu[index].show();
+    },
+    closeMenu(index) {
+      this.$refs.qmenu[index].hide();
+    },
+    getChildMenus(menus) {
+      let myMenuList = [];
+
+      //console.log(menus.children.length);
+      myMenuList.push(menus.children);
+      //console.log(myMenuList);
+      // if (this.isLeftDrawerClosed) {
+      //   //myMenuList.push(menus);
+      //   menus.children.forEach(element => {
+      //     if (!!element) {
+      //       myMenuList.push(element);
+      //     }
+      //   });
+      // } else {
+      //   menus.children.forEach(element => {
+      //     if (!!element) {
+      //       myMenuList.push(element);
+      //     }
+      //   }); // myMenuList.push(menus.children);
+      // }
+      return menus.children;
+    }
+    //show() {}
+  },
+  watch: {
+    isLeftDrawerClosed() {
+      console.log(this.isLeftDrawerClosed);
+    }
   }
 };
 </script>
