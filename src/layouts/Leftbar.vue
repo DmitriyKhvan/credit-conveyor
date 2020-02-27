@@ -110,9 +110,9 @@ export default {
     getChildMenus(menus) {
       let myMenuList = [];
 
-      console.log(menus.children.length);
+      //console.log(menus.children.length);
       myMenuList.push(menus.children);
-      console.log(myMenuList);
+      //console.log(myMenuList);
       // if (this.isLeftDrawerClosed) {
       //   //myMenuList.push(menus);
       //   menus.children.forEach(element => {
