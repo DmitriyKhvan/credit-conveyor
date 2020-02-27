@@ -11,10 +11,7 @@
     >
       <div v-if="!drawer">
         <div class="block">
-          <q-img
-            src="./../../../assets/statics/logoNew.png"
-            style="color:red; width: 100px"
-          />
+          <q-img src="./../../../assets/statics/logoNew.png" style="color:red; width: 100px" />
         </div>
         <div class="block2">
           <div class="row justify-center">
@@ -115,8 +112,7 @@
                       :disable="$v.credentials.$invalid"
                       @click="handleSubmit()"
                       v-on:keyup.enter="handleSubmit()"
-                      >{{ $t("auth.signin") }}</q-btn
-                    >
+                    >{{ $t("auth.signin") }}</q-btn>
                   </q-card-section>
                 </q-form>
               </q-card>
@@ -126,12 +122,7 @@
       </div>
 
       <q-page-sticky position="bottom-right" :offset="[-15, 55]">
-        <q-btn
-          fab
-          color="blue"
-          style="width: 30px; height: 30px;"
-          @click="drawer = !drawer"
-        >
+        <q-btn fab color="blue" style="width: 30px; height: 30px;" @click="drawer = !drawer">
           <q-icon
             :name="drawer ? 'keyboard_arrow_left' : 'keyboard_arrow_right'"
             class="absolute-center"
@@ -149,7 +140,6 @@
   </q-layout>
 </template>
 <script>
-import axios from "axios";
 import { AuthService } from "../../../services/auth.service";
 import { required, minLength, between } from "vuelidate/lib/validators";
 import NotifyService from "../../../services/notify.service";

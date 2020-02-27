@@ -25,10 +25,14 @@ const AuthService = {
         store.dispatch("auth/setUserDetails", token);
         store.dispatch("common/setLang", credentials.lang.value); // set lang
         TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
-        //await DictService.loadAll();
+        await DictService.loadAll();
+        //=== currentMenus
+        let menus = JSON.stringify(store.getters['dicts/getMenuList']);
+        let b64EncodedMenus = Buffer.from(menus).toString('base64');
+        TokenService.setKey('menus', b64EncodedMenus);
+        //
         store.dispatch("auth/loginSuccess", token);
         //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
-        //ApiService.mount401Interceptor();
         router.push(router.history.current.query.redirect || "/");
         callback(true);
       } else {
@@ -39,6 +43,14 @@ const AuthService = {
         callback(false);
       }
     } catch (e) {
+      //? clear all init data
+      // let response = await this.clearTokenFromCache(store.getters['auth/token']);
+      // TokenService.removeToken();
+      // ApiService.removeHeader();
+      // TokenService.removeKeyFromCookies("lang")
+      // ApiService.unmount401Interceptor();
+      // store.dispatch("dicts/setIsAllSet", false);
+      //
       if (e instanceof AuthenticationError) {
         store.dispatch("auth/loginError", {
           errorCode: e.errorCode,
@@ -75,9 +87,6 @@ const AuthService = {
   logout: async function () {
 
     let response = await this.clearTokenFromCache(store.getters['auth/token']);
-    console.log({
-      "logout clear token": response
-    });
     TokenService.removeToken();
     ApiService.removeHeader();
     TokenService.removeKeyFromCookies("lang")
