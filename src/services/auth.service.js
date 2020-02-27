@@ -27,8 +27,7 @@ const AuthService = {
         TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
         await DictService.loadAll();
         //=== currentMenus
-        let menus = JSON.stringify(store.getters['dicts/getMenuList']);
-        let b64EncodedMenus = Buffer.from(menus).toString('base64');
+        let b64EncodedMenus = btoa(unescape(encodeURIComponent(JSON.stringify(store.getters['dicts/getMenuList']))));
         TokenService.setKey('menus', b64EncodedMenus);
         //
         store.dispatch("auth/loginSuccess", token);
@@ -89,7 +88,8 @@ const AuthService = {
     let response = await this.clearTokenFromCache(store.getters['auth/token']);
     TokenService.removeToken();
     ApiService.removeHeader();
-    TokenService.removeKeyFromCookies("lang")
+    TokenService.removeKeyFromCookies("lang");
+    TokenService.removeKey('menus');
     ApiService.unmount401Interceptor();
     store.dispatch("dicts/setIsAllSet", false);
     //SocketService.stopConnection();

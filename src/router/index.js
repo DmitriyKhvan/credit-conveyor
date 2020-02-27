@@ -6,6 +6,9 @@ import ApiService from './../services/api.service';
 import routes from "./routes";
 import store from './../store/index';
 import CommonUtils from "../shared/utils/CommonUtils";
+import {
+  AuthService
+} from "../services/auth.service";
 
 Vue.use(VueRouter);
 
@@ -51,10 +54,19 @@ router.beforeEach(async (to, from, next) => {
 
   //* check router path by user role
   if (isLoggedIn) {
-    let menus = JSON.parse(Buffer.from(TokenService.getKey('menus'), 'base64').toString());
-    if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
-      if (to.path !== '/404')
-        return next('/404')
+    // let menus = JSON.parse(atob((TokenService.getKey('menus')).toString()));
+    console.log({
+      ismenuexist: TokenService.isKeyExist('menus')
+    })
+    if (TokenService.isKeyExist('menus')) {
+      var menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
+      // console.log(menus)
+      if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
+        if (to.path !== '/404')
+          return next('/404')
+      }
+    } else {
+      AuthService.logout();
     }
   }
 
