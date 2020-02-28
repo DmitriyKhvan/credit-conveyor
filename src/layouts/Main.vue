@@ -3,6 +3,7 @@
     <s-header />
     <s-leftbar />
     <s-content />
+    <s-footer />
   </q-layout>
 </template>
 
@@ -13,7 +14,8 @@ export default {
   components: {
     SHeader: () => import("./Header"),
     SLeftbar: () => import("./Leftbar"),
-    SContent: () => import("./Content")
+    SContent: () => import("./Content"),
+    SFooter: () => import("./Footor")
   },
 
   data() {

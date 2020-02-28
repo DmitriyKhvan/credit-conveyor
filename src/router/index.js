@@ -54,10 +54,6 @@ router.beforeEach(async (to, from, next) => {
 
   //* check router path by user role
   if (isLoggedIn) {
-    // let menus = JSON.parse(atob((TokenService.getKey('menus')).toString()));
-    console.log({
-      ismenuexist: TokenService.isKeyExist('menus')
-    })
     if (TokenService.isKeyExist('menus')) {
       var menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
       // console.log(menus)

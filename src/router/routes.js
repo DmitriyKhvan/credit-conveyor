@@ -57,7 +57,7 @@ const routes = [{
     path: "/",
     redirect: "/home",
     component: MainContainer,
-    name: "main",
+    name: "Main",
     meta: {
       requiresAuth: true
     },
@@ -87,11 +87,11 @@ const routes = [{
           },
           {
             path: "task",
-            name: "my tasks",
+            name: "My Tasks",
             component: Tasks,
             children: [{
               path: "list",
-              name: "tasklist",
+              name: "Task List",
               component: TasksList
             }]
           },
@@ -101,27 +101,27 @@ const routes = [{
             component: Credit,
             children: [{
                 path: "application",
-                name: "application",
+                name: "Application",
                 component: Applicaion
               },
               {
                 path: "taskQueue",
-                name: "taskQueue",
+                name: "Task Queue",
                 component: TaskQueue
               },
               {
                 path: "creditCommiteeTask",
-                name: "CreditCommiteeTask",
+                name: "Credit Commitee Task",
                 component: CreditCommiteeTask
               },
               {
                 path: "registration",
-                name: "registration",
+                name: "Registration",
                 component: CreditReg
               },
               {
                 path: 'profile',
-                name: 'profile',
+                name: 'Profile',
                 component: CreditProfile
               }
             ]
@@ -154,7 +154,7 @@ const routes = [{
           },
           {
             path: "selfdev",
-            name: "SelfDeveloper",
+            name: "Self Developer",
             component: SelfDevPage,
             children: [{
                 path: "topicPage",
@@ -163,17 +163,17 @@ const routes = [{
               },
               {
                 path: "questionPage",
-                name: "addEditQuestion",
+                name: "Add Edit Question",
                 component: QuestionPage
               },
               {
                 path: "testPage",
-                name: "addEditTest",
+                name: "Add Edit Test",
                 component: TestPage
               },
               {
                 path: "monitoringPage",
-                name: "addEditMonitoring",
+                name: "Add Edit Monitoring",
                 component: MonitoringPage
               }
             ]
@@ -202,12 +202,12 @@ const routes = [{
       },
       {
         path: "selfdev",
-        name: "TestList",
+        name: "Test List",
         component: TestList
       },
       {
         path: "completeTest",
-        name: "CompleteTest",
+        name: "Complete Test",
         component: CompleteTest,
         props: true
       },
