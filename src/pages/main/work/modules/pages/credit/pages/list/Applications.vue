@@ -33,7 +33,7 @@
               label="Статус"
             />
           </th>
-          <th class="text-right">
+          <th class="text-right" colspan="2">
             <q-input
               outlined
               square
@@ -59,28 +59,31 @@
               </template>
             </q-input>
           </th>
-          <th class="text-left"></th>
+          
         </tr>
 
-        <tr class="titleApplication">
+        <tr 
+         
+          class="titleApplication"
+        >
           <th class="text-center number"><span>№</span></th>
           <th class="text-left application">
-            <button class="filter">
+            <button class="filter" idx="applicationNumber">
               Заявка
             </button>
           </th>
           <th class="text-left client">
-            <button class="filter">
+            <button class="filter" idx="clientName">
               Клиент
             </button>
           </th>
           <th class="text-left status">
-            <button class="filter">
+            <button class="filter" idx="applicationStatus">
               Статус
             </button>
           </th>
           <th class="text-left date">
-            <button class="filter">
+            <button class="filter" idx="modifiedDate">
               Дата
             </button>
           </th>
@@ -90,7 +93,7 @@
       <tbody>
         
         
-        <tr v-for="(item, index) of data.applications" :key="item.id"> 
+        <tr v-for="(item, index) of applications" :key="item.id"> 
           
           <router-link 
             :to="{
@@ -99,46 +102,68 @@
               query: {
                 date: item.modifiedDate,
                 applicationNumber: item.applicationNumber,
-                //protocolNumber: item.additionalInfo.protocolNumber
+                protocolNumber: item.additionalInfo ? item.additionalInfo.protocolNumber : null
                 }
             }" 
             tag="td" 
             class="text-center number applicationRow"
-          >
-            {{index + 1}}
-          </router-link>
+          >{{index + 1}}</router-link>
+          
           <router-link 
             :to="'creditCommiteeTask/' + item.id" 
             tag="td" 
-            class="text-center number applicationRow"
-          >
-            {{item.applicationNumber}}
-          </router-link>
+            class="text-left number applicationRow"
+          >{{item.applicationNumber}}</router-link>
+
           <router-link 
             :to="'creditCommiteeTask/' + item.id" 
             tag="td" 
-            class="text-center number applicationRow"
-          >
-            {{item.clientName}}
-          </router-link>
+            class="text-left number applicationRow"
+          >{{item.clientName}}</router-link>
+
           <router-link 
             :to="'creditCommiteeTask/' + item.id" 
             tag="td" 
-            class="text-center number applicationRow"
-          >
-            {{item.applicationStatus}}
-          </router-link>
+            class="text-left number applicationRow"
+          >{{item.applicationStatus}}</router-link>
+
           <router-link 
             :to="'creditCommiteeTask/' + item.id" 
             tag="td" 
-            class="text-center number applicationRow"
-          >
-            {{item.modifiedDate}}
-          </router-link>
+            class="text-left number applicationRow"
+          >{{item.modifiedDate}}</router-link>
+
           <td class="text-left print">
             <div class="text-blue q-gutter-md">
-              <q-icon name="print" size="md" />
-              <q-icon name="cloud_download" size="md" />
+              
+
+              <router-link  
+                to="/work/credit/registration"
+                tag="span"
+                class="icon"
+              >
+                <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
+                <q-icon name="print" size="md" />
+                <!--  -->
+                <q-tooltip anchor="bottom left" self="top left">
+                  Распечатать файл
+                </q-tooltip>
+              </router-link>
+
+              <router-link  
+                to="/work/credit/registration"
+                tag="span"
+                class="icon"
+              >
+                <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
+                <q-icon name="cloud_download" size="md" />
+                <!--  -->
+                <q-tooltip anchor="bottom left" self="top left">
+                  Скачать файл
+                </q-tooltip>
+              </router-link>
+
+              
             </div>
           </td>
           
@@ -157,7 +182,156 @@ export default {
   data() {
     return {
       bpmService: new BpmService(),
-      data: {},
+      data: {
+	"applications": [
+		{
+			"id":185,
+			"applicationId":"225",
+			"businessProcessCode":"UNSECURITY_LOAN",
+			"applicationNumber":"00844/000000121/54/2020/10",
+			"branch":"00844",
+			"applicationStatus":"Формирование выписки секретарем",
+			"clientName":"Elena Elena Elena",
+			"clientInn":"111111111",
+			"modifiedDate":"2020-02-14 12:22:54.001",
+			"users":[
+				{
+					"userLogin":"km_user1",
+					"userName":"km_user1",
+					"nfoRole":"KM",
+					"bpmRole":"ROLE_KM_FL"
+				},{
+					"userLogin":"secretary2",
+					"userName":"secretary2",
+					"nfoRole":"SECCC",
+					"bpmRole":"ROLE_SECRETARY_CC"
+				},{
+					"userLogin":"bo_user1",
+					"userName":"bo_user1",
+					"nfoRole":"BO",
+					"bpmRole":"ROLE_BO"
+				},{
+					"userLogin":"kk_member2",
+					"userName":"Дубов Петр Иванович",
+					"nfoRole":"CC",
+					"bpmRole":"ROLE_CC"
+				},{
+					"userLogin":"kk_member3",
+					"userName":"Раков Петр Иванович",
+					"nfoRole":"CC",
+					"bpmRole":"ROLE_CC"
+				}
+			],
+			"additionalInfo":{
+				"protocolNumber":"00844/2/2020/4",
+				"protocolStatus":"signed",
+				"protocolCountMember":2,
+				"protocolTotalCountMember":2
+			}
+		},
+		{
+			"id":154,
+			"applicationId":"182",
+			"businessProcessCode":"UNSECURITY_LOAN",
+			"applicationNumber":"00844/000000062/35/2020/7",
+			"branch":"00844",
+			"applicationStatus":"eДоработка заявки",
+			"clientName":"Petrov Ivanovovich",
+			"clientInn":"111111111",
+			"modifiedDate":"2020-03-18 17:30:14.689",
+			"users":[
+				{
+					"userLogin":"km_user1",
+					"userName":"km_user1",
+					"nfoRole":"KM",
+					"bpmRole":"ROLE_KM_FL"
+				},{
+					"userLogin":"bo_user1",
+					"userName":"bo_user1",
+					"nfoRole":"BO",
+					"bpmRole":"ROLE_BO"
+				}
+			]
+    },
+    
+    {
+			"id":155,
+			"applicationId":"182",
+			"businessProcessCode":"UNSECURITY_LOAN",
+			"applicationNumber":"00844/000000062/35/2020/7",
+			"branch":"00844",
+			"applicationStatus":"Доработка заявки",
+			"clientName":"TIMUR TIMUR TIMUR",
+			"clientInn":"111111111",
+			"modifiedDate":"2020-02-18 17:30:14.689",
+			"users":[
+				{
+					"userLogin":"km_user1",
+					"userName":"km_user1",
+					"nfoRole":"KM",
+					"bpmRole":"ROLE_KM_FL"
+				},{
+					"userLogin":"bo_user1",
+					"userName":"bo_user1",
+					"nfoRole":"BO",
+					"bpmRole":"ROLE_BO"
+				}
+			]
+    },
+    
+    {
+			"id":156,
+			"applicationId":"182",
+			"businessProcessCode":"UNSECURITY_LOAN",
+			"applicationNumber":"00846/000000062/35/2020/7",
+			"branch":"00844",
+			"applicationStatus":"Доработка заявки",
+			"clientName":"TIMUR Alisher TIMUR",
+			"clientInn":"111111111",
+			"modifiedDate":"05.04.2020",
+			"users":[
+				{
+					"userLogin":"km_user1",
+					"userName":"km_user1",
+					"nfoRole":"KM",
+					"bpmRole":"ROLE_KM_FL"
+				},{
+					"userLogin":"bo_user1",
+					"userName":"bo_user1",
+					"nfoRole":"BO",
+					"bpmRole":"ROLE_BO"
+				}
+			]
+    },
+    
+    {
+			"id":157,
+			"applicationId":"182",
+			"businessProcessCode":"UNSECURITY_LOAN",
+			"applicationNumber":"00846/000000062/35/2020/7",
+			"branch":"00844",
+			"applicationStatus":"rПроверка заявки",
+			"clientName":"TIMUR Alisher TIMUR",
+			"clientInn":"111111111",
+			"modifiedDate":"05.02.2020",
+			"users":[
+				{
+					"userLogin":"km_user1",
+					"userName":"km_user1",
+					"nfoRole":"KM",
+					"bpmRole":"ROLE_KM_FL"
+				},{
+					"userLogin":"bo_user1",
+					"userName":"bo_user1",
+					"nfoRole":"BO",
+					"bpmRole":"ROLE_BO"
+				}
+			]
+		}
+	],
+	"total":2
+},
+     // keys: [],
       application: "",
       client: "",
       manager: "",
@@ -195,13 +369,13 @@ export default {
         "method": "string"
       }
     }
-
-    //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjE3MCIsImZ1bGxfbmFtZSI6IkFrYmFyb3YgTWFzaHJhYmJlayBNdWh0YXJhbGkgdWdsaSIsInJvbGVzIjpbMl0sImVtcF9pZCI6MTY0MTUsImxpZmVfdGltZSI6MTU4Mjc2MTE5OSwibWVudXMiOlt7Im1lbnVfaWQiOjUsInBhcmVudF9pZCI6bnVsbCwibmFtZSI6ItCT0LvQsNCy0L3QsNGPIiwidXJsIjoiL2hvbWUiLCJpY29uIjoib19ob21lIiwib3JkIjowLCJsdmwiOjAsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjYsInBhcmVudF9pZCI6bnVsbCwibmFtZSI6ItCQ0LTQvNC40L3RgdC60LDRjyIsInVybCI6Ii9hZG1pbiIsImljb24iOiJvX3BvbGljeSIsIm9yZCI6MSwibHZsIjowLCJjaGlsZHJlbiI6W3sibWVudV9pZCI6NywicGFyZW50X2lkIjo2LCJuYW1lIjoi0J_QvtC70YzQt9C-0LLQsNGC0LXQu9C4IiwidXJsIjoiL2FkbWluL3VzZXJzIiwiaWNvbiI6Im9fc3VwZXJ2aXNvcl9hY2NvdW50Iiwib3JkIjoxLCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjgsInBhcmVudF9pZCI6NiwibmFtZSI6ItCg0L7Qu9C4IiwidXJsIjoiL2FkbWluL3JvbGVzIiwiaWNvbiI6Im9fZ3JvdXBfYWRkIiwib3JkIjoyLCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjksInBhcmVudF9pZCI6NiwibmFtZSI6ItCc0LXQvdGOIiwidXJsIjoiL2FkbWluL21lbnVzIiwiaWNvbiI6Im9fcGxheWxpc3RfYWRkIiwib3JkIjozLCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjEwLCJwYXJlbnRfaWQiOjYsIm5hbWUiOiLQodC_0YDQsNCy0L7Rh9C90LjQutC4IiwidXJsIjoiL2FkbWluL2RpY3Rpb25hcmllcyIsImljb24iOiJvX2Jvb2siLCJvcmQiOjQsImx2bCI6MSwiY2hpbGRyZW4iOm51bGx9LHsibWVudV9pZCI6MjksInBhcmVudF9pZCI6NiwibmFtZSI6ItCh0LDQvNC-0YDQsNC30LLQuNGC0LjQtSIsInVybCI6Ii9hZG1pbi9zZWxmZGV2IiwiaWNvbiI6Im9fc2Nob29sIiwib3JkIjo1LCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfV19LHsibWVudV9pZCI6MywicGFyZW50X2lkIjpudWxsLCJuYW1lIjoi0JzQvtGPINGA0LDQsdC-0YLQsCIsInVybCI6Ii93b3JrIiwiaWNvbiI6Im9fd29ya19vdXRsaW5lIiwib3JkIjozLCJsdmwiOjAsImNoaWxkcmVuIjpbeyJtZW51X2lkIjoxOSwicGFyZW50X2lkIjozLCJuYW1lIjoi0JfQsNC00LDRh9C4IiwidXJsIjoiL3dvcmsvdGFzay9saXN0IiwiaWNvbiI6bnVsbCwib3JkIjoxLCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjE0LCJwYXJlbnRfaWQiOjMsIm5hbWUiOiLQn9C-0LzQvtGI0L3QuNC6IiwidXJsIjoiL3dvcmsvYXNzaXN0YW50IiwiaWNvbiI6bnVsbCwib3JkIjoyLCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjE1LCJwYXJlbnRfaWQiOjMsIm5hbWUiOiLQmtCw0L3RhtC10LvQsNGA0LjRjyIsInVybCI6Ii93b3JrL2NoYW5jZWxsYXJ5IiwiaWNvbiI6bnVsbCwib3JkIjozLCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjIwLCJwYXJlbnRfaWQiOjMsIm5hbWUiOiLQmtGA0LXQtNC40YLRiyIsInVybCI6Ii93b3JrL2NyZWRpdCIsImljb24iOm51bGwsIm9yZCI6NCwibHZsIjoxLCJjaGlsZHJlbiI6W3sibWVudV9pZCI6MzMsInBhcmVudF9pZCI6MjAsIm5hbWUiOiLQntGH0LXRgNC10LTRjCDQt9Cw0LTQsNGHIiwidXJsIjoiL3dvcmsvY3JlZGl0L3Rhc2tRdWV1ZSIsImljb24iOm51bGwsIm9yZCI6MSwibHZsIjoyfSx7Im1lbnVfaWQiOjM0LCJwYXJlbnRfaWQiOjIwLCJuYW1lIjoi0JfQsNC00LDRh9C4INC60YDQtdC00LjRgtC90L7Qs9C-INC60L7QvNC40YLQtdGC0LAiLCJ1cmwiOiIvd29yay9jcmVkaXQvY3JlZGl0Q29tbWl0ZWVUYXNrIiwiaWNvbiI6bnVsbCwib3JkIjoxLCJsdmwiOjJ9LHsibWVudV9pZCI6MzIsInBhcmVudF9pZCI6MjAsIm5hbWUiOiLQntGH0LXRgNC10LTRjCDQt9Cw0Y_QstC-0LoiLCJ1cmwiOiIvd29yay9jcmVkaXQvYXBwbGljYXRpb25zIiwiaWNvbiI6bnVsbCwib3JkIjoxLCJsdmwiOjJ9LHsibWVudV9pZCI6MzEsInBhcmVudF9pZCI6MjAsIm5hbWUiOiLQl9Cw0Y_QstC60LAg0L3QsCDQutGA0LXQtNC40YIiLCJ1cmwiOiIvd29yay9jcmVkaXQvcHJvZmlsZSIsImljb24iOm51bGwsIm9yZCI6MSwibHZsIjoyfSx7Im1lbnVfaWQiOjMwLCJwYXJlbnRfaWQiOjIwLCJuYW1lIjoi0KHQvtC30LTQsNGC0Ywg0LfQsNGP0LLQutGDIiwidXJsIjoiL3dvcmsvY3JlZGl0L3JlZ2lzdHJhdGlvbiIsImljb24iOm51bGwsIm9yZCI6MSwibHZsIjoyfV19XX0seyJtZW51X2lkIjo0LCJwYXJlbnRfaWQiOm51bGwsIm5hbWUiOiLQmNCiLdGA0LDQt9C00LXQuyIsInVybCI6Ii9pdCIsImljb24iOiJvX2NvbXB1dGVyIiwib3JkIjo0LCJsdmwiOjAsImNoaWxkcmVuIjpbeyJtZW51X2lkIjoxMywicGFyZW50X2lkIjo0LCJuYW1lIjoi0JjQvdGB0YLRgNGD0LzQtdC90YLRiyIsInVybCI6Ii9pdC9kZXZpY2VzIiwiaWNvbiI6bnVsbCwib3JkIjoxLCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjE3LCJwYXJlbnRfaWQiOjQsIm5hbWUiOiLQo9GH0LXRgiDQn9CaIiwidXJsIjoiL2l0L3BjaW5mbyIsImljb24iOm51bGwsIm9yZCI6MiwibHZsIjoxLCJjaGlsZHJlbiI6bnVsbH1dfSx7Im1lbnVfaWQiOjEyLCJwYXJlbnRfaWQiOm51bGwsIm5hbWUiOiLQn9C-0YfRgtCwIiwidXJsIjoiL21haWwiLCJpY29uIjoib19lbWFpbCIsIm9yZCI6NSwibHZsIjowLCJjaGlsZHJlbiI6bnVsbH0seyJtZW51X2lkIjoxOCwicGFyZW50X2lkIjpudWxsLCJuYW1lIjoi0KfQsNGCIiwidXJsIjoiL2NoYXQiLCJpY29uIjoib19tZXNzYWdlIiwib3JkIjo2LCJsdmwiOjAsImNoaWxkcmVuIjpudWxsfSx7Im1lbnVfaWQiOjIxLCJwYXJlbnRfaWQiOm51bGwsIm5hbWUiOiLQmNC90YHRgtGA0YPQvNC10L3RgtGLIiwidXJsIjoiL3Rvb2xzIiwiaWNvbiI6Im9fYXBwcyIsIm9yZCI6NywibHZsIjowLCJjaGlsZHJlbiI6W3sibWVudV9pZCI6MjIsInBhcmVudF9pZCI6MjEsIm5hbWUiOiLQotC10LsuINGB0L_RgNCw0LLQvtGH0L3QuNC6IiwidXJsIjoiL3Rvb2xzL3Bob25lcyIsImljb24iOiJjb250YWN0X3Bob25lIiwib3JkIjo3LCJsdmwiOjEsImNoaWxkcmVuIjpudWxsfV19LHsibWVudV9pZCI6MjgsInBhcmVudF9pZCI6bnVsbCwibmFtZSI6ItCh0LDQvNC-0YDQsNC30LLQuNGC0LjQtSIsInVybCI6Ii9zZWxmZGV2IiwiaWNvbiI6Im9fc2Nob29sIiwib3JkIjo4LCJsdmwiOjAsImNoaWxkcmVuIjpudWxsfV0sImlhdCI6MTU4MjcxNzk5OSwiZXhwIjoxNTgyNzIxNTk5fQ.l15RsGxSp6qN1uPhTrB86bgDlbHygNZWSxHwjh0_C24"
     
     this.bpmService.getCreditList(data)
       .then(res => {
         console.log('Ответ', res)
-        this.data = res
+        //this.data = res
+        // this.keys = Object.keys(res.applications[0])
+        // console.log(this.keys)
       })
       .catch(err => {
         console.log('Ошибка', err)
@@ -211,17 +385,81 @@ export default {
   mounted() {
     const filters = document.querySelectorAll('.filter')
     for (let filter of filters) {
-      filter.addEventListener('click', () => this.toggleFiler(filter))
+      filter.addEventListener('click', () => this.toggleFilter(filter))
+    }
+  },
+  computed: {
+    // Фильтры
+    applications() {
+      
+      return this.data.applications.filter(task => {
+        let conditions = [true];
+        if (this.application.length > 0) {
+          conditions.push(task.applicationNumber.indexOf(this.application) > -1);
+        }
+
+        if (this.client.length > 0) {
+          console.log(task)
+          conditions.push(task.clientName.indexOf(this.client) > -1);
+        }
+
+        if (this.date.length > 0) {
+          conditions.push(task.modifiedDate.indexOf(this.date) > -1);
+        }
+
+        // if (this.task.length > 0) {
+        //   conditions.push(task.indexOf(this.task) > -1);
+        // }
+
+        if (this.status.length > 0) {
+          conditions.push(task.applicationStatus.indexOf(this.status) > -1);
+        }
+
+        return conditions.every(condition => condition);
+      });
     }
   },
   methods: {
-    toggleFiler(event) {
+    toggleFilter(event) {
+      console.log('индекс', event.getAttribute("idx"))
+      const idx = event.getAttribute("idx")
       for(let item of document.querySelectorAll('.active')) {
         if (item !== event) {
           item.classList.remove('active')
         }
       }
       event.classList.toggle("active");
+      if ( event.classList.contains('active')) {
+        this.sortValue(idx)
+      } else {
+        this.sortValue(idx, false)
+      }
+    },
+
+    sortValue(idx, order = true) {
+      //console.log(this.data)
+      this.data.applications.sort((a,b) => {
+        const itemA = a[idx]
+        const itemB = b[idx]
+        if(order) { //
+          if (itemA < itemB) {
+            return -1
+          }
+          if (itemA > itemB) {
+            return 1
+          }
+        } else {
+          if (itemB < itemA) {
+            return -1
+          }
+          if (itemB > itemA) {
+            return 1
+          }
+        } 
+        
+        return 0
+      })
+       
     }
   }
 };
@@ -275,6 +513,7 @@ td {
 }
 
 .filter {
+  position: relative;
   width: 100%;
   height: 40px;
   border: none;
@@ -285,29 +524,48 @@ td {
   font-size: 16px;
 
   &:after {
+    position: absolute;
+    right: 15px;
+    bottom: 5px;
     content: "";
     float: right;
     border: 1px solid $blue;
     border-width: 0 3px 3px 0;
-    padding: 4px;
-    margin-top: 4px;
+    padding: 3px;
     transform: rotate(45deg);
   }
-}
 
-.active {
-  &:after {
+  &:before {
+    position: absolute;
+    right: 15px;
+    top: 5px;
     content: "";
     float: right;
     border: 1px solid $blue;
     border-width: 0 3px 3px 0;
-    padding: 4px;
-    margin-top: 4px;
+    padding: 3px;
     transform: rotate(-135deg);
   }
 }
 
+.active {
+  // &:after {
+  //   content: "";
+  //   float: right;
+  //   border: 1px solid $blue;
+  //   border-width: 0 3px 3px 0;
+  //   padding: 4px;
+  //   margin-top: 4px;
+  //   transform: rotate(-135deg);
+  // }
+}
+
 .applicationRow {
+  cursor: pointer;
+}
+
+.icon {
+  display: inline-block;
   cursor: pointer;
 }
 </style>

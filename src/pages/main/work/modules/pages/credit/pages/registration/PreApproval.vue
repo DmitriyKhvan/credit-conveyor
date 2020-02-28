@@ -9,7 +9,7 @@
             <table class="creditTable" align="center">
               <tr>
                 <td>Eжемесячный доход </td>
-                <td>{{ preApprovalData.income | formatNumber}} сум</td>
+                <td>{{ personalData.income | formatNumber}} сум</td>
               </tr>
               <tr>
                 <td>Расходы</td>

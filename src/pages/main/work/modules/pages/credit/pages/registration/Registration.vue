@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md row justify-center">
-    <form @submit.prevent.stop="onSubmit">
-    <div class="row q-gutter-md" style="width: 1110px">
+    <form @submit.prevent.stop="onSubmit" style="width: 70%">
+    <div class="row q-gutter-md">
       
         <div class="col-7">
         
@@ -479,6 +479,8 @@ export default {
 
         this.$store.commit("toggleConfirm", true);
         this.$store.commit("creditConfirm", resp);
+
+        console.log('jjjj', this.personalData)
        
       }
     }
@@ -528,10 +530,6 @@ export default {
     margin-bottom: 15px;
   }
 
-  .q-field__bottom {
-    padding: 1px 0 0 10px;
-  }
-
   .q-btn--rectangle {
     border-radius: 0;
   }
@@ -547,9 +545,9 @@ export default {
 </style>
 
  <style lang="scss">
-//   .q-field__bottom {
-//     padding: 1px 0 0 10px;
-//   }
+  .q-field__bottom {
+    padding: 1px 0 0 10px;
+  }
 
 //   .q-btn--rectangle {
 //     border-radius: 0;
