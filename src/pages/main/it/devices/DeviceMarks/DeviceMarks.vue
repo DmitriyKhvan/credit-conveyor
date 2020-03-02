@@ -6,7 +6,7 @@
 
 <script>
 import GridTable from "./../../../../../components/GridTable";
-import AddEditDeviceMark from "./../dialogs/AddEditDeviceMark";
+import AddEditDeviceMark from "./dialogs/AddEditDeviceMark";
 
 import { Dialog } from "quasar";
 import ApiService from "./../../../../../services/api.service";

@@ -40,8 +40,8 @@ const CompleteTest = () => import("pages/main/work/modules/pages/test/CompleteTe
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
 
-const It = () => import("pages/main/it/Index");
-const Devices = () => import("pages/main/it/devices/Index");
+const It = () => import("pages/main/it/It");
+const Devices = () => import("pages/main/it/devices/Devices");
 
 //education
 const TopicPage = () =>

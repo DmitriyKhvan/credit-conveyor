@@ -13,35 +13,17 @@
       <q-card-section>
         <div class="q-gutter-y-sm q-gutter-x-md column">
           <div class="row">
-            <q-select
-              outlined
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.type_id"
-              :options="typesList"
-              stack-label
-              option-value="value"
-              option-label="text"
-              emit-value
-              map-options
-              :label="$t('tables.device_types.type_id')"
-              @input="$v.details.type_id.$touch()"
-              :rules="[
-                val =>
-                  $v.details.type_id.required || 'Type is required'
-              ]"
-              lazy-rules
-            />
             <q-input
               outlined
               clearable
               color="purple-12"
               class="col-xs-12 col-sm-12 col-md-12"
               v-model="details.name"
-              label="Device Characterestics Name"
+              label="Device Mark"
               @input="$v.details.name.$touch()"
               :rules="[
                 val =>
-                  $v.details.name.required || 'Name is required'
+                  $v.details.name.required || 'Device Mark is required'
               ]"
               lazy-rules
             />
@@ -60,8 +42,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../../services/notify.service";
-import dialogMix from "./../../../../../shared/mixins/dialogMix";
+import NotifyService from "./../../../../../../services/notify.service";
+import dialogMix from "./../../../../../../shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -69,18 +51,15 @@ import {
   between,
   email
 } from "vuelidate/lib/validators";
-import ApiService from "../../../../../services/api.service";
 export default {
   data() {
     return {
       isLoading: this.$store.getters["common/getLoading"],
       isValidated: true,
-      typesList: [],
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
-        name: null,
-        type_id: null
+        name: null
       }
     };
   },
@@ -88,9 +67,6 @@ export default {
     details: {
       id: {},
       name: {
-        required
-      },
-      type_id: {
         required
       }
     }
@@ -104,29 +80,8 @@ export default {
     }
   },
   mixins: [dialogMix],
-  created() {
-    Promise.all([this.deviceDetailsList()]).then(x => {
-      this.typesList = x[0];
-    });
-  },
-  methods: {
-    deviceDetailsList() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("devices/type")
-          .then(response => {
-            resolve(
-              response.data.map(elem => {
-                return { text: elem.name[1], value: elem.id };
-              })
-            );
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      });
-    }
-  },
-  computed: {}
+  created() {},
+  methods: {}
 };
 </script>
 
