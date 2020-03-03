@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Header</div>
+          <div class="text-h6">{{data.caption}}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -14,17 +14,17 @@
         <q-table
           :dense="$q.screen.lt.md"
           :grid="$q.screen.xs"
-          :title="caption"
           :data="itemsArray"
           :columns="fields"
-          :[selectionKey]="selectMode"
+          :selection="data.selectMode"
           :selected.sync="selectedRows"
-          :row-key="rowId"
+          :row-key="data.rowId"
           :visible-columns="visibleColumns"
           :pagination.sync="defaultPaginationConfig"
           :filter="filter"
           :loading="loading"
         >
+          <q-space />
           <template v-slot:loading>
             <q-inner-loading showing color="primary" />
           </template>
@@ -37,9 +37,10 @@
           </template>
         </q-table>
       </q-card-section>
+      <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="!isSelected" label="Ok" @click="onOkClick">
-          <q-spinner color="white" size="1em" v-show="isLoading" />
+        <q-btn color="primary" label="Ok" @click="onOkClick">
+          <!-- <q-spinner color="white" size="1em" v-show="true" /> -->
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
       </q-card-actions>
@@ -55,48 +56,50 @@ export default {
   async created() {
     await this.initialize();
   },
-  mixins: [dialogMix],
+  mixins: [],
   props: {
-    caption: {
-      type: String,
-      default: "Table"
-    },
-    tablePath: {
-      type: String,
-      default: "auth/users"
-    }, // url,
-    rowId: {
-      type: String,
-      default: "user_id"
-    },
-    defaultSort: {
-      type: [Array, Object],
-      default: () => []
-    },
-    excludedColumns: {
-      type: Array,
-      default: () => []
-    },
-    excludeSortingColoumns: {
-      type: Array,
-      default: () => []
-    },
-    selectMode: {
-      type: String,
-      default: "single"
-    },
-    paginationConfig: {
-      type: Object,
-      default: () => {
-        return {};
+    data: {
+      caption: {
+        type: String,
+        default: "Table"
+      },
+      tablePath: {
+        type: String,
+        default: "auth/users"
+      }, // url,
+      rowId: {
+        type: String,
+        default: "user_id"
+      },
+      defaultSort: {
+        type: [Array, Object],
+        default: () => []
+      },
+      excludedColumns: {
+        type: Array,
+        default: () => []
+      },
+      excludeSortingColoumns: {
+        type: Array,
+        default: () => []
+      },
+      selectMode: {
+        type: String,
+        default: "single"
+      },
+      paginationConfig: {
+        type: Object,
+        default: () => {
+          return {};
+        }
+      },
+      filterColumn: {
+        type: [Array, Object],
+        default: () => []
       }
-    },
-    filterColumn: {
-      type: [Array, Object],
-      default: () => []
     }
   },
-  data() {
+  data: function() {
     return {
       itemsArray: [],
       fields: [],
@@ -136,11 +139,11 @@ export default {
       });
     },
     allTableData: function() {
-      return ApiService.get(this.tablePath)
+      return ApiService.get(this.data.tablePath)
         .then(res => {
           let data = res.data;
           // Filter step
-          this.filterColumn.forEach(param => {
+          this.data.filterColumn.forEach(param => {
             data = data.filter(item => {
               //console.log(item);
               return this.operators[param.operator](
@@ -157,7 +160,7 @@ export default {
           // filtering and sorting coloumns of table
           if (data.length > 0) {
             Object.keys(data[0]).map(async (k, index) => {
-              let sortable = this.excludeSortingColoumns.includes(k) //sortable filter
+              let sortable = this.data.excludeSortingColoumns.includes(k) //sortable filter
                 ? false
                 : true;
               this.fields.push({
@@ -169,7 +172,7 @@ export default {
                 field: k
               });
               // exluding check filter
-              if (!this.excludedColumns.includes(k)) {
+              if (!this.data.excludedColumns.includes(k)) {
                 this.visibleColumns.push(k);
               }
             });
@@ -179,6 +182,13 @@ export default {
           console.error(err);
         });
     },
+    async refreshTable() {
+      this.loading = true;
+      this.clearTableData();
+      await this.allTableData().then(_ => {
+        this.loading = false;
+      });
+    },
     clearTableData() {
       this.itemsArray = [];
       this.fields = [];
@@ -186,14 +196,44 @@ export default {
       this.selectedRows = [];
     },
     onOkClick() {
-      console.log("Ok Clicked");
+      console.log("ok clicked");
+      this.$emit("ok", this.selectedRows);
+      this.hide();
     },
     onCancelClick() {
-      console.log("Cancel Clicked");
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: this.$t("messages.confirm_exit"),
+          cancel: true,
+          persistent: true
+        })
+        .onOk(() => {
+          this.hide();
+        })
+        .onCancel(() => {
+          // console.log('>>>> Cancel')
+        });
+    },
+    // !!! Don't change
+    show() {
+      this.$refs.dialog.show();
+    },
+
+    // !!! Don't change
+    hide() {
+      this.$refs.dialog.hide();
+    },
+    onDialogHide() {
+      this.$emit("hide");
     }
   }
 };
 </script>
 
+<<<<<<< HEAD
 <style>
 </style>
+=======
+<style></style>
+>>>>>>> 9c9b8b514afe6fcc9da700a6793790439eba8f1c

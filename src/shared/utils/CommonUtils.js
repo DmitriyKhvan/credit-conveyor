@@ -28,18 +28,22 @@ export default {
     }
   },
   isValueExistInObject(arr, key, value) {
-    for (let k = 0; k < arr.length; k++) {
-      if (arr[k][key] == value) {
-        return true;
-      } else {
-        if (arr[k]['children'] != null) {
-          if (this.isValueExistInObject(arr[k]['children'], key, value)) {
-            return true;
-          }
-        } else continue;
+    if (arr !== null) {
+      for (let k = 0; k < arr.length; k++) {
+        if (arr[k][key] == value) {
+          return true;
+        } else {
+          if (arr[k]['children'] != null) {
+            if (this.isValueExistInObject(arr[k]['children'], key, value)) {
+              return true;
+            }
+          } else continue;
+        }
       }
+      return false;
+    } else {
+      return false
     }
-    return false;
   },
   getChildMenus(menus, url) {
     for (let i = 0; i < menus.length; i++) {
