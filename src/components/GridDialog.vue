@@ -231,9 +231,4 @@ export default {
 };
 </script>
 
-<<<<<<< HEAD
-<style>
-</style>
-=======
 <style></style>
->>>>>>> 9c9b8b514afe6fcc9da700a6793790439eba8f1c

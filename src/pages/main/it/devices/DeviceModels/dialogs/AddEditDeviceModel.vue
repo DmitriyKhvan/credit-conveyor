@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Header</div>
+          <div class="text-h6">Add Edit Device Model</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -242,6 +242,17 @@ export default {
   mixins: [dialogMix],
   created() {},
   methods: {
+    initializeData() {
+      if (!!this.data.selectedRow) {
+        this.details = this.data.selectedRow[0];
+        this.deviceTypeName = this.data.selectedRow[0].type_name;
+        this.deviceMarkName = this.data.selectedRow[0].mark_name;
+        this.data.selectedRow[0].details.forEach((element, index) => {
+          this.deviceDetailName[index] = element.detail_name;
+        });
+      }
+    },
+
     deleteDetailItem(index) {
       this.details.details.splice(index, 1);
     },
