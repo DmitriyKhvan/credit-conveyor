@@ -25,63 +25,62 @@
                   $v.details.name.required || 'Device Model Name is required'
               ]"
               lazy-rules
-            />
-            <q-select
+            ></q-input>
+            <!-- select types of devices -->
+            <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              v-model="details.type_id"
-              :options="typesList"
-              stack-label
-              option-value="value"
-              option-label="text"
-              emit-value
-              map-options
               label="Device Type"
+              :value="deviceTypeName"
+              @dblclick="selectDeviceType()"
+              readonly="readonly"
               :rules="[
                 val =>
                   $v.details.type_id.required || 'Type is required'
               ]"
               lazy-rules
-            />
+            >
+              <template v-slot:hint>Double Click</template>
+            </q-input>
+            <!--  -->
           </div>
           <div class="row">
-            <q-select
+            <!-- select mark of device -->
+            <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              v-model="details.mark_id"
-              :options="marksList"
-              stack-label
-              option-value="value"
-              option-label="text"
-              emit-value
-              map-options
               label="Device Mark"
+              :value="deviceMarkName"
+              @dblclick="selectDeviceMark()"
+              readonly="readonly"
               :rules="[
                 val =>
                   $v.details.mark_id.required || 'Mark is required'
               ]"
               lazy-rules
-            />
+            >
+              <template v-slot:hint>Double Click</template>
+            </q-input>
+            <!--  -->
           </div>
+
           <div class="row justify-between">
             <div class="text-h6">DETAILS</div>
           </div>
-          <!-- Device Models -->
 
+          <!-- Device Model Details -->
           <div class="row" v-for="(items, index) in details.details" :key="index">
             <div class="col-5">
-              <q-select
+              <q-input
                 outlined
                 class="col-xs-12 col-sm-12 col-md-6"
-                v-model="details.details[index].detail_id"
-                label="Select Detail"
-                :options="detailsList"
-                stack-label
-                option-value="value"
-                option-label="text"
-                emit-value
-                map-options
-              />
+                label="Device Detail"
+                :value="deviceDetailName[index]"
+                @dblclick="selectDeviceDetail(index)"
+                readonly="readonly"
+              >
+                <template v-slot:hint>Double Click</template>
+              </q-input>
             </div>
             <div class="col-5">
               <q-input
@@ -132,6 +131,8 @@
 <script>
 import NotifyService from "./../../../../../../services/notify.service";
 import dialogMix from "./../../../../../../shared/mixins/dialogMix";
+import GridDialog from "./../../../../../../components/GridDialog";
+
 import {
   required,
   requiredIf,
@@ -149,6 +150,9 @@ export default {
       typesList: [],
       marksList: [],
       detailsList: [],
+      deviceTypeName: null,
+      deviceMarkName: null,
+      deviceDetailName: [],
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
@@ -156,6 +160,57 @@ export default {
         type_id: null,
         mark_id: null,
         details: []
+      },
+      deviceTypeDialogProps: {
+        caption: "Device Types",
+        tablePath: "devices/type",
+        rowId: "id", //
+        defaultSort: [], // TODO
+        excludedColumns: [],
+        excludeSortingColoumns: [],
+        selectMode: "single",
+        paginationConfig: {
+          sortBy: "name",
+          descending: false,
+          page: 1,
+          rowsPerPage: 5
+          //rowsNumber: 4 // if getting data from a server
+        },
+        filterColumn: []
+      },
+      deviceMarkDialogProps: {
+        caption: "Device Marks",
+        tablePath: "devices/mark",
+        rowId: "id", //
+        defaultSort: [], // TODO
+        excludedColumns: [],
+        excludeSortingColoumns: [],
+        selectMode: "single",
+        paginationConfig: {
+          sortBy: "name",
+          descending: false,
+          page: 1,
+          rowsPerPage: 5
+          //rowsNumber: 4 // if getting data from a server
+        },
+        filterColumn: []
+      },
+      deviceDetailDialogProps: {
+        caption: "Device Detail",
+        tablePath: "devices/detail",
+        rowId: "id", //
+        defaultSort: [], // TODO
+        excludedColumns: [],
+        excludeSortingColoumns: [],
+        selectMode: "single",
+        paginationConfig: {
+          sortBy: "name",
+          descending: false,
+          page: 1,
+          rowsPerPage: 5
+          //rowsNumber: 4 // if getting data from a server
+        },
+        filterColumn: []
       }
     };
   },
@@ -173,6 +228,9 @@ export default {
       }
     }
   },
+  components: {
+    GridDialog
+  },
   props: {
     data: {
       type: Object,
@@ -182,78 +240,8 @@ export default {
     }
   },
   mixins: [dialogMix],
-  created() {
-    Promise.all([
-      this.deviceTypesListSelect(),
-      this.deviceMarksListSelect(),
-      this.deviceDetailsListSelect()
-    ]).then(x => {
-      this.typesList = x[0];
-      this.marksList = x[1];
-      this.detailsList = x[2];
-    });
-  },
+  created() {},
   methods: {
-    deviceTypesListSelect() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("devices/type")
-          .then(response => {
-            resolve(
-              response.data.map(elem => {
-                return { text: elem.name[1], value: elem.id };
-              })
-            );
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      });
-    },
-    deviceMarksListSelect() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("devices/mark")
-          .then(response => {
-            resolve(
-              response.data.map(elem => {
-                return { text: elem.name, value: elem.id };
-              })
-            );
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      });
-    },
-    deviceDetailsListSelect() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("devices/detail")
-          .then(response => {
-            resolve(
-              response.data.map(elem => {
-                return { text: elem.name, value: elem.id };
-              })
-            );
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      });
-    },
-    deviceDetailsList() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("devices/detail")
-          .then(response => {
-            resolve(
-              response.data.map(elem => {
-                return { text: elem.name, value: elem.id };
-              })
-            );
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      });
-    },
     deleteDetailItem(index) {
       this.details.details.splice(index, 1);
     },
@@ -265,6 +253,55 @@ export default {
       };
       this.details.details = this.details.details || [];
       this.details.details.push(aDetail);
+    },
+
+    selectDeviceType() {
+      this.$q
+        .dialog({
+          component: GridDialog,
+          parent: this,
+          data: this.deviceTypeDialogProps
+        })
+        .onOk(res => {
+          console.log(res);
+          this.deviceTypeName = res[0].name_ru;
+          this.details.type_id = res[0].id;
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        });
+    },
+    selectDeviceMark() {
+      this.$q
+        .dialog({
+          component: GridDialog,
+          parent: this,
+          data: this.deviceMarkDialogProps
+        })
+        .onOk(res => {
+          console.log(res);
+          this.deviceMarkName = res[0].name;
+          this.details.mark_id = res[0].id;
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        });
+    },
+    selectDeviceDetail(index) {
+      this.$q
+        .dialog({
+          component: GridDialog,
+          parent: this,
+          data: this.deviceDetailDialogProps
+        })
+        .onOk(res => {
+          this.deviceDetailName[index] = res[0].name;
+          this.details.details[index].detail_id = res[0].id;
+          console.log(this.details.details);
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        });
     }
   }
 };
