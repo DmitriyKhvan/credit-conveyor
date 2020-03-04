@@ -27,11 +27,15 @@
               :key="index"
               clickable
               :to="menuss.url"
+              :active="(index == 0) ? true:false"
+              active-class="text-orange"
+              v-ripple
             >
               <q-item-section>{{ menuss.name }}</q-item-section>
             </q-item>
           </q-list>
         </q-menu>
+
         <q-expansion-item
           expand-separator
           :icon="menus.icon"
@@ -40,6 +44,8 @@
           group="somegroup"
           :to="menus.url"
           exact-active-class="icon-style"
+          @show="openExtention(index)"
+          @hide="closeExtention(index)"
         >
           <div
             v-for="(menuss, index) in menus.children"
@@ -98,7 +104,9 @@ export default {
   },
   created() {},
   data() {
-    return {};
+    return {
+      isExpansionOpen: []
+    };
   },
   methods: {
     showMenu(index) {
@@ -110,26 +118,28 @@ export default {
     getChildMenus(menus) {
       let myMenuList = [];
 
-      //console.log(menus.children.length);
-      myMenuList.push(menus.children);
-      //console.log(myMenuList);
-      // if (this.isLeftDrawerClosed) {
-      //   //myMenuList.push(menus);
-      //   menus.children.forEach(element => {
-      //     if (!!element) {
-      //       myMenuList.push(element);
-      //     }
-      //   });
-      // } else {
-      //   menus.children.forEach(element => {
-      //     if (!!element) {
-      //       myMenuList.push(element);
-      //     }
-      //   }); // myMenuList.push(menus.children);
-      // }
-      return menus.children;
+      if (this.isLeftDrawerClosed) {
+        myMenuList.push(menus);
+        if (menus.children) {
+          menus.children.forEach(element => {
+            myMenuList.push(element);
+          });
+        }
+      } else {
+        if (menus.children) {
+          menus.children.forEach(element => {
+            myMenuList.push(element);
+          });
+        }
+      }
+      return myMenuList;
+    },
+    openExtention(index) {
+      this.$refs.qmenu[index].hide();
+    },
+    closeExtention(index) {
+      this.$refs.qmenu[index].show();
     }
-    //show() {}
   },
   watch: {
     isLeftDrawerClosed() {

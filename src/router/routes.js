@@ -25,6 +25,7 @@ const Tasks = () => import("pages/main/work/modules/pages/task/index.vue");
 const TasksList = () =>
   import("pages/main/work/modules/pages/task/modules/pages/tasklist/List");
 const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
+const ErrorPage = () => import("pages/main/work/modules/pages/credit/ErrorPage");
 const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
 const CreditProfile = () => import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
 const Applications = () => import("pages/main/work/modules/pages/credit/pages/list/Applications.vue");
@@ -57,7 +58,7 @@ const routes = [{
     path: "/",
     redirect: "/home",
     component: MainContainer,
-    name: "main",
+    name: "Main",
     meta: {
       requiresAuth: true
     },
@@ -87,11 +88,11 @@ const routes = [{
           },
           {
             path: "task",
-            name: "my tasks",
+            name: "My Tasks",
             component: Tasks,
             children: [{
               path: "list",
-              name: "tasklist",
+              name: "Task List",
               component: TasksList
             }]
           },
@@ -106,7 +107,7 @@ const routes = [{
               },
               {
                 path: "taskQueue",
-                name: "taskQueue",
+                name: "Task Queue",
                 component: TaskQueue
               },
               {
@@ -116,15 +117,20 @@ const routes = [{
               },
               {
                 path: "registration",
-                name: "registration",
+                name: "Registration",
                 component: CreditReg
               },
               {
                 path: 'profile',
-                name: 'profile',
+                name: 'Profile',
                 component: CreditProfile
               }
             ]
+          },
+          {
+            path: "errorPage",
+            name: "errorPage",
+            component: ErrorPage,
           }
         ]
       },
@@ -154,7 +160,7 @@ const routes = [{
           },
           {
             path: "selfdev",
-            name: "SelfDeveloper",
+            name: "Self Developer",
             component: SelfDevPage,
             children: [{
                 path: "topicPage",
@@ -163,17 +169,17 @@ const routes = [{
               },
               {
                 path: "questionPage",
-                name: "addEditQuestion",
+                name: "Add Edit Question",
                 component: QuestionPage
               },
               {
                 path: "testPage",
-                name: "addEditTest",
+                name: "Add Edit Test",
                 component: TestPage
               },
               {
                 path: "monitoringPage",
-                name: "addEditMonitoring",
+                name: "Add Edit Monitoring",
                 component: MonitoringPage
               }
             ]
@@ -202,12 +208,12 @@ const routes = [{
       },
       {
         path: "selfdev",
-        name: "TestList",
+        name: "Test List",
         component: TestList
       },
       {
         path: "completeTest",
-        name: "CompleteTest",
+        name: "Complete Test",
         component: CompleteTest,
       },
       {

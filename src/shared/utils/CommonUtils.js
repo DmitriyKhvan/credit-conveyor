@@ -16,7 +16,6 @@ export default {
     if (obj[key] === value) {
       return true;
     } else {
-
       for (let i = 0, len = Object.keys(obj).length; i < len; i++) {
         if (typeof obj[i] == 'object') {
           let found = this.findNested(obj[i], key, value);
@@ -26,7 +25,6 @@ export default {
           }
         }
       }
-
     }
   },
   isValueExistInObject(arr, key, value) {
@@ -42,5 +40,22 @@ export default {
       }
     }
     return false;
+  },
+  getChildMenus(menus, url) {
+    for (let i = 0; i < menus.length; i++) {
+      if (menus[i].url == url) {
+        return [];
+      }
+      if (menus[i]['children'] !== null) {
+        for (let j = 0; j < menus[i]['children'].length; j++) {
+          if (menus[i]['children'][j].url == url) {
+            if (menus[i]['children'][j]['children'] != null) {
+              return menus[i]['children'][j]['children'];
+            } else return [];
+          }
+        }
+      }
+    }
+    return null;
   }
 }

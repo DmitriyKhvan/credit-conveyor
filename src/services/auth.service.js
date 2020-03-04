@@ -151,6 +151,7 @@ const AuthService = {
       //TokenService.saveRefreshToken(response.data.refresh_token)
       // Update the header in ApiService
       ApiService.setHeader(response.data.access_token);
+
       return response.data.access_token;
     } catch (error) {
       throw new AuthenticationError(
