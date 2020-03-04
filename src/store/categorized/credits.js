@@ -1,8 +1,15 @@
 import BpmService from '../../services/bpm.service';
-
+import storegeService from '../../services/storage.service';
+import { decode } from 'jsonwebtoken';
 
 export default {
   state: {
+    roles: {
+      CreditManager: "CRM",
+      BackOfficee: "BO",
+      CreditCommitteeMember: "CCM",
+      CreditSecretary: "CS"
+    },
     confirm: false,
     personalData: {
       surname: "",
@@ -43,6 +50,28 @@ export default {
   },
   actions: {
 
+    async authBpm({state, dispatch}) {
+      // получение id пользователя
+      const userId = decode(storegeService.getToken()).id;
+
+      // получение ролей пользователя
+      const role = await dispatch("getUserRole", userId)
+      console.log("userRole", role)
+
+      // запись роли в header запроса
+      await dispatch("setHeaderRole", state.roles[role.text[0].role_name])
+      
+      // получение BPM token 
+      const csrf_token = await dispatch("authProcess")
+      console.log('ttoken', csrf_token)
+
+      // запись BPM token в header запроса
+      await dispatch("setHeaderBPM", csrf_token.csrf_token)
+
+      // запись BPM token sessionStore
+      sessionStorage.setItem("csrf_token", csrf_token.csrf_token);
+    },
+
     async getUserRole({ state }, payload) {
       return await state.bpmService.getUserRole(payload)
     },
@@ -51,8 +80,16 @@ export default {
       return await state.bpmService.authProcess(payload);
     },
 
-    async startProcess({ state }, payload) {
-      return await state.bpmService.startProcess(payload);
+    async startProcess({ state }) {
+      return await state.bpmService.startProcess();
+    },
+
+    async setHeaderRole({ state }, payload) {
+      return await state.bpmService.setHeaderRole(payload);
+    },
+
+    async setHeaderBPM({ state }, payload) {
+      return await state.bpmService.setHeaderBPM(payload);
     },
 
     async getDigIdNumber({ state }) {
@@ -67,12 +104,8 @@ export default {
       return await state.bpmService.getUserDataFromReader();
     },
 
-    async setHeaderRole({ state }, payload) {
-      return await state.bpmService.setHeaderRole(payload);
-    },
-
-    async setHeaderBPM({ state }, payload) {
-      return await state.bpmService.setHeaderBPM(payload);
+    async getCreditList({ state }) {
+      return await state.bpmService.getCreditList();
     }
 
   },

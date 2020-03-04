@@ -21,11 +21,10 @@ export default class BpmService {
     return responce.data;
   }
 
-  startProcess = async (token) => {
+  startProcess = async () => {
     const responce = await axios({
       method: 'post',
-      headers: { 'NBU-BPM-Role': token },
-      url: `${this._baseUrl}/processes?model=Issuance&container=ACC`
+      url: `${this._baseUrl}/processes`
     });
   
     return responce.data;
@@ -92,6 +91,6 @@ export default class BpmService {
   }
 
   setHeaderRole(role) {
-    axios.defaults.headers.common["NBU_BPM_role"] = role
+    axios.defaults.headers.common["NBU-BPM-Role"] = role
   }
  }

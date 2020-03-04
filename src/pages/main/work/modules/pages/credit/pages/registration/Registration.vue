@@ -167,7 +167,7 @@
                     v-model="personalData.typeStepCredit"
                     :options="options.typeStepCredit"
                     dense
-                    label="Тип пошагового кредита"
+                    label="Тип погашения кредита"
                     class="q-pb-sm"
                   />
                 </div>
@@ -308,8 +308,6 @@
   </div>
 </template>
 <script>
-import storegeService from "../../../../../../../../services/storage.service";
-import { decode } from "jsonwebtoken";
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
@@ -319,13 +317,6 @@ export default {
     return {
       loader: true,
       loaderForm: true,
-      //icon: false,
-      roles: {
-        CreditManager: "CRM",
-        BackOfficee: "BO",
-        CreditCommitteeMember: "CCM",
-        CreditSecretary: "CS"
-      },
       options: {
         family: [
           "Женат",
@@ -360,40 +351,24 @@ export default {
   async created() {
     console.log('loader', this.loader)
     try {
-      // получение id пользователя
-      const userId = decode(storegeService.getToken()).id;
-
-      // получение ролей пользователя
-      const role = await this.$store.dispatch("getUserRole", userId)
-      console.log("userRole", role)
-
-      // запись роли в header запроса
-      await this.$store.dispatch("setHeaderRole", this.roles[role.text[0].role_name])
       
-      // получение BPM token 
-      const csrf_token = await this.$store.dispatch("authProcess")
-      console.log(csrf_token)
+      await this.$store.dispatch("authBpm")
 
-      // запись BPM token в header запроса
-      await this.$store.dispatch("setHeaderBPM", csrf_token)
-
-      // запись BPM token sessionStore
-      sessionStorage.setItem("csrf_token", csrf_token.csrf_token);
-
-      this.loaderForm = false;
-        
-      // this.$store
-      //   .dispatch("startProcess", token)
-      //   .then(res => {
-      //     console.log(res);
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
       } catch (err) {
         console.log("Errror!",err)
-        //this.$router.push('errorPage')
+        this.$router.push('errorPage')
+        sessionStorage.removeItem("csrf_token");
         this.loaderForm = false
+    }
+
+    // start process
+    try {
+      const process = await this.$store.dispatch("startProcess")
+      console.log(process)  
+
+      this.loaderForm = false;
+    } catch (err) {
+      console.log(await err)
     }
     
     try {
