@@ -273,20 +273,22 @@ export default {
           let data = res.data;
           // Filter step
           this.filterColumn.forEach(param => {
-            data = data.filter(item => {
-              //console.log(item);
-              return this.operators[param.operator](
-                item[param.column],
-                param.value
-              );
-            });
+            if (param.value) {
+              data = data.filter(item => {
+                //console.log(item);
+                return this.operators[param.operator](
+                  item[param.column],
+                  param.value
+                );
+              });
+            }
           });
           // data adding step
           data.forEach(element => {
             this.itemsArray.push(element);
           });
 
-          // filtering and sorting coloumns of table
+          // sorting coloumns of table
           if (data.length > 0) {
             Object.keys(data[0]).map(async (k, index) => {
               let sortable = this.excludeSortingColoumns.includes(k) //sortable filter

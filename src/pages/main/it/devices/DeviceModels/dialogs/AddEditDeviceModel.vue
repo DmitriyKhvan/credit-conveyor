@@ -147,9 +147,6 @@ export default {
     return {
       isLoading: this.$store.getters["common/getLoading"],
       isValidated: true,
-      typesList: [],
-      marksList: [],
-      detailsList: [],
       deviceTypeName: null,
       deviceMarkName: null,
       deviceDetailName: [],
