@@ -9,18 +9,15 @@ export default {
   },
   props: {},
   created() {
-    this.initializeData();
+    // !!! Don't change
+    if (!!this.data.selectedRow) {
+      this.details = this.data.selectedRow[0];
+    } else {}
   },
   computed: {
 
   },
   methods: {
-    //!!! Don't change
-    initializeData() {
-      if (!!this.data.selectedRow) {
-        this.details = this.data.selectedRow[0];
-      }
-    },
     // !!! Don't change
     show() {
       this.$refs.dialog.show();

@@ -20,10 +20,10 @@
 </template>
 
 <script>
-import DevicesTypes from "./modules/Devices";
-import DevicesMarks from "./modules/DeviceMarks";
-import DevicesModels from "./modules/DeviceModels";
-import DevicesDetails from "./modules/DeviceDetails";
+import DevicesTypes from "./DeviceTypes/DeviceTypes";
+import DevicesMarks from "./DeviceMarks/DeviceMarks";
+import DevicesModels from "./DeviceModels/DeviceModels";
+import DevicesDetails from "./DeviceDetails/DeviceDetails";
 
 export default {
   components: {
