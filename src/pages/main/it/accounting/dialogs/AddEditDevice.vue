@@ -155,7 +155,43 @@
               lazy-rules
             />
           </div>
-          <div class="row"></div>
+          <div class="row">
+            <q-input
+              outlined
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              label="Made Date"
+              v-model="details.made_date"
+              mask="date"
+              :rules="['date']"
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="details.made_date" @input="() => $refs.qDateProxy.hide()" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+
+            <q-input
+              outlined
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              label="Bought Date"
+              v-model="details.bought_date"
+              mask="date"
+              :rules="['date']"
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="details.bought_date" @input="() => $refs.qDateProxy.hide()" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
         </div>
       </q-card-section>
       <!-- buttons example -->
@@ -188,7 +224,7 @@ export default {
     return {
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
-        { key: "Active", value: 0 },
+        { key: "Active", value: 1 },
         { key: "Passive", value: 0 }
       ],
       isValidated: true,
@@ -345,17 +381,35 @@ export default {
           };
         });
         this.branchList = x[0].data[0].children;
+        if (this.details.branch_id && this.details.filial_id) {
+          // when edit case initializes deviceFilials array
+          this.branchList.forEach(element => {
+            if (element.CODE == this.details.branch_id) {
+              this.deviceFilials = element.children.map(val => {
+                return {
+                  text: val.DEPARTMENT_NAME1,
+                  value: val.CODE
+                };
+              });
+            }
+          });
+        }
       })
       .catch(error => {
         console.log(error);
       });
   },
-  computed: {
-    deviceFilialsList() {
-      return this.deviceFilials;
-    }
-  },
+  computed: {},
   methods: {
+    initializeData() {
+      if (!!this.data.selectedRow) {
+        console.log;
+        this.details = this.data.selectedRow[0];
+        this.deviceTypeName = this.data.selectedRow[0].type_name;
+        this.deviceMarkName = this.data.selectedRow[0].mark_name;
+        this.deviceModelName = this.data.selectedRow[0].model_name;
+      }
+    },
     selectDeviceType() {
       this.$q
         .dialog({
