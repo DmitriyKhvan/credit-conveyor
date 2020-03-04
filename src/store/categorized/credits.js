@@ -1,4 +1,4 @@
-import BpmService from '../../pages/main/work/modules/pages/credit/service/bpm-service';
+import BpmService from '../../services/bpm.service';
 
 
 export default {
@@ -43,25 +43,38 @@ export default {
   },
   actions: {
 
-    async authProcess(state, payload) {
-      return await state.state.bpmService.authProcess(payload);
+    async getUserRole({ state }, payload) {
+      return await state.bpmService.getUserRole(payload)
     },
 
-    async startProcess(state, payload) {
-      return await state.state.bpmService.startProcess(payload);
+    async authProcess({ state, dispatch }, payload) {
+      return await state.bpmService.authProcess(payload);
     },
 
-    async getDigIdNumber(state) {
-      return await state.state.bpmService.getDigIdNumber();
+    async startProcess({ state }, payload) {
+      return await state.bpmService.startProcess(payload);
     },
 
-    async getUserDataFromService(state) {
-      return await state.state.bpmService.getUserDataFromService();
+    async getDigIdNumber({ state }) {
+      return await state.bpmService.getDigIdNumber();
     },
 
-    async getUserDataFromReader(state) {
-      return await state.state.bpmService.getUserDataFromReader();
+    async getUserDataFromService({ state }) {
+      return await state.bpmService.getUserDataFromService();
+    },
+
+    async getUserDataFromReader({ state }) {
+      return await state.bpmService.getUserDataFromReader();
+    },
+
+    async setHeaderRole({ state }, payload) {
+      return await state.bpmService.setHeaderRole(payload);
+    },
+
+    async setHeaderBPM({ state }, payload) {
+      return await state.bpmService.setHeaderBPM(payload);
     }
+
   },
   mutations: {
     toggleConfirm(state, payload) {

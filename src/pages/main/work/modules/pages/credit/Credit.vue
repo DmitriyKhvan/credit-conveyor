@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="creditMenu">
     <!-- <q-toolbar class="bg-grey-3"> -->
     <q-btn 
@@ -38,8 +39,10 @@
     </q-btn>
 
     <!-- </q-toolbar> -->
-    <router-view></router-view>
+    
   </div>
+  <router-view></router-view>
+</div>
 </template>
 <script>
 export default {

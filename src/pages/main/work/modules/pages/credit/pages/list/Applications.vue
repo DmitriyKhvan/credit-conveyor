@@ -175,7 +175,7 @@
 </template>
 
 <script>
-import BpmService from '../../service/bpm-service'
+import BpmService from '../../../../../../../../services/bpm.service'
 
 export default {
   props: ["tasks"],

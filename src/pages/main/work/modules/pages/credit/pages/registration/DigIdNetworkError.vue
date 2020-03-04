@@ -34,7 +34,12 @@ export default {
   },
   methods: {
     closeIcon(val) {
-      this.$store.commit("errorLoadData", val);
+      const data = {
+        flag: val,
+        loader: false,
+        message: ""
+      }
+      this.$store.commit("errorLoadData", data);
     }
   }
 }

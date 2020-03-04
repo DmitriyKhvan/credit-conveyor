@@ -1,13 +1,10 @@
 import axios from "axios";
-import storegeService from "../../../../../../../services/storage.service"
 
 export default class BpmService {
   
-  //_baseUrl = "https://10.9.1.131:9443/bpm";
   _baseUrl = "http://10.8.7.71:8070";
+  _personalUrl = "http://10.8.8.70:4000"
   _digIdUrl = "http://localhost:50000/api/Identification";
-
-  
 
   // data = {
   //   "refresh-groups": true,
@@ -16,9 +13,9 @@ export default class BpmService {
 
   authProcess = async (data) => {
     const responce = await axios({
-    method: 'post',
-    url: `${this._baseUrl}/system/login`,
-    data
+      method: 'post',
+      url: `${this._baseUrl}/system/login`,
+      data
     });
     
     return responce.data;
@@ -27,7 +24,7 @@ export default class BpmService {
   startProcess = async (token) => {
     const responce = await axios({
       method: 'post',
-      headers: { 'BPMCSRFToken': token },
+      headers: { 'NBU-BPM-Role': token },
       url: `${this._baseUrl}/processes?model=Issuance&container=ACC`
     });
   
@@ -68,8 +65,8 @@ export default class BpmService {
 
   getCreditList = async (data) => {
 
-    console.log('Текущий пользователь', storegeService.getToken())
-    const token = storegeService.getToken();
+    // console.log('Текущий пользователь', storegeService.getToken())
+    // const token = storegeService.getToken();
     const responce = await axios({
       method: "post",
       //headers: { 'Authorization': `Bearer "${token}"` },
@@ -78,5 +75,23 @@ export default class BpmService {
     })
 
     return responce.data
+  }
+
+  getUserRole = async (userId) => {
+    console.log(2222)
+    const responce = await axios({
+      method: "get",
+      url: `${this._personalUrl}/roles/user?id=${userId}` 
+    })
+
+    return responce.data
+  }
+
+  setHeaderBPM(csrf_token) {
+    axios.defaults.headers.common["BPMCSRFToken"] = csrf_token
+  }
+
+  setHeaderRole(role) {
+    axios.defaults.headers.common["NBU_BPM_role"] = role
   }
  }
