@@ -84,6 +84,7 @@
             <!-- TODO -->
             <q-select
               outlined
+              clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.branch_id"
@@ -101,6 +102,7 @@
             />
             <q-select
               outlined
+              clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.filial_id"
@@ -167,8 +169,8 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                    <q-date v-model="details.made_date" @input="() => $refs.qDateProxy.hide()" />
+                  <q-popup-proxy ref="madeDate" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="details.made_date" @input="() => $refs.madeDate.hide()" />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -185,8 +187,8 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                    <q-date v-model="details.bought_date" @input="() => $refs.qDateProxy.hide()" />
+                  <q-popup-proxy ref="boughtDate" transition-show="scale" transition-hide="scale">
+                    <q-date v-model="details.bought_date" @input="() => $refs.boughtDate.hide()" />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -381,7 +383,7 @@ export default {
           };
         });
         this.branchList = x[0].data[0].children;
-        if (this.details.branch_id && this.details.filial_id) {
+        if (this.details.branch_id) {
           // when edit case initializes deviceFilials array
           this.branchList.forEach(element => {
             if (element.CODE == this.details.branch_id) {
