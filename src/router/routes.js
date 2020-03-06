@@ -64,6 +64,15 @@ const Topic = () => import("pages/main/work/modules/pages/test/Topic.vue");
 const CompleteTest = () =>
   import("pages/main/work/modules/pages/test/CompleteTest.vue");
 
+// Проверка на BPM token
+const ifAuthenticated = (to, from, next) => {
+  if (sessionStorage.getItem("csrf_token")) {
+    next()
+    return
+  }
+  next('/work/credit')
+}
+
 const routes = [
   {
     path: "/",
@@ -131,7 +140,8 @@ const routes = [
               {
                 path: "task/:id",
                 name: "CreditTask",
-                component: CreditTask
+                component: CreditTask,
+                //beforeEnter: ifAuthenticated,
               },
               {
                 path: "registration",
@@ -141,12 +151,14 @@ const routes = [
               {
                 path: "profile",
                 name: "Profile",
-                component: CreditProfile
+                component: CreditProfile,
+                beforeEnter: ifAuthenticated,
               },
               {
                 path: "errorPage",
                 name: "errorPage",
-                component: ErrorPage
+                component: ErrorPage,
+                //beforeEnter: ifAuthenticated,
               }
             ]
           },

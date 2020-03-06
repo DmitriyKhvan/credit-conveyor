@@ -1,5 +1,7 @@
 <template>
-  <div class="q-pa-md">
+  <div>
+    <appLoader v-if="loader"/>
+  <div v-else class="q-pa-md">
     <h4>Очередь заявок {{ tasks }}</h4>
     <q-markup-table>
       <thead>
@@ -166,20 +168,17 @@
       </tbody>
     </q-markup-table>
   </div>
+  </div>
 </template>
 
 <script>
+import Loader from '../../../../../../../../components/Loader'
 
 export default {
   props: ["tasks"],
   data() {
     return {
-      roles: {
-        CreditManager: "CRM",
-        BackOfficee: "BO",
-        CreditCommitteeMember: "CCM",
-        CreditSecretary: "CS"
-      },
+      loader: true,
       //bpmService: new BpmService(),
       data: {
         // applications: [
@@ -371,21 +370,16 @@ export default {
     try {
       
       await this.$store.dispatch("authBpm")
+      const app = await this.$store.dispatch("getCreditList")
+      this.loader = false
 
       } catch (err) {
         console.log("Errror!",err)
         this.$router.push('errorPage')
         sessionStorage.removeItem("csrf_token");
-        this.loaderForm = false
+        this.loader = false
     }
 
-    try {
-      const app = await this.$store.dispatch("getCreditList")
-      console.log(app)
-
-    } catch (err) {
-      console.log(err)
-    }
   },
   mounted() {
     const filters = document.querySelectorAll(".filter");
@@ -467,6 +461,10 @@ export default {
         return 0;
       });
     }
+  },
+
+  components: {
+    appLoader: Loader
   }
 };
 </script>

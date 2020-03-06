@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default class BpmService {
   
-  _baseUrl = "http://10.8.7.71:8070";
+  _baseUrl = "http://10.8.7.71:8070/bpm";
   _personalUrl = "http://10.8.8.70:4000"
   _digIdUrl = "http://localhost:50000/api/Identification";
 
@@ -11,11 +11,10 @@ export default class BpmService {
   //   "requested-lifetime": 7200
   // };
 
-  authProcess = async (data) => {
+  authProcess = async () => {
     const responce = await axios({
       method: 'post',
       url: `${this._baseUrl}/system/login`,
-      data
     });
     
     return responce.data;
@@ -62,15 +61,11 @@ export default class BpmService {
     return responce.data;
   }
 
-  getCreditList = async (data) => {
-
-    // console.log('Текущий пользователь', storegeService.getToken())
-    // const token = storegeService.getToken();
+  getCreditList = async () => {
+    
     const responce = await axios({
-      method: "post",
-      //headers: { 'Authorization': `Bearer "${token}"` },
-      url: `${this._baseUrl}/system/taskList`,
-      data
+      method: "get",
+      url: `${this._baseUrl}/processes`,
     })
 
     return responce.data

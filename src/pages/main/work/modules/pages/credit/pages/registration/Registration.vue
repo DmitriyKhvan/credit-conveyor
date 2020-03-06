@@ -1,9 +1,6 @@
 <template>
   <div>
-    <div class="row justify-center loader" v-if="loaderForm">
-      <q-spinner-ios color="primary" size="2em" />
-      <q-tooltip :offset="[0, 8]">Пожалуйста подождите</q-tooltip>
-    </div>
+    <appLoader v-if="loaderForm"/>
 
     <div v-else class="q-pa-md row justify-center">
       <form @submit.prevent.stop="onSubmit" style="width: 70%">
@@ -128,7 +125,7 @@
                   </div>
                   <div v-else class="default_personPhoto_block">
                     <img
-                      src="../../assets/default-avatar.png"
+                      src="../../../../../../../../assets/images/default-avatar.png"
                       alt=""
                       class="default_personPhoto"
                     />
@@ -308,9 +305,16 @@
   </div>
 </template>
 <script>
+// import Vue from "vue";
+import CommonUtils from "../../../../../../../../shared/utils/CommonUtils"
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
+import Loader from '../../../../../../../../components/Loader'
+
+// Vue.config.errorHandler = function(err, vm, info) {
+//   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
+// }
 
 export default {
   data() {
@@ -349,48 +353,31 @@ export default {
     };
   },
   async created() {
-    console.log('loader', this.loader)
     try {
       
-      await this.$store.dispatch("authBpm")
-
-      } catch (err) {
-        console.log("Errror!",err)
-        this.$router.push('errorPage')
-        sessionStorage.removeItem("csrf_token");
-        this.loaderForm = false
-    }
-
-    // start process
-    try {
+      const auth = await this.$store.dispatch("authBpm")
+      console.log('auth', auth)
       const process = await this.$store.dispatch("startProcess")
-      console.log(process)  
-
+      console.log('process', process) 
       this.loaderForm = false;
-    } catch (err) {
-      console.log(await err)
+
+    } catch (error) {
+      CommonUtils.filterServerError(error)
+      //console.log("Errror!", error)
+      this.$router.push('errorPage')
+      sessionStorage.removeItem("csrf_token");
+      this.loaderForm = false
     }
-    
+
     try {
       const scannerSerial = await this.$store.dispatch("getDigIdNumber")
       this.$store.commit("sentScannerSerialNumber", scannerSerial);
       this.loader = false;
     } catch (err) {
-      console.log(err)
+      console.log(err.response)
       this.loader = false;
     }
 
-    // this.$store
-    //   .dispatch("getDigIdNumber")
-    //   .then(res => {
-    //     const scannerSerial = res.ServiceInfo.ScannerSerial;
-    //     this.$store.commit("sentScannerSerialNumber", scannerSerial);
-    //     this.loader = false;
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //     this.loader = false;
-    //   });
   },
   computed: {
     loadMessage() {
@@ -496,7 +483,8 @@ export default {
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
-    appDigIdNetworkError: DigIdNetworkError
+    appDigIdNetworkError: DigIdNetworkError,
+    appLoader: Loader
   }
 };
 </script>

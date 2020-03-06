@@ -60,24 +60,29 @@ export default {
 
       // запись роли в header запроса
       await dispatch("setHeaderRole", state.roles[role.text[0].role_name])
-      
+      //await dispatch("setHeaderRole", "ff")
+     
+      //debugger
       // получение BPM token 
       const csrf_token = await dispatch("authProcess")
       console.log('ttoken', csrf_token)
+      
 
       // запись BPM token в header запроса
       await dispatch("setHeaderBPM", csrf_token.csrf_token)
 
       // запись BPM token sessionStore
       sessionStorage.setItem("csrf_token", csrf_token.csrf_token);
+
+      return csrf_token
     },
 
     async getUserRole({ state }, payload) {
       return await state.bpmService.getUserRole(payload)
     },
 
-    async authProcess({ state, dispatch }, payload) {
-      return await state.bpmService.authProcess(payload);
+    async authProcess({ state, dispatch }) {
+      return await state.bpmService.authProcess();
     },
 
     async startProcess({ state }) {
@@ -154,6 +159,30 @@ export default {
       state.personalData.mname = payload.Patronym;
       state.personalData.personPhoto = payload.personPhoto;
     },
+    resetPersonData(state) {
+      state.personalData = {
+        surname: "",
+        name: "",
+        mname: "",
+        inn: "",
+        phone: 998,
+        pinpp: "",
+        passport: "",
+        personPhoto: "",
+        // FAMILY //
+        familyStatus: "",
+        children: "",
+        childrenCount: 0,
+        // MONEY //
+        income: 0, //подтвержденный ежемесячный доход
+        expense: 0, //периодические расходы
+        otherExpenses: 0, //плата за облуживание других обязательств
+        externalIncome: "", //наличие дополнительного дохода
+        externalIncomeSize: 0, //размер дополнительного дохода
+        additionalIncomeSource: "" //источник дополнительного дохода
+      }
+    },
+    
     toggleScannerSerialNumber(state, payload) {
       state.scannerSerialNumber = payload;
     }
