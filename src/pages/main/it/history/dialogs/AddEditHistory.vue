@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Header</div>
+          <div class="text-h6">Add Edit History</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -48,7 +48,25 @@
             </q-input>
             <!--  -->
           </div>
-          <div class="row"></div>
+          <div class="row">
+            <q-select
+              outlined
+              color="purple-12"
+              class="col-xs-12 col-sm-12 col-md-6"
+              v-model="details.status"
+              :options="stateList"
+              option-value="value"
+              option-label="key"
+              emit-value
+              map-options
+              label="Status"
+              @input="$v.details.status.$touch()"
+              :rules="[
+                val => $v.details.status.required || 'Status is required'
+              ]"
+              lazy-rules
+            />
+          </div>
         </div>
       </q-card-section>
       <!-- buttons example -->
@@ -65,8 +83,9 @@
 <script>
 import NotifyService from "./../../../../../services/notify.service";
 import dialogMix from "./../../../../../shared/mixins/dialogMix";
-import GridDialog from "./../../../../../components/GridDialog";
 import ApiService from "./../../../../../services/api.service";
+import GridDialog from "./../../../../../components/GridDialog";
+import SelectUser from "./SelectUser";
 
 import {
   required,
@@ -75,13 +94,19 @@ import {
   between,
   email
 } from "vuelidate/lib/validators";
+import CommonUtils from "../../../../../shared/utils/CommonUtils";
 export default {
   data() {
     return {
       isLoading: this.$store.getters["common/getLoading"],
+      stateList: [
+        { key: "Active", value: 1 },
+        { key: "Passive", value: 0 }
+      ],
       isValidated: true,
       deviceName: null,
       userName: null,
+      userInfo: null,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
@@ -117,7 +142,13 @@ export default {
   validations: {
     details: {
       id: {},
-      name: {
+      dev_id: {
+        required
+      },
+      emp_id: {
+        required
+      },
+      status: {
         required
       }
     }
@@ -133,6 +164,16 @@ export default {
   mixins: [dialogMix],
   created() {},
   methods: {
+    async initializeData() {
+      if (!!this.data.selectedRow) {
+        this.details = this.data.selectedRow[0];
+        this.deviceName = this.data.selectedRow[0].type_name;
+        this.userName = this.data.selectedRow[0].name;
+        this.userInfo = await this.getUserInfoById(
+          this.data.selectedRow[0].emp_id
+        );
+      }
+    },
     selectDevice() {
       this.$q
         .dialog({
@@ -149,19 +190,29 @@ export default {
         });
     },
     selectUser() {
+      let tempData = null;
+      if (!!this.selectedRow) {
+        tempData = this.userInfo.data;
+      }
       this.$q
         .dialog({
-          component: GridDialog,
+          component: SelectUser,
           parent: this,
-          data: this.deviceDialogProps
+          data: tempData
         })
         .onOk(res => {
-          this.deviceName = res[0].type_name;
-          this.details.dev_id = res[0].id;
+          console.log(res);
+          this.userName = CommonUtils.domDecoder(
+            res.LAST_NAME + " " + res.FIRST_NAME + " " + res.MIDDLE_NAME
+          );
+          this.details.emp_id = res.EMP_ID;
         })
         .onCancel(() => {
           console.log("Cancel");
         });
+    },
+    getUserInfoById(id) {
+      return ApiService.get(`emps/info?id=${id}`);
     }
   }
 };

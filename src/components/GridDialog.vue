@@ -202,6 +202,7 @@ export default {
       this.$emit("ok", this.selectedRows);
       this.hide();
     },
+
     onCancelClick() {
       this.$q
         .dialog({

@@ -1,7 +1,6 @@
 <template>
   <div>
     <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
-    <select-user />
   </div>
 </template>
 
@@ -13,7 +12,6 @@ import { Dialog } from "quasar";
 import ApiService from "../../../../services/api.service";
 import NotifyService from "../../../../services/notify.service";
 import GridService from "../../../../services/grid.service";
-import SelectUser from "./dialogs/SelectUser";
 export default {
   created() {},
   data() {
@@ -45,8 +43,7 @@ export default {
     };
   },
   components: {
-    GridTable,
-    SelectUser
+    GridTable
   },
   methods: {
     addEditRow(selected) {

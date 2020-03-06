@@ -41,7 +41,7 @@
       <div class="col test" style="background: #F2F4F4">
         <q-scroll-area style="height: 850px;">
           <q-tree
-            :nodes="customize"
+            :nodes="filials"
             node-key="CODE"
             label-key="DEPARTMENT_NAME1"
             default-expand-all
@@ -56,11 +56,11 @@
             <template v-slot:default-body="prop">
               <div class="row">
                 <div
-                  class="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+                  class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
                   v-for="(item, index) in prop.node.emps"
                   :key="index"
                 >
-                  <q-card>
+                  <q-card @click="emitUser(item)" style="cursor: pointer">
                     <!-- BOY CARD -->
                     <div v-if="item.GENDER === 'M'">
                       <q-card-section
@@ -80,7 +80,7 @@
                       <q-item style="padding: 0 5px 5px 10px;">
                         <q-item-section avatar>
                           <q-avatar square style="width: 80px; height: 100px">
-                            <img :src="image + item.EMP_ID" />
+                            <img :src="getPhotoUrl(item.EMP_ID)" />
                           </q-avatar>
                         </q-item-section>
                         <q-item-section style="padding: 0 5px 5px 10px;">
@@ -121,12 +121,12 @@
                       >
                         <div
                           class="text-subtitle1"
-                        >{{ decode(item.LAST_NAME) +' ' + decode(item.FIRST_NAME) + ' '+ (item.MIDDLE_NAME) }}</div>
+                        >{{ decode(item.LAST_NAME) +' ' + decode(item.FIRST_NAME) + ' '+ decode(item.MIDDLE_NAME) }}</div>
                       </q-card-section>
                       <q-item style="padding: 0 5px 5px 10px;">
                         <q-item-section avatar>
                           <q-avatar square style="width: 80px; height: 100px">
-                            <img :src="image + item.EMP_ID" />
+                            <img :src="getPhotoUrl(item.EMP_ID)" />
                           </q-avatar>
                         </q-item-section>
                         <q-item-section style="padding: 0 5px 5px 10px;">
@@ -173,16 +173,16 @@
 <script>
 import ApiService from "./../services/api.service";
 import CommonUtils from "./../shared/utils/CommonUtils";
+import UserService from "./../services/user.service";
 
 export default {
+  mixins: [],
   data() {
     return {
-      image:
-        "http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=",
       mail: "mailto:",
       selectedBranch: null,
       branches: [],
-      customize: []
+      filials: []
     };
   },
   props: {},
@@ -197,11 +197,14 @@ export default {
       });
   },
   methods: {
+    emitUser(item) {
+      this.$emit("selectUser", item);
+    },
     getSectors(mfo, code) {
       ApiService.get(`structure/departments?mfo=${mfo}&code=${code}`)
         .then(res => {
           // set array
-          this.customize = res.data;
+          this.filials = res.data;
           this.$nextTick(function() {
             this.$refs.nodes.expandAll();
           });
@@ -215,6 +218,9 @@ export default {
     },
     getBranches() {
       return ApiService.get("structure/branches");
+    },
+    getPhotoUrl(emp_id) {
+      return UserService.getUserProfilePhotoUrl(emp_id);
     }
   }
 };
