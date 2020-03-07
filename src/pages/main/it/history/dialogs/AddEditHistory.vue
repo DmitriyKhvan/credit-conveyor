@@ -132,7 +132,7 @@ export default {
         filterColumn: [
           {
             column: "is_assigned",
-            value: 0,
+            value: "0",
             operator: "=="
           }
         ]
@@ -191,7 +191,7 @@ export default {
     },
     selectUser() {
       let tempData = null;
-      if (!!this.selectedRow) {
+      if (!!this.data.selectedRow) {
         tempData = this.userInfo.data;
       }
       this.$q

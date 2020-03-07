@@ -41,7 +41,7 @@ export default {
         selectMode: "single",
         extraButtons: [],
         paginationConfig: {
-          sortBy: "name",
+          sortBy: "parent_id",
           descending: false,
           page: 1,
           rowsPerPage: 5

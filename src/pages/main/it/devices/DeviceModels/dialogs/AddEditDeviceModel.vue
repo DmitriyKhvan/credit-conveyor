@@ -274,6 +274,11 @@ export default {
           console.log(res);
           this.deviceTypeName = res[0].name_ru;
           this.details.type_id = res[0].id;
+          this.deviceDetailDialogProps.filterColumn.push({
+            column: "type_id",
+            operator: "==",
+            value: res[0].id
+          });
         })
         .onCancel(() => {
           console.log("Cancel");
