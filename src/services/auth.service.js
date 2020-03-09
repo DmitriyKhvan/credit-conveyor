@@ -4,6 +4,7 @@ import store from "./../store/index";
 import router from "./../router/index";
 import DictService from "./dict.service";
 import SocketService from "./socket.service";
+import MainService from "./main.service";
 
 class AuthenticationError extends Error {
   constructor(errorCode, message) {
@@ -23,7 +24,9 @@ const AuthService = {
               //console.log(token);
               store.dispatch("auth/setUserDetails", token);
               store.dispatch("common/setLang", credentials.lang.value); // set lang
+
               TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
+
               await DictService.loadAll();
               //=== currentMenus
               let b64EncodedMenus = btoa(
@@ -34,7 +37,7 @@ const AuthService = {
                 )
               );
               TokenService.setKey("menus", b64EncodedMenus);
-              //
+
               store.dispatch("auth/loginSuccess", token);
               //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
 
@@ -119,17 +122,10 @@ const AuthService = {
           console.error(err);
           throw err;
         });
+
       ApiService.removeHeader();
 
-      if (await TokenService.isTokenExist()) {
-        TokenService.removeToken();
-      }
-      if (await TokenService.isCookieExist("lang")) {
-        TokenService.removeKeyFromCookies("lang");
-      }
-      if (await TokenService.isKeyExist("menus")) {
-        TokenService.removeKey("menus");
-      }
+      await MainService.clearStorage();
 
       store.dispatch("dicts/setIsAllSet", false);
       //SocketService.stopConnection();
@@ -138,6 +134,7 @@ const AuthService = {
       if (!(await TokenService.isTokenExist())) {
         router.push("/login");
       }
+
     } catch (error) {
       console.log({
         "Error in logout": error
