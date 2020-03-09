@@ -8,7 +8,9 @@ const MENU_LIST = "menu_list";
  * accessed through this instace.
  **/
 
-import jwt_decode from 'jwt-decode';
+import {
+  decode
+} from 'jsonwebtoken';
 import {
   Cookies
 } from 'quasar'
@@ -16,7 +18,9 @@ import {
 const TokenService = {
 
   getKey(key) {
-    return localStorage.getItem(key)
+    return new Promise((res, rej) => {
+      res(localStorage.getItem(key))
+    })
   },
   setKey(key, value) {
     localStorage.setItem(key, value);
@@ -30,7 +34,9 @@ const TokenService = {
     });
   },
   getKeyFromCookies(key) {
-    return Cookies.get(key)
+    return new Promise((res, rej) => {
+      res(Cookies.get(key))
+    });
   },
   setKeyToCookies(key, value) {
     Cookies.set(key, value);
@@ -44,7 +50,9 @@ const TokenService = {
     });
   },
   getToken() {
-    return Cookies.get(TOKEN_KEY);
+    return new Promise((res, rej) => {
+      res(Cookies.get(TOKEN_KEY));
+    });
   },
   saveToken(accessToken) {
     Cookies.set(TOKEN_KEY, accessToken);
@@ -60,10 +68,12 @@ const TokenService = {
   isTokenExpired() {
     return new Promise(async (res, rej) => {
       if (await this.isTokenExist()) {
-        let decodedToken = jwt_decode(this.getToken());
-        if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
-          res(true);
-        } else res(false);
+        let decodedToken = decode(await this.getToken());
+        if (decodedToken) {
+          if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
+            res(true);
+          } else res(false);
+        }
       } else {
         res(true);
       }

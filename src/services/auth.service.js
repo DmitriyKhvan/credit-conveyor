@@ -20,8 +20,7 @@ const AuthService = {
     try {
       this.authenticate(credentials)
         .then(
-          async token => {
-              //console.log(token);
+          async (token) => {
               store.dispatch("auth/setUserDetails", token);
               store.dispatch("common/setLang", credentials.lang.value); // set lang
 
@@ -170,7 +169,7 @@ const AuthService = {
 
   // refresh Token
   refreshAccessToken: async function () {
-    const accessToken = TokenService.getToken(); //  get accesToken from cookie
+    const accessToken = await TokenService.getToken(); //  get accesToken from cookie
 
     const requestData = {
       method: "post",
@@ -182,8 +181,12 @@ const AuthService = {
 
     try {
       const response = await ApiService.customRequest(requestData);
+      if (await TokenService.isTokenExist()) {
+        TokenService.removeToken();
+        console.log("token cleared")
+      }
+      console.log("storing token...")
       TokenService.saveToken(response.data.access_token);
-
       //TokenService.saveRefreshToken(response.data.refresh_token)
       // Update the header in ApiService
       ApiService.setHeader(response.data.access_token);
