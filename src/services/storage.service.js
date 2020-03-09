@@ -19,7 +19,8 @@ const TokenService = {
 
   getKey(key) {
     return new Promise((res, rej) => {
-      res(localStorage.getItem(key))
+      let val = localStorage.getItem(key);
+      res(val)
     })
   },
   setKey(key, value) {
@@ -30,12 +31,14 @@ const TokenService = {
   },
   isKeyExist(key) {
     return new Promise((res, rej) => {
-      res((Boolean)(localStorage.getItem(key) !== null));
+      let isExist = (Boolean)(localStorage.getItem(key) !== null);
+      res(isExist);
     });
   },
   getKeyFromCookies(key) {
     return new Promise((res, rej) => {
-      res(Cookies.get(key))
+      let value = Cookies.get(key)
+      res(value)
     });
   },
   setKeyToCookies(key, value) {
@@ -51,7 +54,8 @@ const TokenService = {
   },
   getToken() {
     return new Promise((res, rej) => {
-      res(Cookies.get(TOKEN_KEY));
+      let token = Cookies.get(TOKEN_KEY)
+      res(token);
     });
   },
   saveToken(accessToken) {
@@ -62,19 +66,28 @@ const TokenService = {
   },
   isTokenExist() {
     return new Promise((res, rej) => {
-      res((Boolean)(Cookies.has(TOKEN_KEY)));
+      let isExist = (Boolean)(Cookies.has(TOKEN_KEY));
+      console.log(isExist)
+      res(isExist);
     })
   },
   isTokenExpired() {
     return new Promise(async (res, rej) => {
+
       if (await this.isTokenExist()) {
         let decodedToken = decode(await this.getToken());
         if (decodedToken) {
           if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
+            console.log(true)
             res(true);
-          } else res(false);
+          }
+          else {
+            console.log(false)
+            res(false);
+          }
         }
       } else {
+        console.log(false)
         res(true);
       }
     });
