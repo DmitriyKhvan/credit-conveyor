@@ -19,32 +19,32 @@ const AuthService = {
     try {
       this.authenticate(credentials).then(
         async token => {
-          //console.log(token);
-          store.dispatch("auth/setUserDetails", token);
-          store.dispatch("common/setLang", credentials.lang.value); // set lang
-          TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
-          await DictService.loadAll();
-          //=== currentMenus
-          let b64EncodedMenus = btoa(unescape(encodeURIComponent(JSON.stringify(store.getters['dicts/getMenuList']))));
-          TokenService.setKey('menus', b64EncodedMenus);
-          //
-          store.dispatch("auth/loginSuccess", token);
-          //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
+            //console.log(token);
+            store.dispatch("auth/setUserDetails", token);
+            store.dispatch("common/setLang", credentials.lang.value); // set lang
+            TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
+            await DictService.loadAll();
+            //=== currentMenus
+            let b64EncodedMenus = btoa(unescape(encodeURIComponent(JSON.stringify(store.getters['dicts/getMenuList']))));
+            TokenService.setKey('menus', b64EncodedMenus);
+            //
+            store.dispatch("auth/loginSuccess", token);
+            //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
 
-          router.push(router.history.current.query.redirect || "/");
+            router.push(router.history.current.query.redirect || "/");
 
-          callback(true);
-        },
-        error => {
-          console.error("Error occured here 1 !!!")
+            callback(true);
+          },
+          error => {
+            console.error("Error occured here 1 !!!")
 
-          store.dispatch("auth/loginError", {
-            errorCode: 500,
-            errorMessage: "Can't get token"
-          });
-          callback(false);
-          //throw new AuthenticationError(500, "Can't get token")
-        }
+            store.dispatch("auth/loginError", {
+              errorCode: 500,
+              errorMessage: "Can't get token"
+            });
+            callback(false);
+            //throw new AuthenticationError(500, "Can't get token")
+          }
       ).catch(error => {
         console.error("Error occured here 2 !!!")
 
@@ -65,7 +65,7 @@ const AuthService = {
       // TokenService.removeKeyFromCookies("lang")
       // ApiService.unmount401Interceptor();
       // store.dispatch("dicts/setIsAllSet", false);
-      //
+
       if (e instanceof AuthenticationError) {
         store.dispatch("auth/loginError", {
           errorCode: e.errorCode,
@@ -107,19 +107,38 @@ const AuthService = {
   logout: async function () {
 
     try {
-      let response = this.clearTokenFromCache(store.getters['auth/token']);
-      TokenService.removeToken();
-      ApiService.removeHeader();
-      TokenService.removeKeyFromCookies("lang");
-      TokenService.removeKey('menus');
       ApiService.unmount401Interceptor();
+
+      this.clearTokenFromCache(store.getters['auth/token']).then(
+        result => {
+          console.log(result)
+        },
+        error => {
+          console.error(error)
+        }
+      ).catch(err => {
+        console.error(err)
+        throw err
+      });
+
+      if (TokenService.isTokenExist()) {
+        TokenService.removeToken();
+      }
+      ApiService.removeHeader();
+      if (TokenService.isCookieExist("lang")) {
+        TokenService.removeKeyFromCookies("lang");
+      }
+      if (TokenService.isKeyExist("menus")) {
+        TokenService.removeKey('menus');
+      }
       store.dispatch("dicts/setIsAllSet", false);
       //SocketService.stopConnection();
       store.dispatch("auth/logoutSuccess");
       router.push("/login");
-    }
-    catch (error) {
-      console.log({ "Error in logout": error });
+    } catch (error) {
+      console.log({
+        "Error in logout": error
+      });
       throw error
     }
   },
@@ -189,22 +208,36 @@ const AuthService = {
 
   },
   async clearTokenFromCache(token) {
-    const requestData = {
-      method: "delete",
-      url: "auth/token",
-      data: {
-        token: token
+
+    return new Promise(async (res, rej) => {
+      const requestData = {
+        method: "delete",
+        url: "auth/token",
+        data: {
+          token: token
+        }
+      };
+      try {
+        ApiService.customRequest(requestData).then(
+          result => {
+            res(result);
+          },
+          error => {
+            reject(error)
+          }
+        )
+      } catch (error) {
+        rej(new AuthenticationError(
+          error.response.status,
+          error.response.data.detail
+        ))
+        throw new AuthenticationError(
+          error.response.status,
+          error.response.data.detail
+        );
       }
-    };
-    try {
-      const response = await ApiService.customRequest(requestData);
-      return response;
-    } catch (error) {
-      throw new AuthenticationError(
-        error.response.status,
-        error.response.data.detail
-      );
-    }
+    })
+
   }
 };
 
