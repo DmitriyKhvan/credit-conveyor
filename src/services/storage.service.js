@@ -20,6 +20,7 @@ const TokenService = {
   getKey(key) {
     return new Promise((res, rej) => {
       let val = localStorage.getItem(key);
+      console.log(val)
       res(val)
     })
   },
@@ -32,12 +33,15 @@ const TokenService = {
   isKeyExist(key) {
     return new Promise((res, rej) => {
       let isExist = (Boolean)(localStorage.getItem(key) !== null);
+      console.log(isExist)
+
       res(isExist);
     });
   },
   getKeyFromCookies(key) {
     return new Promise((res, rej) => {
       let value = Cookies.get(key)
+      console.log(value)
       res(value)
     });
   },
@@ -49,12 +53,15 @@ const TokenService = {
   },
   isCookieExist(key) {
     return new Promise((res, rej) => {
-      res((Boolean)(Cookies.has(key)));
+      let isCookieExist = (Boolean)(Cookies.has(key));
+      console.log(isCookieExist)
+      res(isCookieExist);
     });
   },
   getToken() {
     return new Promise((res, rej) => {
       let token = Cookies.get(TOKEN_KEY)
+      console.log(token)
       res(token);
     });
   },

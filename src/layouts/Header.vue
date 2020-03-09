@@ -85,7 +85,7 @@ export default {
       }
       return (zero + num).slice(-digit);
     },
-    logout: () => {
+    logout() {
       AuthService.logout();
       console.log("logged out");
     }
