@@ -33,12 +33,14 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn = !TokenService.isTokenExpired();
 
   if (!isPublic && !isLoggedIn) {
-    return next({
-      path: "/login",
-      query: {
-        redirect: to.fullPath
-      } // Store the full path to redirect the user to after login
-    });
+    if (to.path !== '/login') {
+      return next({
+        path: "/login",
+        query: {
+          redirect: to.fullPath
+        } // Store the full path to redirect the user to after login
+      });
+    }
   }
 
   //* Once Logged In

@@ -1,7 +1,7 @@
 import ApiService from "./../services/api.service";
 import TokenService from "./../services/storage.service";
-import store from './../store/index';
-import router from './../router/index';
+import store from "./../store/index";
+import router from "./../router/index";
 import DictService from "./dict.service";
 import SocketService from "./socket.service";
 
@@ -17,47 +17,55 @@ const AuthService = {
   login: async function (credentials, callback) {
     store.dispatch("auth/loginRequest");
     try {
-      this.authenticate(credentials).then(
-        async token => {
-            //console.log(token);
-            store.dispatch("auth/setUserDetails", token);
-            store.dispatch("common/setLang", credentials.lang.value); // set lang
-            TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
-            await DictService.loadAll();
-            //=== currentMenus
-            let b64EncodedMenus = btoa(unescape(encodeURIComponent(JSON.stringify(store.getters['dicts/getMenuList']))));
-            TokenService.setKey('menus', b64EncodedMenus);
-            //
-            store.dispatch("auth/loginSuccess", token);
-            //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
+      this.authenticate(credentials)
+        .then(
+          async token => {
+              //console.log(token);
+              store.dispatch("auth/setUserDetails", token);
+              store.dispatch("common/setLang", credentials.lang.value); // set lang
+              TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
+              await DictService.loadAll();
+              //=== currentMenus
+              let b64EncodedMenus = btoa(
+                unescape(
+                  encodeURIComponent(
+                    JSON.stringify(store.getters["dicts/getMenuList"])
+                  )
+                )
+              );
+              TokenService.setKey("menus", b64EncodedMenus);
+              //
+              store.dispatch("auth/loginSuccess", token);
+              //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
 
-            router.push(router.history.current.query.redirect || "/");
+              router.push(router.history.current.query.redirect || "/");
 
-            callback(true);
-          },
-          error => {
-            console.error("Error occured here 1 !!!")
+              callback(true);
+            },
+            error => {
+              console.error("Error occured here 1 !!!");
 
+              store.dispatch("auth/loginError", {
+                errorCode: 500,
+                errorMessage: "Can't get token"
+              });
+              callback(false);
+              //throw new AuthenticationError(500, "Can't get token")
+            }
+        )
+        .catch(error => {
+          console.error("Error occured here 2 !!!");
+
+          if (error instanceof AuthenticationError) {
             store.dispatch("auth/loginError", {
-              errorCode: 500,
-              errorMessage: "Can't get token"
+              errorCode: error.errorCode,
+              errorMessage: error.message
             });
-            callback(false);
-            //throw new AuthenticationError(500, "Can't get token")
           }
-      ).catch(error => {
-        console.error("Error occured here 2 !!!")
-
-        if (error instanceof AuthenticationError) {
-          store.dispatch("auth/loginError", {
-            errorCode: error.errorCode,
-            errorMessage: error.message
-          });
-        }
-        callback(false);
-      });
+          callback(false);
+        });
     } catch (e) {
-      console.error("Error occured here 3 !!!")
+      console.error("Error occured here 3 !!!");
       //? clear all init data
       // let response = await this.clearTokenFromCache(store.getters['auth/token']);
       // TokenService.removeToken();
@@ -93,7 +101,7 @@ const AuthService = {
           reject(response.data.message);
         }
       } catch (error) {
-        console.error("Error occured here 4 !!!")
+        console.error("Error occured here 4 !!!");
 
         reject(error);
         throw new AuthenticationError(
@@ -105,21 +113,22 @@ const AuthService = {
   },
 
   logout: async function () {
-
     try {
       ApiService.unmount401Interceptor();
 
-      this.clearTokenFromCache(store.getters['auth/token']).then(
-        result => {
-          console.log(result)
-        },
-        error => {
-          console.error(error)
-        }
-      ).catch(err => {
-        console.error(err)
-        throw err
-      });
+      this.clearTokenFromCache(store.getters["auth/token"])
+        .then(
+          result => {
+            console.log(result);
+          },
+          error => {
+            console.error(error);
+          }
+        )
+        .catch(err => {
+          console.error(err);
+          throw err;
+        });
 
       if (TokenService.isTokenExist()) {
         TokenService.removeToken();
@@ -129,22 +138,24 @@ const AuthService = {
         TokenService.removeKeyFromCookies("lang");
       }
       if (TokenService.isKeyExist("menus")) {
-        TokenService.removeKey('menus');
+        TokenService.removeKey("menus");
       }
       store.dispatch("dicts/setIsAllSet", false);
       //SocketService.stopConnection();
       store.dispatch("auth/logoutSuccess");
-      router.push("/login");
+      if (router.currentRoute.path !== '/login') {
+        router.push("/login");
+      }
+
     } catch (error) {
       console.log({
         "Error in logout": error
       });
-      throw error
+      throw error;
     }
   },
 
   refreshToken() {
-
     //const token = UserService.refreshToken();
     if (!store.getters["auth/refreshTokenPromise"]) {
       const p = this.refreshAccessToken();
@@ -159,27 +170,18 @@ const AuthService = {
         },
         error => {
           store.dispatch("auth/refreshTokenPromise", null);
-          throw new AuthenticationError(
-            error.errorCode,
-            error.message
-          );
+          throw new AuthenticationError(error.errorCode, error.message);
         }
       ).catch(error => {
-        throw new AuthenticationError(
-          error.errorCode,
-          error.message
-        );
+        throw new AuthenticationError(error.errorCode, error.message);
       });
     }
-
     return store.getters["auth/refreshTokenPromise"];
     //commit('setToken', token);
   },
 
-
   // refresh Token
   refreshAccessToken: async function () {
-
     const accessToken = TokenService.getToken(); //  get accesToken from cookie
 
     const requestData = {
@@ -205,10 +207,8 @@ const AuthService = {
         error.response.data.detail
       );
     }
-
   },
   async clearTokenFromCache(token) {
-
     return new Promise(async (res, rej) => {
       const requestData = {
         method: "delete",
@@ -223,21 +223,22 @@ const AuthService = {
             res(result);
           },
           error => {
-            reject(error)
+            reject(error);
           }
-        )
+        );
       } catch (error) {
-        rej(new AuthenticationError(
-          error.response.status,
-          error.response.data.detail
-        ))
+        rej(
+          new AuthenticationError(
+            error.response.status,
+            error.response.data.detail
+          )
+        );
         throw new AuthenticationError(
           error.response.status,
           error.response.data.detail
         );
       }
-    })
-
+    });
   }
 };
 

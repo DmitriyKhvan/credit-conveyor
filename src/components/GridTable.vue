@@ -89,7 +89,7 @@
                 transition-hide="scale"
                 anchor="top middle"
                 self="bottom middle"
-              >Refresh Table</q-tooltip>
+              >Refresh</q-tooltip>
             </q-btn>
             <!-- Dynamic Buttons -->
             <q-btn
