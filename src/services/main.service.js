@@ -19,6 +19,26 @@ const MainService = {
       // ApiService.mount401Interceptor();
       resolve(true);
     })
+  },
+  clearStorage() {
+    return new Promise(async (resolve, reject) => {
+
+      if (await TokenService.isTokenExist()) {
+        TokenService.removeToken();
+        console.log("token cleared")
+      }
+      if (await TokenService.isCookieExist("lang")) {
+        TokenService.removeKeyFromCookies("lang");
+        console.log("lang cleared")
+      }
+      if (await TokenService.isKeyExist("menus")) {
+        TokenService.removeKey("menus");
+        console.log("menus cleared")
+      }
+
+      console.log(true)
+      resolve(true);
+    })
   }
 
 };

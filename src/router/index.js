@@ -33,12 +33,15 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn = !(await TokenService.isTokenExpired());
 
   if (!isPublic && !isLoggedIn) {
+    //AuthService.logout();
+    await MainService.clearStorage();
     return next({
       path: "/login",
       query: {
         redirect: to.fullPath
       } // Store the full path to redirect the user to after login
     });
+
   }
 
   //* Once Logged In
@@ -55,7 +58,7 @@ router.beforeEach(async (to, from, next) => {
   //* check router path by user role
   if (isLoggedIn) {
     if (TokenService.isKeyExist('menus')) {
-      var menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
+      let menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
       //console.log(menus)
       if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
         if (to.path !== '/404')
