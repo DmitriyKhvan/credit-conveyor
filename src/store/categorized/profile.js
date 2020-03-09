@@ -1,4 +1,4 @@
-import BpmService from '../../pages/main/work/modules/pages/credit/service/bpm-service';
+import BpmService from '../../services/bpm.service';
 
 export default {
   state: {

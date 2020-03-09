@@ -1,10 +1,17 @@
 <template>
-  <div>
+<div>
+  <div class="creditMenu">
     <!-- <q-toolbar class="bg-grey-3"> -->
     <q-btn 
-      flat dense icon="library_add" 
+      class="subMenuCredit"
+      flat  
       to="/work/credit/registration"
     >
+      <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
+      <q-icon 
+        name="library_add" 
+      />
+      <!--  -->
       <q-tooltip anchor="bottom left" self="top left">
         Форма регистрации клиента
       </q-tooltip>
@@ -13,7 +20,7 @@
       </q-toolbar-title>
     </q-btn>
 
-    <q-btn flat dense icon="library_books" :to="link">
+    <q-btn class="subMenuCredit" flat icon="library_books" :to="link">
       <q-tooltip anchor="bottom left" self="top left">
         Список заявок
       </q-tooltip>
@@ -22,7 +29,7 @@
       </q-toolbar-title>
     </q-btn>
 
-    <q-btn flat dense icon="library_add_check" to="/work/credit/taskQueue">
+    <q-btn class="subMenuCredit" flat icon="library_add_check" to="/work/credit/taskQueue">
       <q-tooltip anchor="bottom left" self="top left">
         Список задач
       </q-tooltip>
@@ -32,8 +39,10 @@
     </q-btn>
 
     <!-- </q-toolbar> -->
-    <router-view></router-view>
+    
   </div>
+  <router-view></router-view>
+</div>
 </template>
 <script>
 export default {
@@ -45,17 +54,30 @@ export default {
   },
   created() {
     if (true) {
-      this.link = "/work/credit/application";
+      this.link = "/work/credit/applications";
     } else {
-      this.link = "/work/credit/application2";
+      this.link = "/work/credit/applications2";
     }
   }
 };
 </script>
+<style lang="scss" scoped>
+  .creditMenu {
+    margin: 15px;
+  }
 
-<style lang="scss">
   .q-btn--rectangle {
     background: $blue;
     color: #fff;
+    margin-right: 15px;
   }
+  .ellipsis {
+    font-size: 1rem
+  }
+</style>
+
+<style>
+  /* .subMenuCredit {
+    border-radius: 3px;
+  } */
 </style>

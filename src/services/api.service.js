@@ -20,6 +20,8 @@ const ApiService = {
     axios.defaults.headers.common = {}
   },
 
+  
+
   get(resource) {
     return axios.get(resource)
   },

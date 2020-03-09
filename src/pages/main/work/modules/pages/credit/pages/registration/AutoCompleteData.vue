@@ -63,7 +63,7 @@ export default {
           }
           this.$store.commit('errorLoadData', data);
 
-          //this.$store.commit('toggleSubmitting', false);
+          this.$store.commit('toggleSubmitting', false);
           this.$store.commit('toggleDisableInput', false);
           this.$store.commit('toggleScannerSerialNumber', false);
           this.$store.commit('toggleDisableBtn', false);

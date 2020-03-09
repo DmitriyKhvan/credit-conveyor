@@ -9,7 +9,7 @@
             <table class="creditTable" align="center">
               <tr>
                 <td>Eжемесячный доход </td>
-                <td>{{ preApprovalData.income | formatNumber}} сум</td>
+                <td>{{ personalData.income | formatNumber}} сум</td>
               </tr>
               <tr>
                 <td>Расходы</td>
@@ -25,7 +25,43 @@
               </tr>
             </table>
 
-            <q-card-actions class="row justify-center">
+            <div v-if="failureCreditReason">
+              <div class="text-h6">Причина отказа:</div>
+
+              <form @submit.prevent="onSubmit">
+                <div class="row">
+                  <q-field
+                    ref="toggle"
+                    :value="!!selection.length"
+                    :rules="[val => !!val || 'выберите причину']"
+                  >
+
+                  <div class="col-6">
+                    <q-checkbox v-model="selection" val="не устроила ставка" label="не устроила ставка"/>
+                    <q-checkbox v-model="selection" val="не устроил срок кредита" label="не устроил срок кредита"/>
+                    <q-checkbox v-model="selection" val="не устроила сумма" label="не устроила сумма"/>
+                  </div>
+                  <div class="col-6">
+                    <q-checkbox v-model="selection" val="изменились планы" label="изменились планы"/>
+                    <q-checkbox v-model="selection" val="не устраивает размер платежа" label="не устраивает размер платежа"/>
+                  </div>
+                  </q-field>
+                </div>
+
+                <q-card-actions class="row justify-center">
+                  <q-btn
+                    label="Продолжить"
+                    color="green"
+                   
+                    type="submit"
+                  />
+                </q-card-actions>
+              </form>
+            </div>
+
+            <q-card-actions 
+              v-if="!failureCreditReason"
+              class="row justify-center">
               <q-btn
                 label="Отправить заявку"
                 color="green"
@@ -37,7 +73,7 @@
                 label="Отменить"
                 color="red-5"
                 v-close-popup
-                @click="failureCredit(false)"
+                @click="() => {failureCreditReason = true}"
               />
             </q-card-actions>
                 
@@ -53,7 +89,9 @@ import formatNumber from '../../filters/format_number.js';
 export default {
   data() {
     return {
-
+      failureCreditReason: false,
+      selection: [],
+      model: false
     }
   },
   // created() {
@@ -78,48 +116,34 @@ export default {
       console.log("successCredit");
       this.$store.commit('toggleConfirm', val);
       this.$router.push('profile');
-       // const data = {
-      //   output: [
-      //     {
-      //       name: "preApplication",
-      //       data: {
-      //         preApproval: {
-      //           incoming: 0,
-      //           payment: 0,
-      //           sum: 0,
-      //           expenses: 0
-      //         },
-      //         applicationID: 0,
-      //         maritalStatus: {
-      //           childrens: true,
-      //           status: true,
-      //           childrenCount: 2
-      //         },
-      //         finance: {
-      //           otherIncome: 0,
-      //           periodicExpenses: 1000000,
-      //           otherExpenses: 0,
-      //           confirmIncome: 4000000
-      //         },
-      //         createDate: "2020-01-08T10:02:33.573Z",
-      //         customer: {
-      //           firstName: "First name",
-      //           lastName: "Last name",
-      //           number: 0,
-      //           phone: 0,
-      //           series: "",
-      //           tin: 0,
-      //           middleName: "",
-      //           pinpp: 0
-      //         }
-      //       }
-      //     }
-      //   ]
-      // };
+      
     },
     failureCredit(val) {
-      console.log("failureCredit");
+      console.log("failureCredit", this.selection);
+      this.$store.commit('resetPersonData')
+      this.$store.commit('toggleDisableInput', val)
       this.$store.commit('toggleConfirm', val)
+      this.$router.push("/work/credit")
+    },
+
+    onSubmit() {
+      console.log('selection ', this.selection)
+      this.$refs.toggle.validate()
+      console.log('ddd', this.$refs.toggle.hasError)
+      if (this.$refs.toggle.hasError) {
+        this.formHasError = true;
+        console.log('unvalid')
+
+        console.log("failureCredit", this.selection);
+        this.$store.commit('toggleConfirm', true)
+      } else {
+        console.log("valid")
+        console.log("failureCredit", this.selection);
+        this.$store.commit('resetPersonData')
+        this.$store.commit('toggleDisableInput', false)
+        this.$store.commit('toggleConfirm', false)
+        this.$router.push("/work/credit")
+      }
     }
   },
 
@@ -145,7 +169,7 @@ export default {
     .creditBackground {
       padding-bottom: 12px;
       width: 100%;
-      background: url(../../assets/ornament.png) no-repeat 0 0;
+      background: url(../../../../../../../../assets/images/credit/ornament.png) no-repeat 0 0;
 
       .personName {
         margin: 15px 0 0 0;

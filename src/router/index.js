@@ -58,7 +58,7 @@ router.beforeEach(async (to, from, next) => {
   if (isLoggedIn) {
     if (TokenService.isKeyExist('menus')) {
       var menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
-      // console.log(menus)
+       //console.log(menus)
       if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
         if (to.path !== '/404')
           return next('/404')

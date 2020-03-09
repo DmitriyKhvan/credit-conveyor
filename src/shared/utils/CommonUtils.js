@@ -28,11 +28,13 @@ export default {
     }
   },
   isValueExistInObject(arr, key, value) {
+    //debugger
     if (arr !== null) {
       for (let k = 0; k < arr.length; k++) {
         if (arr[k][key] == value) {
           return true;
-        } else {
+        } 
+        else {
           if (arr[k]['children'] != null) {
             if (this.isValueExistInObject(arr[k]['children'], key, value)) {
               return true;
@@ -61,5 +63,14 @@ export default {
       }
     }
     return null;
+  },
+
+  filterServerError(error) {
+    if (error.response) {
+      return console.log(error.response.data);
+    } else {
+      return console.log('ErRror', error.message);
+    }
+    //return console.log(error.config);
   }
 }

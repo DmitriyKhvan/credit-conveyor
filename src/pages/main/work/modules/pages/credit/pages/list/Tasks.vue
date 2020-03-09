@@ -4,73 +4,176 @@
     <q-markup-table>
       <thead>
         <tr>
-          <th class="text-left">
+          <!-- <th class="text-left"></th> -->
+          <th class="text-left" colspan="2">
             <q-input
               square
               outlined
               v-model="application"
               dense
-              hint="Заявка"
+              label="Введите номер заявки"
             />
           </th>
-          <th class="text-right">
-            <q-input square outlined v-model="client" dense hint="Клиент" />
-          </th>
-          <th class="text-right">
-            <q-input square outlined v-model="manager" dense hint="Менеджер" />
-          </th>
-
-          <th class="text-right">
-            <q-input square outlined v-model="MFO" dense hint="МФО" />
-          </th>
-
-          <th class="text-right">
-            <q-input square outlined v-model="filial" dense hint="Филиал" />
+          <th class="text-left">
+            <q-input
+              square
+              outlined
+              v-model="client"
+              dense
+              label="Введите наименование клиента"
+            />
           </th>
 
-          <th class="text-right">
+          <th class="text-left">
+            <q-input
+              square
+              outlined
+              v-model="manager"
+              dense
+              label="Введите наименование менеджера"
+            />
+          </th>
+
+          <th class="text-left">
+            <q-input
+              square
+              outlined
+              v-model="MFO"
+              dense
+              label="Введите наименование МФО"
+            />
+          </th>
+
+          <th class="text-left">
+            <q-input
+              square
+              outlined
+              v-model="filial"
+              dense
+              label="Введите наименование филиала"
+            />
+          </th>
+
+          <th class="text-left">
             <q-select
               square
               outlined
-              v-model="task"
+              v-model="status"
               :options="options.task"
               dense
-              hint="Задача"
+              label="Задача"
             />
           </th>
-          <th class="text-right">
+
+          <th class="text-left">
             <q-select
               square
               outlined
               v-model="status"
               :options="options.status"
               dense
-              hint="Статус"
+              label="Статус"
             />
           </th>
-          <th class="text-right">
-            <q-select
-              square
+          <th class="text-left">
+            <q-input
               outlined
-              v-model="sort"
-              :options="options.sort"
+              square
               dense
-              hint="Сортировка"
-            />
+              label="Выберите дату"
+              v-model="date"
+              mask="##.##.####"
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    transition-show="scale"
+                    transition-hide="scale"
+                    ref="qDate"
+                  >
+                    <q-date
+                      mask="DD.MM.YYYY"
+                      v-model="date"
+                      @input="() => $refs.qDate.hide()"
+                    />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
           </th>
+          <th class="text-left"></th>
+        </tr>
+
+        <tr class="titleApplication">
+          <th class="text-center number"><span>№</span></th>
+          <th class="text-left application">
+            <button class="filter">
+              Заявка
+            </button>
+          </th>
+          <th class="text-left client">
+            <button class="filter">
+              Клиент
+            </button>
+          </th>
+
+          <th class="text-left manager">
+            <button class="filter">
+              Менеджер
+            </button>
+          </th>
+
+          <th class="text-left MFO">
+            <button class="filter">
+              MFO
+            </button>
+          </th>
+
+          <th class="text-left filial">
+            <button class="filter">
+              Филиал
+            </button>
+          </th>
+
+          <th class="text-left task">
+            <button class="filter">
+              Задача
+            </button>
+          </th>
+
+          <th class="text-left status">
+            <button class="filter">
+              Статус
+            </button>
+          </th>
+          <th class="text-left date">
+            <button class="filter">
+              Дата
+            </button>
+          </th>
+          <th class="text-left"></th>
         </tr>
       </thead>
       <tbody>
-        <!-- <tr>
-          <td class="text-left">Frozen Yogurt</td>
-          <td class="text-right">159</td>
-          <td class="text-right">6</td>
-          <td class="text-right">24</td>
-          <td class="text-right">6</td>
-          <td class="text-right">24</td>
-          <td class="text-right">4</td>
-          <td class="text-right">87</td>
-        </tr> -->
+        <tr>
+          <td class="text-center number">1</td>
+          <td class="text-left application">
+            12132132132 dsfsf sdfsf sdfsdf sddfsd sddfsdf sdfsdf
+          </td>
+          <td class="text-left client">Иванов Иван Иванович</td>
+          <td class="text-left manager">Менеджер</td>
+          <td class="text-left MFO">MFO</td>
+          <td class="text-left filial">Филиала</td>
+          <td class="text-left task">Задача</td>
+          <td class="text-left status">Статус</td>
+          <td class="text-left date">Дата</td>
+          <td class="text-left print">
+            <div class="text-blue q-gutter-md">
+              <q-icon name="print" size="md" />
+              <q-icon name="cloud_download" size="md" />
+            </div>
+          </td>
+        </tr>
       </tbody>
     </q-markup-table>
   </div>
@@ -87,6 +190,7 @@ export default {
       filial: "",
       task: "",
       status: "",
+      date: "",
       sort: "",
       options: {
         task: [
@@ -108,6 +212,12 @@ export default {
   created() {
     // Запрос к базе данных
     this.task;
+  },
+  mounted() {
+    const filters = document.querySelectorAll('.filter')
+    for (let filter of filters) {
+      filter.addEventListener('click', () => this.toggleFiler(filter))
+    }
   },
   computed: {
     // Фильтры
@@ -138,7 +248,90 @@ export default {
       });
     }
   },
-  methods: {}
+  methods: {
+    toggleFiler(event) {
+      for (let item of document.querySelectorAll(".active")) {
+        if (item !== event) {
+          item.classList.remove("active");
+        }
+      }
+      event.classList.toggle("active");
+    }
+  }
 };
 </script>
-<style></style>
+
+<style lang="scss" scoped>
+tr:nth-child(2n) {
+  background: #e8edff;
+}
+
+th,
+td {
+  padding: 2px;
+}
+
+td {
+  /* word-break: break-all; */
+  white-space: pre-wrap;
+}
+
+.number {
+  width: 3%;
+  span {
+    font-size: 16px;
+    color: #093475;
+  }
+}
+
+.application {
+  width: 9%;
+}
+
+.client,
+.manager,
+.MFO,
+.filial,
+.task,
+.status,
+.date {
+  width: 11%;
+}
+
+.print {
+  width: 6%;
+}
+
+.filter {
+  width: 100%;
+  height: 40px;
+  border: none;
+  background: inherit;
+  cursor: pointer;
+  text-align: left;
+  color: #093475;
+  font-size: 16px;
+
+  &:after {
+    content: "";
+    float: right;
+    border: 1px solid $blue;
+    border-width: 0 3px 3px 0;
+    padding: 4px;
+    margin-top: 4px;
+    transform: rotate(45deg);
+  }
+}
+
+.active {
+  &:after {
+    content: "";
+    float: right;
+    border: 1px solid $blue;
+    border-width: 0 3px 3px 0;
+    padding: 4px;
+    margin-top: 4px;
+    transform: rotate(-135deg);
+  }
+}
+</style>

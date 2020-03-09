@@ -2,29 +2,28 @@ import axios from "axios";
 
 export default class BpmService {
   
-  _baseUrl = "https://10.9.1.131:9443/bpm";
-  _digIdUrl = "http://localhost:50000/api/Identification/";
+  _baseUrl = "http://10.8.7.71:8070/bpm";
+  _personalUrl = "http://10.8.8.70:4000"
+  _digIdUrl = "http://localhost:50000/api/Identification";
 
   // data = {
   //   "refresh-groups": true,
   //   "requested-lifetime": 7200
   // };
 
-  authProcess = async (data) => {
+  authProcess = async () => {
     const responce = await axios({
-    method: 'post',
-    url: `${this._baseUrl}/system/login`,
-    data
+      method: 'post',
+      url: `${this._baseUrl}/system/login`,
     });
     
     return responce.data;
   }
 
-  startProcess = async (token) => {
+  startProcess = async () => {
     const responce = await axios({
       method: 'post',
-      headers: { 'BPMCSRFToken': token },
-      url: `${this._baseUrl}/processes?model=Issuance&container=ACC`
+      url: `${this._baseUrl}/processes`
     });
   
     return responce.data;
@@ -61,4 +60,32 @@ export default class BpmService {
 
     return responce.data;
   }
-}
+
+  getCreditList = async () => {
+    
+    const responce = await axios({
+      method: "get",
+      url: `${this._baseUrl}/processes`,
+    })
+
+    return responce.data
+  }
+
+  getUserRole = async (userId) => {
+    console.log(2222)
+    const responce = await axios({
+      method: "get",
+      url: `${this._personalUrl}/roles/user?id=${userId}` 
+    })
+
+    return responce.data
+  }
+
+  setHeaderBPM(csrf_token) {
+    axios.defaults.headers.common["BPMCSRFToken"] = csrf_token
+  }
+
+  setHeaderRole(role) {
+    axios.defaults.headers.common["NBU-BPM-Role"] = role
+  }
+ }
