@@ -141,7 +141,7 @@ const routes = [
                 path: "task/:id",
                 name: "CreditTask",
                 component: CreditTask,
-                //beforeEnter: ifAuthenticated,
+                beforeEnter: ifAuthenticated,
               },
               {
                 path: "registration",
@@ -152,7 +152,7 @@ const routes = [
                 path: "profile",
                 name: "Profile",
                 component: CreditProfile,
-                beforeEnter: ifAuthenticated,
+                //beforeEnter: ifAuthenticated,
               },
               {
                 path: "errorPage",
