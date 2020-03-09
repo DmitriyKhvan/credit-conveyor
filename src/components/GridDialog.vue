@@ -39,7 +39,7 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" label="Ok" @click="onOkClick">
+        <q-btn color="primary" label="Ok" :disable="!isSelected" @click="onOkClick">
           <!-- <q-spinner color="white" size="1em" v-show="true" /> -->
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -144,13 +144,15 @@ export default {
           let data = res.data;
           // Filter step
           this.data.filterColumn.forEach(param => {
-            data = data.filter(item => {
-              //console.log(item);
-              return this.operators[param.operator](
-                item[param.column],
-                param.value
-              );
-            });
+            if (param.value) {
+              data = data.filter(item => {
+                //console.log(item);
+                return this.operators[param.operator](
+                  item[param.column],
+                  param.value
+                );
+              });
+            }
           });
           // data adding step
           data.forEach(element => {
@@ -200,6 +202,7 @@ export default {
       this.$emit("ok", this.selectedRows);
       this.hide();
     },
+
     onCancelClick() {
       this.$q
         .dialog({

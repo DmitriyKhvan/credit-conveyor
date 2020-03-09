@@ -46,13 +46,7 @@ export default {
           rowsPerPage: 5
           //rowsNumber: 4 // if getting data from a server
         },
-        filterColumn: [
-          {
-            column: "id",
-            operator: "==",
-            value: "354"
-          }
-        ]
+        filterColumn: []
       }
     };
   },

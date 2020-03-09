@@ -81,8 +81,8 @@ export default {
       }
       return (zero + num).slice(-digit);
     },
-    logout: async () => {
-      await AuthService.logout();
+    logout: () => {
+      AuthService.logout();
       console.log("logged out");
     }
   },

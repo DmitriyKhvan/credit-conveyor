@@ -6,32 +6,24 @@
 
 <script>
 import GridTable from "./../../../../components/GridTable";
-import AddEditMenu from "./dialogs/AddEditMenu";
+import AddEditHistory from "./dialogs/AddEditHistory";
 
 import { Dialog } from "quasar";
 import ApiService from "../../../../services/api.service";
 import NotifyService from "../../../../services/notify.service";
 import GridService from "../../../../services/grid.service";
-
 export default {
   created() {},
   data() {
     return {
       props: {
-        caption: this.$t("tables.menus._self"),
-        tablePath: "menus",
-        rowId: "menu_id",
-        addEdit: "menus", // url
-        delete: "menus", //
+        caption: "Devices List",
+        tablePath: "devices/history",
+        rowId: "id",
+        addEdit: "devices/history", // url
+        delete: "devices/history", //
         defaultSort: [], // TODO
-        excludedColumns: [
-          "name",
-          "status",
-          "created_by",
-          "creation_date",
-          "updated_by",
-          "update_date"
-        ],
+        excludedColumns: [],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,
@@ -41,7 +33,7 @@ export default {
         selectMode: "single",
         extraButtons: [],
         paginationConfig: {
-          sortBy: "parent_id",
+          sortBy: "name",
           descending: false,
           page: 1,
           rowsPerPage: 5
@@ -55,7 +47,7 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditMenu, selected, this.props, this)
+      GridService.addEditRecord(AddEditHistory, selected, this.props, this)
         .then(
           ok => {
             if (ok) {

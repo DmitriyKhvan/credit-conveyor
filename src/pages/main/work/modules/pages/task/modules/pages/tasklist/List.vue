@@ -156,10 +156,7 @@ export default {
   beforeCreate: function() {
     axios({
       method: "GET",
-      url: "tasks/user",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("access_token")
-      }
+      url: "tasks/user"
     }).then(res => {
       this.scene = searchIndex(res.data, this.scene);
     });

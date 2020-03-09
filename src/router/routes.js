@@ -49,7 +49,8 @@ const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
 const It = () => import("pages/main/it/It");
 const Devices = () => import("pages/main/it/devices/Devices");
 const DevicesAccounting = () => import("pages/main/it/accounting/Accounting");
-
+const DevicesHistory = () => import("pages/main/it/history/History");
+const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
 //education
 const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
 const QuestionPage = () =>
@@ -73,8 +74,7 @@ const ifAuthenticated = (to, from, next) => {
   next('/work/credit')
 }
 
-const routes = [
-  {
+const routes = [{
     path: "/",
     redirect: "/home",
     component: MainContainer,
@@ -82,8 +82,7 @@ const routes = [
     meta: {
       requiresAuth: true
     },
-    children: [
-      {
+    children: [{
         path: "home",
         name: "Home",
         component: HomePage
@@ -92,8 +91,7 @@ const routes = [
         path: "work",
         name: "Work",
         component: WorkPage,
-        children: [
-          {
+        children: [{
             path: "assistant",
             name: "Assistant",
             component: Assistant
@@ -102,32 +100,27 @@ const routes = [
             path: "chancellary",
             name: "Kanselariya",
             component: Chancellary,
-            children: [
-              {
-                path: "registration",
-                name: "Kanselariya Registration",
-                component: ChanReg
-              }
-            ]
+            children: [{
+              path: "registration",
+              name: "Kanselariya Registration",
+              component: ChanReg
+            }]
           },
           {
             path: "task",
             name: "My Tasks",
             component: Tasks,
-            children: [
-              {
-                path: "list",
-                name: "Task List",
-                component: TasksList
-              }
-            ]
+            children: [{
+              path: "list",
+              name: "Task List",
+              component: TasksList
+            }]
           },
           {
             path: "credit",
             name: "Credit",
             component: Credit,
-            children: [
-              {
+            children: [{
                 path: "applications",
                 name: "CreditApplications",
                 component: CreditApplications
@@ -168,8 +161,7 @@ const routes = [
         path: "admin",
         name: "Admin Page",
         component: AdminPage,
-        children: [
-          {
+        children: [{
             path: "users",
             name: "Users List",
             component: Users
@@ -193,8 +185,7 @@ const routes = [
             path: "selfdev",
             name: "Self Developer",
             component: SelfDevPage,
-            children: [
-              {
+            children: [{
                 path: "topicPage",
                 name: "addEditTopic",
                 component: TopicPage
@@ -222,20 +213,17 @@ const routes = [
         path: "tools",
         name: "Tools",
         component: Tools,
-        children: [
-          {
-            path: "phones",
-            name: "Phones",
-            component: Phones
-          }
-        ]
+        children: [{
+          path: "phones",
+          name: "Phones",
+          component: Phones
+        }]
       },
       {
         path: "it",
         name: "IT section",
         component: It,
-        children: [
-          {
+        children: [{
             path: "devices",
             name: "Devices",
             component: Devices
@@ -263,6 +251,42 @@ const routes = [
         name: "Topic",
         component: Topic
       }
+    ]
+  },
+  {
+    path: "tools",
+    name: "Tools",
+    component: Tools,
+    children: [{
+      path: "phones",
+      name: "Phones",
+      component: Phones
+    }]
+  },
+  {
+    path: "it",
+    name: "IT section",
+    component: It,
+    children: [{
+        path: "devices",
+        name: "Devices",
+        component: Devices
+      },
+      {
+        path: "pcinfo",
+        name: "Devices Accounting",
+        component: DevicesAccounting
+      },
+      {
+        path: "history",
+        name: "Devices History",
+        component: DevicesHistory
+      },
+      {
+        path: "monitoring",
+        name: "Devices Monotoring",
+        component: DevicesMonitoring
+      },
     ]
   },
   {
