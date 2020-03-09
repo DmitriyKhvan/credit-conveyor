@@ -110,9 +110,7 @@ const AuthService = {
 
       this.clearTokenFromCache(store.getters["auth/token"])
         .then(
-          result => {
-            console.log(result);
-          },
+          result => {},
           error => {
             console.error(error);
           }

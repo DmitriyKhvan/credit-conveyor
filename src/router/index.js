@@ -31,7 +31,6 @@ router.beforeEach(async (to, from, next) => {
   const onlyWhenLoggedOut = to.matched.some(record => record.meta.onlyWhenLoggedOut);
 
   const isLoggedIn = !(await TokenService.isTokenExpired());
-  console.log(isLoggedIn);
 
   if (!isPublic && !isLoggedIn) {
     return next({
@@ -70,9 +69,8 @@ router.beforeEach(async (to, from, next) => {
   //* page refresh call
   if (isLoggedIn && !store.getters["dicts/isAllSet"]) {
     ApiService.mount401Interceptor(); //
-    if (!TokenService.isTokenExpired()) { // reloads all Dicts
-      await MainService.loadAllPageRefresh();
-    }
+    // reloads all Dicts
+    await MainService.loadAllPageRefresh();
   }
   next();
 });
