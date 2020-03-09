@@ -30,17 +30,16 @@ router.beforeEach(async (to, from, next) => {
   const isPublic = to.matched.some(record => record.meta.public);
   const onlyWhenLoggedOut = to.matched.some(record => record.meta.onlyWhenLoggedOut);
 
-  const isLoggedIn = !TokenService.isTokenExpired();
+  const isLoggedIn = !(await TokenService.isTokenExpired());
+  console.log(isLoggedIn);
 
   if (!isPublic && !isLoggedIn) {
-    if (to.path !== '/login') {
-      return next({
-        path: "/login",
-        query: {
-          redirect: to.fullPath
-        } // Store the full path to redirect the user to after login
-      });
-    }
+    return next({
+      path: "/login",
+      query: {
+        redirect: to.fullPath
+      } // Store the full path to redirect the user to after login
+    });
   }
 
   //* Once Logged In
@@ -58,13 +57,13 @@ router.beforeEach(async (to, from, next) => {
   if (isLoggedIn) {
     if (TokenService.isKeyExist('menus')) {
       var menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
-       //console.log(menus)
+      //console.log(menus)
       if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
         if (to.path !== '/404')
           return next('/404')
       }
     } else {
-      AuthService.logout();
+      //AuthService.logout();
     }
   }
 

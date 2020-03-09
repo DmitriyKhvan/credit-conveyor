@@ -232,6 +232,16 @@ const routes = [{
             path: "pcinfo",
             name: "Devices Accounting",
             component: DevicesAccounting
+          },
+          {
+            path: "history",
+            name: "Devices History",
+            component: DevicesHistory
+          },
+          {
+            path: "monitoring",
+            name: "Devices Monotoring",
+            component: DevicesMonitoring
           }
         ]
       },
@@ -251,42 +261,6 @@ const routes = [{
         name: "Topic",
         component: Topic
       }
-    ]
-  },
-  {
-    path: "tools",
-    name: "Tools",
-    component: Tools,
-    children: [{
-      path: "phones",
-      name: "Phones",
-      component: Phones
-    }]
-  },
-  {
-    path: "it",
-    name: "IT section",
-    component: It,
-    children: [{
-        path: "devices",
-        name: "Devices",
-        component: Devices
-      },
-      {
-        path: "pcinfo",
-        name: "Devices Accounting",
-        component: DevicesAccounting
-      },
-      {
-        path: "history",
-        name: "Devices History",
-        component: DevicesHistory
-      },
-      {
-        path: "monitoring",
-        name: "Devices Monotoring",
-        component: DevicesMonitoring
-      },
     ]
   },
   {

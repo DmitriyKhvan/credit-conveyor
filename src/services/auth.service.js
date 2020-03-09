@@ -66,14 +66,6 @@ const AuthService = {
         });
     } catch (e) {
       console.error("Error occured here 3 !!!");
-      //? clear all init data
-      // let response = await this.clearTokenFromCache(store.getters['auth/token']);
-      // TokenService.removeToken();
-      // ApiService.removeHeader();
-      // TokenService.removeKeyFromCookies("lang")
-      // ApiService.unmount401Interceptor();
-      // store.dispatch("dicts/setIsAllSet", false);
-
       if (e instanceof AuthenticationError) {
         store.dispatch("auth/loginError", {
           errorCode: e.errorCode,
@@ -129,24 +121,25 @@ const AuthService = {
           console.error(err);
           throw err;
         });
+      ApiService.removeHeader();
 
-      if (TokenService.isTokenExist()) {
+      if (await TokenService.isTokenExist()) {
         TokenService.removeToken();
       }
-      ApiService.removeHeader();
-      if (TokenService.isCookieExist("lang")) {
+      if (await TokenService.isCookieExist("lang")) {
         TokenService.removeKeyFromCookies("lang");
       }
-      if (TokenService.isKeyExist("menus")) {
+      if (await TokenService.isKeyExist("menus")) {
         TokenService.removeKey("menus");
       }
+
       store.dispatch("dicts/setIsAllSet", false);
       //SocketService.stopConnection();
       store.dispatch("auth/logoutSuccess");
-      if (router.currentRoute.path !== '/login') {
+
+      if (!(await TokenService.isTokenExist())) {
         router.push("/login");
       }
-
     } catch (error) {
       console.log({
         "Error in logout": error

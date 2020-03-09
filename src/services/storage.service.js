@@ -25,7 +25,9 @@ const TokenService = {
     localStorage.removeItem(key)
   },
   isKeyExist(key) {
-    return (Boolean)(localStorage.getItem(key) !== null);
+    return new Promise((res, rej) => {
+      res((Boolean)(localStorage.getItem(key) !== null));
+    });
   },
   getKeyFromCookies(key) {
     return Cookies.get(key)
@@ -37,7 +39,9 @@ const TokenService = {
     Cookies.remove(key)
   },
   isCookieExist(key) {
-    return (Boolean)(Cookies.has(key));
+    return new Promise((res, rej) => {
+      res((Boolean)(Cookies.has(key)));
+    });
   },
   getToken() {
     return Cookies.get(TOKEN_KEY);
@@ -49,19 +53,22 @@ const TokenService = {
     Cookies.remove(TOKEN_KEY);
   },
   isTokenExist() {
-    return (Boolean)(Cookies.has(TOKEN_KEY));
+    return new Promise((res, rej) => {
+      res((Boolean)(Cookies.has(TOKEN_KEY)));
+    })
   },
-
   isTokenExpired() {
-    if (this.isTokenExist()) {
-      let decodedToken = jwt_decode(this.getToken());
-      if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
-        return true;
-      } else return false;
-
-    } else return true;
+    return new Promise(async (res, rej) => {
+      if (await this.isTokenExist()) {
+        let decodedToken = jwt_decode(this.getToken());
+        if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
+          res(true);
+        } else res(false);
+      } else {
+        res(true);
+      }
+    });
   }
-
 };
 
 export default TokenService;
