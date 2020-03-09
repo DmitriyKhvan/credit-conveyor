@@ -6,10 +6,9 @@ import ApiService from './../services/api.service';
 import routes from "./routes";
 import store from './../store/index';
 import CommonUtils from "../shared/utils/CommonUtils";
-
 import {
-  decode
-} from "jsonwebtoken";
+  AuthService
+} from "../services/auth.service";
 
 Vue.use(VueRouter);
 
@@ -31,7 +30,8 @@ router.beforeEach(async (to, from, next) => {
   const isPublic = to.matched.some(record => record.meta.public);
   const onlyWhenLoggedOut = to.matched.some(record => record.meta.onlyWhenLoggedOut);
 
-  const isLoggedIn = !TokenService.isTokenExpired();
+  const isLoggedIn = !(await TokenService.isTokenExpired());
+  console.log(isLoggedIn);
 
   if (!isPublic && !isLoggedIn) {
     return next({
@@ -42,19 +42,38 @@ router.beforeEach(async (to, from, next) => {
     });
   }
 
-  if (isLoggedIn && onlyWhenLoggedOut) {
-    //TODO call load functions
-    //return next("/");
+  //* Once Logged In
+  if (isLoggedIn && from.path == '/login') {
+    console.log('mount once log in')
+    ApiService.mount401Interceptor();
   }
 
-  // page refresh call
+  //!!! Don't Change
+  if (isLoggedIn && onlyWhenLoggedOut) {
+    return next('/')
+  }
+
+  //* check router path by user role
+  if (isLoggedIn) {
+    if (TokenService.isKeyExist('menus')) {
+      var menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
+      //console.log(menus)
+      if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
+        if (to.path !== '/404')
+          return next('/404')
+      }
+    } else {
+      //AuthService.logout();
+    }
+  }
+
+  //* page refresh call
   if (isLoggedIn && !store.getters["dicts/isAllSet"]) {
-    ApiService.mount401Interceptor(); //  remount once page refreshes
+    ApiService.mount401Interceptor(); //
     if (!TokenService.isTokenExpired()) { // reloads all Dicts
       await MainService.loadAllPageRefresh();
     }
   }
-
   next();
 });
 

@@ -1,8 +1,6 @@
 import {
   decode
 } from "jsonwebtoken";
-// import SocketService from "../services/socket.service";
-// import AuthService from "./../services/auth.service";
 
 /**
  *  States
@@ -17,6 +15,7 @@ const state = {
   username: null,
   userId: null,
   fullName: null,
+  userRoles: []
 };
 
 /**
@@ -57,6 +56,9 @@ const getters = {
   },
   token: state => {
     return state.accessToken;
+  },
+  userRoles: state => {
+    return state.userRoles
   }
 };
 
@@ -102,16 +104,22 @@ const actions = {
   setUserDetails({
     commit
   }, token) {
+    let decodedToken = decode(token);
+
     let details = {
-      username: decode(token).username,
-      userId: decode(token).id,
-      fullName: decode(token).full_name,
+      username: decodedToken.username,
+      userId: decodedToken.id,
+      fullName: decodedToken.full_name,
     }
     commit("setUsername", details.username);
     commit("setUserId", details.userId);
     commit("setUserFullname", details.fullName);
   },
-
+  setUserRoles({
+    commit
+  }, roles) {
+    commit("setUserRoles", roles);
+  }
 };
 
 /**
@@ -154,6 +162,9 @@ const mutations = {
   },
   setUserFullname(state, fullName) {
     state.fullName = fullName;
+  },
+  setUserRoles(state, userRoles) {
+    state.userRoles = userRoles;
   }
 
 };

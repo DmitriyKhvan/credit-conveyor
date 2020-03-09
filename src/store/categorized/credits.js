@@ -1,8 +1,15 @@
-import BpmService from '../../pages/main/work/modules/pages/credit/service/bpm-service';
-
+import BpmService from '../../services/bpm.service';
+import storegeService from '../../services/storage.service';
+import { decode } from 'jsonwebtoken';
 
 export default {
   state: {
+    roles: {
+      CreditManager: "CRM",
+      BackOfficee: "BO",
+      CreditCommitteeMember: "CCM",
+      CreditSecretary: "CS"
+    },
     confirm: false,
     personalData: {
       surname: "",
@@ -43,25 +50,69 @@ export default {
   },
   actions: {
 
-    async authProcess(state, payload) {
-      return await state.state.bpmService.authProcess(payload);
+    async authBpm({state, dispatch}) {
+      // получение id пользователя
+      const userId = decode(storegeService.getToken()).id;
+
+      // получение ролей пользователя
+      const role = await dispatch("getUserRole", userId)
+      console.log("userRole", role)
+
+      // запись роли в header запроса
+      await dispatch("setHeaderRole", state.roles[role.text[0].role_name])
+      //await dispatch("setHeaderRole", "ff")
+     
+      //debugger
+      // получение BPM token 
+      const csrf_token = await dispatch("authProcess")
+      console.log('ttoken', csrf_token)
+      
+
+      // запись BPM token в header запроса
+      await dispatch("setHeaderBPM", csrf_token.csrf_token)
+
+      // запись BPM token sessionStore
+      sessionStorage.setItem("csrf_token", csrf_token.csrf_token);
+
+      return csrf_token
     },
 
-    async startProcess(state, payload) {
-      return await state.state.bpmService.startProcess(payload);
+    async getUserRole({ state }, payload) {
+      return await state.bpmService.getUserRole(payload)
     },
 
-    async getDigIdNumber(state) {
-      return await state.state.bpmService.getDigIdNumber();
+    async authProcess({ state, dispatch }) {
+      return await state.bpmService.authProcess();
     },
 
-    async getUserDataFromService(state) {
-      return await state.state.bpmService.getUserDataFromService();
+    async startProcess({ state }) {
+      return await state.bpmService.startProcess();
     },
 
-    async getUserDataFromReader(state) {
-      return await state.state.bpmService.getUserDataFromReader();
+    async setHeaderRole({ state }, payload) {
+      return await state.bpmService.setHeaderRole(payload);
+    },
+
+    async setHeaderBPM({ state }, payload) {
+      return await state.bpmService.setHeaderBPM(payload);
+    },
+
+    async getDigIdNumber({ state }) {
+      return await state.bpmService.getDigIdNumber();
+    },
+
+    async getUserDataFromService({ state }) {
+      return await state.bpmService.getUserDataFromService();
+    },
+
+    async getUserDataFromReader({ state }) {
+      return await state.bpmService.getUserDataFromReader();
+    },
+
+    async getCreditList({ state }) {
+      return await state.bpmService.getCreditList();
     }
+
   },
   mutations: {
     toggleConfirm(state, payload) {
@@ -108,6 +159,30 @@ export default {
       state.personalData.mname = payload.Patronym;
       state.personalData.personPhoto = payload.personPhoto;
     },
+    resetPersonData(state) {
+      state.personalData = {
+        surname: "",
+        name: "",
+        mname: "",
+        inn: "",
+        phone: 998,
+        pinpp: "",
+        passport: "",
+        personPhoto: "",
+        // FAMILY //
+        familyStatus: "",
+        children: "",
+        childrenCount: 0,
+        // MONEY //
+        income: 0, //подтвержденный ежемесячный доход
+        expense: 0, //периодические расходы
+        otherExpenses: 0, //плата за облуживание других обязательств
+        externalIncome: "", //наличие дополнительного дохода
+        externalIncomeSize: 0, //размер дополнительного дохода
+        additionalIncomeSource: "" //источник дополнительного дохода
+      }
+    },
+    
     toggleScannerSerialNumber(state, payload) {
       state.scannerSerialNumber = payload;
     }

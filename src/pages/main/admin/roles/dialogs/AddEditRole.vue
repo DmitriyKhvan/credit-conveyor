@@ -72,7 +72,6 @@
               lazy-rules
             />
           </div>
-
           <div class="row">
             <q-select
               outlined
@@ -92,6 +91,41 @@
               lazy-rules
             />
           </div>
+          <div class="row">
+            <q-select
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.branch_code"
+              :options="deviceBranches"
+              option-value="value"
+              option-label="text"
+              emit-value
+              map-options
+              label="Branches"
+              @input="selected"
+              :rules="[
+              ]"
+              lazy-rules
+            />
+            <q-select
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.filial_code"
+              :options="deviceFilials"
+              option-value="value"
+              option-label="text"
+              emit-value
+              map-options
+              label="Filials"
+              :rules="[
+              ]"
+              lazy-rules
+            />
+          </div>
         </div>
       </q-card-section>
       <!-- buttons example -->
@@ -108,6 +142,7 @@
 <script>
 import NotifyService from "./../../../../../services/notify.service";
 import dialogMix from "./../../../../../shared/mixins/dialogMix";
+import ApiService from "./../../../../../services/api.service";
 import {
   required,
   requiredIf,
@@ -125,12 +160,17 @@ export default {
         { key: "Passive", value: 0 }
       ],
       isValidated: true,
+      deviceBranches: [],
+      deviceFilials: [],
+      branchList: [],
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         role_id: null,
         authority: null,
         name: [],
-        status: null
+        status: null,
+        branch_code: null,
+        filial_code: null
       }
     };
   },
@@ -163,9 +203,52 @@ export default {
   },
   mixins: [dialogMix],
   created() {
-    console.log(this.data.props.addEdit);
+    Promise.all([this.selectBranch()])
+      .then(x => {
+        this.deviceBranches = x[0].data[0].children.map(val => {
+          return {
+            text: val.DEPARTMENT_NAME1,
+            value: val.CODE
+          };
+        });
+        this.branchList = x[0].data[0].children;
+        if (this.details.branch_code) {
+          // when edit case initializes deviceFilials array
+
+          this.branchList.forEach(element => {
+            if (element.CODE == this.details.branch_code) {
+              this.deviceFilials = element.children.map(val => {
+                return {
+                  text: val.DEPARTMENT_NAME1,
+                  value: val.CODE
+                };
+              });
+            }
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   },
-  methods: {}
+  methods: {
+    selectBranch() {
+      return ApiService.get("structure/branches");
+    },
+    selected(parentCode) {
+      this.details.filial_code = null;
+      this.branchList.forEach(element => {
+        if (element.CODE == parentCode) {
+          this.deviceFilials = element.children.map(val => {
+            return {
+              text: val.DEPARTMENT_NAME1,
+              value: val.CODE
+            };
+          });
+        }
+      });
+    }
+  }
 };
 </script>
 

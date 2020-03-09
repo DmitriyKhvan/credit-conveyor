@@ -16,7 +16,6 @@ export default {
     if (obj[key] === value) {
       return true;
     } else {
-
       for (let i = 0, len = Object.keys(obj).length; i < len; i++) {
         if (typeof obj[i] == 'object') {
           let found = this.findNested(obj[i], key, value);
@@ -26,21 +25,52 @@ export default {
           }
         }
       }
-
     }
   },
   isValueExistInObject(arr, key, value) {
-    for (let k = 0; k < arr.length; k++) {
-      if (arr[k][key] == value) {
-        return true;
-      } else {
-        if (arr[k]['children'] != null) {
-          if (this.isValueExistInObject(arr[k]['children'], key, value)) {
-            return true;
+    //debugger
+    if (arr !== null) {
+      for (let k = 0; k < arr.length; k++) {
+        if (arr[k][key] == value) {
+          return true;
+        } 
+        else {
+          if (arr[k]['children'] != null) {
+            if (this.isValueExistInObject(arr[k]['children'], key, value)) {
+              return true;
+            }
+          } else continue;
+        }
+      }
+      return false;
+    } else {
+      return false
+    }
+  },
+  getChildMenus(menus, url) {
+    for (let i = 0; i < menus.length; i++) {
+      if (menus[i].url == url) {
+        return [];
+      }
+      if (menus[i]['children'] !== null) {
+        for (let j = 0; j < menus[i]['children'].length; j++) {
+          if (menus[i]['children'][j].url == url) {
+            if (menus[i]['children'][j]['children'] != null) {
+              return menus[i]['children'][j]['children'];
+            } else return [];
           }
-        } else continue;
+        }
       }
     }
-    return false;
+    return null;
+  },
+
+  filterServerError(error) {
+    if (error.response) {
+      return console.log(error.response.data);
+    } else {
+      return console.log('ErRror', error.message);
+    }
+    //return console.log(error.config);
   }
 }

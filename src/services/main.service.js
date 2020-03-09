@@ -19,7 +19,6 @@ const MainService = {
       // ApiService.mount401Interceptor();
       resolve(true);
     })
-
   }
 
 };

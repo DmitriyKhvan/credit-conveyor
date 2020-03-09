@@ -17,14 +17,39 @@
               outlined
               clearable
               color="purple-12"
-              class="col-xs-12 col-sm-12 col-md-12"
-              v-model="details.name"
-              label="Device Mark"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.name[0]"
+              label="Device Type Name Uz"
               @input="$v.details.name.$touch()"
               :rules="[
                 val =>
-                  $v.details.name.required || 'Device Mark is required'
+                  $v.details.name.required || 'Device Type Name Uz is required'
               ]"
+              lazy-rules
+            />
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.name[1]"
+              label="Device Type Name Ru"
+              @input="$v.details.name.$touch()"
+              :rules="[
+                val => $v.details.name.required || 'Name Ru is required'
+              ]"
+              lazy-rules
+            />
+          </div>
+          <div class="row">
+            <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.name[2]"
+              label="Device Type Name En"
+              :rules="[]"
               lazy-rules
             />
           </div>
@@ -42,8 +67,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../../services/notify.service";
-import dialogMix from "./../../../../../shared/mixins/dialogMix";
+import NotifyService from "./../../../../../../services/notify.service";
+import dialogMix from "./../../../../../../shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -59,7 +84,7 @@ export default {
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
-        name: null
+        name: []
       }
     };
   },

@@ -24,40 +24,61 @@ const ChanReg = () =>
 const Tasks = () => import("pages/main/work/modules/pages/task/index.vue");
 const TasksList = () =>
   import("pages/main/work/modules/pages/task/modules/pages/tasklist/List");
-const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
-const CreditReg = () => import("pages/main/work/modules/pages/credit/pages/registration/Registration.vue");
-const CreditProfile = () => import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
-const Applicaion = () => import("pages/main/work/modules/pages/credit/pages/list/Application.vue");
-const TaskQueue = () => import("pages/main/work/modules/pages/credit/pages/list/Tasks.vue");
 
-//const CreditManagerCabinet = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditManager/TaskList.vue");
-const CreditCommiteeTask = () => import("pages/main/work/modules/pages/credit/pages/cabinet/creditCommittee/Task.vue");
-const TestList = () => import("pages/main/work/modules/pages/test/TestList.vue");
-const Topic = () => import("pages/main/work/modules/pages/test/Topic.vue");
-const CompleteTest = () => import("pages/main/work/modules/pages/test/CompleteTest.vue");
+// Credit
+const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
+const ErrorPage = () =>
+  import("pages/main/work/modules/pages/credit/ErrorPage");
+const CreditReg = () =>
+  import(
+    "pages/main/work/modules/pages/credit/pages/registration/Registration.vue"
+  );
+const CreditProfile = () =>
+  import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
+const CreditApplications = () =>
+  import("pages/main/work/modules/pages/credit/pages/list/Applications.vue");
+const CreditTasks = () =>
+  import("pages/main/work/modules/pages/credit/pages/list/Tasks.vue");
+const CreditTask = () =>
+  import("pages/main/work/modules/pages/credit/pages/list/Task.vue");
 
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
 const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
 
-const It = () => import("pages/main/it/Index");
-const Devices = () => import("pages/main/it/devices/Index");
-
+const It = () => import("pages/main/it/It");
+const Devices = () => import("pages/main/it/devices/Devices");
+const DevicesAccounting = () => import("pages/main/it/accounting/Accounting");
+const DevicesHistory = () => import("pages/main/it/history/History");
+const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
 //education
-const TopicPage = () =>
-  import("pages/main/admin/self_dev/topics/Topics");
+const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
 const QuestionPage = () =>
   import("pages/main/admin/self_dev/questions/Questions");
-const TestPage = () =>
-  import("pages/main/admin/self_dev/tests/Tests");
+const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
 const MonitoringPage = () =>
   import("pages/main/admin/modules/self_dev/pages/addEditMonitoringPage");
+
+const TestList = () =>
+  import("pages/main/work/modules/pages/test/TestList.vue");
+const Topic = () => import("pages/main/work/modules/pages/test/Topic.vue");
+const CompleteTest = () =>
+  import("pages/main/work/modules/pages/test/CompleteTest.vue");
+
+// Проверка на BPM token
+const ifAuthenticated = (to, from, next) => {
+  if (sessionStorage.getItem("csrf_token")) {
+    next()
+    return
+  }
+  next('/work/credit')
+}
 
 const routes = [{
     path: "/",
     redirect: "/home",
     component: MainContainer,
-    name: "main",
+    name: "Main",
     meta: {
       requiresAuth: true
     },
@@ -87,11 +108,11 @@ const routes = [{
           },
           {
             path: "task",
-            name: "my tasks",
+            name: "My Tasks",
             component: Tasks,
             children: [{
               path: "list",
-              name: "tasklist",
+              name: "Task List",
               component: TasksList
             }]
           },
@@ -100,32 +121,40 @@ const routes = [{
             name: "Credit",
             component: Credit,
             children: [{
-                path: "application",
-                name: "application",
-                component: Applicaion
+                path: "applications",
+                name: "CreditApplications",
+                component: CreditApplications
               },
               {
-                path: "taskQueue",
-                name: "taskQueue",
-                component: TaskQueue
+                path: "tasks",
+                name: "CreditTasks",
+                component: CreditTasks
               },
               {
-                path: "creditCommiteeTask",
-                name: "CreditCommiteeTask",
-                component: CreditCommiteeTask
+                path: "task/:id",
+                name: "CreditTask",
+                component: CreditTask,
+                //beforeEnter: ifAuthenticated,
               },
               {
                 path: "registration",
-                name: "registration",
+                name: "Registration",
                 component: CreditReg
               },
               {
-                path: 'profile',
-                name: 'profile',
-                component: CreditProfile
+                path: "profile",
+                name: "Profile",
+                component: CreditProfile,
+                beforeEnter: ifAuthenticated,
+              },
+              {
+                path: "errorPage",
+                name: "errorPage",
+                component: ErrorPage,
+                //beforeEnter: ifAuthenticated,
               }
             ]
-          }
+          },
         ]
       },
       {
@@ -154,7 +183,7 @@ const routes = [{
           },
           {
             path: "selfdev",
-            name: "SelfDeveloper",
+            name: "Self Developer",
             component: SelfDevPage,
             children: [{
                 path: "topicPage",
@@ -163,17 +192,17 @@ const routes = [{
               },
               {
                 path: "questionPage",
-                name: "addEditQuestion",
+                name: "Add Edit Question",
                 component: QuestionPage
               },
               {
                 path: "testPage",
-                name: "addEditTest",
+                name: "Add Edit Test",
                 component: TestPage
               },
               {
                 path: "monitoringPage",
-                name: "addEditMonitoring",
+                name: "Add Edit Monitoring",
                 component: MonitoringPage
               }
             ]
@@ -195,28 +224,43 @@ const routes = [{
         name: "IT section",
         component: It,
         children: [{
-          path: "devices",
-          name: "Devices",
-          component: Devices
-        }]
+            path: "devices",
+            name: "Devices",
+            component: Devices
+          },
+          {
+            path: "pcinfo",
+            name: "Devices Accounting",
+            component: DevicesAccounting
+          },
+          {
+            path: "history",
+            name: "Devices History",
+            component: DevicesHistory
+          },
+          {
+            path: "monitoring",
+            name: "Devices Monotoring",
+            component: DevicesMonitoring
+          }
+        ]
       },
       {
         path: "selfdev",
-        name: "TestList",
+        name: "Test List",
         component: TestList
       },
       {
         path: "completeTest",
-        name: "CompleteTest",
+        name: "Complete Test",
         component: CompleteTest,
         props: true
       },
       {
         path: "topic/:id",
         name: "Topic",
-        component: Topic,
-      },
-
+        component: Topic
+      }
     ]
   },
   {
@@ -236,7 +280,6 @@ const routes = [{
       public: true
     }
   }
-
 ];
 
 // Always leave this as last one
