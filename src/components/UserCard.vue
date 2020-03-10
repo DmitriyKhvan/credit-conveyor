@@ -21,7 +21,7 @@
         </q-item-section>
         <q-item-section style="padding: 0 5px 5px 10px;">
           <q-item-label>
-            <b>{{ decode(item.WORK_POSITION) }}</b>
+            <b>{{ decode(item.POST_NAME) }}</b>
           </q-item-label>
           <q-item-label>
             <q-icon name="o_local_phone" />
