@@ -40,40 +40,52 @@ const TokenService = {
   },
   getKeyFromCookies(key) {
     return new Promise((res, rej) => {
-      let value = Cookies.get(key)
+      //let value = Cookies.get(key)
+      let value = localStorage.getItem(key);
       console.log(value)
       res(value)
     });
   },
   setKeyToCookies(key, value) {
-    Cookies.set(key, value);
+    //Cookies.set(key, value);
+    localStorage.setItem(key, value);
+
   },
   removeKeyFromCookies(key) {
-    Cookies.remove(key)
+    //Cookies.remove(key)
+    localStorage.removeItem(key)
   },
   isCookieExist(key) {
     return new Promise((res, rej) => {
-      let isCookieExist = (Boolean)(Cookies.has(key));
+      //let isCookieExist = (Boolean)(Cookies.has(key));
+      let isCookieExist = (Boolean)(localStorage.getItem(key) !== null);
+
       console.log(isCookieExist)
       res(isCookieExist);
     });
   },
   getToken() {
     return new Promise((res, rej) => {
-      let token = Cookies.get(TOKEN_KEY)
+      //let token = Cookies.get(TOKEN_KEY)
+      let token = localStorage.getItem(TOKEN_KEY);
       //console.log(token)
       res(token);
     });
   },
   saveToken(accessToken) {
-    Cookies.set(TOKEN_KEY, accessToken);
+    localStorage.setItem(TOKEN_KEY, accessToken);
+
+    //Cookies.set(TOKEN_KEY, accessToken);
   },
   removeToken() {
-    Cookies.remove(TOKEN_KEY);
+    //Cookies.remove(TOKEN_KEY);
+    localStorage.removeItem(TOKEN_KEY)
   },
   isTokenExist() {
     return new Promise((res, rej) => {
-      let isExist = (Boolean)(Cookies.has(TOKEN_KEY));
+      //let isExist = (Boolean)(Cookies.has(TOKEN_KEY));
+      let isExist = (Boolean)(localStorage.getItem(TOKEN_KEY) !== null);
+
       console.log(isExist)
       res(isExist);
     })
