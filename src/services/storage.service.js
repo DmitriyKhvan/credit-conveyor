@@ -20,7 +20,7 @@ const TokenService = {
   getKey(key) {
     return new Promise((res, rej) => {
       let val = localStorage.getItem(key);
-      console.log(val)
+      //console.log(val)
       res(val)
     })
   },
@@ -61,7 +61,7 @@ const TokenService = {
   getToken() {
     return new Promise((res, rej) => {
       let token = Cookies.get(TOKEN_KEY)
-      console.log(token)
+      //console.log(token)
       res(token);
     });
   },
@@ -87,8 +87,7 @@ const TokenService = {
           if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
             console.log(true)
             res(true);
-          }
-          else {
+          } else {
             console.log(false)
             res(false);
           }
