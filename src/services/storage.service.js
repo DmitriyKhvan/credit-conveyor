@@ -40,7 +40,8 @@ const TokenService = {
   },
   getKeyFromCookies(key) {
     return new Promise((res, rej) => {
-      let value = Cookies.get(key)
+      //let value = Cookies.get(key)
+      let value = localStorage.getItem(key);
       console.log(value)
       res(value)
     });
