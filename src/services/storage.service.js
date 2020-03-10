@@ -8,7 +8,9 @@ const MENU_LIST = "menu_list";
  * accessed through this instace.
  **/
 
-import jwt_decode from 'jwt-decode';
+import {
+  decode
+} from 'jsonwebtoken';
 import {
   Cookies
 } from 'quasar'
@@ -16,7 +18,11 @@ import {
 const TokenService = {
 
   getKey(key) {
-    return localStorage.getItem(key)
+    return new Promise((res, rej) => {
+      let val = localStorage.getItem(key);
+      //console.log(val)
+      res(val)
+    })
   },
   setKey(key, value) {
     localStorage.setItem(key, value);
@@ -26,11 +32,18 @@ const TokenService = {
   },
   isKeyExist(key) {
     return new Promise((res, rej) => {
-      res((Boolean)(localStorage.getItem(key) !== null));
+      let isExist = (Boolean)(localStorage.getItem(key) !== null);
+      console.log(isExist)
+
+      res(isExist);
     });
   },
   getKeyFromCookies(key) {
-    return Cookies.get(key)
+    return new Promise((res, rej) => {
+      let value = Cookies.get(key)
+      console.log(value)
+      res(value)
+    });
   },
   setKeyToCookies(key, value) {
     Cookies.set(key, value);
@@ -40,11 +53,17 @@ const TokenService = {
   },
   isCookieExist(key) {
     return new Promise((res, rej) => {
-      res((Boolean)(Cookies.has(key)));
+      let isCookieExist = (Boolean)(Cookies.has(key));
+      console.log(isCookieExist)
+      res(isCookieExist);
     });
   },
   getToken() {
-    return Cookies.get(TOKEN_KEY);
+    return new Promise((res, rej) => {
+      let token = Cookies.get(TOKEN_KEY)
+      //console.log(token)
+      res(token);
+    });
   },
   saveToken(accessToken) {
     Cookies.set(TOKEN_KEY, accessToken);
@@ -54,17 +73,27 @@ const TokenService = {
   },
   isTokenExist() {
     return new Promise((res, rej) => {
-      res((Boolean)(Cookies.has(TOKEN_KEY)));
+      let isExist = (Boolean)(Cookies.has(TOKEN_KEY));
+      console.log(isExist)
+      res(isExist);
     })
   },
   isTokenExpired() {
     return new Promise(async (res, rej) => {
+
       if (await this.isTokenExist()) {
-        let decodedToken = jwt_decode(this.getToken());
-        if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
-          res(true);
-        } else res(false);
+        let decodedToken = decode(await this.getToken());
+        if (decodedToken) {
+          if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
+            console.log(true)
+            res(true);
+          } else {
+            console.log(false)
+            res(false);
+          }
+        }
       } else {
+        console.log(false)
         res(true);
       }
     });

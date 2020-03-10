@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import jwt from "jsonwebtoken";
+import { decode } from "jsonwebtoken";
 import { AuthService } from "./../services/auth.service";
 import TokenService from "./../services/storage.service";
 import { date } from "quasar";
@@ -46,7 +46,6 @@ export default {
       date: "",
       imageUrl:
         "http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=",
-      emps: jwt.decode(TokenService.getToken()),
       url2: "https://www.svgrepo.com/show/275245/man-profile.svg"
     };
   },
@@ -73,6 +72,11 @@ export default {
         week[cd.getDay()];
     }, 1000);
   },
+  computed: {
+    async emps() {
+      return decode(await TokenService.getToken());
+    }
+  },
   methods: {
     zeroPadding(num, digit) {
       let zero = "";
@@ -81,7 +85,7 @@ export default {
       }
       return (zero + num).slice(-digit);
     },
-    logout: () => {
+    logout() {
       AuthService.logout();
       console.log("logged out");
     }

@@ -32,6 +32,8 @@ router.beforeEach(async (to, from, next) => {
 
   const isLoggedIn = !(await TokenService.isTokenExpired());
 
+  console.log(isLoggedIn);
+
   if (!isPublic && !isLoggedIn) {
     //AuthService.logout();
     await MainService.clearStorage();
@@ -57,15 +59,15 @@ router.beforeEach(async (to, from, next) => {
 
   //* check router path by user role
   if (isLoggedIn) {
-    if (TokenService.isKeyExist('menus')) {
-      let menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
+    if (await TokenService.isKeyExist('menus')) {
+      let menus = JSON.parse(decodeURIComponent(escape(window.atob(await TokenService.getKey('menus')))));
       //console.log(menus)
       if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
         if (to.path !== '/404')
           return next('/404')
       }
     } else {
-      //AuthService.logout();
+      AuthService.logout();
     }
   }
 
