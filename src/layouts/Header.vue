@@ -15,9 +15,9 @@
       <q-space />
 
       <q-avatar class="avatar1">
-        <img :src="imageUrl + emps.emp_id" />
+        <img :src="getPhotoUrl(empId)" />
       </q-avatar>
-      <span class="titleName">{{ emps.full_name }}</span>
+      <span class="titleName">{{ fullName}}</span>
 
       <q-btn class="icon-color" flat dense icon="o_notifications" size="16px">
         <q-badge color="red" floating transparent>12</q-badge>
@@ -33,10 +33,9 @@
 </template>
 
 <script>
-import { decode } from "jsonwebtoken";
 import { AuthService } from "./../services/auth.service";
-import TokenService from "./../services/storage.service";
 import { date } from "quasar";
+import UserService from "../services/user.service";
 
 export default {
   name: "Header",
@@ -44,9 +43,8 @@ export default {
     return {
       time: "",
       date: "",
-      imageUrl:
-        "http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=",
-      url2: "https://www.svgrepo.com/show/275245/man-profile.svg"
+      fullName: this.$store.getters["auth/fullName"],
+      empId: this.$store.getters["auth/empId"]
     };
   },
   created() {
@@ -72,11 +70,7 @@ export default {
         week[cd.getDay()];
     }, 1000);
   },
-  computed: {
-    async emps() {
-      return decode(await TokenService.getToken());
-    }
-  },
+  computed: {},
   methods: {
     zeroPadding(num, digit) {
       let zero = "";
@@ -88,6 +82,9 @@ export default {
     logout() {
       AuthService.logout();
       console.log("logged out");
+    },
+    getPhotoUrl(emp_id) {
+      return UserService.getUserProfilePhotoUrl(emp_id);
     }
   },
   watch: {
