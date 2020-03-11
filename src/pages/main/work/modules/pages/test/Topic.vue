@@ -354,7 +354,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .testLi {
   list-style: none;
 }

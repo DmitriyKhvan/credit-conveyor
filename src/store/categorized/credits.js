@@ -4,6 +4,7 @@ import { decode } from 'jsonwebtoken';
 
 export default {
   state: {
+    errorMessage: null,
     roles: {
       CreditManager: "CRM",
       BackOfficee: "BO",
@@ -64,10 +65,8 @@ export default {
      
       //debugger
       // получение BPM token 
-      const csrf_token = await dispatch("authProcess")
-      console.log('ttoken', csrf_token)
+      const csrf_token = await dispatch("getBPMToken")
       
-
       // запись BPM token в header запроса
       await dispatch("setHeaderBPM", csrf_token.csrf_token)
 
@@ -81,8 +80,8 @@ export default {
       return await state.bpmService.getUserRole(payload)
     },
 
-    async authProcess({ state, dispatch }) {
-      return await state.bpmService.authProcess();
+    async getBPMToken({ state, dispatch }) {
+      return await state.bpmService.getBPMToken();
     },
 
     async startProcess({ state }) {
@@ -185,9 +184,19 @@ export default {
     
     toggleScannerSerialNumber(state, payload) {
       state.scannerSerialNumber = payload;
+    },
+
+    setError(state, error) {
+      state.errorMessage = error
+    },
+
+    clearError(state) {
+      state.errorMessage = null
     }
   },
   getters: {
-
+    error(state) {
+      return state.errorMessage
+    }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-pa-md">
     <!-- Header credit -->
     <div class="row infoBlock">
       <div class="infoBlockItem">

@@ -2510,8 +2510,209 @@
     </q-dialog>
 
     <!-- credit result -->
-    <appFullProfile />
+    <q-dialog v-model="confirmCredit" persistent>
+      <q-card>
+        <q-card-section class="row items-center justify-center">
+          <form @submit.prevent.stop="getCredit" class="creditCalc">
+            <div class="row q-col-gutter-md">
+              <div class="col-3">
+                <q-input
+                  ref="loanSum"
+                  square
+                  outlined
+                  v-model.number="creditCalc.loanSum"
+                  type="number"
+                  dense
+                  label="Сумма кредита"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите сумму кредита']"
+                />
+              </div>
 
+              <div class="col-3">
+                <q-input
+                  ref="loanRate"
+                  square
+                  outlined
+                  v-model.number="creditCalc.loanRate"
+                  type="number"
+                  dense
+                  label="Ставка кредита"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите ставку кредита']"
+                />
+              </div>
+
+              <div class="col-3">
+                <q-input
+                  ref="loanTerm"
+                  square
+                  outlined
+                  v-model.number="creditCalc.loanTerm"
+                  type="number"
+                  dense
+                  label="Срок кредита"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите срок кредита']"
+                />
+              </div>
+
+              <div class="col-3">
+                <q-input
+                  ref="loanDate"
+                  outlined
+                  square
+                  dense
+                  label="Дата выдачи кредита"
+                  v-model="creditCalc.loanDate"
+                  mask="##.##.####"
+                  lazy-rules
+                  :rules="[
+                    val =>
+                      (val && val.length === 10) ||
+                      'Введите дату выдачи кредита'
+                  ]"
+                >
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        transition-show="scale"
+                        transition-hide="scale"
+                        ref="qDateLoanDate"
+                      >
+                        <q-date
+                          mask="DD.MM.YYYY"
+                          v-model="creditCalc.loanDate"
+                          @input="() => $refs.qDateLoanDate.hide()"
+                        />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-3">
+                <q-select
+                  ref="paymentType"
+                  square
+                  outlined
+                  v-model="creditCalc.paymentType"
+                  :options="options.paymentType"
+                  dense
+                  label="Тип платежа"
+                  lazy-rules
+                  :rules="[val => !!val || 'Выберите тип платежа']"
+                  class="q-pb-sm"
+                />
+              </div>
+              <div class="col-3">
+                <!-- <q-input
+                  ref="preferential"
+                  square
+                  outlined
+                  v-model.number="creditCalc.preferential"
+                  type="number"
+                  dense
+                  label="Льготный период"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите льготный период']"
+                /> -->
+
+                <q-select
+                  ref="preferential"
+                  square
+                  outlined
+                  v-model.number="creditCalc.preferential"
+                  :options="options.preferential"
+                  dense
+                  label="Льготный период"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите льготный период']"
+                  class="q-pb-sm"
+                />
+              </div>
+
+              <div class="col-3">
+                <q-input
+                  ref="preTerm"
+                  square
+                  outlined
+                  v-model.number="creditCalc.preTerm"
+                  type="number"
+                  dense
+                  label="Срок льготного периода"
+                  lazy-rules
+                  :rules="[val => !!val || 'Введите срок льготного периода']"
+                />
+              </div>
+              <div class="col-3">
+                <q-btn
+                  type="submit"
+                  color="primary"
+                  label="Пересчитать"
+                  class="q-ml-sm full-width"
+                />
+              </div>
+            </div>
+          </form>
+
+          <div class="q-pa-md">
+            <q-markup-table flat bordered separator="cell">
+              <thead class="bg-blue">
+                <tr>
+                  <th colspan="8">
+                    <div class="row no-wrap items-center">
+                      <!-- <q-img
+                        style="width: 70px"
+                        :ratio="1"
+                        class="rounded-borders"
+                        src="https://cdn.quasar.dev/img/donuts.png"
+                      /> -->
+
+                      <div class="text-h4 q-ml-md text-white">
+                        {{ creditCalc.paymentType }}
+                      </div>
+                    </div>
+                  </th>
+                </tr>
+                <tr class="text-white">
+                  <th class="text-left">Номер</th>
+                  <th class="text-right">Дата</th>
+                  <th class="text-right">Кол-во дней</th>
+                  <th class="text-right">Остаток на начало месяца</th>
+                  <th class="text-right">Проценты</th>
+                  <th class="text-right">Основной долг</th>
+                  <th class="text-right">Всего к оплате</th>
+                  <th class="text-right">Остаток на конец месяца</th>
+                </tr>
+              </thead>
+              <tbody class="bg-grey-3">
+                <tr
+                  v-for="(item, index) of paymentCalc.paymentRows"
+                  :key="'pr' + index"
+                >
+                  <td class="text-left">{{ item.monthNum }}</td>
+                  <td class="text-right">{{ item.date }}</td>
+                  <td class="text-right">{{ item.daysInMonth }}</td>
+                  <td class="text-right">{{ item.balanceAtStart }}</td>
+                  <td class="text-right">{{ item.percent }}</td>
+                  <td class="text-right">{{ item.mainDebt }}</td>
+                  <td class="text-right">{{ item.total }}</td>
+                  <td class="text-right">{{ item.balanceAtEnd }}</td>
+                </tr>
+              </tbody>
+            </q-markup-table>
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Распечатать" color="primary" v-close-popup />
+          <q-btn flat label="Закрыть" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </div>
 </template>
@@ -2520,13 +2721,12 @@
 import * as moment from "moment";
 import CommonUtils from "../../../../../../../../shared/utils/CommonUtils"
 import Loader from '../../../../../../../../components/Loader'
-import FullProfile from './FullProfile'
 
 export default {
   name: "profile",
   data() {
     return {
-      loaderForm: false,
+      loaderForm: true,
       isValid: true, //валидация Email
       sameRegistration: "",
       emptyTemporaryRegistration: false,
@@ -2701,49 +2901,62 @@ export default {
         ]
       },
 
+      paymentCalc: {}
     };
   },
-  // mounted() {
-  //   this.$store.state.profile.personalData.name = this.$store.state.credits.personalData.name;
-  //   this.$store.state.profile.personalData.surname = this.$store.state.credits.personalData.surname;
-  //   this.$store.state.profile.personalData.mname = this.$store.state.credits.personalData.mname;
-  //   this.$store.state.profile.personalData.inn = this.$store.state.credits.personalData.inn;
-  //   this.$store.state.profile.personalData.phones[0].phone = this.$store.state.credits.personalData.phone;
-  //   this.$store.state.profile.personalData.pinpp = this.$store.state.credits.personalData.pinpp;
-  //   this.$store.state.profile.personalData.passportData.series = this.$store.state.credits.personalData.passport.slice(
-  //     0,
-  //     2
-  //   );
-  //   this.$store.state.profile.personalData.passportData.number = this.$store.state.credits.personalData.passport.slice(
-  //     2
-  //   );
+  mounted() {
+    this.$store.state.profile.personalData.name = this.$store.state.credits.personalData.name;
+    this.$store.state.profile.personalData.surname = this.$store.state.credits.personalData.surname;
+    this.$store.state.profile.personalData.mname = this.$store.state.credits.personalData.mname;
+    this.$store.state.profile.personalData.inn = this.$store.state.credits.personalData.inn;
+    this.$store.state.profile.personalData.phones[0].phone = this.$store.state.credits.personalData.phone;
+    this.$store.state.profile.personalData.pinpp = this.$store.state.credits.personalData.pinpp;
+    this.$store.state.profile.personalData.passportData.series = this.$store.state.credits.personalData.passport.slice(
+      0,
+      2
+    );
+    this.$store.state.profile.personalData.passportData.number = this.$store.state.credits.personalData.passport.slice(
+      2
+    );
 
-  //   this.$store.state.profile.personalData.expenseIncome.income = this.$store.state.credits.personalData.income;
-  //   this.$store.state.profile.personalData.expenseIncome.expense = this.$store.state.credits.personalData.expense;
-  //   this.$store.state.profile.personalData.expenseIncome.otherExpenses = this.$store.state.credits.personalData.otherExpenses;
-  //   this.$store.state.profile.personalData.expenseIncome.externalIncome = this.$store.state.credits.personalData.externalIncome;
-  //   this.$store.state.profile.personalData.expenseIncome.externalIncomeSize = this.$store.state.credits.personalData.externalIncomeSize;
-  //   this.$store.state.profile.personalData.expenseIncome.additionalIncomeSource = this.$store.state.credits.personalData.additionalIncomeSource;
+    this.$store.state.profile.personalData.expenseIncome.income = this.$store.state.credits.personalData.income;
+    this.$store.state.profile.personalData.expenseIncome.expense = this.$store.state.credits.personalData.expense;
+    this.$store.state.profile.personalData.expenseIncome.otherExpenses = this.$store.state.credits.personalData.otherExpenses;
+    this.$store.state.profile.personalData.expenseIncome.externalIncome = this.$store.state.credits.personalData.externalIncome;
+    this.$store.state.profile.personalData.expenseIncome.externalIncomeSize = this.$store.state.credits.personalData.externalIncomeSize;
+    this.$store.state.profile.personalData.expenseIncome.additionalIncomeSource = this.$store.state.credits.personalData.additionalIncomeSource;
 
-  //   this.$store.state.profile.creditCalc.loanSum = this.$store.state.credits.preApprovalData.maxSum;
+    this.$store.state.profile.creditCalc.loanSum = this.$store.state.credits.preApprovalData.maxSum;
 
-  // },
+    // this.paymentCalc = this.loanPaymentCalculate(
+    //     this.creditCalc.loanRate,
+    //     this.creditCalc.loanSum,
+    //     this.creditCalc.loanTerm,
+    //     this.creditCalc.loanDate,
+    //     this.creditCalc.paymentType,
+    //     this.creditCalc.preferential,
+    //     this.creditCalc.preTerm,
+    // );
+    //   setTimeout(() => {
+    //       this.confirmCredit = true;
+    //   }, 500);
+  },
   async created() {
-    // try {
+    try {
       
-    //   const auth = await this.$store.dispatch("authBpm")
-    //   console.log('auth', auth)
-    //   const process = await this.$store.dispatch("startProcess")
-    //   console.log('process', process) 
-    //   this.loaderForm = false;
+      const auth = await this.$store.dispatch("authBpm")
+      console.log('auth', auth)
+      const process = await this.$store.dispatch("startProcess")
+      console.log('process', process) 
+      this.loaderForm = false;
 
-    // } catch (error) {
-    //   const errorMessage = CommonUtils.filterServerError(error)
-    //   this.$store.commit('setError', errorMessage)
-    //   this.$router.push('errorPage')
-    //   sessionStorage.removeItem("csrf_token");
-    //   //this.loaderForm = false
-    // }
+    } catch (error) {
+      const errorMessage = CommonUtils.filterServerError(error)
+      this.$store.commit('setError', errorMessage)
+      this.$router.push('errorPage')
+      sessionStorage.removeItem("csrf_token");
+      //this.loaderForm = false
+    }
 
   },
   computed: {
@@ -3111,8 +3324,29 @@ export default {
         this.bar = true;
       } else {
         console.log("personalData", this.$store.state.profile.personalData);
-
         this.confirmCredit = true;
+        this.paymentCalc = this.loanPaymentCalculate(
+          this.creditCalc.loanRate,
+          this.creditCalc.loanSum,
+          this.creditCalc.loanTerm,
+          this.creditCalc.loanDate,
+          this.creditCalc.paymentType,
+          this.creditCalc.preferential,
+          this.creditCalc.preTerm
+        );
+
+        // console.log(
+        //   this.loanPaymentCalculate(
+        //     this.creditCalc.loanRate,
+        //     this.creditCalc.loanSum,
+        //     this.creditCalc.loanTerm,
+        //     this.creditCalc.loanDate,
+        //     this.creditCalc.paymentType,
+        //     this.creditCalc.preferential,
+        //     this.creditCalc.preTerm,
+
+        //   )
+        // )
       }
     },
 
@@ -3189,6 +3423,127 @@ export default {
           }
         }
       });
+    },
+
+    getCredit() {
+      this.paymentCalc = this.loanPaymentCalculate(
+        this.creditCalc.loanRate,
+        this.creditCalc.loanSum,
+        this.creditCalc.loanTerm,
+        this.creditCalc.loanDate,
+        this.creditCalc.paymentType,
+        this.creditCalc.preferential,
+        this.creditCalc.preTerm
+      );
+    },
+
+    loanPaymentCalculate(
+      loanRate, // Кредитная ставка (26)%
+      loanSum, // Кредитная сумма (1000000)
+      loanTerm, // Срок кредита (24)
+      loanDate, // Дата выдачи
+      paymentType, // Аннуэтетный - 1; Дифференцированный - 2
+      preferential, // true - Льготный период, начисляются только проценты
+      preTerm // Срок льготного периода
+    ) {
+      console.log("start", loanRate, loanSum, loanTerm);
+
+      //loanSum = 27800000;
+
+      let totalPercent = 0;
+      let totalPayment = 0;
+      let totalLoan = 0;
+
+      console.log("дата: ", loanDate);
+      loanDate = moment(loanDate, "DD.MM.YYYY");
+      console.log("дата: ", loanDate.month());
+
+      let percent = 0;
+      if (paymentType == this.options.paymentType[0]) {
+        percent = loanRate / 100 / 365;
+      }
+      console.log("Percent " + percent);
+
+      let dayPercent = (percent * 365) / 12;
+
+      let payment = 0,
+        preTermTemp = 0;
+      if (paymentType == this.options.paymentType[0]) {
+        preTermTemp = preferential ? preTerm : 0;
+        payment =
+          loanSum *
+          (dayPercent +
+            dayPercent /
+              (Math.pow(1 + dayPercent, loanTerm - preTermTemp) - 1));
+      } else if (paymentType == this.options.paymentType[1]) {
+        preTermTemp = preferential ? preTerm : 0;
+        payment = loanSum / (loanTerm - preTermTemp);
+      }
+      console.log("Payment " + Math.ceil(payment));
+
+      let loanPaymentReturn = [];
+      for (let i = 0; i < loanTerm; i++) {
+        let curDate = moment(loanDate).month(loanDate.month() + i + 1);
+        let daysInMonth = curDate.daysInMonth();
+
+        let startMonthBalance =
+          i > 0 ? loanPaymentReturn[i - 1].balanceAtEnd : loanSum;
+
+        let monthPercent = 0;
+        if (paymentType == this.options.paymentType[0]) {
+          monthPercent = Math.ceil(startMonthBalance * percent * daysInMonth);
+        } else if (paymentType == this.options.paymentType[1]) {
+          monthPercent = Math.ceil(
+            ((startMonthBalance * loanRate) / 100) * (daysInMonth / 365)
+          );
+        }
+
+        let monthMainDebt = 0;
+        if (!preferential || preTerm - 1 < i) {
+          if (paymentType == this.options.paymentType[0]) {
+            monthMainDebt =
+              payment - monthPercent > startMonthBalance
+                ? startMonthBalance
+                : Math.ceil(payment - monthPercent);
+          } else if (paymentType == this.options.paymentType[1]) {
+            monthMainDebt = Math.ceil(payment);
+          }
+        }
+
+        let monthPayTotal = monthPercent + monthMainDebt;
+
+        let endMonthBalance = Math.ceil(startMonthBalance - monthMainDebt);
+
+        if (i + 1 == loanTerm) {
+          monthMainDebt = startMonthBalance;
+          monthPayTotal = monthMainDebt + monthPercent;
+          endMonthBalance = startMonthBalance - monthMainDebt;
+        }
+
+        loanPaymentReturn.push({
+          date: curDate.format("DD MMM YYYY"),
+          daysInMonth: daysInMonth,
+          monthNum: i + 1,
+          balanceAtStart: startMonthBalance,
+          percent: monthPercent,
+          mainDebt: monthMainDebt,
+          total: monthPayTotal,
+          balanceAtEnd: endMonthBalance
+        });
+
+        totalPercent = totalPercent + monthPercent;
+        totalLoan = totalLoan + monthMainDebt;
+        totalPayment = totalPayment + monthPayTotal;
+      }
+
+      console.log(totalPercent, totalPayment, totalLoan, loanPaymentReturn);
+
+      return {
+        totalPercent: totalPercent,
+        totalPayment: totalPayment,
+        totalLoan: totalLoan,
+        paymentRows: loanPaymentReturn
+      };
     },
 
     //itemValid - флаг текущего поля (true/false)
@@ -3289,8 +3644,7 @@ export default {
     }
   },
   components: {
-    appLoader: Loader,
-    appFullProfile: FullProfile,
+    appLoader: Loader
   }
 };
 </script>

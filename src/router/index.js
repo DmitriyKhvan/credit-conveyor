@@ -55,18 +55,18 @@ router.beforeEach(async (to, from, next) => {
   }
 
   //* check router path by user role
-  if (isLoggedIn) {
-    if (TokenService.isKeyExist('menus')) {
-      var menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
-       //console.log(menus)
-      if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
-        if (to.path !== '/404')
-          return next('/404')
-      }
-    } else {
-      AuthService.logout();
-    }
-  }
+  // if (isLoggedIn) {
+  //   if (TokenService.isKeyExist('menus')) {
+  //     var menus = JSON.parse(decodeURIComponent(escape(window.atob(TokenService.getKey('menus')))));
+  //      //console.log(menus)
+  //     if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
+  //       if (to.path !== '/404')
+  //         return next('/404')
+  //     }
+  //   } else {
+  //     AuthService.logout();
+  //   }
+  // }
 
   //* page refresh call
   if (isLoggedIn && !store.getters["dicts/isAllSet"]) {

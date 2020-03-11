@@ -320,7 +320,7 @@ export default {
   data() {
     return {
       loader: true,
-      loaderForm: true,
+      loaderForm: false,
       options: {
         family: [
           "Женат",
@@ -353,21 +353,21 @@ export default {
     };
   },
   async created() {
-    try {
+    // try {
       
-      const auth = await this.$store.dispatch("authBpm")
-      console.log('auth', auth)
-      const process = await this.$store.dispatch("startProcess")
-      console.log('process', process) 
-      this.loaderForm = false;
+    //   const auth = await this.$store.dispatch("authBpm")
+    //   console.log('auth', auth)
+    //   const process = await this.$store.dispatch("startProcess")
+    //   console.log('process', process) 
+    //   this.loaderForm = false;
 
-    } catch (error) {
-      CommonUtils.filterServerError(error)
-      //console.log("Errror!", error)
-      this.$router.push('errorPage')
-      sessionStorage.removeItem("csrf_token");
-      this.loaderForm = false
-    }
+    // } catch (error) {
+    //   CommonUtils.filterServerError(error)
+    //   //console.log("Errror!", error)
+    //   this.$router.push('errorPage')
+    //   sessionStorage.removeItem("csrf_token");
+    //   this.loaderForm = false
+    // }
 
     try {
       const scannerSerial = await this.$store.dispatch("getDigIdNumber")
@@ -477,6 +477,9 @@ export default {
         this.$store.commit("creditConfirm", resp);
 
         console.log("jjjj", this.personalData);
+        for (let item in this.personalData) {
+          console.log(item)
+        }
       }
     }
   },
