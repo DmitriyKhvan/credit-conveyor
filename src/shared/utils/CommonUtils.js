@@ -29,14 +29,23 @@ export default {
   },
   isValueExistInObject(arr, key, value) {
     //debugger
+    let searchVal;
+
+    if (value.search('\/sub\/') != -1) {
+      let index = value.indexOf("/sub/");
+      let temp = value.substring(0, index)
+      searchVal = temp
+    } else {
+      searchVal = value;
+    }
+
     if (arr !== null) {
       for (let k = 0; k < arr.length; k++) {
-        if (arr[k][key] == value) {
+        if (arr[k][key] == searchVal) {
           return true;
-        } 
-        else {
+        } else {
           if (arr[k]['children'] != null) {
-            if (this.isValueExistInObject(arr[k]['children'], key, value)) {
+            if (this.isValueExistInObject(arr[k]['children'], key, searchVal)) {
               return true;
             }
           } else continue;
