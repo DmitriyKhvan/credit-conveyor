@@ -3,7 +3,7 @@
     <q-layout view="hHh lpR fFf" container style="height: 100vh" class="shadow-2">
       <q-header reveal elevated class="bg-primary text-white" height-hint="98">
         <bread-crumb :list="list()" />
-        <sub-header-tab :path="path()" />
+        <sub-header-tab :path="path" />
       </q-header>
 
       <q-page-container>
@@ -25,11 +25,18 @@ export default {
   created() {
     //console.log(this.$store.getters["dicts/getMenuList"]);
     // console.log(this.$route.path);
+    //this.path = this.$route.path;
   },
   data() {
     return {
       data: null
     };
+  },
+  computed: {
+    path() {
+      //console.log(this.$route.path);
+      return this.$route.path;
+    }
   },
   methods: {
     list() {
@@ -37,10 +44,6 @@ export default {
       return this.$route.matched.filter(
         route => route.name || route.meta.label
       );
-    },
-    path() {
-      //console.log(this.$route.path);
-      return this.$route.path;
     }
   }
 };

@@ -14,6 +14,7 @@ const state = {
   refreshTokenPromise: null,
   username: null,
   userId: null,
+  empId: null,
   fullName: null,
   userRoles: []
 };
@@ -40,6 +41,9 @@ const getters = {
   },
   userId: state => {
     return state.userId
+  },
+  empId: state => {
+    return state.empId
   },
   username: state => {
     return state.username
@@ -110,10 +114,12 @@ const actions = {
       username: decodedToken.username,
       userId: decodedToken.id,
       fullName: decodedToken.full_name,
+      empId: decodedToken.emp_id
     }
     commit("setUsername", details.username);
     commit("setUserId", details.userId);
     commit("setUserFullname", details.fullName);
+    commit("setEmpId", details.empId);
   },
   setUserRoles({
     commit
@@ -160,6 +166,10 @@ const mutations = {
   setUserId(state, userId) {
     state.userId = userId;
   },
+  setEmpId(state, empId) {
+    state.empId = empId;
+  },
+
   setUserFullname(state, fullName) {
     state.fullName = fullName;
   },

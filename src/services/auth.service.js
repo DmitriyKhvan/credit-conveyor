@@ -4,6 +4,7 @@ import store from "./../store/index";
 import router from "./../router/index";
 import DictService from "./dict.service";
 import SocketService from "./socket.service";
+import MainService from "./main.service";
 
 class AuthenticationError extends Error {
   constructor(errorCode, message) {
@@ -19,11 +20,12 @@ const AuthService = {
     try {
       this.authenticate(credentials)
         .then(
-          async token => {
-              //console.log(token);
+          async (token) => {
               store.dispatch("auth/setUserDetails", token);
               store.dispatch("common/setLang", credentials.lang.value); // set lang
+
               TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
+
               await DictService.loadAll();
               //=== currentMenus
               let b64EncodedMenus = btoa(
@@ -34,7 +36,7 @@ const AuthService = {
                 )
               );
               TokenService.setKey("menus", b64EncodedMenus);
-              //
+
               store.dispatch("auth/loginSuccess", token);
               //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
 
@@ -66,14 +68,6 @@ const AuthService = {
         });
     } catch (e) {
       console.error("Error occured here 3 !!!");
-      //? clear all init data
-      // let response = await this.clearTokenFromCache(store.getters['auth/token']);
-      // TokenService.removeToken();
-      // ApiService.removeHeader();
-      // TokenService.removeKeyFromCookies("lang")
-      // ApiService.unmount401Interceptor();
-      // store.dispatch("dicts/setIsAllSet", false);
-
       if (e instanceof AuthenticationError) {
         store.dispatch("auth/loginError", {
           errorCode: e.errorCode,
@@ -116,10 +110,10 @@ const AuthService = {
     try {
       ApiService.unmount401Interceptor();
 
-      this.clearTokenFromCache(store.getters["auth/token"])
+      await this.clearTokenFromCache(store.getters["auth/token"])
         .then(
           result => {
-            console.log(result);
+            console.log("token cleared");
           },
           error => {
             console.error(error);
@@ -130,20 +124,27 @@ const AuthService = {
           throw err;
         });
 
-      if (TokenService.isTokenExist()) {
+
+      ApiService.removeHeader();
+
+      //await MainService.clearStorage();
+
+      if ((await TokenService.isTokenExist())) {
+        console.log("removing token")
         TokenService.removeToken();
       }
-      ApiService.removeHeader();
-      if (TokenService.isCookieExist("lang")) {
+      if ((await TokenService.isCookieExist("lang"))) {
         TokenService.removeKeyFromCookies("lang");
       }
-      if (TokenService.isKeyExist("menus")) {
+      if (await TokenService.isKeyExist("menus")) {
         TokenService.removeKey("menus");
       }
+
       store.dispatch("dicts/setIsAllSet", false);
       //SocketService.stopConnection();
       store.dispatch("auth/logoutSuccess");
-      if (router.currentRoute.path !== '/login') {
+      console.log(!(await TokenService.isTokenExist()))
+      if (!(await TokenService.isTokenExist())) {
         router.push("/login");
       }
 
@@ -182,7 +183,7 @@ const AuthService = {
 
   // refresh Token
   refreshAccessToken: async function () {
-    const accessToken = TokenService.getToken(); //  get accesToken from cookie
+    const accessToken = await TokenService.getToken(); //  get accesToken from cookie
 
     const requestData = {
       method: "post",
@@ -194,8 +195,12 @@ const AuthService = {
 
     try {
       const response = await ApiService.customRequest(requestData);
+      if (await TokenService.isTokenExist()) {
+        TokenService.removeToken();
+        console.log("token cleared")
+      }
+      console.log("storing token...")
       TokenService.saveToken(response.data.access_token);
-
       //TokenService.saveRefreshToken(response.data.refresh_token)
       // Update the header in ApiService
       ApiService.setHeader(response.data.access_token);

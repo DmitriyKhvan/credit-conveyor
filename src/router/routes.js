@@ -233,7 +233,6 @@ const routes = [{
             name: "Devices Accounting",
             component: DevicesAccounting
           },
-
           {
             path: "history",
             name: "Devices History",
@@ -243,8 +242,7 @@ const routes = [{
             path: "monitoring",
             name: "Devices Monotoring",
             component: DevicesMonitoring
-          },
-
+          }
         ]
       },
       {

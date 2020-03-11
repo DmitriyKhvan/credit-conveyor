@@ -8,7 +8,9 @@ const MENU_LIST = "menu_list";
  * accessed through this instace.
  **/
 
-import jwt_decode from 'jwt-decode';
+import {
+  decode
+} from 'jsonwebtoken';
 import {
   Cookies
 } from 'quasar'
@@ -16,7 +18,11 @@ import {
 const TokenService = {
 
   getKey(key) {
-    return localStorage.getItem(key)
+    return new Promise((res, rej) => {
+      let val = localStorage.getItem(key);
+      //console.log(val)
+      res(val)
+    })
   },
   setKey(key, value) {
     localStorage.setItem(key, value);
@@ -25,43 +31,85 @@ const TokenService = {
     localStorage.removeItem(key)
   },
   isKeyExist(key) {
-    return (Boolean)(localStorage.getItem(key) !== null);
+    return new Promise((res, rej) => {
+      let isExist = (Boolean)(localStorage.getItem(key) !== null);
+      console.log(isExist)
+
+      res(isExist);
+    });
   },
   getKeyFromCookies(key) {
-    return Cookies.get(key)
+    return new Promise((res, rej) => {
+      //let value = Cookies.get(key)
+      let value = localStorage.getItem(key);
+      console.log(value)
+      res(value)
+    });
   },
   setKeyToCookies(key, value) {
-    Cookies.set(key, value);
+    //Cookies.set(key, value);
+    localStorage.setItem(key, value);
+
   },
   removeKeyFromCookies(key) {
-    Cookies.remove(key)
+    //Cookies.remove(key)
+    localStorage.removeItem(key)
   },
   isCookieExist(key) {
-    return (Boolean)(Cookies.has(key));
+    return new Promise((res, rej) => {
+      //let isCookieExist = (Boolean)(Cookies.has(key));
+      let isCookieExist = (Boolean)(localStorage.getItem(key) !== null);
+
+      console.log(isCookieExist)
+      res(isCookieExist);
+    });
   },
   getToken() {
-    return Cookies.get(TOKEN_KEY);
+    return new Promise((res, rej) => {
+      //let token = Cookies.get(TOKEN_KEY)
+      let token = localStorage.getItem(TOKEN_KEY);
+      //console.log(token)
+      res(token);
+    });
   },
   saveToken(accessToken) {
-    Cookies.set(TOKEN_KEY, accessToken);
+    localStorage.setItem(TOKEN_KEY, accessToken);
+
+    //Cookies.set(TOKEN_KEY, accessToken);
   },
   removeToken() {
-    Cookies.remove(TOKEN_KEY);
+    //Cookies.remove(TOKEN_KEY);
+    localStorage.removeItem(TOKEN_KEY)
   },
   isTokenExist() {
-    return (Boolean)(Cookies.has(TOKEN_KEY));
+    return new Promise((res, rej) => {
+      //let isExist = (Boolean)(Cookies.has(TOKEN_KEY));
+      let isExist = (Boolean)(localStorage.getItem(TOKEN_KEY) !== null);
+
+      console.log(isExist)
+      res(isExist);
+    })
   },
-
   isTokenExpired() {
-    if (this.isTokenExist()) {
-      let decodedToken = jwt_decode(this.getToken());
-      if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
-        return true;
-      } else return false;
+    return new Promise(async (res, rej) => {
 
-    } else return true;
+      if (await this.isTokenExist()) {
+        let decodedToken = decode(await this.getToken());
+        if (decodedToken) {
+          if (Math.floor(Date.now() / 1000) > decodedToken.life_time) {
+            console.log(true)
+            res(true);
+          } else {
+            console.log(false)
+            res(false);
+          }
+        }
+      } else {
+        console.log(false)
+        res(true);
+      }
+    });
   }
-
 };
 
 export default TokenService;
