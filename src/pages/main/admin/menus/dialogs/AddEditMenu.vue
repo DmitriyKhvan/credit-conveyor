@@ -91,6 +91,16 @@
             />
           </div>
           <div class="row">
+            <!-- <q-input
+              outlined
+              clearable
+              color="purple-12"
+              class="col-xs-12 col-sm-6 col-md-6"
+              v-model="details.icon"
+              label="Icon Class Name"
+              :rules="[]"
+              lazy-rules
+            /> -->
             <q-input
               outlined
               clearable
@@ -100,7 +110,22 @@
               label="Icon Class Name"
               :rules="[]"
               lazy-rules
-            />
+            >
+              <template v-slot:append>
+                <q-icon name="extension" class="cursor-pointer">
+                  <q-popup-proxy v-model="showIconPicker">
+                    <q-icon-picker
+                      v-model="details.icon"
+                      :filter="details.icon"
+                      icon-set="material-icons"
+                      tooltips
+                      :pagination.sync="pagination"
+                      style="height: 300px; width: 300px; background-color: white;"
+                    />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
             <q-select
               outlined
               class="col-xs-12 col-sm-6 col-md-6"
@@ -145,7 +170,12 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
+        <q-btn
+          color="primary"
+          :disable="$v.details.$invalid"
+          label="Submit"
+          @click="submitForm"
+        >
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -174,6 +204,11 @@ export default {
         { key: "Passive", value: 0 }
       ],
       isValidated: true,
+      showIconPicker: false,
+      pagination: {
+        itemsPerPage: 35,
+        page: 0
+      },
       rolesList: this.$store.getters["dicts/getRolesDict"],
       parentMenusList: this.$store.getters["dicts/getParentMenus"],
       // !!! Dont change. Functions in dialogMixin depends on name "details"
