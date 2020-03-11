@@ -8,8 +8,10 @@ const AdminPage = () => import("pages/main/admin/admin");
 const Users = () => import("pages/main/admin/users/Users");
 const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
+const Moderators = () => import("pages/main/admin/moderators/Moderators")
 const Dictionaries = () => import("pages/main/admin/dictionaries/Dictionaries");
 const SelfDevPage = () => import("pages/main/admin/self_dev/Index");
+
 
 // Work
 const WorkPage = () => import("pages/main/work/Work");
@@ -175,6 +177,11 @@ const routes = [{
             path: "menus",
             name: "Menus List",
             component: Menus
+          },
+          {
+            path: "moderator",
+            name: "Moderators",
+            component: Moderators
           },
           {
             path: "dictionaries",

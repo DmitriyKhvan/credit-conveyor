@@ -11,7 +11,7 @@
 
 <script>
 import GridTable from "./../../../../components/GridTable";
-import AddEditRole from "./dialogs/AddEditRole";
+import AddEditModerator from "./dialogs/AddEditModerator";
 
 import { Dialog } from "quasar";
 import ApiService from "../../../../services/api.service";
@@ -24,10 +24,10 @@ export default {
     return {
       props: {
         caption: this.$t("tables.roles._self"),
-        tablePath: "roles",
-        rowId: "role_id",
-        addEdit: "roles", // url
-        delete: "roles", //
+        tablePath: "roles/moderator",
+        rowId: "id",
+        addEdit: "roles/moderator", // url
+        delete: "roles/moderator", //
         defaultSort: [], // TODO
         excludedColumns: [
           "name",
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditRole, selected, this.props, this)
+      GridService.addEditRecord(AddEditModerator, selected, this.props, this)
         .then(
           ok => {
             if (ok) {
