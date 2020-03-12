@@ -16,7 +16,7 @@
           </div>
           <div class="col-3">
             <div style="height: 50vh; width: 100%;">
-              <user-card v-bind:items="item" />
+              <user-card v-bind:itemData="item" />
             </div>
           </div>
         </div>
@@ -34,9 +34,9 @@
 </template>
 
 <script>
-import StructureBank from "./../../../../../components/StructureBank";
-import UserCard from "./../../../../../components/UserCard";
-import dialogMix from "./../../../../../shared/mixins/dialogMix";
+import StructureBank from "./../../components/StructureBank";
+import UserCard from "./../../components/UserCard";
+import dialogMix from "./../../shared/mixins/dialogMix";
 
 export default {
   name: "SelectUser",

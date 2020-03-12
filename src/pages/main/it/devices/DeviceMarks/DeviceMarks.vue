@@ -25,6 +25,7 @@ export default {
         delete: "devices/mark", //
         defaultSort: [], // TODO
         excludedColumns: [
+          "id",
           "created_by",
           "creation_date",
           "updated_by",

@@ -23,7 +23,18 @@ export default {
         addEdit: "devices/history", // url
         delete: "devices/history", //
         defaultSort: [], // TODO
-        excludedColumns: [],
+        excludedColumns: [
+          "id",
+          "emp_id",
+          "dev_id",
+          "type_id",
+          "mark_id",
+          "status",
+          "model_id",
+          "assigned_by",
+          "updated_by",
+          "updated_at"
+        ],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,

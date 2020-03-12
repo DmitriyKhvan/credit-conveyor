@@ -85,7 +85,7 @@ import NotifyService from "./../../../../../services/notify.service";
 import dialogMix from "./../../../../../shared/mixins/dialogMix";
 import ApiService from "./../../../../../services/api.service";
 import GridDialog from "./../../../../../components/GridDialog";
-import SelectUser from "./SelectUser";
+import SelectUser from "./../../../../dialogs/SelectUser";
 
 import {
   required,

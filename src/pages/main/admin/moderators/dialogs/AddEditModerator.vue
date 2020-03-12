@@ -13,94 +13,45 @@
       <q-card-section>
         <div class="q-gutter-y-sm q-gutter-x-md column">
           <div class="row">
+            <!-- select  -->
             <q-input
+              dense
               outlined
-              clearable
-              color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.authority"
-              label="Authority"
-              @input="$v.details.authority.$touch()"
+              label="User"
+              :value="userName"
+              @dblclick="selectUser()"
+              readonly="readonly"
+              @input="onSelectUser"
               :rules="[
-                val => $v.details.authority.required || 'Authority is required',
                 val =>
-                  $v.details.authority.minLength ||
-                  'Length should be at least 3 chars'
+                  $v.details.emp_id.required || 'User is required'
               ]"
               lazy-rules
-            />
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[0]"
-              label="Name Uz"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                val => $v.details.name.required || 'Name Uz is required',
-                val =>
-                  $v.details.name.minLength ||
-                  'Length should be at least 3 chars'
-              ]"
-              lazy-rules
-            />
-          </div>
-          <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[1]"
-              label="Name Ru"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                val => $v.details.name.required || 'Name Ru is required',
-                val =>
-                  $v.details.name.minLength ||
-                  'Length should be at least 3 chars'
-              ]"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[2]"
-              label="Name En"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                val => $v.details.name.required || 'Name En is required',
-                val =>
-                  $v.details.name.minLength ||
-                  'Length should be at least 3 chars'
-              ]"
-              lazy-rules
-            />
-          </div>
-          <div class="row">
+            >
+              <template v-slot:hint>Double Click</template>
+            </q-input>
+            <!--  -->
             <q-select
+              dense
               outlined
+              clearable
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.status"
-              :options="stateList"
+              v-model="details.role_id"
+              :options="rolesModList"
               option-value="value"
-              option-label="key"
+              option-label="text"
               emit-value
               map-options
-              label="Status"
-              @input="$v.details.status.$touch()"
-              :rules="[
-                val => $v.details.status.required || 'Status is required'
-              ]"
+              label="Role"
+              :rules="[]"
               lazy-rules
             />
           </div>
           <div class="row">
             <q-select
+              dense
               outlined
               clearable
               color="purple-12"
@@ -117,6 +68,7 @@
               lazy-rules
             />
             <q-select
+              dense
               outlined
               clearable
               color="purple-12"
@@ -136,12 +88,7 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn
-          color="primary"
-          :disable="isLoading"
-          label="Submit"
-          @click="submitForm"
-        >
+        <q-btn color="primary" :disable="isLoading" label="Submit" @click="submitForm">
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -154,6 +101,9 @@
 import NotifyService from "./../../../../../services/notify.service";
 import dialogMix from "./../../../../../shared/mixins/dialogMix";
 import ApiService from "./../../../../../services/api.service";
+import CommonUtils from "../../../../../shared/utils/CommonUtils";
+import SelectUser from "./../../../../dialogs/SelectUser";
+
 import {
   required,
   requiredIf,
@@ -174,12 +124,14 @@ export default {
       deviceBranches: [],
       deviceFilials: [],
       branchList: [],
+      userInfo: null,
+      userName: null,
+      rolesModList: [],
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
+        id: null,
+        emp_id: null,
         role_id: null,
-        authority: null,
-        name: [],
-        status: null,
         branch_code: null,
         filial_code: null
       }
@@ -187,19 +139,15 @@ export default {
   },
   validations: {
     details: {
-      role_id: {},
-      authority: {
-        required,
-        minLength: minLength(3)
+      id: {},
+      role_id: { required },
+      emp_id: {
+        required
       },
-      name: {
-        required,
-        minLength: minLength(3),
-        $each: {
-          minLength: minLength(3)
-        }
+      branch_code: {
+        required
       },
-      status: {
+      filial_code: {
         required
       }
     }
@@ -216,6 +164,7 @@ export default {
   created() {
     Promise.all([this.selectBranch()])
       .then(x => {
+        // --
         this.deviceBranches = x[0].data[0].children.map(val => {
           return {
             text: val.DEPARTMENT_NAME1,
@@ -225,7 +174,6 @@ export default {
         this.branchList = x[0].data[0].children;
         if (this.details.branch_code) {
           // when edit case initializes deviceFilials array
-
           this.branchList.forEach(element => {
             if (element.CODE == this.details.branch_code) {
               this.deviceFilials = element.children.map(val => {
@@ -237,11 +185,13 @@ export default {
             }
           });
         }
+        // --
       })
       .catch(error => {
         console.log(error);
       });
   },
+  computed: {},
   methods: {
     selectBranch() {
       return ApiService.get("structure/branches");
@@ -258,6 +208,49 @@ export default {
           });
         }
       });
+    },
+    async onSelectUser(emp_id) {
+      let temp = (await this.getRoleModsList(emp_id)).data.value;
+      // rolemodelist
+      temp = temp.filter(role => {
+        return role.mod_available == 0;
+      });
+      this.rolesModList = temp.map(val => {
+        return {
+          text: val.name,
+          value: val.role_id
+        };
+      });
+      console.log(this.rolesModList);
+    },
+    selectUser() {
+      let tempData = null;
+      if (!!this.data.selectedRow) {
+        tempData = this.userInfo.data;
+      }
+      this.$q
+        .dialog({
+          component: SelectUser,
+          parent: this,
+          data: tempData
+        })
+        .onOk(res => {
+          console.log(res);
+          this.userName = CommonUtils.domDecoder(
+            res.LAST_NAME + " " + res.FIRST_NAME + " " + res.MIDDLE_NAME
+          );
+          this.details.emp_id = res.EMP_ID;
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        });
+    },
+    getUserInfoById(id) {
+      return ApiService.get(`emps/info?id=${id}`);
+    },
+    getRoleModsList(emp_id) {
+      //let emp_id = this.$store.getters[]
+      return ApiService.get(`roles/user?id=${emp_id}`);
     }
   }
 };

@@ -25,6 +25,7 @@ export default {
         delete: "devices/type", //
         defaultSort: [], // TODO
         excludedColumns: [
+          "id",
           "name",
           "created_by",
           "creation_date",

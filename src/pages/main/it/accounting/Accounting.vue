@@ -24,7 +24,18 @@ export default {
         addEdit: "devices/list", // url
         delete: "devices/list", //
         defaultSort: [], // TODO
-        excludedColumns: [],
+        excludedColumns: [
+          "id",
+          "type_id",
+          "mark_id",
+          "model_id",
+          "status",
+          "created_by",
+          "created_at",
+          "updated_by",
+          "updated_by",
+          "updated_at"
+        ],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,

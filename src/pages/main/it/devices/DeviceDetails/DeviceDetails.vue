@@ -24,7 +24,7 @@ export default {
         addEdit: "devices/detail", // url
         delete: "devices/detail", //
         defaultSort: [], // TODO
-        excludedColumns: [],
+        excludedColumns: ["id", "type_id"],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,
