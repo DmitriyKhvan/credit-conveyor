@@ -29,8 +29,13 @@ export default {
         rowId: "user_id",
         addEdit: "auth/users", // url
         delete: "auth/users", //
-        defaultSort: [], // TODO
+        defaultSort: [],
         excludedColumns: [
+          "user_id",
+          "roles",
+          "first_name",
+          "last_name",
+          "middle_name",
           "status",
           "created_by",
           "creation_date",

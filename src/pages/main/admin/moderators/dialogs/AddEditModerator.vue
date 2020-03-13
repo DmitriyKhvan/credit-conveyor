@@ -277,10 +277,8 @@ export default {
           data: this.selectUserProps
         })
         .onOk(res => {
-          console.log(res);
           this.userName = res[0].name;
           this.details.emp_id = res[0].emp_id;
-          console.log(this.userName, this.details.emp_id);
           this.onSelectUser(this.details.emp_id);
         })
         .onCancel(() => {
