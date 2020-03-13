@@ -43,7 +43,8 @@
   </div>
   <router-view></router-view>
 
-  <errorMessage v-if="err"/>
+  <!-- Server error message -->
+  <errorMessage></errorMessage>
 </div>
 </template>
 <script>
@@ -51,19 +52,16 @@ import ErrorMessage from './ErrorMessage'
 
 export default {
   name: "credit",
-  data() {
-    return {
-      err: false
-    };
-  },
   computed: {
     error() {
+      console.log('computed', this.$store.getters.error)
       return this.$store.getters.error
     }
   },
   watch: {
-    error(serverError) {
-      this.err = true
+    error(serverError) {   
+      this.$store.commit('toggleErrorBar', true)
+      console.log('watch', this.$store.getters.errorBar)
     }
   },
 

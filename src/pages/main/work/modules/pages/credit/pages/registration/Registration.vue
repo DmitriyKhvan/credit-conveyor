@@ -150,9 +150,11 @@
                     square
                     outlined
                     v-model="personalData.typeCredit"
-                    :options="options.typeCredit"
+                    :options="options.typeCredits"
                     dense
                     label="Кредитный продукт"
+                    emit-value
+                    map-options
                     class="q-pb-sm"
                   />
                 </div>
@@ -162,7 +164,7 @@
                     square
                     outlined
                     v-model="personalData.typeStepCredit"
-                    :options="options.typeStepCredit"
+                    :options="options.typeStepCredits"
                     dense
                     label="Тип погашения кредита"
                     class="q-pb-sm"
@@ -171,11 +173,11 @@
 
                 <div class="col-12 text-white">
                   <q-badge color="secondary">
-                    Model: {{ countMonth }} (0 to 12, step 1)
+                    Model: {{ periodCredit }} (0 to 12, step 1)
                   </q-badge>
 
                   <q-slider
-                    v-model="countMonth"
+                    v-model="periodCredit"
                     :min="0"
                     :max="12"
                     :step="1"
@@ -335,54 +337,9 @@ import Loader from "../../../../../../../../components/Loader";
 export default {
   data() {
     return {
-      countMonth: 0,
+      periodCredit: 0,
       loader: true,
-      loaderForm: false,
-
-      input: [
-        {
-          credit_name: {
-            name: "Микрозайм",
-            value: "001"
-          },
-          period: { min: 1, max: 12 },
-          payment_type: [
-            {
-              name: "аннуитетный",
-              value: "1"
-            }
-          ]
-        },
-
-        {
-          credit_name: {
-            name: "Микрозайм2",
-            value: "002"
-          },
-          period: ["1", "2", "3"],
-          payment_type: [
-            {
-              name: "аннуитетный2",
-              value: "2"
-            }
-          ]
-        },
-
-        {
-          credit_name: {
-            name: "Микрозайм3",
-            value: "003"
-          },
-          period: ["1", "2", "3"],
-          payment_type: [
-            {
-              name: "аннуитетный3",
-              value: "2"
-            }
-          ]
-        }
-      ],
-
+      loaderForm: true,
       options: {
         family: [
           "Женат",
@@ -408,35 +365,48 @@ export default {
           "Другое"
         ], //источник дополнительного дохода
 
-        typeCredit: ["Кредит 1", "Кредит 2", "Кредит 3", "Кредит 4"],
+        typeCredits: [],
 
-        typeStepCredit: ["Шаг 1", "Шаг 2", "Шаг 3", "Шаг 4"]
+        typeStepCredit: []
       }
     };
   },
   async created() {
-    // try {
+    this.$store.commit('clearError')
+    
+    try {
 
-    //   const auth = await this.$store.dispatch("authBpm")
-    //   console.log('auth', auth)
-    //   const process = await this.$store.dispatch("startProcess")
-    //   console.log('process', process)
-    //   this.loaderForm = false;
+      const auth = await this.$store.dispatch("authBpm")
+      console.log('auth', auth)
+      const process = await this.$store.dispatch("startProcess")
 
-    // } catch (error) {
-    //   CommonUtils.filterServerError(error)
-    //   //console.log("Errror!", error)
-    //   this.$router.push('errorPage')
-    //   sessionStorage.removeItem("csrf_token");
-    //   this.loaderForm = false
-    // }
+      console.log('process', process)
+      for (let typeCredit of process.userTaskInstances.user_task_instances[0].input) {
+        const credits = {
+          label: typeCredit.creditName.name,
+          value: typeCredit.creditName.value,
+          period: typeCredit.period,
+          paymentTypes: typeCredit.paymentTypes
+        }
+
+        this.options.typeCredits.push(credits)
+      }
+
+      console.log(this.options.typeCredits)
+      this.loaderForm = false;
+
+    } catch (error) {
+      const errorMessage = CommonUtils.filterServerError(error)
+      this.$store.commit('setError', errorMessage)
+      sessionStorage.removeItem("csrf_token");
+    }
 
     try {
       const scannerSerial = await this.$store.dispatch("getDigIdNumber");
       this.$store.commit("sentScannerSerialNumber", scannerSerial);
       this.loader = false;
     } catch (err) {
-      console.log(err.response);
+      console.log('DigId', err);
       this.loader = false;
     }
   },
@@ -452,9 +422,18 @@ export default {
     },
     personalData() {
       return this.$store.state.credits.personalData;
+    },
+    typeCredit() {
+      return this.$store.getters.typeCredit
     }
   },
-
+  watch: {
+    typeCredit(credit) {
+      console.log('Вид кредита', credit)
+      const idxCredit = this.options.typeCredits.findIndex(item => item.value == credit)
+      //this.options.typeStepCredit = 
+    }
+  },
   methods: {
     onSubmit() {
       this.$refs.surname.validate();
@@ -538,9 +517,7 @@ export default {
         this.$store.commit("creditConfirm", resp);
 
         console.log("jjjj", this.personalData);
-        for (let item in this.personalData) {
-          console.log(item);
-        }
+        
       }
     }
   },

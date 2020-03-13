@@ -6,12 +6,14 @@ export default {
   state: {
     errorMessage: null,
     roles: {
+      Администратор: "CRM",
       CreditManager: "CRM",
       BackOfficee: "BO",
       CreditCommitteeMember: "CCM",
       CreditSecretary: "CS"
     },
     confirm: false,
+    errorBar: false,
     personalData: {
       surname: "",
       name: "",
@@ -21,6 +23,9 @@ export default {
       pinpp: "",
       passport: "",
       personPhoto: "",
+
+      typeCredit: "",
+      typeStepCredit: "",
       // FAMILY //
       familyStatus: "",
       children: "",
@@ -60,7 +65,7 @@ export default {
       console.log("userRole", role)
 
       // запись роли в header запроса
-      await dispatch("setHeaderRole", state.roles[role.text[0].role_name])
+      await dispatch("setHeaderRole", state.roles[role.value[0].name])
       //await dispatch("setHeaderRole", "ff")
      
       //debugger
@@ -192,11 +197,15 @@ export default {
 
     clearError(state) {
       state.errorMessage = null
+    },
+
+    toggleErrorBar(state, payload) {
+      state.errorBar = payload
     }
   },
   getters: {
-    error(state) {
-      return state.errorMessage
-    }
+    error: state => state.errorMessage,
+    typeCredit: state => state.personalData.typeCredit,
+    errorBar: state => state.errorBar
   }
 }

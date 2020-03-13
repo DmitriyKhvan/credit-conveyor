@@ -491,72 +491,16 @@ export default {
     // }
     callPrint(strid) {
       const head = document.querySelector('head')
+      console.log(head)
       const prtContent = document.getElementById(strid);
-      const prtCSS = `
-      <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.9/dist/quasar.min.css" rel="stylesheet" type="text/css">
-
-       <style scoped>
-      .q-dialog__inner--minimized > div {
-        max-width: 50%;
-      }
-      .fullProfile {
-        /* min-width: 700px; */
-      }
-
-      .fullProfile .row > div {
-        border: 1px solid #ccc;
-        margin-top: -1px;
-      }
-
-      .fullProfile .row > .col-3 {
-        border-right: none;
-      }
-
-      .fullProfile .row > div:not(.profileTitle) {
-        padding: 5px 20px;
-      }
-
-      .profileTitle {
-        text-align: center;
-        background-color: #ededed;
-        color: #0e3475;
-        padding: 10px;
-        font-size: 18px;
-      }
-
-      .profileSubTitle {
-        background: #ededed87;
-        color: #0e3475;
-      }
-
-      .profileSubSubTitle {
-        color: #0e3475;
-      }
-
-      .dataBlock {
-      }
-
-      .signature {
-        width: 100%;
-      }
-
-      .bor::after {
-        content: " ";
-        display: block;
-        height: 1px;
-        width: 90%;
-        background: #ccc;
-      }
-      </style>`;
       const WinPrint = window.open(
         "",
         "",
-        "left=50,top=50,width=800,height=640,toolbar=0,scrollbars=1,status=0"
+        "left=0,top=0,width=800,height=640,toolbar=0,scrollbars=1,status=0"
       );
       //WinPrint.document.write("<html><head><title>Полная анкета</title>");
       WinPrint.document.write("<html>");
-      WinPrint.document.write(head);
-      WinPrint.document.write(prtCSS);
+      WinPrint.document.write(head.innerHTML);
       WinPrint.document.write("<body>");
       WinPrint.document.write('<div id="print" class="contentpane">');
       WinPrint.document.write(prtContent.innerHTML);
