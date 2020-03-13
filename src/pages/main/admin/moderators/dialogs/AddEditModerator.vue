@@ -13,16 +13,15 @@
       <q-card-section>
         <div class="q-gutter-y-sm q-gutter-x-md column">
           <div class="row">
-            <!-- select  -->
+            <!-- select mark of device -->
             <q-input
-              dense
               outlined
-              class="col-xs-12 col-sm-6 col-md-6"
+              dense
+              class="col-xs-12 col-sm-12 col-md-6"
               label="User"
               :value="userName"
               @dblclick="selectUser()"
               readonly="readonly"
-              @input="onSelectUser"
               :rules="[
                 val =>
                   $v.details.emp_id.required || 'User is required'
@@ -36,6 +35,7 @@
               dense
               outlined
               clearable
+              :readonly="roleReadOnly"
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.role_id"
@@ -102,7 +102,7 @@ import NotifyService from "./../../../../../services/notify.service";
 import dialogMix from "./../../../../../shared/mixins/dialogMix";
 import ApiService from "./../../../../../services/api.service";
 import CommonUtils from "../../../../../shared/utils/CommonUtils";
-import SelectUser from "./../../../../dialogs/SelectUser";
+import GridDialog from "./../../../../../components/GridDialog";
 
 import {
   required,
@@ -127,6 +127,7 @@ export default {
       userInfo: null,
       userName: null,
       rolesModList: [],
+      roleReadOnly: true,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
@@ -134,6 +135,37 @@ export default {
         role_id: null,
         branch_code: null,
         filial_code: null
+      },
+      selectUserProps: {
+        caption: "Users",
+        tablePath: "auth/users",
+        rowId: "user_id", //
+        defaultSort: [],
+        excludedColumns: [
+          "user_id",
+          "username",
+          "roles",
+          "status",
+          "created_by",
+          "creation_date",
+          "updated_by",
+          "update_date",
+          "emp_id",
+          "first_name",
+          "last_name",
+          "middle_name",
+          "role_names"
+        ],
+        excludeSortingColoumns: [],
+        selectMode: "single",
+        paginationConfig: {
+          sortBy: "name",
+          descending: false,
+          page: 1,
+          rowsPerPage: 5
+          //rowsNumber: 4 // if getting data from a server
+        },
+        filterColumn: []
       }
     };
   },
@@ -193,6 +225,15 @@ export default {
   },
   computed: {},
   methods: {
+    initializeData() {
+      if (!!this.data.selectedRow) {
+        console.log(this.data.selectedRow);
+        this.details = this.data.selectedRow[0];
+        this.userName = this.data.selectedRow[0].name;
+        let emp_id = this.data.selectedRow[0].emp_id;
+        this.onSelectUser(emp_id);
+      }
+    },
     selectBranch() {
       return ApiService.get("structure/branches");
     },
@@ -221,7 +262,8 @@ export default {
           value: val.role_id
         };
       });
-      console.log(this.rolesModList);
+      //TODO remove existing ones
+      this.roleReadOnly = false;
     },
     selectUser() {
       let tempData = null;
@@ -230,26 +272,22 @@ export default {
       }
       this.$q
         .dialog({
-          component: SelectUser,
+          component: GridDialog,
           parent: this,
-          data: tempData
+          data: this.selectUserProps
         })
         .onOk(res => {
           console.log(res);
-          this.userName = CommonUtils.domDecoder(
-            res.LAST_NAME + " " + res.FIRST_NAME + " " + res.MIDDLE_NAME
-          );
-          this.details.emp_id = res.EMP_ID;
+          this.userName = res[0].name;
+          this.details.emp_id = res[0].emp_id;
+          console.log(this.userName, this.details.emp_id);
+          this.onSelectUser(this.details.emp_id);
         })
         .onCancel(() => {
           console.log("Cancel");
         });
     },
-    getUserInfoById(id) {
-      return ApiService.get(`emps/info?id=${id}`);
-    },
     getRoleModsList(emp_id) {
-      //let emp_id = this.$store.getters[]
       return ApiService.get(`roles/user?id=${emp_id}`);
     }
   }

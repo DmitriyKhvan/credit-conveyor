@@ -1,11 +1,6 @@
 <template>
   <div>
-    <grid-table
-      v-bind="props"
-      @addEdit="addEditRow"
-      @delRow="deleteRow"
-      ref="gridTable"
-    ></grid-table>
+    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
   </div>
 </template>
 
@@ -23,19 +18,18 @@ export default {
   data() {
     return {
       props: {
-        caption: this.$t("tables.roles._self"),
+        caption: "Moderator Table",
         tablePath: "roles/moderator",
         rowId: "id",
         addEdit: "roles/moderator", // url
         delete: "roles/moderator", //
-        defaultSort: [], // TODO
+        defaultSort: [], //
         excludedColumns: [
-          "name",
-          "status",
-          "created_by",
-          "creation_date",
-          "updated_by",
-          "update_date"
+          "id",
+          "emp_id",
+          "role_id",
+          "branch_code",
+          "filial_code"
         ],
         excludeSortingColoumns: [],
         enableAddEdit: true,
