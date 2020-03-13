@@ -2729,21 +2729,22 @@ export default {
 
   // },
   async created() {
-    // try {
-      
-    //   const auth = await this.$store.dispatch("authBpm")
-    //   console.log('auth', auth)
-    //   const process = await this.$store.dispatch("startProcess")
-    //   console.log('process', process) 
-    //   this.loaderForm = false;
+    
+    try {
+      const auth = await this.$store.dispatch("authBpm")
+      console.log('auth', auth)
+      const process = await this.$store.dispatch("startProcess")
+      console.log('process', process) 
+      this.loaderForm = false;
 
-    // } catch (error) {
-    //   const errorMessage = CommonUtils.filterServerError(error)
-    //   this.$store.commit('setError', errorMessage)
-    //   this.$router.push('errorPage')
-    //   sessionStorage.removeItem("csrf_token");
-    //   //this.loaderForm = false
-    // }
+    } catch (error) {
+      const errorMessage = CommonUtils.filterServerError(error)
+      console.log('ooooooooo', errorMessage)
+      this.$store.commit('setError', errorMessage)
+      //this.$router.push('errorPage')
+      sessionStorage.removeItem("csrf_token");
+      //this.loaderForm = false
+    }
 
   },
   computed: {

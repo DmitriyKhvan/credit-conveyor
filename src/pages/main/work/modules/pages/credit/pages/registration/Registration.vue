@@ -1,6 +1,6 @@
 <template>
   <div>
-    <appLoader v-if="loaderForm"/>
+    <appLoader v-if="loaderForm" />
 
     <div v-else class="q-pa-md row justify-center">
       <form @submit.prevent.stop="onSubmit" style="width: 70%">
@@ -157,7 +157,7 @@
                   />
                 </div>
 
-                <div class=" creditContent" ref="creditContent">
+                <div class="creditContent" ref="creditContent">
                   <q-select
                     square
                     outlined
@@ -166,6 +166,23 @@
                     dense
                     label="Тип погашения кредита"
                     class="q-pb-sm"
+                  />
+                </div>
+
+                <div class="col-12 text-white">
+                  <q-badge color="secondary">
+                    Model: {{ countMonth }} (0 to 12, step 1)
+                  </q-badge>
+
+                  <q-slider
+                    v-model="countMonth"
+                    :min="0"
+                    :max="12"
+                    :step="1"
+                    
+                    label
+                    label-always
+                    color="light-green"
                   />
                 </div>
               </div>
@@ -301,16 +318,15 @@
       <!-- Pre-Approval -->
       <app-pre-approval></app-pre-approval>
     </div>
-
   </div>
 </template>
 <script>
 // import Vue from "vue";
-import CommonUtils from "../../../../../../../../shared/utils/CommonUtils"
+import CommonUtils from "../../../../../../../../shared/utils/CommonUtils";
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
-import Loader from '../../../../../../../../components/Loader'
+import Loader from "../../../../../../../../components/Loader";
 
 // Vue.config.errorHandler = function(err, vm, info) {
 //   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
@@ -319,8 +335,54 @@ import Loader from '../../../../../../../../components/Loader'
 export default {
   data() {
     return {
+      countMonth: 0,
       loader: true,
       loaderForm: false,
+
+      input: [
+        {
+          credit_name: {
+            name: "Микрозайм",
+            value: "001"
+          },
+          period: { min: 1, max: 12 },
+          payment_type: [
+            {
+              name: "аннуитетный",
+              value: "1"
+            }
+          ]
+        },
+
+        {
+          credit_name: {
+            name: "Микрозайм2",
+            value: "002"
+          },
+          period: ["1", "2", "3"],
+          payment_type: [
+            {
+              name: "аннуитетный2",
+              value: "2"
+            }
+          ]
+        },
+
+        {
+          credit_name: {
+            name: "Микрозайм3",
+            value: "003"
+          },
+          period: ["1", "2", "3"],
+          payment_type: [
+            {
+              name: "аннуитетный3",
+              value: "2"
+            }
+          ]
+        }
+      ],
+
       options: {
         family: [
           "Женат",
@@ -354,11 +416,11 @@ export default {
   },
   async created() {
     // try {
-      
+
     //   const auth = await this.$store.dispatch("authBpm")
     //   console.log('auth', auth)
     //   const process = await this.$store.dispatch("startProcess")
-    //   console.log('process', process) 
+    //   console.log('process', process)
     //   this.loaderForm = false;
 
     // } catch (error) {
@@ -370,14 +432,13 @@ export default {
     // }
 
     try {
-      const scannerSerial = await this.$store.dispatch("getDigIdNumber")
+      const scannerSerial = await this.$store.dispatch("getDigIdNumber");
       this.$store.commit("sentScannerSerialNumber", scannerSerial);
       this.loader = false;
     } catch (err) {
-      console.log(err.response)
+      console.log(err.response);
       this.loader = false;
     }
-
   },
   computed: {
     loadMessage() {
@@ -478,7 +539,7 @@ export default {
 
         console.log("jjjj", this.personalData);
         for (let item in this.personalData) {
-          console.log(item)
+          console.log(item);
         }
       }
     }

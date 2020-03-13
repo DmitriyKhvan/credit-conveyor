@@ -15,6 +15,7 @@ export default class BpmService {
     const responce = await axios({
       method: 'post',
       url: `${this._baseUrl}/system/login`,
+      timeout: 6000
     });
     
     return responce.data;

@@ -1,7 +1,13 @@
 <template>
-  <div>
-    <h1>{{ topicName }}</h1>
-    <h4>{{ time }}</h4>
+  <div class="topicBlock">
+    <div class="headTopic">
+      <h2 class="titleTopic">{{ topicName }}</h2>
+      <div class="timeBlock">
+        <h3 class="titleTime">Оставшееся время</h3>
+        <span class="time">{{ time }}</span>
+      </div>
+    </div>
+    
     <q-card>
       <q-tabs
         v-model="tab"
@@ -19,6 +25,7 @@
           :label="index + 1"
           :class="{ answered: test.answered }"
         />
+        
         <!-- <q-tab name="alarms" label="Alarms" />
           <q-tab name="movies" label="Movies" /> -->
       </q-tabs>
@@ -31,7 +38,7 @@
         v-model="tab"
       >
         <q-tab-panel :name="index">
-          <div class="text-h6">{{ test.question_text }}</div>
+          <div class="text-h6">{{index + 1}}. {{ test.question_text }}</div>
 
           <!-- <q-form @submit="onSubmit(1)" class="q-gutter-md"> -->
           <q-item
@@ -39,9 +46,9 @@
             v-for="variant of test.variants"
             :key="variant.id"
           >
-            <q-item-section avatar>
+            <q-item-section avatar class="radioBlock">
               <q-radio
-                name="shape"
+                
                 v-model="answerTest[index].variant_text"
                 :val="variant.answer_text"
                 @input="
@@ -56,7 +63,7 @@
                 "
               />
             </q-item-section>
-            <q-item-section>
+            <q-item-section class="variantBlock">
               <q-item-label caption>{{ variant.answer_text }}</q-item-label>
             </q-item-section>
           </q-item>
@@ -65,32 +72,50 @@
               <q-btn label="Submit" type="submit" color="primary" />
             </div> -->
           <!-- </q-form> -->
-          {{ timeCurQuestion }}
+          <!-- {{ timeCurQuestion }} -->
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
 
+    <div class="answer_block">
+      <div>
+        <span class="typeAnswer blue"></span>
+        <p class="typeAnswerText">Отмеченные вопросы</p>
+        <span class="typeAnswer green"></span>
+        <p class="typeAnswerText">Не отмеченные вопросы</p>
+        <span class="typeAnswer white"></span>
+        <p class="typeAnswerText">Не посещенные вопросы</p>
+      </div>
+    </div>
+
     <div class="button_block">
-      <q-btn
-        label="Назад"
-        color="primary"
-        @click="prevTest(1)"
-        :disabled="prevDisabled"
-        class="q-ml-sm"
-      />
-      <q-btn
-        label="Вперед"
-        color="primary"
-        @click="nextTest(1)"
-        :disabled="nextDisabled"
-        class="q-ml-sm"
-      />
-      <q-btn
-        label="Завершить тест"
-        color="primary"
-        @click="completeTest()"
-        class="q-ml-sm"
-      />
+      <div>
+        <q-btn
+          icon="keyboard_arrow_left"
+          label="Предыдущий"
+          color="primary"
+          @click="prevTest(1)"
+          :disabled="prevDisabled"
+          class="q-ml-sm"
+        />
+        
+        <q-btn
+          icon="how_to_reg"
+          label="Сдать тест"
+          color="primary"
+          @click="completeTest()"
+          class="q-ml-sm"
+        />
+
+        <q-btn
+          icon-right="keyboard_arrow_right"
+          label="Следующий"
+          color="primary"
+          @click="nextTest(1)"
+          :disabled="nextDisabled"
+          class="q-ml-sm"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -178,6 +203,13 @@ export default {
   },
   watch: {
     tab() {
+
+      // const el = document.querySelector('.q-tab--active')
+      // const icon = '<i class="material-icons">accessibility_new</i>'
+
+      // el.append(innerHtml);
+      
+
       if (this.tab < this.data.answers.length - 1 && this.tab > 0) {
         this.nextDisabled = false;
         this.prevDisabled = false;
@@ -355,6 +387,53 @@ export default {
 };
 </script>
 <style scoped>
+.topicBlock {
+  padding: 50px;
+}
+
+.headTopic {
+  display: flex;
+  justify-content: space-between;
+}
+
+.titleTopic {
+  font-size: 22px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.timeBlock {
+  display: flex;
+  align-items: center;
+  border: 1px solid #bbbbbb;
+  height: 40px;
+  padding: 0 15px;
+  font-size: 22px;
+}
+
+.titleTime {
+  position: relative;
+  margin: 0;
+  font-size: 22px;
+  margin-right: 20px;
+}
+
+/* .titleTime::before {
+  position: absolute;
+  content: "";
+  display: block;
+  height: 1px;
+  width: 20px;
+  background: #8e9fbe;
+  transform: rotate(90deg);
+  top: 0;
+  right: 0;
+} */
+
+.time {
+  color: #ff0000
+}
+
 .testLi {
   list-style: none;
 }
@@ -371,12 +450,104 @@ export default {
   margin-left: 15px;
 }
 
+.q-tab--active {
+  
+}
+
 .answered {
-  background: #00800070;
+  background: #00aeef;
   color: white !important;
+}
+
+.q-item__label {
+  font-size: 22px;
+  color: #000;
 }
 
 .button_block {
   margin: 20px 40px;
 }
+
+/* .q-tab-panels {
+  padding: 30px 40px;
+} */
+
+.q-tab-panel {
+  border: 1px solid #ccc;
+  width: 95%;
+  margin: 30px auto 0;
+}
+
+.q-tabs__content--align-justify .q-tab {
+  flex: 0 0 auto;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d7d7d7;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.q-tab {
+  min-height: 26px;
+}
+
+.q-card {
+  box-shadow: none;
+}
+
+.q-separator--horizontal {
+  margin-top: 15px;
+  background: #0e3475;
+}
+
+.q-radio__inner {
+  border: 1px solid #ccc;
+}
+
+.radioBlock, .variantBlock {
+  border: 1px solid #bcbcbc;
+}
+
+.radioBlock {
+  padding: 0;
+  border-right: none;
+  min-width: auto;
+}
+
+.answer_block, .button_block {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 40px 0;
+}
+
+.typeAnswer {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid #d7d7d7;
+}
+
+.answer_block > div {
+  display: flex;
+  align-items: center;
+  /* align-content: center; */
+}
+
+.typeAnswerText {
+  margin: 0 20px 0 5px;
+}
+
+.blue {
+  background: #00aeef;
+}
+
+.green {
+  background: #12a39e;
+}
+
+.button_block button {
+  margin: 0 10px;
+}
+
 </style>

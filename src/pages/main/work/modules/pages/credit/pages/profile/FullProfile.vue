@@ -482,11 +482,15 @@ export default {
       confirmCredit: true
     };
   },
+  computed() {
+    //console.log(document.querySelector('head'))
+  },
   methods: {
     // printForm() {
     //   window.print();
     // }
     callPrint(strid) {
+      const head = document.querySelector('head')
       const prtContent = document.getElementById(strid);
       const prtCSS = `
       <link href="https://cdn.jsdelivr.net/npm/quasar@1.9.9/dist/quasar.min.css" rel="stylesheet" type="text/css">
@@ -549,9 +553,11 @@ export default {
         "",
         "left=50,top=50,width=800,height=640,toolbar=0,scrollbars=1,status=0"
       );
-      WinPrint.document.write("<html><head><title>Полная анкета</title>");
+      //WinPrint.document.write("<html><head><title>Полная анкета</title>");
+      WinPrint.document.write("<html>");
+      WinPrint.document.write(head);
       WinPrint.document.write(prtCSS);
-      WinPrint.document.write("</head><body>");
+      WinPrint.document.write("<body>");
       WinPrint.document.write('<div id="print" class="contentpane">');
       WinPrint.document.write(prtContent.innerHTML);
       WinPrint.document.write("</div>");
@@ -566,7 +572,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .q-dialog__inner--minimized > div {
   max-width: 50%;
 }

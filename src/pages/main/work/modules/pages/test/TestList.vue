@@ -1,9 +1,9 @@
 <template>
-  <div class="row justify-center">
-    <div>
-      <h4>Веберите тему</h4>
+  <div class="topicsBlock">
+   
+      <h4 class="titleAllTest">Веберите тему</h4>
       <div class="row q-col-gutter-md">
-        <div class="col-12">
+        <div class="col-6">
           <ul>
             <li
               ref="topicLi"
@@ -16,19 +16,19 @@
             </li>
           </ul>
         </div>
-        <!-- <div class="col-6"></div> -->
+        <div class="col-6"></div>
       </div>
       <!-- <router-link v-if="topicId" :to="'topic/' + topicId">
         <q-btn color="green" label="Начать тест"></q-btn>
       </router-link> -->
-      <q-btn
+      <q-btn 
+        class="startTopic"
         color="green"
         label="Начать тест"
         :disabled="disabled"
         @click="() => this.$router.push('topic/' + topicId)"
       >
       </q-btn>
-    </div>
   </div>
 </template>
 <script>
@@ -81,16 +81,44 @@ export default {
 };
 </script>
 <style scoped>
+.topicsBlock {
+  /* display: flex;
+  flex-direction: column; */
+}
+
+.titleAllTest {
+  text-align: center;
+  font-size: 28px;
+  color: #0e3475;
+  margin: 20px 0 10px 0;
+}
+
 .topic {
+  font-size: 20px;
+  color: #2b2b2b;
   list-style: none;
-  border: 1px solid #ccc;
+  border: 1px solid #bbd1e7;
   border-radius: 3px;
-  margin-bottom: 5px;
-  padding: 5px 10px;
+  margin-bottom: 10px;
+  padding: 15px 20px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.2s linear;
+}
+
+.topic:hover {
+  background: #0073e3;
+  color: white;
 }
 
 .selectedTopic {
-  background: blue;
+  background: #0073e3;
   color: white;
+}
+
+.startTopic {
+  display: block;
+  margin: 0 auto;
+  font-size: 20px;
+  padding: 0 50px;
 }
 </style>

@@ -53,8 +53,8 @@ export default {
 
     async authBpm({state, dispatch}) {
       // получение id пользователя
-      const userId = decode(storegeService.getToken()).id;
-
+      const userId = decode(await storegeService.getToken()).id;
+      
       // получение ролей пользователя
       const role = await dispatch("getUserRole", userId)
       console.log("userRole", role)

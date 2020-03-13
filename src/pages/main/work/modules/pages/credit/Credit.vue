@@ -20,7 +20,7 @@
       </q-toolbar-title>
     </q-btn>
 
-    <q-btn class="subMenuCredit" flat icon="library_books" :to="link">
+    <q-btn class="subMenuCredit" flat icon="library_books" to="/work/credit/applications">
       <q-tooltip anchor="bottom left" self="top left">
         Список заявок
       </q-tooltip>
@@ -42,22 +42,33 @@
     
   </div>
   <router-view></router-view>
+
+  <errorMessage v-if="err"/>
 </div>
 </template>
 <script>
+import ErrorMessage from './ErrorMessage'
+
 export default {
   name: "credit",
   data() {
     return {
-      link: ""
+      err: false
     };
   },
-  created() {
-    if (true) {
-      this.link = "/work/credit/applications";
-    } else {
-      this.link = "/work/credit/applications2";
+  computed: {
+    error() {
+      return this.$store.getters.error
     }
+  },
+  watch: {
+    error(serverError) {
+      this.err = true
+    }
+  },
+
+  components: {
+    errorMessage: ErrorMessage
   }
 };
 </script>

@@ -27,14 +27,15 @@ const TasksList = () =>
 
 // Credit
 const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
-const ErrorPage = () =>
-  import("pages/main/work/modules/pages/credit/ErrorPage");
+
 const CreditReg = () =>
   import(
     "pages/main/work/modules/pages/credit/pages/registration/Registration.vue"
   );
 const CreditProfile = () =>
   import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
+  const test123 = () =>
+  import("pages/main/work/modules/pages/credit/pages/profile/test123.vue");
 const CreditApplications = () =>
   import("pages/main/work/modules/pages/credit/pages/list/Applications.vue");
 const CreditTasks = () =>
@@ -131,7 +132,7 @@ const routes = [{
                 component: CreditTasks
               },
               {
-                path: "task/:id",
+                path: "sub/task/:id",
                 name: "CreditTask",
                 component: CreditTask,
                 //beforeEnter: ifAuthenticated,
@@ -148,9 +149,9 @@ const routes = [{
                 //beforeEnter: ifAuthenticated,
               },
               {
-                path: "errorPage",
-                name: "errorPage",
-                component: ErrorPage,
+                path: "test123",
+                name: "Profile",
+                component: test123,
                 //beforeEnter: ifAuthenticated,
               }
             ]
