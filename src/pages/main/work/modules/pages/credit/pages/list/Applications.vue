@@ -373,12 +373,7 @@ export default {
       const app = await this.$store.dispatch("getCreditList")
       this.loader = false
 
-      } catch (err) {
-        console.log("Errror!",err)
-        this.$router.push('errorPage')
-        sessionStorage.removeItem("csrf_token");
-        this.loader = false
-    }
+      } catch (err) {}
 
   },
   mounted() {

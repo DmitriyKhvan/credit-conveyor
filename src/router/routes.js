@@ -143,7 +143,7 @@ const routes = [{
                 component: CreditReg
               },
               {
-                path: "profile",
+                path: "sub/profile",
                 name: "Profile",
                 component: CreditProfile,
                 //beforeEnter: ifAuthenticated,

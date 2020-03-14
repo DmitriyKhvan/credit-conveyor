@@ -1,6 +1,7 @@
 import BpmService from '../../services/bpm.service';
 import storegeService from '../../services/storage.service';
 import { decode } from 'jsonwebtoken';
+import CommonUtils from '../../shared/utils/CommonUtils'
 
 export default {
   state: {
@@ -56,29 +57,34 @@ export default {
   },
   actions: {
 
-    async authBpm({state, dispatch}) {
-      // получение id пользователя
-      const userId = decode(await storegeService.getToken()).id;
-      
-      // получение ролей пользователя
-      const role = await dispatch("getUserRole", userId)
-      console.log("userRole", role)
+    async authBpm({state, dispatch, commit}) {
+      try {
+          // получение id пользователя
+          const userId = decode(await storegeService.getToken()).id;
+          
+          // получение ролей пользователя
+          const role = await dispatch("getUserRole", userId)
+          console.log("userRole", role)
 
-      // запись роли в header запроса
-      await dispatch("setHeaderRole", state.roles[role.value[0].name])
-      //await dispatch("setHeaderRole", "ff")
-     
-      //debugger
-      // получение BPM token 
-      const csrf_token = await dispatch("getBPMToken")
-      
-      // запись BPM token в header запроса
-      await dispatch("setHeaderBPM", csrf_token.csrf_token)
+          // запись роли в header запроса
+          await dispatch("setHeaderRole", state.roles[role.value[0].name])
+          //await dispatch("setHeaderRole", "ff")
+        
+          // получение BPM token 
+          const csrf_token = await dispatch("getBPMToken")
+          
+          // запись BPM token в header запроса
+          await dispatch("setHeaderBPM", csrf_token.csrf_token)
 
-      // запись BPM token sessionStore
-      sessionStorage.setItem("csrf_token", csrf_token.csrf_token);
+          // запись BPM token sessionStore
+          sessionStorage.setItem("csrf_token", csrf_token.csrf_token);
 
-      return csrf_token
+          return csrf_token
+      } catch (error) {
+          const errorMessage = CommonUtils.filterServerError(error)
+          commit('setError', errorMessage)
+          sessionStorage.removeItem("csrf_token");
+      }
     },
 
     async getUserRole({ state }, payload) {
@@ -89,16 +95,22 @@ export default {
       return await state.bpmService.getBPMToken();
     },
 
-    async startProcess({ state }) {
-      return await state.bpmService.startProcess();
-    },
-
     async setHeaderRole({ state }, payload) {
       return await state.bpmService.setHeaderRole(payload);
     },
 
     async setHeaderBPM({ state }, payload) {
       return await state.bpmService.setHeaderBPM(payload);
+    },
+
+    async startProcess({ state }) {
+      try {
+        return await state.bpmService.startProcess();
+      } catch (error) {
+          const errorMessage = CommonUtils.filterServerError(error)
+          commit('setError', errorMessage)
+          sessionStorage.removeItem("csrf_token");
+      }
     },
 
     async getDigIdNumber({ state }) {
@@ -109,14 +121,20 @@ export default {
       return await state.bpmService.getUserDataFromService();
     },
 
-    async getUserDataFromReader({ state }) {
-      return await state.bpmService.getUserDataFromReader();
-    },
+    // async getUserDataFromReader({ state }) {
+    //   return await state.bpmService.getUserDataFromReader();
+    // },
 
     async getCreditList({ state }) {
-      return await state.bpmService.getCreditList();
+      try {
+        return await state.bpmService.getCreditList();
+      } catch (error) {
+          const errorMessage = CommonUtils.filterServerError(error)
+          
+          commit('setError', errorMessage)
+          sessionStorage.removeItem("csrf_token");
+      }
     }
-
   },
   mutations: {
     toggleConfirm(state, payload) {

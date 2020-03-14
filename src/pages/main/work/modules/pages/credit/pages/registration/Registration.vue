@@ -125,7 +125,7 @@
                   </div>
                   <div v-else class="default_personPhoto_block">
                     <img
-                      src="../../../../../../../../assets/images/default-avatar.png"
+                      src="~assets/images/default-avatar.png"
                       alt=""
                       class="default_personPhoto"
                     />
@@ -395,11 +395,7 @@ export default {
       console.log(this.options.typeCredits)
       this.loaderForm = false;
 
-    } catch (error) {
-      const errorMessage = CommonUtils.filterServerError(error)
-      this.$store.commit('setError', errorMessage)
-      sessionStorage.removeItem("csrf_token");
-    }
+    } catch (error) {}
 
     try {
       const scannerSerial = await this.$store.dispatch("getDigIdNumber");
