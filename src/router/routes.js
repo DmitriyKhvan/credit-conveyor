@@ -143,12 +143,6 @@ const routes = [{
                 name: "Profile",
                 component: CreditProfile,
                 beforeEnter: ifAuthenticated
-              },
-              {
-                path: "errorPage",
-                name: "errorPage",
-                component: ErrorPage
-                //beforeEnter: ifAuthenticated,
               }
             ]
           }
