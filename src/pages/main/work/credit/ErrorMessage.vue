@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import message from "../../../../../../shared/utils/messages";
+import message from "@/shared/utils/messages";
 export default {
   
   data() {

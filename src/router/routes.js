@@ -27,7 +27,7 @@ const TasksList = () =>
   import("pages/main/work/task/modules/pages/tasklist/List");
 
 // Credit
-const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
+const Credit = () => import("pages/main/work/credit/Credit");
 
 const CreditReg = () =>
   import(

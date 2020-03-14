@@ -2518,8 +2518,8 @@
 
 <script>
 import * as moment from "moment";
-import CommonUtils from "../../../../../../../../shared/utils/CommonUtils"
-import Loader from '../../../../../../../../components/Loader'
+import CommonUtils from "@/shared/utils/CommonUtils"
+import Loader from '@/components/Loader'
 import FullProfile from './FullProfile'
 
 export default {
