@@ -24,6 +24,7 @@
     "socket.io-client": "^2.3.0",
     "vanta": "^0.5.10",
     "vue-google-charts": "^0.3.2",
+    "vue-html-to-paper": "^1.3.0",
     "vue-i18n": "^8.0.0",
     "vue-router": "^3.1.5",
     "vue-smooth-dnd": "^0.8.1",

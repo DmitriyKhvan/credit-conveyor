@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import GridTable from "../../../../../components/GridTable";
+import GridTable from "@/components/GridTable";
 import AddEditQuestion from "./dialogs/AddEditQuestion";
 import { Dialog } from "quasar";
-import ApiService from "../../../../../services/api.service";
-import NotifyService from "../../../../../services/notify.service";
-import GridService from "../../../../../services/grid.service";
+import ApiService from "@/services/api.service";
+import NotifyService from "@/services/notify.service";
+import GridService from "@/services/grid.service";
 
 export default {
   name: "QuestionPage",

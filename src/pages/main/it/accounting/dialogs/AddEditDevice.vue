@@ -208,10 +208,10 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../../services/notify.service";
-import dialogMix from "./../../../../../shared/mixins/dialogMix";
-import GridDialog from "./../../../../../components/GridDialog";
-import ApiService from "./../../../../../services/api.service";
+import NotifyService from "@/services/notify.service";
+import dialogMix from "@/shared/mixins/dialogMix";
+import GridDialog from "@/components/GridDialog";
+import ApiService from "@/services/api.service";
 
 import {
   required,
@@ -255,7 +255,7 @@ export default {
         caption: "Device Types",
         tablePath: "devices/type",
         rowId: "id", //
-        defaultSort: [], // TODO
+        defaultSort: [],
         excludedColumns: [],
         excludeSortingColoumns: [],
         selectMode: "single",

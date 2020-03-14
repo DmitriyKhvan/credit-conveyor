@@ -7,13 +7,15 @@
         </div>
         <div class="col-3">
           <div style="width: 100%;">
-            <user-card v-bind:items="item" />
+            <q-card>
+              <user-card v-bind:itemData="item" />
+            </q-card>
             <q-card>
               <q-card-section>
                 <div v-for="(element, index) in devicesList" :key="index">
-                  <p>{{index+1}}. Type: {{element.type_name}}</p>
-                  <p>Model: {{element.model_name}}</p>
-                  <p>Serial: {{element.serial}}</p>
+                  <p>{{ index + 1 }}. Type: {{ element.type_name }}</p>
+                  <p>Model: {{ element.model_name }}</p>
+                  <p>Serial: {{ element.serial }}</p>
                 </div>
               </q-card-section>
             </q-card>
@@ -25,9 +27,9 @@
 </template>
 
 <script>
-import StructureBank from "./../../../../components/StructureBank";
-import UserCard from "./../../../../components/UserCard";
-import ApiService from "../../../../services/api.service";
+import StructureBank from "@/components/StructureBank";
+import UserCard from "@/components/UserCard";
+import ApiService from "@/services/api.service";
 
 export default {
   name: "SelectUser",
@@ -65,5 +67,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

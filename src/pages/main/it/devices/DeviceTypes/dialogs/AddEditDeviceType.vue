@@ -67,8 +67,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../../../services/notify.service";
-import dialogMix from "./../../../../../../shared/mixins/dialogMix";
+import NotifyService from "@/services/notify.service";
+import dialogMix from "@/shared/mixins/dialogMix";
 import {
   required,
   requiredIf,

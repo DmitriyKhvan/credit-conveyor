@@ -11,13 +11,13 @@
 </template>
 
 <script>
-import GridTable from "./../../../../components/GridTable";
+import GridTable from "@/components/GridTable";
 import AddEditUser from "./dialogs/AddEditUser";
 
 import { Dialog } from "quasar";
-import ApiService from "./../../../../services/api.service";
-import NotifyService from "./../../../../services/notify.service";
-import GridService from "./../../../../services/grid.service";
+import ApiService from "@/services/api.service";
+import NotifyService from "@/services/notify.service";
+import GridService from "@/services/grid.service";
 
 export default {
   created() {},
@@ -29,8 +29,13 @@ export default {
         rowId: "user_id",
         addEdit: "auth/users", // url
         delete: "auth/users", //
-        defaultSort: [], // TODO
+        defaultSort: [],
         excludedColumns: [
+          "user_id",
+          "roles",
+          "first_name",
+          "last_name",
+          "middle_name",
           "status",
           "created_by",
           "creation_date",
