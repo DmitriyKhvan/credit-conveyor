@@ -142,7 +142,7 @@ const routes = [{
                 path: "sub/profile",
                 name: "Profile",
                 component: CreditProfile,
-                beforeEnter: ifAuthenticated
+                //beforeEnter: ifAuthenticated
               }
             ]
           }
