@@ -1,36 +1,35 @@
 <template>
-  <div id="addEditTopicPage">
+  <div>
     <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
-    <router-view />
   </div>
 </template>
 
 <script>
 import GridTable from "@/components/GridTable";
-import AddEditTopic from "./dialogs/AddEditTopic";
+import AddEditModerator from "./dialogs/AddEditModerator";
+
 import { Dialog } from "quasar";
 import ApiService from "@/services/api.service";
 import NotifyService from "@/services/notify.service";
 import GridService from "@/services/grid.service";
 
 export default {
-  name: "addEditTopicPage",
+  created() {},
   data() {
     return {
-      tab: "EditTopic",
       props: {
-        caption: "Test Topics Page",
-        tablePath: "test/topic",
+        caption: "Moderator Table",
+        tablePath: "roles/moderator",
         rowId: "id",
-        addEdit: "test/topic", // url
-        delete: "test/topic", //
-        defaultSort: [], // TODO
+        addEdit: "roles/moderator", // url
+        delete: "roles/moderator", //
+        defaultSort: [], //
         excludedColumns: [
           "id",
-          "created_by",
-          "creation_date",
-          "updated_by",
-          "update_date"
+          "emp_id",
+          "role_id",
+          "branch_code",
+          "filial_code"
         ],
         excludeSortingColoumns: [],
         enableAddEdit: true,
@@ -53,10 +52,9 @@ export default {
   components: {
     GridTable
   },
-  created() {},
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditTopic, selected, this.props, this)
+      GridService.addEditRecord(AddEditModerator, selected, this.props, this)
         .then(
           ok => {
             if (ok) {
@@ -93,3 +91,5 @@ export default {
   }
 };
 </script>
+
+<style></style>

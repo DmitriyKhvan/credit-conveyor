@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../../../services/notify.service";
-import dialogMix from "./../../../../../../shared/mixins/dialogMix";
+import NotifyService from "@/services/notify.service";
+import dialogMix from "@/shared/mixins/dialogMix";
 import {
   required,
   requiredIf,
@@ -69,7 +69,7 @@ import {
   between,
   email
 } from "vuelidate/lib/validators";
-import ApiService from "../../../../../../services/api.service";
+import ApiService from "@/services/api.service";
 export default {
   data() {
     return {

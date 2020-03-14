@@ -113,13 +113,10 @@
                 </div>
 
                 <div class="col-5 row content-between justify-end">
-                  <div
-                    v-if="personalData.personPhoto"
-                    class="personPhoto_block"
-                  >
+                  <div v-if="personalData.personPhoto" class="personPhoto_block">
                     <img
                       :src="'data:image/png;base64,' + personalData.personPhoto"
-                      alt=""
+                      alt
                       class="personPhoto"
                     />
                   </div>
@@ -229,9 +226,7 @@
 
             <!-- Expense/income -->
             <div class="expense-income tab">
-              <h4 class="tab-title" ref="expenseIncome">
-                Ежемесячные расходы/доходы
-              </h4>
+              <h4 class="tab-title" ref="expenseIncome">Ежемесячные расходы/доходы</h4>
               <div class="tab-content" ref="tabContent">
                 <q-input
                   ref="income"
@@ -324,11 +319,11 @@
 </template>
 <script>
 // import Vue from "vue";
-import CommonUtils from "../../../../../../../../shared/utils/CommonUtils";
+import CommonUtils from "@/shared/utils/CommonUtils";
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
-import Loader from "../../../../../../../../components/Loader";
+import Loader from "@/components/Loader";
 
 // Vue.config.errorHandler = function(err, vm, info) {
 //   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
@@ -339,7 +334,7 @@ export default {
     return {
       periodCredit: 0,
       loader: true,
-      loaderForm: true,
+      loaderForm: false,
       options: {
         family: [
           "Женат",

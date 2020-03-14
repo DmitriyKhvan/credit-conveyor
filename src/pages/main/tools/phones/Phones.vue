@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import StructureBank from "./../../../../../../components/StructureBank";
+import StructureBank from "@/components/StructureBank";
 export default {
   components: {
     StructureBank

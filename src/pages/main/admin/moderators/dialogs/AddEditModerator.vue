@@ -13,86 +13,45 @@
       <q-card-section>
         <div class="q-gutter-y-sm q-gutter-x-md column">
           <div class="row">
+            <!-- select mark of device -->
             <q-input
               outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.authority"
-              label="Authority"
-              @input="$v.details.authority.$touch()"
+              dense
+              class="col-xs-12 col-sm-12 col-md-6"
+              label="User"
+              :value="userName"
+              @dblclick="selectUser()"
+              readonly="readonly"
               :rules="[
-                      val => $v.details.authority.required || 'Authority is required',
-                      val => $v.details.authority.minLength || 'Length should be at least 3 chars'
-                      ]"
+                val =>
+                  $v.details.emp_id.required || 'User is required'
+              ]"
               lazy-rules
-            />
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[0]"
-              label="Name Uz"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name Uz is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
-            />
-          </div>
-          <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[1]"
-              label="Name Ru"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name Ru is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
-            />
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.name[2]"
-              label="Name En"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name En is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
-            />
-          </div>
-          <div class="row">
+            >
+              <template v-slot:hint>Double Click</template>
+            </q-input>
+            <!--  -->
             <q-select
+              dense
               outlined
+              clearable
+              :readonly="roleReadOnly"
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.status"
-              :options="stateList"
+              v-model="details.role_id"
+              :options="rolesModList"
               option-value="value"
-              option-label="key"
+              option-label="text"
               emit-value
               map-options
-              label="Status"
-              @input="$v.details.status.$touch()"
-              :rules="[
-                      val => $v.details.status.required || 'Status is required'
-                      ]"
+              label="Role"
+              :rules="[]"
               lazy-rules
             />
           </div>
           <div class="row">
             <q-select
+              dense
               outlined
               clearable
               color="purple-12"
@@ -105,11 +64,11 @@
               map-options
               label="Branches"
               @input="selected"
-              :rules="[
-              ]"
+              :rules="[]"
               lazy-rules
             />
             <q-select
+              dense
               outlined
               clearable
               color="purple-12"
@@ -121,8 +80,7 @@
               emit-value
               map-options
               label="Filials"
-              :rules="[
-              ]"
+              :rules="[]"
               lazy-rules
             />
           </div>
@@ -143,6 +101,9 @@
 import NotifyService from "@/services/notify.service";
 import dialogMix from "@/shared/mixins/dialogMix";
 import ApiService from "@/services/api.service";
+import CommonUtils from "@/shared/utils/CommonUtils";
+import GridDialog from "@/components/GridDialog";
+
 import {
   required,
   requiredIf,
@@ -163,32 +124,62 @@ export default {
       deviceBranches: [],
       deviceFilials: [],
       branchList: [],
+      userInfo: null,
+      userName: null,
+      rolesModList: [],
+      roleReadOnly: true,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
+        id: null,
+        emp_id: null,
         role_id: null,
-        authority: null,
-        name: [],
-        status: null,
         branch_code: null,
         filial_code: null
+      },
+      selectUserProps: {
+        caption: "Users",
+        tablePath: "auth/users",
+        rowId: "user_id", //
+        defaultSort: [],
+        excludedColumns: [
+          "user_id",
+          "username",
+          "roles",
+          "status",
+          "created_by",
+          "creation_date",
+          "updated_by",
+          "update_date",
+          "emp_id",
+          "first_name",
+          "last_name",
+          "middle_name",
+          "role_names"
+        ],
+        excludeSortingColoumns: [],
+        selectMode: "single",
+        paginationConfig: {
+          sortBy: "name",
+          descending: false,
+          page: 1,
+          rowsPerPage: 5
+          //rowsNumber: 4 // if getting data from a server
+        },
+        filterColumn: []
       }
     };
   },
   validations: {
     details: {
-      role_id: {},
-      authority: {
-        required,
-        minLength: minLength(3)
+      id: {},
+      role_id: { required },
+      emp_id: {
+        required
       },
-      name: {
-        required,
-        minLength: minLength(3),
-        $each: {
-          minLength: minLength(3)
-        }
+      branch_code: {
+        required
       },
-      status: {
+      filial_code: {
         required
       }
     }
@@ -205,6 +196,7 @@ export default {
   created() {
     Promise.all([this.selectBranch()])
       .then(x => {
+        // --
         this.deviceBranches = x[0].data[0].children.map(val => {
           return {
             text: val.DEPARTMENT_NAME1,
@@ -214,7 +206,6 @@ export default {
         this.branchList = x[0].data[0].children;
         if (this.details.branch_code) {
           // when edit case initializes deviceFilials array
-
           this.branchList.forEach(element => {
             if (element.CODE == this.details.branch_code) {
               this.deviceFilials = element.children.map(val => {
@@ -226,12 +217,23 @@ export default {
             }
           });
         }
+        // --
       })
       .catch(error => {
         console.log(error);
       });
   },
+  computed: {},
   methods: {
+    initializeData() {
+      if (!!this.data.selectedRow) {
+        console.log(this.data.selectedRow);
+        this.details = this.data.selectedRow[0];
+        this.userName = this.data.selectedRow[0].name;
+        let emp_id = this.data.selectedRow[0].emp_id;
+        this.onSelectUser(emp_id);
+      }
+    },
     selectBranch() {
       return ApiService.get("structure/branches");
     },
@@ -247,10 +249,47 @@ export default {
           });
         }
       });
+    },
+    async onSelectUser(emp_id) {
+      let temp = (await this.getRoleModsList(emp_id)).data.value;
+      // rolemodelist
+      temp = temp.filter(role => {
+        return role.mod_available == 0;
+      });
+      this.rolesModList = temp.map(val => {
+        return {
+          text: val.name,
+          value: val.role_id
+        };
+      });
+      //TODO remove existing ones
+      this.roleReadOnly = false;
+    },
+    selectUser() {
+      let tempData = null;
+      if (!!this.data.selectedRow) {
+        tempData = this.userInfo.data;
+      }
+      this.$q
+        .dialog({
+          component: GridDialog,
+          parent: this,
+          data: this.selectUserProps
+        })
+        .onOk(res => {
+          this.userName = res[0].name;
+          this.details.emp_id = res[0].emp_id;
+          this.onSelectUser(this.details.emp_id);
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        });
+    },
+    getRoleModsList(emp_id) {
+      return ApiService.get(`roles/user?id=${emp_id}`);
     }
   }
 };
 </script>
 
-<style>
-</style>
+<style></style>

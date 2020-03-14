@@ -27,16 +27,12 @@
         />
         
         <!-- <q-tab name="alarms" label="Alarms" />
-          <q-tab name="movies" label="Movies" /> -->
+        <q-tab name="movies" label="Movies" />-->
       </q-tabs>
 
       <q-separator />
 
-      <q-tab-panels
-        v-for="(test, index) of topic.questions"
-        :key="test.id"
-        v-model="tab"
-      >
+      <q-tab-panels v-for="(test, index) of topic.questions" :key="test.id" v-model="tab">
         <q-tab-panel :name="index">
           <div class="text-h6">{{index + 1}}. {{ test.question_text }}</div>
 
@@ -70,7 +66,7 @@
 
           <!-- <div>
               <q-btn label="Submit" type="submit" color="primary" />
-            </div> -->
+          </div>-->
           <!-- </q-form> -->
           <!-- {{ timeCurQuestion }} -->
         </q-tab-panel>
@@ -120,7 +116,7 @@
   </div>
 </template>
 <script>
-import ApiService from "./../../../../../../services/api.service";
+import ApiService from "@/services/api.service";
 
 export default {
   data() {

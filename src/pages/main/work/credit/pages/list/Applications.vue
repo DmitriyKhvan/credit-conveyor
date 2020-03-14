@@ -1,97 +1,64 @@
 <template>
   <div>
-    <appLoader v-if="loader"/>
-  <div v-else class="q-pa-md">
-    <h4>Очередь заявок {{ tasks }}</h4>
-    <q-markup-table>
-      <thead>
-        <tr>
-          <!-- <th class="text-left"></th> -->
-          <th class="text-left" colspan="2">
-            <q-input
-              square
-              outlined
-              v-model="application"
-              dense
-              label="Введите номер заявки"
-            />
-          </th>
-          <th class="text-right">
-            <q-input
-              square
-              outlined
-              v-model="client"
-              dense
-              label="Введите ноименование клиента"
-            />
-          </th>
-          <th class="text-right">
-            <q-select
-              square
-              outlined
-              v-model="status"
-              :options="options.status"
-              dense
-              label="Статус"
-            />
-          </th>
-          <th class="text-right" colspan="2">
-            <q-input
-              outlined
-              square
-              dense
-              label="Выберите дату"
-              v-model="date"
-              mask="##.##.####"
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    transition-show="scale"
-                    transition-hide="scale"
-                    ref="qDate"
-                  >
-                    <q-date
-                      mask="DD.MM.YYYY"
-                      v-model="date"
-                      @input="() => $refs.qDate.hide()"
-                    />
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </th>
-        </tr>
+    <appLoader v-if="loader" />
+    <div v-else class="q-pa-md">
+      <h4>Очередь заявок {{ tasks }}</h4>
+      <q-markup-table>
+        <thead>
+          <tr>
+            <!-- <th class="text-left"></th> -->
+            <th class="text-left" colspan="2">
+              <q-input square outlined v-model="application" dense label="Введите номер заявки" />
+            </th>
+            <th class="text-right">
+              <q-input square outlined v-model="client" dense label="Введите ноименование клиента" />
+            </th>
+            <th class="text-right">
+              <q-select
+                square
+                outlined
+                v-model="status"
+                :options="options.status"
+                dense
+                label="Статус"
+              />
+            </th>
+            <th class="text-right" colspan="2">
+              <q-input outlined square dense label="Выберите дату" v-model="date" mask="##.##.####">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy transition-show="scale" transition-hide="scale" ref="qDate">
+                      <q-date mask="DD.MM.YYYY" v-model="date" @input="() => $refs.qDate.hide()" />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </th>
+          </tr>
 
-        <tr class="titleApplication">
-          <th class="text-center number"><span>№</span></th>
-          <th class="text-left application">
-            <button class="filter" idx="applicationNumber">
-              Заявка
-            </button>
-          </th>
-          <th class="text-left client">
-            <button class="filter" idx="clientName">
-              Клиент
-            </button>
-          </th>
-          <th class="text-left status">
-            <button class="filter" idx="applicationStatus">
-              Статус
-            </button>
-          </th>
-          <th class="text-left date">
-            <button class="filter" idx="modifiedDate">
-              Дата
-            </button>
-          </th>
-          <th class="text-left"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) of applications" :key="item.id">
-          <router-link
-            :to="{
+          <tr class="titleApplication">
+            <th class="text-center number">
+              <span>№</span>
+            </th>
+            <th class="text-left application">
+              <button class="filter" idx="applicationNumber">Заявка</button>
+            </th>
+            <th class="text-left client">
+              <button class="filter" idx="clientName">Клиент</button>
+            </th>
+            <th class="text-left status">
+              <button class="filter" idx="applicationStatus">Статус</button>
+            </th>
+            <th class="text-left date">
+              <button class="filter" idx="modifiedDate">Дата</button>
+            </th>
+            <th class="text-left"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) of applications" :key="item.id">
+            <router-link
+              :to="{
               name: 'CreditCommiteeTask',
               params: { id: item.applicationId },
               query: {
@@ -102,77 +69,60 @@
                   : null
               }
             }"
-            tag="td"
-            class="text-center number applicationRow"
-            >{{ index + 1 }}</router-link
-          >
+              tag="td"
+              class="text-center number applicationRow"
+            >{{ index + 1 }}</router-link>
 
-          <router-link
-            :to="'creditCommiteeTask/' + item.id"
-            tag="td"
-            class="text-left number applicationRow"
-            >{{ item.applicationNumber }}</router-link
-          >
+            <router-link
+              :to="'creditCommiteeTask/' + item.id"
+              tag="td"
+              class="text-left number applicationRow"
+            >{{ item.applicationNumber }}</router-link>
 
-          <router-link
-            :to="'creditCommiteeTask/' + item.id"
-            tag="td"
-            class="text-left number applicationRow"
-            >{{ item.clientName }}</router-link
-          >
+            <router-link
+              :to="'creditCommiteeTask/' + item.id"
+              tag="td"
+              class="text-left number applicationRow"
+            >{{ item.clientName }}</router-link>
 
-          <router-link
-            :to="'creditCommiteeTask/' + item.id"
-            tag="td"
-            class="text-left number applicationRow"
-            >{{ item.applicationStatus }}</router-link
-          >
+            <router-link
+              :to="'creditCommiteeTask/' + item.id"
+              tag="td"
+              class="text-left number applicationRow"
+            >{{ item.applicationStatus }}</router-link>
 
-          <router-link
-            :to="'creditCommiteeTask/' + item.id"
-            tag="td"
-            class="text-left number applicationRow"
-            >{{ item.modifiedDate }}</router-link
-          >
+            <router-link
+              :to="'creditCommiteeTask/' + item.id"
+              tag="td"
+              class="text-left number applicationRow"
+            >{{ item.modifiedDate }}</router-link>
 
-          <td class="text-left print">
-            <div class="text-blue q-gutter-md">
-              <router-link
-                to="/work/credit/registration"
-                tag="span"
-                class="icon"
-              >
-                <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
-                <q-icon name="print" size="md" />
-                <!--  -->
-                <q-tooltip anchor="bottom left" self="top left">
-                  Распечатать файл
-                </q-tooltip>
-              </router-link>
+            <td class="text-left print">
+              <div class="text-blue q-gutter-md">
+                <router-link to="/work/credit/registration" tag="span" class="icon">
+                  <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
+                  <q-icon name="print" size="md" />
+                  <!--  -->
+                  <q-tooltip anchor="bottom left" self="top left">Распечатать файл</q-tooltip>
+                </router-link>
 
-              <router-link
-                to="/work/credit/registration"
-                tag="span"
-                class="icon"
-              >
-                <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
-                <q-icon name="cloud_download" size="md" />
-                <!--  -->
-                <q-tooltip anchor="bottom left" self="top left">
-                  Скачать файл
-                </q-tooltip>
-              </router-link>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </q-markup-table>
-  </div>
+                <router-link to="/work/credit/registration" tag="span" class="icon">
+                  <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
+                  <q-icon name="cloud_download" size="md" />
+                  <!--  -->
+                  <q-tooltip anchor="bottom left" self="top left">Скачать файл</q-tooltip>
+                </router-link>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </q-markup-table>
+    </div>
   </div>
 </template>
 
 <script>
-import Loader from '../../../../../../../../components/Loader'
+import Loader from "@/components/Loader";
 
 export default {
   props: ["tasks"],
@@ -366,7 +316,6 @@ export default {
     };
   },
   async created() {
-
     try {
       
       await this.$store.dispatch("authBpm")

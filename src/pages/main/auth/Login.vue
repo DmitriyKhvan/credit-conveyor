@@ -140,10 +140,10 @@
   </q-layout>
 </template>
 <script>
-import { AuthService } from "../../../services/auth.service";
+import { AuthService } from "@/services/auth.service";
 import { required, minLength, between } from "vuelidate/lib/validators";
-import NotifyService from "../../../services/notify.service";
-import TokenService from "../../../services/storage.service";
+import NotifyService from "@/services/notify.service";
+import TokenService from "@/services/storage.service";
 
 export default {
   name: "names",
