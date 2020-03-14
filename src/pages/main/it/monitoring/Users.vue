@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import StructureBank from "./../../../../components/StructureBank";
-import UserCard from "./../../../../components/UserCard";
-import ApiService from "../../../../services/api.service";
+import StructureBank from "@/components/StructureBank";
+import UserCard from "@/components/UserCard";
+import ApiService from "@/services/api.service";
 
 export default {
   name: "SelectUser",

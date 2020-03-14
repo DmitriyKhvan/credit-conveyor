@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import GridTable from "./../../../../../components/GridTable";
+import GridTable from "@/components/GridTable";
 import AddEditDeviceDetail from "./dialogs/AddEditDeviceDetail";
 
 import { Dialog } from "quasar";
-import ApiService from "./../../../../../services/api.service";
-import NotifyService from "./../../../../../services/notify.service";
-import GridService from "./../../../../../services/grid.service";
+import ApiService from "@/services/api.service";
+import NotifyService from "@/services/notify.service";
+import GridService from "@/services/grid.service";
 
 export default {
   created() {},

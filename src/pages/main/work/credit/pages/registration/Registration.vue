@@ -1,6 +1,6 @@
 <template>
   <div>
-    <appLoader v-if="loaderForm"/>
+    <appLoader v-if="loaderForm" />
 
     <div v-else class="q-pa-md row justify-center">
       <form @submit.prevent.stop="onSubmit" style="width: 70%">
@@ -113,22 +113,15 @@
                 </div>
 
                 <div class="col-5 row content-between justify-end">
-                  <div
-                    v-if="personalData.personPhoto"
-                    class="personPhoto_block"
-                  >
+                  <div v-if="personalData.personPhoto" class="personPhoto_block">
                     <img
                       :src="'data:image/png;base64,' + personalData.personPhoto"
-                      alt=""
+                      alt
                       class="personPhoto"
                     />
                   </div>
                   <div v-else class="default_personPhoto_block">
-                    <img
-                      src="../../../../../../../../assets/images/default-avatar.png"
-                      alt=""
-                      class="default_personPhoto"
-                    />
+                    <img src="~assets/images/default-avatar.png" alt class="default_personPhoto" />
                   </div>
                 </div>
               </div>
@@ -157,7 +150,7 @@
                   />
                 </div>
 
-                <div class=" creditContent" ref="creditContent">
+                <div class="creditContent" ref="creditContent">
                   <q-select
                     square
                     outlined
@@ -210,9 +203,7 @@
 
             <!-- Expense/income -->
             <div class="expense-income tab">
-              <h4 class="tab-title" ref="expenseIncome">
-                Ежемесячные расходы/доходы
-              </h4>
+              <h4 class="tab-title" ref="expenseIncome">Ежемесячные расходы/доходы</h4>
               <div class="tab-content" ref="tabContent">
                 <q-input
                   ref="income"
@@ -301,16 +292,15 @@
       <!-- Pre-Approval -->
       <app-pre-approval></app-pre-approval>
     </div>
-
   </div>
 </template>
 <script>
 // import Vue from "vue";
-import CommonUtils from "../../../../../../../../shared/utils/CommonUtils"
+import CommonUtils from "@/shared/utils/CommonUtils";
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
-import Loader from '../../../../../../../../components/Loader'
+import Loader from "@/components/Loader";
 
 // Vue.config.errorHandler = function(err, vm, info) {
 //   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
@@ -320,7 +310,7 @@ export default {
   data() {
     return {
       loader: true,
-      loaderForm: true,
+      loaderForm: false,
       options: {
         family: [
           "Женат",
@@ -354,30 +344,27 @@ export default {
   },
   async created() {
     try {
-      
-      const auth = await this.$store.dispatch("authBpm")
-      console.log('auth', auth)
-      const process = await this.$store.dispatch("startProcess")
-      console.log('process', process) 
+      const auth = await this.$store.dispatch("authBpm");
+      console.log("auth", auth);
+      const process = await this.$store.dispatch("startProcess");
+      console.log("process", process);
       this.loaderForm = false;
-
     } catch (error) {
-      CommonUtils.filterServerError(error)
+      CommonUtils.filterServerError(error);
       //console.log("Errror!", error)
-      this.$router.push('errorPage')
+      this.$router.push("errorPage");
       sessionStorage.removeItem("csrf_token");
-      this.loaderForm = false
+      this.loaderForm = false;
     }
 
     try {
-      const scannerSerial = await this.$store.dispatch("getDigIdNumber")
+      const scannerSerial = await this.$store.dispatch("getDigIdNumber");
       this.$store.commit("sentScannerSerialNumber", scannerSerial);
       this.loader = false;
     } catch (err) {
-      console.log(err.response)
+      console.log(err.response);
       this.loader = false;
     }
-
   },
   computed: {
     loadMessage() {

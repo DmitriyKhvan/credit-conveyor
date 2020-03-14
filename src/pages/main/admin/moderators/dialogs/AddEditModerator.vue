@@ -98,11 +98,11 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../../services/notify.service";
-import dialogMix from "./../../../../../shared/mixins/dialogMix";
-import ApiService from "./../../../../../services/api.service";
-import CommonUtils from "../../../../../shared/utils/CommonUtils";
-import GridDialog from "./../../../../../components/GridDialog";
+import NotifyService from "@/services/notify.service";
+import dialogMix from "@/shared/mixins/dialogMix";
+import ApiService from "@/services/api.service";
+import CommonUtils from "@/shared/utils/CommonUtils";
+import GridDialog from "@/components/GridDialog";
 
 import {
   required,

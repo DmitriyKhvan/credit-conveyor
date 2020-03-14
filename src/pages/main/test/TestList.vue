@@ -11,29 +11,25 @@
               :key="topic.id"
               @click="getIdTopic(topic.id, topic.name, $event.target)"
               class="topic"
-            >
-              {{ topic.name }}
-            </li>
+            >{{ topic.name }}</li>
           </ul>
         </div>
         <!-- <div class="col-6"></div> -->
       </div>
       <!-- <router-link v-if="topicId" :to="'topic/' + topicId">
         <q-btn color="green" label="Начать тест"></q-btn>
-      </router-link> -->
+      </router-link>-->
       <q-btn
         color="green"
         label="Начать тест"
         :disabled="disabled"
         @click="() => this.$router.push('topic/' + topicId)"
-      >
-      </q-btn>
+      ></q-btn>
     </div>
   </div>
 </template>
 <script>
-import ApiService from "./../../../../../../services/api.service";
-
+import ApiService from "@/services/api.service";
 export default {
   data() {
     return {

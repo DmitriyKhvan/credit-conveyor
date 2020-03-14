@@ -20,25 +20,17 @@
           :class="{ answered: test.answered }"
         />
         <!-- <q-tab name="alarms" label="Alarms" />
-          <q-tab name="movies" label="Movies" /> -->
+        <q-tab name="movies" label="Movies" />-->
       </q-tabs>
 
       <q-separator />
 
-      <q-tab-panels
-        v-for="(test, index) of topic.questions"
-        :key="test.id"
-        v-model="tab"
-      >
+      <q-tab-panels v-for="(test, index) of topic.questions" :key="test.id" v-model="tab">
         <q-tab-panel :name="index">
           <div class="text-h6">{{ test.question_text }}</div>
 
           <!-- <q-form @submit="onSubmit(1)" class="q-gutter-md"> -->
-          <q-item
-            tag="label"
-            v-for="variant of test.variants"
-            :key="variant.id"
-          >
+          <q-item tag="label" v-for="variant of test.variants" :key="variant.id">
             <q-item-section avatar>
               <q-radio
                 name="shape"
@@ -63,7 +55,7 @@
 
           <!-- <div>
               <q-btn label="Submit" type="submit" color="primary" />
-            </div> -->
+          </div>-->
           <!-- </q-form> -->
           {{ timeCurQuestion }}
         </q-tab-panel>
@@ -85,17 +77,12 @@
         :disabled="nextDisabled"
         class="q-ml-sm"
       />
-      <q-btn
-        label="Завершить тест"
-        color="primary"
-        @click="completeTest()"
-        class="q-ml-sm"
-      />
+      <q-btn label="Завершить тест" color="primary" @click="completeTest()" class="q-ml-sm" />
     </div>
   </div>
 </template>
 <script>
-import ApiService from "./../../../../../../services/api.service";
+import ApiService from "@/services/api.service";
 
 export default {
   data() {

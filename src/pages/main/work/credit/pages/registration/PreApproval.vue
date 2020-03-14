@@ -2,13 +2,15 @@
   <div>
     <q-dialog v-model="confirm" persistent>
       <q-card class="preApprovalBlock">
-        <q-card-section class="column  items-start">
+        <q-card-section class="column items-start">
           <div class="text-h6">Заявка на кредит</div>
           <div class="creditBackground">
-            <h4 class="personName">{{`${personalData.surname} ${personalData.name} ${personalData.mname}`}}</h4>
+            <h4
+              class="personName"
+            >{{`${personalData.surname} ${personalData.name} ${personalData.mname}`}}</h4>
             <table class="creditTable" align="center">
               <tr>
-                <td>Eжемесячный доход </td>
+                <td>Eжемесячный доход</td>
                 <td>{{ personalData.income | formatNumber}} сум</td>
               </tr>
               <tr>
@@ -35,33 +37,45 @@
                     :value="!!selection.length"
                     :rules="[val => !!val || 'выберите причину']"
                   >
-
-                  <div class="col-6">
-                    <q-checkbox v-model="selection" val="не устроила ставка" label="не устроила ставка"/>
-                    <q-checkbox v-model="selection" val="не устроил срок кредита" label="не устроил срок кредита"/>
-                    <q-checkbox v-model="selection" val="не устроила сумма" label="не устроила сумма"/>
-                  </div>
-                  <div class="col-6">
-                    <q-checkbox v-model="selection" val="изменились планы" label="изменились планы"/>
-                    <q-checkbox v-model="selection" val="не устраивает размер платежа" label="не устраивает размер платежа"/>
-                  </div>
+                    <div class="col-6">
+                      <q-checkbox
+                        v-model="selection"
+                        val="не устроила ставка"
+                        label="не устроила ставка"
+                      />
+                      <q-checkbox
+                        v-model="selection"
+                        val="не устроил срок кредита"
+                        label="не устроил срок кредита"
+                      />
+                      <q-checkbox
+                        v-model="selection"
+                        val="не устроила сумма"
+                        label="не устроила сумма"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-checkbox
+                        v-model="selection"
+                        val="изменились планы"
+                        label="изменились планы"
+                      />
+                      <q-checkbox
+                        v-model="selection"
+                        val="не устраивает размер платежа"
+                        label="не устраивает размер платежа"
+                      />
+                    </div>
                   </q-field>
                 </div>
 
                 <q-card-actions class="row justify-center">
-                  <q-btn
-                    label="Продолжить"
-                    color="green"
-                   
-                    type="submit"
-                  />
+                  <q-btn label="Продолжить" color="green" type="submit" />
                 </q-card-actions>
               </form>
             </div>
 
-            <q-card-actions 
-              v-if="!failureCreditReason"
-              class="row justify-center">
+            <q-card-actions v-if="!failureCreditReason" class="row justify-center">
               <q-btn
                 label="Отправить заявку"
                 color="green"
@@ -76,7 +90,6 @@
                 @click="() => {failureCreditReason = true}"
               />
             </q-card-actions>
-                
           </div>
         </q-card-section>
       </q-card>
@@ -84,7 +97,7 @@
   </div>
 </template>
 <script>
-import formatNumber from '../../filters/format_number.js';
+import formatNumber from "../../filters/format_number.js";
 
 export default {
   data() {
@@ -92,7 +105,7 @@ export default {
       failureCreditReason: false,
       selection: [],
       model: false
-    }
+    };
   },
   // created() {
   //   console.log(this.$store.state.credits.confirm)
@@ -114,35 +127,34 @@ export default {
   methods: {
     successCredit(val) {
       console.log("successCredit");
-      this.$store.commit('toggleConfirm', val);
-      this.$router.push('profile');
-      
+      this.$store.commit("toggleConfirm", val);
+      this.$router.push("profile");
     },
     failureCredit(val) {
       console.log("failureCredit", this.selection);
-      this.$store.commit('resetPersonData')
-      this.$store.commit('toggleDisableInput', val)
-      this.$store.commit('toggleConfirm', val)
-      this.$router.push("/work/credit")
+      this.$store.commit("resetPersonData");
+      this.$store.commit("toggleDisableInput", val);
+      this.$store.commit("toggleConfirm", val);
+      this.$router.push("/work/credit");
     },
 
     onSubmit() {
-      console.log('selection ', this.selection)
-      this.$refs.toggle.validate()
-      console.log('ddd', this.$refs.toggle.hasError)
+      console.log("selection ", this.selection);
+      this.$refs.toggle.validate();
+      console.log("ddd", this.$refs.toggle.hasError);
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
-        console.log('unvalid')
+        console.log("unvalid");
 
         console.log("failureCredit", this.selection);
-        this.$store.commit('toggleConfirm', true)
+        this.$store.commit("toggleConfirm", true);
       } else {
-        console.log("valid")
+        console.log("valid");
         console.log("failureCredit", this.selection);
-        this.$store.commit('resetPersonData')
-        this.$store.commit('toggleDisableInput', false)
-        this.$store.commit('toggleConfirm', false)
-        this.$router.push("/work/credit")
+        this.$store.commit("resetPersonData");
+        this.$store.commit("toggleDisableInput", false);
+        this.$store.commit("toggleConfirm", false);
+        this.$router.push("/work/credit");
       }
     }
   },
@@ -150,7 +162,7 @@ export default {
   filters: {
     formatNumber
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .preApprovalBlock {
@@ -169,8 +181,8 @@ export default {
     .creditBackground {
       padding-bottom: 12px;
       width: 100%;
-      background: url(../../../../../../../../assets/images/credit/ornament.png) no-repeat 0 0;
-
+      background: url("~assets/images/credit/ornament.png") no-repeat 0 0;
+      //assets/images/credit/ornament.png
       .personName {
         margin: 15px 0 0 0;
         text-align: center;
@@ -189,26 +201,25 @@ export default {
         td:nth-child(odd) {
           color: #acacac;
         }
-        
+
         td:nth-child(even) {
           color: #5bb85d;
         }
       }
 
-      &::before{
+      &::before {
         content: "";
         display: block;
         height: 1px;
         background: #acacac;
       }
     }
-    
   }
 }
 
 .q-btn--rectangle {
-    margin: 0 10px;
-    border-radius: 0;
-    width: 35%;
-  }
+  margin: 0 10px;
+  border-radius: 0;
+  width: 35%;
+}
 </style>
