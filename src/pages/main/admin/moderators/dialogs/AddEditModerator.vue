@@ -13,7 +13,7 @@
       <q-card-section>
         <div class="q-gutter-y-sm q-gutter-x-md column">
           <div class="row">
-            <!-- select mark of device -->
+            <!-- select user -->
             <q-input
               outlined
               dense
@@ -31,23 +31,24 @@
               <template v-slot:hint>Double Click</template>
             </q-input>
             <!--  -->
-            <q-select
-              dense
+            <!-- select user -->
+            <q-input
               outlined
-              clearable
-              :readonly="roleReadOnly"
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.role_id"
-              :options="rolesModList"
-              option-value="value"
-              option-label="text"
-              emit-value
-              map-options
-              label="Role"
-              :rules="[]"
+              dense
+              class="col-xs-12 col-sm-12 col-md-6"
+              label="Menu"
+              :value="menuName"
+              @dblclick="selectMenu()"
+              readonly="readonly"
+              :rules="[
+                val =>
+                  $v.details.emp_id.required || 'Menu is required'
+              ]"
               lazy-rules
-            />
+            >
+              <template v-slot:hint>Double Click</template>
+            </q-input>
+            <!--  -->
           </div>
           <div class="row">
             <q-select
@@ -126,12 +127,11 @@ export default {
       branchList: [],
       userInfo: null,
       userName: null,
-      rolesModList: [],
-      roleReadOnly: true,
+      menuName: null,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
-        emp_id: null,
+        menu_id: null,
         role_id: null,
         branch_code: null,
         filial_code: null
@@ -166,6 +166,30 @@ export default {
           //rowsNumber: 4 // if getting data from a server
         },
         filterColumn: []
+      },
+      selectMenuProps: {
+        caption: this.$t("tables.menus._self"),
+        tablePath: "menus",
+        rowId: "menu_id", //
+        defaultSort: [],
+        excludedColumns: [
+          "name",
+          "status",
+          "created_by",
+          "creation_date",
+          "updated_by",
+          "update_date"
+        ],
+        excludeSortingColoumns: [],
+        selectMode: "single",
+        paginationConfig: {
+          sortBy: "parent_id",
+          descending: false,
+          page: 1,
+          rowsPerPage: 5
+          //rowsNumber: 4 // if getting data from a server
+        },
+        filterColumn: []
       }
     };
   },
@@ -173,7 +197,7 @@ export default {
     details: {
       id: {},
       role_id: { required },
-      emp_id: {
+      menu_id: {
         required
       },
       branch_code: {
@@ -203,6 +227,7 @@ export default {
             value: val.CODE
           };
         });
+
         this.branchList = x[0].data[0].children;
         if (this.details.branch_code) {
           // when edit case initializes deviceFilials array
@@ -214,10 +239,18 @@ export default {
                   value: val.CODE
                 };
               });
+              this.deviceFilials = [
+                { text: "All", value: "0" },
+                ...this.deviceFilials
+              ];
             }
           });
         }
         // --
+        this.deviceBranches = [
+          { text: "All", value: "0" },
+          ...this.deviceBranches
+        ];
       })
       .catch(error => {
         console.log(error);
@@ -229,9 +262,10 @@ export default {
       if (!!this.data.selectedRow) {
         console.log(this.data.selectedRow);
         this.details = this.data.selectedRow[0];
-        this.userName = this.data.selectedRow[0].name;
         let emp_id = this.data.selectedRow[0].emp_id;
-        this.onSelectUser(emp_id);
+        this.userName = this.data.selectedRow[0].name;
+        let menu_id = this.data.selectedRow[0].menu_id;
+        this.menuName = this.data.selectedRow[0].name[1]; //select name with lang code
       }
     },
     selectBranch() {
@@ -239,6 +273,7 @@ export default {
     },
     selected(parentCode) {
       this.details.filial_code = null;
+      this.deviceFilials = [];
       this.branchList.forEach(element => {
         if (element.CODE == parentCode) {
           this.deviceFilials = element.children.map(val => {
@@ -247,23 +282,12 @@ export default {
               value: val.CODE
             };
           });
+          this.deviceFilials = [
+            { text: "All", value: "0" },
+            ...this.deviceFilials
+          ];
         }
       });
-    },
-    async onSelectUser(emp_id) {
-      let temp = (await this.getRoleModsList(emp_id)).data.value;
-      // rolemodelist
-      temp = temp.filter(role => {
-        return role.mod_available == 0;
-      });
-      this.rolesModList = temp.map(val => {
-        return {
-          text: val.name,
-          value: val.role_id
-        };
-      });
-      //TODO remove existing ones
-      this.roleReadOnly = false;
     },
     selectUser() {
       let tempData = null;
@@ -279,14 +303,44 @@ export default {
         .onOk(res => {
           this.userName = res[0].name;
           this.details.emp_id = res[0].emp_id;
-          this.onSelectUser(this.details.emp_id);
         })
         .onCancel(() => {
           console.log("Cancel");
         });
     },
-    getRoleModsList(emp_id) {
-      return ApiService.get(`roles/user?id=${emp_id}`);
+    selectMenu() {
+      if (!!this.details.emp_id) {
+        this.$q
+          .dialog({
+            component: GridDialog,
+            parent: this,
+            data: this.selectMenuProps
+          })
+          .onOk(res => {
+            console.log(res[0]);
+            this.menuName = res[0].name[1]; // menu by lang#
+            this.details.menu_id = res[0].menu_id;
+          })
+          .onCancel(() => {
+            console.log("Cancel");
+          });
+      } else {
+        this.$q
+          .dialog({
+            dark: true,
+            title: "Alert",
+            message: "Choose the User first !!!"
+          })
+          .onOk(() => {
+            // console.log('OK')
+          })
+          .onCancel(() => {
+            // console.log('Cancel')
+          })
+          .onDismiss(() => {
+            // console.log('I am triggered on both OK and Cancel')
+          });
+      }
     }
   }
 };

@@ -27,7 +27,7 @@ export default {
         excludedColumns: [
           "id",
           "emp_id",
-          "role_id",
+          "menu_id",
           "branch_code",
           "filial_code"
         ],
