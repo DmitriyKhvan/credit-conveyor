@@ -125,7 +125,6 @@ export default {
       deviceBranches: [],
       deviceFilials: [],
       branchList: [],
-      userInfo: null,
       userName: null,
       menuName: null,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
@@ -169,7 +168,7 @@ export default {
       },
       selectMenuProps: {
         caption: this.$t("tables.menus._self"),
-        tablePath: "menus",
+        tablePath: "menus/user",
         rowId: "menu_id", //
         defaultSort: [],
         excludedColumns: [
@@ -183,7 +182,7 @@ export default {
         excludeSortingColoumns: [],
         selectMode: "single",
         paginationConfig: {
-          sortBy: "parent_id",
+          sortBy: "url",
           descending: false,
           page: 1,
           rowsPerPage: 5
@@ -239,6 +238,7 @@ export default {
                   value: val.CODE
                 };
               });
+              // adding extra All option to filials
               this.deviceFilials = [
                 { text: "All", value: "0" },
                 ...this.deviceFilials
@@ -246,7 +246,7 @@ export default {
             }
           });
         }
-        // --
+        // --adding extra All option to branches
         this.deviceBranches = [
           { text: "All", value: "0" },
           ...this.deviceBranches
@@ -260,12 +260,11 @@ export default {
   methods: {
     initializeData() {
       if (!!this.data.selectedRow) {
-        console.log(this.data.selectedRow);
         this.details = this.data.selectedRow[0];
         let emp_id = this.data.selectedRow[0].emp_id;
         this.userName = this.data.selectedRow[0].name;
         let menu_id = this.data.selectedRow[0].menu_id;
-        this.menuName = this.data.selectedRow[0].name[1]; //select name with lang code
+        this.menuName = this.data.selectedRow[0].menu_name; //select menu name
       }
     },
     selectBranch() {
@@ -290,10 +289,6 @@ export default {
       });
     },
     selectUser() {
-      let tempData = null;
-      if (!!this.data.selectedRow) {
-        tempData = this.userInfo.data;
-      }
       this.$q
         .dialog({
           component: GridDialog,
@@ -303,6 +298,7 @@ export default {
         .onOk(res => {
           this.userName = res[0].name;
           this.details.emp_id = res[0].emp_id;
+          this.selectMenuProps.tablePath = `menus/user?id=${res[0].emp_id}`;
         })
         .onCancel(() => {
           console.log("Cancel");
@@ -310,6 +306,7 @@ export default {
     },
     selectMenu() {
       if (!!this.details.emp_id) {
+        console.log(this.selectMenuProps);
         this.$q
           .dialog({
             component: GridDialog,
