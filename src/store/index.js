@@ -22,6 +22,8 @@ import profile from './categorized/profile';
 
 import education from './categorized/education';
 
+import birthdays from './birthdays'
+
 
 Vue.use(Vuex);
 
@@ -35,7 +37,8 @@ const store = new Vuex.Store({
     common,
     credits,
     profile,
-    education
+    education,
+    birthdays
   },
 
   // enable strict mode (adds overhead!)
