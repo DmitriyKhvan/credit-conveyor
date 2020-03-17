@@ -12,7 +12,7 @@
       <q-card-section>
         <div class="row">
           <div class="col-9">
-            <structure-bank @selectUser="selectUser" />
+            <structure-bank v-bind:view="'dialog'" @selectUser="selectUser" />
           </div>
           <div class="col-3">
             <div style="height: 50vh; width: 100%;">

@@ -3,7 +3,7 @@
     <q-card-section>
       <div class="row">
         <div class="col-9">
-          <structure-bank @selectUser="selectUser" />
+          <structure-bank :view="'dialog'" @selectUser="selectUser" />
         </div>
         <div class="col-3">
           <div style="width: 100%;">

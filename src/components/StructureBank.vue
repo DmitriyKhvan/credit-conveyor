@@ -3,7 +3,36 @@
     <div class="row q-gutter-sm">
       <!-- select box branches-->
 
-      <div class="col-2">
+      <div :class="view && view==='dialog' ? 'col-4' : 'col-2'">
+        <div class="row filter">
+          <div class="col-12">
+            <span class="white_span">
+              <q-icon name="tune" class="icon" />
+              Фильтр
+            </span>
+            <q-form
+              class="q-gutter-none"
+            >
+              <q-input
+                dense
+                square 
+                outlined
+                v-model="name"
+                label="Имя Фамилия персонала"
+                class="white"
+              />
+              <q-select
+                dense 
+                outlined 
+                square
+                v-model="model" 
+                :options="options" 
+                label="Отделения"
+                class="white" 
+              />
+            </q-form>
+          </div>
+        </div>
         <div class="row q-gutter-sm">
           <div class="col-12">
             <q-select
@@ -20,8 +49,8 @@
               dense
             />
           </div>
-          <div class="col-12" style="height: 83vh;">
-            <q-scroll-area style="height: 750px;">
+          <div class="col-12" style="">
+            <q-scroll-area :style="{height: heightEl}">
               <q-list bordered separator v-if="selectedBranch">
                 <q-item
                   clickable
@@ -41,7 +70,7 @@
       <!-- -->
 
       <div class="col test" style="background: #F2F4F4">
-        <q-scroll-area style="height: 850px;">
+        <q-scroll-area :style="{height: heightElRight}">
           <q-tree
             :nodes="filials"
             node-key="CODE"
@@ -58,14 +87,15 @@
             <template v-slot:default-body="prop">
               <div class="row">
                 <div
-                  class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+                  :class="view && view === 'dialog' ? 'userRowMin': 'userRow'"
                   v-for="(item, index) in prop.node.emps"
                   :key="index"
                 >
-                  <q-card @click="emitUser(item)" style="cursor: pointer">
-                    <user-card :itemData="item" />
+                  <q-card @click="emitUser(item)" style="cursor: pointer"  class="userBlock">
+                    <user-card :itemData="item" :view="(view === 'dialog') ? 'dialog': ''" />
                   </q-card>
                 </div>
+                
               </div>
             </template>
           </q-tree>
@@ -79,6 +109,8 @@ import ApiService from "./../services/api.service";
 import CommonUtils from "./../shared/utils/CommonUtils";
 import UserService from "./../services/user.service";
 import UserCard from "./../components/UserCard";
+import { dom } from 'quasar'
+const { height } = dom
 
 export default {
   components: {
@@ -90,10 +122,21 @@ export default {
       mail: "mailto:",
       selectedBranch: null,
       branches: [],
-      filials: []
+      filials: [],
+      name: '',
+      model: null,
+      options: [
+        'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
+      ],
+      heightEl: '',
+      heightElRight: ''
     };
   },
-  props: {},
+  props: {
+    view: {
+      type: String
+    }
+  },
   created() {
     Promise.all([this.getBranches()])
       .then(x => {
@@ -103,6 +146,16 @@ export default {
         console.error(error);
         throw error;
       });
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.heightEl = height(eee)-330+'px'
+      this.heightElRight = height(eee)-100+'px'
+      window.onresize = () => {
+        this.heightEl = height(eee)-330+'px'
+        this.heightElRight = height(eee)-100+'px'
+      }
+    })
   },
   methods: {
     emitUser(item) {
@@ -137,12 +190,38 @@ export default {
 .row > div
   padding: 10px 10px 2px 5px
 
-.row + .row
-  margin-top: 1rem
-
 .test
   border: 1px solid rgba(39, 55, 70,.4)
 
+.filter > div
+  padding: 15px 15px 20px
+  background: #0060d3 url('./../assets/images/uzor-white.png') no-repeat right bottom
+
+.white_span
+  color:#fff
+  padding: 0 0 10px 0
+  display: block
+
+.white 
+  background: #fff;
+  margin-bottom: 10px
+
+.icon 
+  font-size: 1.5rem
+  color:#fff
+
 .underline
   text-decoration: underline
+
+.userBlock, .userRowMin 
+  width: 300px
+  height: 170px
+  overflow: hidden
+
+.userRowMin
+  height: 105px
+
+.userRow 
+  float: left
+
 </style>
