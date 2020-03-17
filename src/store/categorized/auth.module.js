@@ -16,7 +16,8 @@ const state = {
   userId: null,
   empId: null,
   fullName: null,
-  userRoles: []
+  userRoles: [],
+  moderatorsList: []
 };
 
 /**
@@ -63,6 +64,9 @@ const getters = {
   },
   userRoles: state => {
     return state.userRoles
+  },
+  moderatorsList: state => {
+    return state.moderatorsList
   }
 };
 
@@ -125,6 +129,11 @@ const actions = {
     commit
   }, roles) {
     commit("setUserRoles", roles);
+  },
+  setModeratorsList({
+    commit
+  }, moderatorsList) {
+    commit("moderatorsList", moderatorsList);
   }
 };
 
@@ -175,6 +184,9 @@ const mutations = {
   },
   setUserRoles(state, userRoles) {
     state.userRoles = userRoles;
+  },
+  setModeratorsList(state, moderatorsList) {
+    state.moderatorsList = moderatorsList;
   }
 
 };

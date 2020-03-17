@@ -23,7 +23,7 @@ export default {
         rowId: "menu_id",
         addEdit: "menus", // url
         delete: "menus", //
-        defaultSort: [], // TODO
+        defaultSort: [],
         excludedColumns: [
           "name",
           "status",

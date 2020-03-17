@@ -22,9 +22,12 @@ const DictService = {
         let userList = await this.userList();
         store.dispatch("dicts/setUserList", userList);
         let testTopicList = await this.testTopicList();
-        store.dispatch("dicts/setTestTopicList", testTopicList); // 
+        store.dispatch("dicts/setTestTopicList", testTopicList); //
         let receivedNotifications = await this.receivedNotifications();
         store.dispatch("dicts/setReceivedNotifications", receivedNotifications);
+        let moderatorsList = await this.moderatorsList();
+        store.dispatch("auth/setModeratorsList", moderatorsList);
+
         store.dispatch("dicts/setIsAllSet", true);
         resolve(true)
 
@@ -129,6 +132,21 @@ const DictService = {
       let uid = store.getters["auth/userId"];
       ApiService.get(`chat/notifications/${uid}`)
         .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  moderatorsList() {
+    return new Promise((resolve, reject) => {
+      let emp_id = store.getters["auth/empId"];
+
+      ApiService.get(`roles/moderator?id=${emp_id}`)
+        .then(res => {
+          console.log(res.data)
           resolve(res.data);
         })
         .catch(err => {
