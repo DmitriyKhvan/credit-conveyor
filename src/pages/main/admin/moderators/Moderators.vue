@@ -14,7 +14,9 @@ import NotifyService from "@/services/notify.service";
 import GridService from "@/services/grid.service";
 
 export default {
-  created() {},
+  created() {
+    console.log(this.$store.getters["auth/moderatorsList"]);
+  },
   data() {
     return {
       props: {
