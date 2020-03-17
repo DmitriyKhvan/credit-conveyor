@@ -1,5 +1,6 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+let path = require('path')
 
 module.exports = function (ctx) {
   return {
@@ -7,7 +8,7 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ["i18n", "axios", "notify-defaults", "calendar", "vuelidate"],
+    boot: ["i18n", "axios", "notify-defaults", "calendar", "vuelidate", "vuehtml"],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass"],
@@ -85,6 +86,10 @@ module.exports = function (ctx) {
           //   formatter: require('eslint').CLIEngine.getFormatter('stylish')
           // }
         });
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias,
+          '@': path.resolve(__dirname, './src')
+        }
       }
     },
 

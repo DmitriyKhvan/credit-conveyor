@@ -1,50 +1,50 @@
 const MainContainer = () => import("layouts/Main");
 const LoginPage = () => import("pages/main/auth/Login");
 const HomePage = () => import("pages/main/home/Home");
-const Page404 = () => import("pages/Error404");
+const Page404 = () => import("pages/extras/Error404");
 
 // Admin
 const AdminPage = () => import("pages/main/admin/admin");
 const Users = () => import("pages/main/admin/users/Users");
 const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
+const Moderators = () => import("pages/main/admin/moderators/Moderators");
 const Dictionaries = () => import("pages/main/admin/dictionaries/Dictionaries");
 const SelfDevPage = () => import("pages/main/admin/self_dev/Index");
 
 // Work
 const WorkPage = () => import("pages/main/work/Work");
 const Assistant = () =>
-  import("pages/main/work/modules/pages/assistant/Assistant.vue");
+  import("pages/main/work/assistant/Assistant.vue");
 const Chancellary = () =>
-  import("pages/main/work/modules/pages/kanselariya/Index.vue");
+  import("pages/main/work/kanselariya/Index.vue");
 const ChanReg = () =>
   import(
-    "pages/main/work/modules/pages/kanselariya/modules/pages/registration/index.vue"
+    "pages/main/work/kanselariya/modules/pages/registration/index.vue"
   );
-const Tasks = () => import("pages/main/work/modules/pages/task/index.vue");
+const Tasks = () => import("pages/main/work/task/index.vue");
 const TasksList = () =>
-  import("pages/main/work/modules/pages/task/modules/pages/tasklist/List");
+  import("pages/main/work/task/modules/pages/tasklist/List");
 
 // Credit
-const Credit = () => import("pages/main/work/modules/pages/credit/Credit");
-const ErrorPage = () =>
-  import("pages/main/work/modules/pages/credit/ErrorPage");
+const Credit = () => import("pages/main/work/credit/Credit");
+
 const CreditReg = () =>
   import(
-    "pages/main/work/modules/pages/credit/pages/registration/Registration.vue"
+    "pages/main/work/credit/pages/registration/Registration.vue"
   );
 const CreditProfile = () =>
-  import("pages/main/work/modules/pages/credit/pages/profile/Profile.vue");
+  import("pages/main/work/credit/pages/profile/Profile.vue");
 const CreditApplications = () =>
-  import("pages/main/work/modules/pages/credit/pages/list/Applications.vue");
+  import("pages/main/work/credit/pages/list/Applications.vue");
 const CreditTasks = () =>
-  import("pages/main/work/modules/pages/credit/pages/list/Tasks.vue");
+  import("pages/main/work/credit/pages/list/Tasks.vue");
 const CreditTask = () =>
-  import("pages/main/work/modules/pages/credit/pages/list/Task.vue");
+  import("pages/main/work/credit/pages/list/Task.vue");
 
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
-const Phones = () => import("pages/main/tools/modules/pages/phones/phones");
+const Phones = () => import("pages/main/tools/phones/phones");
 
 const It = () => import("pages/main/it/It");
 const Devices = () => import("pages/main/it/devices/Devices");
@@ -56,23 +56,20 @@ const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
 const QuestionPage = () =>
   import("pages/main/admin/self_dev/questions/Questions");
 const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
-const MonitoringPage = () =>
-  import("pages/main/admin/modules/self_dev/pages/addEditMonitoringPage");
+const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 
-const TestList = () =>
-  import("pages/main/work/modules/pages/test/TestList.vue");
-const Topic = () => import("pages/main/work/modules/pages/test/Topic.vue");
-const CompleteTest = () =>
-  import("pages/main/work/modules/pages/test/CompleteTest.vue");
+const TestList = () => import("pages/main/test/TestList.vue");
+const Topic = () => import("pages/main/test/Topic.vue");
+const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
   if (sessionStorage.getItem("csrf_token")) {
-    next()
-    return
+    next();
+    return;
   }
-  next('/work/credit')
-}
+  next("/work/credit");
+};
 
 const routes = [{
     path: "/",
@@ -131,9 +128,9 @@ const routes = [{
                 component: CreditTasks
               },
               {
-                path: "task/:id",
+                path: "sub/task/:id",
                 name: "CreditTask",
-                component: CreditTask,
+                component: CreditTask
                 //beforeEnter: ifAuthenticated,
               },
               {
@@ -142,19 +139,13 @@ const routes = [{
                 component: CreditReg
               },
               {
-                path: "profile",
+                path: "sub/profile",
                 name: "Profile",
                 component: CreditProfile,
-                beforeEnter: ifAuthenticated,
-              },
-              {
-                path: "errorPage",
-                name: "errorPage",
-                component: ErrorPage,
-                //beforeEnter: ifAuthenticated,
+                //beforeEnter: ifAuthenticated
               }
             ]
-          },
+          }
         ]
       },
       {
@@ -175,6 +166,11 @@ const routes = [{
             path: "menus",
             name: "Menus List",
             component: Menus
+          },
+          {
+            path: "moderator",
+            name: "Moderators",
+            component: Moderators
           },
           {
             path: "dictionaries",

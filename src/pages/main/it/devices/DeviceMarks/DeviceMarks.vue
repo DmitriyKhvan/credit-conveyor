@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import GridTable from "./../../../../../components/GridTable";
+import GridTable from "@/components/GridTable";
 import AddEditDeviceMark from "./dialogs/AddEditDeviceMark";
 
 import { Dialog } from "quasar";
-import ApiService from "./../../../../../services/api.service";
-import NotifyService from "./../../../../../services/notify.service";
-import GridService from "./../../../../../services/grid.service";
+import ApiService from "@/services/api.service";
+import NotifyService from "@/services/notify.service";
+import GridService from "@/services/grid.service";
 
 export default {
   created() {},
@@ -25,6 +25,7 @@ export default {
         delete: "devices/mark", //
         defaultSort: [], // TODO
         excludedColumns: [
+          "id",
           "created_by",
           "creation_date",
           "updated_by",

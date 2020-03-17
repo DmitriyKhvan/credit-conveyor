@@ -100,7 +100,7 @@
               label="Icon Class Name"
               :rules="[]"
               lazy-rules
-            /> -->
+            />-->
             <q-input
               outlined
               clearable
@@ -170,12 +170,7 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn
-          color="primary"
-          :disable="$v.details.$invalid"
-          label="Submit"
-          @click="submitForm"
-        >
+        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -185,8 +180,8 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../../services/notify.service";
-import dialogMix from "./../../../../../shared/mixins/dialogMix";
+import NotifyService from "@/services/notify.service";
+import dialogMix from "@/shared/mixins/dialogMix";
 import {
   required,
   requiredIf,

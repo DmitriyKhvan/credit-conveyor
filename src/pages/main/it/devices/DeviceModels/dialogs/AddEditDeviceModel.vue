@@ -129,9 +129,9 @@
 </template>
 
 <script>
-import NotifyService from "./../../../../../../services/notify.service";
-import dialogMix from "./../../../../../../shared/mixins/dialogMix";
-import GridDialog from "./../../../../../../components/GridDialog";
+import NotifyService from "@/services/notify.service";
+import dialogMix from "@/shared/mixins/dialogMix";
+import GridDialog from "@/components/GridDialog";
 
 import {
   required,
@@ -140,7 +140,7 @@ import {
   between,
   email
 } from "vuelidate/lib/validators";
-import ApiService from "../../../../../../services/api.service";
+import ApiService from "@/services/api.service";
 
 export default {
   data() {

@@ -11,10 +11,11 @@ export default class BpmService {
   //   "requested-lifetime": 7200
   // };
 
-  authProcess = async () => {
+  getBPMToken = async () => {
     const responce = await axios({
       method: 'post',
       url: `${this._baseUrl}/system/login`,
+      timeout: 6000
     });
     
     return responce.data;
@@ -23,7 +24,7 @@ export default class BpmService {
   startProcess = async () => {
     const responce = await axios({
       method: 'post',
-      url: `${this._baseUrl}/processes`
+      url: `${this._baseUrl}/credit/start`
     });
   
     return responce.data;
@@ -72,7 +73,6 @@ export default class BpmService {
   }
 
   getUserRole = async (userId) => {
-    console.log(2222)
     const responce = await axios({
       method: "get",
       url: `${this._personalUrl}/roles/user?id=${userId}` 
