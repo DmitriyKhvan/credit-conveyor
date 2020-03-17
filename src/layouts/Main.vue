@@ -3,7 +3,7 @@
     <s-header />
     <s-leftbar />
     <s-content />
-    <s-footer />
+    <!-- <s-footer /> -->
   </q-layout>
 </template>
 
