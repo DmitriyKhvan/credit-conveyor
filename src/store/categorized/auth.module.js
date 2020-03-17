@@ -17,7 +17,9 @@ const state = {
   empId: null,
   fullName: null,
   userRoles: [],
-  moderatorsList: []
+  moderatorsList: [],
+  branchCode: null,
+  filialCode: null
 };
 
 /**
@@ -67,7 +69,14 @@ const getters = {
   },
   moderatorsList: state => {
     return state.moderatorsList
+  },
+  branchCode: state => {
+    return state.branchCode
+  },
+  filialCode: state => {
+    return state.filialCode
   }
+
 };
 
 /**
@@ -133,7 +142,17 @@ const actions = {
   setModeratorsList({
     commit
   }, moderatorsList) {
-    commit("moderatorsList", moderatorsList);
+    commit("setModeratorsList", moderatorsList);
+  },
+  setBranchCode({
+    commit
+  }, branchCode) {
+    commit("setBranchCode", branchCode);
+  },
+  setFilialCode({
+    commit
+  }, filialCode) {
+    commit("setFilialCode", filialCode);
   }
 };
 
@@ -187,8 +206,13 @@ const mutations = {
   },
   setModeratorsList(state, moderatorsList) {
     state.moderatorsList = moderatorsList;
+  },
+  setBranchCode(state, branchCode) {
+    state.branchCode = branchCode;
+  },
+  setFilialCode(state, filialCode) {
+    state.filialCode = filialCode;
   }
-
 };
 
 export const auth = {

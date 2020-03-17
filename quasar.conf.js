@@ -66,7 +66,7 @@ module.exports = function (ctx) {
       gzip: false,
       analyze: false,
       env: ctx.dev ? {
-        VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+        VUE_APP_BASE_URL: JSON.stringify("http://localhost:4000/")
       } : {
         VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
       },

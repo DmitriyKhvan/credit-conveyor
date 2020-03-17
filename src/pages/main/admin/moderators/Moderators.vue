@@ -15,7 +15,17 @@ import GridService from "@/services/grid.service";
 
 export default {
   created() {
-    console.log(this.$store.getters["auth/moderatorsList"]);
+    // let modList = this.$store.getters["auth/moderatorsList"];
+    // let onlyMenuIds = [];
+    // modList.forEach(element => {
+    //   onlyMenuIds.push(element.menu_id);
+    // });
+    // ApiService.get("menus/user").then(res => {
+    //   let filtered = res.data.filter(x => {
+    //     return !onlyMenuIds.includes(x.menu_id);
+    //   });
+    //   console.log(filtered);
+    // });
   },
   data() {
     return {

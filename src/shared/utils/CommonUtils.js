@@ -1,3 +1,5 @@
+import store from '@/store'
+
 export default {
   domDecoder(str) {
     let parser = new DOMParser();
@@ -42,6 +44,8 @@ export default {
     if (arr !== null) {
       for (let k = 0; k < arr.length; k++) {
         if (arr[k][key] == searchVal) {
+          // set branchcode, filialcode
+          this.setRoleLevel(arr[k]['menu_id']);
           return true;
         } else {
           if (arr[k]['children'] != null) {
@@ -73,7 +77,19 @@ export default {
     }
     return null;
   },
-
+  setRoleLevel(menu_id) {
+    store.dispatch('auth/setBranchCode', null);
+    store.dispatch('auth/setFilialCode', null);
+    let modList = store.getters["auth/moderatorsList"]
+    if (modList) {
+      modList.forEach(element => {
+        if (element.menu_id == menu_id) {
+          store.dispatch('auth/setBranchCode', element.branch_code);
+          store.dispatch('auth/setFilialCode', element.filial_code);
+        }
+      });
+    }
+  },
   filterServerError(error) {
     if (error.response) {
       return error.response.data.message

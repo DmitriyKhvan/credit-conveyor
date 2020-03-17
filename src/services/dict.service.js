@@ -143,10 +143,8 @@ const DictService = {
   moderatorsList() {
     return new Promise((resolve, reject) => {
       let emp_id = store.getters["auth/empId"];
-
       ApiService.get(`roles/moderator?id=${emp_id}`)
         .then(res => {
-          console.log(res.data)
           resolve(res.data);
         })
         .catch(err => {

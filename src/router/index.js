@@ -1,14 +1,14 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import TokenService from "./../services/storage.service";
-import MainService from "./../services/main.service"; //"/services/main.service";
-import ApiService from './../services/api.service';
+import TokenService from "@/services/storage.service";
+import MainService from "@/services/main.service"; //"/services/main.service";
+import ApiService from '@/services/api.service';
 import routes from "./routes";
-import store from './../store/index';
-import CommonUtils from "../shared/utils/CommonUtils";
+import store from '@/store/index';
+import CommonUtils from "@/shared/utils/CommonUtils";
 import {
   AuthService
-} from "../services/auth.service";
+} from "@/services/auth.service";
 
 Vue.use(VueRouter);
 
@@ -31,8 +31,6 @@ router.beforeEach(async (to, from, next) => {
   const onlyWhenLoggedOut = to.matched.some(record => record.meta.onlyWhenLoggedOut);
 
   const isLoggedIn = !(await TokenService.isTokenExpired());
-
-  console.log(isLoggedIn);
 
   if (!isPublic && !isLoggedIn) {
     //AuthService.logout();
@@ -57,25 +55,25 @@ router.beforeEach(async (to, from, next) => {
     return next('/')
   }
 
-  //* check router path by user role
-  // if (isLoggedIn) {
-  //   if (await TokenService.isKeyExist('menus')) {
-  //     let menus = JSON.parse(decodeURIComponent(escape(window.atob(await TokenService.getKey('menus')))));
-  //     //console.log(menus)
-  //     if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
-  //       if (to.path !== '/404')
-  //         return next('/404')
-  //     }
-  //   } else {
-  //     AuthService.logout();
-  //   }
-  // }
-
   //* page refresh call
   if (isLoggedIn && !store.getters["dicts/isAllSet"]) {
     ApiService.mount401Interceptor(); //
     // reloads all Dicts
     await MainService.loadAllPageRefresh();
+  }
+
+  //!! LAST
+  //* check router path by user role
+  if (isLoggedIn) {
+    if (await TokenService.isKeyExist('menus')) {
+      let menus = JSON.parse(decodeURIComponent(escape(window.atob(await TokenService.getKey('menus')))));
+      if (!CommonUtils.isValueExistInObject(menus, 'url', to.path)) {
+        if (to.path !== '/404')
+          return next('/404')
+      }
+    } else {
+      AuthService.logout();
+    }
   }
   next();
 });
