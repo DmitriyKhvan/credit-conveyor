@@ -21,7 +21,7 @@
                 outlined
                 v-model="personalData.surname"
                 dense
-                :hint="loadMessage"
+                
                 label="Фамилия"
                 lazy-rules
                 :rules="[val => !!val || 'Введите фамилию']"
@@ -61,7 +61,7 @@
                 outlined
                 v-model="personalData.inn"
                 dense
-                :hint="loadMessage"
+                
                 label="ИНН"
                 mask="#########"
                 lazy-rules
@@ -78,7 +78,7 @@
                 outlined
                 v-model="personalData.pinpp"
                 dense
-                :hint="loadMessage"
+                
                 label="ПИНФЛ"
                 mask="##############"
                 lazy-rules
@@ -121,7 +121,7 @@
                 outlined
                 v-model="personalData.passportData.series"
                 dense
-                :hint="loadMessage"
+                
                 label="Серия паспорта"
                 mask="AA"
                 lazy-rules
@@ -138,7 +138,7 @@
                 outlined
                 v-model="personalData.passportData.number"
                 dense
-                :hint="loadMessage"
+                
                 label="Номер паспорта"
                 mask="#######"
                 lazy-rules
@@ -225,7 +225,7 @@
                   outlined
                   v-model="phone.phone"
                   dense
-                  :hint="loadMessage"
+                  
                   label="Тел. номер"
                   mask="+### (##) ### ## ##"
                   lazy-rules
@@ -267,7 +267,7 @@
                 outlined
                 v-model.lazy="personalData.email"
                 dense
-                :hint="loadMessage"
+                
                 label="Email"
                 error-message="Ведите корректный Email"
                 :error="!isValid"
@@ -296,7 +296,7 @@
                     outlined
                     v-model="personalData.permanentRegistration.index"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Индекс"
                     mask="######"
                   />
@@ -322,7 +322,7 @@
                     outlined
                     v-model="personalData.permanentRegistration.city"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Город / Район"
                   />
                 </div>
@@ -336,7 +336,7 @@
                     outlined
                     v-model="personalData.permanentRegistration.street"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Улица / Мкр."
                     lazy-rules
                     :rules="[
@@ -351,7 +351,7 @@
                     outlined
                     v-model="personalData.permanentRegistration.houseNumber"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Номер дома"
                     lazy-rules
                     :rules="[val => !!val || 'Введите номер дома']"
@@ -363,7 +363,7 @@
                     outlined
                     v-model="personalData.permanentRegistration.housing"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Корпус"
                   />
                 </div>
@@ -376,7 +376,7 @@
                     outlined
                     v-model="personalData.permanentRegistration.structure"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Строение"
                   />
                 </div>
@@ -386,7 +386,7 @@
                     outlined
                     v-model="personalData.permanentRegistration.apartmentNumber"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Номер квартиры"
                   />
                 </div>
@@ -396,7 +396,7 @@
                     outlined
                     v-model="personalData.permanentRegistration.typeOfOwnership"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Вид владения"
                   />
                 </div>
@@ -431,7 +431,7 @@
                       outlined
                       v-model="personalData.actualRegistration.index"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Индекс"
                       mask="######"
                     />
@@ -457,7 +457,7 @@
                       outlined
                       v-model="personalData.actualRegistration.city"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Город / Район"
                     />
                   </div>
@@ -471,7 +471,7 @@
                       outlined
                       v-model="personalData.actualRegistration.street"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Улица / Мкр."
                       lazy-rules
                       :rules="[
@@ -486,7 +486,7 @@
                       outlined
                       v-model="personalData.actualRegistration.houseNumber"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Номер дома"
                       lazy-rules
                       :rules="[val => !!val || 'Введите номер дома']"
@@ -498,7 +498,7 @@
                       outlined
                       v-model="personalData.actualRegistration.housing"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Корпус"
                     />
                   </div>
@@ -511,7 +511,7 @@
                       outlined
                       v-model="personalData.actualRegistration.structure"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Строение"
                     />
                   </div>
@@ -521,7 +521,7 @@
                       outlined
                       v-model="personalData.actualRegistration.apartmentNumber"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Номер квартиры"
                     />
                   </div>
@@ -531,7 +531,7 @@
                       outlined
                       v-model="personalData.actualRegistration.typeOfOwnership"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Вид владения"
                     />
                   </div>
@@ -558,7 +558,7 @@
                       outlined
                       v-model="personalData.temporaryRegistration.index"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Индекс"
                       mask="######"
                     />
@@ -584,7 +584,7 @@
                       outlined
                       v-model="personalData.temporaryRegistration.city"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Город / Район"
                     />
                   </div>
@@ -598,7 +598,7 @@
                       outlined
                       v-model="personalData.temporaryRegistration.street"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Улица / Мкр."
                       lazy-rules
                       :rules="[
@@ -613,7 +613,7 @@
                       outlined
                       v-model="personalData.temporaryRegistration.houseNumber"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Номер дома"
                       lazy-rules
                       :rules="[val => !!val || 'Введите номер дома']"
@@ -625,7 +625,7 @@
                       outlined
                       v-model="personalData.temporaryRegistration.housing"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Корпус"
                     />
                   </div>
@@ -638,7 +638,7 @@
                       outlined
                       v-model="personalData.temporaryRegistration.structure"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Строение"
                     />
                   </div>
@@ -650,7 +650,7 @@
                         personalData.temporaryRegistration.apartmentNumber
                       "
                       dense
-                      :hint="loadMessage"
+                      
                       label="Номер квартиры"
                     />
                   </div>
@@ -662,7 +662,7 @@
                         personalData.temporaryRegistration.typeOfOwnership
                       "
                       dense
-                      :hint="loadMessage"
+                      
                       label="Вид владения"
                     />
                   </div>
@@ -770,7 +770,7 @@
                   outlined
                   v-model="relative.surname"
                   dense
-                  :hint="loadMessage"
+                  
                   label="Фамилия"
                   lazy-rules
                   :rules="[val => !!val || 'Введите фамилию']"
@@ -783,7 +783,7 @@
                   outlined
                   v-model="relative.name"
                   dense
-                  :hint="loadMessage"
+                  
                   label="Имя"
                   lazy-rules
                   :rules="[val => !!val || 'Введите имя']"
@@ -844,7 +844,7 @@
                   outlined
                   v-model="relative.passportData.series"
                   dense
-                  :hint="loadMessage"
+                  
                   label="Серия паспорта"
                   mask="AA"
                   lazy-rules
@@ -860,7 +860,7 @@
                   outlined
                   v-model="relative.passportData.number"
                   dense
-                  :hint="loadMessage"
+                  
                   label="Номер паспорта"
                   mask="#######"
                   lazy-rules
@@ -968,7 +968,7 @@
                   outlined
                   v-model="personalData.activity.nameOfEmployer"
                   dense
-                  :hint="loadMessage"
+                  
                   label="Наименование работодателя"
                   lazy-rules
                   :rules="[val => !!val || 'Введите наименование работодателя']"
@@ -979,9 +979,9 @@
                   ref="innOfEmployer"
                   square
                   outlined
-                  v-model.number="personalData.activity.innOfEmployer"
+                  v-model="personalData.activity.innOfEmployer"
                   dense
-                  :hint="loadMessage"
+                  
                   label="ИНН работодателя"
                   mask="#########"
                   lazy-rules
@@ -1031,7 +1031,7 @@
                   outlined
                   v-model="personalData.activity.position"
                   dense
-                  :hint="loadMessage"
+                  
                   label="Должность"
                   lazy-rules
                   :rules="[val => !!val || 'Введите должность']"
@@ -1457,7 +1457,7 @@
                     square
                     outlined
                     v-model.number="guarantee.individual.price"
-                    :hint="loadMessage"
+                    
                     dense
                     label="Сумма поручительства"
                     lazy-rules
@@ -1474,7 +1474,7 @@
                     outlined
                     v-model="guarantee.individual.surname"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Фамилия"
                     lazy-rules
                     :rules="[val => !!val || 'Введите фамилию']"
@@ -1487,7 +1487,7 @@
                     outlined
                     v-model="guarantee.individual.name"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Имя"
                     lazy-rules
                     :rules="[val => !!val || 'Введите имя']"
@@ -1500,7 +1500,7 @@
                     outlined
                     v-model="guarantee.individual.mname"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Отчество"
                     lazy-rules
                     :rules="[val => !!val || 'Введите отчество']"
@@ -1551,7 +1551,7 @@
                     outlined
                     v-model="guarantee.individual.inn"
                     dense
-                    :hint="loadMessage"
+                    
                     label="ИНН"
                     mask="#########"
                     lazy-rules
@@ -1569,7 +1569,7 @@
                     outlined
                     v-model="guarantee.individual.pinpp"
                     dense
-                    :hint="loadMessage"
+                    
                     label="ПИНФЛ"
                     mask="##############"
                     lazy-rules
@@ -1599,7 +1599,7 @@
                     outlined
                     v-model="guarantee.individual.passportData.series"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Серия паспорта"
                     mask="AA"
                     lazy-rules
@@ -1616,7 +1616,7 @@
                     outlined
                     v-model="guarantee.individual.passportData.number"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Номер паспорта"
                     mask="#######"
                     lazy-rules
@@ -1692,7 +1692,7 @@
                     outlined
                     v-model="guarantee.individual.city"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Город / Район"
                   />
                 </div>
@@ -1706,7 +1706,7 @@
                     outlined
                     v-model="guarantee.individual.street"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Улица / Мкр."
                     lazy-rules
                     :rules="[
@@ -1721,7 +1721,7 @@
                     outlined
                     v-model="guarantee.individual.houseNumber"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Номер дома"
                     lazy-rules
                     :rules="[val => !!val || 'Введите номер дома']"
@@ -1733,7 +1733,7 @@
                     outlined
                     v-model="guarantee.individual.housing"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Корпус"
                   />
                 </div>
@@ -1746,7 +1746,7 @@
                     outlined
                     v-model="guarantee.individual.structure"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Строение"
                   />
                 </div>
@@ -1756,7 +1756,7 @@
                     outlined
                     v-model="guarantee.individual.apartmentNumber"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Номер квартиры"
                   />
                 </div>
@@ -1779,7 +1779,7 @@
                       outlined
                       v-model="phone.phone"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Тел. номер"
                       mask="+### (##) ### ## ##"
                       lazy-rules
@@ -1841,7 +1841,7 @@
                     outlined
                     v-model="guarantee.entity.name"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Имя"
                     lazy-rules
                     :rules="[val => !!val || 'Введите имя']"
@@ -1855,7 +1855,7 @@
                     outlined
                     v-model="guarantee.entity.inn"
                     dense
-                    :hint="loadMessage"
+                    
                     label="ИНН"
                     mask="#########"
                     lazy-rules
@@ -1912,7 +1912,7 @@
                     outlined
                     v-model="guarantee.entity.city"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Город / Район"
                   />
                 </div>
@@ -1926,7 +1926,7 @@
                     outlined
                     v-model="guarantee.entity.street"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Улица / Мкр."
                     lazy-rules
                     :rules="[
@@ -1941,7 +1941,7 @@
                     outlined
                     v-model="guarantee.entity.houseNumber"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Номер дома"
                     lazy-rules
                     :rules="[val => !!val || 'Введите номер дома']"
@@ -1953,7 +1953,7 @@
                     outlined
                     v-model="guarantee.entity.housing"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Корпус"
                   />
                 </div>
@@ -1966,7 +1966,7 @@
                     outlined
                     v-model="guarantee.entity.structure"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Строение"
                   />
                 </div>
@@ -1976,7 +1976,7 @@
                     outlined
                     v-model="guarantee.entity.officeNumber"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Номер офиса"
                   />
                 </div>
@@ -1999,7 +1999,7 @@
                       outlined
                       v-model="phone.phone"
                       dense
-                      :hint="loadMessage"
+                      
                       label="Тел. номер"
                       mask="+### (##) ### ## ##"
                       lazy-rules
@@ -2045,7 +2045,7 @@
                     outlined
                     v-model="guarantee.insurance.name"
                     dense
-                    :hint="loadMessage"
+                    
                     label="Наименование страховой компании"
                     lazy-rules
                     :rules="[
@@ -2060,7 +2060,7 @@
                     outlined
                     v-model="guarantee.insurance.inn"
                     dense
-                    :hint="loadMessage"
+                    
                     label="ИНН страховой компании"
                     mask="#########"
                     lazy-rules
@@ -2748,16 +2748,6 @@ export default {
 
   },
   computed: {
-    loadMessage() {
-      return this.$store.state.profile.loadMessage;
-    },
-    disableInput() {
-      return this.$store.state.profile.disableInput;
-    },
-    disableBtn() {
-      return this.$store.state.profile.disableBtn;
-    },
-
     personalData() {
       return this.$store.state.profile.personalData;
     },
@@ -3111,9 +3101,9 @@ export default {
         this.formHasError = true;
         this.bar = true;
       } else {
-        console.log("personalData", this.$store.state.profile.personalData);
+        console.log("fullProfile", this.$store.state.profile);
 
-        this.confirmCredit = true;
+        this.confirmCredit = false;
       }
     },
 

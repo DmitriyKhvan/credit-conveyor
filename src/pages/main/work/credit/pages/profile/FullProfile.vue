@@ -10,21 +10,21 @@
             <div class="col-9">132131231</div>
             <div class="col-12 profileTitle">1. Персональные данные</div>
             <div class="col-3">Фамилия</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.surname}}</div>
             <div class="col-3">Имя</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.name}}</div>
             <div class="col-3">Отчество</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.mname}}</div>
             <div class="col-3">Дата рождения</div>
             <div class="col-9"></div>
             <div class="col-3">ИНН</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.inn}}</div>
             <div class="col-3">ПИНФЛ</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.pinpp}}</div>
             <div class="col-3">Пол</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.sex}}</div>
             <div class="col-3">Резидентсво</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.residency}}</div>
 
             <div class="col-12 profileTitle">2. Паспортные данные</div>
             <div class="col-3">Вид документа</div>
@@ -32,113 +32,125 @@
             <div class="col-3">Наименование документа</div>
             <div class="col-9"></div>
             <div class="col-3">Серия</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.passportData.series}}</div>
             <div class="col-3">Номер</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.passportData.number}}</div>
             <div class="col-3">Дата выдачи</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.passportData.date}}</div>
             <div class="col-3">Кем выдан документ</div>
             <div class="col-9"></div>
             <div class="col-3">Срок действия документа</div>
             <div class="col-9"></div>
 
             <div class="col-12 profileTitle">3. Контактная информация</div>
-            <div class="col-3">Телефон</div>
-            <div class="col-9"></div>
+
+            <div class="col-12 dataList">
+              <div class="row" v-for="(phone, index) of fullProfileDate.phones" :key="phone.phone">
+                <div class="col-3">Телефон {{index + 1}}</div>
+                <div class="col-9">{{phone.phone}}</div>
+              </div>  
+            </div>
+
             <div class="col-3">e-mail адрес</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.email}}</div>
 
             <div class="col-12 profileTitle">4. Образование</div>
             <div class="col-3">Степень Образования</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.education}}</div>
 
             <div class="col-12 profileTitle">5. Адреса</div>
             <div class="col-12 profileSubTitle">
               5.1 Адрес постоянной регистрации
             </div>
             <div class="col-3">Индекс</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.permanentRegistration.index}}</div>
             <div class="col-3">Регион / область</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.permanentRegistration.region}}</div>
             <div class="col-3">Город / район</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.permanentRegistration.city}}</div>
             <div class="col-3">Улица / мкр.</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.permanentRegistration.street}}</div>
             <div class="col-3">Номер дома</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.permanentRegistration.houseNumber}}</div>
             <div class="col-3">Квартира</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.permanentRegistration.apartmentNumber}}</div>
             <div class="col-3">Вид владения</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.permanentRegistration.typeOfOwnership}}</div>
 
             <div class="col-12 profileSubTitle">
               5.2 Адрес фактического проживания
             </div>
             <div class="col-3">Индекс</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.actualRegistration.index}}</div>
             <div class="col-3">Регион / область</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.actualRegistration.region}}</div>
             <div class="col-3">Город / район</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.actualRegistration.city}}</div>
             <div class="col-3">Улица / мкр.</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.actualRegistration.street}}</div>
             <div class="col-3">Номер дома</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.actualRegistration.houseNumber}}</div>
             <div class="col-3">Квартира</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.actualRegistration.apartmentNumber}}</div>
             <div class="col-3">Вид владения</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.actualRegistration.typeOfOwnership}}</div>
 
             <div class="col-12 profileSubTitle">
               5.3 Адрес временной регистрации
             </div>
             <div class="col-3">Индекс</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.temporaryRegistration.index}}</div>
             <div class="col-3">Регион / область</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.temporaryRegistration.region}}</div>
             <div class="col-3">Город / район</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.temporaryRegistration.city}}</div>
             <div class="col-3">Улица / мкр.</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.temporaryRegistration.street}}</div>
             <div class="col-3">Номер дома</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.temporaryRegistration.houseNumber}}</div>
             <div class="col-3">Квартира</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.temporaryRegistration.apartmentNumber}}</div>
             <div class="col-3">Вид владения</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.temporaryRegistration.typeOfOwnership}}</div>
 
             <div class="col-12 profileTitle">6 Семейное положение</div>
             <div class="col-3">Семейное положение</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.family.familyStatus}}</div>
             <div class="col-3">Количество иждивенцев</div>
             <div class="col-9"></div>
             <div class="col-3">Количество детей</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.family.childrenCount}}</div>
 
             <div class="col-12 profileTitle">
               7 Родственники (обязательно указать данные супруга/супруги)
             </div>
-            <div class="col-12 profileSubTitle">Родственная связь</div>
-            <div class="col-3">Тип родственной связи</div>
-            <div class="col-9"></div>
-            <div class="col-3">Фамилия</div>
-            <div class="col-9"></div>
-            <div class="col-3">Имя</div>
-            <div class="col-9"></div>
-            <div class="col-3">Отчество</div>
-            <div class="col-9"></div>
-            <div class="col-3">Дата рождения</div>
-            <div class="col-9"></div>
-            <div class="col-3">ИНН</div>
-            <div class="col-9"></div>
-            <div class="col-3">Вид документа</div>
-            <div class="col-9"></div>
-            <div class="col-3">Серия</div>
-            <div class="col-9"></div>
-            <div class="col-3">Номер</div>
-            <div class="col-9"></div>
-            <div class="col-3">Дата выдачи</div>
-            <div class="col-9"></div>
+            <div class="col-12 dataList">
+              <div class="row" v-for="(relative, index) of fullProfileDate.relatives" :key="'relatives' + index">
+                <div class="col-12 profileSubTitle">Родственник {{index + 1}}</div>
+                <div class="col-3">Тип родственной связи</div>
+                <div class="col-9">{{relative.relative}}</div>
+                <div class="col-3">Фамилия</div>
+                <div class="col-9">{{relative.surname}}</div>
+                <div class="col-3">Имя</div>
+                <div class="col-9">{{relative.name}}</div>
+                <div class="col-3">Отчество</div>
+                <div class="col-9">{{relative.mname}}</div>
+                <div class="col-3">Дата рождения</div>
+                <div class="col-9">{{relative.birthday}}</div>
+                <div class="col-3">ИНН</div>
+                <div class="col-9">{{relative.inn}}</div>
+                <div class="col-3">Вид документа</div>
+                <div class="col-9">{{relative.relative}}</div>
+                <div class="col-3">Серия</div>
+                <div class="col-9">{{relative.passportData.series}}</div>
+                <div class="col-3">Номер</div>
+                <div class="col-9">{{relative.passportData.number}}</div>
+                <div class="col-3">Дата выдачи</div>
+                <div class="col-9">{{relative.passportData.date}}</div>
+              </div>
+            </div>
+
+            <!-- Поменять структуру -->
 
             <div class="col-12 profileTitle">8 Сведения по основной работе</div>
             <div class="col-3">8.1 Вид деятельности</div>
@@ -180,17 +192,17 @@
               9 Сведения о ежемесячных доходах/расходах
             </div>
             <div class="col-3">Подтвержденный ежемесячный доход</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.expenseIncome.income}}</div>
             <div class="col-3">
               Периодические расходы (доля расходов на налоги, содержание семьи,
               оплата аренды, образование, алименты и др.)
             </div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.expenseIncome.expense}}</div>
             <div class="col-3">
               Плата за облуживание других обязательств (погашение кредитов в
               банках, фин. организациях и др.)
             </div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.expenseIncome.otherExpenses}}</div>
             <div class="col-3">Наличие дополнительного дохода</div>
             <div class="col-9"></div>
             <div class="col-3">Размер дополнительного дохода</div>
@@ -482,13 +494,12 @@ export default {
       confirmCredit: true
     };
   },
-  computed() {
-    //console.log(document.querySelector('head'))
+  computed: {
+    fullProfileDate() {
+      return this.$store.state.profile.personalData
+    }
   },
   methods: {
-    // printForm() {
-    //   window.print();
-    // }
     callPrint(strid) {
       const head = document.querySelector('head')
       console.log(head)
@@ -516,12 +527,17 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .q-dialog__inner--minimized > div {
   max-width: 50%;
 }
 .fullProfile {
   /* min-width: 700px; */
+}
+
+.fullProfile .row .col-12.dataList {
+  padding: 0;
+  border: none;
 }
 
 .fullProfile .row > div {
