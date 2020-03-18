@@ -27,6 +27,8 @@ const DictService = {
         store.dispatch("dicts/setReceivedNotifications", receivedNotifications);
         let moderatorsList = await this.moderatorsList();
         store.dispatch("auth/setModeratorsList", moderatorsList);
+        let dictTypes = await this.dictTypes();
+        store.dispatch("dicts/setDictTypes", dictTypes);
 
         store.dispatch("dicts/setIsAllSet", true);
         resolve(true)
@@ -144,6 +146,19 @@ const DictService = {
     return new Promise((resolve, reject) => {
       let emp_id = store.getters["auth/empId"];
       ApiService.get(`roles/moderator?id=${emp_id}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  dictTypes() {
+    return new Promise((resolve, reject) => {
+      //let emp_id = store.getters["auth/empId"];
+      ApiService.get(`dicts/type`)
         .then(res => {
           resolve(res.data);
         })

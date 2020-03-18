@@ -13,7 +13,8 @@ const state = {
   menuList: [],
   userList: [],
   receivedNotifications: [],
-  testTopicList: []
+  testTopicList: [],
+  dictTypes: []
 };
 
 const getters = {
@@ -75,6 +76,14 @@ const getters = {
   },
   receivedNotifications: state => {
     return state.receivedNotifications;
+  },
+  getDictTypes: state => {
+    return state.dictTypes.map(val => {
+      return {
+        text: val.name,
+        value: val.id
+      };
+    });
   }
 };
 
@@ -108,6 +117,9 @@ const mutations = {
   },
   addNotification(state, noty) {
     state.receivedNotifications = [noty, ...state.receivedNotifications];
+  },
+  setDictTypes(state, types) {
+    state.dictTypes = types
   }
 };
 
@@ -162,6 +174,11 @@ const actions = {
     commit
   }, noty) {
     commit("addNotification", noty);
+  },
+  setDictTypes({
+    commit
+  }, types) {
+    commit("setDictTypes", types);
   }
 
 };
