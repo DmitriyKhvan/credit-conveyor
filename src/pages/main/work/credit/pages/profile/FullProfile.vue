@@ -481,7 +481,8 @@
           color="primary"
           @click="callPrint('form')"
         />
-        <q-btn flat label="Закрыть" color="primary" v-close-popup />
+        <!-- <q-btn flat label="Закрыть" color="primary" v-close-popup /> -->
+        <q-btn flat label="Закрыть" color="primary" @click="() => this.$router.push('/work/credit/sub/task/1')" />
       </q-card-actions>
     </q-card>
   </q-dialog>

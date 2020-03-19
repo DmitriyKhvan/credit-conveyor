@@ -2510,7 +2510,7 @@
     </q-dialog>
 
     <!-- credit result -->
-    <appFullProfile />
+    <appFullProfile v-if="confirmCredit"/>
 
   </div>
 </div>
@@ -3103,7 +3103,7 @@ export default {
       } else {
         console.log("fullProfile", this.$store.state.profile);
 
-        this.confirmCredit = false;
+        this.confirmCredit = true;
       }
     },
 
