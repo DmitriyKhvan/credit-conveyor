@@ -149,10 +149,9 @@ export default {
 
         try {
           const resCredit = await this.$store.dispatch('confirmationCredit', {taskId, data: this.data})
+          this.$router.push("sub/profile");
           console.log('successCredit', resCredit)
         } catch (error) {}
-
-        this.$router.push("sub/profile");
     },
     
     async failureCredit() {

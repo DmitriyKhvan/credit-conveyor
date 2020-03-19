@@ -147,6 +147,7 @@ export default {
 
     async confirmationCredit({state}, payload) {
       try {
+        //this.$router.push("sub/profile"); //переход на полную форму
         return await state.bpmService.confirmationCredit(payload);
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
