@@ -133,7 +133,7 @@ const actions = {
   setModeratorsList({
     commit
   }, moderatorsList) {
-    commit("moderatorsList", moderatorsList);
+    commit("setModeratorsList", moderatorsList);
   }
 };
 

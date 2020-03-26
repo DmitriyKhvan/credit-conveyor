@@ -135,4 +135,6 @@ export default {
     font-size: 10px;
   }
 }
+
+.q-breadcrumbs__el a, .q-breadcrumbs__separator i {color: #fff !important; text-decoration: none;}
 </style>
