@@ -3,50 +3,51 @@
     show-if-above
     :mini="isLeftDrawerClosed"
     bordered
-    content-class="bg-grey-2"
+    content-class="bg-grey-2 drawOver"
     :width="250"
+    
   >
     <q-list>
       <q-item-label header>{{ $t("layout.menu_label") }}</q-item-label>
       <div
         v-for="(menus, index) in menusList"
         :key="index"
-        @mouseenter="showMenu(index)"
-        @mouseleave="closeMenu(index)"
+         class="menuLabel"          
       >
-        <q-menu
-          anchor="top right"
-          self="top left"
-          ref="qmenu"
-          @mouseenter="showMenu(index)"
-          @mouseleave="closeMenu(index)"
-        >
-          <q-list style="min-width: 100px">
-            <q-item
-              v-for="(menuss, index) in getChildMenus(menus)"
-              :key="index"
-              clickable
-              :to="menuss.url"
-              :active="(index == 0) ? true:false"
-              active-class="text-orange"
-              v-ripple
-            >
-              <q-item-section>{{ menuss.name }}</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
+      
+
+                <q-list v-if="getChildMenus(menus).length !== 0" class="menuItem subPopup" :id="menus.menu_id">
+                    <q-item
+                      v-for="(menuss, index) in getChildMenus(menus)"
+                      :key="index"
+                      clickable
+                      :to="menuss.url"
+                      
+                      active-class="text-orange"
+                      v-ripple
+                    >
+                      <q-item-section>{{ menuss.name }}</q-item-section>
+                    </q-item>
+                  </q-list>
+                
+                  
+                
 
         <q-expansion-item
           expand-separator
           :icon="menus.icon"
           :label="menus.name"
           :caption="$t('layout.menu_caption')"
+          @show = eventShow(menus.menu_id)
+          @hide = eventHide(menus.menu_id)
           group="somegroup"
           :to="menus.url"
           exact-active-class="icon-style"
-          @show="openExtention(index)"
-          @hide="closeExtention(index)"
+          :class="'id-'+menus.menu_id"
         >
+                  
+
+
           <div
             v-for="(menuss, index) in menus.children"
             :key="index"
@@ -62,11 +63,15 @@
                   {{
                   $t("layout.menu_caption")
                   }}
-                </q-item-label>
+                </q-item-label>               
+
               </q-item-section>
             </q-item>
           </div>
+
+          
         </q-expansion-item>
+        
       </div>
     </q-list>
     <q-page-sticky position="bottom-right" :offset="[-15, 55]">
@@ -102,18 +107,32 @@ export default {
       return this.$store.getters["dicts/getMenuList"];
     }
   },
-  created() {},
+  created() {
+    
+  },
   data() {
     return {
-      isExpansionOpen: []
+      isExpansionOpen: [],
+      show: null
     };
   },
-  methods: {
-    showMenu(index) {
-      this.$refs.qmenu[index].show();
+  
+  methods: {    
+    eventShow(id){
+      const popup = document.getElementById(id)
+      popup.setAttribute("style", "display:none;");
+      this.show = id
     },
-    closeMenu(index) {
-      this.$refs.qmenu[index].hide();
+    eventHide(id) {
+      const popup = document.getElementById(id)
+      popup.removeAttribute("style")
+      this.show = null
+    },
+    mOver (id) {
+      console.log('mOver ',id)
+    },
+    mLeave (id) {
+      console.log('mLeave ',id)
     },
     getChildMenus(menus) {
       let myMenuList = [];
@@ -134,16 +153,25 @@ export default {
       }
       return myMenuList;
     },
-    openExtention(index) {
+    openExtention(index) {     
       this.$refs.qmenu[index].hide();
     },
     closeExtention(index) {
       this.$refs.qmenu[index].show();
-    }
+    },
   },
   watch: {
     isLeftDrawerClosed() {
-      console.log(this.isLeftDrawerClosed);
+        if(this.isLeftDrawerClosed) {
+          const popup = document.getElementsByClassName('menuItem')          
+          for (var i = 0; i < popup.length; i++) {
+            popup[i].removeAttribute("style")            
+          }         
+        }
+        if(this.show){
+          const popup = document.getElementById(this.show)
+          popup.setAttribute("style", "display:none;");
+        }
     }
   }
 };
@@ -154,4 +182,35 @@ export default {
   position: fixed;
   background-color: red;
 }
+.menuLabel {
+  position: relative;
+}
+.menuLabel .menuItem {
+  display: none;
+  position: absolute;
+  right: -150px;
+  top: 0;
+  width: 150px;
+  background: #fff;
+  z-index: 10000;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.menuLabel:hover .menuItem {
+  display: block;
+}
+.drawOver {
+  overflow: visible;
+}
+
+.menuItem .q-item__section--main {
+  display: block !important;
+  text-align: left  !important;
+  padding-left: 10px !important;
+  align-self: center;
+  }
+.q-item__section {
+  position: relative;
+}
+
+.q-item__label {text-align: left;}
 </style>

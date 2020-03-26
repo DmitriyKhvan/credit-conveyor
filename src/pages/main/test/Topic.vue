@@ -4,28 +4,32 @@
       <h2 class="titleTopic">{{ topicName }}</h2>
       <div class="timeBlock">
         <h3 class="titleTime">Оставшееся время</h3>
-        <span class="time">{{ time }}</span>
+        <span class="time"></span>
       </div>
     </div>
     
     <q-card>
       <q-tabs
         v-model="tab"
+        
         dense
-        class="text-grey"
+        class="text-grey cardVisible"
         active-color="primary"
         indicator-color="primary"
         align="justify"
-        narrow-indicator
+        narrow-indicator        
       >
         <q-tab
           v-for="(test, index) of answerTest"
           :key="test.question_id"
           :name="index"
           :label="index + 1"
-          :class="{ answered: test.answered }"
+          icon="accessibility_new"
+          class="cardVisible"
+          :class="tabColor(index, test.answered)" 
+          @click="setColorView(index)"         
         />
-        
+          
         <!-- <q-tab name="alarms" label="Alarms" />
         <q-tab name="movies" label="Movies" />-->
       </q-tabs>
@@ -39,7 +43,7 @@
           <!-- <q-form @submit="onSubmit(1)" class="q-gutter-md"> -->
           <q-item
             tag="label"
-            v-for="variant of test.variants"
+            v-for="(variant, i) of test.variants"
             :key="variant.id"
           >
             <q-item-section avatar class="radioBlock">
@@ -59,8 +63,8 @@
                 "
               />
             </q-item-section>
-            <q-item-section class="variantBlock">
-              <q-item-label caption>{{ variant.answer_text }}</q-item-label>
+            <q-item-section :class="varActive(variant.id)">
+              <q-item-label caption class="varContainer"><span class="abc">{{ abc[i] }}</span> {{ variant.answer_text }}</q-item-label>
             </q-item-section>
           </q-item>
 
@@ -133,11 +137,12 @@ export default {
       topic: {},
 
       tab: 0,
+      tabView: [0],
       answerTest: [],
       nextDisabled: false,
       prevDisabled: true,
       timer: null,
-      time: "", // обратный отчет
+      //time: "", // обратный отчет
       timeCurQuestion: 0,
       timerCurQuestion: null,
       duration: 0,
@@ -147,7 +152,8 @@ export default {
       days: null,
       hours: null,
       minutes: null,
-      seconds: null // переменные для единиц времени
+      seconds: null, // переменные для единиц времени
+      abc: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
     };
   },
   created() {
@@ -155,8 +161,6 @@ export default {
 
     this.getTests(this.id)
       .then(res => {
-        console.log("ddd", res);
-
         this.data.session_id = "" + Math.round(Math.random() * 100000000);
         this.data.test_id = res.data.test_id;
         this.data.start_time = this.curDate();
@@ -192,6 +196,9 @@ export default {
       this.getCountdown();
     }, 1000);
     this.getCountUp();
+    const tabover = document.getElementsByClassName("q-tabs__content")
+    tabover[1].style.cssText = "overflow: visible"
+    
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -222,10 +229,17 @@ export default {
       this.countTimeCurQuestion(2);
 
       clearInterval(this.timerCurQuestion);
-      this.getCountUp();
+      //this.getCountUp();
 
-      console.log("watch", this.data.answers);
-    }
+      
+    },
+  },
+  updated () {
+    // this.data.answers.forEach(element => {
+    //   console.log(element.variant_id)
+    // });
+    
+    // if(this.data.answers.variant_id) console.log('вопросы', this.data.answers.variant_id)
   },
   computed: {
     topicName() {
@@ -238,6 +252,21 @@ export default {
     //   this.tab = this.tab + count;
     //   this.answerTest = "";
     // },
+    tabColor (i, answer) {
+      const start = this.tabView.length
+      const view = this.tabView.find(e => e === i)
+      if(answer) {
+        return 'answered'
+      } else if (view || i === 0) {
+        return 'tabView'
+      } 
+    },
+    setColorView (i) {
+      if(!this.tabView.find(e => e === i)) this.tabView.push(i)
+    },
+    varActive(id) {
+      if(this.data.answers.find(e => e.variant_id === id)) return 'varActive'      
+    },    
     async getTests(id) {
       return (await ApiService.get(`/test/get?id=${id}`)).data;
     },
@@ -246,9 +275,11 @@ export default {
     },
     nextTest(count) {
       this.tab = this.tab + count;
+      this.setColorView (this.tab)
     },
     prevTest(count) {
       this.tab = this.tab - count;
+      this.setColorView (this.tab)
     },
     sentAnswer(
       index,
@@ -258,7 +289,7 @@ export default {
       variant_text,
       duration
     ) {
-      console.log(this.answerTest);
+      
       //clearInterval(this.timerCurQuestion)
 
       //const timeAnswer = this.answers[index].duration + this.timeCurQuestion
@@ -274,10 +305,12 @@ export default {
         answer,
         ...this.data.answers.slice(index + 1)
       ];
+      
 
       const variantAnswer = {
         question_id,
         variant_text,
+        variant_id,
         answered: true
       };
       this.answerTest = [
@@ -287,23 +320,25 @@ export default {
       ];
     },
     completeTest() {
+      console.log('data', this.data)
       this.countTimeCurQuestion(1);
 
       this.data.end_time = this.curDate();
 
       this.sentTestAnswers(this.data)
         .then(res => {
-          console.log("ответ", res);
           const payload = {
             countTrueAnswers: res.message,
             quesAmount: this.data.ques_amount
           };
           this.$store.commit("sentAnswersTest", payload);
+          this.$store.commit('setResTest', res.message)
         })
         .catch(err => {
           console.log(err);
         });
-      console.log("Answers", this.data);
+      
+      
       this.$router.push({ path: "/completeTest" });
     },
     getCountdown() {
@@ -368,7 +403,7 @@ export default {
       //
       const timeAnswer =
         this.data.answers[index].duration + this.timeCurQuestion;
-      console.log("curtime", timeAnswer);
+      
       const answer = {
         ...this.data.answers[index],
         duration: timeAnswer
@@ -382,23 +417,23 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style>
 .topicBlock {
   padding: 50px;
 }
 
-.headTopic {
+.topicBlock .headTopic {
   display: flex;
   justify-content: space-between;
 }
 
-.titleTopic {
+.topicBlock .titleTopic {
   font-size: 22px;
   font-weight: 400;
   margin: 0;
 }
 
-.timeBlock {
+.topicBlock .timeBlock {
   display: flex;
   align-items: center;
   border: 1px solid #bbbbbb;
@@ -407,12 +442,14 @@ export default {
   font-size: 22px;
 }
 
-.titleTime {
+.topicBlock  .titleTime {
   position: relative;
   margin: 0;
   font-size: 22px;
   margin-right: 20px;
 }
+
+
 
 /* .titleTime::before {
   position: absolute;
@@ -426,14 +463,14 @@ export default {
   right: 0;
 } */
 
-.time {
+.topicBlock .time {
   color: #ff0000
 }
 
-.testLi {
+.topicBlock .testLi {
   list-style: none;
 }
-.testNav {
+.topicBlock .testNav {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -450,17 +487,20 @@ export default {
   
 }
 
-.answered {
+.topicBlock .answered, .topicBlock .tabView {
   background: #00aeef;
   color: white !important;
 }
+.topicBlock .tabView {
+  background: #12a39e;
+}
 
-.q-item__label {
+.topicBlock .q-item__label {
   font-size: 22px;
   color: #000;
 }
 
-.button_block {
+.topicBlock .button_block {
   margin: 20px 40px;
 }
 
@@ -468,13 +508,13 @@ export default {
   padding: 30px 40px;
 } */
 
-.q-tab-panel {
+.topicBlock .q-tab-panel {
   border: 1px solid #ccc;
   width: 95%;
   margin: 30px auto 0;
 }
 
-.q-tabs__content--align-justify .q-tab {
+.topicBlock .q-tabs__content--align-justify .q-tab {
   flex: 0 0 auto;
   padding: 0;
   width: 26px;
@@ -484,66 +524,104 @@ export default {
   margin-right: 20px;
 }
 
-.q-tab {
+.topicBlock .q-tab {
   min-height: 26px;
 }
 
-.q-card {
+.topicBlock .q-card {
   box-shadow: none;
 }
 
-.q-separator--horizontal {
+.topicBlock .q-separator--horizontal {
   margin-top: 15px;
   background: #0e3475;
 }
 
-.q-radio__inner {
+.topicBlock .q-radio__inner {
   border: 1px solid #ccc;
 }
 
-.radioBlock, .variantBlock {
-  border: 1px solid #bcbcbc;
+
+
+.topicBlock .radioBlock {
+  display: none;
 }
 
-.radioBlock {
-  padding: 0;
-  border-right: none;
-  min-width: auto;
-}
-
-.answer_block, .button_block {
+.topicBlock .answer_block, .topicBlock .button_block {
   display: flex;
   justify-content: center;
   margin: 10px 0 40px 0;
 }
 
-.typeAnswer {
+.topicBlock .varContainer {
+  display: flex;
+  padding: 0;
+  border: 1px solid #bcbcbc;
+  align-items: center;
+}
+.topicBlock .abc {
+  display: flex;
+  border-right: 1px solid #bcbcbc;
+  width: 40px;
+  height: 40px;
+  background: #ccc;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+}
+
+.topicBlock .typeAnswer {
   width: 26px;
   height: 26px;
   border-radius: 50%;
   border: 1px solid #d7d7d7;
 }
 
-.answer_block > div {
+.topicBlock .answer_block > div {
   display: flex;
   align-items: center;
   /* align-content: center; */
 }
 
-.typeAnswerText {
+.topicBlock .typeAnswerText {
   margin: 0 20px 0 5px;
 }
 
-.blue {
+.topicBlock .blue {
   background: #00aeef;
 }
 
-.green {
+.topicBlock .green {
   background: #12a39e;
 }
 
-.button_block button {
+.topicBlock .button_block button {
   margin: 0 10px;
 }
+.radioBlock[data-v-353b6ad8], .variantBlock[data-v-353b6ad8] {border: none;}
+
+.topicBlock .varActive {
+  border: 1px #3d5afe solid;
+}
+.topicBlock .varActive span {
+  background: #3d5afe;
+  color: #fff;
+}
+
+.topicBlock .cardVisible i.q-tab__icon {
+  position: absolute;
+  top: -25px;
+}
+
+.topicBlock div.q-tab i {
+  display: none;
+  color: #3d5afe;
+}
+.topicBlock div.q-tab--active i {
+  display: block !important;
+  color: #3d5afe;
+}
+.topicBlock .q-tab__indicator {display: none;}
+.topicBlock .q-card {margin-top: 20px;}
 
 </style>
