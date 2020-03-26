@@ -77,9 +77,9 @@ export default {
   filterServerError(error) {
     if (error.response) {
       return error.response.data.message
-    } else {
+    } else if(error.message) {
       return error.message
     }
-    //return console.log(error.config);
+    return error
   }
 }

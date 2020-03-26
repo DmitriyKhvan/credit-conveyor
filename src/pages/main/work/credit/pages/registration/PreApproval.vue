@@ -102,6 +102,7 @@
 </template>
 <script>
 import formatNumber from "../../filters/format_number.js";
+import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   data() {
@@ -149,9 +150,26 @@ export default {
 
         try {
           const resCredit = await this.$store.dispatch('confirmationCredit', {taskId, data: this.data})
-          this.$router.push("sub/profile");
-          console.log('successCredit', resCredit)
-        } catch (error) {}
+          
+          //Вставить следующий task_id
+          this.$store.commit("setTaskId", resCredit.nextTask.id)
+
+          if (resCredit.nextTask.input) {
+            this.$store.commit("setDictionaries", resCredit.nextTask.input[2].data)  
+            this.$router.push("sub/profile");
+          } else {
+            throw 'Data is null'
+          }
+
+          //this.$router.push("sub/profile");
+          console.log('successCredit', JSON.stringify(resCredit))
+        } catch (error) {
+          console.log('error', error)
+          const errorMessage = CommonUtils.filterServerError(error);
+          console.log('errorMessage', errorMessage)
+          this.$store.commit("setError", errorMessage);
+          sessionStorage.removeItem("csrf_token");
+        }
     },
     
     async failureCredit() {

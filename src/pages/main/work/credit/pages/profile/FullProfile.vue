@@ -16,13 +16,13 @@
             <div class="col-3">Отчество</div>
             <div class="col-9">{{fullProfileDate.mname}}</div>
             <div class="col-3">Дата рождения</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.birthday}}</div>
             <div class="col-3">ИНН</div>
             <div class="col-9">{{fullProfileDate.inn}}</div>
             <div class="col-3">ПИНФЛ</div>
             <div class="col-9">{{fullProfileDate.pinpp}}</div>
             <div class="col-3">Пол</div>
-            <div class="col-9">{{fullProfileDate.sex}}</div>
+            <div class="col-9">{{dictionaries.Gender.items[fullProfileDate.sex].value}}</div>
             <div class="col-3">Резидентсво</div>
             <div class="col-9">{{fullProfileDate.residency}}</div>
 
@@ -36,11 +36,11 @@
             <div class="col-3">Номер</div>
             <div class="col-9">{{fullProfileDate.passportData.number}}</div>
             <div class="col-3">Дата выдачи</div>
-            <div class="col-9">{{fullProfileDate.passportData.date}}</div>
+            <div class="col-9">{{fullProfileDate.passportData.dateStart}}</div>
             <div class="col-3">Кем выдан документ</div>
             <div class="col-9"></div>
-            <div class="col-3">Срок действия документа</div>
-            <div class="col-9"></div>
+            <div class="col-3">Дата окончания действия документа</div>
+            <div class="col-9">{{fullProfileDate.passportData.dateFinish}}</div>
 
             <div class="col-12 profileTitle">3. Контактная информация</div>
 
@@ -140,7 +140,7 @@
                 <div class="col-3">ИНН</div>
                 <div class="col-9">{{relative.inn}}</div>
                 <div class="col-3">Вид документа</div>
-                <div class="col-9">{{relative.relative}}</div>
+                <div class="col-9"></div>
                 <div class="col-3">Серия</div>
                 <div class="col-9">{{relative.passportData.series}}</div>
                 <div class="col-3">Номер</div>
@@ -156,37 +156,44 @@
             <div class="col-3">8.1 Вид деятельности</div>
             <div class="col-9"></div>
 
-            <div class="col-12 profileSubTitle">8.2 Работа по найму</div>
-            <div class="col-3">Наименование работодателя</div>
-            <div class="col-9"></div>
-            <div class="col-3">ИНН работодателя</div>
-            <div class="col-9"></div>
-            <div class="col-3">Вид деятельности организации</div>
-            <div class="col-9"></div>
-            <div class="col-3">Должность</div>
-            <div class="col-9"></div>
-            <div class="col-3">Количество работников в организации</div>
-            <div class="col-9"></div>
-            <div class="col-3">Стаж на последнем месте работы в месяцах</div>
-            <div class="col-9"></div>
-            <div class="col-3">Общий трудовой стаж в месяцах</div>
-            <div class="col-9"></div>
+            <template v-if="fullProfileDate.activity.kind === '1'">
+              <div class="col-12 profileSubTitle">8.2 Работа по найму</div>
+              <div class="col-3">Наименование работодателя</div>
+              <div class="col-9">{{fullProfileDate.activity.nameOfEmployer}}</div>
+              <div class="col-3">ИНН работодателя</div>
+              <div class="col-9">{{fullProfileDate.activity.innOfEmployer}}</div>
+              <div class="col-3">Вид деятельности организации</div>
+              <div class="col-9">{{fullProfileDate.activity.typeOrganization}}</div>
+              <div class="col-3">Должность</div>
+              <div class="col-9">{{fullProfileDate.activity.position}}</div>
+              <div class="col-3">Количество работников в организации</div>
+              <div class="col-9">{{fullProfileDate.activity.amountWorkes}}</div>
+              <div class="col-3">Стаж на последнем месте работы в месяцах</div>
+              <div class="col-9">{{fullProfileDate.activity.workExperience}}</div>
+              <div class="col-3">Общий трудовой стаж в месяцах</div>
+              <div class="col-9">{{fullProfileDate.activity.totalWorkExperience}}</div>
+            </template>
 
-            <div class="col-12 profileSubTitle">
-              8.3 Предпринимательская деятельность
-            </div>
-            <div class="col-3">Вид деятельности</div>
-            <div class="col-9"></div>
-            <div class="col-3">Срок деятельности</div>
-            <div class="col-9"></div>
 
-            <div class="col-12 profileSubTitle">
-              8.4 Личное подсобное хозяйство
-            </div>
-            <div class="col-3">Вид деятельности</div>
-            <div class="col-9"></div>
-            <div class="col-3">Срок деятельности</div>
-            <div class="col-9"></div>
+            <template v-if="fullProfileDate.activity.kind === '2'">
+              <div class="col-12 profileSubTitle">
+                8.3 Предпринимательская деятельность
+              </div>
+              <div class="col-3">Вид деятельности</div>
+              <div class="col-9">{{fullProfileDate.activity.typeOrganization}}</div>
+              <div class="col-3">Срок деятельности</div>
+              <div class="col-9">{{fullProfileDate.activity.workExperience}}</div>
+            </template>
+
+            <template v-if="fullProfileDate.activity.kind === '3'">
+              <div class="col-12 profileSubTitle">
+                8.4 Личное подсобное хозяйство
+              </div>
+              <div class="col-3">Вид деятельности</div>
+              <div class="col-9">{{fullProfileDate.activity.typeOrganization}}</div>
+              <div class="col-3">Срок деятельности</div>
+              <div class="col-9">{{fullProfileDate.activity.workExperience}}</div>
+            </template>
 
             <div class="col-12 profileTitle">
               9 Сведения о ежемесячных доходах/расходах
@@ -204,33 +211,45 @@
             </div>
             <div class="col-9">{{fullProfileDate.expenseIncome.otherExpenses}}</div>
             <div class="col-3">Наличие дополнительного дохода</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.expenseIncome.externalIncome}}</div>
             <div class="col-3">Размер дополнительного дохода</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.expenseIncome.externalIncomeSize}}</div>
             <div class="col-3">
               Источник дополнительного дохода (появляются при наличии доп.
               дохода)
             </div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.expenseIncome.additionalIncomeSource}}</div>
 
             <div class="col-12 profileTitle">10 Сведения об имуществе</div>
             <div class="col-12 profileSubTitle">10.1 Недвижимость</div>
-            <div class="col-3">Вид недвижимости</div>
-            <div class="col-9"></div>
-            <div class="col-3">Регион/ область</div>
-            <div class="col-9"></div>
-            <div class="col-3">Рыночная стоимость</div>
-            <div class="col-9"></div>
+
+            <div class="col-12 dataList">
+              <div class="row" v-for="(property, index) of fullProfileDate.properties" :key="'properties' + index">
+                <div class="col-12 profileSubTitle">Недвижимость {{index + 1}}</div>
+                <div class="col-3">Вид недвижимости</div>
+                <div class="col-9">{{property.type}}</div>
+                <div class="col-3">Регион / область</div>
+                <div class="col-9">{{property.region}}</div>
+                <div class="col-3">Рыночная стоимость</div>
+                <div class="col-9">{{property.price}}</div>
+              </div>
+            </div>
 
             <div class="col-12 profileSubTitle">10.2 Транспортное средства</div>
-            <div class="col-3">Вид транспортного средства</div>
-            <div class="col-9"></div>
-            <div class="col-3">Марка транспортного средства</div>
-            <div class="col-9"></div>
-            <div class="col-3">Год выпуска</div>
-            <div class="col-9"></div>
-            <div class="col-3">Рыночная стоимость</div>
-            <div class="col-9"></div>
+
+             <div class="col-12 dataList">
+              <div class="row" v-for="(vehicle, index) of fullProfileDate.vehicles" :key="'vehicles' + index">
+                <div class="col-12 profileSubTitle">Транспорт {{index + 1}}</div>
+                <div class="col-3">Вид транспортного средства</div>
+                <div class="col-9">{{vehicle.type}}</div>
+                <div class="col-3">Марка транспортного средства</div>
+                <div class="col-9">{{vehicle.brand}}</div>
+                <div class="col-3">Год выпуска</div>
+                <div class="col-9">{{vehicle.year}}</div>
+                <div class="col-3">Рыночная стоимость</div>
+                <div class="col-9">{{vehicle.price}}</div>
+              </div>
+             </div>
 
             <div class="col-12 profileTitle">
               11 Поручительство и страхование
@@ -320,7 +339,7 @@
               12. Сведения о запрашиваемом кредите
             </div>
             <div class="col-3">Вид кредита</div>
-            <div class="col-9"></div>
+            <div class="col-9">{{fullProfileDate.infoCredit.product}}</div>
             <div class="col-3">Кредитный продукт</div>
             <div class="col-9"></div>
             <div class="col-3">Запрашиваемая сумма кредита</div>
@@ -481,8 +500,8 @@
           color="primary"
           @click="callPrint('form')"
         />
-        <!-- <q-btn flat label="Закрыть" color="primary" v-close-popup /> -->
-        <q-btn flat label="Закрыть" color="primary" @click="() => this.$router.push('/work/credit/sub/task/1')" />
+        <q-btn flat label="Закрыть" color="primary" v-close-popup />
+        <!-- <q-btn flat label="Закрыть" color="primary" @click="() => this.$router.push('/work/credit/sub/task/1')" /> -->
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -498,6 +517,9 @@ export default {
   computed: {
     fullProfileDate() {
       return this.$store.state.profile.personalData
+    },
+    dictionaries() {
+      return this.$store.state.profile.dictionaries;
     }
   },
   methods: {

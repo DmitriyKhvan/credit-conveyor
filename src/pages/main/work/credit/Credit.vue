@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="creditConveyor">
   <div class="creditMenu">
     <!-- <q-toolbar class="bg-grey-3"> -->
     <q-btn 

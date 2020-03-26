@@ -1,335 +1,401 @@
-import BpmService from '../../services/bpm.service';
+import BpmService from "../../services/bpm.service";
 
 export default {
   state: {
     confirm: false,
-    personalData: {
-      surname: "",
-      name: "",
-      mname: "",
-      inn: null,
-      pinpp: null,
-      sex: "",
-      residency: "",
-      phones: [{
-        phone: 998
-      }],
-      email: "",
-      education: "",
-      
-      passportData: {
-        series: "",
-        number: "",
-        date: ""
+    dictionaries: {},
+
+    Status: "",
+    ApplicationID: "",
+    ProtocolNumber: "",
+    Number: "",
+    Branch: "",
+    BODecision: "",
+    FinalDecision: "",
+    Date: "",
+    BOLogin: "",
+    Department: "",
+    ClientManagerLogin: "",
+    CreditCommiteeDecisions: [
+      {
+        Comment: "",
+        MemberOfCCFIO: "",
+        id: 0,
+        Login: "",
+        isApproved: false
+      }
+    ],
+
+    Customer: {
+      DigID: false,
+      Email: "",
+      FirstName: "",
+      LastName: "",
+      MiddleName: "",
+      FullName: "",
+      BirthDate: "",
+      INN: "",
+      PINPP: "",
+      ResidentFlag: false,
+      Gender: null,
+
+      Document: {
+        Series: "",
+        Number: null,
+        ExpirationDate: "",
+        GivenDate: "",
+        GUID: "",
+        Country: "",
+        DocLink: "",
+        DocumentName: 0
       },
 
-      //Адрес
-      permanentRegistration: {
-        index: null,
-        rigion: "",
-        city: "",
-        street: "",
-        houseNumber: "",
-        housing: "",
-        structure: "",
-        apartmentNumber: "",
-        typeOfOwnership: ""
-      },
-    
-  
-      actualRegistration: {
-        index: null,
-        rigion: "",
-        city: "",
-        street: "",
-        houseNumber: "",
-        housing: "",
-        structure: "",
-        apartmentNumber: "",
-        typeOfOwnership: ""
-      },
-
-      temporaryRegistration: {
-        index: null,
-        rigion: "",
-        city: "",
-        street: "",
-        houseNumber: "",
-        housing: "",
-        structure: "",
-        apartmentNumber: "",
-        typeOfOwnership: ""
-      },
-
-      activity: {
-        kind: "",
-        nameOfEmployer: "",
-        innOfEmployer: null,
-        typeOrganization: "",
-        amountWorkes: "",
-        position: "",
-        positionCategory: "",
-        workExperience: "",
-        totalWorkExperience: "",
-      },
-
-      family: {
-        familyStatus: "",
-        children: "",
-        childrenCount: 0
-      },
-
-      expenseIncome: {
-        income: 0, //подтвержденный ежемесячный доход
-        expense: 0, //периодические расходы
-        otherExpenses: 0, //плата за облуживание других обязательств
-        externalIncome: "", //наличие дополнительного дохода
-        externalIncomeSize: 0, //размер дополнительного дохода
-        additionalIncomeSource: "" //источник дополнительного дохода
-      },
-
-      relatives: [
+      Education: null,
+      PhoneList: [
         {
-          relative: "",
-          surname: "",
-          name: "",
-          mname: "",
-          birthday: "",
-          passportData: {
-            series: "",
-            number: null,
-            date: ""
+          Number: ""
+        }
+      ],
+
+      AddressList: [
+        {
+          Building: "",
+          OwnershipType: null,
+          HouseType: "",
+          PostalCode: "",
+          Region: null,
+          District: "", //Надо добавить!!!
+          Street: "",
+          Block: "",
+          House: "",
+          City: "",
+          Apartment: "",
+          AddressType: 1
+        },
+        {
+          Building: "",
+          OwnershipType: null,
+          HouseType: "",
+          PostalCode: "",
+          Region: null,
+          District: "", //Надо добавить!!!
+          Street: "",
+          Block: "",
+          House: "",
+          City: "",
+          Apartment: "",
+          AddressType: 2
+        }
+      ],
+
+      MaritalStatus: false,
+      hasChildren: false,
+      // "ChildrenNum": 0,
+      UnderAgeChildrenNum: null,
+
+      Relatives: [
+        {
+          FirstName: "",
+          FullName: "",
+          FamilyConnectionType: null,
+          LastName: "",
+          MiddleName: "",
+          BirthDate: "",
+          Document: {
+            Series: "",
+            Number: null,
+            ExpirationDate: "",
+            GivenDate: "",
+            GUID: "",
+            Country: "",
+            DocLink: "",
+            DocumentName: 0
           }
         }
       ],
 
-      //Имущество
-      properties: [],
-      vehicles: [],
-
-      //Гарантии
-      guarantees: [],
-
-      infoCredit: {
-        product: "",
-        price: 0,
-        currency: "",
-        typeRepayment: "",
-        interestRateMax: 0,
-        interestRateMin: 0,
-        periodRepayment: "",
-        comfortablePeriodRepayment: 0,
-        periodRepaymentMin: 0,
-        periodRepaymentMax: 0,
-        type: "",
-        initialFee: 0,
-        procentInitialFeeMin: 0,
-        procentInitialFeeMax: 0,
-        purposeCredit: "",
-        sellerName: "",
-        productName: "",
-        sourceFinancs: ""
+      JobInfo: {
+        employerActivityType: null, //вид деятельности организации
+        positionType: null, // Категория занимаемой должности
+        INN: "",
+        employeesNum: null, // количество работников
+        employerName: "", // Наименование работадателя
+        totalJobExperienceMonths: null, // общий трудовой стаж
+        activeYears: null, // срок деятельности
+        position: "", // должность
+        type: "", // вид деятельности
+        lastJobExperienceMonths: null // стаж на последнем месте работы
       },
 
-      comment: ""
-
-    },
-
-    creditCalc: {
-      loanSum: 51105000,
-      loanRate: 26,
-      loanTerm: 24,
-      loanDate: "08.02.2020",
-      paymentType: "Аннуэтетный",
-      preferential: "Нет",
-      preTerm: 0
-    },
-
-    creditResult: {
-      totalPercent: 300000,
-      totalLoan: 1000000,
-      totalPayment: 1300000,
-      paymentRows: [
-        {
-          date: '01.01.2020',
-          daysInMonth: 30,
-          monthNum: 1,
-          balanceAtStart: 1000000,
-          percent: 10000,
-          mainDebt: 20000,
-          total: 30000,
-          balanceAtEnd: 980000
+      // eжемесячные расходы
+      MonthlyExpenses: {
+        recurringExpenses: 0,
+        obligations: 0
+      },
+      // ежемесячные доходы
+      MonthlyIncome: {
+        confirmMonthlyIncome: 0,
+        hasAdditionalIncome: false,
+        additionalIncome: {
+          incomeType: 0,
+          sum: 0
         }
-      ]
+      },
+
+      PropertyInformation: {
+        Realty_new: [],
+        Transport_new: []
+      }
     },
-    
+
+    Guarantee: {
+      Insurance: [],
+      RelatedLegalPerson: [],
+      RelatedPerson: []
+    },
+
+    LoanInfo: {
+      LoanProduct: null, // Кредитный продукт
+      Sum: null, // Запрашиваемая сумма кредита
+      Currency: "", // Валюта
+      RepaymentType: null, // Тип пошагового кредита
+      LoanType: null, // Вид кредита
+
+      MinInterestRate: null, // Процентаня ставка по кредиту (минимальная)
+      MaxInterestRate: null, // Процентная ставка по кредиту (максимальная)
+
+      MaxDefferalRepaymentPeriod: null, // Льготный период по погашению кредита
+
+      ConvenientRepaymentTerm: null, // Удобный срок погашения в мес
+
+      MaxTermInMonths: null, // Максимальное количество месяцев на кредит
+      MinTermInMonths: null, // Минимальное количество месяцев на кредит
+
+      InitialPayment: null, // Первоначальный взнос
+
+      MaxInitialPaymentPercent: null, // Процент первоначального взноса (максимальный)
+      MinInitialPaymentPercent: null, // Процент первоначального взноса (минимальный)
+
+      LoanPurpose: "", // Цель кредитования
+
+      SellerName: "", // Наименование продавца
+
+      ProductName: "", // Наименование товара/работы/услуги
+
+      FundingSource: "", // Источник финансирования
+
+      FacilitiesForRepaymentDate: false
+    },
+
+    ApplicationComment: [
+      {
+        Comment: "",
+        Type: "",
+        CommentPerson: "",
+        id: 0,
+        CommentDate: "2020-03-18T09:00:23.928+05:00"
+      }
+    ],
+    AttachedDocuments: [
+      {
+        DocLink: "",
+        DocumentName: ""
+      }
+    ],
+
     bpmService: new BpmService(),
-    icon: false,
-    loader: false,
-    iconMessage: "",
-    disableBtn: false,
-    disableInput: false,
-    submitting: false,
-    loadMessage: "",
+    // icon: false,
+    // loader: false,
+    // iconMessage: "",
+    // disableBtn: false,
+    // disableInput: false,
+    // submitting: false,
+    // loadMessage: ""
   },
   actions: {
-
     // async authProcess(state, payload) {
     //   return await state.state.bpmService.authProcess(payload);
     // }
   },
   mutations: {
     addPhone(state) {
-      //console.log(state)
-      state.personalData.phones.push({
-        phone: 998
-      })
-    }, 
+      state.Customer.PhoneList.push({
+        Number: 998
+      });
+    },
 
     addPhoneGuarantee(state, payload) {
-      //console.log(state.personalData.guarantees[payload])
-      state.personalData.guarantees[payload.index][payload.item].phones.push({
-        phone: 998
-      })
-
+      state.Guarantee[payload.item][payload.index].PhoneList.push({
+        Number: 998
+      });
     },
 
     addProperty(state) {
-      state.personalData.properties.push({
-        type: "",
-        region: "",
-        price: 0
-      })
+      state.Customer.PropertyInformation.Realty_new.push({
+        MarketValue: null,
+        Region: null,
+        PropertyType: null
+      });
     },
 
     addVehicle(state) {
-      state.personalData.vehicles.push({
-        type: "",
-        brand: "",
-        year: null,
-        price: 0
-      })
+      state.Customer.PropertyInformation.Transport_new.push({
+        transportBrand: "",
+        yearOfRelease: null,
+        VehicleType: null,
+        marketValue: null
+      });
     },
 
-    addGuarantee(state) {
-      state.personalData.guarantees.push({
-        type: "",
-        individual: {
-          attitude: "",
-          price: 0,
-          surname: "",
-          name: "",
-          mname: "",
-          birthday: "",
-          inn: null,
-          pinpp: null,
-          residency: "",
-          index: "",
-          region: "",
-          city: "",
-          street: "",
-          houseNumber: "",
-          housing: "",
-          structure: "",
-          apartmentNumber: "",
-          passportData: {
-            series: "",
-            number: null,
-            date: ""
-          },
-          phones: [{
-            phone: 998
-          }],
-        },
-        entity: {
-          price: 0,
-          name:"",
-          inn: null,
-          activity: "",
-          index: "",
-          region: "",
-          city: "",
-          street: "",
-          houseNumber: "",
-          housing: "",
-          structure: "",
-          officeNumber: "",
-          phones: [{
-            phone: 998
-          }],
-        },
-        insurance: {
-          name:"",
-          inn: null,
-          price: 0,
-        },
-      })
+    addInsurance(state) {
+      state.Guarantee.Insurance.push({
+        INN: "",
+        OrgName: "",
+        Sum: 0
+      });
     },
 
-    updateGuarantee(state, payload) {
-      state.personalData.guarantees = Object.assign([], state.personalData.guarantees, payload);
+    addRelatedLegalPerson(state) {
+      state.Guarantee.RelatedLegalPerson.push({
+        Address: {
+          Building: "",
+          OwnershipType: null,
+          HouseType: "",
+          PostalCode: "",
+          Region: null,
+          Street: "",
+          District: "", //Надо добавить!!!
+          Block: "",
+          House: "",
+          City: "",
+          Apartment: "",
+          Office: "", // ???
+          AddressType: null
+        },
+        PhoneList: [
+          {
+            Number: 998
+          }
+        ],
+        INN: "",
+        Name: "",
+        Sum: 0, // Надо добавить!
+        Activity: "" // Надо добавить!
+      });
+    },
+
+    addRelatedPerson(state) {
+      state.Guarantee.RelatedPerson.push({
+        Address: {
+          Building: "",
+          OwnershipType: null,
+          HouseType: "",
+          PostalCode: "",
+          Region: null,
+          Street: "",
+          District: "", //Надо добавить!!!
+          Block: "",
+          House: "",
+          City: "",
+          Apartment: "",
+          AddressType: null
+        },
+        FirstName: "",
+        NameENG: "",
+        INN: "",
+        Sum: 0,
+        MiddleName: "",
+        Document: {
+          Series: "",
+          Number: null,
+          ExpirationDate: "",
+          GivenDate: "",
+          GUID: "",
+          Country: "",
+          DocLink: "",
+          DocumentName: 0
+        },
+        ClientRelation: null,
+        PhoneList: [
+          {
+            Number: 998
+          }
+        ],
+        FullName: "",
+        Resident: false,
+        LastName: "",
+        PINPP: "",
+        BirthDate: ""
+      });
     },
 
     removeItem(state, payload) {
-      state.personalData[payload.item].splice(payload.index, 1);
+      state.Customer[payload.item].splice(payload.index, 1);
+    },
+
+    removeGuarantee(state, payload) {
+      state.Guarantee[payload.item].splice(payload.index, 1);
     },
 
     removePhoneGuarantee(state, payload) {
-      //console.log(state.personalData.guarantees);
-      state.personalData.guarantees[payload.index][payload.item].phones.splice(payload.index2, 1)
+      state.Guarantee[payload.item][payload.index].PhoneList.splice(
+        payload.index2,
+        1
+      );
     },
 
     addRelative(state) {
-        state.personalData.relatives.push({
-        relative: "",
-        surname: "",
-        name: "",
-        birthday: "",
-        mname: "",
-        passportData: {
-          series: "",
-          number: "",
-          date: ""
+      state.Customer.Relatives.push({
+        FirstName: "",
+        FullName: "",
+        FamilyConnectionType: null,
+        LastName: "",
+        MiddleName: "",
+        BirthDate: "",
+        Document: {
+          Series: "",
+          Number: null,
+          ExpirationDate: "",
+          GivenDate: "",
+          GUID: "",
+          Country: "",
+          DocLink: "",
+          DocumentName: 0
         }
-      })
+      });
     },
 
-    // toggleConfirm(state, payload) {
-    //   state.confirm = payload.preApprovalForm;
-    //   state.preApprovalData.income = payload.income;
-    //   state.preApprovalData.expense = payload.expense;
-    //   state.preApprovalData.maxPayment = payload.maxPayment;
-    //   state.preApprovalData.maxSum = payload.maxSum
-    // },
-    // toggleSubmitting(state, payload) {
-    //   state.submitting = payload
-    // },
-    // toggleDisableBtn(state, payload) {
-    //   state.disableBtn = payload
-    // },
-    // toggleDisableInput(state, payload) {
-    //   state.disableInput = payload
-    // },
-    // errorLoadData(state, payload) {
-    //   // console.log(payload);
-    //   state.icon = payload.flag;
-    //   state.loader = payload.loader;
-    //   state.iconMessage = payload.message
-    // },
-    // loadMessageChange(state, payload) {
-    //   state.loadMessage = payload
-    // },
-    // sentPersonData(state, payload) {
-    //   console.log("Данные пользователя",payload);
-    //   state.personalData.name = payload.personData.Name;
-    //   state.personalData.surname = payload.personData.Surname;
-    //   state.personalData.pinpp = payload.personData.Pinpp;
-    //   state.personalData.passport = payload.personData.DocumentNumber;
-    //   state.personalData.inn = payload.Inn;
-    //   state.personalData.mname = payload.Patronym;
-    // }
-  },
-  getters: {
+    addRegistration(state, AddressType) {
+      state.Customer.AddressList.push({
+        Building: "",
+        OwnershipType: null,
+        HouseType: "",
+        PostalCode: "",
+        Region: null,
+        District: "", //Надо добавить!!!
+        Street: "",
+        Block: "",
+        House: "",
+        City: "",
+        Apartment: "",
+        AddressType
+      });
+    },
 
-  }
-}
+    removeRegistration(state, payload) {
+      const idx = state.Customer.AddressList.findIndex(
+        item => item.AddressType === payload.item
+      );
+      state.Customer.AddressList.splice(idx, 1);
+    },
+
+    removeProperty(state, payload) {
+      state.Customer.PropertyInformation[payload.item].splice(payload.index, 1);
+    },
+
+    setDictionaries(state, payload) {
+      state.dictionaries = payload;
+    }
+  },
+  getters: {}
+};

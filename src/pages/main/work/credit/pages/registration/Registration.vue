@@ -180,8 +180,10 @@
                 <div v-if="!!personalData.typeCredit" class="col-12">
                   <h6 class="periodCredit">Выберите срок кредита</h6>
                   <q-badge color="secondary">
-                    Срок: {{ personalData.periodCredit }} ({{ periodCreditMin }} до
-                    {{ periodCreditMax }})
+                    Срок: {{ personalData.periodCredit }} ({{
+                      periodCreditMin
+                    }}
+                    до {{ periodCreditMax }})
                   </q-badge>
                   <q-slider
                     v-model.number="personalData.periodCredit"
@@ -332,7 +334,7 @@
 
       <apploaderFullScreen v-if="loaderPreApproval"></apploaderFullScreen>
       <!-- Pre-Approval -->
-      <app-pre-approval  v-else></app-pre-approval>
+      <app-pre-approval v-else></app-pre-approval>
     </div>
   </div>
 </template>
@@ -405,9 +407,8 @@ export default {
     };
   },
   async created() {
+    this.$store.commit("resetPersonData");
 
-    this.$store.commit("resetPersonData")
-    
     try {
       const auth = await this.$store.dispatch("authBpm");
       console.log("auth", auth);
@@ -415,9 +416,11 @@ export default {
       const process = await this.$store.dispatch("startProcess");
       console.log("process", process);
 
-      this.$store.commit("setTaskId", process.userTaskCreditDetailed.id)
-      this.personalData.spouseCost = process.userTaskCreditDetailed.input.spouseCost
-      this.personalData.childCost = process.userTaskCreditDetailed.input.childCost
+      this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
+      this.personalData.spouseCost =
+        process.userTaskCreditDetailed.input.spouseCost;
+      this.personalData.childCost =
+        process.userTaskCreditDetailed.input.childCost;
 
       for (let typeCredit of process.userTaskCreditDetailed.input.credits) {
         const credits = {
@@ -431,7 +434,7 @@ export default {
         this.options.typeCredits.push(credits);
       }
 
-      console.log('typeCredits', this.options.typeCredits);
+      console.log("typeCredits", this.options.typeCredits);
       this.loaderForm = false;
     } catch (error) {}
 
@@ -458,12 +461,12 @@ export default {
       return this.$store.state.credits.personalData;
     },
     credits() {
-      return this.$store.state.credits
+      return this.$store.state.credits;
     }
   },
   watch: {
-    "personalData.typeCredit" (credit) {
-      this.personalData.typeStepCredit = null
+    "personalData.typeCredit"(credit) {
+      this.personalData.typeStepCredit = null;
       this.options.typeStepCredits = [];
       this.periodCreditMin = null;
       this.periodCreditMax = null;
@@ -498,16 +501,16 @@ export default {
         );
       }
     },
-    "personalData.children" (status) {
+    "personalData.children"(status) {
       if (!status) {
-        this.personalData.childrenCount = 0
+        this.personalData.childrenCount = 0;
       }
     },
 
-    "personalData.externalIncome" (status) {
+    "personalData.externalIncome"(status) {
       if (!status) {
-        this.personalData.externalIncomeSize = 0
-        this.personalData.additionalIncomeSource = ""
+        this.personalData.externalIncomeSize = 0;
+        this.personalData.additionalIncomeSource = "";
       }
     }
   },
@@ -541,10 +544,8 @@ export default {
         this.$refs.phone.hasError ||
         this.$refs.pinpp.hasError ||
         this.$refs.pasport.hasError ||
-
         this.$refs.typeCredit.hasError ||
         this.$refs.typeStepCredit.hasError ||
-
         this.$refs.income.hasError ||
         this.$refs.expense.hasError ||
         this.$refs.otherExpenses.hasError
@@ -573,7 +574,7 @@ export default {
           periodCredit,
           loanRate,
           spouseCost,
-          childCost,
+          childCost
         } = this.personalData;
 
         const data = {
@@ -602,7 +603,7 @@ export default {
                     number: Number(passport.slice(2)),
                     series: passport.slice(0, 2)
                   },
-                  mainPhone: phone.replace(/[\s+()]/g, ''),
+                  mainPhone: phone.replace(/[\s+()]/g, ""),
                   tin: Number(inn),
                   pinpp
                 }
@@ -620,18 +621,21 @@ export default {
           ]
         };
 
-        const taskId = this.$store.getters.taskId
+        const taskId = this.$store.getters.taskId;
 
         try {
-          const resCredit = await this.$store.dispatch('calculationCredit', {taskId, data})
-          console.log('resCredit', resCredit)
+          const resCredit = await this.$store.dispatch("calculationCredit", {
+            taskId,
+            data
+          });
+          console.log("resCredit", resCredit);
 
-          this.credits.reasonsList = resCredit.nextTask.input.reasonsList
+          this.credits.reasonsList = resCredit.nextTask.input.reasonsList;
 
-          console.log('resons', this.$store.state.credits.reasonsList)
+          console.log("resons", this.$store.state.credits.reasonsList);
 
           //Вставить следующий task_id
-          this.$store.commit("setTaskId", resCredit.nextTask.id)
+          this.$store.commit("setTaskId", resCredit.nextTask.id);
 
           const resp = {
             income: resCredit.nextTask.input.incoming, // Сколько дохода учитываем
@@ -643,11 +647,10 @@ export default {
           this.$store.commit("toggleConfirm", true);
           this.$store.commit("creditConfirm", resp);
           this.loaderPreApproval = false;
-
         } catch (e) {}
 
         console.log("personalData", this.$store.state.credits.personalData);
-        console.log('data', data)
+        console.log("data", data);
       }
     },
 
@@ -661,90 +664,78 @@ export default {
           hasError: false //валидный
         };
       }
-    },
+    }
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
     appDigIdNetworkError: DigIdNetworkError,
     appLoader: Loader,
-    apploaderFullScreen: LoaderFullScreen,
+    apploaderFullScreen: LoaderFullScreen
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.tab-title {
-  background-color: #ededed;
-  color: #0e3475;
-  margin-top: 7px;
-  padding: 9px 11px;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 16px;
-  //text-transform: uppercase
-}
-
-.tab-content {
-  color: #212121;
-}
-
-.personPhoto_block,
-.default_personPhoto_block {
-  width: 94%;
-  height: auto;
-  border: 1px solid #acacac;
-}
-
-.personPhoto,
-.default_personPhoto {
-  width: 100%;
-  display: block;
-}
-
-.creditContent {
-  width: 48%;
-}
-
-.loader {
-  margin-bottom: 15px;
-}
-
-.q-btn--rectangle {
-  border-radius: 0;
-}
-
-.q-field--with-bottom,
-.q-pb-sm {
-  padding-bottom: 16px;
-}
-
-.q-field__native,
-.q-field__prefix,
-.q-field__suffix {
-  color: #acacac;
-}
-</style>
-
 <style lang="scss">
-.q-field__bottom {
-  padding: 1px 0 0 10px;
+.creditConveyor {
+  .tab-title {
+    background-color: #ededed;
+    color: #0e3475;
+    margin-top: 7px;
+    padding: 9px 11px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+    //text-transform: uppercase
+  }
+
+  .tab-content {
+    color: #212121;
+  }
+
+  .personPhoto_block,
+  .default_personPhoto_block {
+    width: 94%;
+    height: auto;
+    border: 1px solid #acacac;
+  }
+
+  .personPhoto,
+  .default_personPhoto {
+    width: 100%;
+    display: block;
+  }
+
+  .creditContent {
+    width: 48%;
+  }
+
+  .loader {
+    margin-bottom: 15px;
+  }
+
+  .q-btn--rectangle {
+    border-radius: 0;
+  }
+
+  .q-field--with-bottom,
+  .q-pb-sm {
+    padding-bottom: 16px;
+  }
+
+  .q-field__native,
+  .q-field__prefix,
+  .q-field__suffix {
+    color: #acacac;
+  }
+
+  .q-field__bottom {
+    padding: 1px 0 0 10px;
+  }
+
+  .periodCredit {
+    margin: 0;
+  }
 }
-
-.periodCredit {
-  margin: 0;
-}
-
-//   .q-btn--rectangle {
-//     border-radius: 0;
-//   }
-
-//   .q-field--with-bottom, .q-pb-sm {
-//     padding-bottom: 16px;
-//   }
-
-//   .q-field__native, .q-field__prefix, .q-field__suffix {
-//     color: #acacac;
-//   }
 </style>
