@@ -353,7 +353,7 @@
               class="fieldset_block"
             >
               <legend class="legend_title">
-                {{ options.AddressType[index] }}
+                {{ options.AddressType[address.AddressType - 1] }}
                 <!-- Адрес постоянной регистрации -->
               </legend>
 
@@ -518,7 +518,7 @@
             </fieldset>
 
             <q-btn
-              v-if="!emptyTemporaryRegistration"
+              v-if="Customer.AddressList.findIndex(item => item.AddressType === 3) === -1"
               color="primary"
               label="Добавить адрес временной регистрации"
               @click="addRegistration(3)"
@@ -1876,7 +1876,7 @@
                     square
                     outlined
                     v-model="guarantee.Activity"
-                    :options="options.activities"
+                    :options="dictionaries.MainWorkType.items"
                     dense
                     label="Вид деятельности"
                     emit-value
@@ -2585,7 +2585,6 @@ export default {
       loaderForm: false,
       isValid: true, //валидация Email
       sameRegistration: "",
-      emptyTemporaryRegistration: false,
       confirm: false,
       confirmCredit: false,
       itemName: "",
@@ -2714,6 +2713,7 @@ export default {
   methods: {
     onSubmit() {
       console.log("fullProfile", this.$store.state.profile);
+      this.confirmCredit = true;
 
       this.$refs.surname.validate();
       this.$refs.name.validate();

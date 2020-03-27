@@ -386,7 +386,9 @@ export default {
       const idx = state.Customer.AddressList.findIndex(
         item => item.AddressType === payload.item
       );
-      state.Customer.AddressList.splice(idx, 1);
+      if (idx !== -1) {
+        state.Customer.AddressList.splice(idx, 1);
+      }
     },
 
     removeProperty(state, payload) {

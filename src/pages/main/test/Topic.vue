@@ -142,7 +142,7 @@ export default {
       nextDisabled: false,
       prevDisabled: true,
       timer: null,
-      //time: "", // обратный отчет
+      // time: "", // обратный отчет
       timeCurQuestion: 0,
       timerCurQuestion: null,
       duration: 0,
@@ -199,6 +199,9 @@ export default {
     const tabover = document.getElementsByClassName("q-tabs__content")
     tabover[1].style.cssText = "overflow: visible"
     
+  },
+  updated() {
+    console.log('updated')
   },
   beforeDestroy() {
     clearInterval(this.timer);
@@ -265,6 +268,7 @@ export default {
       if(!this.tabView.find(e => e === i)) this.tabView.push(i)
     },
     varActive(id) {
+      console.log('varActive')
       if(this.data.answers.find(e => e.variant_id === id)) return 'varActive'      
     },    
     async getTests(id) {

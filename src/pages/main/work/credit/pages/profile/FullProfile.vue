@@ -516,7 +516,10 @@ export default {
   },
   computed: {
     fullProfileDate() {
-      return this.$store.state.profile.personalData
+      return this.$store.state.profile
+    },
+    Customer() {
+      return this.$store.state.profile.Customer
     },
     dictionaries() {
       return this.$store.state.profile.dictionaries;
