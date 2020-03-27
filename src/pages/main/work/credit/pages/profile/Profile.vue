@@ -140,7 +140,7 @@
                   square
                   outlined
                   v-model="Customer.ResidentFlag"
-                  :options="options.confirmation"
+                  :options="fullProfile.options.confirmation"
                   dense
                   label="Резидентство"
                   emit-value
@@ -353,12 +353,11 @@
               class="fieldset_block"
             >
               <legend class="legend_title">
-                {{ options.AddressType[address.AddressType - 1] }}
-                <!-- Адрес постоянной регистрации -->
+                {{ fullProfile.AddressType[address.AddressType - 1] }}
               </legend>
 
               <div class="tab-content" ref="tabContent">
-                <div
+                <!-- <div
                   v-if="address.AddressType === 2"
                   class="row q-col-gutter-md"
                 >
@@ -367,7 +366,7 @@
                       square
                       outlined
                       v-model="sameRegistration"
-                      :options="options.confirmation"
+                      :options="fullProfile.options.confirmation"
                       dense
                       label="Совпадает ли с адресом постоянной регистрации"
                       emit-value
@@ -375,7 +374,7 @@
                       class="q-pb-sm"
                     />
                   </div>
-                </div>
+                </div> -->
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -503,26 +502,46 @@
               </div>
 
               <q-btn
-                v-if="address.AddressType === 3"
+                v-if="address.AddressType === 2 || address.AddressType === 3"
                 color="red"
                 label="Удалить"
                 @click="
                   confirmDeleteItem(
-                    'Адрес временной регистрации',
+                    options.AddressType[address.AddressType - 1],
                     removeRegistration,
-                    3
+                    address.AddressType
                   )
                 "
                 class="removeItem"
               ></q-btn>
             </fieldset>
 
-            <q-btn
-              v-if="Customer.AddressList.findIndex(item => item.AddressType === 3) === -1"
-              color="primary"
-              label="Добавить адрес временной регистрации"
-              @click="addRegistration(3)"
-            ></q-btn>
+            <template v-if="Customer.AddressList.findIndex(item => item.AddressType === 2) === -1">
+              <h5 class="tab-content_title">
+                Данные по адресу фактического проживания отсутствуют
+              </h5>
+            
+              <q-btn
+                color="primary"
+                label="Добавить адрес фактического проживания"
+                @click="addRegistration(2)"
+                class="addItem"
+              ></q-btn>
+            </template>
+              
+            <template v-if="Customer.AddressList.findIndex(item => item.AddressType === 3) === -1">
+              <h5 class="tab-content_title">
+                Данные по адресу временной регистрации отсутствуют
+              </h5>
+
+              <q-btn
+                color="primary"
+                label="Добавить адрес временной регистрации"
+                @click="addRegistration(3)"
+                class="addItem"
+              ></q-btn>
+            </template>
+            
           </div>
         </div>
 
@@ -555,7 +574,7 @@
                   square
                   outlined
                   v-model="Customer.hasChildren"
-                  :options="options.confirmation"
+                  :options="fullProfile.options.confirmation"
                   dense
                   label="Есть ли дети"
                   emit-value
@@ -805,6 +824,7 @@
               color="primary"
               label="Добавить родственника"
               @click="addRelative"
+              class="addItem"
             ></q-btn>
           </div>
         </div>
@@ -1079,7 +1099,7 @@
                   square
                   outlined
                   v-model="Customer.MonthlyIncome.hasAdditionalIncome"
-                  :options="options.confirmation"
+                  :options="fullProfile.options.confirmation"
                   dense
                   label="Наличие дополнительного дохода"
                   emit-value
@@ -1430,7 +1450,7 @@
                     ref="mnameGuarantees"
                     square
                     outlined
-                    v-model="guarantee.FullName"
+                    v-model="guarantee.MiddleName"
                     dense
                     label="Отчество"
                     lazy-rules
@@ -1512,7 +1532,7 @@
                     square
                     outlined
                     v-model="guarantee.Resident"
-                    :options="options.confirmation"
+                    :options="fullProfile.options.confirmation"
                     dense
                     label="Резидентство"
                     emit-value
@@ -2217,7 +2237,7 @@
                   square
                   outlined
                   v-model="fullProfile.LoanInfo.RepaymentType"
-                  :options="options.RepaymentType"
+                  :options="fullProfile.options.RepaymentType"
                   dense
                   label="Тип пошагового кредита"
                   :rules="[val => !!val || 'Выберите тип пошагового кредита']"
@@ -2261,7 +2281,7 @@
                 />
               </div>
 
-              <div class="col-4">
+              <!-- <div class="col-4">
                 <q-select
                   ref="periodRepayment"
                   square
@@ -2275,7 +2295,7 @@
                   map-options
                   class="q-pb-sm"
                 />
-              </div>
+              </div> -->
             </div>
 
             <div class="row q-col-gutter-md">
@@ -2593,23 +2613,6 @@ export default {
       bar: false,
 
       options: {
-        confirmation: [
-          {
-            label: "Да",
-            value: true
-          },
-          {
-            label: "Нет",
-            value: false
-          }
-        ],
-
-        AddressType: [
-          "Адрес постоянной регистрации",
-          "Адрес фактического проживания",
-          "Адрес временной регистрации"
-        ],
-
         RepaymentType: [],
 
         yearsOfIssueVehicle: []
@@ -2704,7 +2707,7 @@ export default {
         this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
           idx
         ].MaxInitialPaymentPercent;
-        this.options.RepaymentType = this.dictionaries.LoanDetails.items[
+        this.fullProfile.options.RepaymentType = this.dictionaries.LoanDetails.items[
           idx
         ].PaymentsType.items;
       }
@@ -2712,8 +2715,7 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log("fullProfile", this.$store.state.profile);
-      this.confirmCredit = true;
+      //console.log("fullProfile", this.$store.state.profile);
 
       this.$refs.surname.validate();
       this.$refs.name.validate();
@@ -2887,7 +2889,7 @@ export default {
       this.$refs.productCredit.validate();
       this.$refs.priceCredit.validate();
       this.$refs.typeRepayment.validate();
-      this.$refs.periodRepayment.validate();
+      // this.$refs.periodRepayment.validate();
       this.$refs.comfortablePeriodRepayment.validate();
       // this.$refs.typeCredit.validate();
       this.$refs.initialFee.validate();
@@ -2969,9 +2971,9 @@ export default {
         this.$refs.productCredit.hasError ||
         this.$refs.priceCredit.hasError ||
         this.$refs.typeRepayment.hasError ||
-        this.$refs.periodRepayment.hasError ||
+        // this.$refs.periodRepayment.hasError ||
         this.$refs.comfortablePeriodRepayment.hasError ||
-        this.$refs.typeCredit.hasError ||
+        // this.$refs.typeCredit.hasError ||
         this.$refs.initialFee.hasError ||
         this.$refs.purposeCredit.hasError ||
         this.$refs.sellerName.hasError ||

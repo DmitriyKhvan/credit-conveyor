@@ -4,6 +4,27 @@ export default {
   state: {
     confirm: false,
     dictionaries: {},
+    
+    AddressType: [
+      "Адрес постоянной регистрации",
+      "Адрес фактического проживания",
+      "Адрес временной регистрации"
+    ],
+
+    options: {
+      confirmation: [
+        {
+          label: "Да",
+          value: true
+        },
+        {
+          label: "Нет",
+          value: false
+        }
+      ],
+
+      RepaymentType: []
+    },
 
     Status: "",
     ApplicationID: "",
@@ -72,20 +93,20 @@ export default {
           Apartment: "",
           AddressType: 1
         },
-        {
-          Building: "",
-          OwnershipType: null,
-          HouseType: "",
-          PostalCode: "",
-          Region: null,
-          District: "", //Надо добавить!!!
-          Street: "",
-          Block: "",
-          House: "",
-          City: "",
-          Apartment: "",
-          AddressType: 2
-        }
+        // {
+        //   Building: "",
+        //   OwnershipType: null,
+        //   HouseType: "",
+        //   PostalCode: "",
+        //   Region: null,
+        //   District: "", //Надо добавить!!!
+        //   Street: "",
+        //   Block: "",
+        //   House: "",
+        //   City: "",
+        //   Apartment: "",
+        //   AddressType: 2
+        // }
       ],
 
       MaritalStatus: false,
