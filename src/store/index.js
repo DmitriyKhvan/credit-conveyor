@@ -1,8 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import example from "./module-example";
-
 import {
   auth
 } from "./categorized/auth.module";
@@ -30,7 +28,6 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   namespaced: true,
   modules: {
-    example,
     auth,
     dicts,
     socket,

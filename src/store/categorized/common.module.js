@@ -2,7 +2,9 @@
 const state = {
   lang: "ru", // 1-ru, 2- uzkr, 3-ru, 4-uzkr   --> 3-uz, 4-en
   isLoading: false,
-  isLeftDrawerClosed: false
+  isLeftDrawerClosed: false,
+  drawerHidden: false
+
 };
 
 const getters = {
