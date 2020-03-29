@@ -44,10 +44,10 @@
             <span class="my-table-details">{{ props.row.fio }}</span
             ><br />
             Журналь:
-            <span class="my-table-details">{{ props.row.journal_name[0] }}</span
+            <span class="my-table-details">{{ props.row.journal }}</span
             ><br />
             Орган:
-            <span class="my-table-details">{{ props.row.organ_name[0] }}</span
+            <span class="my-table-details">{{ props.row.organ }}</span
             ><br />
           </div>
         </q-td>
@@ -76,12 +76,12 @@
             Листов.:
             <span class="my-table-details"
               >{{ props.row.paper_count }} &nbsp;/&nbsp;{{
-                props.row.format_name[0]
+                props.row.format
               }}</span
             ><br />
             Размер:
             <span class="my-table-details">{{
-              conv_size(props.row.file_size)
+              conv_size(props.row.file.file_size)
             }}</span
             ><br />
             Файл:
@@ -112,11 +112,8 @@
 
       <template v-slot:body-cell-users="props">
         <q-td :props="props">
-          <div v-if="props.row.users.users !== null">
-            <div
-              v-for="(subusers, index) in props.row.users.users"
-              :key="index"
-            >
+          <div v-if="props.row.tasks !== null">
+            <div v-for="(subusers, index) in props.row.tasks" :key="index">
               <span :class="[index == 0 ? 'mainStyle' : '']">
                 {{ subusers.u_name }}
                 <q-icon v-if="subusers.children == true" name="home" />
@@ -148,7 +145,7 @@
             ></q-icon
             >&nbsp;&nbsp;
             <q-icon
-              v-if="props.row.users.users !== null"
+              v-if="props.row.tasks !== null"
               name="o_print"
               size="25px"
               color="secondary"
@@ -160,7 +157,7 @@
     <q-dialog v-model="bar" square persistent>
       <q-card class="dialog">
         <q-bar>
-          <div>Документ Ид {{ rowData.id }}</div>
+          <div>Документ Ид {{ rowData.doc_id }}</div>
           <q-space />
           <q-btn
             dense
@@ -434,7 +431,7 @@ export default {
     downloadFile(item) {
       axios({
         method: "get",
-        url: "/files/" + item.id,
+        url: "/files/" + item.file.id,
         responseType: "arraybuffer"
       }).then(function(response) {
         let blob = new Blob([response.data], { type: "application/pdf" });
@@ -534,6 +531,7 @@ export default {
       .get("/files/docs/all")
       .then(res => {
         this.desserts = res.data;
+        console.log(this.desserts);
       })
       .catch(err => {
         this.error = err;
