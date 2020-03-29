@@ -6,43 +6,23 @@
 
 <script>
 import GridTable from "@/components/GridTable";
-import AddEditModerator from "./dialogs/AddEditModerator";
+import AddEditType from "./dialogs/AddEditType";
 
 import { Dialog } from "quasar";
-import ApiService from "@/services/api.service";
-import NotifyService from "@/services/notify.service";
 import GridService from "@/services/grid.service";
 
 export default {
-  created() {
-    // let modList = this.$store.getters["auth/moderatorsList"];
-    // let onlyMenuIds = [];
-    // modList.forEach(element => {
-    //   onlyMenuIds.push(element.menu_id);
-    // });
-    // ApiService.get("menus/user").then(res => {
-    //   let filtered = res.data.filter(x => {
-    //     return !onlyMenuIds.includes(x.menu_id);
-    //   });
-    //   console.log(filtered);
-    // });
-  },
+  created() {},
   data() {
     return {
       props: {
-        caption: "Moderator Table",
-        tablePath: "roles/moderator",
+        caption: "Dict Types",
+        tablePath: "dicts/type",
         rowId: "id",
-        addEdit: "roles/moderator", // url
-        delete: "roles/moderator", //
-        defaultSort: [], //
-        excludedColumns: [
-          "id",
-          "emp_id",
-          "menu_id",
-          "branch_code",
-          "filial_code"
-        ],
+        addEdit: "dicts/type", // url
+        delete: "dicts/type", //
+        defaultSort: [],
+        excludedColumns: ["id"],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,
@@ -66,7 +46,7 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditModerator, selected, this.props, this)
+      GridService.addEditRecord(AddEditType, selected, this.props, this)
         .then(
           ok => {
             if (ok) {
@@ -82,7 +62,6 @@ export default {
           throw error;
         });
     },
-
     deleteRow(row) {
       GridService.deleteRecord(row, this.props)
         .then(

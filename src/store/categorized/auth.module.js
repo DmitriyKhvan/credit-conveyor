@@ -15,7 +15,9 @@ const state = {
   empId: null,
   fullName: null,
   userRoles: [],
-  moderatorsList: []
+  moderatorsList: [],
+  branchCode: null,
+  filialCode: null
 };
 
 /**
@@ -64,8 +66,19 @@ const getters = {
     return state.userRoles;
   },
   moderatorsList: state => {
+<<<<<<< HEAD
     return state.moderatorsList;
+=======
+    return state.moderatorsList
+  },
+  branchCode: state => {
+    return state.branchCode
+  },
+  filialCode: state => {
+    return state.filialCode
+>>>>>>> 70325ad0f1e13b115d5afc6a4f47f05443eed58e
   }
+
 };
 
 /**
@@ -111,8 +124,25 @@ const actions = {
   setUserRoles({ commit }, roles) {
     commit("setUserRoles", roles);
   },
+<<<<<<< HEAD
   setModeratorsList({ commit }, moderatorsList) {
     commit("setModeratorsList", moderatorsList);
+=======
+  setModeratorsList({
+    commit
+  }, moderatorsList) {
+    commit("setModeratorsList", moderatorsList);
+  },
+  setBranchCode({
+    commit
+  }, branchCode) {
+    commit("setBranchCode", branchCode);
+  },
+  setFilialCode({
+    commit
+  }, filialCode) {
+    commit("setFilialCode", filialCode);
+>>>>>>> 70325ad0f1e13b115d5afc6a4f47f05443eed58e
   }
 };
 
@@ -162,6 +192,12 @@ const mutations = {
   },
   setModeratorsList(state, moderatorsList) {
     state.moderatorsList = moderatorsList;
+  },
+  setBranchCode(state, branchCode) {
+    state.branchCode = branchCode;
+  },
+  setFilialCode(state, filialCode) {
+    state.filialCode = filialCode;
   }
 };
 

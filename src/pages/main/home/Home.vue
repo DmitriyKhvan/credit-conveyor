@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row q-pa-lg q-col-gutter-md">
-      <div class="col-lg-8 col-md-6 col-sm-12">
+      <div class="col-lg-9 col-md-6 col-sm-12">
         <q-card square flat bordered class="height100">
           <q-card-section class="bg-grey-3">
             <div class="text-h6">Уведомления</div>
@@ -17,16 +17,16 @@
         </q-card>
         
       </div>
-      <div class="col-lg-4 col-md-6 col-sm-12">
+      <div class="col-lg-3 col-md-6 col-sm-12">
         <s-notificatons />
       </div>
     </div>
     
     <div class="row q-col-gutter-md q-px-lg q-mb-sm">
-      <div class="col-lg-8 col-md-6 col-sm-12">
+      <div class="col-lg-9 col-md-6 col-sm-12">
         <s-calendar />
       </div>
-      <div class="col-lg-4 col-md-6 col-sm-12 q-pl-md">
+      <div class="col-lg-3 col-md-6 col-sm-12 q-pl-md">
         <s-results />
       </div>
     </div>

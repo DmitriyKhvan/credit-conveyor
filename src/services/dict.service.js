@@ -27,6 +27,17 @@ const DictService = {
         store.dispatch("dicts/setReceivedNotifications", receivedNotifications);
         let moderatorsList = await this.moderatorsList();
         store.dispatch("auth/setModeratorsList", moderatorsList);
+        let dictTypes = await this.dictTypes();
+        store.dispatch("dicts/setDictTypes", dictTypes);
+
+        let formats = await this.formats();
+        store.dispatch("dicts/setFormat", formats);
+        let journals = await this.journals();
+        store.dispatch("dicts/setJournal", journals);
+        let organs = await this.organs();
+        store.dispatch("dicts/setOrgan", organs);
+        let regions = await this.regions();
+        store.dispatch("dicts/setRegion", regions);
 
         store.dispatch("dicts/setIsAllSet", true);
         resolve(true)
@@ -143,10 +154,69 @@ const DictService = {
   moderatorsList() {
     return new Promise((resolve, reject) => {
       let emp_id = store.getters["auth/empId"];
-
       ApiService.get(`roles/moderator?id=${emp_id}`)
         .then(res => {
-          console.log(res.data)
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  dictTypes() {
+    return new Promise((resolve, reject) => {
+      //let emp_id = store.getters["auth/empId"];
+      ApiService.get(`dicts/type`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  formats() {
+    return new Promise((resolve, reject) => {
+      ApiService.get(`dicts/formats`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  journals() {
+    return new Promise((resolve, reject) => {
+      ApiService.get(`dicts/journals`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  organs() {
+    return new Promise((resolve, reject) => {
+      ApiService.get(`dicts/organs`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  regions() {
+    return new Promise((resolve, reject) => {
+      ApiService.get(`dicts/regions`)
+        .then(res => {
           resolve(res.data);
         })
         .catch(err => {

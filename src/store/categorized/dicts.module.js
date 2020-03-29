@@ -13,7 +13,13 @@ const state = {
   menuList: [],
   userList: [],
   receivedNotifications: [],
-  testTopicList: []
+  testTopicList: [],
+  dictTypes: [],
+
+  formats: null,
+  journals: null,
+  organs: null,
+  regions: null
 };
 
 const getters = {
@@ -75,7 +81,28 @@ const getters = {
   },
   receivedNotifications: state => {
     return state.receivedNotifications;
+  },
+  getDictTypes: state => {
+    return state.dictTypes.map(val => {
+      return {
+        text: val.name,
+        value: val.id
+      };
+    });
+  },
+  getFormat: (state) => {
+    return state.formats
+  },
+  getJournal: (state) => {
+    return state.journals
+  },
+  getOrgan: (state) => {
+    return state.organs
+  },
+  getRegion: (state) => {
+    return state.regions
   }
+
 };
 
 const mutations = {
@@ -108,6 +135,21 @@ const mutations = {
   },
   addNotification(state, noty) {
     state.receivedNotifications = [noty, ...state.receivedNotifications];
+  },
+  setDictTypes(state, types) {
+    state.dictTypes = types
+  },
+  setFormat: (state, payload) => {
+    state.formats = payload
+  },
+  setJournal: (state, payload) => {
+    state.journals = payload
+  },
+  setOrgan: (state, payload) => {
+    state.organs = payload
+  },
+  setRegion: (state, payload) => {
+    state.regions = payload
   }
 };
 
@@ -162,8 +204,24 @@ const actions = {
     commit
   }, noty) {
     commit("addNotification", noty);
+  },
+  setDictTypes({
+    commit
+  }, types) {
+    commit("setDictTypes", types);
+  },
+  setFormat: ({ commit }, formats) => {
+    commit("setFormat", formats)
+  },
+  setJournal: ({ commit }, journals) => {
+    commit("setJournal", journals)
+  },
+  setOrgan: ({ commit }, organs) => {
+    commit("setOrgan", organs)
+  },
+  setRegion: ({ commit }, regions) => {
+    commit("setRegion", regions)
   }
-
 };
 //
 export const dicts = {
