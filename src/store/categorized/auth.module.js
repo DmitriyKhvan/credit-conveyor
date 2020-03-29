@@ -66,19 +66,14 @@ const getters = {
     return state.userRoles;
   },
   moderatorsList: state => {
-<<<<<<< HEAD
     return state.moderatorsList;
-=======
-    return state.moderatorsList
   },
   branchCode: state => {
-    return state.branchCode
+    return state.branchCode;
   },
   filialCode: state => {
-    return state.filialCode
->>>>>>> 70325ad0f1e13b115d5afc6a4f47f05443eed58e
+    return state.filialCode;
   }
-
 };
 
 /**
@@ -124,25 +119,14 @@ const actions = {
   setUserRoles({ commit }, roles) {
     commit("setUserRoles", roles);
   },
-<<<<<<< HEAD
   setModeratorsList({ commit }, moderatorsList) {
     commit("setModeratorsList", moderatorsList);
-=======
-  setModeratorsList({
-    commit
-  }, moderatorsList) {
-    commit("setModeratorsList", moderatorsList);
   },
-  setBranchCode({
-    commit
-  }, branchCode) {
+  setBranchCode({ commit }, branchCode) {
     commit("setBranchCode", branchCode);
   },
-  setFilialCode({
-    commit
-  }, filialCode) {
+  setFilialCode({ commit }, filialCode) {
     commit("setFilialCode", filialCode);
->>>>>>> 70325ad0f1e13b115d5afc6a4f47f05443eed58e
   }
 };
 
