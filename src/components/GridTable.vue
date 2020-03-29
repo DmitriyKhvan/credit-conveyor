@@ -1,8 +1,8 @@
 <template>
-  <div class="q-pa-md">
-    <q-card class="primary">
+  <div class="">
+    <!-- <q-card class="primary">
       <q-card-section>{{caption}}</q-card-section>
-      <q-card-section>
+      <q-card-section> -->
         <q-table
           :dense="$q.screen.lt.md"
           :grid="$q.screen.xs"
@@ -136,8 +136,8 @@
             </div>
           </template>
         </q-table>
-      </q-card-section>
-    </q-card>
+      <!-- </q-card-section>
+    </q-card> -->
   </div>
 </template>
 

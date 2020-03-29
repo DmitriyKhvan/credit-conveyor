@@ -15,7 +15,7 @@ export default class BpmService {
     const responce = await axios({
       method: 'post',
       url: `${this._baseUrl}/system/login`,
-      timeout: 6000
+      timeout: 60000
     });
     
     return responce.data;
@@ -57,6 +57,26 @@ export default class BpmService {
       method: "get",
       url: `${this._digIdUrl}/DataFromService`,
       timeout: 60000
+    })
+
+    return responce.data;
+  }
+
+  calculationCredit = async ({taskId, data}) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/credit/calculation/${taskId}`,
+      data
+    })
+
+    return responce.data;
+  }
+
+  confirmationCredit = async ({taskId, data}) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/credit/confirmation/${taskId}`,
+      data
     })
 
     return responce.data;
