@@ -1,6 +1,185 @@
 <template>
-  <div class="row q-col-gutter-sm">
-    <q-form class="col q-gutter-y-sm" @submit="sendNewDoc">
+  <div class="row justify-center q-col-gutter-sm regKanc">
+    <div class="col-10">
+      <div class="row">
+        <div class="col-8">
+
+          <div class="row">
+            <div class="col-12 q-pa-sm">
+
+              <q-form @submit="sendNewDoc">
+                <q-file color="teal" filled v-model="model" label="Label">
+                  <template v-slot:prepend>
+                    <q-icon name="cloud_upload" />
+                  </template>
+                </q-file>
+              </q-form>
+
+            </div>
+          </div>
+
+          <div class="row">
+
+            <div class="col-6 q-pa-sm">
+
+              <q-select filled bottom-slots v-model="model" :options="options" label="Label" >
+                <template v-slot:prepend>
+                  <q-icon name="menu_book" @click.stop />
+                </template>
+                <template v-slot:append>
+                  <q-icon name="close" @click.stop="model = ''" class="cursor-pointer" />
+                </template>
+              </q-select>
+
+            </div>
+
+            <div class="col-6 q-pa-sm">
+
+              <q-select filled bottom-slots v-model="model" :options="options" label="Label" >
+                <template v-slot:prepend>
+                  <q-icon name="public" @click.stop />
+                </template>
+                <template v-slot:append>
+                  <q-icon name="close" @click.stop="model = ''" class="cursor-pointer" />
+                </template>
+              </q-select>
+
+            </div>
+            
+          </div>
+
+          <div class="row">
+
+            <div class="col-6 q-pr-sm q-pa-sm">
+              <q-input outlined v-model="text" label="Outlined" />
+            </div>
+
+            <div class="col-6 q-pl-sm q-pa-sm">
+              <q-input outlined v-model="date" mask="date" :rules="['date']">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-6 q-pr-sm q-pa-sm">
+               <q-select filled bottom-slots v-model="model" :options="options" label="Label" >
+                <template v-slot:prepend>
+                  <q-icon name="list" @click.stop />
+                </template>
+                <template v-slot:append>
+                  <q-icon name="close" @click.stop="model = ''" class="cursor-pointer" />
+                </template>
+              </q-select>
+            </div>
+
+            <div class="col-6 q-pl-sm q-pa-sm">
+              <q-input outlined v-model="text" label="Outlined" />
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-6 q-pr-sm q-pa-sm checkInput">
+               <div class="checkBlock">
+                 <q-checkbox v-model="teal" />
+               </div>
+               <div style="width:100%">
+                 <q-input outlined v-model="text" label="Исх. Номер" />
+               </div>
+            </div>
+
+            <div class="col-6 q-pl-sm q-pa-sm checkInput">
+               <div class="checkBlock">
+                 <q-checkbox v-model="teal" />
+               </div>
+               <div style="width:100%" >
+                 <q-input outlined v-model="date" mask="date" :rules="['date']">
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                          <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+               </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-6 q-pr-sm q-pa-sm">
+               <q-select filled bottom-slots v-model="model" :options="options" label="Label" >
+                  <template v-slot:prepend>
+                    <q-icon name="dashboard" @click.stop />
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="close" @click.stop="model = ''" class="cursor-pointer" />
+                  </template>
+                </q-select>
+            </div>
+
+            <div class="col-6 q-pl-sm q-pa-sm">
+               <q-input outlined v-model="text" label="Outlined" />
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col q-pa-sm">
+              <q-input
+                v-model="text"
+                outlined
+                type="textarea"
+                label="Outlined"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col q-pa-sm">
+              <q-input outlined v-model="text" label="Outlined" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col text-center q-pa-sm">
+              <q-btn color="white" text-color="black" label="Отменить" class="q-mr-sm" />
+              <q-btn color="primary" label="Сохранить" />
+            </div>
+          </div>
+          
+        </div>
+
+        
+
+        <div class="col-4 q-pa-sm">
+          <div class="rightBlock q-pa-md text-center">
+            <img src="@/assets/file.png" alt=""><br>
+            просмотреть файл
+          </div>            
+        </div>
+      </div>
+      
+    </div>
+    
+
+
+
+
+
+    <!-- <q-form class="col q-gutter-y-sm" @submit="sendNewDoc">
       <q-uploader
         style="width: 100%"
         @added="uploadFile"
@@ -241,7 +420,7 @@
           <span>Здес будет показано ваш документ</span>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -255,6 +434,14 @@ export default {
   },
   data() {
     return {
+      model: null,
+      options: [
+        'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
+      ],
+      date: '',
+      teal: false,
+
+
       file: [],
       form: {
         journal: null,
@@ -382,9 +569,27 @@ export default {
   }
 };
 </script>
-<style lang="sass" scoped>
-.my-content
-  padding: 10px 15px
-  background: rgba(86,61,124,.15)
-  border: 1px solid rgba(86,61,124,.2)
+<style lang="scss" scoped>
+.my-content {
+  padding: 10px 15px;
+  background: rgba(86,61,124,.15);
+  border: 1px solid rgba(86,61,124,.2);
+  }
+.checkInput {
+  display: flex;
+  align-items: center;
+}
+.checkBlock {
+  padding: 7px;
+  background: #F2F2F2;
+  border: 1px #C2C2C2 solid;
+}
+.rightBlock {
+  background: #F2F2F2;
+  cursor: pointer;
+}
+</style>
+
+<style lang="stylus">
+.regKanc .q-field--with-bottom {padding-bottom:0 }
 </style>
