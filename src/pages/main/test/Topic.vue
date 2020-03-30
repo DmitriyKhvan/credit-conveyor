@@ -2,10 +2,11 @@
   <div class="topicBlock">
     <div class="headTopic">
       <h2 class="titleTopic">{{ topicName }}</h2>
-      <div class="timeBlock">
+      <!-- <div class="timeBlock">
         <h3 class="titleTime">Оставшееся время</h3>
         <span class="time"></span>
-      </div>
+      </div> -->
+      <appTimer />
     </div>
     
     <q-card>
@@ -121,6 +122,7 @@
 </template>
 <script>
 import ApiService from "@/services/api.service";
+import Timer from "./components/Timer"
 
 export default {
   data() {
@@ -149,10 +151,10 @@ export default {
       target_date: null,
       queue: [0],
       //target_date: new Date().getTime() + (1000 * 3600), // установить дату обратного отсчета
-      days: null,
-      hours: null,
-      minutes: null,
-      seconds: null, // переменные для единиц времени
+      // days: null,
+      // hours: null,
+      // minutes: null,
+      // seconds: null, // переменные для единиц времени
       abc: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
     };
   },
@@ -168,9 +170,11 @@ export default {
         this.data.ques_amount = res.data.ques_amount;
 
         this.topic = res;
-        this.target_date = new Date().getTime() + 1000 * res.data.duration;
+        const targetDate = new Date().getTime() + 1000 * res.data.duration;
+        console.log('targetDate', targetDate)
+        this.$store.commit("setTargetDate", targetDate)
 
-        this.getCountdown();
+        //this.getCountdown();
 
         for (let question of this.topic.questions) {
           this.data.answers.push({
@@ -192,9 +196,9 @@ export default {
       });
   },
   mounted() {
-    this.timer = setInterval(() => {
-      this.getCountdown();
-    }, 1000);
+    // this.timer = setInterval(() => {
+    //   this.getCountdown();
+    // }, 1000);
     this.getCountUp();
     const tabover = document.getElementsByClassName("q-tabs__content")
     tabover[1].style.cssText = "overflow: visible"
@@ -203,10 +207,10 @@ export default {
   updated() {
     console.log('updated')
   },
-  beforeDestroy() {
-    clearInterval(this.timer);
-    clearInterval(this.timerCurQuestion);
-  },
+  // beforeDestroy() {
+  //   clearInterval(this.timer);
+  //   clearInterval(this.timerCurQuestion);
+  // },
   watch: {
     tab() {
 
@@ -345,30 +349,30 @@ export default {
       
       this.$router.push({ path: "/completeTest" });
     },
-    getCountdown() {
-      let current_date = new Date().getTime();
-      let seconds_left = (this.target_date - current_date) / 1000;
+    // getCountdown() {
+    //   let current_date = new Date().getTime();
+    //   let seconds_left = (this.target_date - current_date) / 1000;
 
-      this.days = this.pad(parseInt(seconds_left / 86400));
-      seconds_left = seconds_left % 86400;
+    //   this.days = this.pad(parseInt(seconds_left / 86400));
+    //   seconds_left = seconds_left % 86400;
 
-      this.hours = this.pad(parseInt(seconds_left / 3600));
-      seconds_left = seconds_left % 3600;
+    //   this.hours = this.pad(parseInt(seconds_left / 3600));
+    //   seconds_left = seconds_left % 3600;
 
-      this.minutes = this.pad(parseInt(seconds_left / 60));
-      this.seconds = this.pad(parseInt(seconds_left % 60));
+    //   this.minutes = this.pad(parseInt(seconds_left / 60));
+    //   this.seconds = this.pad(parseInt(seconds_left % 60));
 
-      // строка обратного отсчета  + значение тега
+    //   // строка обратного отсчета  + значение тега
 
-      //this.time = this.days + "</span><span>" + this.hours + "</span><span>" + this.minutes + "</span><span>" + this.seconds + "</span>";
-      this.time = this.hours + ":" + this.minutes + ":" + this.seconds;
-      if (this.time == "00:00:00") {
-        this.completeTest();
-      }
-    },
-    pad(n) {
-      return (n < 10 ? "0" : "") + n;
-    },
+    //   //this.time = this.days + "</span><span>" + this.hours + "</span><span>" + this.minutes + "</span><span>" + this.seconds + "</span>";
+    //   this.time = this.hours + ":" + this.minutes + ":" + this.seconds;
+    //   if (this.time == "00:00:00") {
+    //     this.completeTest();
+    //   }
+    // },
+    // pad(n) {
+    //   return (n < 10 ? "0" : "") + n;
+    // },
     getCountUp() {
       this.timeCurQuestion = 0;
       this.timerCurQuestion = setInterval(() => {
@@ -418,6 +422,9 @@ export default {
         ...this.data.answers.slice(index + 1)
       ];
     }
+  },
+  components: {
+    appTimer: Timer
   }
 };
 </script>
@@ -446,7 +453,7 @@ export default {
   font-size: 22px;
 }
 
-.topicBlock  .titleTime {
+.topicBlock .titleTime {
   position: relative;
   margin: 0;
   font-size: 22px;
@@ -518,7 +525,7 @@ export default {
   margin: 30px auto 0;
 }
 
-.topicBlock .q-tabs__content--align-justify .q-tab {
+/* .topicBlock .q-tabs__content--align-justify .q-tab {
   flex: 0 0 auto;
   padding: 0;
   width: 26px;
@@ -526,10 +533,17 @@ export default {
   border: 1px solid #d7d7d7;
   border-radius: 50%;
   margin-right: 20px;
-}
+} */
 
 .topicBlock .q-tab {
   min-height: 26px;
+  flex: 0 0 auto;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d7d7d7;
+  border-radius: 50%;
+  margin-right: 20px;
 }
 
 .topicBlock .q-card {
