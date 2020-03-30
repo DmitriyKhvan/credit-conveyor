@@ -147,6 +147,8 @@ export default {
       this.$store.commit("toggleConfirm", val);
 
         const taskId = this.$store.getters.taskId
+        
+        console.log(JSON.stringify(this.data, null, 2))
 
         try {
           const resCredit = await this.$store.dispatch('confirmationCredit', {taskId, data: this.data})

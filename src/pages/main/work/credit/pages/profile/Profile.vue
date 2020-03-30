@@ -516,11 +516,17 @@
               ></q-btn>
             </fieldset>
 
-            <template v-if="Customer.AddressList.findIndex(item => item.AddressType === 2) === -1">
+            <template
+              v-if="
+                Customer.AddressList.findIndex(
+                  item => item.AddressType === 2
+                ) === -1
+              "
+            >
               <h5 class="tab-content_title">
                 Данные по адресу фактического проживания отсутствуют
               </h5>
-            
+
               <q-btn
                 color="primary"
                 label="Добавить адрес фактического проживания"
@@ -528,8 +534,14 @@
                 class="addItem"
               ></q-btn>
             </template>
-              
-            <template v-if="Customer.AddressList.findIndex(item => item.AddressType === 3) === -1">
+
+            <template
+              v-if="
+                Customer.AddressList.findIndex(
+                  item => item.AddressType === 3
+                ) === -1
+              "
+            >
               <h5 class="tab-content_title">
                 Данные по адресу временной регистрации отсутствуют
               </h5>
@@ -541,7 +553,6 @@
                 class="addItem"
               ></q-btn>
             </template>
-            
           </div>
         </div>
 
@@ -2616,8 +2627,7 @@ export default {
         RepaymentType: [],
 
         yearsOfIssueVehicle: []
-      },
-
+      }
     };
   },
   mounted() {
@@ -2635,10 +2645,11 @@ export default {
       2
     );
 
-    this.$store.state.profile.Customer.MaritalStatus = +this.$store.state.credits.personalData.familyStatus + "";
+    this.$store.state.profile.Customer.MaritalStatus =
+      +this.$store.state.credits.personalData.familyStatus + "";
     this.$store.state.profile.Customer.hasChildren = this.$store.state.credits.personalData.children;
     this.$store.state.profile.Customer.UnderAgeChildrenNum = this.$store.state.credits.personalData.childrenCount;
-    
+
     this.$store.state.profile.Customer.MonthlyIncome.confirmMonthlyIncome = this.$store.state.credits.personalData.income;
     this.$store.state.profile.Customer.MonthlyExpenses.recurringExpenses = this.$store.state.credits.personalData.expense;
     this.$store.state.profile.Customer.MonthlyExpenses.obligations = this.$store.state.credits.personalData.otherExpenses;
@@ -2734,7 +2745,7 @@ export default {
 
       this.validFilter("phonesValid", "phones");
 
-     // Address
+      // Address
       this.validFilter("regionValid", "region");
       this.validFilter("streetValid", "street");
       this.validFilter("houseNumberValid", "houseNumber");
@@ -2876,15 +2887,15 @@ export default {
         this.validItems("phonesGuaranteesValid");
       }
 
-      if (this.$refs.priceGuarantees) {
-        this.validFilter("nameGuaranteesValid", "nameGuarantees");
-        this.validFilter("innGuaranteesValid", "innGuarantees");
-        this.validFilter("priceGuaranteesValid", "priceGuarantees");
-      } else {
-        this.validItems("priceGuaranteesValid");
-        this.validItems("nameGuaranteesValid");
-        this.validItems("innGuaranteesValid");
-      }
+      // if (this.$refs.priceGuarantees) {
+      //   this.validFilter("nameGuaranteesValid", "nameGuarantees");
+      //   this.validFilter("innGuaranteesValid", "innGuarantees");
+      //   this.validFilter("priceGuaranteesValid", "priceGuarantees");
+      // } else {
+      //   this.validItems("priceGuaranteesValid");
+      //   this.validItems("nameGuaranteesValid");
+      //   this.validItems("innGuaranteesValid");
+      // }
 
       this.$refs.productCredit.validate();
       this.$refs.priceCredit.validate();
@@ -2914,7 +2925,6 @@ export default {
         this.$refs.pasportDateFinish.hasError ||
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
-
         this.$refs.regionValid.hasError ||
         this.$refs.streetValid.hasError ||
         this.$refs.houseNumberValid.hasError ||
@@ -2984,6 +2994,51 @@ export default {
         this.bar = true;
       } else {
         console.log("fullProfile", this.$store.state.profile);
+        const {
+          Status,
+          ApplicationID,
+          ProtocolNumber,
+          Number,
+          Branch,
+          BODecision,
+          FinalDecision,
+          Date,
+          BOLogin,
+          Department,
+          ClientManagerLogin,
+          CreditCommiteeDecisions,
+          Customer,
+          Guarantee,
+          LoanInfo,
+          ApplicationComment,
+          AttachedDocuments
+        } = this.fullProfile
+
+        const data = {
+          output: [
+            {
+              Status,
+              ApplicationID,
+              ProtocolNumber,
+              Number,
+              Branch,
+              BODecision,
+              FinalDecision,
+              Date,
+              BOLogin,
+              Department,
+              ClientManagerLogin,
+              CreditCommiteeDecisions,
+              Customer,
+              Guarantee,
+              LoanInfo,
+              ApplicationComment,
+              AttachedDocuments
+            }
+          ]
+        };
+
+        console.log(JSON.stringify(data, null, 2))
 
         this.confirmCredit = true;
       }

@@ -622,6 +622,7 @@ export default {
         };
 
         const taskId = this.$store.getters.taskId;
+        console.log(JSON.stringify(data, null, 2))
 
         try {
           const resCredit = await this.$store.dispatch("calculationCredit", {
