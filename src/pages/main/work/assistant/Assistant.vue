@@ -1,5 +1,179 @@
 <template>
   <div class="q-pa-md">
+    <q-toolbar class="shadow-2 rounded-borders">
+      
+      <q-tabs v-model="tab" inline-label stretch>
+        <q-tab name="tab1" label="Новые" icon="new_releases" />
+        <q-tab name="tab2" label="Отправленные" icon="drafts" />
+      </q-tabs>
+    </q-toolbar>
+
+    <div class="sub_menu">
+      <div>перенаправить</div>
+      <div>сортировать</div>
+      <div>удалить</div>
+    </div>
+
+    <div
+      v-for="(b, i) in 2"
+      :key="i" 
+      class="row docBlock"
+      >
+      <div class="col-1 check">
+        <div class="check_div"><q-checkbox v-model="val" /></div>
+      </div>
+      <div class="col content">
+        <div class="row">
+          <div class="col text">
+            Поручение по письму Министерства  РУз также призвал глав муниципалитетов разъяснить пожилым гражданам необходимость оставаться дома и исключить ...
+          </div>
+        </div>
+        <div class="row">
+          <div class="col despBlock">
+            <div><q-icon name="skip_previous" /></div>
+            <div>
+              <span>Исх.№</span> 36-44/29<br>
+              <span>от:</span> 2019.12.24
+            </div>
+          </div>
+          <div class="col despBlock">
+            <div><q-icon name="skip_next" /></div>
+            <div>
+              <span>Вх.№</span> 36-44/29<br>
+              <span>от:</span> 2019.12.24
+            </div>
+          </div>
+          <div class="col despBlock">
+            <div><q-icon name="description" /></div>
+            <div>
+              <span>1 лист / бумажное</span><br>
+              <i>622 кб</i>
+            </div>
+          </div>
+          <div class="col despBlock">
+            <div><q-icon name="history" /></div>
+            <div>
+              Не расмотрен
+            </div>
+          </div>
+          <div class="col despBlock">
+            <q-btn color="white text-black" icon="person" size="sm" label="Ответсвенные" @click="dialogPopup = true" />
+            <q-dialog 
+              v-model="dialogPopup"
+            >
+              <q-dialog-popup></q-dialog-popup>             
+            </q-dialog>
+          </div>
+          <div class="col despBlock">
+            <div><q-icon name="person" /></div>
+            <div>
+              <span>от:</span> <strong>Мирсаитов А.С.</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-1 text-right actions">
+        <q-btn-group push>
+          <q-btn push icon="cloud_download" />
+          <q-btn push icon="print" />
+          <q-btn push icon="play_arrow" color="primary" @click="fixed = true"/>
+
+          <q-dialog v-model="fixed">
+            <q-card  style="width:500px">
+              
+              <q-card-section class="bg-blue-7 text-white">
+                <div class="text-h6">Номер документа №6765</div>
+              </q-card-section>
+
+              <q-separator />
+
+              <q-card-section style="max-height: 70vh" class="scroll">
+                <div class="q-pb-md">
+                  <q-input 
+                    label="Содержание" 
+                    type="textarea"
+                    outlined 
+                  />
+                </div>
+                <div class="q-pb-md">
+                  <q-select
+                    filled
+                    v-model="model"
+                    use-input
+                    input-debounce="0"
+                    label="Выберите исполнителей"
+                    :options="options"
+                    @filter="filterFn"
+                    behavior="menu"
+                  >
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No results
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
+                </div>
+
+                <div>
+                  Выберите исполнителей
+                </div>
+                <div class="q-pb-md selDiv">
+                  <q-option-group
+                    v-model="group"
+                    :options="optionsSel"
+                    color="primary"
+                  />
+                </div>
+                
+                <div class="q-pb-md">
+                  <q-select
+                    filled
+                    v-model="model"
+                    use-input
+                    input-debounce="0"
+                    label="Выберите руководителя"
+                    :options="options"
+                    @filter="filterFn"
+                    behavior="menu"
+                  >
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No results
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                  </q-select>
+                </div>
+
+                <div class="q-pb-md">
+                  <q-select filled v-model="model" :options="optionsSel" label="Выберите шаблон" />
+                </div>
+                <div class="q-pb-md">
+                  <q-toggle size="md" v-model="shape" val="md" label="Не подписан" />
+                </div>
+                
+              </q-card-section>
+
+              <q-separator />
+
+              <q-card-actions align="right">
+                <q-btn label="Закрыть" color="white" text-color="black" v-close-popup />
+                <q-btn label="Отправить" color="primary" v-close-popup />                
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
+      </q-btn-group>
+      </div>
+    </div>
+
+
+    
+    
+
+    <!-- старая таблица -->
     <q-table
       :data="desserts"
       :columns="columns"
@@ -178,9 +352,7 @@
           <q-card-section>
             <span class="section-desc-title text-bold">Поручение:</span>
             <div>
-              <!-- <q-badge color="secondary" class="q-mb-md">
-                                USER ID: {{ modelMultiple || '[]' }}
-                            </q-badge> -->
+              
               <q-select
                 square
                 outlined
@@ -252,15 +424,7 @@
             ></q-select>
           </q-card-section>
           <q-card-section>
-            <!-- <q-input outlined dense square v-model="date">
-                        <template v-slot:append>
-                            <q-icon name="o_event" class="cursor-pointer">
-                                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                                    <q-date today-btn v-model="date" @input="() => $refs.qDateProxy.hide()" mask="YYYY-MM-DD" />
-                                </q-popup-proxy>
-                            </q-icon>
-                        </template>
-                    </q-input>                 -->
+            
           </q-card-section>
           <q-card-section>
             <q-list>
@@ -298,10 +462,41 @@
 <script>
 import axios from "axios";
 import userList from "./user.json";
+import QDialogPopup from './dialog'
+
+const stringOptions = [
+  'Хамдамов А.А.', 'Касимов Ю.Д.', 'Петров Ф.В'
+]
+
 export default {
   name: "assistant",
+  components: {
+    QDialogPopup
+  },
   data() {
     return {
+      tab: 'tab1',
+      dialogPopup: false,
+      val: false,
+      fixed: false,
+      model: null,
+      group: 'op1',
+      optionsSel: [
+        {
+          label: 'Хамдамов А.А.',
+          value: 'op1'
+        },
+        {
+          label: 'Касимов Ю.Д.',
+          value: 'op2'
+        },
+        {
+          label: 'Петров Ф.В',
+          value: 'op3'
+        }
+      ],
+      shape: [ ],
+
       selected: [],
       pagination: {
         rowsPerPage: 10
@@ -420,6 +615,21 @@ export default {
     };
   },
   methods: {
+    filterFn (val, update) {
+      if (val === '') {
+        update(() => {
+          this.options = stringOptions
+        })
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      })
+    },
+
+
     test123(newSelected) {
       const data = [];
       for (let i = 0; i < newSelected.length; i++) {
@@ -547,6 +757,67 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+  .sub_menu {
+    padding: 10px 0;
+    margin: 10px 0;
+    display: flex;
+  }
+  .sub_menu div {
+    padding-left: 10px;    
+    margin-right: 10px;
+    color: #8B8B8B;
+    cursor: pointer; 
+    font-size: 12px;   
+  }
+  .sub_menu div + div {border-left:1px #C2C2C2 solid;}
+  .docBlock {
+    border-top:1px #C2C2C2 solid;
+    padding: 30px 15px;
+    color: #8B8B8B;
+  }
+  .docBlock:hover {
+    background: #F2F2F2;
+  }
+  .docBlock div {
+    padding-right: 5px;
+  }
+  .docBlock span {
+    color: black;
+    float: left;
+    display: block;
+    padding-right: 5px;
+  }
+  .check {
+    padding: 0 10px;
+    width: 65px;
+    margin-right: 10px;
+  }
+  .check_div {
+    background:#F2F2F2;
+    padding: 5px;
+    border-radius:10px ;
+  }
+  .despBlock {
+    display: flex;
+    font-size: 14px;
+  }
+  .despBlock + .despBlock {
+    border-left:1px #C2C2C2 solid;
+    padding: 0 15px ;
+    margin-right: 15px;
+  }
+  .text {
+    font-size: 16px;
+    padding-bottom: 15px;
+  }
+  .actions {
+    width: 200px;
+  }
+
+</style>
+
+
 <style lang="sass">
 .my-sticky-header-table
   .q-table__middle
@@ -566,57 +837,57 @@ export default {
     top: 48px
 </style>
 <style lang="scss">
-.my-table-details {
-  /* font-size: 0.85em; */
-  font-size: 0.9em;
-  font-style: italic;
-  max-width: 500px;
-  white-space: normal;
-  color: #555;
-  margin-top: 4px;
-  text-decoration: underline;
-}
-.mainStyle {
-  border: 1px solid #ccc;
-  padding: 2px;
-  background-color: #abebc6;
-}
-.taskMessSty {
-  width: 10px;
-  white-space: normal;
-  font-size: 0.9em;
-  font-style: italic;
-}
-.my-table-header {
-  font-size: 1.9em;
-  white-space: normal;
-  color: #555;
-}
-a {
-  text-decoration: underline; /* Добавляем подчеркивание 
-                                   при наведении курсора мыши на ссылку */
-}
-.dialog {
-  min-width: 600px;
-  .section-desc {
-    border: 1px solid #ccc;
-    min-height: 30px;
-    padding: 5px;
-    font-style: italic;
-    margin-top: 5px;
-  }
-  .section-supervisor {
-    margin-top: 5px;
-  }
-  .section-template {
-    border: 1px solid #ccc;
-    min-height: 30px;
-    padding: 5px;
-    font-style: italic;
-    margin-bottom: 5px;
-  }
-}
-.tableHeader {
-  color: blue;
-}
+// .my-table-details {
+//   /* font-size: 0.85em; */
+//   font-size: 0.9em;
+//   font-style: italic;
+//   max-width: 500px;
+//   white-space: normal;
+//   color: #555;
+//   margin-top: 4px;
+//   text-decoration: underline;
+// }
+// .mainStyle {
+//   border: 1px solid #ccc;
+//   padding: 2px;
+//   background-color: #abebc6;
+// }
+// .taskMessSty {
+//   width: 10px;
+//   white-space: normal;
+//   font-size: 0.9em;
+//   font-style: italic;
+// }
+// .my-table-header {
+//   font-size: 1.9em;
+//   white-space: normal;
+//   color: #555;
+// }
+// a {
+//   text-decoration: underline; /* Добавляем подчеркивание 
+//                                    при наведении курсора мыши на ссылку */
+// }
+// .dialog {
+//   min-width: 600px;
+//   .section-desc {
+//     border: 1px solid #ccc;
+//     min-height: 30px;
+//     padding: 5px;
+//     font-style: italic;
+//     margin-top: 5px;
+//   }
+//   .section-supervisor {
+//     margin-top: 5px;
+//   }
+//   .section-template {
+//     border: 1px solid #ccc;
+//     min-height: 30px;
+//     padding: 5px;
+//     font-style: italic;
+//     margin-bottom: 5px;
+//   }
+// }
+// .tableHeader {
+//   color: blue;
+// }
 </style>
