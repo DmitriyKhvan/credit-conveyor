@@ -233,7 +233,7 @@ export default {
 
       this.queue.push(this.tab);
 
-      this.countTimeCurQuestion(2);
+      this.countTimeCurQuestion(2); // 2 - предпоследний элемент
 
       clearInterval(this.timerCurQuestion);
       //this.getCountUp();
@@ -329,7 +329,7 @@ export default {
     },
     completeTest() {
       console.log('data', this.data)
-      this.countTimeCurQuestion(1);
+      this.countTimeCurQuestion(1); // 1 послдений элемент
 
       this.data.end_time = this.curDate();
 
