@@ -5,69 +5,66 @@
         <q-card-section class="column items-start">
           <div class="text-h6">Заявка на кредит</div>
           <div class="creditBackground">
-            <h4
-              class="personName"
-            >{{`${personalData.surname} ${personalData.name} ${personalData.mname}`}}</h4>
+            <h4 class="personName">
+              {{
+                `${personalData.surname} ${personalData.name} ${personalData.mname}`
+              }}
+            </h4>
             <table class="creditTable" align="center">
               <tr>
                 <td>Eжемесячный доход</td>
-                <td>{{ personalData.income | formatNumber}} сум</td>
+                <td>{{ personalData.income | formatNumber }} сум</td>
               </tr>
               <tr>
                 <td>Расходы</td>
-                <td>{{ preApprovalData.expense | formatNumber}} сум</td>
+                <td>{{ preApprovalData.expense | formatNumber }} сум</td>
               </tr>
               <tr>
                 <td>Eжемесячная плата</td>
-                <td>{{preApprovalData.maxPayment | formatNumber}} сум</td>
+                <td>{{ preApprovalData.maxPayment | formatNumber }} сум</td>
               </tr>
               <tr>
                 <td>Доступная сумма кредита</td>
-                <td>{{preApprovalData.maxSum | formatNumber(2)}} сум</td>
+                <td>{{ preApprovalData.maxSum | formatNumber(2) }} сум</td>
               </tr>
             </table>
 
             <div v-if="failureCreditReason">
               <div class="text-h6">Причина отказа:</div>
 
-              <form @submit.prevent="onSubmit">
-                <div class="row">
+              <form @submit.prevent="failureCredit">
                   <q-field
                     ref="toggle"
                     :value="!!selection.length"
                     :rules="[val => !!val || 'выберите причину']"
                   >
-                    <div class="col-6">
+
+                  <div class="row">
+                    <div 
+                      class="col-6"
+                      v-for="(reson, index) of this.credits.reasonsList.slice(0, Math.random(this.credits.reasonsList.length / 2))"
+                      :key="'reson' + index"
+                    >
                       <q-checkbox
                         v-model="selection"
-                        val="не устроила ставка"
-                        label="не устроила ставка"
-                      />
-                      <q-checkbox
-                        v-model="selection"
-                        val="не устроил срок кредита"
-                        label="не устроил срок кредита"
-                      />
-                      <q-checkbox
-                        v-model="selection"
-                        val="не устроила сумма"
-                        label="не устроила сумма"
+                        :val="reson.value"
+                        :label="reson.name"
                       />
                     </div>
-                    <div class="col-6">
+
+                    <div 
+                      class="col-6"
+                      v-for="(reson, index) of this.credits.reasonsList.slice(Math.random(this.credits.reasonsList.length / 2))"
+                      :key="'reson' + index"
+                    >
                       <q-checkbox
                         v-model="selection"
-                        val="изменились планы"
-                        label="изменились планы"
+                        :val="reson.value"
+                        :label="reson.name"
                       />
-                      <q-checkbox
-                        v-model="selection"
-                        val="не устраивает размер платежа"
-                        label="не устраивает размер платежа"
-                      />
+                    </div>
                     </div>
                   </q-field>
-                </div>
 
                 <q-card-actions class="row justify-center">
                   <q-btn label="Продолжить" color="green" type="submit" />
@@ -75,7 +72,10 @@
               </form>
             </div>
 
-            <q-card-actions v-if="!failureCreditReason" class="row justify-center">
+            <q-card-actions
+              v-if="!failureCreditReason"
+              class="row justify-center"
+            >
               <q-btn
                 label="Отправить заявку"
                 color="green"
@@ -87,7 +87,11 @@
                 label="Отменить"
                 color="red-5"
                 v-close-popup
-                @click="() => {failureCreditReason = true}"
+                @click="
+                  () => {
+                    failureCreditReason = true;
+                  }
+                "
               />
             </q-card-actions>
           </div>
@@ -98,18 +102,29 @@
 </template>
 <script>
 import formatNumber from "../../filters/format_number.js";
+import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   data() {
     return {
       failureCreditReason: false,
       selection: [],
-      model: false
+      model: false,
+      data: {
+        output: [
+          {
+            name: "confirm",
+            data: true
+          },
+          {
+            name: "reasons",
+            data: []
+          }
+        ]
+      }
     };
   },
-  // created() {
-  //   console.log(this.$store.state.credits.confirm)
-  // },
+
   computed: {
     disableBtn() {
       return this.$store.state.credits.disableBtn;
@@ -122,39 +137,73 @@ export default {
     },
     personalData() {
       return this.$store.state.credits.personalData;
+    },
+    credits() {
+      return this.$store.state.credits;
     }
   },
   methods: {
-    successCredit(val) {
-      console.log("successCredit");
+    async successCredit(val) {
       this.$store.commit("toggleConfirm", val);
-      this.$router.push("profile");
-    },
-    failureCredit(val) {
-      console.log("failureCredit", this.selection);
-      this.$store.commit("resetPersonData");
-      this.$store.commit("toggleDisableInput", val);
-      this.$store.commit("toggleConfirm", val);
-      this.$router.push("/work/credit");
-    },
 
-    onSubmit() {
-      console.log("selection ", this.selection);
+        const taskId = this.$store.getters.taskId
+
+        try {
+          const resCredit = await this.$store.dispatch('confirmationCredit', {taskId, data: this.data})
+          
+          //Вставить следующий task_id
+          this.$store.commit("setTaskId", resCredit.nextTask.id)
+
+          if (resCredit.nextTask.input) {
+            this.$store.commit("setDictionaries", resCredit.nextTask.input[2].data)  
+            this.$router.push("sub/profile");
+          } else {
+            throw 'Data is null'
+          }
+
+          //this.$router.push("sub/profile");
+          console.log('successCredit', JSON.stringify(resCredit))
+        } catch (error) {
+          console.log('error', error)
+          const errorMessage = CommonUtils.filterServerError(error);
+          console.log('errorMessage', errorMessage)
+          this.$store.commit("setError", errorMessage);
+          sessionStorage.removeItem("csrf_token");
+        }
+    },
+    
+    async failureCredit() {
       this.$refs.toggle.validate();
-      console.log("ddd", this.$refs.toggle.hasError);
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
-        console.log("unvalid");
-
-        console.log("failureCredit", this.selection);
         this.$store.commit("toggleConfirm", true);
       } else {
-        console.log("valid");
-        console.log("failureCredit", this.selection);
-        this.$store.commit("resetPersonData");
         this.$store.commit("toggleDisableInput", false);
         this.$store.commit("toggleConfirm", false);
+
+        const data = {
+          output: [
+            {
+              name: "confirm",
+              data: false
+            },
+            {
+              name: "reasons",
+              data: this.selection
+            }
+          ]
+        };
+
+        const taskId = this.$store.getters.taskId
+
+        try {
+          const resCredit = await this.$store.dispatch('confirmationCredit', {taskId, data})
+          console.log(resCredit)
+        } catch (error) {}
+
         this.$router.push("/work/credit");
+
+        console.log('creditData', data)
       }
     }
   },
