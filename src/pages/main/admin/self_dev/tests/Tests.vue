@@ -30,7 +30,8 @@ export default {
           "created_by",
           "creation_date",
           "updated_by",
-          "update_date"
+          "update_date",
+          "topics"
         ],
         excludeSortingColoumns: [],
         enableAddEdit: true,

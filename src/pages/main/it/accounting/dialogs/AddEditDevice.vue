@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Add Edit Devices</div>
+          <div class="text-h6">{{$t('tables.devices.add_edit_devices')}}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -17,7 +17,7 @@
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              label="Device Type"
+              :label="$t('tables.device_models.device_type')"
               :value="deviceTypeName"
               @dblclick="selectDeviceType()"
               readonly="readonly"
@@ -27,14 +27,14 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
             <!-- select mark of device -->
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              label="Device Mark"
+              :label="$t('tables.device_models.device_mark')"
               :value="deviceMarkName"
               @dblclick="selectDeviceMark()"
               readonly="readonly"
@@ -44,7 +44,7 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
           </div>
@@ -53,7 +53,7 @@
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              label="Device Model"
+              :label="$t('tables.device_models.device_mark')"
               :value="deviceModelName"
               @dblclick="selectDeviceModel()"
               readonly="readonly"
@@ -63,7 +63,7 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
             <q-input
@@ -72,7 +72,7 @@
               color="purple-12"
               class="col-xs-12 col-sm-12 col-md-6"
               v-model="details.serial"
-              label="Device Serial Number"
+              :label="$t('tables.devices.device_serial_number')"
               :rules="[
                 val =>
                   $v.details.serial.required || 'Serial is required'
@@ -93,7 +93,7 @@
               option-label="text"
               emit-value
               map-options
-              label="Branches"
+              :label="$t('tables.devices.branch')"
               @input="selected"
               :rules="[
                 val => $v.details.branch_id.required || 'Branch is required'
@@ -111,7 +111,7 @@
               option-label="text"
               emit-value
               map-options
-              label="Filials"
+              :label="$t('tables.devices.filial')"
               :rules="[
                 val => $v.details.filial_id.required || 'Filial is required'
               ]"
@@ -123,7 +123,7 @@
               v-model="details.description"
               outlined
               class="col-xs-12 col-sm-12 col-md-12"
-              label="Description"
+              :label="$t('tables.devices.description')"
               filled
               type="textarea"
               rows="3"
@@ -134,7 +134,7 @@
               v-model="details.inventar"
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              label="Inventar"
+              :label="$t('tables.devices.inventory')"
               :rules="[
               ]"
               lazy-rules
@@ -149,7 +149,7 @@
               option-label="key"
               emit-value
               map-options
-              label="Status"
+              :label="$t('tables.devices.status')"
               @input="$v.details.status.$touch()"
               :rules="[
                 val => $v.details.status.required || 'Status is required'
@@ -162,7 +162,7 @@
               outlined
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              label="Made Date"
+              :label="$t('tables.devices.made_date')"
               v-model="details.made_date"
               mask="date"
               :rules="['date']"
@@ -180,7 +180,7 @@
               outlined
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
-              label="Bought Date"
+              :label="$t('tables.devices.bought_date')"
               v-model="details.bought_date"
               mask="date"
               :rules="['date']"
@@ -226,8 +226,8 @@ export default {
     return {
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
-        { key: "Active", value: 1 },
-        { key: "Passive", value: 0 }
+        { key: "Активный", value: 1 },
+        { key: "Пассивный", value: 0 }
       ],
       isValidated: true,
       deviceTypeName: null,

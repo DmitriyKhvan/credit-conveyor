@@ -1,6 +1,6 @@
 <template>
   <div class="timeBlock">
-    <h3 class="titleTime">Оставшееся время</h3>
+    <h3 class="titleTime">{{$t('tables.education.test.time_left')}}</h3>
     <span class="time">{{ time }}</span>
   </div>
 </template>
@@ -52,9 +52,9 @@ export default {
         this.completeTest();
       }
     },
-     pad(n) {
+    pad(n) {
       return (n < 10 ? "0" : "") + n;
-    },
+    }
   }
 };
 </script>
