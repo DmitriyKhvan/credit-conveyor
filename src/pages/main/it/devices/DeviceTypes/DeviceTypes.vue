@@ -45,7 +45,6 @@ export default {
           descending: false,
           page: 1,
           rowsPerPage: 5
-          //rowsNumber: 4 // if getting data from a server
         },
         filterColumn: []
       }

@@ -3,7 +3,9 @@ export default {
         topicName: '',
         countTrueAnswers: '',
         quesAmount: null,
-        topicName: ''
+        topicName: '',
+        answerTest: '',
+        res: []
     },
     actions: {
 
@@ -15,6 +17,17 @@ export default {
         },
         setTopicName(state, payload) {
             state.topicName = payload
+        },
+        setAnswerTest (state, payload) {
+            state.answerTest = payload
+        },
+        setResTest (state, payload) {
+            state.res = payload
+        }
+    },
+    getters: {
+        getTopicState (state){
+            return state
         }
     }
 }
