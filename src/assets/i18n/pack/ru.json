@@ -6,7 +6,7 @@
     "true": "Да",
     "false": "Нет",
     "children": "Вхождение",
-    "id": "Ид-р",
+    "id": "Ид",
     "level": "Уровень",
     "name": "Наименование",
     "departments": "Департаменты",
@@ -17,9 +17,17 @@
     "choose": "- Выберите -",
     "all": "- Выбрать все -",
     "not_all": "- Убрать все -",
-    "double_click": "Двойной Клик"
+    "double_click": "Двойной Клик",
+    "status": "Статус",
+    "from": "От",
+    "created": "Cоздано",
+    "new": "Новые",
+    "size": "Размер",
+    "file": "Файл",
+    "message": "Сообщение"
   },
   "actions": {
+    "open": "Открыть",
     "details": "Реквизиты",
     "add": "Добавить",
     "edit": "Изменить",
@@ -74,7 +82,9 @@
     "submit": "Добавить",
     "cancel": "Отмена",
     "print": "Распечатать",
-    "send": "Отправить"
+    "send": "Отправить",
+    "redirect": "Перенаправить",
+    "sort": "Сортировать"
   },
   "messages": {
     "accessDenied": "Доступ запрещен",
@@ -297,6 +307,53 @@
       "device": "Оборудование",
       "user": "Пользователь",
       "status": "Статус"
+    },
+    "work": {
+      "choose_executor": "Выберите исполнителей",
+      "choose_executive": "Выберите руководителя",
+      "document_num": "Документ №",
+      "content": "Содержание",
+      "resolution": "Резолюция",
+      "tasks": {
+        "new": "Новые",
+        "accepted": "Принял(а)",
+        "working": "Работаю",
+        "finished": "Завершено",
+        "actions": "Действия",
+        "redirect": "Перенаправить",
+        "sort": "Сортировать",
+        "responsibles": "Ответсвенные",
+        "from": "От",
+        "dialog_task": {
+          "document_num": "Документ №",
+          "choose_executor": "Выберите исполнителей",
+          "update": "Обновление"
+        },
+        "dialog_hierarchy": {
+          "resp_for_doc_num": "Ответсвенные по документу №"
+        }
+      },
+      "assistant": {
+        "sent": "Отправленные",
+        "no_result": "Нет Результата",
+        "choose_template": "Выберите шаблон",
+        "not_signed": "Не подписан",
+        "signed": "Подписан",
+        "name": "Наименование",
+        "journal": "Журнал",
+        "organ": "Орган",
+        "pages": "Листов",
+        "not_reviewed": "Не рассмотрен",
+        "task": "Поручение",
+        "task_template": "Шаблон поручений",
+        "dialog": {
+          "resp_for_doc_num": "Ответсвенные по документу №"
+        }
+      },
+      "credit": {
+        "try_again": "Попробуйте снова",
+        "smth_went_wrong": "Что-то пошло не так"
+      }
     },
     "education": {
       "topicName": "Названия темы",

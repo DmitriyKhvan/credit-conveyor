@@ -17,9 +17,17 @@
     "choose": "- Select -",
     "all": "- Select all -",
     "not_all": "- Unselect all -",
-    "double_click": "Double Click"
+    "double_click": "Double Click",
+    "status": "Status",
+    "from": "From",
+    "created": "Created",
+    "new": "New",
+    "size": "Size",
+    "file": "File",
+    "message": "Message"
   },
   "actions": {
+    "open": "Open",
     "details": "Details",
     "add": "Add",
     "edit": "Edit",
@@ -74,7 +82,9 @@
     "submit": "Добавить",
     "cancel": "Отмена",
     "print": "Print",
-    "send": "Send"
+    "send": "Send",
+    "redirect": "Redirect",
+    "sort": "Sort"
   },
   "messages": {
     "accessDenied": "Access Denied",
@@ -296,6 +306,52 @@
       "device": "Device",
       "user": "User",
       "status": "Status"
+    },
+    "work": {
+      "choose_executor": "Choose Executor",
+      "choose_executive": "Choose Executive",
+      "document_num": "Docmunent №",
+      "content": "Content",
+      "resolution": "Resolution",
+      "tasks": {
+        "new": "New",
+        "accepted": "Accepted",
+        "working": "Working",
+        "finished": "Finished",
+        "actions": "Actions",
+        "redirect": "Redirect",
+        "sort": "Sort",
+        "responsibles": "Responsibles",
+        "from": "From",
+        "dialog_task": {
+          "document_num": "Docmunent №",
+          "choose_executor": "Choose Executor",
+          "update": "Update"
+        },
+        "dialog_hierarchy": {
+          "resp_for_doc_num": "Responsibles for document №"
+        }
+      },
+      "assistant": {
+        "sent": "Sent",
+        "no_result": "No results",
+        "choose_template": "Choose template",
+        "not_signed": "Not signed",
+        "signed": "Signed",
+        "name": "Name",
+        "journal": "Journal",
+        "organ": "Organ",
+        "pages": "Pages",
+        "not_reviewed": "Not reviewed",
+        "task": "Task",
+        "task_template": "Task template",
+        "dialog": {
+          "resp_for_doc_num": "Ответсвенные по документу №"
+        }
+      },
+      "credit": {
+        "try_again": "Try Again"
+      }
     },
     "education": {
       "topicName": "Topic Name",

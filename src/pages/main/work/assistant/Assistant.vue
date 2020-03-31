@@ -1,73 +1,86 @@
 <template>
   <div class="q-pa-md">
     <q-toolbar class="shadow-2 rounded-borders">
-      
       <q-tabs v-model="tab" inline-label stretch>
-        <q-tab name="tab1" label="Новые" icon="new_releases" />
-        <q-tab name="tab2" label="Отправленные" icon="drafts" />
+        <q-tab name="tab1" :label="$t('common.new')" icon="new_releases" />
+        <q-tab name="tab2" :label="$t('tables.work.assistant.sent')" icon="drafts" />
       </q-tabs>
     </q-toolbar>
 
     <div class="sub_menu">
-      <div>перенаправить</div>
-      <div>сортировать</div>
-      <div>удалить</div>
+      <div>{{$t('actions.redirect')}}</div>
+      <div>{{$t('actions.sort')}}</div>
+      <div>{{$t('actions.delete')}}</div>
     </div>
 
-    <div
-      v-for="(b, i) in 2"
-      :key="i" 
-      class="row docBlock"
-      >
+    <div v-for="(b, i) in 2" :key="i" class="row docBlock">
       <div class="col-1 check">
-        <div class="check_div"><q-checkbox v-model="val" /></div>
+        <div class="check_div">
+          <q-checkbox v-model="val" />
+        </div>
       </div>
       <div class="col content">
         <div class="row">
-          <div class="col text">
-            Поручение по письму Министерства  РУз также призвал глав муниципалитетов разъяснить пожилым гражданам необходимость оставаться дома и исключить ...
-          </div>
+          <div
+            class="col text"
+          >Поручение по письму Министерства РУз также призвал глав муниципалитетов разъяснить пожилым гражданам необходимость оставаться дома и исключить ...</div>
         </div>
         <div class="row">
           <div class="col despBlock">
-            <div><q-icon name="skip_previous" /></div>
             <div>
-              <span>Исх.№</span> 36-44/29<br>
+              <q-icon name="skip_previous" />
+            </div>
+            <div>
+              <span>Исх.№</span> 36-44/29
+              <br />
               <span>от:</span> 2019.12.24
             </div>
           </div>
           <div class="col despBlock">
-            <div><q-icon name="skip_next" /></div>
             <div>
-              <span>Вх.№</span> 36-44/29<br>
+              <q-icon name="skip_next" />
+            </div>
+            <div>
+              <span>Вх.№</span> 36-44/29
+              <br />
               <span>от:</span> 2019.12.24
             </div>
           </div>
           <div class="col despBlock">
-            <div><q-icon name="description" /></div>
             <div>
-              <span>1 лист / бумажное</span><br>
+              <q-icon name="description" />
+            </div>
+            <div>
+              <span>1 лист / бумажное</span>
+              <br />
               <i>622 кб</i>
             </div>
           </div>
           <div class="col despBlock">
-            <div><q-icon name="history" /></div>
             <div>
-              Не расмотрен
+              <q-icon name="history" />
             </div>
+            <div>Не расмотрен</div>
           </div>
           <div class="col despBlock">
-            <q-btn color="white text-black" icon="person" size="sm" label="Ответсвенные" @click="dialogPopup = true" />
-            <q-dialog 
-              v-model="dialogPopup"
-            >
-              <q-dialog-popup></q-dialog-popup>             
+            <q-btn
+              color="white text-black"
+              icon="person"
+              size="sm"
+              :label="$t('tables.work.tasks.responsibles')"
+              @click="dialogPopup = true"
+            />
+            <q-dialog v-model="dialogPopup">
+              <q-dialog-popup></q-dialog-popup>
             </q-dialog>
           </div>
           <div class="col despBlock">
-            <div><q-icon name="person" /></div>
             <div>
-              <span>от:</span> <strong>Мирсаитов А.С.</strong>
+              <q-icon name="person" />
+            </div>
+            <div>
+              <span>{{$t('common.from')}}:</span>
+              <strong>Мирсаитов А.С.</strong>
             </div>
           </div>
         </div>
@@ -76,24 +89,19 @@
         <q-btn-group push>
           <q-btn push icon="cloud_download" />
           <q-btn push icon="print" />
-          <q-btn push icon="play_arrow" color="primary" @click="fixed = true"/>
+          <q-btn push icon="play_arrow" color="primary" @click="fixed = true" />
 
           <q-dialog v-model="fixed">
-            <q-card  style="width:500px">
-              
+            <q-card style="width:500px">
               <q-card-section class="bg-blue-7 text-white">
-                <div class="text-h6">Номер документа №6765</div>
+                <div class="text-h6">{{$t('tables.work.document_num')}}6765</div>
               </q-card-section>
 
               <q-separator />
 
               <q-card-section style="max-height: 70vh" class="scroll">
                 <div class="q-pb-md">
-                  <q-input 
-                    label="Содержание" 
-                    type="textarea"
-                    outlined 
-                  />
+                  <q-input :label="$t('tables.work.content')" type="textarea" outlined />
                 </div>
                 <div class="q-pb-md">
                   <q-select
@@ -101,77 +109,72 @@
                     v-model="model"
                     use-input
                     input-debounce="0"
-                    label="Выберите исполнителей"
+                    :label="$t('tables.work.choose_executor')"
                     :options="options"
                     @filter="filterFn"
                     behavior="menu"
                   >
                     <template v-slot:no-option>
                       <q-item>
-                        <q-item-section class="text-grey">
-                          No results
-                        </q-item-section>
+                        <q-item-section class="text-grey">No results</q-item-section>
                       </q-item>
                     </template>
                   </q-select>
                 </div>
 
-                <div>
-                  Выберите исполнителей
-                </div>
+                <div>{{$t('tables.work.choose_executor')}}</div>
                 <div class="q-pb-md selDiv">
-                  <q-option-group
-                    v-model="group"
-                    :options="optionsSel"
-                    color="primary"
-                  />
+                  <q-option-group v-model="group" :options="optionsSel" color="primary" />
                 </div>
-                
+
                 <div class="q-pb-md">
                   <q-select
                     filled
                     v-model="model"
                     use-input
                     input-debounce="0"
-                    label="Выберите руководителя"
+                    :label="$t('tables.work.choose_executive')"
                     :options="options"
                     @filter="filterFn"
                     behavior="menu"
                   >
                     <template v-slot:no-option>
                       <q-item>
-                        <q-item-section class="text-grey">
-                          No results
-                        </q-item-section>
+                        <q-item-section class="text-grey">{{$t('tables.work.assistant.no_result')}}</q-item-section>
                       </q-item>
                     </template>
                   </q-select>
                 </div>
 
                 <div class="q-pb-md">
-                  <q-select filled v-model="model" :options="optionsSel" label="Выберите шаблон" />
+                  <q-select
+                    filled
+                    v-model="model"
+                    :options="optionsSel"
+                    :label="$t('tables.work.assistant.choose_template')"
+                  />
                 </div>
                 <div class="q-pb-md">
-                  <q-toggle size="md" v-model="shape" val="md" label="Не подписан" />
+                  <q-toggle
+                    size="md"
+                    v-model="shape"
+                    val="md"
+                    :label="$t('tables.work.assistant.not_signed')"
+                  />
                 </div>
-                
               </q-card-section>
 
               <q-separator />
 
               <q-card-actions align="right">
-                <q-btn label="Закрыть" color="white" text-color="black" v-close-popup />
-                <q-btn label="Отправить" color="primary" v-close-popup />                
+                <q-btn :label="$t('actions.close')" color="white" text-color="black" v-close-popup />
+                <q-btn :label="$t('actions.send')" color="primary" v-close-popup />
               </q-card-actions>
             </q-card>
           </q-dialog>
-      </q-btn-group>
+        </q-btn-group>
       </div>
     </div>
-
-
-    
-    
 
     <!-- старая таблица -->
     <q-table
@@ -189,7 +192,7 @@
       class="my-sticky-header-table"
     >
       <template v-slot:top-right>
-        <q-input dense outlined square v-model="filter" placeholder="Поиск">
+        <q-input dense outlined square v-model="filter" :placeholder="$t('actions.search')">
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -197,7 +200,9 @@
       </template>
       <template v-slot:top-left>
         <div class="q-gutter-lg">
-          <q-btn v-if="selected.length > 0"><q-icon name="post_add"/></q-btn>
+          <q-btn v-if="selected.length > 0">
+            <q-icon name="post_add" />
+          </q-btn>
           <q-btn>test</q-btn>
           <q-btn>test</q-btn>
         </div>
@@ -205,82 +210,82 @@
 
       <template v-slot:body-cell-id="props">
         <q-td :props="props" style="background-">
-          <div>
-            {{ props.row.id }}
-          </div>
+          <div>{{ props.row.id }}</div>
         </q-td>
       </template>
 
       <template v-slot:body-cell-journal_name="props">
         <q-td :props="props">
           <div>
-            Наименование:
-            <span class="my-table-details">{{ props.row.fio }}</span
-            ><br />
-            Журналь:
-            <span class="my-table-details">{{ props.row.journal }}</span
-            ><br />
-            Орган:
-            <span class="my-table-details">{{ props.row.organ }}</span
-            ><br />
+            {{$t('tables.work.assistant.name')}}:
+            <span class="my-table-details">{{ props.row.fio }}</span>
+            <br />
+            {{$t('tables.work.assistant.journal')}}:
+            <span
+              class="my-table-details"
+            >{{ props.row.journal }}</span>
+            <br />
+            {{$t('tables.work.assistant.organ')}}:
+            <span
+              class="my-table-details"
+            >{{ props.row.organ }}</span>
+            <br />
           </div>
         </q-td>
       </template>
       <template v-slot:body-cell-out_number="props">
         <q-td :props="props">
           <div>
-            №: <span class="my-table-details">{{ props.row.out_number }}</span
-            ><br />
-            от: <span class="my-table-details">{{ props.row.out_date }}</span>
+            №:
+            <span class="my-table-details">{{ props.row.out_number }}</span>
+            <br />
+            {{$t('common.from')}}:
+            <span class="my-table-details">{{ props.row.out_date }}</span>
           </div>
         </q-td>
       </template>
       <template v-slot:body-cell-in_number="props">
         <q-td :props="props">
           <div>
-            №: <span class="my-table-details">{{ props.row.in_number }}</span
-            ><br />
-            от: <span class="my-table-details">{{ props.row.in_date }}</span>
+            №:
+            <span class="my-table-details">{{ props.row.in_number }}</span>
+            <br />
+            {{$t('common.from')}}:
+            <span class="my-table-details">{{ props.row.in_date }}</span>
           </div>
         </q-td>
       </template>
       <template v-slot:body-cell-format_name="props">
         <q-td :props="props">
           <div>
-            Листов.:
-            <span class="my-table-details"
-              >{{ props.row.paper_count }} &nbsp;/&nbsp;{{
-                props.row.format
-              }}</span
-            ><br />
-            Размер:
-            <span class="my-table-details">{{
+            {{$t('tables.work.assistant.pages')}}:
+            <span class="my-table-details">
+              {{ props.row.paper_count }} &nbsp;/&nbsp;{{
+              props.row.format
+              }}
+            </span>
+            <br />
+            {{$t('common.size')}}:
+            <span class="my-table-details">
+              {{
               conv_size(props.row.file.file_size)
-            }}</span
-            ><br />
-            Файл:
-            <q-icon
-              name="attachment"
-              size="25px"
-              color="red"
-              @click="downloadFile(props.row)"
-            >
+              }}
+            </span>
+            <br />
+            {{$t('common.file')}}:
+            <q-icon name="attachment" size="25px" color="red" @click="downloadFile(props.row)">
               <q-tooltip
                 content-class="bg-green"
                 content-style="font-size: 16px"
                 :offset="[10, 10]"
-              >
-                Скачать
-              </q-tooltip>
+              >{{$t('actions.download')}}</q-tooltip>
             </q-icon>
           </div>
         </q-td>
       </template>
       <template v-slot:body-cell-description="props">
         <q-td :props="props">
-          <div class="my-table-details">
-            {{ props.row.description }}
-          </div>
+          <div class="my-table-details">{{ props.row.description }}</div>
         </q-td>
       </template>
 
@@ -295,15 +300,16 @@
             </div>
             <br />
             <q-separator />
-            <span class="taskMessSty">{{ props.row.task_message }}</span
-            ><br /><br />
-            <span><b>(Мирсоатов А.К.)</b></span
-            ><br />
+            <span class="taskMessSty">{{ props.row.task_message }}</span>
+            <br />
+            <br />
+            <span>
+              <b>(Мирсоатов А.К.)</b>
+            </span>
+            <br />
             <span>[{{ props.row.in_date }}]</span>
           </div>
-          <div v-else>
-            Не рассмотрен
-          </div>
+          <div v-else>{{$t('tables.work.assistant.not_reviewed')}}</div>
         </q-td>
       </template>
 
@@ -316,14 +322,8 @@
               size="25px"
               color="#17202A"
               @click="getRowTable(props)"
-            ></q-icon
-            >&nbsp;&nbsp;
-            <q-icon
-              v-if="props.row.tasks !== null"
-              name="o_print"
-              size="25px"
-              color="secondary"
-            ></q-icon>
+            ></q-icon>&nbsp;&nbsp;
+            <q-icon v-if="props.row.tasks !== null" name="o_print" size="25px" color="secondary"></q-icon>
           </div>
         </q-td>
       </template>
@@ -331,28 +331,20 @@
     <q-dialog v-model="bar" square persistent>
       <q-card class="dialog">
         <q-bar>
-          <div>Документ Ид {{ rowData.doc_id }}</div>
+          <div>{{$t('tables.work.document_num')}} {{ rowData.doc_id }}</div>
           <q-space />
-          <q-btn
-            dense
-            flat
-            icon="close"
-            v-close-popup
-            color="red"
-            @click="resetDialog()"
-          >
-            <q-tooltip>Закрыт</q-tooltip>
+          <q-btn dense flat icon="close" v-close-popup color="red" @click="resetDialog()">
+            <q-tooltip>{{$t('actions.close')}}</q-tooltip>
           </q-btn>
         </q-bar>
         <q-form @submit="simulateProgress(4, rowData)">
           <q-card-section>
-            <span class="section-title text-bold">Содержание:</span>
+            <span class="section-title text-bold">{{$t('tables.work.content')}}:</span>
             <div class="section-desc">{{ rowData.description }}</div>
           </q-card-section>
           <q-card-section>
-            <span class="section-desc-title text-bold">Поручение:</span>
+            <span class="section-desc-title text-bold">{{$t('tables.work.assistant.task')}}:</span>
             <div>
-              
               <q-select
                 square
                 outlined
@@ -361,7 +353,7 @@
                 :options="options"
                 use-chips
                 stack-label
-                label="Выберите исполнителей"
+                :label="$t('tables.work.choose_executor')"
                 option-value="uid"
                 option-label="fio"
                 :rules="[
@@ -381,7 +373,7 @@
             </div>
           </q-card-section>
           <q-card-section>
-            <span class="section-title text-bold">Резолюция:</span>
+            <span class="section-title text-bold">{{$t('tables.work.resolution')}}:</span>
             <div class="section-supervisor">
               <q-select
                 v-model="modelSupervisor"
@@ -390,7 +382,7 @@
                 dense
                 stack-label
                 :options="optSupervisor"
-                label="Выберите руководителя"
+                :label="$t('tables.work.choose_executive')"
                 option-value="uid"
                 option-label="fio"
                 :rules="[
@@ -408,7 +400,7 @@
             </div>
           </q-card-section>
           <q-card-section>
-            <span class="section-title text-bold">Шаблон поручений:</span>
+            <span class="section-title text-bold">{{$t('tables.work.assistant.task_template')}}:</span>
             <q-select
               v-model="modelTemplate"
               outlined
@@ -417,15 +409,13 @@
               :options="optTemplate"
               option-value="text"
               option-label="text"
-              label="Выберите шаблон"
+              :label="$t('tables.work.assistant.choose_template')"
               emit-value
               stack-label
               map-options
             ></q-select>
           </q-card-section>
-          <q-card-section>
-            
-          </q-card-section>
+          <q-card-section></q-card-section>
           <q-card-section>
             <q-list>
               <q-item>
@@ -433,24 +423,20 @@
                   <q-checkbox v-model="signedButton" color="red" dense />
                 </q-item-section>
                 <q-item-section caption>
-                  <q-item-label>{{
-                    signedButton ? "Подписан" : "Не подписан"
-                  }}</q-item-label>
+                  <q-item-label>
+                    {{
+                    signedButton ? $t('tables.work.assistant.signed') : $t('tables.work.assistant.not_signed')
+                    }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
           </q-card-section>
           <q-card-actions align="left">
-            <q-btn
-              :loading="loading4"
-              color="primary"
-              class="full-width"
-              type="submit"
-            >
-              Сохранить
+            <q-btn :loading="loading4" color="primary" class="full-width" type="submit">
+              {{$t('actions.save')}}
               <template v-slot:loading>
-                <q-spinner-hourglass class="on-left" />
-                Подождите...
+                <q-spinner-hourglass class="on-left" />Подождите...
               </template>
             </q-btn>
           </q-card-actions>
@@ -462,11 +448,9 @@
 <script>
 import axios from "axios";
 import userList from "./user.json";
-import QDialogPopup from './dialog'
+import QDialogPopup from "./dialog";
 
-const stringOptions = [
-  'Хамдамов А.А.', 'Касимов Ю.Д.', 'Петров Ф.В'
-]
+const stringOptions = ["Хамдамов А.А.", "Касимов Ю.Д.", "Петров Ф.В"];
 
 export default {
   name: "assistant",
@@ -475,27 +459,27 @@ export default {
   },
   data() {
     return {
-      tab: 'tab1',
+      tab: "tab1",
       dialogPopup: false,
       val: false,
       fixed: false,
       model: null,
-      group: 'op1',
+      group: "op1",
       optionsSel: [
         {
-          label: 'Хамдамов А.А.',
-          value: 'op1'
+          label: "Хамдамов А.А.",
+          value: "op1"
         },
         {
-          label: 'Касимов Ю.Д.',
-          value: 'op2'
+          label: "Касимов Ю.Д.",
+          value: "op2"
         },
         {
-          label: 'Петров Ф.В',
-          value: 'op3'
+          label: "Петров Ф.В",
+          value: "op3"
         }
       ],
-      shape: [ ],
+      shape: [],
 
       selected: [],
       pagination: {
@@ -615,20 +599,21 @@ export default {
     };
   },
   methods: {
-    filterFn (val, update) {
-      if (val === '') {
+    filterFn(val, update) {
+      if (val === "") {
         update(() => {
-          this.options = stringOptions
-        })
-        return
+          this.options = stringOptions;
+        });
+        return;
       }
 
       update(() => {
-        const needle = val.toLowerCase()
-        this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      })
+        const needle = val.toLowerCase();
+        this.options = stringOptions.filter(
+          v => v.toLowerCase().indexOf(needle) > -1
+        );
+      });
     },
-
 
     test123(newSelected) {
       const data = [];
@@ -758,63 +743,64 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-  .sub_menu {
-    padding: 10px 0;
-    margin: 10px 0;
-    display: flex;
-  }
-  .sub_menu div {
-    padding-left: 10px;    
-    margin-right: 10px;
-    color: #8B8B8B;
-    cursor: pointer; 
-    font-size: 12px;   
-  }
-  .sub_menu div + div {border-left:1px #C2C2C2 solid;}
-  .docBlock {
-    border-top:1px #C2C2C2 solid;
-    padding: 30px 15px;
-    color: #8B8B8B;
-  }
-  .docBlock:hover {
-    background: #F2F2F2;
-  }
-  .docBlock div {
-    padding-right: 5px;
-  }
-  .docBlock span {
-    color: black;
-    float: left;
-    display: block;
-    padding-right: 5px;
-  }
-  .check {
-    padding: 0 10px;
-    width: 65px;
-    margin-right: 10px;
-  }
-  .check_div {
-    background:#F2F2F2;
-    padding: 5px;
-    border-radius:10px ;
-  }
-  .despBlock {
-    display: flex;
-    font-size: 14px;
-  }
-  .despBlock + .despBlock {
-    border-left:1px #C2C2C2 solid;
-    padding: 0 15px ;
-    margin-right: 15px;
-  }
-  .text {
-    font-size: 16px;
-    padding-bottom: 15px;
-  }
-  .actions {
-    width: 200px;
-  }
-
+.sub_menu {
+  padding: 10px 0;
+  margin: 10px 0;
+  display: flex;
+}
+.sub_menu div {
+  padding-left: 10px;
+  margin-right: 10px;
+  color: #8b8b8b;
+  cursor: pointer;
+  font-size: 12px;
+}
+.sub_menu div + div {
+  border-left: 1px #c2c2c2 solid;
+}
+.docBlock {
+  border-top: 1px #c2c2c2 solid;
+  padding: 30px 15px;
+  color: #8b8b8b;
+}
+.docBlock:hover {
+  background: #f2f2f2;
+}
+.docBlock div {
+  padding-right: 5px;
+}
+.docBlock span {
+  color: black;
+  float: left;
+  display: block;
+  padding-right: 5px;
+}
+.check {
+  padding: 0 10px;
+  width: 65px;
+  margin-right: 10px;
+}
+.check_div {
+  background: #f2f2f2;
+  padding: 5px;
+  border-radius: 10px;
+}
+.despBlock {
+  display: flex;
+  font-size: 14px;
+}
+.despBlock + .despBlock {
+  border-left: 1px #c2c2c2 solid;
+  padding: 0 15px;
+  margin-right: 15px;
+}
+.text {
+  font-size: 16px;
+  padding-bottom: 15px;
+}
+.actions {
+  width: 200px;
+}
 </style>
 
 
@@ -864,7 +850,7 @@ export default {
 //   color: #555;
 // }
 // a {
-//   text-decoration: underline; /* Добавляем подчеркивание 
+//   text-decoration: underline; /* Добавляем подчеркивание
 //                                    при наведении курсора мыши на ссылку */
 // }
 // .dialog {
