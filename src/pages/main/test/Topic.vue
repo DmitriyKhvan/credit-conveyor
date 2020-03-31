@@ -2,10 +2,7 @@
   <div class="topicBlock">
     <div class="headTopic">
       <h2 class="titleTopic">{{ topicName }}</h2>
-      <div class="timeBlock">
-        <h3 class="titleTime">Оставшееся время</h3>
-        <span class="time"></span>
-      </div>
+      <appTimer />
     </div>
     
     <q-card>
@@ -58,7 +55,6 @@
                     test.topic_id,
                     variant.id,
                     variant.answer_text,
-                    (duration = 0)
                   )
                 "
               />
@@ -121,6 +117,7 @@
 </template>
 <script>
 import ApiService from "@/services/api.service";
+import Timer from "./components/Timer"
 
 export default {
   data() {
@@ -141,24 +138,13 @@ export default {
       answerTest: [],
       nextDisabled: false,
       prevDisabled: true,
-      timer: null,
-      // time: "", // обратный отчет
-      timeCurQuestion: 0,
-      timerCurQuestion: null,
-      duration: 0,
+      timeCurQuestion: Date.now(),
       target_date: null,
       queue: [0],
-      //target_date: new Date().getTime() + (1000 * 3600), // установить дату обратного отсчета
-      days: null,
-      hours: null,
-      minutes: null,
-      seconds: null, // переменные для единиц времени
       abc: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
     };
   },
   created() {
-    //console.log(this.$router.currentRoute);
-
     this.getTests(this.id)
       .then(res => {
         this.data.session_id = "" + Math.round(Math.random() * 100000000);
@@ -168,9 +154,10 @@ export default {
         this.data.ques_amount = res.data.ques_amount;
 
         this.topic = res;
-        this.target_date = new Date().getTime() + 1000 * res.data.duration;
-
-        this.getCountdown();
+        //Timer
+        const targetDate = new Date().getTime() + 1000 * res.data.duration;
+        
+        this.$store.commit("setTargetDate", targetDate)
 
         for (let question of this.topic.questions) {
           this.data.answers.push({
@@ -192,10 +179,6 @@ export default {
       });
   },
   mounted() {
-    this.timer = setInterval(() => {
-      this.getCountdown();
-    }, 1000);
-    this.getCountUp();
     const tabover = document.getElementsByClassName("q-tabs__content")
     tabover[1].style.cssText = "overflow: visible"
     
@@ -203,18 +186,12 @@ export default {
   updated() {
     console.log('updated')
   },
-  beforeDestroy() {
-    clearInterval(this.timer);
-    clearInterval(this.timerCurQuestion);
-  },
   watch: {
     tab() {
-
       // const el = document.querySelector('.q-tab--active')
       // const icon = '<i class="material-icons">accessibility_new</i>'
 
       // el.append(innerHtml);
-      
 
       if (this.tab < this.data.answers.length - 1 && this.tab > 0) {
         this.nextDisabled = false;
@@ -229,12 +206,7 @@ export default {
 
       this.queue.push(this.tab);
 
-      this.countTimeCurQuestion(2);
-
-      clearInterval(this.timerCurQuestion);
-      //this.getCountUp();
-
-      
+      this.countTimeCurQuestion(2); // 2 - предпоследний элемент
     },
   },
   updated () {
@@ -250,11 +222,6 @@ export default {
     }
   },
   methods: {
-    // onSubmit(count) {
-    //   console.log(this.answerTest);
-    //   this.tab = this.tab + count;
-    //   this.answerTest = "";
-    // },
     tabColor (i, answer) {
       const start = this.tabView.length
       const view = this.tabView.find(e => e === i)
@@ -291,25 +258,22 @@ export default {
       topic_id,
       variant_id,
       variant_text,
-      duration
-    ) {
       
-      //clearInterval(this.timerCurQuestion)
-
-      //const timeAnswer = this.answers[index].duration + this.timeCurQuestion
-
+    ) {
       const answer = {
         ques_id: question_id,
         topic_id,
         variant_id,
-        duration: 0
       };
+
       this.data.answers = [
         ...this.data.answers.slice(0, index),
-        answer,
+        {
+          ...this.data.answers.slice(index, index + 1)[0],
+          ...answer,
+        },
         ...this.data.answers.slice(index + 1)
       ];
-      
 
       const variantAnswer = {
         question_id,
@@ -325,7 +289,7 @@ export default {
     },
     completeTest() {
       console.log('data', this.data)
-      this.countTimeCurQuestion(1);
+      this.countTimeCurQuestion(1); // 1 последний элемент
 
       this.data.end_time = this.curDate();
 
@@ -337,45 +301,15 @@ export default {
           };
           this.$store.commit("sentAnswersTest", payload);
           this.$store.commit('setResTest', res.message)
+
+          this.$router.push({ path: "/completeTest" });
         })
         .catch(err => {
           console.log(err);
         });
       
-      
-      this.$router.push({ path: "/completeTest" });
     },
-    getCountdown() {
-      let current_date = new Date().getTime();
-      let seconds_left = (this.target_date - current_date) / 1000;
-
-      this.days = this.pad(parseInt(seconds_left / 86400));
-      seconds_left = seconds_left % 86400;
-
-      this.hours = this.pad(parseInt(seconds_left / 3600));
-      seconds_left = seconds_left % 3600;
-
-      this.minutes = this.pad(parseInt(seconds_left / 60));
-      this.seconds = this.pad(parseInt(seconds_left % 60));
-
-      // строка обратного отсчета  + значение тега
-
-      //this.time = this.days + "</span><span>" + this.hours + "</span><span>" + this.minutes + "</span><span>" + this.seconds + "</span>";
-      this.time = this.hours + ":" + this.minutes + ":" + this.seconds;
-      if (this.time == "00:00:00") {
-        this.completeTest();
-      }
-    },
-    pad(n) {
-      return (n < 10 ? "0" : "") + n;
-    },
-    getCountUp() {
-      this.timeCurQuestion = 0;
-      this.timerCurQuestion = setInterval(() => {
-        this.timeCurQuestion = this.timeCurQuestion + 1;
-      }, 1000);
-    },
-
+    
     curDate() {
       var date = new Date();
       var aaaa = date.getFullYear();
@@ -402,9 +336,10 @@ export default {
     },
 
     countTimeCurQuestion(el) {
-      // нужно оптимизировать!!!
+      this.timeCurQuestion = Math.round((Date.now() - this.timeCurQuestion) / 1000)// количество секунд
+      
       const index = this.queue[this.queue.length - el];
-      //
+    
       const timeAnswer =
         this.data.answers[index].duration + this.timeCurQuestion;
       
@@ -417,7 +352,12 @@ export default {
         answer,
         ...this.data.answers.slice(index + 1)
       ];
+
+      this.timeCurQuestion = Date.now() // время прошедшее от 1970г. в секундах
     }
+  },
+  components: {
+    appTimer: Timer
   }
 };
 </script>
@@ -446,7 +386,7 @@ export default {
   font-size: 22px;
 }
 
-.topicBlock  .titleTime {
+.topicBlock .titleTime {
   position: relative;
   margin: 0;
   font-size: 22px;
@@ -518,7 +458,7 @@ export default {
   margin: 30px auto 0;
 }
 
-.topicBlock .q-tabs__content--align-justify .q-tab {
+/* .topicBlock .q-tabs__content--align-justify .q-tab {
   flex: 0 0 auto;
   padding: 0;
   width: 26px;
@@ -526,10 +466,17 @@ export default {
   border: 1px solid #d7d7d7;
   border-radius: 50%;
   margin-right: 20px;
-}
+} */
 
 .topicBlock .q-tab {
   min-height: 26px;
+  flex: 0 0 auto;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d7d7d7;
+  border-radius: 50%;
+  margin-right: 20px;
 }
 
 .topicBlock .q-card {

@@ -1,6 +1,7 @@
 export default {
     state: {
         topicName: '',
+        targetDate: null,
         countTrueAnswers: '',
         quesAmount: null,
         topicName: '',
@@ -23,6 +24,9 @@ export default {
         },
         setResTest (state, payload) {
             state.res = payload
+        },
+        setTargetDate(state, payload) {
+            state.targetDate = payload
         }
     },
     getters: {
