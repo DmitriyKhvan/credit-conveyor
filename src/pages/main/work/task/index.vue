@@ -2,15 +2,18 @@
   <div class="q-pa-md">
     <q-toolbar class="shadow-2 rounded-borders">
       <q-tabs v-model="tab" inline-label stretch>
-        <q-tab name="tab1" label="Новые" icon="new_releases">
-          <q-badge color="red" floating>2</q-badge>
+        <q-tab 
+          v-for="item of menu"
+          :key="item.value"
+          :name="item.value"
+          :label="item.label" 
+          :icon="item.icon"
+        >
+          <template v-if="item.countTask">
+            <q-badge color="red" floating>{{ item.countTask }}</q-badge>
+          </template>
         </q-tab>
-        <q-tab name="tab2" label="Принял(а)" icon="drafts">
-          <q-badge color="red" floating>12</q-badge>
-        </q-tab>
-        <q-tab name="tab2" label="Работаю" icon="settings_applications">
-        </q-tab>
-        <q-tab name="tab2" label="Завершено" icon="check_circle"> </q-tab>
+        
       </q-tabs>
     </q-toolbar>
 
@@ -31,12 +34,14 @@
 
     <div v-for="task in userTasks" :key="task.task_id" class="row docBlock">
       <div class="col-1 check">
-        <div class="check_div"><q-checkbox v-model="selection" :val="task.task_id" /></div>
+        <div class="check_div">
+          <q-checkbox v-model="selection" :val="task.task_id" />
+        </div>
       </div>
       <div class="col content">
         <div class="row">
           <div class="col text">
-            {{ task.f_task_data.description }}
+            {{ task.f_task_data.description.slice(0, 300) }}...
           </div>
         </div>
         <div class="row">
@@ -61,7 +66,7 @@
                 >{{ task.f_task_data.paper_count }} лист /
                 {{ task.f_task_data.format }}</span
               ><br />
-              <i>{{ task.f_task_data.file.size }} кб</i>
+              <i>{{ task.f_task_data.file.size }} байт</i>
             </div>
           </div>
 
@@ -71,18 +76,34 @@
               icon="person"
               size="sm"
               label="Ответсвенные"
-              @click="usersHierarchy(
-                {
+              @click="
+                usersHierarchy({
                   label: `${task.last_name} ${task.first_name} ${task.middle_name}`,
                   children: task.forward_tasks
-                }
-              )"
+                })
+              "
             />
           </div>
           <div class="col despBlock">
             <div><q-icon name="person" /></div>
             <div>
-              <span>от:</span> <strong>{{ `${task.h_last_name} ${task.h_first_name} ${task.h_middle_name}` }}</strong>
+              <span>от:</span>
+              <strong
+                class="poster"
+                v-html="
+                  `${task.h_last_name} ${task.h_first_name.slice(
+                    0,
+                    1
+                  )}. ${task.h_middle_name.slice(0, 1)}.`
+                "
+              >
+              </strong>
+              <p
+                class="desc"
+                v-html="
+                  `${task.h_last_name} ${task.h_first_name} ${task.h_middle_name}`
+                "
+              ></p>
             </div>
           </div>
         </div>
@@ -93,7 +114,7 @@
           label="Открыть"
           @click="usersTask(task)"
         /><br />
-       
+
         <q-btn flat size="sm" icon="print" />
         <q-btn flat size="sm" icon="cloud_download" />
       </div>
@@ -105,12 +126,10 @@
     </q-dialog>
 
     <!-- Задача -->
-     <q-dialog v-model="taskPopup" full-width full-height>
-        <q-task></q-task>
-      </q-dialog>
+    <q-dialog v-model="taskPopup" full-width full-height>
+      <q-task></q-task>
+    </q-dialog>
   </div>
-
-  
 
   <!-- <div class="q-pa-md">
     <router-view />
@@ -118,6 +137,7 @@
 </template>
 
 <script>
+import UserService from "@/services/user.service";
 import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
 
@@ -125,70 +145,65 @@ export default {
   data() {
     return {
       taskPopup: false,
-      tab: "tab1",
-      selection: [],
-      fixed: false,
-      model: null,
-      group: "op1",
-      optionsSel: [
-        {
-          label: "Хамдамов А.А.",
-          value: "op1"
-        },
-        {
-          label: "Касимов Ю.Д.",
-          value: "op2"
-        },
-        {
-          label: "Петров Ф.В",
-          value: "op3"
-        }
-      ],
-      shape: [],
       usersPopup: false,
+      tab: 1,
+      selection: [],
+      model: null,
+      // shape: [],
       optionsFilter: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
     };
   },
   async created() {
     try {
-      await this.$store.dispatch("task/userTasks");
+      await this.$store.dispatch("task/userTasks", 1);
     } catch (error) {}
   },
   computed: {
     userTasks() {
       return this.$store.getters["task/getUserTasks"];
+    },
+    menu() {
+      return this.$store.getters["task/getStatuses"];
+    }
+  },
+  watch: {
+    async tab(value) {
+      try {
+        await this.$store.dispatch("task/userTasks", value);
+      } catch (error) {}
     }
   },
   methods: {
     usersHierarchy(data) {
-      
-      const children = []
+      const children = [];
+      const emp_id = this.$store.getters["auth/empId"];
+      const avatar = UserService.getUserProfilePhotoUrl(emp_id);
       if (data.children) {
         for (let child of data.children) {
           children.push({
             label: `${child.first_name} ${child.last_name} ${child.middle_name}`,
-            icon: 'check_circle',
-          })
+            icon: "check_circle"
+          });
         }
       }
-      
+
       const props = [
         {
           label: data.label,
-          avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+          avatar,
           children
         }
-      ]
-      console.log(props)
+      ];
+      console.log(props);
 
-      this.$store.commit('task/setUserHierarchy', props)
-      
+      this.$store.commit("task/setUserHierarchy", props);
+
       this.usersPopup = true;
     },
     usersTask(task) {
       // const task = this.userTasks.find(i => i.task_id = task_id)
-      this.$store.commit('task/setCurrentTask', task)
-      this.taskPopup = true
+      this.$store.commit("task/setCurrentTask", task);
+      this.taskPopup = true;
     }
   },
   components: {
@@ -246,6 +261,35 @@ export default {
   display: flex;
   font-size: 14px;
 }
+
+.poster {
+  position: relative;
+  cursor: pointer;
+}
+
+.poster:hover + .desc {
+  // opacity: 1;
+  display: block;
+}
+
+.desc {
+  position: absolute;
+  // top: 100%;
+  // left: 0;
+  // text-overflow: clip;
+  // white-space: nowrap;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 14px;
+  color: #000;
+  padding: 5px 10px;
+  display: none;
+  // opacity: 0;
+  // transition: opacity, 0.3s ease;
+  z-index: 10;
+}
+
 .despBlock + .despBlock {
   border-left: 1px #c2c2c2 solid;
   padding: 0 15px;

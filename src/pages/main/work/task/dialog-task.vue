@@ -1,7 +1,7 @@
 <template>
   <q-card style="width:500px">
     <q-card-section class="bg-blue-7 text-white header">
-      <div class="text-h6">Документ №6765</div>
+      <div class="text-h6">Документ №{{ task.f_task_data.doc_id }}</div>
       <q-btn icon="clear" flat text-color="white" v-close-popup />
     </q-card-section>
 
@@ -22,28 +22,49 @@
         <div class="comments scroll q-pb-md" style="max-height: 45vh">
           <div
             class="comment q-pt-md"
-            v-for="comment in task.comments"
+            v-for="(comment, index) in task.comments"
             :key="comment.id"
           >
             <div class="avatar q-pr-md">
               <q-avatar>
-                <img src="https://cdn.quasar.dev/img/avatar.png" />
+                <img :src="getPhotoUrl(comment.emp_id)" />
               </q-avatar>
             </div>
             <div class="textComment">
               <div class="title">
-                {{
-                  `${comment.first_name} ${comment.last_name} ${comment.middle_name}`
-                }}<i>2 минуты назад</i>
+                <span class="poster"
+                  v-html="`${comment.last_name} ${comment.first_name.slice(0,1)}. ${comment.middle_name.slice(0,1)}.`">
+                </span>
+                <p class="desc" v-html=" `${comment.last_name} ${comment.first_name} ${comment.middle_name}`"></p>
+                <i>2 минуты назад</i>
               </div>
-              <div class="content">
-                {{ comment.text }}
+              <div v-if="!comment.edit">
+                <div class="content">
+                  {{ comment.text }}
+                </div>
+
+                <div class="actions">
+                  <div @click="editComment(index)">редактировать</div>
+                  |
+                  <div @click="deleteComment(comment.id)">удалить</div>
+                </div>
               </div>
-              <div class="actions">
-                <div>редактировать</div>
-                |
-                <div @click="deleteComment(comment.id)">удалить</div>
-              </div>
+              <form v-else @submit.prevent.stop="onSubmit(index, comment.id)">
+                <q-input
+                  v-model="comment.text"
+                  outlined
+                  type="textarea"
+                  label="Редактирование комментария"
+                  dense
+                />
+                <q-btn
+                  type="submit"
+                  color="white q-mt-sm"
+                  text-color="black"
+                  label="Редактировать"
+                />
+              </form>
+              
             </div>
           </div>
         </div>
@@ -53,7 +74,7 @@
         <div class="addComment q-py-md">
           <div class="addAvatar q-pr-md">
             <q-avatar>
-              <img src="https://cdn.quasar.dev/img/avatar.png" />
+              <img :src="getPhotoUrl(emp_id)" />
             </q-avatar>
           </div>
           <div class="addText">
@@ -61,7 +82,7 @@
               v-model="text"
               outlined
               type="textarea"
-              label="Outlined"
+              label="Введите комментарий"
               dense
             />
             <q-btn
@@ -80,36 +101,61 @@
             <q-select
               dense
               filled
-              v-model="model"
-              :options="options"
+              v-model="task.u_status"
+              :options="statuses"
               label="Статус"
+              emit-value
+              map-options
             />
           </div>
-          <div class="q-pl-md">
+          <!-- <div class="q-pl-md">
             <q-btn color="primary" text-color="white" label="Отправить" />
-          </div>
+          </div> -->
         </div>
         <div class="q-py-md">
-          <q-select
+          <!-- <q-select
             dense
             outlined
             text-color="black"
-            v-model="model"
+            v-model="ttt"
             :options="options"
             label="Выберите исполнителей"
-          />
+          /> -->
         </div>
         <div class="usersRight q-pb-md">
-          <q-chip color="red" text-color="white">
-            Хакимов Ф.Е.
+          <q-chip color="red poster" text-color="white"
+              v-html="`${task.last_name} ${task.first_name.slice(0,1)}. ${task.middle_name.slice(0,1)}.`">
           </q-chip>
-          <div class="userLine">Мирсаев У.А.</div>
-          <div class="userLine">Хамдамов А.А.</div>
-          <div class="userLine">Баратов С</div>
+          <p class="desc" v-html=" `${task.last_name} ${task.first_name} ${task.middle_name}`"></p>
+          <div 
+            class="userLine"
+            v-for="user of task.forward_tasks"
+            :key = user.task_id
+          >
+            <q-btn
+              size="7px"
+              round
+              color="red"
+              icon="close"
+              class="deleteUser"
+              @click="deleteUser(user.task_id)"
+            />
+            <span class="poster"
+              v-html="`${user.last_name} ${user.first_name.slice(0,1)}. ${user.middle_name.slice(0,1)}.`">
+            </span>
+            <p class="desc" v-html=" `${user.last_name} ${user.first_name} ${user.middle_name}`"></p>
+          </div>
+          <!-- <div class="userLine">Хамдамов А.А.</div>
+          <div class="userLine">Баратов С</div> -->
         </div>
         <q-separator />
         <div class="general">
-          От: Мамхмудов К.Р
+          От:
+          <span class="poster"
+            v-html="`${task.h_last_name} ${task.h_first_name.slice(0,1)}. ${task.h_middle_name.slice(0,1)}.`">
+          </span>
+           <p class="desc" 
+            v-html="`${task.h_last_name} ${task.h_first_name} ${task.h_middle_name}`"></p>
         </div>
         <q-separator />
         <div class="files q-pt-sm">
@@ -132,7 +178,7 @@
           color="primary"
           standout
           bottom-slots
-          v-model="model"
+          v-model="upload"
           label="Загрузить"
         >
           <template v-slot:prepend>
@@ -160,17 +206,36 @@
 </template>
 
 <script>
+import UserService from "@/services/user.service";
+
 export default {
   data() {
     return {
+      emp_id: this.$store.getters["auth/empId"],
       text: "",
-      model: null,
-      options: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
+      // status: this.task.u_status,
+      upload: null,
+      // options: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
     };
   },
   computed: {
     task() {
+      //console.log(JSON.stringify((this.$store.getters["task/getCurrentTask"]).u_status, null, 2))
       return this.$store.getters["task/getCurrentTask"];
+    },
+    statuses() {
+      return this.$store.getters["task/getStatuses"]
+    }
+  },
+  watch: {
+    async "task.u_status"(value) {
+      try {
+        const status = {
+          id: this.task.task_id,
+          status: value
+        }
+        await this.$store.dispatch("task/changeTaskStatus", status)
+      }catch(error) {}
     }
   },
   methods: {
@@ -204,6 +269,31 @@ export default {
     async deleteComment(id) {
       try {
         await this.$store.dispatch("task/deleteComment", id)
+      } catch(error) {}
+    },
+
+    editComment(idx) {
+      this.task.comments[idx].edit = true
+    },
+
+    getPhotoUrl(emp_id) {
+      return UserService.getUserProfilePhotoUrl(emp_id);
+    },
+
+    async onSubmit(idx, id) {
+      try {
+        const comment = {
+          id,
+          text: this.task.comments[idx].text
+        };
+        await this.$store.dispatch("task/editComment", comment)
+        this.task.comments[idx].edit = false
+      } catch(error) {}
+    },
+
+    async deleteUser(task_id) {
+      try {
+        await this.$store.dispatch("task/deleteUser", task_id)
       } catch(error) {}
     }
   }
@@ -287,5 +377,38 @@ export default {
 .header {
   display: flex;
   justify-content: space-between;
+}
+
+.poster {
+  position: relative;
+  cursor: pointer;
+}
+
+.poster:hover + .desc{
+  // opacity: 1;
+  display: block;
+}
+
+.desc {
+  position: absolute;
+  // top: 100%;
+  // left: 0;
+  // text-overflow: clip;
+  // white-space: nowrap;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 100;
+  color: #000;
+  padding: 5px 10px;
+  display: none;
+  // opacity: 0;
+  // transition: opacity, 0.3s ease;
+  z-index: 10;
+}
+
+.deleteUser {
+  margin-right: 5px;
 }
 </style>
