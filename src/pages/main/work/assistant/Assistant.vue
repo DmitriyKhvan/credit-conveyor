@@ -1,73 +1,75 @@
 <template>
   <div class="q-pa-md">
+    
     <q-toolbar class="shadow-2 rounded-borders">
       
       <q-tabs v-model="tab" inline-label stretch>
-        <q-tab name="tab1" label="Новые" icon="new_releases" />
-        <q-tab name="tab2" label="Отправленные" icon="drafts" />
+        <q-tab name="tab1" label="Новые" icon="new_releases" @click="changeDocs(1)" />
+        <q-tab name="tab2" label="Отправленные" icon="drafts" @click="changeDocs(2)" />
       </q-tabs>
     </q-toolbar>
 
     <div class="sub_menu">
-      <div>перенаправить</div>
+      <div v-if="tab === 'tab1'" @click="sendSelDocs()" :class="selection.length !== 0 ? 'active': ''">перенаправить</div>
       <div>сортировать</div>
       <div>удалить</div>
     </div>
-
+    
     <div
-      v-for="(b, i) in 2"
-      :key="i" 
+      v-for="doc in docs"
+      :key="doc.doc_id" 
       class="row docBlock"
       >
-      <div class="col-1 check">
-        <div class="check_div"><q-checkbox v-model="val" /></div>
+      <div class="col-1 check text-center">
+        <div class="check_div"><q-checkbox v-model="selection" :val="doc" /></div>
+        #{{doc.doc_id}}
       </div>
       <div class="col content">
         <div class="row">
           <div class="col text">
-            Поручение по письму Министерства  РУз также призвал глав муниципалитетов разъяснить пожилым гражданам необходимость оставаться дома и исключить ...
+            {{doc.description}}
           </div>
         </div>
         <div class="row">
           <div class="col despBlock">
             <div><q-icon name="skip_previous" /></div>
             <div>
-              <span>Исх.№</span> 36-44/29<br>
-              <span>от:</span> 2019.12.24
+              <span>Исх.№</span> {{doc.out_number}}<br>
+              <span>от:</span> {{doc.out_date}}
             </div>
           </div>
           <div class="col despBlock">
             <div><q-icon name="skip_next" /></div>
             <div>
-              <span>Вх.№</span> 36-44/29<br>
-              <span>от:</span> 2019.12.24
+              <span>Вх.№</span> {{doc.in_number}}<br>
+              <span>от:</span> {{doc.in_date}}
             </div>
           </div>
           <div class="col despBlock">
             <div><q-icon name="description" /></div>
             <div>
-              <span>1 лист / бумажное</span><br>
-              <i>622 кб</i>
+              <span>{{doc.paper_count}} лист / {{doc.format}}</span><br>
+              <i>{{sizeFunc(doc.file.file_size)}}</i>
             </div>
           </div>
-          <div class="col despBlock">
+          <div v-if="doc.tasks === null" class="col despBlock">
             <div><q-icon name="history" /></div>
             <div>
               Не расмотрен
             </div>
           </div>
-          <div class="col despBlock">
+          <!-- <div v-if="tab === 'tab1' && doc.tasks === null" class="col despBlock">
             <q-btn color="white text-black" icon="person" size="sm" label="Ответсвенные" @click="dialogPopup = true" />
             <q-dialog 
               v-model="dialogPopup"
             >
               <q-dialog-popup></q-dialog-popup>             
             </q-dialog>
-          </div>
+          </div> -->
           <div class="col despBlock">
             <div><q-icon name="person" /></div>
             <div>
-              <span>от:</span> <strong>Мирсаитов А.С.</strong>
+              <span>от:</span> <strong>{{doc.signed_by}}</strong>
             </div>
           </div>
         </div>
@@ -76,561 +78,85 @@
         <q-btn-group push>
           <q-btn push icon="cloud_download" />
           <q-btn push icon="print" />
-          <q-btn push icon="play_arrow" color="primary" @click="fixed = true"/>
-
-          <q-dialog v-model="fixed">
-            <q-card  style="width:500px">
-              
-              <q-card-section class="bg-blue-7 text-white">
-                <div class="text-h6">Номер документа №6765</div>
-              </q-card-section>
-
-              <q-separator />
-
-              <q-card-section style="max-height: 70vh" class="scroll">
-                <div class="q-pb-md">
-                  <q-input 
-                    label="Содержание" 
-                    type="textarea"
-                    outlined 
-                  />
-                </div>
-                <div class="q-pb-md">
-                  <q-select
-                    filled
-                    v-model="model"
-                    use-input
-                    input-debounce="0"
-                    label="Выберите исполнителей"
-                    :options="options"
-                    @filter="filterFn"
-                    behavior="menu"
-                  >
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No results
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
-                </div>
-
-                <div>
-                  Выберите исполнителей
-                </div>
-                <div class="q-pb-md selDiv">
-                  <q-option-group
-                    v-model="group"
-                    :options="optionsSel"
-                    color="primary"
-                  />
-                </div>
-                
-                <div class="q-pb-md">
-                  <q-select
-                    filled
-                    v-model="model"
-                    use-input
-                    input-debounce="0"
-                    label="Выберите руководителя"
-                    :options="options"
-                    @filter="filterFn"
-                    behavior="menu"
-                  >
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No results
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
-                </div>
-
-                <div class="q-pb-md">
-                  <q-select filled v-model="model" :options="optionsSel" label="Выберите шаблон" />
-                </div>
-                <div class="q-pb-md">
-                  <q-toggle size="md" v-model="shape" val="md" label="Не подписан" />
-                </div>
-                
-              </q-card-section>
-
-              <q-separator />
-
-              <q-card-actions align="right">
-                <q-btn label="Закрыть" color="white" text-color="black" v-close-popup />
-                <q-btn label="Отправить" color="primary" v-close-popup />                
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-      </q-btn-group>
+          <q-btn push icon="play_arrow" color="primary" @click="sendDoc(doc)"/>          
+        </q-btn-group>
       </div>
     </div>
 
 
     
-    
-
-    <!-- старая таблица -->
-    <q-table
-      :data="desserts"
-      :columns="columns"
-      :filter="filter"
-      separator="cell"
-      row-key="id"
-      table-header-class="bg-blue-5 text-white"
-      table-style="max-height: 750px;"
-      :pagination.sync="pagination"
-      selection="multiple"
-      :selected.sync="selected"
-      @update:selected="test123"
-      class="my-sticky-header-table"
-    >
-      <template v-slot:top-right>
-        <q-input dense outlined square v-model="filter" placeholder="Поиск">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
-      <template v-slot:top-left>
-        <div class="q-gutter-lg">
-          <q-btn v-if="selected.length > 0"><q-icon name="post_add"/></q-btn>
-          <q-btn>test</q-btn>
-          <q-btn>test</q-btn>
-        </div>
-      </template>
-
-      <template v-slot:body-cell-id="props">
-        <q-td :props="props" style="background-">
-          <div>
-            {{ props.row.id }}
-          </div>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-journal_name="props">
-        <q-td :props="props">
-          <div>
-            Наименование:
-            <span class="my-table-details">{{ props.row.fio }}</span
-            ><br />
-            Журналь:
-            <span class="my-table-details">{{ props.row.journal_name[0] }}</span
-            ><br />
-            Орган:
-            <span class="my-table-details">{{ props.row.organ_name[0] }}</span
-            ><br />
-          </div>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-out_number="props">
-        <q-td :props="props">
-          <div>
-            №: <span class="my-table-details">{{ props.row.out_number }}</span
-            ><br />
-            от: <span class="my-table-details">{{ props.row.out_date }}</span>
-          </div>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-in_number="props">
-        <q-td :props="props">
-          <div>
-            №: <span class="my-table-details">{{ props.row.in_number }}</span
-            ><br />
-            от: <span class="my-table-details">{{ props.row.in_date }}</span>
-          </div>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-format_name="props">
-        <q-td :props="props">
-          <div>
-            Листов.:
-            <span class="my-table-details"
-              >{{ props.row.paper_count }} &nbsp;/&nbsp;{{
-                props.row.format_name[0]
-              }}</span
-            ><br />
-            Размер:
-            <span class="my-table-details">{{
-              conv_size(props.row.file_size)
-            }}</span
-            ><br />
-            Файл:
-            <q-icon
-              name="attachment"
-              size="25px"
-              color="red"
-              @click="downloadFile(props.row)"
-            >
-              <q-tooltip
-                content-class="bg-green"
-                content-style="font-size: 16px"
-                :offset="[10, 10]"
-              >
-                Скачать
-              </q-tooltip>
-            </q-icon>
-          </div>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-description="props">
-        <q-td :props="props">
-          <div class="my-table-details">
-            {{ props.row.description }}
-          </div>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-users="props">
-        <q-td :props="props">
-          <div v-if="props.row.users.users !== null">
-            <div
-              v-for="(subusers, index) in props.row.users.users"
-              :key="index"
-            >
-              <span :class="[index == 0 ? 'mainStyle' : '']">
-                {{ subusers.u_name }}
-                <q-icon v-if="subusers.children == true" name="home" />
-              </span>
-            </div>
-            <br />
-            <q-separator />
-            <span class="taskMessSty">{{ props.row.task_message }}</span
-            ><br /><br />
-            <span><b>(Мирсоатов А.К.)</b></span
-            ><br />
-            <span>[{{ props.row.in_date }}]</span>
-          </div>
-          <div v-else>
-            Не рассмотрен
-          </div>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-action="props">
-        <q-td :props="props">
-          <div>
-            <q-icon
-              v-if="selected.length <= 0"
-              name="o_post_add"
-              size="25px"
-              color="#17202A"
-              @click="getRowTable(props)"
-            ></q-icon
-            >&nbsp;&nbsp;
-            <q-icon
-              v-if="props.row.users.users !== null"
-              name="o_print"
-              size="25px"
-              color="secondary"
-            ></q-icon>
-          </div>
-        </q-td>
-      </template>
-    </q-table>
-    <q-dialog v-model="bar" square persistent>
-      <q-card class="dialog">
-        <q-bar>
-          <div>Документ Ид {{ rowData.id }}</div>
-          <q-space />
-          <q-btn
-            dense
-            flat
-            icon="close"
-            v-close-popup
-            color="red"
-            @click="resetDialog()"
-          >
-            <q-tooltip>Закрыт</q-tooltip>
-          </q-btn>
-        </q-bar>
-        <q-form @submit="simulateProgress(4, rowData)">
-          <q-card-section>
-            <span class="section-title text-bold">Содержание:</span>
-            <div class="section-desc">{{ rowData.description }}</div>
-          </q-card-section>
-          <q-card-section>
-            <span class="section-desc-title text-bold">Поручение:</span>
-            <div>
-              
-              <q-select
-                square
-                outlined
-                v-model="modelMultiple"
-                multiple
-                :options="options"
-                use-chips
-                stack-label
-                label="Выберите исполнителей"
-                option-value="uid"
-                option-label="fio"
-                :rules="[
-                  val => (val && val.length > 0) || 'Выберите исполнителей'
-                ]"
-                dense
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-                    <q-item-section>
-                      <q-item-label v-html="scope.opt.fio" />
-                      <q-item-label caption>{{ scope.opt.dep }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <span class="section-title text-bold">Резолюция:</span>
-            <div class="section-supervisor">
-              <q-select
-                v-model="modelSupervisor"
-                square
-                outlined
-                dense
-                stack-label
-                :options="optSupervisor"
-                label="Выберите руководителя"
-                option-value="uid"
-                option-label="fio"
-                :rules="[
-                  val => (val && val.uid > 0) || 'Выберите руководителя'
-                ]"
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-                    <q-item-section>
-                      <q-item-label v-html="scope.opt.fio" />
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <span class="section-title text-bold">Шаблон поручений:</span>
-            <q-select
-              v-model="modelTemplate"
-              outlined
-              square
-              clearable
-              :options="optTemplate"
-              option-value="text"
-              option-label="text"
-              label="Выберите шаблон"
-              emit-value
-              stack-label
-              map-options
-            ></q-select>
-          </q-card-section>
-          <q-card-section>
-            
-          </q-card-section>
-          <q-card-section>
-            <q-list>
-              <q-item>
-                <q-item-section avatar>
-                  <q-checkbox v-model="signedButton" color="red" dense />
-                </q-item-section>
-                <q-item-section caption>
-                  <q-item-label>{{
-                    signedButton ? "Подписан" : "Не подписан"
-                  }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-          <q-card-actions align="left">
-            <q-btn
-              :loading="loading4"
-              color="primary"
-              class="full-width"
-              type="submit"
-            >
-              Сохранить
-              <template v-slot:loading>
-                <q-spinner-hourglass class="on-left" />
-                Подождите...
-              </template>
-            </q-btn>
-          </q-card-actions>
-        </q-form>
-      </q-card>
+    <q-dialog v-model="fixed">
+      <q-dialog-send :docs="docsObj" :tab="tab"></q-dialog-send>
     </q-dialog>
+
+   
   </div>
 </template>
 <script>
 import axios from "axios";
 import userList from "./user.json";
 import QDialogPopup from './dialog'
+import QDialogSend from './dialog-send'
 
-const stringOptions = [
-  'Хамдамов А.А.', 'Касимов Ю.Д.', 'Петров Ф.В'
-]
 
 export default {
   name: "assistant",
   components: {
-    QDialogPopup
+    QDialogPopup,
+    QDialogSend
   },
   data() {
     return {
       tab: 'tab1',
       dialogPopup: false,
-      val: false,
+      selection: [],
       fixed: false,
       model: null,
       group: 'op1',
-      optionsSel: [
-        {
-          label: 'Хамдамов А.А.',
-          value: 'op1'
-        },
-        {
-          label: 'Касимов Ю.Д.',
-          value: 'op2'
-        },
-        {
-          label: 'Петров Ф.В',
-          value: 'op3'
-        }
-      ],
-      shape: [ ],
-
-      selected: [],
-      pagination: {
-        rowsPerPage: 10
-        // rowsNumber: xx if getting data from a server
-      },
-      img: false,
-      image:
-        "http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=",
-      columns: [
-        {
-          name: "id",
-          label: "ИД",
-          field: "id",
-          align: "left",
-          sortable: true,
-          style: "width: 50px"
-        },
-        {
-          name: "journal_name",
-          label: "Документ",
-          field: "journal_name",
-          align: "left",
-          style: "width: 300px"
-        },
-        {
-          name: "out_number",
-          label: "Исходяший",
-          field: "out_number",
-          align: "left",
-          style: "width: 150px"
-        },
-        {
-          name: "in_number",
-          label: "Входяший",
-          field: "in_number",
-          align: "left",
-          style: "width: 150px"
-        },
-        {
-          name: "description",
-          label: "Содержание",
-          field: "description",
-          align: "left",
-          style: "width: 400px"
-        },
-        {
-          name: "format_name",
-          label: "Файл",
-          field: "format_name",
-          align: "left",
-          style: "width: 250px"
-        },
-        {
-          name: "users",
-          label: "Исполнители",
-          field: "users",
-          align: "left",
-          style: "max-width: 300px"
-        },
-        {
-          name: "action",
-          label: "Действия",
-          field: "action",
-          align: "center",
-          style: "width: 50px"
-        }
-      ],
-      loading: true,
-      desserts: [],
-      filter: "",
-      selectOrgan: null,
-      bar: false,
-      rowData: [],
-      signedButton: false,
-      loading4: false,
-      date: "2019-02-01",
-
-      // USER SELECT DATA
-      modelMultiple: [],
-      modelSupervisor: {},
-      modelTemplate: "",
-      options: userList.rows,
-      optSupervisor: userList.rows2,
-      optTemplate: [
-        { id: "1", text: "Пусто" },
-        { id: "2", text: "Прошу рассмотреть." },
-        { id: "3", text: "Прошу рассмотреть в установленном порядке" },
-        {
-          id: "4",
-          text: "Прошу рассмотреть в установленном порядке, согласно поручению"
-        },
-        { id: "5", text: "Для использования в работе" },
-        { id: "6", text: "К исполнению " },
-        { id: "7", text: "К сведению" },
-        { id: "8", text: "Прошу организовать встречу" },
-        { id: "9", text: "Прошу провести переговоры" },
-        { id: "10", text: "Прошу в установленном порядке взять на контроль" },
-        {
-          id: "11",
-          text:
-            "Прошу рассмотреть в установленном порядке и принять необходимые меры"
-        },
-        {
-          id: "12",
-          text: "Прошу рассмотреть в установленном порядке и доложить"
-        },
-        {
-          id: "13",
-          text: "Прошу в установленном порядке взять на контроль и доложить"
-        },
-        {
-          id: "14",
-          text: "Прошу в установленном порядке подготовить информацию"
-        }
-      ]
+      shape: [],
+      docs: [],
+      docId: [],
+      description: [],
+      taskMes: 'Пусто',
+      docsObj: []
     };
   },
-  methods: {
-    filterFn (val, update) {
-      if (val === '') {
-        update(() => {
-          this.options = stringOptions
-        })
-        return
-      }
 
-      update(() => {
-        const needle = val.toLowerCase()
-        this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      })
+  methods: {
+    sizeFunc (b) {
+      if (b / 1024 > 1024) {
+        return (b / 1024 / 1024).toFixed(1) + ' мб';
+      } else {
+        return (b / 1024).toFixed(1) + ' кб';
+      }      
     },
+    changeDocs (slelect) {
+      axios
+        .get("/tasks/pomoshnik/"+slelect)
+        .then(response => {                    
+            this.docs = response.data
+            console.log(this.docs )
+        })
+        .catch(error => {
+            console.log('error') 
+        });
+    },
+    sendSelDocs () { 
+      this.docsObj = []     
+      if(this.selection.length !== 0) {
+        this.selection.forEach(el => {
+          this.docsObj.push(el)
+        })        
+        this.fixed = true
+      }
+    },
+    sendDoc (doc) {
+      this.docsObj = []
+      this.docsObj.push(doc)
+      this.fixed = true
+    },
+
+
 
 
     test123(newSelected) {
@@ -639,7 +165,7 @@ export default {
         data.push(newSelected[i].id);
       }
       // eslint-disable-next-line
-      console.log(data);
+     
     },
     downloadFile(item) {
       axios({
@@ -702,7 +228,7 @@ export default {
         doc_message: this.modelTemplate
       };
       // eslint-disable-next-line
-      console.log(formData);
+      
 
       axios({
         method: "POST",
@@ -756,7 +282,19 @@ export default {
       .catch(error => {
         this.selectOrgan = error;
       });
-  }
+     axios
+      .get("/tasks/pomoshnik/1")
+      .then(response => {
+        console.log('data', response.data) 
+        this.docs = response.data
+      })
+      .catch(error => {
+        console.log('error') 
+        this.selectOrgan = error;
+      });
+      
+  },
+  
 };
 </script>
 <style lang="scss" scoped>
@@ -772,6 +310,7 @@ export default {
     cursor: pointer; 
     font-size: 12px;   
   }
+  .sub_menu div.active {font-weight: bold;}
   .sub_menu div + div {border-left:1px #C2C2C2 solid;}
   .docBlock {
     border-top:1px #C2C2C2 solid;
