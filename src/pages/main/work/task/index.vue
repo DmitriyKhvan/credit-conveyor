@@ -23,7 +23,7 @@
           dense
           filled
           v-model="model"
-          :options="optionsFilter"
+          :options="menu"
           label="Действия"
         />
       </div>
@@ -66,7 +66,7 @@
                 >{{ task.f_task_data.paper_count }} лист /
                 {{ task.f_task_data.format }}</span
               ><br />
-              <i>{{ task.f_task_data.file.size }} байт</i>
+              <i>{{ task.f_task_data.file.size | formatSize}}</i>
             </div>
           </div>
 
@@ -80,7 +80,7 @@
                 usersHierarchy({
                   label: `${task.last_name} ${task.first_name} ${task.middle_name}`,
                   children: task.forward_tasks
-                })
+                }, task)
               "
             />
           </div>
@@ -140,6 +140,7 @@
 import UserService from "@/services/user.service";
 import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
+import formatSize from "./filters/formatSize"
 
 export default {
   data() {
@@ -150,7 +151,7 @@ export default {
       selection: [],
       model: null,
       // shape: [],
-      optionsFilter: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
+      // optionsFilter: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
     };
   },
   async created() {
@@ -174,7 +175,8 @@ export default {
     }
   },
   methods: {
-    usersHierarchy(data) {
+    usersHierarchy(data, task) {
+      this.$store.commit("task/setCurrentTask", task);
       const children = [];
       const emp_id = this.$store.getters["auth/empId"];
       const avatar = UserService.getUserProfilePhotoUrl(emp_id);
@@ -194,7 +196,7 @@ export default {
           children
         }
       ];
-      console.log(props);
+      //console.log(props);
 
       this.$store.commit("task/setUserHierarchy", props);
 
@@ -209,6 +211,9 @@ export default {
   components: {
     QHierarchy,
     QTask
+  }, 
+  filters: {
+    formatSize
   }
 };
 </script>

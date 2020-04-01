@@ -1,11 +1,9 @@
-export default function formatSize(value, power) {
+export default function formatSize(value) {
 
-
-  const size = value / 1024 + " кб"; 
-  if (size > 1024) {
-    size = size / 1024 + " мб"
+  let size = (value / 1024).toFixed(2) + " кб"; 
+  if (parseInt(size) > 1024) {
+    size = (parseInt(size) / 1024).toFixed(2) + " мб"
   }
 
-
-  return new Intl.NumberFormat().format(number)
+  return size
 }

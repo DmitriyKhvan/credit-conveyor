@@ -14,7 +14,7 @@
           <div class="icon q-pr-xs"><q-icon name="insert_drive_file" /></div>
           <div>
             {{ task.f_task_data.file.name }}<br />
-            <i>{{ task.f_task_data.file.size }}кб</i>
+            <i>{{ task.f_task_data.file.size | formatSize}}</i>
           </div>
         </div>
         <q-separator />
@@ -32,11 +32,23 @@
             </div>
             <div class="textComment">
               <div class="title">
-                <span class="poster"
-                  v-html="`${comment.last_name} ${comment.first_name.slice(0,1)}. ${comment.middle_name.slice(0,1)}.`">
+                <span
+                  class="poster"
+                  v-html="
+                    `${comment.last_name} ${comment.first_name.slice(
+                      0,
+                      1
+                    )}. ${comment.middle_name.slice(0, 1)}.`
+                  "
+                >
                 </span>
-                <p class="desc" v-html=" `${comment.last_name} ${comment.first_name} ${comment.middle_name}`"></p>
-                <i>2 минуты назад</i>
+                <p
+                  class="desc"
+                  v-html="
+                    `${comment.last_name} ${comment.first_name} ${comment.middle_name}`
+                  "
+                ></p>
+                <i> {{comment.updated_at | formatDate}}</i>
               </div>
               <div v-if="!comment.edit">
                 <div class="content">
@@ -64,7 +76,6 @@
                   label="Редактировать"
                 />
               </form>
-              
             </div>
           </div>
         </div>
@@ -113,24 +124,68 @@
           </div> -->
         </div>
         <div class="q-py-md">
-          <!-- <q-select
-            dense
-            outlined
-            text-color="black"
-            v-model="ttt"
-            :options="options"
-            label="Выберите исполнителей"
-          /> -->
+          <!-- Поиск для добавление пользователя -->
+          <div class="q-pb-md">
+            <q-input
+              v-model="searchUser"
+              @input="selUsers"
+              filled
+              placeholder="Добавить исполнителей"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+
+          <div>
+            <div
+              v-for="user in users"
+              :key="user.EMP_ID"
+              @click="addUser(user)"
+              class="result"
+            >
+              <span v-html="user.LAST_NAME"></span>
+              <span v-html="user.FIRST_NAME"></span>
+              <span v-html="user.MIDDLE_NAME"> </span>
+              <q-btn
+                round
+                color="black"
+                size="5px"
+                icon="priority_high"
+                unelevated
+              >
+                <q-tooltip
+                  anchor="top middle"
+                  self="bottom middle"
+                  :offset="[10, 10]"
+                >
+                  <span v-html="user.DEPARTMENTS_NAME"></span>
+                </q-tooltip>
+              </q-btn>
+            </div>
+          </div>
         </div>
         <div class="usersRight q-pb-md">
-          <q-chip color="red poster" text-color="white"
-              v-html="`${task.last_name} ${task.first_name.slice(0,1)}. ${task.middle_name.slice(0,1)}.`">
+          <q-chip
+            color="red poster"
+            text-color="white"
+            v-html="
+              `${task.last_name} ${task.first_name.slice(
+                0,
+                1
+              )}. ${task.middle_name.slice(0, 1)}.`
+            "
+          >
           </q-chip>
-          <p class="desc" v-html=" `${task.last_name} ${task.first_name} ${task.middle_name}`"></p>
-          <div 
+          <p
+            class="desc"
+            v-html="`${task.last_name} ${task.first_name} ${task.middle_name}`"
+          ></p>
+          <div
             class="userLine"
             v-for="user of task.forward_tasks"
-            :key = user.task_id
+            :key="user.task_id"
           >
             <q-btn
               size="7px"
@@ -140,10 +195,22 @@
               class="deleteUser"
               @click="deleteUser(user.task_id)"
             />
-            <span class="poster"
-              v-html="`${user.last_name} ${user.first_name.slice(0,1)}. ${user.middle_name.slice(0,1)}.`">
+            <span
+              class="poster"
+              v-html="
+                `${user.last_name} ${user.first_name.slice(
+                  0,
+                  1
+                )}. ${user.middle_name.slice(0, 1)}.`
+              "
+            >
             </span>
-            <p class="desc" v-html=" `${user.last_name} ${user.first_name} ${user.middle_name}`"></p>
+            <p
+              class="desc"
+              v-html="
+                `${user.last_name} ${user.first_name} ${user.middle_name}`
+              "
+            ></p>
           </div>
           <!-- <div class="userLine">Хамдамов А.А.</div>
           <div class="userLine">Баратов С</div> -->
@@ -151,14 +218,25 @@
         <q-separator />
         <div class="general">
           От:
-          <span class="poster"
-            v-html="`${task.h_last_name} ${task.h_first_name.slice(0,1)}. ${task.h_middle_name.slice(0,1)}.`">
+          <span
+            class="poster"
+            v-html="
+              `${task.h_last_name} ${task.h_first_name.slice(
+                0,
+                1
+              )}. ${task.h_middle_name.slice(0, 1)}.`
+            "
+          >
           </span>
-           <p class="desc" 
-            v-html="`${task.h_last_name} ${task.h_first_name} ${task.h_middle_name}`"></p>
+          <p
+            class="desc"
+            v-html="
+              `${task.h_last_name} ${task.h_first_name} ${task.h_middle_name}`
+            "
+          ></p>
         </div>
         <q-separator />
-        <div class="files q-pt-sm">
+        <!-- <div class="files q-pt-sm">
           <div class="iconRight q-pr-xs">
             <q-icon name="insert_drive_file" />
           </div>
@@ -184,11 +262,11 @@
           <template v-slot:prepend>
             <q-icon name="attach_file" />
           </template>
-        </q-file>
+        </q-file> -->
         <q-separator />
         <div class="date">
-          создано: 20.01.2019<br />
-          обновление: 1 день назад
+          создано: {{task.created_at | formatDate}}<br />
+          обновление: {{task.updated_at | formatDate}}
         </div>
       </div>
     </div>
@@ -207,6 +285,8 @@
 
 <script>
 import UserService from "@/services/user.service";
+import formatSize from "./filters/formatSize"
+import formatDate from "./filters/formatDate"
 
 export default {
   data() {
@@ -215,6 +295,7 @@ export default {
       text: "",
       // status: this.task.u_status,
       upload: null,
+      searchUser: ""
       // options: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
     };
   },
@@ -224,7 +305,10 @@ export default {
       return this.$store.getters["task/getCurrentTask"];
     },
     statuses() {
-      return this.$store.getters["task/getStatuses"]
+      return this.$store.getters["task/getStatuses"];
+    },
+    users() {
+      return this.$store.getters["task/getUsers"];
     }
   },
   watch: {
@@ -233,9 +317,9 @@ export default {
         const status = {
           id: this.task.task_id,
           status: value
-        }
-        await this.$store.dispatch("task/changeTaskStatus", status)
-      }catch(error) {}
+        };
+        await this.$store.dispatch("task/changeTaskStatus", status);
+      } catch (error) {}
     }
   },
   methods: {
@@ -259,43 +343,88 @@ export default {
           middle_name: MIDDLE_NAME,
           dep_code: DEP_CODE,
           dep_name: DEP_NAME,
-          text: this.text
+          text: this.text,
+          edit: false
         };
         await this.$store.dispatch("task/addComment", comment);
-        this.text = ""
+        this.text = "";
       } catch (error) {}
     },
 
     async deleteComment(id) {
       try {
-        await this.$store.dispatch("task/deleteComment", id)
-      } catch(error) {}
+        await this.$store.dispatch("task/deleteComment", id);
+      } catch (error) {}
     },
 
     editComment(idx) {
-      this.task.comments[idx].edit = true
+      this.task.comments[idx].edit = true;
     },
 
     getPhotoUrl(emp_id) {
       return UserService.getUserProfilePhotoUrl(emp_id);
     },
 
+    // отправка отредактированного коментария
     async onSubmit(idx, id) {
       try {
         const comment = {
           id,
           text: this.task.comments[idx].text
         };
-        await this.$store.dispatch("task/editComment", comment)
-        this.task.comments[idx].edit = false
-      } catch(error) {}
+        await this.$store.dispatch("task/editComment", comment);
+        this.task.comments[idx].edit = false;
+      } catch (error) {}
     },
 
     async deleteUser(task_id) {
       try {
-        await this.$store.dispatch("task/deleteUser", task_id)
-      } catch(error) {}
+        await this.$store.dispatch("task/deleteUser", task_id);
+      } catch (error) {}
+    },
+
+    async selUsers() {
+      try {
+        await this.$store.dispatch("task/searchUser", this.searchUser);
+      } catch (error) {}
+    },
+
+    async addUser(user) {
+      try {
+        this.searchUser = "";
+        const userDataUI = {
+          task_id: null,
+          emp_id: user.EMP_ID,
+          check: false,
+          first_name: user.FIRST_NAME,
+          last_name: user.LAST_NAME,
+          middle_name: user.MIDDLE_NAME,
+          dep_code: user.DEP_CODE,
+          dep_name: user.DEPARTMENTS_NAME,
+          comments: null
+        }
+
+        const userData = {
+          id: null,
+          type: 1,
+          f_task_id: this.task.f_task_data.doc_id,
+          emp_id: user.EMP_ID,
+          dep_code: user.DEP_CODE,
+          check: this.task.check,
+          h_emp_id: this.task.emp_id,
+          h_dep_code: this.task.dep_code,
+          user_status: 1,
+          m_emp_id: null,
+          history: '{}'
+        };
+        await this.$store.dispatch("task/addUser", {userData, userDataUI});
+        
+      } catch (error) {}
     }
+  },
+  filters: {
+    formatSize,
+    formatDate
   }
 };
 </script>
@@ -384,7 +513,7 @@ export default {
   cursor: pointer;
 }
 
-.poster:hover + .desc{
+.poster:hover + .desc {
   // opacity: 1;
   display: block;
 }
@@ -410,5 +539,18 @@ export default {
 
 .deleteUser {
   margin-right: 5px;
+}
+
+.result {
+  cursor: pointer;
+  padding: 2px 10px;
+}
+.result:hover,
+.selDiv div:hover {
+  background: #f2f2f2;
+  border-radius: 4px;
+}
+.result span {
+  padding-right: 5px;
 }
 </style>

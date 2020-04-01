@@ -9,6 +9,7 @@ export const task = {
   state: {
     userTasks: [],
     props: [],
+    users: [],
     currentTask: null,
     currentMenu: null,
     statuses: [
@@ -112,13 +113,33 @@ export const task = {
 
     async deleteUser({commit}, task_id) {
       try {
-        let { data } = await ApiService.delete(`http://10.8.8.70:4000/tasks?id=${task_id}`)
+        let { data } = await ApiService.delete(`tasks?id=${task_id}`)
         //console.log(data)
         if (data.status == 1) {
           commit("deleteUser", task_id)
         }
       } catch(error) {
         console.log(error)
+      }
+    },
+
+    async searchUser({commit}, user) {
+      try {
+        let { data } = await ApiService.get(`emps/search?name=${user}`)
+        console.log(data)
+        commit("setUsers", data)
+        
+      } catch(error) {
+        console.log(error)
+      }
+    },
+
+    async addUser({commit,getters}, {userData, userDataUI}) {
+      let { data } = await ApiService.post(`tasks`, userData)
+      console.log(data)
+      if (data.status == 1) {
+        commit("addUser", userDataUI)
+        commit("clearUsers")
       }
     }
 
@@ -157,23 +178,46 @@ export const task = {
     deleteUser(state, task_id) {
       const idx = state.currentTask.forward_tasks.findIndex(i => i.task_id == task_id)
       state.currentTask.forward_tasks.splice(idx, 1)
+    },
+    setUsers(state, users) {
+      state.users = users
+    },
+    addUser(state, userData) {
+      if (!state.currentTask.forward_tasks) {
+        state.currentTask.forward_tasks = []
+      }
+      state.currentTask.forward_tasks.unshift(userData)
+    },
+    clearUsers(state) {
+      console.log('clearUsers')
+      state.users = []
     }
   },
   getters: {
     getUserTasks(state) {
+      // console.log('getUserTasks')
       return state.userTasks
     },
     getUserHierarchy(state) {
+      // console.log('getUserHierarchy')
       return state.props
     },
     getCurrentTask(state) {
+      // console.log('getCurrentTask')
       return state.currentTask
     },
     getStatuses(state) {
+      // console.log('getStatuses')
       return state.statuses
     }, 
     getCurrentMenu(state) {
+      // console.log('getCurrentMenu')
       return state.currentMenu
-    }
+    },
+    getUsers(state) {
+      // console.log('getUsers')
+      return state.users
+    },
+    
   }
 }
