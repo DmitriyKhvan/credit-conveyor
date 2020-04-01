@@ -50,7 +50,7 @@ module.exports = function(ctx) {
       components: [],
       directives: [],
       // Quasar plugins
-      plugins: ["Notify", "Cookies", "Dialog"],
+      plugins: ["Notify", "Cookies", "Dialog", "Loading"],
       config: {}
     },
 
