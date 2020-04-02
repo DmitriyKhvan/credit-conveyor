@@ -2,7 +2,7 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 let path = require("path");
 
-module.exports = function(ctx) {
+module.exports = function (ctx) {
   return {
     supportIE: true,
     // app boot file (/src/boot)
@@ -74,11 +74,11 @@ module.exports = function(ctx) {
       analyze: false,
       env: ctx.dev
         ? {
-            VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
-          }
+          VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+        }
         : {
-            VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
-          },
+          VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+        },
 
       // Options below are automatically set depending on the env, set them if you want to override
       // preloadChunks: false,

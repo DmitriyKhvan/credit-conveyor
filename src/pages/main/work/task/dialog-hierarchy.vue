@@ -1,7 +1,7 @@
 <template>
   <q-card style="width:500px">
     <q-card-section class="bg-blue-7 text-white">
-      <div class="text-h6">{{$t('tables.work.tasks.dialog_hierarchy.resp_for_doc_num')}}6765</div>
+      <div class="text-h6">Ответсвенные по документу №{{ task.f_task_data.doc_id }}</div>
     </q-card-section>
 
     <q-card-section style="max-height: 70vh" class="scroll">
@@ -21,32 +21,17 @@ export default {
   name: "DialogHierarchy",
   data() {
     return {
-      selected: null,
-      props: [
-        {
-          label: "Касымов А.Л.",
-          avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-          children: [
-            {
-              label: "Петров В.В.",
-              icon: "check_circle",
-              children: [
-                { label: "Хамдамов А.А.", icon: "check_circle" },
-                { label: "Сидоров У.К." }
-              ]
-            },
-            {
-              label: "Васичкин В.В.",
-              icon: "check_circle",
-              children: [
-                { label: "Таджиев У.У." },
-                { label: "Леонов Ф.Ф.", icon: "check_circle" }
-              ]
-            }
-          ]
-        }
-      ]
+      selected: null
+      //props: this.props
     };
+  },
+  computed: {
+    task() {
+      return this.$store.getters["task/getCurrentTask"];
+    },
+    props() {
+      return this.$store.getters["task/getUserHierarchy"];
+    }
   }
 };
 </script>

@@ -14,6 +14,8 @@ import {
   common
 } from "./categorized/common.module";
 
+import { task } from './categorized/task.module'
+
 import credits from './categorized/credits';
 
 import profile from './categorized/profile';
@@ -32,6 +34,7 @@ const store = new Vuex.Store({
     dicts,
     socket,
     common,
+    task,
     credits,
     profile,
     education,
