@@ -6,11 +6,6 @@ export default class BpmService {
   _personalUrl = "http://10.8.8.70:4000"
   _digIdUrl = "http://localhost:50000/api/Identification";
 
-  // data = {
-  //   "refresh-groups": true,
-  //   "requested-lifetime": 7200
-  // };
-
   getBPMToken = async () => {
     const responce = await axios({
       method: 'post',
