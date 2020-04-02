@@ -117,7 +117,7 @@
         <q-btn class="white text-black q-mb-sm" label="Открыть" @click="usersTask(task)" />
         <br />
 
-        <q-btn flat size="sm" icon="print" />
+        <q-btn flat size="sm" icon="print" @click="downloadFile(task.f_task_data.file)" />
         <q-btn flat size="sm" icon="cloud_download" />
       </div>
     </div>
@@ -143,6 +143,7 @@ import UserService from "@/services/user.service";
 import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
 import formatSize from "./filters/formatSize";
+import axios from "axios";
 
 export default {
   data() {
@@ -208,6 +209,21 @@ export default {
       // const task = this.userTasks.find(i => i.task_id = task_id)
       this.$store.commit("task/setCurrentTask", task);
       this.taskPopup = true;
+    },
+
+    downloadFile(item) {
+      console.log(item);
+      axios({
+        method: "get",
+        url: "/files/" + item.id,
+        responseType: "arraybuffer"
+      }).then(function(response) {
+        let blob = new Blob([response.data], { type: "application/pdf" });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = item.name.slice(0, -4);
+        link.click();
+      });
     }
   },
   components: {

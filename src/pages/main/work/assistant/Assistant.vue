@@ -14,7 +14,7 @@
         :class="selection.length !== 0 ? 'active': ''"
       >перенаправить</div>
       <div>сортировать</div>
-      <div>удалить</div>
+      <!-- <div>удалить</div> -->
     </div>
 
     <div v-for="doc in docs" :key="doc.doc_id" class="row docBlock">
@@ -29,7 +29,7 @@
           <div class="col text">{{doc.description}}</div>
         </div>
         <div class="row">
-          <div class="col despBlock">
+          <div class="col-2 despBlock">
             <div>
               <q-icon name="skip_previous" />
             </div>
@@ -41,7 +41,7 @@
               {{doc.out_date}}
             </div>
           </div>
-          <div class="col despBlock">
+          <div class="col-2 despBlock">
             <div>
               <q-icon name="skip_next" />
             </div>
@@ -53,7 +53,7 @@
               {{doc.in_date}}
             </div>
           </div>
-          <div class="col despBlock">
+          <div class="col-3 despBlock">
             <div>
               <q-icon name="description" />
             </div>
@@ -63,12 +63,12 @@
               <i>{{sizeFunc(doc.file.file_size)}}</i>
             </div>
           </div>
-          <div v-if="doc.tasks === null" class="col despBlock">
+          <!-- <div v-if="doc.tasks === null" class="col despBlock">
+            <div><q-icon name="history" /></div>
             <div>
-              <q-icon name="history" />
+              Не расмотрен
             </div>
-            <div>Не расмотрен</div>
-          </div>
+          </div>-->
           <!-- <div v-if="tab === 'tab1' && doc.tasks === null" class="col despBlock">
             <q-btn color="white text-black" icon="person" size="sm" label="Ответсвенные" @click="dialogPopup = true" />
             <q-dialog 
@@ -82,277 +82,25 @@
               <q-icon name="person" />
             </div>
             <div>
-              <span>от:</span>
-              <strong>{{doc.signed_by}}</strong>
+              От: {{doc.fio}}
+              <br />
+              <span v-if="doc.signed_by"></span>
+              Кто подписал: {{doc.signed_by}}
             </div>
           </div>
         </div>
       </div>
       <div class="col-1 text-right actions">
         <q-btn-group push>
-          <q-btn push icon="cloud_download" />
+          <q-btn push icon="cloud_download" @click="downloadFile(doc.file)" />
           <q-btn push icon="print" />
           <q-btn push icon="play_arrow" color="primary" @click="sendDoc(doc)" />
         </q-btn-group>
       </div>
     </div>
 
-    <!-- старая таблица -->
-    <q-table
-      :data="desserts"
-      :columns="columns"
-      :filter="filter"
-      separator="cell"
-      row-key="id"
-      table-header-class="bg-blue-5 text-white"
-      table-style="max-height: 750px;"
-      :pagination.sync="pagination"
-      selection="multiple"
-      :selected.sync="selected"
-      @update:selected="test123"
-      class="my-sticky-header-table"
-    >
-      <template v-slot:top-right>
-        <q-input dense outlined square v-model="filter" :placeholder="$t('actions.search')">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </template>
-      <template v-slot:top-left>
-        <div class="q-gutter-lg">
-          <q-btn v-if="selected.length > 0">
-            <q-icon name="post_add" />
-          </q-btn>
-          <q-btn>test</q-btn>
-          <q-btn>test</q-btn>
-        </div>
-      </template>
-
-      <template v-slot:body-cell-id="props">
-        <q-td :props="props" style="background-">
-          <div>{{ props.row.id }}</div>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-journal_name="props">
-        <q-td :props="props">
-          <div>
-            Наименование:
-            <span class="my-table-details">{{ props.row.fio }}</span>
-            <br />Журналь:
-            <span class="my-table-details">{{ props.row.journal }}</span>
-            <br />Орган:
-            <span class="my-table-details">{{ props.row.organ }}</span>
-            <br />
-          </div>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-out_number="props">
-        <q-td :props="props">
-          <div>
-            №:
-            <span class="my-table-details">{{ props.row.out_number }}</span>
-            <br />от:
-            <span class="my-table-details">{{ props.row.out_date }}</span>
-          </div>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-in_number="props">
-        <q-td :props="props">
-          <div>
-            №:
-            <span class="my-table-details">{{ props.row.in_number }}</span>
-            <br />от:
-            <span class="my-table-details">{{ props.row.in_date }}</span>
-          </div>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-format_name="props">
-        <q-td :props="props">
-          <div>
-            Листов.:
-            <span class="my-table-details">
-              {{ props.row.paper_count }} &nbsp;/&nbsp;{{
-              props.row.format
-              }}
-            </span>
-            <br />Размер:
-            <span class="my-table-details">
-              {{
-              conv_size(props.row.file.file_size)
-              }}
-            </span>
-            <br />Файл:
-            <q-icon name="attachment" size="25px" color="red" @click="downloadFile(props.row)">
-              <q-tooltip
-                content-class="bg-green"
-                content-style="font-size: 16px"
-                :offset="[10, 10]"
-              >Скачать</q-tooltip>
-            </q-icon>
-          </div>
-        </q-td>
-      </template>
-      <template v-slot:body-cell-description="props">
-        <q-td :props="props">
-          <div class="my-table-details">{{ props.row.description }}</div>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-users="props">
-        <q-td :props="props">
-          <div v-if="props.row.tasks !== null">
-            <div v-for="(subusers, index) in props.row.tasks" :key="index">
-              <span :class="[index == 0 ? 'mainStyle' : '']">
-                {{ subusers.u_name }}
-                <q-icon v-if="subusers.children == true" name="home" />
-              </span>
-            </div>
-            <br />
-            <q-separator />
-            <span class="taskMessSty">{{ props.row.task_message }}</span>
-            <br />
-            <br />
-            <span>
-              <b>(Мирсоатов А.К.)</b>
-            </span>
-            <br />
-            <span>[{{ props.row.in_date }}]</span>
-          </div>
-          <div v-else>Не рассмотрен</div>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-action="props">
-        <q-td :props="props">
-          <div>
-            <q-icon
-              v-if="selected.length <= 0"
-              name="o_post_add"
-              size="25px"
-              color="#17202A"
-              @click="getRowTable(props)"
-            ></q-icon>&nbsp;&nbsp;
-            <q-icon v-if="props.row.tasks !== null" name="o_print" size="25px" color="secondary"></q-icon>
-          </div>
-        </q-td>
-      </template>
-    </q-table>
-    <q-dialog v-model="bar" square persistent>
-      <q-card class="dialog">
-        <q-bar>
-          <div>{{$t('tables.work.document_num')}} {{ rowData.doc_id }}</div>
-          <q-space />
-          <q-btn dense flat icon="close" v-close-popup color="red" @click="resetDialog()">
-            <q-tooltip>Закрыт</q-tooltip>
-          </q-btn>
-        </q-bar>
-        <q-form @submit="simulateProgress(4, rowData)">
-          <q-card-section>
-            <span class="section-title text-bold">{{$t('tables.work.content')}}:</span>
-            <div class="section-desc">{{ rowData.description }}</div>
-          </q-card-section>
-          <q-card-section>
-            <span class="section-desc-title text-bold">{{$t('tables.work.assistant.task')}}:</span>
-            <div>
-              <q-select
-                square
-                outlined
-                v-model="modelMultiple"
-                multiple
-                :options="options"
-                use-chips
-                stack-label
-                :label="$t('tables.work.choose_executor')"
-                option-value="uid"
-                option-label="fio"
-                :rules="[
-                  val => (val && val.length > 0) || 'Выберите исполнителей'
-                ]"
-                dense
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-                    <q-item-section>
-                      <q-item-label v-html="scope.opt.fio" />
-                      <q-item-label caption>{{ scope.opt.dep }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <span class="section-title text-bold">{{$t('tables.work.resolution')}}:</span>
-            <div class="section-supervisor">
-              <q-select
-                v-model="modelSupervisor"
-                square
-                outlined
-                dense
-                stack-label
-                :options="optSupervisor"
-                :label="$t('tables.work.choose_executive')"
-                option-value="uid"
-                option-label="fio"
-                :rules="[
-                  val => (val && val.uid > 0) || 'Выберите руководителя'
-                ]"
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
-                    <q-item-section>
-                      <q-item-label v-html="scope.opt.fio" />
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <span class="section-title text-bold">{{$t('tables.work.assistant.task_template')}}:</span>
-            <q-select
-              v-model="modelTemplate"
-              outlined
-              square
-              clearable
-              :options="optTemplate"
-              option-value="text"
-              option-label="text"
-              :label="$t('tables.work.assistant.choose_template')"
-              emit-value
-              stack-label
-              map-options
-            ></q-select>
-          </q-card-section>
-          <q-card-section></q-card-section>
-          <q-card-section>
-            <q-list>
-              <q-item>
-                <q-item-section avatar>
-                  <q-checkbox v-model="signedButton" color="red" dense />
-                </q-item-section>
-                <q-item-section caption>
-                  <q-item-label>
-                    {{
-                    signedButton ? "Подписан" : "Не подписан"
-                    }}
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-          <q-card-actions align="left">
-            <q-btn :loading="loading4" color="primary" class="full-width" type="submit">
-              Сохранить
-              <template v-slot:loading>
-                <q-spinner-hourglass class="on-left" />Подождите...
-              </template>
-            </q-btn>
-          </q-card-actions>
-        </q-form>
-      </q-card>
+    <q-dialog v-model="fixed">
+      <q-dialog-send :docs="docsObj" :tab="tab"></q-dialog-send>
     </q-dialog>
   </div>
 </template>
@@ -429,13 +177,13 @@ export default {
     downloadFile(item) {
       axios({
         method: "get",
-        url: "/files/" + item.file.id,
+        url: "/files/" + item.id,
         responseType: "arraybuffer"
       }).then(function(response) {
         let blob = new Blob([response.data], { type: "application/pdf" });
         let link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
-        link.download = item.in_number;
+        link.download = item.name.slice(0, -4);
         link.click();
       });
     },
