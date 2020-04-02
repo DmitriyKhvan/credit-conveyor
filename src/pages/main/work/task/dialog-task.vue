@@ -23,7 +23,7 @@
           <div
             class="comment q-pt-md"
             v-for="(comment, index) in task.comments"
-            :key="comment.id"
+            :key="task.comments.length + comment.id"
           >
             <div class="avatar q-pr-md">
               <q-avatar>
@@ -48,7 +48,8 @@
                     `${comment.last_name} ${comment.first_name} ${comment.middle_name}`
                   "
                 ></p>
-                <i> {{comment.updated_at}}</i>
+                <i v-if="comment.updated_at"> {{comment.updated_at | formatDate}}</i>
+                <i v-else> {{comment.created_at | formatDate}}</i>
               </div>
               <div v-if="!comment.edit">
                 <div class="content">
@@ -344,6 +345,8 @@ export default {
           dep_code: DEP_CODE,
           dep_name: DEP_NAME,
           text: this.text,
+          created_at: new Date(),
+          updated_at: null,
           edit: false
         };
         await this.$store.dispatch("task/addComment", comment);
@@ -370,6 +373,7 @@ export default {
       try {
         const comment = {
           id,
+          updated_at: new Date(),
           text: this.task.comments[idx].text
         };
         await this.$store.dispatch("task/editComment", comment);

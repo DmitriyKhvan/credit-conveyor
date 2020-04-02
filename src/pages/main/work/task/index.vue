@@ -183,7 +183,7 @@ export default {
       if (data.children) {
         for (let child of data.children) {
           children.push({
-            label: `${child.first_name} ${child.last_name} ${child.middle_name}`,
+            label: `${child.last_name} ${child.first_name} ${child.middle_name}`,
             icon: "check_circle"
           });
         }
