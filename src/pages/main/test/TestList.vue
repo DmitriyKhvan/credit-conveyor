@@ -1,32 +1,30 @@
 <template>
   <div class="topicsBlock">
-   
-      <h4 class="titleAllTest">Веберите тему</h4>
-      <div class="row q-col-gutter-md">
-        <div class="col-6">
-          <ul>
-            <li
-              ref="topicLi"
-              v-for="topic of topics"
-              :key="topic.id"
-              @click="getIdTopic(topic.id, topic.name, $event.target)"
-              class="topic"
-            >{{ topic.name }}</li>
-          </ul>
-        </div>
-        <div class="col-6"></div>
+    <h4 class="titleAllTest">{{$t('tables.education.test.choose_test')}}</h4>
+    <div class="row q-col-gutter-md">
+      <div class="col-6">
+        <ul>
+          <li
+            ref="topicLi"
+            v-for="topic of topics"
+            :key="topic.id"
+            @click="getIdTopic(topic.id, topic.name, $event.target)"
+            class="topic"
+          >{{ topic.name }}</li>
+        </ul>
       </div>
-      <!-- <router-link v-if="topicId" :to="'topic/' + topicId">
+      <div class="col-6"></div>
+    </div>
+    <!-- <router-link v-if="topicId" :to="'topic/' + topicId">
         <q-btn color="green" label="Начать тест"></q-btn>
-      </router-link> -->
-      <q-btn 
-        class="startTopic"
-        color="green"
-        label="Начать тест"
-        :disabled="disabled"
-        @click="() => this.$router.push('topic/' + topicId)"
-      >
-      </q-btn>
+    </router-link>-->
+    <q-btn
+      class="startTopic"
+      color="green"
+      :label="$t('tables.education.test.begin_test')"
+      :disabled="disabled"
+      @click="() => this.$router.push('topic/' + topicId)"
+    ></q-btn>
   </div>
 </template>
 <script>

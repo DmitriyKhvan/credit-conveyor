@@ -1,6 +1,6 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
-let path = require('path')
+let path = require("path");
 
 module.exports = function (ctx) {
   return {
@@ -8,7 +8,14 @@ module.exports = function (ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ["i18n", "axios", "notify-defaults", "calendar", "vuelidate", "vuehtml"],
+    boot: [
+      "i18n",
+      "axios",
+      "notify-defaults",
+      "calendar",
+      "vuelidate",
+      "vuehtml"
+    ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ["app.sass"],
@@ -43,7 +50,7 @@ module.exports = function (ctx) {
       components: [],
       directives: [],
       // Quasar plugins
-      plugins: ["Notify", "Cookies", "Dialog"],
+      plugins: ["Notify", "Cookies", "Dialog", "Loading"],
       config: {}
     },
 
@@ -65,11 +72,13 @@ module.exports = function (ctx) {
       showProgress: true,
       gzip: false,
       analyze: false,
-      env: ctx.dev ? {
-        VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
-      } : {
-        VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
-      },
+      env: ctx.dev
+        ? {
+          VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+        }
+        : {
+          VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/")
+        },
 
       // Options below are automatically set depending on the env, set them if you want to override
       // preloadChunks: false,
@@ -88,8 +97,8 @@ module.exports = function (ctx) {
         });
         cfg.resolve.alias = {
           ...cfg.resolve.alias,
-          '@': path.resolve(__dirname, './src')
-        }
+          "@": path.resolve(__dirname, "./src")
+        };
       }
     },
 
@@ -121,7 +130,8 @@ module.exports = function (ctx) {
         orientation: "portrait",
         background_color: "#ffffff",
         theme_color: "#027be3",
-        icons: [{
+        icons: [
+          {
             src: "assets/statics/icons/icon-128x128.png",
             sizes: "128x128",
             type: "image/png"

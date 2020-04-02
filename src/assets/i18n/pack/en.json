@@ -16,7 +16,8 @@
     "delay": "Delay",
     "choose": "- Select -",
     "all": "- Select all -",
-    "not_all": "- Unselect all -"
+    "not_all": "- Unselect all -",
+    "double_click": "Double Click"
   },
   "actions": {
     "details": "Details",
@@ -69,7 +70,11 @@
     "automatic_value": "Generated automatically",
     "author": "Author",
     "executor": "Executor",
-    "view_type": "View type"
+    "view_type": "View type",
+    "submit": "Добавить",
+    "cancel": "Отмена",
+    "print": "Print",
+    "send": "Send"
   },
   "messages": {
     "accessDenied": "Access Denied",
@@ -140,7 +145,20 @@
       "side": "Side",
       "over": "Over"
     },
-    "backdrop": "Backdrop"
+    "backdrop": "Backdrop",
+    "notification": {
+      "_self": "Уведомления"
+    },
+    "results": {
+      "myResults": "My results"
+    },
+    "caruselCard": {
+      "birthday": "Birthday",
+      "employees": "employee(s)",
+      "today": "today",
+      "tomorrow": "tomorrow",
+      "aftertomorrow": "day after tomorrow"
+    }
   },
   "users": {
     "_self": "Users",
@@ -243,7 +261,8 @@
     },
     "device_marks": {
       "_self": "Device Marks Table",
-      "add_edit": "Create/Edit Device Mark"
+      "add_edit": "Create/Edit Device Mark",
+      "deviceCharacteresticsName": "Device Characterestics Name"
     },
     "device_details": {
       "_self": "Device Details Table",
@@ -251,10 +270,75 @@
     },
     "device_models": {
       "_self": "Device Types Model",
-      "add_edit": "Create/Edit Device Model"
+      "add_edit": "Create/Edit Device Model",
+      "device_model_name": "Device Model Name",
+      "device_type": "Device Type",
+      "device_mark": "Device Mark",
+      "device_details": "Device Details"
+    },
+    "devices": {
+      "_self": "Devices",
+      "marks": "Marks",
+      "models": "Models",
+      "details": "Details",
+      "add_edit_devices": "Add/Edit Devices",
+      "device_serial_number": "Device Serial Number",
+      "branch": "Branch",
+      "filial": "Filial",
+      "description": "Description",
+      "inventory": "Inventory",
+      "status": "Status",
+      "made_date": "Made Date",
+      "bought_date": "Bought Date"
+    },
+    "devices_history": {
+      "add_edit_history": "Добавить/Изменить Историю",
+      "device": "Device",
+      "user": "User",
+      "status": "Status"
     },
     "education": {
-      "topicName": "Topic Name"
+      "topicName": "Topic Name",
+      "topicNameError": "Topic name error",
+      "addEditTopic": "Add/Edit Topic",
+      "addEditQuestion": "Add/Edit Question",
+      "levelOfQuestion": "Complexity of Question",
+      "levelQuestionError": "Error on inserting Complexity of Question",
+      "questionName": "Enter Question",
+      "textVariant": "Text of Variant",
+      "addEditTest": "Add/Edit Test",
+      "description": "Description",
+      "duration": "Duration (in minutes)",
+      "hideStatus": "Show/Hide Test",
+      "testAmount": "Test Amount",
+      "addEditTestError": "Error on inserting Test",
+      "monitoring": "Мониторинг",
+      "test": {
+        "choose_test": "Choose Test",
+        "begin_test": "Begin Test",
+        "marked_questions": "Marked questions",
+        "not_marked_questions": "Not marked questions",
+        "not_visited_questions": "Not visited questions",
+        "previous": "Previous",
+        "end_test": "End Test",
+        "next": "Next",
+        "time_left": "Time left",
+        "completed": {
+          "end1": "Congratulations, You have successfully passed the test!",
+          "end2": "Wish You great success, great achievements in life,",
+          "end3": "further work on the way of prsperity of our bank!",
+          "efficiency": "Efficiency",
+          "your_result": "Your Result",
+          "right_answers": "Right answers",
+          "wrong_answers": "Wrong answers",
+          "not_answered": "Not answered",
+          "total_time": "Total time",
+          "hours": "hour(s)",
+          "minutes": "minute(s)",
+          "seconds": "second(s)",
+          "avg_time_for_one_question": "Average time for one question"
+        }
+      }
     }
   }
 }

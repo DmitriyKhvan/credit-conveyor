@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Header</div>
+          <div class="text-h6">{{$t('tables.device_types.add_edit')}}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -19,11 +19,11 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[0]"
-              label="Device Type Name Uz"
+              label="Название типа оборудования УЗБ"
               @input="$v.details.name.$touch()"
               :rules="[
                 val =>
-                  $v.details.name.required || 'Device Type Name Uz is required'
+                  $v.details.name.required || 'Название типа оборудования УЗБ is required'
               ]"
               lazy-rules
             />
@@ -33,7 +33,7 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[1]"
-              label="Device Type Name Ru"
+              label="Название типа оборудования РУ"
               @input="$v.details.name.$touch()"
               :rules="[
                 val => $v.details.name.required || 'Name Ru is required'
@@ -48,7 +48,7 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[2]"
-              label="Device Type Name En"
+              label="Название типа оборудования АНГ"
               :rules="[]"
               lazy-rules
             />
@@ -57,10 +57,10 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
+        <q-btn color="primary" :disable="$v.details.$invalid" label="Добавить" @click="submitForm">
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
-        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
+        <q-btn color="primary" label="Отмена" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>

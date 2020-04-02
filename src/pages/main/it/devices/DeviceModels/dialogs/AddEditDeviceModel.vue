@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Add Edit Device Model</div>
+          <div class="text-h6">{{$t('tables.device_models.add_edit')}}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -19,7 +19,7 @@
               color="purple-12"
               class="col-xs-12 col-sm-12 col-md-6"
               v-model="details.name"
-              label="Device Model Name"
+              :label="$t('tables.device_models.device_model_name')"
               :rules="[
                 val =>
                   $v.details.name.required || 'Device Model Name is required'
@@ -30,7 +30,7 @@
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              label="Device Type"
+              :label="$t('tables.device_models.device_type')"
               :value="deviceTypeName"
               @dblclick="selectDeviceType()"
               readonly="readonly"
@@ -40,7 +40,7 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
           </div>
@@ -49,7 +49,7 @@
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              label="Device Mark"
+              :label="$t('tables.device_models.device_mark')"
               :value="deviceMarkName"
               @dblclick="selectDeviceMark()"
               readonly="readonly"
@@ -59,13 +59,13 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
           </div>
 
           <div class="row justify-between">
-            <div class="text-h6">DETAILS</div>
+            <div class="text-h6">{{$t('tables.devices.details')}}</div>
           </div>
 
           <!-- Device Model Details -->
@@ -74,12 +74,12 @@
               <q-input
                 outlined
                 class="col-xs-12 col-sm-12 col-md-6"
-                label="Device Detail"
+                :label="$t('tables.device_models.device_details')"
                 :value="deviceDetailName[index]"
                 @dblclick="selectDeviceDetail(index)"
                 readonly="readonly"
               >
-                <template v-slot:hint>Double Click</template>
+                <template v-slot:hint>{{$t('common.double_click')}}</template>
               </q-input>
             </div>
             <div class="col-5">
@@ -89,7 +89,7 @@
                 color="purple-12"
                 class="col-xs-12 col-sm-12 col-md-6"
                 v-model="details.details[index].value"
-                label="Device Model Name"
+                :label="$t('tables.device_models.device_model_name')"
               />
             </div>
             <div class="col-1">
@@ -103,7 +103,7 @@
                   @click="deleteDetailItem(index)"
                 >
                   <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-                    <span>Delete</span>
+                    <span>{{$t('actions.delete')}}</span>
                   </q-tooltip>
                 </q-btn>
               </div>
@@ -114,15 +114,20 @@
       <q-card-section>
         <q-btn color="teal" @click="addDetailItem()">
           <q-icon left size="2em" name="add" />
-          <div>Add</div>
+          <div>{{$t('actions.add')}}</div>
         </q-btn>
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
+        <q-btn
+          color="primary"
+          :disable="$v.details.$invalid"
+          :label="$t('actions.submit')"
+          @click="submitForm"
+        >
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
-        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
+        <q-btn color="primary" :label="$t('actions.cancel')" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>
