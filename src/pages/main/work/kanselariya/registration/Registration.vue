@@ -3,42 +3,43 @@
     <div class="col-10">
       <div class="row">
         <div class="col-8">
-          <q-form  @submit="sendNewDoc" @reset="resetForm" ref="myform">
-          <div class="row">
-            <div class="col-12 q-pa-sm">
-
-              
-                <q-file 
-                    color="teal" 
-                    filled 
-                    v-model="file" 
-                    label="Выберите файл" 
-                    @input="uploadFile"
+          <q-form @submit="sendNewDoc" @reset="resetForm" ref="myform">
+            <div class="row">
+              <div class="col-12 q-pa-sm">
+                <q-file
+                  color="teal"
+                  filled
+                  v-model="file"
+                  label="Выберите файл"
+                  @input="uploadFile"
                 >
                   <template v-slot:prepend>
                     <q-icon name="cloud_upload" />
                   </template>
                   <template v-slot:append>
-                  <q-btn round dense flat icon="close" @click.stop="file = []" class="cursor-pointer" />
-                </template>
+                    <q-btn
+                      round
+                      dense
+                      flat
+                      icon="close"
+                      @click.stop="file = []"
+                      class="cursor-pointer"
+                    />
+                  </template>
                 </q-file>
-              
-
+              </div>
             </div>
-          </div>
 
-          <div class="row">
-
-            <div class="col-6 q-pa-sm">
-
-              <q-select 
+            <div class="row">
+              <div class="col-6 q-pa-sm">
+                <q-select
                   v-model="form.journal"
-                  :options="select.journals" 
+                  :options="select.journals"
                   option-value="id"
                   option-label="name_short"
-                  label="Журнал" 
-                  filled 
-                  bottom-slots 
+                  label="Журнал"
+                  filled
+                  bottom-slots
                   square
                   emit-value
                   map-options
@@ -47,161 +48,156 @@
                     val => (val && val.length !== null) || 'Пожалуста выберите журнал'
                   ]"
                 >
-                <template v-slot:prepend>
-                  <q-icon name="menu_book" @click.stop />
-                </template>
-                <template v-slot:append>
-                  <q-icon name="close" @click.stop="form.journal = null" class="cursor-pointer" />
-                </template>
-              </q-select>
+                  <template v-slot:prepend>
+                    <q-icon name="menu_book" @click.stop />
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="close" @click.stop="form.journal = null" class="cursor-pointer" />
+                  </template>
+                </q-select>
+              </div>
 
-            </div>
-
-            <div class="col-6 q-pa-sm">
-
-              <q-select 
-                  v-model="form.region" 
-                  :options="select.regions" 
+              <div class="col-6 q-pa-sm">
+                <q-select
+                  v-model="form.region"
+                  :options="select.regions"
                   option-value="id"
                   option-label="name_short"
                   label="Регионы"
-                  filled 
-                  bottom-slots 
-                  emit-value
-                  map-options                  
-                >
-                <template v-slot:prepend>
-                  <q-icon name="public" @click.stop />
-                </template>
-                <template v-slot:append>
-                  <q-icon name="close" @click.stop="form.region = null" class="cursor-pointer" />
-                </template>
-              </q-select>
-
-            </div>
-            
-          </div>
-
-          <div class="row">
-
-            <div class="col-6 q-pr-sm q-pa-sm">
-              <q-input disable outlined v-model="form.in_number" label="Вх. Номер" />
-            </div>
-
-            <div class="col-6 q-pl-sm q-pa-sm">
-              <q-input outlined v-model="form.in_date" placeholder="Вх. Дата">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="qDateProxy1" transition-show="scale" transition-hide="scale">
-                      <q-date 
-                          mask="YYYY-MM-DD" 
-                          v-model="form.in_date" 
-                          @input="() => $refs.qDateProxy1.hide()" 
-                          today-btn
-                        />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-
-          </div>
-
-          <div class="row">
-
-            <div class="col-6 q-pr-sm q-pa-sm">
-               <q-select 
-                  v-model="form.organs" 
-                  :options="select.organs" 
-                  option-value="id"
-                  option-label="name_short"
-                  label="Выбрать организацию" 
-                  filled 
+                  filled
                   bottom-slots
                   emit-value
-                  map-options  
+                  map-options
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="public" @click.stop />
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="close" @click.stop="form.region = null" class="cursor-pointer" />
+                  </template>
+                </q-select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6 q-pr-sm q-pa-sm">
+                <q-input disable outlined v-model="form.in_number" label="Вх. Номер" />
+              </div>
+
+              <div class="col-6 q-pl-sm q-pa-sm">
+                <q-input outlined v-model="form.in_date" placeholder="Вх. Дата">
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        ref="qDateProxy1"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          mask="YYYY-MM-DD"
+                          v-model="form.in_date"
+                          @input="() => $refs.qDateProxy1.hide()"
+                          today-btn
+                        />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6 q-pr-sm q-pa-sm">
+                <q-select
+                  v-model="form.organs"
+                  :options="select.organs"
+                  option-value="id"
+                  option-label="name_short"
+                  label="Выбрать организацию"
+                  filled
+                  bottom-slots
+                  emit-value
+                  map-options
                   :rules="[
                     val =>
                       (val && val.length !== null) || 'Укажите пожалуста организацию'
-                  ]"                    
+                  ]"
                 >
-                <template v-slot:prepend>
-                  <q-icon name="list" @click.stop />
-                </template>
-                <template v-slot:append>
-                  <q-icon name="close" @click.stop="form.organs = null" class="cursor-pointer" />
-                </template>
-              </q-select>
+                  <template v-slot:prepend>
+                    <q-icon name="list" @click.stop />
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="close" @click.stop="form.organs = null" class="cursor-pointer" />
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-6 q-pl-sm q-pa-sm">
+                <q-input outlined v-model="form.whoIsText" label="Написать откуда" />
+              </div>
             </div>
 
-            <div class="col-6 q-pl-sm q-pa-sm">
-              <q-input outlined v-model="form.whoIsText" label="Написать откуда" />
-            </div>
-
-          </div>
-
-          <div class="row">
-
-            <div class="col-6 q-pr-sm q-pa-sm checkInput">
-               <div class="checkBlock">
-                 <q-checkbox v-model="form.number" />
-               </div>
-               <div style="width:100%">
-                 <q-input
+            <div class="row">
+              <div class="col-6 q-pr-sm q-pa-sm checkInput">
+                <div class="checkBlock">
+                  <q-checkbox v-model="form.number" />
+                </div>
+                <div style="width:100%">
+                  <q-input
                     :disable="form.number"
-                    outlined  
-                    square 
-                    v-model="form.out_number" 
+                    outlined
+                    square
+                    v-model="form.out_number"
                     :placeholder="[form.number ? 'Без номер' : 'Исх. Номер']"
                   />
-               </div>
-            </div>
+                </div>
+              </div>
 
-            <div class="col-6 q-pl-sm q-pa-sm checkInput">
-               <div class="checkBlock">
-                 <q-checkbox v-model="form.date" />
-               </div>
-               <div style="width:100%" >
-                 <q-input 
+              <div class="col-6 q-pl-sm q-pa-sm checkInput">
+                <div class="checkBlock">
+                  <q-checkbox v-model="form.date" />
+                </div>
+                <div style="width:100%">
+                  <q-input
                     :disable="form.date"
-                    outlined 
-                    square 
+                    outlined
+                    square
                     v-model="form.out_date"
-                   
                     :placeholder="[form.date ? 'Без даты' : 'Исх. Дата']"
-                    
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date  
-                              mask="YYYY-MM-DD"  
-                              v-model="form.out_date" 
-                              @input="() => $refs.qDateProxy.hide()" 
-                              today-btn
-                            />
+                        <q-popup-proxy
+                          ref="qDateProxy"
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            mask="YYYY-MM-DD"
+                            v-model="form.out_date"
+                            @input="() => $refs.qDateProxy.hide()"
+                            today-btn
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
                   </q-input>
-               </div>
+                </div>
+              </div>
             </div>
 
-          </div>
-
-          <div class="row">
-
-            <div class="col-6 q-pr-sm q-pa-sm">
-               <q-select 
-                  v-model="form.format" 
-                  :options="select.formats"   
+            <div class="row">
+              <div class="col-6 q-pr-sm q-pa-sm">
+                <q-select
+                  v-model="form.format"
+                  :options="select.formats"
                   option-value="id"
-                  option-label="name_short"                
-                  filled 
-                  bottom-slots 
+                  option-label="name_short"
+                  filled
+                  bottom-slots
                   emit-value
                   map-options
-                  label="Формат" 
+                  label="Формат"
                 >
                   <template v-slot:prepend>
                     <q-icon name="dashboard" @click.stop />
@@ -210,10 +206,10 @@
                     <q-icon name="close" @click.stop="form.format = null" class="cursor-pointer" />
                   </template>
                 </q-select>
-            </div>
+              </div>
 
-            <div class="col-6 q-pl-sm q-pa-sm">
-               <q-input 
+              <div class="col-6 q-pl-sm q-pa-sm">
+                <q-input
                   v-model="form.listCount"
                   label="Кол. лист"
                   outlined
@@ -221,65 +217,81 @@
                   :rules="[
                     val =>
                       (val && val.length !== null) || 'Пожалуста укажите кол. листов'
-                  ]"                
+                  ]"
                 />
+              </div>
             </div>
 
-          </div>
-
-          <div class="row">
-            <div class="col q-pa-sm">
-              <q-input
-                v-model="form.description"
-                outlined
-                type="textarea"
-                label="Содержание"
-                lazy-rules
-                :rules="[
+            <div class="row">
+              <div class="col q-pa-sm">
+                <q-input
+                  v-model="form.description"
+                  outlined
+                  type="textarea"
+                  label="Содержание"
+                  lazy-rules
+                  :rules="[
                   val => (val && val.length >= 10) || 'Пожалуста укажите содержание'
                 ]"
-              />
+                />
+              </div>
             </div>
-          </div>
 
-          <div class="row">
-            <div class="col q-pa-sm">
-              <q-input outlined v-model="form.signedby" label="Кто подписаль" />
+            <div class="row">
+              <div class="col q-pa-sm">
+                <q-input outlined v-model="form.signedby" label="Кто подписаль" />
+              </div>
             </div>
-          </div>
 
-          
-
-          <div class="row">
-            <div class="col text-center q-pa-sm">
-              <q-btn color="white" text-color="black" label="Сбросит" type="reset" class="q-mr-sm" />
-              <q-btn color="primary" label="Сохранить" type="submit"/>
+            <div class="row">
+              <div class="col text-center q-pa-sm">
+                <q-btn
+                  color="white"
+                  text-color="black"
+                  label="Сбросит"
+                  type="reset"
+                  class="q-mr-sm"
+                />
+                <q-btn color="primary" label="Сохранить" type="submit" />
+              </div>
             </div>
-          </div>
-
           </q-form>
-        </div>      
+        </div>
 
         <div class="col-4 q-pa-sm">
           <div class="rightBlock q-pa-md text-center" @click="newFile()">
-            <img src="@/assets/file.png" alt=""><br>
-            просмотреть файл
+            <img src="@/assets/file.png" alt />
+            <br />просмотреть файл
           </div>
-          <div><br>
-            <span>ФАЙЛ === {{ file.name }}</span><br>
-            <span>ЖУРНАЛ === {{ form.journal }}</span><br>
-            <span>РЕГИОН === {{ form.region }}</span><br>
-            <span>ВХ НОМЕР === {{ form.in_number }}</span><br>
-            <span>ВХ ДАТА === {{ form.in_date }}</span><br>
-            <span>ОРГАН === {{ form.organs }}</span><br>
-            <span>КТО ОТПРАВИЛ === {{ form.whoIsText }}</span><br>
-            <span>ИСХ НОМЕР === {{ form.out_number }}</span><br>
-            <span>ИСХ ДАТА === {{ form.out_date }}</span><br>
-            <span>ФОРМАТ === {{ form.format }}</span><br>
-            <span>КОЛ ЛИСТ === {{ form.listCount }}</span><br>
-            <span>СОДЕРЖАНИЕ === {{ form.description }}</span><br>
-            <span>КТО ПОДПИСАЛ === {{ form.signedby }}</span><br>
-          </div>            
+          <div>
+            <br />
+            <span>ФАЙЛ === {{ file.name }}</span>
+            <br />
+            <span>ЖУРНАЛ === {{ form.journal }}</span>
+            <br />
+            <span>РЕГИОН === {{ form.region }}</span>
+            <br />
+            <span>ВХ НОМЕР === {{ form.in_number }}</span>
+            <br />
+            <span>ВХ ДАТА === {{ form.in_date }}</span>
+            <br />
+            <span>ОРГАН === {{ form.organs }}</span>
+            <br />
+            <span>КТО ОТПРАВИЛ === {{ form.whoIsText }}</span>
+            <br />
+            <span>ИСХ НОМЕР === {{ form.out_number }}</span>
+            <br />
+            <span>ИСХ ДАТА === {{ form.out_date }}</span>
+            <br />
+            <span>ФОРМАТ === {{ form.format }}</span>
+            <br />
+            <span>КОЛ ЛИСТ === {{ form.listCount }}</span>
+            <br />
+            <span>СОДЕРЖАНИЕ === {{ form.description }}</span>
+            <br />
+            <span>КТО ПОДПИСАЛ === {{ form.signedby }}</span>
+            <br />
+          </div>
         </div>
       </div>
     </div>
@@ -288,12 +300,12 @@
 
 <script>
 import ApiService from "@/services/api.service";
-import { QSpinnerFacebook } from 'quasar'
+import { QSpinnerFacebook } from "quasar";
 export default {
-data(){
-  return{
-    file:[],
-    form: {
+  data() {
+    return {
+      file: [],
+      form: {
         journal: null,
         region: null,
         in_number: null,
@@ -309,29 +321,27 @@ data(){
         description: null,
         signedby: null
       },
-    
-    select:{
-      formats: null,
-      journals: null,
-      regions: null,
-      organs: null
-    }
-  }
-},
-methods:{
-  uploadFile(val) {
-      console.log(val)
+
+      select: {
+        formats: null,
+        journals: null,
+        regions: null,
+        organs: null
+      }
+    };
+  },
+  methods: {
+    uploadFile(val) {
+      console.log(val);
       this.file = val;
       this.form.in_number = val.name.slice(0, -4);
-      console.log(this.form.in_number)
-
+      console.log(this.form.in_number);
     },
-  
-  sendNewDoc() {
 
+    sendNewDoc() {
       this.$q.loading.show({
         spinner: QSpinnerFacebook
-      })
+      });
 
       let formData = new FormData();
       formData.append("journal", this.form.journal);
@@ -347,35 +357,32 @@ methods:{
       formData.append("description", this.form.description);
       formData.append("signed_by", this.form.signedby);
       formData.append("doc", this.file);
+      formData.append("status", "1");
 
       console.log(formData);
 
-
-      
       ApiService.post("/files/addDoc", formData)
-        .then(
-          response => {
-            console.log(response);
-            if (response.data.status === 1) {
-              this.$q.notify({
-                color: "green-8",
-                textColor: "white",
-                icon: "cloud_done",
-                position: "top",
-                message: "Ваш документ успешно сохранен"
-              });
-              this.$refs.myform.reset();
-            } else {
-              this.$q.notify({
-                color: "red-4",
-                textColor: "white",
-                icon: "cloud_done",
-                message: response.data.message
-              });
-            }
-            this.$q.loading.hide()
+        .then(response => {
+          console.log(response);
+          if (response.data.status === 1) {
+            this.$q.notify({
+              color: "green-8",
+              textColor: "white",
+              icon: "cloud_done",
+              position: "top",
+              message: "Ваш документ успешно сохранен"
+            });
+            this.$refs.myform.reset();
+          } else {
+            this.$q.notify({
+              color: "red-4",
+              textColor: "white",
+              icon: "cloud_done",
+              message: response.data.message
+            });
           }
-        )
+          this.$q.loading.hide();
+        })
         .catch(error => {
           this.$q.notify({
             color: "red-4",
@@ -383,13 +390,13 @@ methods:{
             icon: "cloud_done",
             message: error
           });
-          this.$q.loading.hide()
+          this.$q.loading.hide();
         });
     },
 
     resetForm() {
       (this.file = []),
-      (this.form.journal = null),
+        (this.form.journal = null),
         (this.form.region = null),
         (this.form.in_number = null),
         (this.form.in_date = null),
@@ -400,10 +407,10 @@ methods:{
         (this.form.format = null),
         (this.form.listCount = null),
         (this.form.description = null),
-        (this.form.signedby = null)
+        (this.form.signedby = null);
     },
 
-    notifyRules(val){
+    notifyRules(val) {
       this.$q.notify({
         color: "red-4",
         textColor: "white",
@@ -411,15 +418,15 @@ methods:{
         message: val
       });
     },
-    newFile(){
+    newFile() {
       let blob = new Blob([this.file], { type: "application/pdf" });
       let link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
       link.download = this.form.in_number;
       link.click();
     }
-},
-watch: {
+  },
+  watch: {
     file: function() {
       //this.form.in_number = this.file.name.slice(0, -4);
       var now = new Date();
@@ -430,62 +437,64 @@ watch: {
       this.form.in_date = now.getFullYear() + "-" + month + "-" + day;
     }
   },
-beforeCreate: function(){
-  ApiService.get("dicts/formats")
-  .then(res =>{
-    this.select.formats = res.data
-  })
-  .catch(err =>{
-    console.log(err)
-  })
+  beforeCreate: function() {
+    ApiService.get("dicts/formats")
+      .then(res => {
+        this.select.formats = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
-  ApiService.get("dicts/journals")
-  .then(res =>{
-    this.select.journals = res.data
-  })
-  .catch(err =>{
-    console.log(err)
-  })
+    ApiService.get("dicts/journals")
+      .then(res => {
+        this.select.journals = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
-  ApiService.get("dicts/regions")
-  .then(res =>{
-    this.select.regions = res.data
-  })
-  .catch(err =>{
-    console.log(err)
-  })
+    ApiService.get("dicts/regions")
+      .then(res => {
+        this.select.regions = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
 
-  ApiService.get("dicts/organs")
-  .then(res =>{
-    this.select.organs = res.data
-  })
-  .catch(err =>{
-    console.log(err)
-  })
-}
-}
+    ApiService.get("dicts/organs")
+      .then(res => {
+        this.select.organs = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+};
 </script>
 <style lang="scss" scoped>
 .my-content {
   padding: 10px 15px;
-  background: rgba(86,61,124,.15);
-  border: 1px solid rgba(86,61,124,.2);
-  }
+  background: rgba(86, 61, 124, 0.15);
+  border: 1px solid rgba(86, 61, 124, 0.2);
+}
 .checkInput {
   display: flex;
   align-items: center;
 }
 .checkBlock {
   padding: 7px;
-  background: #F2F2F2;
-  border: 1px #C2C2C2 solid;
+  background: #f2f2f2;
+  border: 1px #c2c2c2 solid;
 }
 .rightBlock {
-  background: #F2F2F2;
+  background: #f2f2f2;
   cursor: pointer;
 }
 </style>
 
 <style lang="stylus">
-.regKanc .q-field--with-bottom {padding-bottom:0 }
+.regKanc .q-field--with-bottom {
+  padding-bottom: 0;
+}
 </style>

@@ -2,115 +2,23 @@
   <div class="q-pa-md">
     <q-toolbar class="shadow-2 rounded-borders">
       <q-tabs v-model="tab" inline-label stretch>
-<<<<<<< HEAD
-        <q-tab name="tab1" :label="$t('tables.work.tasks.new')" icon="new_releases">
-          <q-badge color="red" floating>2</q-badge>
-        </q-tab>
-        <q-tab name="tab2" :label="$t('tables.work.tasks.accepted')" icon="drafts">
-          <q-badge color="red" floating>12</q-badge>
-        </q-tab>
-        <q-tab name="tab3" :label="$t('tables.work.tasks.working')" icon="settings_applications"></q-tab>
-        <q-tab name="tab4" :label="$t('tables.work.tasks.finished')" icon="check_circle"></q-tab>
-=======
-        <q-tab 
+        <q-tab
           v-for="item of menu"
           :key="item.value"
           :name="item.value"
-          :label="item.label" 
+          :label="item.label"
           :icon="item.icon"
         >
           <template v-if="item.countTask">
             <q-badge color="red" floating>{{ item.countTask }}</q-badge>
           </template>
         </q-tab>
-        
->>>>>>> 3d3c1e89a702b4fd49d5080712b15c999cbaa009
       </q-tabs>
     </q-toolbar>
 
     <div class="sub_menu">
       <div class="filterBlock">
-        <q-select
-          dense
-          filled
-          v-model="model"
-<<<<<<< HEAD
-          :options="optionsFilter"
-          :label="$t('tables.work.tasks.actions')"
-        />
-      </div>
-      <div>{{$t('tables.work.tasks.redirect')}}</div>
-      <div>{{$t('tables.work.tasks.sort')}}</div>
-      <div>{{$t('actions.delete')}}</div>
-    </div>
-
-    <div v-for="(b, i) in 2" :key="i" class="row docBlock">
-      <div class="col-1 check">
-        <div class="check_div">
-          <q-checkbox v-model="val" />
-        </div>
-      </div>
-      <div class="col content">
-        <div class="row">
-          <div
-            class="col text"
-          >Поручение по письму Министерства РУз также призвал глав муниципалитетов разъяснить пожилым гражданам необходимость оставаться дома и исключить ...</div>
-        </div>
-        <div class="row">
-          <div class="col despBlock">
-            <div>
-              <q-icon name="skip_previous" />
-            </div>
-            <div>
-              <span>Исх.№</span> 36-44/29
-              <br />
-              <span>от:</span> 2019.12.24
-            </div>
-          </div>
-          <div class="col despBlock">
-            <div>
-              <q-icon name="skip_next" />
-            </div>
-            <div>
-              <span>Вх.№</span> 36-44/29
-              <br />
-              <span>от:</span> 2019.12.24
-            </div>
-          </div>
-          <div class="col despBlock">
-            <div>
-              <q-icon name="description" />
-            </div>
-            <div>
-              <span>1 лист / бумажное</span>
-              <br />
-              <i>622 кб</i>
-            </div>
-          </div>
-
-          <div class="col despBlock">
-            <q-btn
-              color="white text-black"
-              icon="person"
-              size="sm"
-              :label="$t('tables.work.tasks.responsibles')"
-              @click="usersPopup = true"
-            />
-            <q-dialog v-model="usersPopup">
-              <q-hierarchy></q-hierarchy>
-            </q-dialog>
-          </div>
-          <div class="col despBlock">
-            <div>
-              <q-icon name="person" />
-            </div>
-            <div>
-              <span>{{$t('tables.work.tasks.from')}}:</span>
-              <strong>Мирсаитов А.С.</strong>
-=======
-          :options="menu"
-          label="Действия"
-        />
+        <q-select dense filled v-model="model" :options="menu" label="Действия" />
       </div>
       <div>перенаправить</div>
       <div>сортировать</div>
@@ -125,32 +33,43 @@
       </div>
       <div class="col content">
         <div class="row">
-          <div class="col text">
-            {{ task.f_task_data.description.slice(0, 300) }}...
-          </div>
+          <div class="col text">{{ task.f_task_data.description.slice(0, 300) }}...</div>
         </div>
         <div class="row">
           <div class="col despBlock">
-            <div><q-icon name="skip_previous" /></div>
             <div>
-              <span>Исх.№</span>{{ task.f_task_data.out_number }}<br />
-              <span>от:</span>{{ task.f_task_data.out_date }}
+              <q-icon name="skip_previous" />
+            </div>
+            <div>
+              <span>Исх.№</span>
+              {{ task.f_task_data.out_number }}
+              <br />
+              <span>от:</span>
+              {{ task.f_task_data.out_date }}
             </div>
           </div>
           <div class="col despBlock">
-            <div><q-icon name="skip_next" /></div>
             <div>
-              <span>Вх.№</span> {{ task.f_task_data.in_number }}<br />
-              <span>от:</span>{{ task.f_task_data.in_date }}
+              <q-icon name="skip_next" />
+            </div>
+            <div>
+              <span>Вх.№</span>
+              {{ task.f_task_data.in_number }}
+              <br />
+              <span>от:</span>
+              {{ task.f_task_data.in_date }}
             </div>
           </div>
           <div class="col despBlock">
-            <div><q-icon name="description" /></div>
             <div>
-              <span
-                >{{ task.f_task_data.paper_count }} лист /
-                {{ task.f_task_data.format }}</span
-              ><br />
+              <q-icon name="description" />
+            </div>
+            <div>
+              <span>
+                {{ task.f_task_data.paper_count }} лист /
+                {{ task.f_task_data.format }}
+              </span>
+              <br />
               <i>{{ task.f_task_data.file.size | formatSize}}</i>
             </div>
           </div>
@@ -170,7 +89,9 @@
             />
           </div>
           <div class="col despBlock">
-            <div><q-icon name="person" /></div>
+            <div>
+              <q-icon name="person" />
+            </div>
             <div>
               <span>от:</span>
               <strong
@@ -181,42 +102,25 @@
                     1
                   )}. ${task.h_middle_name.slice(0, 1)}.`
                 "
-              >
-              </strong>
+              ></strong>
               <p
                 class="desc"
                 v-html="
                   `${task.h_last_name} ${task.h_first_name} ${task.h_middle_name}`
                 "
               ></p>
->>>>>>> 3d3c1e89a702b4fd49d5080712b15c999cbaa009
             </div>
           </div>
         </div>
       </div>
       <div class="col-1 text-right actions">
-        <q-btn
-          class="white text-black q-mb-sm"
-<<<<<<< HEAD
-          :label="$t('actions.open')"
-          @click="taskPopup = true"
-        />
+        <q-btn class="white text-black q-mb-sm" label="Открыть" @click="usersTask(task)" />
         <br />
-        <q-dialog v-model="taskPopup" full-width full-height>
-          <q-task></q-task>
-        </q-dialog>
-=======
-          label="Открыть"
-          @click="usersTask(task)"
-        /><br />
 
->>>>>>> 3d3c1e89a702b4fd49d5080712b15c999cbaa009
         <q-btn flat size="sm" icon="print" />
         <q-btn flat size="sm" icon="cloud_download" />
       </div>
     </div>
-<<<<<<< HEAD
-=======
 
     <!-- Иерархия -->
     <q-dialog v-model="usersPopup">
@@ -227,7 +131,6 @@
     <q-dialog v-model="taskPopup" full-width full-height>
       <q-task></q-task>
     </q-dialog>
->>>>>>> 3d3c1e89a702b4fd49d5080712b15c999cbaa009
   </div>
 
   <!-- <div class="q-pa-md">
@@ -236,49 +139,19 @@
 </template>
 
 <script>
-<<<<<<< HEAD
-import QHierarchy from "./dialog-hierarchy.vue";
-import QTask from "./dialog-task.vue";
-=======
 import UserService from "@/services/user.service";
 import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
-import formatSize from "./filters/formatSize"
->>>>>>> 3d3c1e89a702b4fd49d5080712b15c999cbaa009
+import formatSize from "./filters/formatSize";
 
 export default {
   data() {
     return {
       taskPopup: false,
-<<<<<<< HEAD
-      tab: "tab1",
-      val: false,
-      fixed: false,
-      model: null,
-      group: "op1",
-      optionsSel: [
-        {
-          label: "Хамдамов А.А.",
-          value: "op1"
-        },
-        {
-          label: "Касимов Ю.Д.",
-          value: "op2"
-        },
-        {
-          label: "Петров Ф.В",
-          value: "op3"
-        }
-      ],
-      shape: [],
-      usersPopup: false,
-      optionsFilter: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
-    };
-=======
       usersPopup: false,
       tab: 1,
       selection: [],
-      model: null,
+      model: null
       // shape: [],
       // optionsFilter: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
     };
@@ -336,12 +209,11 @@ export default {
       this.$store.commit("task/setCurrentTask", task);
       this.taskPopup = true;
     }
->>>>>>> 3d3c1e89a702b4fd49d5080712b15c999cbaa009
   },
   components: {
     QHierarchy,
     QTask
-  }, 
+  },
   filters: {
     formatSize
   }
@@ -396,8 +268,6 @@ export default {
   display: flex;
   font-size: 14px;
 }
-<<<<<<< HEAD
-=======
 
 .poster {
   position: relative;
@@ -427,7 +297,6 @@ export default {
   z-index: 10;
 }
 
->>>>>>> 3d3c1e89a702b4fd49d5080712b15c999cbaa009
 .despBlock + .despBlock {
   border-left: 1px #c2c2c2 solid;
   padding: 0 15px;
