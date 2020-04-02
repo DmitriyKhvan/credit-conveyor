@@ -66,8 +66,9 @@ export const task = {
     async addComment({commit}, comment) {
       try {
         let { data } = await ApiService.post('tasks/comment/add', comment)
-        //console.log(data)
+        console.log(data)
         if (data.status == 1) {
+          comment.id = data.id
           commit('addComment', comment)
         }
       } catch(error) {
@@ -138,6 +139,7 @@ export const task = {
       let { data } = await ApiService.post(`tasks`, userData)
       console.log(data)
       if (data.status == 1) {
+        userDataUI.task_id = data.id
         commit("addUser", userDataUI)
         commit("clearUsers")
       }
