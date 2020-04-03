@@ -21,7 +21,11 @@
         <q-separator />
 
         <div class="comments scroll q-pb-md" style="max-height: 45vh">
-          <div class="comment q-pt-md" v-for="(comment, index) in task.comments" :key="comment.id">
+          <div
+            class="comment q-pt-md"
+            v-for="(comment, index) in task.comments"
+            :key="task.comments.length + comment.id"
+          >
             <div class="avatar q-pr-md">
               <q-avatar>
                 <img :src="getPhotoUrl(comment.emp_id)" />
@@ -44,7 +48,8 @@
                     `${comment.last_name} ${comment.first_name} ${comment.middle_name}`
                   "
                 ></p>
-                <i>{{comment.updated_at}}</i>
+                <i v-if="comment.updated_at">{{comment.updated_at | formatDate}}</i>
+                <i v-else>{{comment.created_at | formatDate}}</i>
               </div>
               <div v-if="!comment.edit">
                 <div class="content">{{ comment.text }}</div>
@@ -125,7 +130,7 @@
             </q-input>
           </div>
 
-          <div>
+          <div v-if="users.length" class="userList">
             <div v-for="user in users" :key="user.EMP_ID" @click="addUser(user)" class="result">
               <span v-html="user.LAST_NAME"></span>
               <span v-html="user.FIRST_NAME"></span>
@@ -307,6 +312,8 @@ export default {
           dep_code: DEP_CODE,
           dep_name: DEP_NAME,
           text: this.text,
+          created_at: new Date(),
+          updated_at: null,
           edit: false
         };
         await this.$store.dispatch("task/addComment", comment);
@@ -333,6 +340,7 @@ export default {
       try {
         const comment = {
           id,
+          updated_at: new Date(),
           text: this.task.comments[idx].text
         };
         await this.$store.dispatch("task/editComment", comment);
@@ -347,9 +355,13 @@ export default {
     },
 
     async selUsers() {
-      try {
-        await this.$store.dispatch("task/searchUser", this.searchUser);
-      } catch (error) {}
+      if (this.searchUser) {
+        try {
+          await this.$store.dispatch("task/searchUser", this.searchUser);
+        } catch (error) {}
+      } else {
+        this.$store.commit("task/clearUsers");
+      }
     },
 
     async addUser(user) {
@@ -514,5 +526,14 @@ export default {
 }
 .result span {
   padding-right: 5px;
+}
+
+.userList {
+  position: absolute;
+  background: #fff;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  z-index: 10;
 }
 </style>

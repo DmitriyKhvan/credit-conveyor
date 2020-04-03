@@ -62,15 +62,12 @@
           </div>
           <div class="col despBlock">
             <div>
-              <q-icon name="description" />
-            </div>
-            <div>
               <span>
                 {{ task.f_task_data.paper_count }} лист /
                 {{ task.f_task_data.format }}
               </span>
               <br />
-              <i>{{ task.f_task_data.file.size | formatSize}}</i>
+              <i>{{ task.f_task_data.file.size | formatSize }}</i>
             </div>
           </div>
 
@@ -81,10 +78,13 @@
               size="sm"
               label="Ответсвенные"
               @click="
-                usersHierarchy({
-                  label: `${task.last_name} ${task.first_name} ${task.middle_name}`,
-                  children: task.forward_tasks
-                }, task)
+                usersHierarchy(
+                  {
+                    label: `${task.last_name} ${task.first_name} ${task.middle_name}`,
+                    children: task.forward_tasks
+                  },
+                  task
+                )
               "
             />
           </div>
@@ -143,7 +143,7 @@ import UserService from "@/services/user.service";
 import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
 import formatSize from "./filters/formatSize";
-import axios from "axios";
+import Decoder from "@/shared/utils/CommonUtils";
 
 export default {
   data() {
@@ -186,7 +186,9 @@ export default {
       if (data.children) {
         for (let child of data.children) {
           children.push({
-            label: `${child.first_name} ${child.last_name} ${child.middle_name}`,
+            label: `${Decoder.decoder(child.last_name)} ${Decoder.decoder(
+              child.first_name
+            )} ${Decoder.decoder(child.middle_name)}`,
             icon: "check_circle"
           });
         }

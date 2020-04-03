@@ -165,13 +165,15 @@ export const task = {
         state.currentTask.comments = []
       }
       state.currentTask.comments.unshift(comment)
+      //console.log('addComment', state.currentTask.comments)
     },
     editComment(state, comment) {
       const editComment = state.currentTask.comments.find(i => i.id == comment.id)
       editComment.text = comment.text
+      editComment.updated_at = comment.updated_at
     },
     deleteComment(state, id) {
-      const idx = state.currentTask.comments.findIndex(i => i.id = id)
+      const idx = state.currentTask.comments.findIndex(i => i.id == id)
       state.currentTask.comments.splice(idx, 1)
     },
     setCurMenu(state, id) {
