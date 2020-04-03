@@ -60,7 +60,8 @@ export default {
       return false
     }
   },
-  getChildMenus(menus, url) {
+  getChildMenus(menus, urlx) {
+    let url = this.filterUrl(urlx)
     for (let i = 0; i < menus.length; i++) {
       if (menus[i].url == url) {
         return [];
@@ -93,9 +94,22 @@ export default {
   filterServerError(error) {
     if (error.response) {
       return error.response.data.message
-    } else if(error.message) {
+    } else if (error.message) {
       return error.message
     }
     return error
+  },
+  filterUrl(url) {
+    let count = 0;
+    for (let i = 0; i < url.length; i++) {
+      if (url.charAt(i) === '/') {
+        count++;
+        if (count == 3) {
+          return url.substr(0, i);
+        }
+      }
+    }
+    return url;
   }
+
 }

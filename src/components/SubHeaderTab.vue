@@ -15,7 +15,9 @@
 </template>
 
 <script>
-import CommonUtils from "../shared/utils/CommonUtils";
+import CommonUtils from "@/shared/utils/CommonUtils";
+import { mapGetters } from "vuex";
+
 export default {
   props: {
     path: {
@@ -25,7 +27,6 @@ export default {
   },
   data() {
     return {
-      menus: this.$store.getters["dicts/getMenuList"],
       temp: []
     };
   },
@@ -33,6 +34,9 @@ export default {
     //console.log(this.getSubMenus());
   },
   computed: {
+    ...mapGetters({
+      menus: "dicts/getMenuList"
+    }),
     currentPath() {
       return this.path;
     },
