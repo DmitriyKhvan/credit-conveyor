@@ -414,9 +414,10 @@ export default {
       console.log("auth", auth);
 
       const process = await this.$store.dispatch("startProcess");
-      console.log("process", process);
 
-      this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
+      // console.log("process", process);
+      // this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
+
       this.personalData.spouseCost =
         process.userTaskCreditDetailed.input.spouseCost;
       this.personalData.childCost =
@@ -621,22 +622,12 @@ export default {
           ]
         };
 
-        const taskId = this.$store.getters.taskId;
-        console.log(JSON.stringify(data, null, 2))
+        //console.log(JSON.stringify(data, null, 2))
 
         try {
-          const resCredit = await this.$store.dispatch("calculationCredit", {
-            taskId,
-            data
-          });
-          console.log("resCredit", resCredit);
+          const resCredit = await this.$store.dispatch("calculationCredit", data);
 
           this.credits.reasonsList = resCredit.nextTask.input.reasonsList;
-
-          console.log("resons", this.$store.state.credits.reasonsList);
-
-          //Вставить следующий task_id
-          this.$store.commit("setTaskId", resCredit.nextTask.id);
 
           const resp = {
             income: resCredit.nextTask.input.incoming, // Сколько дохода учитываем
@@ -648,10 +639,8 @@ export default {
           this.$store.commit("toggleConfirm", true);
           this.$store.commit("creditConfirm", resp);
           this.loaderPreApproval = false;
+          
         } catch (e) {}
-
-        console.log("personalData", this.$store.state.credits.personalData);
-        console.log("data", data);
       }
     },
 

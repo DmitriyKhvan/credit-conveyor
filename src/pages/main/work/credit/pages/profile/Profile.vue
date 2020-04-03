@@ -2304,7 +2304,7 @@
             </div>
 
             <div class="row q-col-gutter-md">
-              <div class="col-6">
+              <div class="col-4">
                 <div v-if="!!fullProfile.LoanInfo.LoanProduct" class="col-12">
                   <h6 class="periodCredit">Льготный период по погашению кредита</h6>
                   <q-badge color="secondary">
@@ -2322,6 +2322,7 @@
                     label-always
                     color="light-green"
                     :rules="[val => !!val || 'Выберите срок кредита']"
+                    class="sliderCredit"
                   />
                 </div>
               </div>
@@ -2713,10 +2714,12 @@ export default {
     },
 
     "fullProfile.LoanInfo.LoanProduct"(credit) {
+      this.fullProfile.LoanInfo.RepaymentType = []
+
       const idx = this.dictionaries.LoanDetails.items.findIndex(
         item => item.LOAN_ID == credit
       );
-      console.log(idx);
+      //console.log(idx);
       if (idx !== -1) {
         this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
           idx
@@ -2744,12 +2747,11 @@ export default {
         this.fullProfile.LoanInfo.GracePeriodMax = this.dictionaries.LoanDetails.items[idx].GracePeriodMax
 
         this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin
-        // this.fullProfile.LoanInfo.RepaymentType = []
       }
     }
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       //console.log("fullProfile", this.$store.state.profile);
 
       this.$refs.surname.validate();
@@ -2923,7 +2925,13 @@ export default {
 
       this.$refs.productCredit.validate();
       this.$refs.priceCredit.validate();
-      this.$refs.typeRepayment.validate();
+
+      if (this.$refs.typeRepayment) {
+        this.$refs.typeRepayment.validate();
+      } else {
+        this.validItems("typeRepayment");
+      }
+
       // this.$refs.periodRepayment.validate();
       this.$refs.comfortablePeriodRepayment.validate();
       // this.$refs.typeCredit.validate();
@@ -3062,7 +3070,11 @@ export default {
           ]
         };
 
-        console.log(JSON.stringify(data, null, 2))
+        try {
+          await this.$store.dispatch('confirmationCredit', data)
+          console.log('response', JSON.stringify(this.$store.dispatch('confirmationCredit', data), null, 2))
+        } catch(e) {}
+        //console.log(JSON.stringify(data, null, 2))
 
         this.confirmCredit = true;
       }
@@ -3300,6 +3312,12 @@ export default {
 
   .periodCredit {
     font-size: 16px;
+    line-height: 13px;
+
+  }
+
+  .sliderCredit {
+    margin: 20px 15px;
   }
 }
 </style>
