@@ -44,7 +44,7 @@
                     `${comment.last_name} ${comment.first_name} ${comment.middle_name}`
                   "
                 ></p>
-                <i>{{comment.updated_at | formatDate}}</i>
+                <i>{{comment.updated_at}}</i>
               </div>
               <div v-if="!comment.edit">
                 <div class="content">{{ comment.text }}</div>
