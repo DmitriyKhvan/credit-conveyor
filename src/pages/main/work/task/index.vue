@@ -117,8 +117,8 @@
         <q-btn class="white text-black q-mb-sm" label="Открыть" @click="usersTask(task)" />
         <br />
 
-        <q-btn flat size="sm" icon="print" @click="downloadFile(task.f_task_data.file)" />
-        <q-btn flat size="sm" icon="cloud_download" />
+        <q-btn flat size="sm" icon="print" />
+        <q-btn flat size="sm" icon="cloud_download" @click="downloadFile(task.f_task_data.file)" />
       </div>
     </div>
 
