@@ -2241,7 +2241,7 @@
               </div>
             </div>
 
-            <div class="row q-col-gutter-md">
+            <div v-if="!!fullProfile.LoanInfo.LoanProduct" class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
                   ref="typeRepayment"
@@ -2257,11 +2257,7 @@
                   class="q-pb-sm"
                 />
               </div>
-              <div class="col-4"></div>
-              <div class="col-4"></div>
-            </div>
 
-            <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
                   ref="interestRateMax"
@@ -2292,8 +2288,7 @@
                 />
               </div>
 
-              <!-- <div class="col-4">
-                <q-select
+                <!-- <q-select
                   ref="periodRepayment"
                   square
                   outlined
@@ -2305,8 +2300,31 @@
                   emit-value
                   map-options
                   class="q-pb-sm"
-                />
-              </div> -->
+                /> -->
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-6">
+                <div v-if="!!fullProfile.LoanInfo.LoanProduct" class="col-12">
+                  <h6 class="periodCredit">Льготный период по погашению кредита</h6>
+                  <q-badge color="secondary">
+                    Срок: {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }} ({{
+                      fullProfile.LoanInfo.GracePeriodMin
+                    }}
+                    до {{ fullProfile.LoanInfo.GracePeriodMax }})
+                  </q-badge>
+                  <q-slider
+                    v-model.number="fullProfile.LoanInfo.MaxDefferalRepaymentPeriod"
+                    :min="fullProfile.LoanInfo.GracePeriodMin"
+                    :max="fullProfile.LoanInfo.GracePeriodMax"
+                    :step="1"
+                    label
+                    label-always
+                    color="light-green"
+                    :rules="[val => !!val || 'Выберите срок кредита']"
+                  />
+                </div>
+              </div>
             </div>
 
             <div class="row q-col-gutter-md">
@@ -2721,6 +2739,12 @@ export default {
         this.fullProfile.options.RepaymentType = this.dictionaries.LoanDetails.items[
           idx
         ].PaymentsType.items;
+
+        this.fullProfile.LoanInfo.GracePeriodMin = this.dictionaries.LoanDetails.items[idx].GracePeriodMin
+        this.fullProfile.LoanInfo.GracePeriodMax = this.dictionaries.LoanDetails.items[idx].GracePeriodMax
+
+        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin
+        // this.fullProfile.LoanInfo.RepaymentType = []
       }
     }
   },
@@ -3272,6 +3296,10 @@ export default {
 
   .creditCalc {
     min-width: 960px;
+  }
+
+  .periodCredit {
+    font-size: 16px;
   }
 }
 </style>

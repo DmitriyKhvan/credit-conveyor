@@ -139,7 +139,7 @@
             </q-input>
           </div>
 
-          <div>
+          <div v-if="users.length" class="userList">
             <div
               v-for="user in users"
               :key="user.EMP_ID"
@@ -388,9 +388,13 @@ export default {
     },
 
     async selUsers() {
-      try {
-        await this.$store.dispatch("task/searchUser", this.searchUser);
-      } catch (error) {}
+      if ( this.searchUser ) {
+        try {
+          await this.$store.dispatch("task/searchUser", this.searchUser);
+        } catch (error) {}
+      } else {
+        this.$store.commit("task/clearUsers")
+      }
     },
 
     async addUser(user) {
@@ -556,5 +560,14 @@ export default {
 }
 .result span {
   padding-right: 5px;
+}
+
+.userList {
+  position: absolute;
+  background: #fff;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  z-index: 10;
 }
 </style>

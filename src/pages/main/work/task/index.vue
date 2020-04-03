@@ -2,18 +2,17 @@
   <div class="q-pa-md">
     <q-toolbar class="shadow-2 rounded-borders">
       <q-tabs v-model="tab" inline-label stretch>
-        <q-tab 
+        <q-tab
           v-for="item of menu"
           :key="item.value"
           :name="item.value"
-          :label="item.label" 
+          :label="item.label"
           :icon="item.icon"
         >
           <template v-if="item.countTask">
             <q-badge color="red" floating>{{ item.countTask }}</q-badge>
           </template>
         </q-tab>
-        
       </q-tabs>
     </q-toolbar>
 
@@ -66,7 +65,7 @@
                 >{{ task.f_task_data.paper_count }} лист /
                 {{ task.f_task_data.format }}</span
               ><br />
-              <i>{{ task.f_task_data.file.size | formatSize}}</i>
+              <i>{{ task.f_task_data.file.size | formatSize }}</i>
             </div>
           </div>
 
@@ -77,10 +76,13 @@
               size="sm"
               label="Ответсвенные"
               @click="
-                usersHierarchy({
-                  label: `${task.last_name} ${task.first_name} ${task.middle_name}`,
-                  children: task.forward_tasks
-                }, task)
+                usersHierarchy(
+                  {
+                    label: `${task.last_name} ${task.first_name} ${task.middle_name}`,
+                    children: task.forward_tasks
+                  },
+                  task
+                )
               "
             />
           </div>
@@ -140,7 +142,8 @@
 import UserService from "@/services/user.service";
 import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
-import formatSize from "./filters/formatSize"
+import formatSize from "./filters/formatSize";
+import Decoder from "@/shared/utils/CommonUtils";
 
 export default {
   data() {
@@ -149,7 +152,7 @@ export default {
       usersPopup: false,
       tab: 1,
       selection: [],
-      model: null,
+      model: null
       // shape: [],
       // optionsFilter: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
     };
@@ -183,7 +186,9 @@ export default {
       if (data.children) {
         for (let child of data.children) {
           children.push({
-            label: `${child.last_name} ${child.first_name} ${child.middle_name}`,
+            label: `${Decoder.decoder(child.last_name)} ${Decoder.decoder(
+              child.first_name
+            )} ${Decoder.decoder(child.middle_name)}`,
             icon: "check_circle"
           });
         }
@@ -211,7 +216,7 @@ export default {
   components: {
     QHierarchy,
     QTask
-  }, 
+  },
   filters: {
     formatSize
   }

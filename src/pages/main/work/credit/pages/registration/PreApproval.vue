@@ -148,7 +148,7 @@ export default {
 
         const taskId = this.$store.getters.taskId
         
-        console.log(JSON.stringify(this.data, null, 2))
+       // console.log(JSON.stringify(this.data, null, 2))
 
         try {
           const resCredit = await this.$store.dispatch('confirmationCredit', {taskId, data: this.data})
@@ -157,7 +157,7 @@ export default {
           this.$store.commit("setTaskId", resCredit.nextTask.id)
 
           if (resCredit.nextTask.input) {
-            this.$store.commit("setDictionaries", resCredit.nextTask.input[2].data)  
+            this.$store.commit("setDictionaries", resCredit.nextTask.input[1].data)  
             this.$router.push("sub/profile");
           } else {
             throw 'Data is null'
