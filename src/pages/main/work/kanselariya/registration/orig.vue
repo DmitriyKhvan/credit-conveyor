@@ -3,10 +3,8 @@
     <div class="col-10">
       <div class="row">
         <div class="col-8">
-
           <div class="row">
             <div class="col-12 q-pa-sm">
-
               <q-form @submit="sendNewDoc">
                 <q-file color="teal" filled v-model="model" label="Label">
                   <template v-slot:prepend>
@@ -14,15 +12,12 @@
                   </template>
                 </q-file>
               </q-form>
-
             </div>
           </div>
 
           <div class="row">
-
             <div class="col-6 q-pa-sm">
-
-              <q-select filled bottom-slots v-model="model" :options="options" label="Label" >
+              <q-select filled bottom-slots v-model="model" :options="options" label="Label">
                 <template v-slot:prepend>
                   <q-icon name="menu_book" @click.stop />
                 </template>
@@ -30,12 +25,10 @@
                   <q-icon name="close" @click.stop="model = ''" class="cursor-pointer" />
                 </template>
               </q-select>
-
             </div>
 
             <div class="col-6 q-pa-sm">
-
-              <q-select filled bottom-slots v-model="model" :options="options" label="Label" >
+              <q-select filled bottom-slots v-model="model" :options="options" label="Label">
                 <template v-slot:prepend>
                   <q-icon name="public" @click.stop />
                 </template>
@@ -43,13 +36,10 @@
                   <q-icon name="close" @click.stop="model = ''" class="cursor-pointer" />
                 </template>
               </q-select>
-
             </div>
-            
           </div>
 
           <div class="row">
-
             <div class="col-6 q-pr-sm q-pa-sm">
               <q-input outlined v-model="text" label="Outlined" />
             </div>
@@ -65,13 +55,11 @@
                 </template>
               </q-input>
             </div>
-
           </div>
 
           <div class="row">
-
             <div class="col-6 q-pr-sm q-pa-sm">
-               <q-select filled bottom-slots v-model="model" :options="options" label="Label" >
+              <q-select filled bottom-slots v-model="model" :options="options" label="Label">
                 <template v-slot:prepend>
                   <q-icon name="list" @click.stop />
                 </template>
@@ -84,66 +72,60 @@
             <div class="col-6 q-pl-sm q-pa-sm">
               <q-input outlined v-model="text" label="Outlined" />
             </div>
-
           </div>
 
           <div class="row">
-
             <div class="col-6 q-pr-sm q-pa-sm checkInput">
-               <div class="checkBlock">
-                 <q-checkbox v-model="teal" />
-               </div>
-               <div style="width:100%">
-                 <q-input outlined v-model="text" label="Исх. Номер" />
-               </div>
+              <div class="checkBlock">
+                <q-checkbox v-model="teal" />
+              </div>
+              <div style="width:100%">
+                <q-input outlined v-model="text" label="Исх. Номер" />
+              </div>
             </div>
 
             <div class="col-6 q-pl-sm q-pa-sm checkInput">
-               <div class="checkBlock">
-                 <q-checkbox v-model="teal" />
-               </div>
-               <div style="width:100%" >
-                 <q-input outlined v-model="date" mask="date" :rules="['date']">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-               </div>
+              <div class="checkBlock">
+                <q-checkbox v-model="teal" />
+              </div>
+              <div style="width:100%">
+                <q-input outlined v-model="date" mask="date" :rules="['date']">
+                  <template v-slot:append>
+                    <q-icon name="event" class="cursor-pointer">
+                      <q-popup-proxy
+                        ref="qDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date v-model="date" @input="() => $refs.qDateProxy.hide()" />
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </div>
             </div>
-
           </div>
 
           <div class="row">
-
             <div class="col-6 q-pr-sm q-pa-sm">
-               <q-select filled bottom-slots v-model="model" :options="options" label="Label" >
-                  <template v-slot:prepend>
-                    <q-icon name="dashboard" @click.stop />
-                  </template>
-                  <template v-slot:append>
-                    <q-icon name="close" @click.stop="model = ''" class="cursor-pointer" />
-                  </template>
-                </q-select>
+              <q-select filled bottom-slots v-model="model" :options="options" label="Label">
+                <template v-slot:prepend>
+                  <q-icon name="dashboard" @click.stop />
+                </template>
+                <template v-slot:append>
+                  <q-icon name="close" @click.stop="model = ''" class="cursor-pointer" />
+                </template>
+              </q-select>
             </div>
 
             <div class="col-6 q-pl-sm q-pa-sm">
-               <q-input outlined v-model="text" label="Outlined" />
+              <q-input outlined v-model="text" label="Outlined" />
             </div>
-
           </div>
 
           <div class="row">
             <div class="col q-pa-sm">
-              <q-input
-                v-model="text"
-                outlined
-                type="textarea"
-                label="Outlined"
-              />
+              <q-input v-model="text" outlined type="textarea" label="Outlined" />
             </div>
           </div>
 
@@ -155,18 +137,22 @@
 
           <div class="row">
             <div class="col text-center q-pa-sm">
-              <q-btn color="white" text-color="black" label="Отменить" class="q-mr-sm" />
-              <q-btn color="primary" label="Сохранить" />
+              <q-btn
+                color="white"
+                text-color="black"
+                :label="$t('actions.cancel')"
+                class="q-mr-sm"
+              />
+              <q-btn color="primary" :label="$t('actions.save')" />
             </div>
           </div>
-          
-        </div>      
+        </div>
 
         <div class="col-4 q-pa-sm">
           <div class="rightBlock q-pa-md text-center">
-            <img src="@/assets/file.png" alt=""><br>
-            просмотреть файл
-          </div>            
+            <img src="@/assets/file.png" alt />
+            <br />просмотреть файл
+          </div>
         </div>
       </div>
     </div>
@@ -183,12 +169,9 @@ export default {
   data() {
     return {
       model: null,
-      options: [
-        'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-      ],
-      date: '',
+      options: ["Google", "Facebook", "Twitter", "Apple", "Oracle"],
+      date: "",
       teal: false,
-
 
       file: [],
       form: {
@@ -305,8 +288,7 @@ export default {
     },
     removeFile() {
       (this.file = []), (this.fileUrl = null);
-    },
-    
+    }
   },
   watch: {
     file: function() {
@@ -320,32 +302,34 @@ export default {
       this.fileUrl = URL.createObjectURL(this.file);
     }
   },
-  beforeCreate: function(){
-    ApiService.post()
+  beforeCreate: function() {
+    ApiService.post();
   }
 };
 </script>
 <style lang="scss" scoped>
 .my-content {
   padding: 10px 15px;
-  background: rgba(86,61,124,.15);
-  border: 1px solid rgba(86,61,124,.2);
-  }
+  background: rgba(86, 61, 124, 0.15);
+  border: 1px solid rgba(86, 61, 124, 0.2);
+}
 .checkInput {
   display: flex;
   align-items: center;
 }
 .checkBlock {
   padding: 7px;
-  background: #F2F2F2;
-  border: 1px #C2C2C2 solid;
+  background: #f2f2f2;
+  border: 1px #c2c2c2 solid;
 }
 .rightBlock {
-  background: #F2F2F2;
+  background: #f2f2f2;
   cursor: pointer;
 }
 </style>
 
 <style lang="stylus">
-.regKanc .q-field--with-bottom {padding-bottom:0 }
+.regKanc .q-field--with-bottom {
+  padding-bottom: 0;
+}
 </style>

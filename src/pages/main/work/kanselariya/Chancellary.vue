@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Kanselariya</h3>
+    <h3>{{$t('tables.work.chancellery._self')}}</h3>
     <router-view />
   </div>
 </template>

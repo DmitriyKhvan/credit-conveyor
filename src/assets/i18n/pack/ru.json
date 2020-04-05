@@ -313,7 +313,10 @@
       "choose_executive": "Выберите руководителя",
       "document_num": "Документ №",
       "content": "Содержание",
+      "content_err": "Пожалуста введите содержание",
       "resolution": "Резолюция",
+      "choose_file": "Выберите файл",
+      "journal": "Журнал",
       "tasks": {
         "new": "Новые",
         "accepted": "Принял(а)",
@@ -353,6 +356,40 @@
       "credit": {
         "try_again": "Попробуйте снова",
         "smth_went_wrong": "Что-то пошло не так"
+      },
+      "chancellery": {
+        "_self": "Канцелярия",
+        "choose_journal_err": "Пожалуста выберите журнал",
+        "regions": "Регионы",
+        "inc_number": "Вх. номер",
+        "inc_date": "Вх. Дата",
+        "choose_organization": "Выбрать организацию",
+        "choose_organization_err": "Пожалуйста укажите организацию",
+        "write_from": "Написать откуда",
+        "without_number": "Без номера",
+        "out_number": "Исх. номер",
+        "out_date": "Исх. дата",
+        "without_date": "Без даты",
+        "format": "Формат",
+        "page_amount": "Кол. лист",
+        "page_amount_err": "Пожалуста укажите кол. листов",
+        "who_signed": "Кто подписал",
+        "review_file": "Просмотреть файл",
+        "results": {
+          "FILE": "ФАЙЛ",
+          "JOURNAL": "ЖУРНАЛ",
+          "REGION": "РЕГИОН",
+          "IN_NUMBER": "ВХ НОМЕР",
+          "IN_DATE": "ВХ ДАТА",
+          "ORGAN": "ОРГАН",
+          "WHO_SEND": "КТО ОТПРАВИЛ",
+          "OUT_NUMBER": "ИСХ НОМЕР",
+          "OUT_DATE": "ИСХ ДАТА",
+          "FORMAT": "ФОРМАТ",
+          "PAGE_AMOUNT": "КОЛ ЛИСТ",
+          "CONTENT": "СОДЕРЖАНИЕ",
+          "WHO_SIGNED": "КТО ПОДПИСАЛ"
+        }
       }
     },
     "education": {
