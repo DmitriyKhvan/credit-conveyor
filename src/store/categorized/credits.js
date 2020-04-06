@@ -181,12 +181,6 @@ export default {
           commit("setTaskId", response.nextTask.id)
         }
         
-        if (response.nextTask.input[1].data) {
-          commit("setDictionaries", response.nextTask.input[1].data) 
-        } else {
-          throw 'Data is null'
-        }
-
         return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -297,7 +291,7 @@ export default {
     },
 
     toggleErrorBar(state, payload) {
-      state.errorMessage = null;
+      //state.errorMessage = null;
       state.errorBar = payload;
     },
 

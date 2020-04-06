@@ -133,15 +133,24 @@ export default {
   methods: {
     async successCredit(val) {
       this.$store.commit("toggleConfirm", val);
-       // console.log(JSON.stringify(this.data, null, 2))
+        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
           const response = await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
 
-          this.$router.push("sub/profile");
-          console.log('successCredit', response)
+          if (false) {
+            commit("setDictionaries", response.nextTask.input[1].data) 
+            this.$router.push("sub/profile");
+          } else {
+            throw 'Data is null'
+          }
 
-          console.log('successCredit', JSON.stringify(await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData), null, 2))
-        } catch (error) {}
+        } catch (error) {
+          const errorMessage = CommonUtils.filterServerError(error);
+          //commit("resetPersonData")
+          console.log('confirmation', errorMessage)
+          this.$store.commit("setError", errorMessage);
+          sessionStorage.removeItem("csrf_token");
+        }
     },
     
     async failureCredit() {
@@ -170,7 +179,7 @@ export default {
         // };
 
         try {
-          await this.$store.dispatch('confirmationCredit', data)
+          await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
           console.log('failureCredit', this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData))
         } catch (error) {}
 

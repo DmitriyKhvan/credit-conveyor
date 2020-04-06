@@ -3049,32 +3049,35 @@ export default {
         const data = {
           output: [
             {
-              Status,
-              ApplicationID,
-              ProtocolNumber,
-              Number,
-              Branch,
-              BODecision,
-              FinalDecision,
-              Date,
-              BOLogin,
-              Department,
-              ClientManagerLogin,
-              CreditCommiteeDecisions,
-              Customer,
-              Guarantee,
-              LoanInfo,
-              ApplicationComment,
-              AttachedDocuments
+              name: "application",
+              data: {
+                Status,
+                ApplicationID,
+                ProtocolNumber,
+                Number,
+                Branch,
+                BODecision,
+                FinalDecision,
+                Date,
+                BOLogin,
+                Department,
+                ClientManagerLogin,
+                CreditCommiteeDecisions,
+                Customer,
+                Guarantee,
+                LoanInfo,
+                ApplicationComment,
+                AttachedDocuments
+              }
             }
           ]
         };
 
         try {
-          await this.$store.dispatch('confirmationCredit', data)
-          console.log('response', JSON.stringify(this.$store.dispatch('confirmationCredit', data), null, 2))
+          const res = await this.$store.dispatch('confirmationCredit', data)
+          console.log('response', JSON.stringify(res, null, 2))
         } catch(e) {}
-        //console.log(JSON.stringify(data, null, 2))
+        console.log(JSON.stringify(data, null, 2))
 
         this.confirmCredit = true;
       }
