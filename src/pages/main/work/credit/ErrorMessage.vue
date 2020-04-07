@@ -40,7 +40,6 @@ export default {
   },
   computed: {
     errorBar() {
-      console.log("Причина ошибки", this.$store.getters.error)
       return this.$store.getters.errorBar
     },
     errorMessage() {

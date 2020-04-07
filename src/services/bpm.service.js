@@ -2,9 +2,10 @@ import axios from "axios";
 
 export default class BpmService {
   
-  _baseUrl = "http://10.8.7.71:8070/bpm";
+  _baseUrl = "http://10.8.7.71:8070/bpm"
   _personalUrl = "http://10.8.8.70:4000"
-  _digIdUrl = "http://localhost:50000/api/Identification";
+  _digIdUrl = "http://localhost:50000/api/Identification"
+  _uploadFileUrl = "http://10.8.8.90:8070"
 
   getBPMToken = async () => {
     const responce = await axios({
@@ -102,5 +103,17 @@ export default class BpmService {
 
   setHeaderRole(role) {
     axios.defaults.headers.common["NBU-BPM-Role"] = role
+  }
+
+  uploadFiles = async (data) => {
+    const fileName = "file full form profile"
+    const responce = await axios({
+      method: "post",
+      url: `${this._uploadFileUrl}/file/?documentType=${fileName}`,
+      data,
+      headers: {'Content-Type': 'multipart/form-data'}
+    })
+
+    return responce.data
   }
  }

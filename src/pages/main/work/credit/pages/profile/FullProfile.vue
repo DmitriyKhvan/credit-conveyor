@@ -84,13 +84,21 @@
                 <div class="col-3">Квартира</div>
                 <div class="col-9">{{address.Apartment}}</div>
                 <div class="col-3">Вид владения</div>
-                <div class="col-9">{{(dictionaries.PropertyType.items.find(i => i.value === address.OwnershipType)).label}}</div>
+                <div class="col-9">
+                  <template v-if="dictionaries.PropertyType.items.find(i => i.value === address.OwnershipType)">
+                    {{(dictionaries.PropertyType.items.find(i => i.value === address.OwnershipType)).label}}
+                  </template>
+                </div>
               </div>
             </div>
 
             <div class="col-12 profileTitle">6 Семейное положение</div>
             <div class="col-3">Семейное положение</div>
-            <div class="col-9">{{(dictionaries.MaritalStatus.items.find(i => i.value === Customer.MaritalStatus)).label}}</div>
+            <div class="col-9">
+              <template v-if="dictionaries.MaritalStatus.items.find(i => i.value === Customer.MaritalStatus)">
+                {{(dictionaries.MaritalStatus.items.find(i => i.value === Customer.MaritalStatus)).label}}
+              </template>
+            </div>
             <div class="col-3">Количество иждивенцев</div>
             <div class="col-9"></div>
             <div class="col-3">Количество детей</div>
@@ -191,7 +199,11 @@
             </div>
             <div class="col-9">{{Customer.MonthlyExpenses.obligations}}</div>
             <div class="col-3">Наличие дополнительного дохода</div>
-            <div class="col-9">{{(fullProfile.options.confirmation.find(i => i.value === Customer.MonthlyIncome.hasAdditionalIncome)).label}}</div>
+            <div class="col-9">
+              <template v-if="fullProfile.options.confirmation.find(i => i.value === Customer.MonthlyIncome.hasAdditionalIncome)">
+                {{(fullProfile.options.confirmation.find(i => i.value === Customer.MonthlyIncome.hasAdditionalIncome)).label}}
+              </template>
+            </div>
             <div class="col-3">Размер дополнительного дохода</div>
             <div class="col-9">{{Customer.MonthlyIncome.additionalIncome.sum}}</div>
             <div class="col-3">

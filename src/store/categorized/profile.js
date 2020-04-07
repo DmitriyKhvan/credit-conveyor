@@ -217,12 +217,7 @@ export default {
         CommentDate: "2020-03-18T09:00:23.928+05:00"
       }
     ],
-    AttachedDocuments: [
-      {
-        DocLink: "",
-        DocumentName: ""
-      }
-    ],
+    AttachedDocuments: [],
 
     bpmService: new BpmService(),
     // icon: false,
@@ -234,9 +229,16 @@ export default {
     // loadMessage: ""
   },
   actions: {
-    // async authProcess(state, payload) {
-    //   return await state.state.bpmService.authProcess(payload);
-    // }
+    async uploadFiles({ state, commit }, data) {
+      console.log('uploadFiles', data)
+      try {
+        const response = await state.bpmService.uploadFiles(data)
+        console.log('responseFile', response) 
+      } catch(error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setError", errorMessage);
+      }
+    }
   },
   mutations: {
     addPhone(state) {
