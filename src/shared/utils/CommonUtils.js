@@ -61,13 +61,15 @@ export default {
     }
   },
   getChildMenus(menus, url) {
+    //console.log(menus, url)
+    //debugger
     for (let i = 0; i < menus.length; i++) {
       if (menus[i].url == url) {
         return [];
       }
       if (menus[i]['children'] !== null) {
         for (let j = 0; j < menus[i]['children'].length; j++) {
-          if (menus[i]['children'][j].url == url) {
+          if (menus[i]['children'][j].url == url.match(/(\/[\w\.]*\/[\w\.]*)/)[0]) {
             if (menus[i]['children'][j]['children'] != null) {
               return menus[i]['children'][j]['children'];
             } else return [];
@@ -93,7 +95,7 @@ export default {
   filterServerError(error) {
     if (error.response) {
       return error.response.data.message
-    } else if(error.message) {
+    } else if (error.message) {
       return error.message
     }
     return error

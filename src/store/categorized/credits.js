@@ -46,6 +46,19 @@ export default {
       additionalIncomeSource: "" //источник дополнительного дохода
     },
 
+    confirmCreditData: {
+      output: [
+        {
+          name: "confirm",
+          data: true
+        },
+        {
+          name: "reasons",
+          data: []
+        }
+      ]
+    },
+
     reasonsList: [], // причины отказа от кредита
 
     preApprovalData: {
@@ -111,9 +124,16 @@ export default {
       return await state.bpmService.setHeaderBPM(payload);
     },
 
-    async startProcess({ state }) {
+    async startProcess({ state, commit }) {
       try {
-        return await state.bpmService.startProcess();
+        const response = await state.bpmService.startProcess();
+
+        console.log('startProcess taskId ', response.userTaskCreditDetailed.id)
+        if (response.userTaskCreditDetailed.id) {
+          commit("setTaskId", response.userTaskCreditDetailed.id)
+        }
+
+        return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
@@ -133,10 +153,17 @@ export default {
     //   return await state.bpmService.getUserDataFromReader();
     // },
 
-    async calculationCredit({state, commit}, payload) {
+    async calculationCredit({state, commit, getters}, data) {
       try {
-        console.log('calculation', payload)
-        return await state.bpmService.calculationCredit(payload);
+        //console.log('calculation', payload)
+        const response = await state.bpmService.calculationCredit({taskId: getters.taskId, data});
+
+        console.log('calculCredit taskId ', response.nextTask.id)
+        if (response.nextTask.id) {
+          commit("setTaskId", response.nextTask.id)
+        }
+
+        return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         //commit("resetPersonData")
@@ -145,13 +172,20 @@ export default {
       }
     },
 
-    async confirmationCredit({state}, payload) {
+    async confirmationCredit({state, commit, getters}, data) {
       try {
-        //this.$router.push("sub/profile"); //переход на полную форму
-        return await state.bpmService.confirmationCredit(payload);
+        const response = await state.bpmService.confirmationCredit({taskId: getters.taskId, data});
+
+        console.log('confirmCredit taskId ', response.nextTask.id)
+        if (response.nextTask.id) {
+          commit("setTaskId", response.nextTask.id)
+        }
+        
+        return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         //commit("resetPersonData")
+        console.log('confirmation', errorMessage)
         commit("setError", errorMessage);
         sessionStorage.removeItem("csrf_token");
       }
@@ -257,7 +291,7 @@ export default {
     },
 
     toggleErrorBar(state, payload) {
-      state.errorMessage = null;
+      //state.errorMessage = null;
       state.errorBar = payload;
     },
 
