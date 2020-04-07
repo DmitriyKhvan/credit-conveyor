@@ -39,12 +39,7 @@ export default {
   },
   computed: {
     errorBar() {
-<<<<<<< HEAD
       return this.$store.getters.errorBar
-=======
-      console.log("Причина ошибки", this.$store.getters.error);
-      return this.$store.getters.errorBar;
->>>>>>> a4918389ebc7272cee1bb99164e1203c1387588e
     },
     errorMessage() {
       return message[this.$store.getters.error] || "Что-то пошло не так";
