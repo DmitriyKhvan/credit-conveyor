@@ -22,7 +22,10 @@
             <div class="col-3">ПИНФЛ</div>
             <div class="col-9">{{Customer.PINPP}}</div>
             <div class="col-3">Пол</div>
-            <div class="col-9">{{(dictionaries.Gender.items.find(i => i.value === Customer.Gender)).label}}</div>
+            <div class="col-9">
+              {{ (dictionaries.Gender.items.find(i => i.value === Customer.Gender)).label}}
+              <!-- {{getLabelDic()}} -->
+            </div>
             <div class="col-3">Резидентсво</div>
             <div class="col-9">{{Customer.ResidentFlag}}</div>
 
@@ -605,7 +608,14 @@ export default {
       WinPrint.print();
       //WinPrint.close();
       //prtContent.innerHTML = strOldOne;
-    }
+    },
+
+    // getLabelDic() {
+    //   const item = dictionaries.Gender.items.find(i => i.value === Customer.Gender)
+    //   if (item) {
+    //     return item.label
+    //   }
+    // }
   }
 };
 </script>

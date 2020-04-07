@@ -42,7 +42,7 @@
                   <div class="row">
                     <div 
                       class="col-6"
-                      v-for="(reson, index) of this.credits.reasonsList.slice(0, Math.random(this.credits.reasonsList.length / 2))"
+                      v-for="(reson, index) of this.credits.reasonsList.slice(0, Math.round(this.credits.reasonsList.length / 2))"
                       :key="'reson' + index"
                     >
                       <q-checkbox
@@ -54,7 +54,7 @@
 
                     <div 
                       class="col-6"
-                      v-for="(reson, index) of this.credits.reasonsList.slice(Math.random(this.credits.reasonsList.length / 2))"
+                      v-for="(reson, index) of this.credits.reasonsList.slice(Math.round(this.credits.reasonsList.length / 2))"
                       :key="'reson' + index"
                     >
                       <q-checkbox
@@ -109,19 +109,7 @@ export default {
     return {
       failureCreditReason: false,
       selection: [],
-      model: false,
-      data: {
-        output: [
-          {
-            name: "confirm",
-            data: true
-          },
-          {
-            name: "reasons",
-            data: []
-          }
-        ]
-      }
+      model: false
     };
   },
 
@@ -145,30 +133,21 @@ export default {
   methods: {
     async successCredit(val) {
       this.$store.commit("toggleConfirm", val);
-
-        const taskId = this.$store.getters.taskId
-        
-       // console.log(JSON.stringify(this.data, null, 2))
-
+        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
-          const resCredit = await this.$store.dispatch('confirmationCredit', {taskId, data: this.data})
-          
-          //Вставить следующий task_id
-          this.$store.commit("setTaskId", resCredit.nextTask.id)
+          const response = await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
 
-          if (resCredit.nextTask.input) {
-            this.$store.commit("setDictionaries", resCredit.nextTask.input[1].data)  
+          if (false) {
+            commit("setDictionaries", response.nextTask.input[1].data) 
             this.$router.push("sub/profile");
           } else {
             throw 'Data is null'
           }
 
-          //this.$router.push("sub/profile");
-          console.log('successCredit', JSON.stringify(resCredit))
         } catch (error) {
-          console.log('error', error)
           const errorMessage = CommonUtils.filterServerError(error);
-          console.log('errorMessage', errorMessage)
+          //commit("resetPersonData")
+          console.log('confirmation', errorMessage)
           this.$store.commit("setError", errorMessage);
           sessionStorage.removeItem("csrf_token");
         }
@@ -183,24 +162,25 @@ export default {
         this.$store.commit("toggleDisableInput", false);
         this.$store.commit("toggleConfirm", false);
 
-        const data = {
-          output: [
-            {
-              name: "confirm",
-              data: false
-            },
-            {
-              name: "reasons",
-              data: this.selection
-            }
-          ]
-        };
+        this.confirmCreditData.output[0].data = false
+        this.confirmCreditData.output[1].data = this.selection
 
-        const taskId = this.$store.getters.taskId
+        // const data = {
+        //   output: [
+        //     {
+        //       name: "confirm",
+        //       data: false
+        //     },
+        //     {
+        //       name: "reasons",
+        //       data: this.selection
+        //     }
+        //   ]
+        // };
 
         try {
-          const resCredit = await this.$store.dispatch('confirmationCredit', {taskId, data})
-          console.log(resCredit)
+          await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
+          console.log('failureCredit', this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData))
         } catch (error) {}
 
         this.$router.push("/work/credit");

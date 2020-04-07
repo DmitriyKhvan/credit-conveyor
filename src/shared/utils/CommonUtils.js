@@ -60,15 +60,16 @@ export default {
       return false
     }
   },
-  getChildMenus(menus, urlx) {
-    let url = this.filterUrl(urlx)
+  getChildMenus(menus, url) {
+    //console.log(menus, url)
+    //debugger
     for (let i = 0; i < menus.length; i++) {
       if (menus[i].url == url) {
         return [];
       }
       if (menus[i]['children'] !== null) {
         for (let j = 0; j < menus[i]['children'].length; j++) {
-          if (menus[i]['children'][j].url == url) {
+          if (menus[i]['children'][j].url == url.match(/(\/[\w\.]*\/[\w\.]*)/)[0]) {
             if (menus[i]['children'][j]['children'] != null) {
               return menus[i]['children'][j]['children'];
             } else return [];
@@ -98,18 +99,5 @@ export default {
       return error.message
     }
     return error
-  },
-  filterUrl(url) {
-    let count = 0;
-    for (let i = 0; i < url.length; i++) {
-      if (url.charAt(i) === '/') {
-        count++;
-        if (count == 3) {
-          return url.substr(0, i);
-        }
-      }
-    }
-    return url;
   }
-
 }

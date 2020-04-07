@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <appLoader v-if="loaderForm" />
+  <div class="registration">
+    <div class="loaderForm" v-if="loaderForm">
+      <appLoader />
+    </div>
 
     <div v-else class="q-pa-md row justify-center">
-      <form @submit.prevent.stop="onSubmit" style="width: 70%">
-        <div class="row q-gutter-md">
+      <form @submit.prevent.stop="onSubmit">
+        <div class="row q-col-gutter-md">
           <div class="col-7">
             <!-- Private data person -->
             <div class="privat-data tab">
@@ -23,7 +25,7 @@
                     label="Фамилия"
                     lazy-rules
                     :rules="[
-                      val => (val && val.length > 1) || 'Введите фамилию'
+                      (val) => (val && val.length > 1) || 'Введите фамилию',
                     ]"
                   />
                   <q-input
@@ -36,7 +38,7 @@
                     :disable="disableInput"
                     label="Имя"
                     lazy-rules
-                    :rules="[val => (val && val.length > 3) || 'Введите имя']"
+                    :rules="[(val) => (val && val.length > 3) || 'Введите имя']"
                   />
                   <q-input
                     ref="mname"
@@ -59,9 +61,9 @@
                     mask="#########"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length == 9) ||
-                        'Количество символов должно быт ровно 9'
+                        'Количество символов должно быт ровно 9',
                     ]"
                   />
                   <q-input
@@ -74,8 +76,8 @@
                     mask="+### (##) ### ## ##"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 19) || 'Введите номер телефона'
+                      (val) =>
+                        (val && val.length === 19) || 'Введите номер телефона',
                     ]"
                   />
                   <q-input
@@ -90,7 +92,7 @@
                     mask="##############"
                     lazy-rules
                     :rules="[
-                      val => (val && val.length === 14) || 'Введите ПНФЛ'
+                      (val) => (val && val.length === 14) || 'Введите ПНФЛ',
                     ]"
                   />
                   <q-input
@@ -105,9 +107,9 @@
                     mask="AA#######"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 9) ||
-                        'Введите Серию и номер паспорта'
+                        'Введите Серию и номер паспорта',
                     ]"
                   />
                 </div>
@@ -133,19 +135,8 @@
                 </div>
               </div>
 
-              <!-- Preloader auto compleate -->
-              <div class="row justify-center loader" v-if="loader">
-                <q-spinner-ios color="primary" size="2em" />
-                <q-tooltip :offset="[0, 8]">Пожалуйста подождите</q-tooltip>
-              </div>
-
-              <!-- Button auto complete person data -->
-              <div v-else>
-                <app-auto-complete-data></app-auto-complete-data>
-              </div>
-
-              <div class="row justify-between">
-                <div class="creditContent">
+              <div class="row q-col-gutter-md justify-between">
+                <div class="col-6">
                   <q-select
                     ref="typeCredit"
                     square
@@ -156,13 +147,12 @@
                     label="Кредитный продукт"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите кредитный продукт']"
-                    class="q-pb-sm"
+                    :rules="[(val) => !!val || 'Выберите кредитный продукт']"
                   />
                 </div>
-
-                <div v-if="!!personalData.typeCredit" class="creditContent">
+                <div class="col-6">
                   <q-select
+                    v-if="!!personalData.typeCredit"
                     ref="typeStepCredit"
                     square
                     outlined
@@ -172,39 +162,48 @@
                     label="Тип погашения кредита"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите тип погашения кредита']"
-                    class="q-pb-sm"
+                    :rules="[
+                      (val) => !!val || 'Выберите тип погашения кредита',
+                    ]"
                   />
                 </div>
+              </div>
 
-                <div v-if="!!personalData.typeCredit" class="col-12">
-                  <h6 class="periodCredit">Выберите срок кредита</h6>
-                  <q-badge color="secondary">
-                    Срок: {{ personalData.periodCredit }} ({{
-                      periodCreditMin
-                    }}
-                    до {{ periodCreditMax }})
-                  </q-badge>
-                  <q-slider
-                    v-model.number="personalData.periodCredit"
-                    :min="periodCreditMin"
-                    :max="periodCreditMax"
-                    :step="1"
-                    label
-                    label-always
-                    color="light-green"
-                    :rules="[val => !!val || 'Выберите срок кредита']"
-                  />
-                </div>
+              <div v-if="!!personalData.typeCredit" class="col-12">
+                <h6 class="periodCredit">Выберите срок кредита</h6>
+                <q-badge color="secondary">
+                  Срок: {{ personalData.periodCredit }} ({{
+                    periodCreditMin
+                  }}
+                  до {{ periodCreditMax }})
+                </q-badge>
+                <q-slider
+                  v-model.number="personalData.periodCredit"
+                  :min="periodCreditMin"
+                  :max="periodCreditMax"
+                  :step="1"
+                  label
+                  label-always
+                  color="light-green"
+                  :rules="[(val) => !!val || 'Выберите срок кредита']"
+                />
+              </div>
+
+              <div class="row col-12 justify-center items-center">
+                <!-- Preloader auto compleate -->
+                <appLoader v-if="loader" />
+
+                <!-- Button auto complete person data -->
+                <app-auto-complete-data v-else />
               </div>
             </div>
           </div>
 
-          <div class="col">
+          <div class="col-5">
             <!-- Family status -->
             <div class="family-status tab">
               <h4 class="tab-title" ref="familyStatus">Семейное положение</h4>
-              <div class="tab-content" ref="tabContent">
+              <div class="tab-content q-col-gutter-md" ref="tabContent">
                 <q-select
                   square
                   outlined
@@ -214,7 +213,6 @@
                   label="Семейное положения"
                   emit-value
                   map-options
-                  class="q-pb-sm"
                 />
                 <q-select
                   square
@@ -225,7 +223,6 @@
                   label="Есть ли дети"
                   emit-value
                   map-options
-                  class="q-pb-sm"
                 />
                 <q-input
                   v-if="personalData.children"
@@ -235,7 +232,6 @@
                   mask="##"
                   dense
                   label="Количество детей до 18 лет"
-                  class="q-pb-sm"
                 />
               </div>
             </div>
@@ -256,9 +252,9 @@
                   label="Подтвержденный ежемесячный доход"
                   lazy-rules
                   :rules="[
-                    val =>
+                    (val) =>
                       (val && val.length !== null) ||
-                      'Поля должно быт заполнено'
+                      'Поля должно быт заполнено',
                   ]"
                 />
                 <q-input
@@ -292,7 +288,6 @@
                   label="Наличие дополнительного дохода"
                   emit-value
                   map-options
-                  class="q-pb-sm"
                 />
                 <q-input
                   v-if="personalData.externalIncome"
@@ -302,7 +297,6 @@
                   type="number"
                   dense
                   label="Размер дополнительного дохода"
-                  class="q-pb-sm"
                 />
                 <q-select
                   v-if="personalData.externalIncome"
@@ -312,7 +306,6 @@
                   :options="options.additIncSourOption"
                   dense
                   label="Источник дополнительного дохода"
-                  class="q-pb-sm"
                 />
               </div>
 
@@ -363,33 +356,33 @@ export default {
         family: [
           {
             label: "Нет",
-            value: false
+            value: false,
           },
           {
             label: "Женат / замужем",
-            value: true
-          }
+            value: true,
+          },
         ],
         children: [
           {
             label: "Да",
-            value: true
+            value: true,
           },
           {
             label: "Нет",
-            value: false
-          }
+            value: false,
+          },
         ],
         // MONEY //
         extIncOption: [
           {
             label: "Да",
-            value: true
+            value: true,
           },
           {
             label: "Нет",
-            value: false
-          }
+            value: false,
+          },
         ], //наличие дополнительного дохода
         additIncSourOption: [
           "Работа по найму",
@@ -397,13 +390,13 @@ export default {
           "Аренда недвижимого имущества",
           "Предпринимательская деятельность",
           "Дивиденды",
-          "Другое"
+          "Другое",
         ], //источник дополнительного дохода
 
         typeCredits: [],
 
-        typeStepCredits: []
-      }
+        typeStepCredits: [],
+      },
     };
   },
   async created() {
@@ -414,9 +407,10 @@ export default {
       console.log("auth", auth);
 
       const process = await this.$store.dispatch("startProcess");
-      console.log("process", process);
 
-      this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
+      // console.log("process", process);
+      // this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
+
       this.personalData.spouseCost =
         process.userTaskCreditDetailed.input.spouseCost;
       this.personalData.childCost =
@@ -428,7 +422,7 @@ export default {
           value: typeCredit.creditName.value,
           period: typeCredit.period,
           loanRate: typeCredit.loanRateBase,
-          paymentTypes: typeCredit.paymentTypes
+          paymentTypes: typeCredit.paymentTypes,
         };
 
         this.options.typeCredits.push(credits);
@@ -462,7 +456,7 @@ export default {
     },
     credits() {
       return this.$store.state.credits;
-    }
+    },
   },
   watch: {
     "personalData.typeCredit"(credit) {
@@ -474,7 +468,7 @@ export default {
       this.personalData.loanRate = 0;
 
       const idxCredit = this.options.typeCredits.findIndex(
-        item => item.value == credit
+        (item) => item.value == credit
       );
 
       if (idxCredit !== -1) {
@@ -482,7 +476,7 @@ export default {
           .paymentTypes) {
           const stepCredit = {
             label: typeStepCredits.name,
-            value: typeStepCredits.value
+            value: typeStepCredits.value,
           };
           this.options.typeStepCredits.push(stepCredit);
         }
@@ -512,7 +506,7 @@ export default {
         this.personalData.externalIncomeSize = 0;
         this.personalData.additionalIncomeSource = "";
       }
-    }
+    },
   },
   methods: {
     async onSubmit() {
@@ -574,7 +568,7 @@ export default {
           periodCredit,
           loanRate,
           spouseCost,
-          childCost
+          childCost,
         } = this.personalData;
 
         const data = {
@@ -585,7 +579,7 @@ export default {
                 maritalInfo: {
                   childrens: children,
                   status: familyStatus,
-                  childrenCount: Number(childrenCount)
+                  childrenCount: Number(childrenCount),
                 },
                 payment_id: Number(typeStepCredit),
                 loan_product_id: Number(typeCredit),
@@ -593,7 +587,7 @@ export default {
                   incomingOther: externalIncomeSize, //доп. доход
                   expensesOther: otherExpenses, //др. переод. расходы
                   expensesPeriodic: expense, //переод. расходы
-                  incomingConfirm: income //ежем. доход
+                  incomingConfirm: income, //ежем. доход
                 },
                 customer: {
                   firstName: name,
@@ -601,13 +595,13 @@ export default {
                   middleName: mname,
                   passport: {
                     number: Number(passport.slice(2)),
-                    series: passport.slice(0, 2)
+                    series: passport.slice(0, 2),
                   },
                   mainPhone: phone.replace(/[\s+()]/g, ""),
                   tin: Number(inn),
-                  pinpp
-                }
-              }
+                  pinpp,
+                },
+              },
             },
             {
               name: "creditProduct",
@@ -615,74 +609,71 @@ export default {
                 spouseCost: Number(spouseCost),
                 childCost: Number(childCost),
                 creditTerm: Number(periodCredit),
-                loanRate: Number(loanRate)
-              }
-            }
-          ]
+                loanRate: Number(loanRate),
+              },
+            },
+          ],
         };
 
-        const taskId = this.$store.getters.taskId;
-        console.log(JSON.stringify(data, null, 2))
+        //console.log(JSON.stringify(data, null, 2))
 
         try {
-          const resCredit = await this.$store.dispatch("calculationCredit", {
-            taskId,
+          const resCredit = await this.$store.dispatch(
+            "calculationCredit",
             data
-          });
-          console.log("resCredit", resCredit);
+          );
 
           this.credits.reasonsList = resCredit.nextTask.input.reasonsList;
-
-          console.log("resons", this.$store.state.credits.reasonsList);
-
-          //Вставить следующий task_id
-          this.$store.commit("setTaskId", resCredit.nextTask.id);
 
           const resp = {
             income: resCredit.nextTask.input.incoming, // Сколько дохода учитываем
             expense: resCredit.nextTask.input.expenses, // Сколько расходов
             maxPayment: resCredit.nextTask.input.payment, // Сколько может платить в месяц
-            maxSum: resCredit.nextTask.input.sum // Сколько максимум кредита можем выдать
+            maxSum: resCredit.nextTask.input.sum, // Сколько максимум кредита можем выдать
           };
 
           this.$store.commit("toggleConfirm", true);
           this.$store.commit("creditConfirm", resp);
           this.loaderPreApproval = false;
         } catch (e) {}
-
-        console.log("personalData", this.$store.state.credits.personalData);
-        console.log("data", data);
       }
     },
 
     validItems(itemsValid, itemValid = true) {
       if (!itemValid) {
         this.$refs[itemsValid] = {
-          hasError: true //не валидный
+          hasError: true, //не валидный
         };
       } else {
         this.$refs[itemsValid] = {
-          hasError: false //валидный
+          hasError: false, //валидный
         };
       }
-    }
+    },
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
     appDigIdNetworkError: DigIdNetworkError,
     appLoader: Loader,
-    apploaderFullScreen: LoaderFullScreen
-  }
+    apploaderFullScreen: LoaderFullScreen,
+  },
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.loaderForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
 .creditConveyor {
   .tab-title {
     background-color: #ededed;
     color: #0e3475;
-    margin-top: 7px;
+    margin-top: 20px;
     padding: 9px 11px;
     border: none;
     text-align: left;
@@ -708,9 +699,9 @@ export default {
     display: block;
   }
 
-  .creditContent {
-    width: 48%;
-  }
+  // .creditContent {
+  //   width: 48%;
+  // }
 
   .loader {
     margin-bottom: 15px;
@@ -720,10 +711,10 @@ export default {
     border-radius: 0;
   }
 
-  .q-field--with-bottom,
-  .q-pb-sm {
-    padding-bottom: 16px;
-  }
+  // .q-field--with-bottom,
+  // .q-pb-sm {
+  //   padding-bottom: 16px;
+  // }
 
   .q-field__native,
   .q-field__prefix,
