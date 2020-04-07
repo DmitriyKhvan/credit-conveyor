@@ -15,32 +15,33 @@
             class="sliderHome"
         >                
             <q-carousel-slide
-            v-for="user in users"
-            :key="user.EMP_ID" 
-            :name="user.LAST_NAME" 
-            class="column no-wrap flex-center"
+                v-for="user in users"
+                :key="user.EMP_ID" 
+                :name="user.LAST_NAME" 
+                class="column no-wrap flex-center"
             >
             <q-card class="userBirthday">
                 <div class="userPad">
                 <div v-if="user.get_department_tree" class="blue q-pb-sm text-weight-bold" v-html="filial(user.get_department_tree)"></div>
-                <!-- <div class="blueLight q-pb-sm text-weight-bold">
-                    <span v-if="user.get_department_tree" v-html="work(user.get_department_tree)"></span>
-                    <q-tooltip
-                        v-if="user.get_department_tree && work(user.get_department_tree).length > 50" 
-                        anchor="top middle" 
-                        self="bottom middle" 
-                        :offset="[10, 10]"
-                    >
-                        <span v-html="workFull(user.get_department_tree)"></span>
-                    </q-tooltip>
-                </div> -->
+                
                 <div class="row">
                     <div class="col-4 photo">
                         <img :src="photo(user.EMP_ID)" alt="">
                     </div>
                     <div class="col-8 q-px-sm">
                         <div class="blue text-body2" v-html="name(user.LAST_NAME, user.FIRST_NAME, user.MIDDLE_NAME )"></div>
-                        <div class="blueLight text-caption" v-html="user.POST_NAME"></div>
+                        <div class="blueLight text-caption">
+                            <span v-html="user.POST_NAME.substring(50, 0)"></span>
+                            <span v-if="user.POST_NAME.length > 50">...</span>
+                            <q-tooltip 
+                                anchor="top middle" 
+                                self="bottom middle" 
+                                :offset="[10, 10]"
+                                v-if="user.POST_NAME.length > 50"
+                            >
+                                <div v-html="user.POST_NAME"></div>
+                            </q-tooltip>
+                        </div>
                         <q-item-label class="q-mt-md greyColor">
                             <q-icon name="o_local_phone" />
                             &nbsp;{{ user.PHONE_WORK }}
@@ -133,6 +134,7 @@ export default {
 
 <style>
     .sliderHome .userBirthday {
+        width: 320px;
         background: url('./../../../../assets/images/naqsh.png') repeat-y 10px 0
     }
     .sliderHome .userPad {
