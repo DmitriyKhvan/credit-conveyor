@@ -6,7 +6,7 @@
     "true": "Да",
     "false": "Нет",
     "children": "Вхождение",
-    "id": "Ид-р",
+    "id": "Ид",
     "level": "Уровень",
     "name": "Наименование",
     "departments": "Департаменты",
@@ -16,9 +16,18 @@
     "delay": "Задержка",
     "choose": "- Выберите -",
     "all": "- Выбрать все -",
-    "not_all": "- Убрать все -"
+    "not_all": "- Убрать все -",
+    "double_click": "Двойной Клик",
+    "status": "Статус",
+    "from": "От",
+    "created": "Cоздано",
+    "new": "Новые",
+    "size": "Размер",
+    "file": "Файл",
+    "message": "Сообщение"
   },
   "actions": {
+    "open": "Открыть",
     "details": "Реквизиты",
     "add": "Добавить",
     "edit": "Изменить",
@@ -69,7 +78,13 @@
     "automatic_value": "Автоматическая генерация",
     "author": "Автор",
     "executor": "Исполнитель",
-    "view_type": "Тип отображение"
+    "view_type": "Тип отображение",
+    "submit": "Добавить",
+    "cancel": "Отмена",
+    "print": "Распечатать",
+    "send": "Отправить",
+    "redirect": "Перенаправить",
+    "sort": "Сортировать"
   },
   "messages": {
     "accessDenied": "Доступ запрещен",
@@ -140,7 +155,21 @@
       "side": "Адаптивный",
       "over": "Перекрывающий"
     },
-    "backdrop": "Анимации"
+    "backdrop": "Анимации",
+    "notifications": {
+      "_self": "Уведомления"
+    },
+    "results": {
+      "myResults": "Мои результаты"
+    },
+    "caruselCard": {
+      "birthday": "День рождение",
+      "employees": "сотрудник(ов)",
+      "celebrates": "отмечают",
+      "today": "сегодня",
+      "tomorrow": "завтра",
+      "aftertomorrow": "послезавтра"
+    }
   },
   "users": {
     "_self": "Пользователи",
@@ -241,16 +270,90 @@
       "type_id": "Тип Оборудование"
     },
     "device_marks": {
-      "_self": "Таблица Marks",
-      "add_edit": "Create/Edit Device Mark"
+      "_self": "Таблица Производителей",
+      "add_edit": "Создать/Изменить Производителя",
+      "device_mark": "Производитель Оборудования"
     },
     "device_details": {
-      "_self": "Таблица Details",
-      "add_edit": "Create/Edit Device Detail"
+      "_self": "Таблица Детали",
+      "add_edit": "Создать/Изменить Деталей Оборудования",
+      "deviceCharacteresticsName": "Наименование Характеристики Устроиства"
     },
     "device_models": {
-      "_self": "Таблица Models",
-      "add_edit": "Create/Edit Device Model"
+      "_self": "Таблица Модель",
+      "add_edit": "Создать/Изменить Модель Оборудования",
+      "device_model_name": "Название Модели Оборудования",
+      "device_type": "Тип Оборудования",
+      "device_mark": "Производитель Оборудования",
+      "device_details": "Детали Оборудования"
+    },
+    "devices": {
+      "_self": "Оборудование",
+      "marks": "Производители",
+      "models": "Модели",
+      "details": "Детали",
+      "add_edit_devices": "Добавить/Изменить Оборудование",
+      "device_serial_number": "Серийный Номер Оборудования",
+      "branch": "Отделение",
+      "filial": "Филиал",
+      "description": "Описание",
+      "inventory": "Инвентарь",
+      "status": "Статус",
+      "made_date": "Дата Изготовления",
+      "bought_date": "Дата Покупки"
+    },
+    "devices_history": {
+      "add_edit_history": "Добавить/Изменить Историю",
+      "device": "Оборудование",
+      "user": "Пользователь",
+      "status": "Статус"
+    },
+    "work": {
+      "choose_executor": "Выберите исполнителей",
+      "choose_executive": "Выберите руководителя",
+      "document_num": "Документ №",
+      "content": "Содержание",
+      "resolution": "Резолюция",
+      "tasks": {
+        "new": "Новые",
+        "accepted": "Принял(а)",
+        "working": "Работаю",
+        "finished": "Завершено",
+        "actions": "Действия",
+        "redirect": "Перенаправить",
+        "sort": "Сортировать",
+        "responsibles": "Ответсвенные",
+        "from": "От",
+        "dialog_task": {
+          "document_num": "Документ №",
+          "choose_executor": "Выберите исполнителей",
+          "update": "Обновление"
+        },
+        "dialog_hierarchy": {
+          "resp_for_doc_num": "Ответсвенные по документу №"
+        }
+      },
+      "assistant": {
+        "sent": "Отправленные",
+        "no_result": "Нет Результата",
+        "choose_template": "Выберите шаблон",
+        "not_signed": "Не подписан",
+        "signed": "Подписан",
+        "name": "Наименование",
+        "journal": "Журнал",
+        "organ": "Орган",
+        "pages": "Листов",
+        "not_reviewed": "Не рассмотрен",
+        "task": "Поручение",
+        "task_template": "Шаблон поручений",
+        "dialog": {
+          "resp_for_doc_num": "Ответсвенные по документу №"
+        }
+      },
+      "credit": {
+        "try_again": "Попробуйте снова",
+        "smth_went_wrong": "Что-то пошло не так"
+      }
     },
     "education": {
       "topicName": "Названия темы",
@@ -266,7 +369,34 @@
       "duration": "Время теста (в минутах)",
       "hideStatus": "Показать/Cкрыть тест",
       "testAmount": "Количество вопросов",
-      "addEditTestError": "Ошибка при вводе теста"
+      "addEditTestError": "Ошибка при вводе теста",
+      "monitoring": "Мониторинг",
+      "test": {
+        "choose_test": "Выберите Тест",
+        "begin_test": "Начать тест",
+        "marked_questions": "Отмеченные вопросы",
+        "not_marked_questions": "Не отмеченные вопросы",
+        "not_visited_questions": "Не посещенные вопросы",
+        "previous": "Предыдущий",
+        "end_test": "Закончить тест",
+        "next": "Следующий",
+        "time_left": "Оставшееся время",
+        "completed": {
+          "end1": "Поздравляем, Вы успешно сдали тест!",
+          "end2": "Желаем Вам больших успехов, больших достижений в жизни,",
+          "end3": "дальнешей работе в пути процветания нашего Банка!",
+          "efficiency": "Эффективность",
+          "your_result": "Ваш результат",
+          "right_answers": "Правильные ответы",
+          "wrong_answers": "Неправильные ответы",
+          "not_answered": "Не ответили",
+          "total_time": "Общее время",
+          "hours": "час",
+          "minutes": "минут",
+          "seconds": "секунд",
+          "avg_time_for_one_question": "Среднее время на один вопрос"
+        }
+      }
     }
   }
 }

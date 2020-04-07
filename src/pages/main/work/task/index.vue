@@ -18,13 +18,7 @@
 
     <div class="sub_menu">
       <div class="filterBlock">
-        <q-select
-          dense
-          filled
-          v-model="model"
-          :options="menu"
-          label="Действия"
-        />
+        <q-select dense filled v-model="model" :options="menu" label="Действия" />
       </div>
       <div>перенаправить</div>
       <div>сортировать</div>
@@ -39,32 +33,40 @@
       </div>
       <div class="col content">
         <div class="row">
-          <div class="col text">
-            {{ task.f_task_data.description.slice(0, 300) }}...
-          </div>
+          <div class="col text">{{ task.f_task_data.description.slice(0, 300) }}...</div>
         </div>
         <div class="row">
           <div class="col despBlock">
-            <div><q-icon name="skip_previous" /></div>
             <div>
-              <span>Исх.№</span>{{ task.f_task_data.out_number }}<br />
-              <span>от:</span>{{ task.f_task_data.out_date }}
+              <q-icon name="skip_previous" />
+            </div>
+            <div>
+              <span>Исх.№</span>
+              {{ task.f_task_data.out_number }}
+              <br />
+              <span>от:</span>
+              {{ task.f_task_data.out_date }}
             </div>
           </div>
           <div class="col despBlock">
-            <div><q-icon name="skip_next" /></div>
             <div>
-              <span>Вх.№</span> {{ task.f_task_data.in_number }}<br />
-              <span>от:</span>{{ task.f_task_data.in_date }}
+              <q-icon name="skip_next" />
+            </div>
+            <div>
+              <span>Вх.№</span>
+              {{ task.f_task_data.in_number }}
+              <br />
+              <span>от:</span>
+              {{ task.f_task_data.in_date }}
             </div>
           </div>
           <div class="col despBlock">
-            <div><q-icon name="description" /></div>
             <div>
-              <span
-                >{{ task.f_task_data.paper_count }} лист /
-                {{ task.f_task_data.format }}</span
-              ><br />
+              <span>
+                {{ task.f_task_data.paper_count }} лист /
+                {{ task.f_task_data.format }}
+              </span>
+              <br />
               <i>{{ task.f_task_data.file.size | formatSize }}</i>
             </div>
           </div>
@@ -87,7 +89,9 @@
             />
           </div>
           <div class="col despBlock">
-            <div><q-icon name="person" /></div>
+            <div>
+              <q-icon name="person" />
+            </div>
             <div>
               <span>от:</span>
               <strong
@@ -98,8 +102,7 @@
                     1
                   )}. ${task.h_middle_name.slice(0, 1)}.`
                 "
-              >
-              </strong>
+              ></strong>
               <p
                 class="desc"
                 v-html="
@@ -111,14 +114,11 @@
         </div>
       </div>
       <div class="col-1 text-right actions">
-        <q-btn
-          class="white text-black q-mb-sm"
-          label="Открыть"
-          @click="usersTask(task)"
-        /><br />
+        <q-btn class="white text-black q-mb-sm" label="Открыть" @click="usersTask(task)" />
+        <br />
 
         <q-btn flat size="sm" icon="print" />
-        <q-btn flat size="sm" icon="cloud_download" />
+        <q-btn flat size="sm" icon="cloud_download" @click="downloadFile(task.f_task_data.file)" />
       </div>
     </div>
 
@@ -135,7 +135,7 @@
 
   <!-- <div class="q-pa-md">
     <router-view />
-  </div> -->
+  </div>-->
 </template>
 
 <script>
@@ -211,6 +211,21 @@ export default {
       // const task = this.userTasks.find(i => i.task_id = task_id)
       this.$store.commit("task/setCurrentTask", task);
       this.taskPopup = true;
+    },
+
+    downloadFile(item) {
+      console.log(item);
+      axios({
+        method: "get",
+        url: "/files/" + item.id,
+        responseType: "arraybuffer"
+      }).then(function(response) {
+        let blob = new Blob([response.data], { type: "application/pdf" });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = item.name.slice(0, -4);
+        link.click();
+      });
     }
   },
   components: {

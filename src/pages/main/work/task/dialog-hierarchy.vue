@@ -5,18 +5,13 @@
     </q-card-section>
 
     <q-card-section style="max-height: 70vh" class="scroll">
-      <q-tree
-        :nodes="props"
-        default-expand-all
-        :selected.sync="selected"
-        node-key="label"
-      />
+      <q-tree :nodes="props" default-expand-all :selected.sync="selected" node-key="label" />
     </q-card-section>
 
     <q-separator />
 
     <q-card-actions align="right">
-      <q-btn label="Закрыть" color="white" text-color="black" v-close-popup />
+      <q-btn :label="$t('actions.close')" color="white" text-color="black" v-close-popup />
     </q-card-actions>
   </q-card>
 </template>
@@ -26,16 +21,16 @@ export default {
   name: "DialogHierarchy",
   data() {
     return {
-      selected: null,
+      selected: null
       //props: this.props
     };
   },
   computed: {
     task() {
-       return this.$store.getters["task/getCurrentTask"];
-    }, 
+      return this.$store.getters["task/getCurrentTask"];
+    },
     props() {
-      return this.$store.getters['task/getUserHierarchy']
+      return this.$store.getters["task/getUserHierarchy"];
     }
   }
 };

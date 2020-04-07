@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Add Edit History</div>
+          <div class="text-h6">{{$t('tables.devices_history.add_edit_history')}}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -17,7 +17,7 @@
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-12"
-              label="Device"
+              :label="$t('tables.devices_history.device')"
               :value="deviceName"
               @dblclick="selectDevice()"
               readonly="readonly"
@@ -27,14 +27,14 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
             <!-- select  -->
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-12"
-              label="User"
+              :label="$t('tables.devices_history.user')"
               :value="userName"
               @dblclick="selectUser()"
               readonly="readonly"
@@ -44,7 +44,7 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
           </div>
@@ -59,7 +59,7 @@
               option-label="key"
               emit-value
               map-options
-              label="Status"
+              :label="$t('tables.devices_history.status')"
               @input="$v.details.status.$touch()"
               :rules="[
                 val => $v.details.status.required || 'Status is required'
@@ -100,8 +100,8 @@ export default {
     return {
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
-        { key: "Active", value: 1 },
-        { key: "Passive", value: 0 }
+        { key: "Активный", value: 1 },
+        { key: "Пассивный", value: 0 }
       ],
       isValidated: true,
       deviceName: null,

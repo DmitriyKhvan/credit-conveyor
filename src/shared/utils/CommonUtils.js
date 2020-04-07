@@ -95,7 +95,7 @@ export default {
   filterServerError(error) {
     if (error.response) {
       return error.response.data.message
-    } else if(error.message) {
+    } else if (error.message) {
       return error.message
     }
     return error

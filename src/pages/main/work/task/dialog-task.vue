@@ -1,19 +1,20 @@
 <template>
   <q-card style="width:500px">
     <q-card-section class="bg-blue-7 text-white header">
-      <div class="text-h6">Документ №{{ task.f_task_data.doc_id }}</div>
+      <div class="text-h6">{{$t('tables.work.tasks.dialog_task.document_num')}}6765</div>
       <q-btn icon="clear" flat text-color="white" v-close-popup />
     </q-card-section>
 
     <div class="row q-pa-md">
       <div class="col-8 q-pr-md">
-        <div class="text-h6">
-          {{ task.f_task_data.description }}
-        </div>
+        <div class="text-h6">{{ task.f_task_data.description }}</div>
         <div class="iconsBlock q-py-sm">
-          <div class="icon q-pr-xs"><q-icon name="insert_drive_file" /></div>
+          <div class="icon q-pr-xs">
+            <q-icon name="insert_drive_file" />
+          </div>
           <div>
-            {{ task.f_task_data.file.name }}<br />
+            {{ task.f_task_data.file.name }}
+            <br />
             <i>{{ task.f_task_data.file.size | formatSize}}</i>
           </div>
         </div>
@@ -40,25 +41,21 @@
                       1
                     )}. ${comment.middle_name.slice(0, 1)}.`
                   "
-                >
-                </span>
+                ></span>
                 <p
                   class="desc"
                   v-html="
                     `${comment.last_name} ${comment.first_name} ${comment.middle_name}`
                   "
                 ></p>
-                <i v-if="comment.updated_at"> {{comment.updated_at | formatDate}}</i>
-                <i v-else> {{comment.created_at | formatDate}}</i>
+                <i v-if="comment.updated_at">{{comment.updated_at | formatDate}}</i>
+                <i v-else>{{comment.created_at | formatDate}}</i>
               </div>
               <div v-if="!comment.edit">
-                <div class="content">
-                  {{ comment.text }}
-                </div>
+                <div class="content">{{ comment.text }}</div>
 
                 <div class="actions">
-                  <div @click="editComment(index)">редактировать</div>
-                  |
+                  <div @click="editComment(index)">редактировать</div>|
                   <div @click="deleteComment(comment.id)">удалить</div>
                 </div>
               </div>
@@ -90,13 +87,7 @@
             </q-avatar>
           </div>
           <div class="addText">
-            <q-input
-              v-model="text"
-              outlined
-              type="textarea"
-              label="Введите комментарий"
-              dense
-            />
+            <q-input v-model="text" outlined type="textarea" label="Введите комментарий" dense />
             <q-btn
               color="white q-mt-sm"
               text-color="black"
@@ -122,7 +113,7 @@
           </div>
           <!-- <div class="q-pl-md">
             <q-btn color="primary" text-color="white" label="Отправить" />
-          </div> -->
+          </div>-->
         </div>
         <div class="q-py-md">
           <!-- Поиск для добавление пользователя -->
@@ -140,27 +131,12 @@
           </div>
 
           <div v-if="users.length" class="userList">
-            <div
-              v-for="user in users"
-              :key="user.EMP_ID"
-              @click="addUser(user)"
-              class="result"
-            >
+            <div v-for="user in users" :key="user.EMP_ID" @click="addUser(user)" class="result">
               <span v-html="user.LAST_NAME"></span>
               <span v-html="user.FIRST_NAME"></span>
-              <span v-html="user.MIDDLE_NAME"> </span>
-              <q-btn
-                round
-                color="black"
-                size="5px"
-                icon="priority_high"
-                unelevated
-              >
-                <q-tooltip
-                  anchor="top middle"
-                  self="bottom middle"
-                  :offset="[10, 10]"
-                >
+              <span v-html="user.MIDDLE_NAME"></span>
+              <q-btn round color="black" size="5px" icon="priority_high" unelevated>
+                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
                   <span v-html="user.DEPARTMENTS_NAME"></span>
                 </q-tooltip>
               </q-btn>
@@ -177,17 +153,9 @@
                 1
               )}. ${task.middle_name.slice(0, 1)}.`
             "
-          >
-          </q-chip>
-          <p
-            class="desc"
-            v-html="`${task.last_name} ${task.first_name} ${task.middle_name}`"
-          ></p>
-          <div
-            class="userLine"
-            v-for="user of task.forward_tasks"
-            :key="user.task_id"
-          >
+          ></q-chip>
+          <p class="desc" v-html="`${task.last_name} ${task.first_name} ${task.middle_name}`"></p>
+          <div class="userLine" v-for="user of task.forward_tasks" :key="user.task_id">
             <q-btn
               size="7px"
               round
@@ -204,8 +172,7 @@
                   1
                 )}. ${user.middle_name.slice(0, 1)}.`
               "
-            >
-            </span>
+            ></span>
             <p
               class="desc"
               v-html="
@@ -214,7 +181,7 @@
             ></p>
           </div>
           <!-- <div class="userLine">Хамдамов А.А.</div>
-          <div class="userLine">Баратов С</div> -->
+          <div class="userLine">Баратов С</div>-->
         </div>
         <q-separator />
         <div class="general">
@@ -227,8 +194,7 @@
                 1
               )}. ${task.h_middle_name.slice(0, 1)}.`
             "
-          >
-          </span>
+          ></span>
           <p
             class="desc"
             v-html="
@@ -263,10 +229,11 @@
           <template v-slot:prepend>
             <q-icon name="attach_file" />
           </template>
-        </q-file> -->
+        </q-file>-->
         <q-separator />
         <div class="date">
-          создано: {{task.created_at | formatDate}}<br />
+          создано: {{task.created_at | formatDate}}
+          <br />
           обновление: {{task.updated_at | formatDate}}
         </div>
       </div>
@@ -280,14 +247,14 @@
 
         <q-card-actions align="right">
             <q-btn label="Закрыть" color="white" text-color="black" v-close-popup />                    
-        </q-card-actions> -->
+    </q-card-actions>-->
   </q-card>
 </template>
 
 <script>
 import UserService from "@/services/user.service";
-import formatSize from "./filters/formatSize"
-import formatDate from "./filters/formatDate"
+import formatSize from "./filters/formatSize";
+import formatDate from "./filters/formatDate";
 
 export default {
   data() {
@@ -388,12 +355,12 @@ export default {
     },
 
     async selUsers() {
-      if ( this.searchUser ) {
+      if (this.searchUser) {
         try {
           await this.$store.dispatch("task/searchUser", this.searchUser);
         } catch (error) {}
       } else {
-        this.$store.commit("task/clearUsers")
+        this.$store.commit("task/clearUsers");
       }
     },
 
@@ -410,7 +377,7 @@ export default {
           dep_code: user.DEP_CODE,
           dep_name: user.DEPARTMENTS_NAME,
           comments: null
-        }
+        };
 
         const userData = {
           id: null,
@@ -423,10 +390,9 @@ export default {
           h_dep_code: this.task.dep_code,
           user_status: 1,
           m_emp_id: null,
-          history: '{}'
+          history: "{}"
         };
-        await this.$store.dispatch("task/addUser", {userData, userDataUI});
-        
+        await this.$store.dispatch("task/addUser", { userData, userDataUI });
       } catch (error) {}
     }
   },
