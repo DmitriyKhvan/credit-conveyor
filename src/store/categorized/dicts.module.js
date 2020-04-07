@@ -3,6 +3,8 @@
 // } from "../services/dict.service";
 // import TokenService from "../services/storage.service";
 
+import store from "../index";
+
 const state = {
   menus: [],
   parentMenus: [],
@@ -45,16 +47,19 @@ const getters = {
   getIconsDict(state) {
     return state.icons.map(val => {
       return {
-        text: val.name, //<i class="${val.class}"></i> ${val.name}
+        text: val.name,
         value: val.class
       };
     });
   },
   getParentMenus(state) {
+    let lang = store.state.common.langNum;
+
     return state.parentMenus.map(val => {
       return {
-        text: val.name[0], // TODO add lang <i class="${val.class}"></i> ${val.name}
-        value: val.menu_id
+        text: val.name[lang] + '\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + val.url,
+        value: val.menu_id,
+        url: val.url
       };
     });
   },
@@ -74,7 +79,7 @@ const getters = {
   getUserList: state => {
     return state.userList.map(val => {
       return {
-        text: val.name, // TODO add lang <i class="${val.class}"></i> ${val.name}
+        text: val.name,
         value: val.user_id
       };
     });

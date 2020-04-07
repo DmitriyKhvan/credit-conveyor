@@ -23,6 +23,7 @@
               option-label="text"
               emit-value
               map-options
+              @input="setPreUrl"
               label="Parent Menu"
               :rules="[]"
               lazy-rules
@@ -70,6 +71,7 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.url"
               label="Url"
+              :prefix="getPreUrl"
               @input="$v.details.url.$touch()"
               :rules="[val => $v.details.url.required || 'Url is required']"
               lazy-rules
@@ -91,16 +93,6 @@
             />
           </div>
           <div class="row">
-            <!-- <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.icon"
-              label="Icon Class Name"
-              :rules="[]"
-              lazy-rules
-            />-->
             <q-input
               outlined
               clearable
@@ -190,10 +182,11 @@ import {
   email,
   numeric
 } from "vuelidate/lib/validators";
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      isLoading: this.$store.getters["common/getLoading"],
       stateList: [
         { key: "Active", value: 1 },
         { key: "Passive", value: 0 }
@@ -204,8 +197,7 @@ export default {
         itemsPerPage: 35,
         page: 0
       },
-      rolesList: this.$store.getters["dicts/getRolesDict"],
-      parentMenusList: this.$store.getters["dicts/getParentMenus"],
+
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         menu_id: null,
@@ -215,7 +207,8 @@ export default {
         ord: null,
         status: null,
         icon: null,
-        roles: []
+        roles: [],
+        preUrl: "/"
       }
     };
   },
@@ -257,9 +250,28 @@ export default {
   },
   mixins: [dialogMix],
   created() {
-    console.log(this.data.props.addEdit);
+    console.log(this.getPreUrl);
   },
-  methods: {}
+  computed: {
+    ...mapGetters({
+      parentMenusList: "dicts/getParentMenus"
+    }),
+    ...mapGetters({
+      rolesList: "dicts/getRolesDict"
+    }),
+    ...mapGetters({
+      isLoading: "common/isLoading"
+    }),
+    getPreUrl() {
+      return this.preUrl;
+    }
+  },
+  methods: {
+    setPreUrl(pre) {
+      // console.log(pre);
+      this.preUrl = pre;
+    }
+  }
 };
 </script>
 
