@@ -23,7 +23,7 @@
                   dense
                   label="Фамилия"
                   lazy-rules
-                  :rules="[val => !!val || 'Введите фамилию']"
+                  :rules="[(val) => !!val || 'Введите фамилию']"
                 />
               </div>
               <div class="col-4">
@@ -35,7 +35,7 @@
                   dense
                   label="Имя"
                   lazy-rules
-                  :rules="[val => !!val || 'Введите имя']"
+                  :rules="[(val) => !!val || 'Введите имя']"
                 />
               </div>
               <div class="col-4">
@@ -47,7 +47,7 @@
                   dense
                   label="Отчество"
                   lazy-rules
-                  :rules="[val => !!val || 'Введите отчество']"
+                  :rules="[(val) => !!val || 'Введите отчество']"
                 />
               </div>
             </div>
@@ -63,7 +63,8 @@
                   v-model="Customer.BirthDate"
                   mask="##.##.####"
                   :rules="[
-                    val => (val && val.length === 10) || 'Введите дату рождения'
+                    (val) =>
+                      (val && val.length === 10) || 'Введите дату рождения',
                   ]"
                 >
                   <template v-slot:append>
@@ -97,9 +98,9 @@
                   mask="#########"
                   lazy-rules
                   :rules="[
-                    val =>
+                    (val) =>
                       (val && val.length === 9) ||
-                      'Количество цифр должно быть 9'
+                      'Количество цифр должно быть 9',
                   ]"
                 />
               </div>
@@ -113,7 +114,9 @@
                   label="ПИНФЛ"
                   mask="##############"
                   lazy-rules
-                  :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
+                  :rules="[
+                    (val) => (val && val.length === 14) || 'Введите ПНФЛ',
+                  ]"
                 />
               </div>
               <div class="col-4">
@@ -126,7 +129,7 @@
                   dense
                   label="Пол"
                   lazy-rules
-                  :rules="[val => !!val || 'Выберите пол']"
+                  :rules="[(val) => !!val || 'Выберите пол']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -159,7 +162,8 @@
                   label="Серия паспорта"
                   mask="AA"
                   :rules="[
-                    val => (val && val.length === 2) || 'Введите Серию паспорта'
+                    (val) =>
+                      (val && val.length === 2) || 'Введите Серию паспорта',
                   ]"
                 />
               </div>
@@ -175,7 +179,8 @@
                   mask="#######"
                   lazy-rules
                   :rules="[
-                    val => (val && val.length === 7) || 'Введите Номер паспорта'
+                    (val) =>
+                      (val && val.length === 7) || 'Введите Номер паспорта',
                   ]"
                 />
               </div>
@@ -191,9 +196,9 @@
                   v-model="Customer.Document.GivenDate"
                   mask="##.##.####"
                   :rules="[
-                    val =>
+                    (val) =>
                       (val && val.length === 10) ||
-                      'Введите дату выдачи паспорта'
+                      'Введите дату выдачи паспорта',
                   ]"
                 >
                   <template v-slot:append>
@@ -225,9 +230,9 @@
                   mask="##.##.####"
                   lazy-rules
                   :rules="[
-                    val =>
+                    (val) =>
                       (val && val.length === 10) ||
-                      'Введите дату окончания действия паспорта'
+                      'Введите дату окончания действия паспорта',
                   ]"
                 >
                   <template v-slot:append>
@@ -257,7 +262,7 @@
                   :options="dictionaries.Graduation.items"
                   dense
                   label="Образование"
-                  :rules="[val => !!val || 'Выберите образование']"
+                  :rules="[(val) => !!val || 'Выберите образование']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -295,8 +300,8 @@
                     mask="+############"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 13) || 'Введите номер телефона'
+                      (val) =>
+                        (val && val.length === 13) || 'Введите номер телефона',
                     ]"
                   />
                 </div>
@@ -397,7 +402,7 @@
                       :options="dictionaries.Region.items"
                       dense
                       label="Регион/область"
-                      :rules="[val => !!val || 'Выберите регион/область']"
+                      :rules="[(val) => !!val || 'Выберите регион/область']"
                       emit-value
                       map-options
                       class="q-pb-sm"
@@ -415,7 +420,7 @@
                   </div>
                 </div>
 
-                <div class="row  q-col-gutter-md">
+                <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
                       square
@@ -438,7 +443,7 @@
                       label="Улица / Мкр."
                       lazy-rules
                       :rules="[
-                        val => !!val || 'Введите наименование улицы / мкр.'
+                        (val) => !!val || 'Введите наименование улицы / мкр.',
                       ]"
                     />
                   </div>
@@ -451,7 +456,7 @@
                       dense
                       label="Номер дома"
                       lazy-rules
-                      :rules="[val => !!val || 'Введите номер дома']"
+                      :rules="[(val) => !!val || 'Введите номер дома']"
                     />
                   </div>
                   <div class="col-4">
@@ -492,7 +497,7 @@
                       :options="dictionaries.PropertyType.items"
                       dense
                       label="Вид владения"
-                      :rules="[val => !!val || 'Выберите вид владения']"
+                      :rules="[(val) => !!val || 'Выберите вид владения']"
                       emit-value
                       map-options
                       class="q-pb-sm"
@@ -502,7 +507,7 @@
               </div>
 
               <q-btn
-                v-if="address.AddressType === 2 || address.AddressType === 3"
+                v-if="address.AddressType == '2' || address.AddressType == '3'"
                 color="red"
                 label="Удалить"
                 @click="
@@ -519,7 +524,7 @@
             <template
               v-if="
                 Customer.AddressList.findIndex(
-                  item => item.AddressType === 2
+                  (item) => item.AddressType == '2'
                 ) === -1
               "
             >
@@ -530,7 +535,7 @@
               <q-btn
                 color="primary"
                 label="Добавить адрес фактического проживания"
-                @click="addRegistration(2)"
+                @click="addRegistration('2')"
                 class="addItem"
               ></q-btn>
             </template>
@@ -538,7 +543,7 @@
             <template
               v-if="
                 Customer.AddressList.findIndex(
-                  item => item.AddressType === 3
+                  (item) => item.AddressType == '3'
                 ) === -1
               "
             >
@@ -549,7 +554,7 @@
               <q-btn
                 color="primary"
                 label="Добавить адрес временной регистрации"
-                @click="addRegistration(3)"
+                @click="addRegistration('3')"
                 class="addItem"
               ></q-btn>
             </template>
@@ -626,7 +631,7 @@
                     label="Отношение к клиенту"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите родственника']"
+                    :rules="[(val) => !!val || 'Выберите родственника']"
                   />
                 </div>
               </div>
@@ -640,7 +645,7 @@
                     v-model="relative.LastName"
                     dense
                     label="Фамилия"
-                    :rules="[val => !!val || 'Введите фамилию']"
+                    :rules="[(val) => !!val || 'Введите фамилию']"
                   />
                 </div>
                 <div class="col-4">
@@ -651,7 +656,7 @@
                     v-model="relative.FirstName"
                     dense
                     label="Имя"
-                    :rules="[val => !!val || 'Введите имя']"
+                    :rules="[(val) => !!val || 'Введите имя']"
                   />
                 </div>
                 <div class="col-4">
@@ -662,7 +667,7 @@
                     v-model="relative.MiddleName"
                     dense
                     label="Отчество"
-                    :rules="[val => !!val || 'Введите отчество']"
+                    :rules="[(val) => !!val || 'Введите отчество']"
                   />
                 </div>
               </div>
@@ -679,8 +684,8 @@
                     mask="##.##.####"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 10) || 'Введите дату рождения'
+                      (val) =>
+                        (val && val.length === 10) || 'Введите дату рождения',
                     ]"
                   >
                     <template v-slot:append>
@@ -712,8 +717,8 @@
                     label="Серия паспорта"
                     mask="AA"
                     :rules="[
-                      val =>
-                        (val && val.length === 2) || 'Введите Серию паспорта'
+                      (val) =>
+                        (val && val.length === 2) || 'Введите Серию паспорта',
                     ]"
                   />
                 </div>
@@ -728,8 +733,8 @@
                     mask="#######"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 7) || 'Введите Номер паспорта'
+                      (val) =>
+                        (val && val.length === 7) || 'Введите Номер паспорта',
                     ]"
                   />
                 </div>
@@ -747,9 +752,9 @@
                     mask="##.##.####"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 10) ||
-                        'Введите дату выдачи паспорта'
+                        'Введите дату выдачи паспорта',
                     ]"
                   >
                     <template v-slot:append>
@@ -786,9 +791,9 @@
                     mask="##.##.####"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 10) ||
-                        'Введите дату окончания паспорта'
+                        'Введите дату окончания паспорта',
                     ]"
                   >
                     <template v-slot:append>
@@ -858,7 +863,7 @@
                   label="Вид деятельности"
                   emit-value
                   map-options
-                  :rules="[val => !!val || 'Выберите вид деятельности']"
+                  :rules="[(val) => !!val || 'Выберите вид деятельности']"
                   class="q-pb-sm"
                 />
               </div>
@@ -867,7 +872,7 @@
             <template
               v-if="
                 Customer.JobInfo.type ===
-                  dictionaries.MainWorkType.items[0].value
+                dictionaries.MainWorkType.items[0].value
               "
             >
               <div class="row q-col-gutter-md">
@@ -881,7 +886,7 @@
                     label="Наименование работодателя"
                     lazy-rules
                     :rules="[
-                      val => !!val || 'Введите наименование работодателя'
+                      (val) => !!val || 'Введите наименование работодателя',
                     ]"
                   />
                 </div>
@@ -896,8 +901,8 @@
                     mask="#########"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 9) || 'Введите ИНН работодателя'
+                      (val) =>
+                        (val && val.length === 9) || 'Введите ИНН работодателя',
                     ]"
                   />
                 </div>
@@ -913,7 +918,7 @@
                     emit-value
                     map-options
                     :rules="[
-                      val => !!val || 'Выберите вид деятельности организации'
+                      (val) => !!val || 'Выберите вид деятельности организации',
                     ]"
                     class="q-pb-sm"
                   />
@@ -933,8 +938,8 @@
                     emit-value
                     map-options
                     :rules="[
-                      val =>
-                        !!val || 'Выберите количество работников организации'
+                      (val) =>
+                        !!val || 'Выберите количество работников организации',
                     ]"
                     class="q-pb-sm"
                   />
@@ -948,7 +953,7 @@
                     dense
                     label="Должность"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите должность']"
+                    :rules="[(val) => !!val || 'Введите должность']"
                   />
                 </div>
                 <div class="col-4">
@@ -963,7 +968,8 @@
                     emit-value
                     map-options
                     :rules="[
-                      val => !!val || 'Выберите категорию занимаемой должности'
+                      (val) =>
+                        !!val || 'Выберите категорию занимаемой должности',
                     ]"
                     class="q-pb-sm"
                   />
@@ -982,7 +988,7 @@
                     label="Стаж на поледнем месте работы"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите стаж работы']"
+                    :rules="[(val) => !!val || 'Выберите стаж работы']"
                     class="q-pb-sm"
                   />
                 </div>
@@ -997,7 +1003,7 @@
                     label="Общий трудовой стаж"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите общий трудовой стаж']"
+                    :rules="[(val) => !!val || 'Выберите общий трудовой стаж']"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1008,8 +1014,8 @@
               v-if="
                 Customer.JobInfo.type ===
                   dictionaries.MainWorkType.items[1].value ||
-                  Customer.JobInfo.type ===
-                    dictionaries.MainWorkType.items[2].value
+                Customer.JobInfo.type ===
+                  dictionaries.MainWorkType.items[2].value
               "
             >
               <div class="row q-col-gutter-md">
@@ -1025,7 +1031,7 @@
                     emit-value
                     map-options
                     :rules="[
-                      val => !!val || 'Выберите вид деятельности организации'
+                      (val) => !!val || 'Выберите вид деятельности организации',
                     ]"
                     class="q-pb-sm"
                   />
@@ -1041,7 +1047,7 @@
                     label="Срок деятельности"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите срок деятельности']"
+                    :rules="[(val) => !!val || 'Выберите срок деятельности']"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1071,7 +1077,7 @@
                   dense
                   label="Подтвержденный ежемесячный доход"
                   lazy-rules
-                  :rules="[val => !!val || 'Поля должно быт заполнено']"
+                  :rules="[(val) => !!val || 'Поля должно быт заполнено']"
                 />
               </div>
 
@@ -1183,7 +1189,7 @@
                     label="Вид недвижимости"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите вид недвижимости']"
+                    :rules="[(val) => !!val || 'Выберите вид недвижимости']"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1198,7 +1204,7 @@
                     label="Регион / область"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите регион']"
+                    :rules="[(val) => !!val || 'Выберите регион']"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1213,7 +1219,7 @@
                     dense
                     label="Рыночная стоимость"
                     lazy-rules
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
+                    :rules="[(val) => !!val || 'Поля должно быт заполнено']"
                   />
                 </div>
               </div>
@@ -1269,7 +1275,7 @@
                     emit-value
                     map-options
                     :rules="[
-                      val => !!val || 'Выберите вид транспортного средства'
+                      (val) => !!val || 'Выберите вид транспортного средства',
                     ]"
                     class="q-pb-sm"
                   />
@@ -1283,7 +1289,7 @@
                     dense
                     label="Марка транспортного средства"
                     lazy-rules
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
+                    :rules="[(val) => !!val || 'Поля должно быт заполнено']"
                   />
                 </div>
                 <div class="col-4">
@@ -1297,7 +1303,7 @@
                     label="Год выпуска"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите год']"
+                    :rules="[(val) => !!val || 'Выберите год']"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1347,7 +1353,7 @@
                     dense
                     label="Рыночная стоимость"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите рыночную стоимость']"
+                    :rules="[(val) => !!val || 'Введите рыночную стоимость']"
                   />
                 </div>
               </div>
@@ -1412,7 +1418,7 @@
                     label="Отношение к клиенту"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите отношение к клиенту']"
+                    :rules="[(val) => !!val || 'Выберите отношение к клиенту']"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1426,7 +1432,7 @@
                     dense
                     label="Сумма поручительства"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[(val) => !!val || 'Введите сумму']"
                   />
                 </div>
               </div>
@@ -1441,7 +1447,7 @@
                     dense
                     label="Фамилия"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите фамилию']"
+                    :rules="[(val) => !!val || 'Введите фамилию']"
                   />
                 </div>
                 <div class="col-4">
@@ -1453,7 +1459,7 @@
                     dense
                     label="Имя"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите имя']"
+                    :rules="[(val) => !!val || 'Введите имя']"
                   />
                 </div>
                 <div class="col-4">
@@ -1465,7 +1471,7 @@
                     dense
                     label="Отчество"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите отчество']"
+                    :rules="[(val) => !!val || 'Введите отчество']"
                   />
                 </div>
               </div>
@@ -1482,8 +1488,8 @@
                     mask="##.##.####"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 10) || 'Введите дату рождения'
+                      (val) =>
+                        (val && val.length === 10) || 'Введите дату рождения',
                     ]"
                   >
                     <template v-slot:append>
@@ -1517,9 +1523,9 @@
                     mask="#########"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
                     ]"
                   />
                 </div>
@@ -1534,7 +1540,7 @@
                     mask="##############"
                     lazy-rules
                     :rules="[
-                      val => (val && val.length === 14) || 'Введите ПНФЛ'
+                      (val) => (val && val.length === 14) || 'Введите ПНФЛ',
                     ]"
                   />
                 </div>
@@ -1565,8 +1571,8 @@
                     mask="AA"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 2) || 'Введите Серию паспорта'
+                      (val) =>
+                        (val && val.length === 2) || 'Введите Серию паспорта',
                     ]"
                   />
                 </div>
@@ -1581,8 +1587,8 @@
                     mask="#######"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 7) || 'Введите Номер паспорта'
+                      (val) =>
+                        (val && val.length === 7) || 'Введите Номер паспорта',
                     ]"
                   />
                 </div>
@@ -1597,9 +1603,9 @@
                     mask="##.##.####"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 10) ||
-                        'Введите дату выдачи паспорта'
+                        'Введите дату выдачи паспорта',
                     ]"
                   >
                     <template v-slot:append>
@@ -1633,9 +1639,9 @@
                     mask="##.##.####"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 10) ||
-                        'Введите дату  окончания действия паспорта'
+                        'Введите дату  окончания действия паспорта',
                     ]"
                   >
                     <template v-slot:append>
@@ -1678,7 +1684,7 @@
                     :options="dictionaries.Region.items"
                     dense
                     label="Регион/область"
-                    :rules="[val => !!val || 'Выберите регион/область']"
+                    :rules="[(val) => !!val || 'Выберите регион/область']"
                     emit-value
                     map-options
                     class="q-pb-sm"
@@ -1717,7 +1723,7 @@
                     dense
                     label="Улица / Мкр."
                     :rules="[
-                      val => !!val || 'Введите наименование улицы / мкр.'
+                      (val) => !!val || 'Введите наименование улицы / мкр.',
                     ]"
                   />
                 </div>
@@ -1729,7 +1735,7 @@
                     v-model="guarantee.Address.House"
                     dense
                     label="Номер дома"
-                    :rules="[val => !!val || 'Введите номер дома']"
+                    :rules="[(val) => !!val || 'Введите номер дома']"
                   />
                 </div>
                 <div class="col-4">
@@ -1785,8 +1791,9 @@
                       mask="+############"
                       lazy-rules
                       :rules="[
-                        val =>
-                          (val && val.length === 13) || 'Введите номер телефона'
+                        (val) =>
+                          (val && val.length === 13) ||
+                          'Введите номер телефона',
                       ]"
                     />
                   </div>
@@ -1863,7 +1870,7 @@
                     dense
                     label="Сумма поручительства"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[(val) => !!val || 'Введите сумму']"
                   />
                 </div>
               </div>
@@ -1878,7 +1885,7 @@
                     dense
                     label="Имя"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите имя']"
+                    :rules="[(val) => !!val || 'Введите имя']"
                   />
                 </div>
 
@@ -1893,9 +1900,9 @@
                     mask="#########"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
                     ]"
                   />
                 </div>
@@ -1912,7 +1919,7 @@
                     label="Вид деятельности"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите вид деятельности']"
+                    :rules="[(val) => !!val || 'Выберите вид деятельности']"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1938,7 +1945,7 @@
                     :options="dictionaries.Region.items"
                     dense
                     label="Регион/область"
-                    :rules="[val => !!val || 'Выберите регион/область']"
+                    :rules="[(val) => !!val || 'Выберите регион/область']"
                     emit-value
                     map-options
                     class="q-pb-sm"
@@ -1978,7 +1985,7 @@
                     label="Улица / Мкр."
                     lazy-rules
                     :rules="[
-                      val => !!val || 'Введите наименование улицы / мкр.'
+                      (val) => !!val || 'Введите наименование улицы / мкр.',
                     ]"
                   />
                 </div>
@@ -1991,7 +1998,7 @@
                     dense
                     label="Номер дома"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите номер дома']"
+                    :rules="[(val) => !!val || 'Введите номер дома']"
                   />
                 </div>
                 <div class="col-4">
@@ -2047,8 +2054,9 @@
                       mask="+############"
                       lazy-rules
                       :rules="[
-                        val =>
-                          (val && val.length === 13) || 'Введите номер телефона'
+                        (val) =>
+                          (val && val.length === 13) ||
+                          'Введите номер телефона',
                       ]"
                     />
                   </div>
@@ -2125,7 +2133,8 @@
                     dense
                     label="Наименование страховой компании"
                     :rules="[
-                      val => !!val || 'Введите наименование страховой компании'
+                      (val) =>
+                        !!val || 'Введите наименование страховой компании',
                     ]"
                   />
                 </div>
@@ -2139,9 +2148,9 @@
                     label="ИНН страховой компании"
                     mask="#########"
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
                     ]"
                   />
                 </div>
@@ -2154,7 +2163,7 @@
                     type="number"
                     dense
                     label="Сумма страхового полиса"
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[(val) => !!val || 'Введите сумму']"
                   />
                 </div>
               </div>
@@ -2203,7 +2212,7 @@
                   :options="dictionaries.LoanProduct.items"
                   dense
                   label="Кредитный продукт"
-                  :rules="[val => !!val || 'Выберите кредитный продукт']"
+                  :rules="[(val) => !!val || 'Выберите кредитный продукт']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -2219,10 +2228,10 @@
                   dense
                   label="Запрашиваемая сумма кредита"
                   :rules="[
-                    val => !!val || 'Введите сумму кредита',
-                    val =>
+                    (val) => !!val || 'Введите сумму кредита',
+                    (val) =>
                       val <= preApprovalData.maxSum ||
-                      `Введите сумму небольше ${preApprovalData.maxSum}`
+                      `Введите сумму небольше ${preApprovalData.maxSum}`,
                   ]"
                 />
               </div>
@@ -2236,12 +2245,15 @@
                   disable
                   label="Валюта"
                   lazy-rules
-                  :rules="[val => !!val || 'Введите валюту']"
+                  :rules="[(val) => !!val || 'Введите валюту']"
                 />
               </div>
             </div>
 
-            <div v-if="!!fullProfile.LoanInfo.LoanProduct" class="row q-col-gutter-md">
+            <div
+              v-if="!!fullProfile.LoanInfo.LoanProduct"
+              class="row q-col-gutter-md"
+            >
               <div class="col-4">
                 <q-select
                   ref="typeRepayment"
@@ -2251,7 +2263,7 @@
                   :options="fullProfile.options.RepaymentType"
                   dense
                   label="Тип пошагового кредита"
-                  :rules="[val => !!val || 'Выберите тип пошагового кредита']"
+                  :rules="[(val) => !!val || 'Выберите тип пошагового кредита']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -2268,7 +2280,7 @@
                   disable
                   label="Процентная ставка по кредиту (максимальная)"
                   :rules="[
-                    val => !!val || 'Введите максимальную процентную ставку'
+                    (val) => !!val || 'Введите максимальную процентную ставку',
                   ]"
                 />
               </div>
@@ -2283,12 +2295,12 @@
                   disable
                   label="Процентаня ставка по кредиту (минимальная)"
                   :rules="[
-                    val => !!val || 'Введите минимальную процентную ставку'
+                    (val) => !!val || 'Введите минимальную процентную ставку',
                   ]"
                 />
               </div>
 
-                <!-- <q-select
+              <!-- <q-select
                   ref="periodRepayment"
                   square
                   outlined
@@ -2306,22 +2318,27 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <div v-if="!!fullProfile.LoanInfo.LoanProduct" class="col-12">
-                  <h6 class="periodCredit">Льготный период по погашению кредита</h6>
+                  <h6 class="periodCredit">
+                    Льготный период по погашению кредита
+                  </h6>
                   <q-badge color="secondary">
-                    Срок: {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }} ({{
+                    Срок:
+                    {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }} ({{
                       fullProfile.LoanInfo.GracePeriodMin
                     }}
                     до {{ fullProfile.LoanInfo.GracePeriodMax }})
                   </q-badge>
                   <q-slider
-                    v-model.number="fullProfile.LoanInfo.MaxDefferalRepaymentPeriod"
+                    v-model.number="
+                      fullProfile.LoanInfo.MaxDefferalRepaymentPeriod
+                    "
                     :min="fullProfile.LoanInfo.GracePeriodMin"
                     :max="fullProfile.LoanInfo.GracePeriodMax"
                     :step="1"
                     label
                     label-always
                     color="light-green"
-                    :rules="[val => !!val || 'Выберите срок кредита']"
+                    :rules="[(val) => !!val || 'Выберите срок кредита']"
                     class="sliderCredit"
                   />
                 </div>
@@ -2341,7 +2358,7 @@
                   mask="##"
                   lazy-rules
                   :rules="[
-                    val => !!val || 'Введите Удобный срок погашения в мес'
+                    (val) => !!val || 'Введите Удобный срок погашения в мес',
                   ]"
                 />
               </div>
@@ -2358,9 +2375,9 @@
                   mask="##"
                   lazy-rules
                   :rules="[
-                    val =>
+                    (val) =>
                       !!val ||
-                      'Введите минимальное количество месяцев на кредит'
+                      'Введите минимальное количество месяцев на кредит',
                   ]"
                 />
               </div>
@@ -2377,9 +2394,9 @@
                   mask="##"
                   lazy-rules
                   :rules="[
-                    val =>
+                    (val) =>
                       !!val ||
-                      'Введите максимальное количество месяцев на кредит'
+                      'Введите максимальное количество месяцев на кредит',
                   ]"
                 />
               </div>
@@ -2416,7 +2433,7 @@
                   dense
                   label="Первоначальный взнос"
                   lazy-rules
-                  :rules="[val => !!val || 'Введите первоначальный взнос']"
+                  :rules="[(val) => !!val || 'Введите первоначальный взнос']"
                 />
               </div>
               <div class="col-4">
@@ -2431,7 +2448,8 @@
                   label="Процент первоначального взноса (минимальный)"
                   lazy-rules
                   :rules="[
-                    val => !!val || 'Введите минимальный первоначальный взнос'
+                    (val) =>
+                      !!val || 'Введите минимальный первоначальный взнос',
                   ]"
                 />
               </div>
@@ -2447,7 +2465,8 @@
                   label="Процент первоначального взноса (максимальный)"
                   lazy-rules
                   :rules="[
-                    val => !!val || 'Введите максимальный первоначальный взнос'
+                    (val) =>
+                      !!val || 'Введите максимальный первоначальный взнос',
                   ]"
                 />
               </div>
@@ -2463,7 +2482,7 @@
                   :options="dictionaries.LoanPurpose.items"
                   dense
                   label="Цель кредитования"
-                  :rules="[val => !!val || 'Выберите цель кредитования']"
+                  :rules="[(val) => !!val || 'Выберите цель кредитования']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -2478,7 +2497,7 @@
                   dense
                   label="Наименование продавца"
                   lazy-rules
-                  :rules="[val => !!val || 'Введите наименование продавца']"
+                  :rules="[(val) => !!val || 'Введите наименование продавца']"
                 />
               </div>
               <div class="col-4">
@@ -2491,7 +2510,8 @@
                   label="Наименование товара/работы/услуги"
                   lazy-rules
                   :rules="[
-                    val => !!val || 'Введите наименование товара/работы/услуги'
+                    (val) =>
+                      !!val || 'Введите наименование товара/работы/услуги',
                   ]"
                 />
               </div>
@@ -2507,7 +2527,9 @@
                   :options="dictionaries.FinancialSources.items"
                   dense
                   label="Источник финансирования"
-                  :rules="[val => !!val || 'Выберите источник финансирования']"
+                  :rules="[
+                    (val) => !!val || 'Выберите источник финансирования',
+                  ]"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -2531,14 +2553,106 @@
           <div class="tab-content" ref="tabContent">
             <div class="row q-col-gutter-md">
               <div class="col">
-                <q-uploader
+                <!-- <q-uploader
                   url="http://localhost:8080/upload"
                   label="Выберите документ"
                   multiple
                   style="width: 100%"
-                />
+                /> -->
+
+                <div class="container">
+                  <div class="">
+                    <q-field
+                      ref="uploadFile"
+                      :value="!!files.length"
+                      :rules="[(val) => !!val || 'Загрузите файлы']"
+                    >
+                      <div class="uploadFile">
+                        <div>
+                          <q-btn 
+                            v-if="files.length"
+                            flat 
+                            round 
+                            color="#0054a6" 
+                            icon="delete_sweep" 
+                            @click.prevent="removeAllFile()"
+                          >
+                            <q-tooltip>Удалить все файлы</q-tooltip>
+                          </q-btn>
+                          <span>Зарузка файлов</span>
+                          <input
+                            type="file"
+                            id="files"
+                            ref="files"
+                            multiple
+                            @change="handleFilesUpload()"
+                          />
+                        </div>
+
+                        <div>
+                          <q-btn 
+                            flat 
+                            round 
+                            color="#0054a6" 
+                            icon="add_box" 
+                            @click.prevent="addFiles()"
+                          >
+                            <q-tooltip>Добавить файл(ы)</q-tooltip>
+                          </q-btn>
+
+                          <q-btn 
+                            v-if="files.length"
+                            flat 
+                            round 
+                            color="#0054a6" 
+                            icon="cloud_upload" 
+                            @click.prevent="submitFiles()"
+                          >
+                            <q-tooltip>Загрузить файл(ы)</q-tooltip>
+                          </q-btn>
+                        </div>
+                      </div>
+                    </q-field>
+                  </div>
+                  <div class="fileList">
+                    <div
+                      v-for="(file, index) in files"
+                      :key="'file' + index"
+                      class="file-listing"
+                    >
+                      <div class="fileNameBlock">
+                        <q-input
+                          class="fileNameInput"
+                          ref="fileName"
+                          square
+                          outlined
+                          v-model="
+                            fullProfile.AttachedDocuments[index].DocumentName
+                          "
+                          dense
+                          label="Название файла"
+                          :rules="[(val) => !!val || 'Введите название файла']"
+                        />
+                        <span class="fileName">{{ file.name }}</span>
+                      </div>
+                      
+                      <q-btn 
+                        flat 
+                        round 
+                        color="black" 
+                        icon="clear" 
+                        @click.prevent="removeFile(index)"
+                      >
+                      <q-tooltip>Удалить файл</q-tooltip>
+                      </q-btn>
+                    </div>
+                  </div>
+                 
+                </div>
               </div>
             </div>
+
+
           </div>
         </div>
 
@@ -2571,7 +2685,7 @@
         <q-btn
           type="submit"
           color="primary"
-          label="Пересчитать"
+          label="Версия для печати"
           class="q-ml-sm"
         />
       </form>
@@ -2645,8 +2759,10 @@ export default {
       options: {
         RepaymentType: [],
 
-        yearsOfIssueVehicle: []
-      }
+        yearsOfIssueVehicle: [],
+      },
+
+      files: []
     };
   },
   mounted() {
@@ -2691,7 +2807,7 @@ export default {
 
     preApprovalData() {
       return this.$store.state.credits.preApprovalData;
-    }
+    },
   },
   watch: {
     "Customer.Email"() {
@@ -2707,17 +2823,18 @@ export default {
 
     sameRegistration(flag) {
       if (flag) {
-        this.removeRegistration({ item: 2 });
+        this.removeRegistration({ item: '2' });
       } else {
-        this.addRegistration(2);
+        this.addRegistration('2');
       }
     },
 
     "fullProfile.LoanInfo.LoanProduct"(credit) {
-      this.fullProfile.LoanInfo.RepaymentType = []
+      this.fullProfile.LoanInfo.RepaymentType = null;
+      this.fullProfile.options.RepaymentType = [];
 
       const idx = this.dictionaries.LoanDetails.items.findIndex(
-        item => item.LOAN_ID == credit
+        (item) => item.LOAN_ID == credit
       );
       //console.log(idx);
       if (idx !== -1) {
@@ -2743,16 +2860,21 @@ export default {
           idx
         ].PaymentsType.items;
 
-        this.fullProfile.LoanInfo.GracePeriodMin = this.dictionaries.LoanDetails.items[idx].GracePeriodMin
-        this.fullProfile.LoanInfo.GracePeriodMax = this.dictionaries.LoanDetails.items[idx].GracePeriodMax
+        this.fullProfile.LoanInfo.GracePeriodMin = this.dictionaries.LoanDetails.items[
+          idx
+        ].GracePeriodMin;
+        this.fullProfile.LoanInfo.GracePeriodMax = this.dictionaries.LoanDetails.items[
+          idx
+        ].GracePeriodMax;
 
-        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin
+        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
       }
-    }
+    },
   },
   methods: {
     async onSubmit() {
       //console.log("fullProfile", this.$store.state.profile);
+      console.log("submit");
 
       this.$refs.surname.validate();
       this.$refs.name.validate();
@@ -2926,8 +3048,10 @@ export default {
       this.$refs.productCredit.validate();
       this.$refs.priceCredit.validate();
 
-      if (this.$refs.typeRepayment) {
+      if (this.$refs.productCredit.validate()) {
         this.$refs.typeRepayment.validate();
+        // console.log('typeRepayment', this.fullProfile.LoanInfo.RepaymentType)
+        // console.log('typeRepayment', this.$refs.typeRepayment.validate())
       } else {
         this.validItems("typeRepayment");
       }
@@ -2941,7 +3065,10 @@ export default {
       this.$refs.productName.validate();
       this.$refs.sourceFinancs.validate();
 
-      // console.log(this.$refs.typeGuaranteesValid);
+      this.$refs.uploadFile.validate();
+
+      // console.log('files', this.$refs.files);
+      // debugger
 
       if (
         this.$refs.surname.hasError ||
@@ -3020,7 +3147,8 @@ export default {
         this.$refs.purposeCredit.hasError ||
         this.$refs.sellerName.hasError ||
         this.$refs.productName.hasError ||
-        this.$refs.sourceFinancs.hasError
+        this.$refs.sourceFinancs.hasError ||
+        this.$refs.uploadFile.hasError
       ) {
         this.formHasError = true;
         this.bar = true;
@@ -3043,9 +3171,10 @@ export default {
           Guarantee,
           LoanInfo,
           ApplicationComment,
-          AttachedDocuments
-        } = this.fullProfile
+          AttachedDocuments,
+        } = this.fullProfile;
 
+        // удалил из объекта - Date!!!
         const data = {
           output: [
             {
@@ -3058,7 +3187,6 @@ export default {
                 Branch,
                 BODecision,
                 FinalDecision,
-                Date,
                 BOLogin,
                 Department,
                 ClientManagerLogin,
@@ -3067,19 +3195,27 @@ export default {
                 Guarantee,
                 LoanInfo,
                 ApplicationComment,
-                AttachedDocuments
-              }
-            }
-          ]
+                AttachedDocuments,
+              },
+            },
+          ],
         };
 
         try {
-          const res = await this.$store.dispatch('confirmationCredit', data)
-          console.log('response', JSON.stringify(res, null, 2))
-        } catch(e) {}
-        console.log(JSON.stringify(data, null, 2))
+          const res = await this.$store.dispatch("confirmationCredit", data);
+          console.log("response", JSON.stringify(res, null, 2));
 
-        this.confirmCredit = true;
+          if (true) {
+            this.confirmCredit = true;
+          } else {
+            throw "Data is null";
+          }
+        } catch (e) {
+          const errorMessage = CommonUtils.filterServerError(error);
+          this.$store.commit("setError", errorMessage);
+          sessionStorage.removeItem("csrf_token");
+        }
+        console.log(JSON.stringify(data, null, 2));
       }
     },
 
@@ -3101,11 +3237,11 @@ export default {
     validItems(itemsValid, itemValid = true) {
       if (!itemValid) {
         this.$refs[itemsValid] = {
-          hasError: true //не валидный
+          hasError: true, //не валидный
         };
       } else {
         this.$refs[itemsValid] = {
-          hasError: false //валидный
+          hasError: false, //валидный
         };
       }
     },
@@ -3167,7 +3303,7 @@ export default {
       this.paylod = {
         item,
         index,
-        index2
+        index2,
       };
     },
 
@@ -3202,12 +3338,62 @@ export default {
       // } else {
       //   tab_content.style.maxHeight = tab_content.scrollHeight + "px";
       // }
-    }
+    },
+
+    handleFilesUpload() {
+      let uploadedFiles = this.$refs.files.files;
+      for (var i = 0; i < uploadedFiles.length; i++) {
+        this.files.push(uploadedFiles[i]);
+        this.fullProfile.AttachedDocuments.push({
+          id: null,
+          DocLink: "",
+          DocumentName: "",
+        });
+      }
+
+      console.log('files', this.files)
+      console.log('BPMData', this.fullProfile.AttachedDocuments)
+    },
+
+    async submitFiles() {
+      this.validFilter("fileNameValid", "fileName");
+      if (this.$refs.fileNameValid.hasError) {
+        this.formHasError = true;
+        this.bar = true;
+      } else {
+        // console.log('submitFiles', this.fullProfile.AttachedDocuments)
+        // console.log('files', this.files)
+
+        let formData = new FormData();
+        for (var i = 0; i < this.files.length; i++) {
+          let file = this.files[i];
+          formData.append("files[" + i + "]", file);
+        }
+
+        try {
+          const response = await this.$store.dispatch("uploadFiles", formData);
+        } catch (error) {}
+      }
+    },
+
+    removeAllFile() {
+      this.files = [];
+      this.fullProfile.AttachedDocuments = [];
+    },
+
+    removeFile(key) {
+      this.files.splice(key, 1);
+      this.fullProfile.AttachedDocuments.splice(key, 1);
+    },
+
+    addFiles() {
+      this.$refs.files.click();
+    },
   },
   components: {
     appLoader: Loader,
-    appFullProfile: FullProfile
-  }
+    appFullProfile: FullProfile,
+  },
 };
 </script>
 <style lang="scss">
@@ -3316,11 +3502,80 @@ export default {
   .periodCredit {
     font-size: 16px;
     line-height: 13px;
-
   }
 
   .sliderCredit {
     margin: 20px 15px;
+  }
+
+  // file
+  .container {
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2), 0 2px 2px rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12);
+    border-radius: 4px;
+    vertical-align: top;
+    background: #fff;
+    position: relative;
+    min-height: 150px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+
+  .uploadFile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-left: 10px;
+    background: #ededed;
+    font-weight: 600;
+    color: #1360ac
+  }
+
+  .fileNameBlock {
+  }
+
+  .fileName {
+    font-weight: 600;
+    padding: 9px;
+  }
+
+  .fileNameInput.q-field--square .q-field__control {
+      width: 300px;
+      border-radius: 5px !important;
+      border: 1px solid #3a3a3a;
+      background: #fff;
+      outline: 0;
+  }
+
+  input[type="file"] {
+    // opacity: 0;
+    display: none;
+    //position: absolute;
+    // top: -500px;
+  }
+
+  .file-listing {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 16px 0 0 16px;
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0;
+    background: #f5f5f5;
+    border-radius: 5px;
+  }
+  
+  .file-listing > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  span.remove-file {
+    color: red;
+    cursor: pointer;
+    float: right;
   }
 }
 </style>

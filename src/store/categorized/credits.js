@@ -166,7 +166,6 @@ export default {
         return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        //commit("resetPersonData")
         commit("setError", errorMessage);
         sessionStorage.removeItem("csrf_token");
       }
@@ -184,8 +183,6 @@ export default {
         return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        //commit("resetPersonData")
-        console.log('confirmation', errorMessage)
         commit("setError", errorMessage);
         sessionStorage.removeItem("csrf_token");
       }
