@@ -91,7 +91,7 @@ export default {
           House: "",
           City: "",
           Apartment: "",
-          AddressType: 1
+          AddressType: "1"
         },
         // {
         //   Building: "",

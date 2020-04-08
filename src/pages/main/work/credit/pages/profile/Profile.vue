@@ -507,7 +507,7 @@
               </div>
 
               <q-btn
-                v-if="address.AddressType === 2 || address.AddressType === 3"
+                v-if="address.AddressType == '2' || address.AddressType == '3'"
                 color="red"
                 label="Удалить"
                 @click="
@@ -524,7 +524,7 @@
             <template
               v-if="
                 Customer.AddressList.findIndex(
-                  (item) => item.AddressType === 2
+                  (item) => item.AddressType == '2'
                 ) === -1
               "
             >
@@ -535,7 +535,7 @@
               <q-btn
                 color="primary"
                 label="Добавить адрес фактического проживания"
-                @click="addRegistration(2)"
+                @click="addRegistration('2')"
                 class="addItem"
               ></q-btn>
             </template>
@@ -543,7 +543,7 @@
             <template
               v-if="
                 Customer.AddressList.findIndex(
-                  (item) => item.AddressType === 3
+                  (item) => item.AddressType == '3'
                 ) === -1
               "
             >
@@ -554,7 +554,7 @@
               <q-btn
                 color="primary"
                 label="Добавить адрес временной регистрации"
-                @click="addRegistration(3)"
+                @click="addRegistration('3')"
                 class="addItem"
               ></q-btn>
             </template>
@@ -2823,9 +2823,9 @@ export default {
 
     sameRegistration(flag) {
       if (flag) {
-        this.removeRegistration({ item: 2 });
+        this.removeRegistration({ item: '2' });
       } else {
-        this.addRegistration(2);
+        this.addRegistration('2');
       }
     },
 
@@ -3174,6 +3174,7 @@ export default {
           AttachedDocuments,
         } = this.fullProfile;
 
+        // удалил из объекта - Date!!!
         const data = {
           output: [
             {
@@ -3186,7 +3187,6 @@ export default {
                 Branch,
                 BODecision,
                 FinalDecision,
-                Date,
                 BOLogin,
                 Department,
                 ClientManagerLogin,
