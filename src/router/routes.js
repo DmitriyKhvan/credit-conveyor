@@ -52,7 +52,7 @@ const Devices = () => import("pages/main/it/devices/Devices");
 const DevicesAccounting = () => import("pages/main/it/accounting/Accounting");
 const DevicesHistory = () => import("pages/main/it/history/History");
 const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
-//education
+// Education
 const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
 const QuestionPage = () =>
   import("pages/main/admin/self_dev/questions/Questions");
@@ -62,6 +62,10 @@ const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
 const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
+
+//Chat
+const ChatPage = () => import('pages/main/chat/Chat');
+
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
@@ -241,6 +245,11 @@ const routes = [{
       component: DevicesMonitoring
     }
     ]
+  },
+  {
+    path: "chat",
+    name: "Chat Page",
+    component: ChatPage
   },
   {
     path: "selfdev",
