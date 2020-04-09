@@ -62,6 +62,11 @@ export default {
     this.socket.on("notify", data => {
       console.log(data);
       this.$store.dispatch("dicts/addNotification", data);
+      this.$q.notify({
+        message: data.title,
+        color: "purple",
+        position: "bottom-right"
+      });
     });
   },
   data() {
