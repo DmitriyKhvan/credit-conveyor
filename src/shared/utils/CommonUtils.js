@@ -1,4 +1,5 @@
 import store from '@/store'
+import moment from "moment";
 
 export default {
   domDecoder(str) {
@@ -99,5 +100,10 @@ export default {
       return error.message
     }
     return error
+  },
+  formattedDate(date) {
+    return moment(date)
+      .startOf("hour")
+      .fromNow(); //format("MMMM Do YYYY, h:mm:ss a");
   }
 }

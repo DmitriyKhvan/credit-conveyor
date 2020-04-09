@@ -1,7 +1,7 @@
-//import io from "socket.io-client";
+import io from "socket.io-client";
 
 const state = {
-  socket: 0, //io("localhost:4000"),
+  socket: io("localhost:4000"),
   socketCount: 0,
   isOnline: false
 };

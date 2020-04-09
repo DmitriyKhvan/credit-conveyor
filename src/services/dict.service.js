@@ -143,6 +143,14 @@ const DictService = {
       let uid = store.getters["auth/userId"];
       ApiService.get(`chat/notifications/${uid}`)
         .then(res => {
+          let count = 0;
+          res.data.forEach(el => {
+            if (el.status == 0) {
+              count++;
+              store.dispatch("dicts/setCountNotifications", count);
+            }
+          });
+
           resolve(res.data);
         })
         .catch(err => {
