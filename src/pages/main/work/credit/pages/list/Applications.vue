@@ -128,163 +128,163 @@ export default {
   props: ["tasks"],
   data() {
     return {
-      loader: true,
+      loader: false,
       //bpmService: new BpmService(),
       data: {
-        // applications: [
-        //   {
-        //     id: 185,
-        //     applicationId: "225",
-        //     businessProcessCode: "UNSECURITY_LOAN",
-        //     applicationNumber: "00844/000000121/54/2020/10",
-        //     branch: "00844",
-        //     applicationStatus: "Формирование выписки секретарем",
-        //     clientName: "Elena Elena Elena",
-        //     clientInn: "111111111",
-        //     modifiedDate: "2020-02-14 12:22:54.001",
-        //     users: [
-        //       {
-        //         userLogin: "km_user1",
-        //         userName: "km_user1",
-        //         nfoRole: "KM",
-        //         bpmRole: "ROLE_KM_FL"
-        //       },
-        //       {
-        //         userLogin: "secretary2",
-        //         userName: "secretary2",
-        //         nfoRole: "SECCC",
-        //         bpmRole: "ROLE_SECRETARY_CC"
-        //       },
-        //       {
-        //         userLogin: "bo_user1",
-        //         userName: "bo_user1",
-        //         nfoRole: "BO",
-        //         bpmRole: "ROLE_BO"
-        //       },
-        //       {
-        //         userLogin: "kk_member2",
-        //         userName: "Дубов Петр Иванович",
-        //         nfoRole: "CC",
-        //         bpmRole: "ROLE_CC"
-        //       },
-        //       {
-        //         userLogin: "kk_member3",
-        //         userName: "Раков Петр Иванович",
-        //         nfoRole: "CC",
-        //         bpmRole: "ROLE_CC"
-        //       }
-        //     ],
-        //     additionalInfo: {
-        //       protocolNumber: "00844/2/2020/4",
-        //       protocolStatus: "signed",
-        //       protocolCountMember: 2,
-        //       protocolTotalCountMember: 2
-        //     }
-        //   },
-        //   {
-        //     id: 154,
-        //     applicationId: "182",
-        //     businessProcessCode: "UNSECURITY_LOAN",
-        //     applicationNumber: "00844/000000062/35/2020/7",
-        //     branch: "00844",
-        //     applicationStatus: "eДоработка заявки",
-        //     clientName: "Petrov Ivanovovich",
-        //     clientInn: "111111111",
-        //     modifiedDate: "2020-03-18 17:30:14.689",
-        //     users: [
-        //       {
-        //         userLogin: "km_user1",
-        //         userName: "km_user1",
-        //         nfoRole: "KM",
-        //         bpmRole: "ROLE_KM_FL"
-        //       },
-        //       {
-        //         userLogin: "bo_user1",
-        //         userName: "bo_user1",
-        //         nfoRole: "BO",
-        //         bpmRole: "ROLE_BO"
-        //       }
-        //     ]
-        //   },
+        applications: [
+          {
+            id: 185,
+            applicationId: "225",
+            businessProcessCode: "UNSECURITY_LOAN",
+            applicationNumber: "00844/000000121/54/2020/10",
+            branch: "00844",
+            applicationStatus: "Формирование выписки секретарем",
+            clientName: "Elena Elena Elena",
+            clientInn: "111111111",
+            modifiedDate: "2020-02-14 12:22:54.001",
+            users: [
+              {
+                userLogin: "km_user1",
+                userName: "km_user1",
+                nfoRole: "KM",
+                bpmRole: "ROLE_KM_FL"
+              },
+              {
+                userLogin: "secretary2",
+                userName: "secretary2",
+                nfoRole: "SECCC",
+                bpmRole: "ROLE_SECRETARY_CC"
+              },
+              {
+                userLogin: "bo_user1",
+                userName: "bo_user1",
+                nfoRole: "BO",
+                bpmRole: "ROLE_BO"
+              },
+              {
+                userLogin: "kk_member2",
+                userName: "Дубов Петр Иванович",
+                nfoRole: "CC",
+                bpmRole: "ROLE_CC"
+              },
+              {
+                userLogin: "kk_member3",
+                userName: "Раков Петр Иванович",
+                nfoRole: "CC",
+                bpmRole: "ROLE_CC"
+              }
+            ],
+            additionalInfo: {
+              protocolNumber: "00844/2/2020/4",
+              protocolStatus: "signed",
+              protocolCountMember: 2,
+              protocolTotalCountMember: 2
+            }
+          },
+          {
+            id: 154,
+            applicationId: "182",
+            businessProcessCode: "UNSECURITY_LOAN",
+            applicationNumber: "00844/000000062/35/2020/7",
+            branch: "00844",
+            applicationStatus: "eДоработка заявки",
+            clientName: "Petrov Ivanovovich",
+            clientInn: "111111111",
+            modifiedDate: "2020-03-18 17:30:14.689",
+            users: [
+              {
+                userLogin: "km_user1",
+                userName: "km_user1",
+                nfoRole: "KM",
+                bpmRole: "ROLE_KM_FL"
+              },
+              {
+                userLogin: "bo_user1",
+                userName: "bo_user1",
+                nfoRole: "BO",
+                bpmRole: "ROLE_BO"
+              }
+            ]
+          },
 
-        //   {
-        //     id: 155,
-        //     applicationId: "182",
-        //     businessProcessCode: "UNSECURITY_LOAN",
-        //     applicationNumber: "00844/000000062/35/2020/7",
-        //     branch: "00844",
-        //     applicationStatus: "Доработка заявки",
-        //     clientName: "TIMUR TIMUR TIMUR",
-        //     clientInn: "111111111",
-        //     modifiedDate: "2020-02-18 17:30:14.689",
-        //     users: [
-        //       {
-        //         userLogin: "km_user1",
-        //         userName: "km_user1",
-        //         nfoRole: "KM",
-        //         bpmRole: "ROLE_KM_FL"
-        //       },
-        //       {
-        //         userLogin: "bo_user1",
-        //         userName: "bo_user1",
-        //         nfoRole: "BO",
-        //         bpmRole: "ROLE_BO"
-        //       }
-        //     ]
-        //   },
+          {
+            id: 155,
+            applicationId: "182",
+            businessProcessCode: "UNSECURITY_LOAN",
+            applicationNumber: "00844/000000062/35/2020/7",
+            branch: "00844",
+            applicationStatus: "Доработка заявки",
+            clientName: "TIMUR TIMUR TIMUR",
+            clientInn: "111111111",
+            modifiedDate: "2020-02-18 17:30:14.689",
+            users: [
+              {
+                userLogin: "km_user1",
+                userName: "km_user1",
+                nfoRole: "KM",
+                bpmRole: "ROLE_KM_FL"
+              },
+              {
+                userLogin: "bo_user1",
+                userName: "bo_user1",
+                nfoRole: "BO",
+                bpmRole: "ROLE_BO"
+              }
+            ]
+          },
 
-        //   {
-        //     id: 156,
-        //     applicationId: "182",
-        //     businessProcessCode: "UNSECURITY_LOAN",
-        //     applicationNumber: "00846/000000062/35/2020/7",
-        //     branch: "00844",
-        //     applicationStatus: "Доработка заявки",
-        //     clientName: "TIMUR Alisher TIMUR",
-        //     clientInn: "111111111",
-        //     modifiedDate: "05.04.2020",
-        //     users: [
-        //       {
-        //         userLogin: "km_user1",
-        //         userName: "km_user1",
-        //         nfoRole: "KM",
-        //         bpmRole: "ROLE_KM_FL"
-        //       },
-        //       {
-        //         userLogin: "bo_user1",
-        //         userName: "bo_user1",
-        //         nfoRole: "BO",
-        //         bpmRole: "ROLE_BO"
-        //       }
-        //     ]
-        //   },
+          {
+            id: 156,
+            applicationId: "182",
+            businessProcessCode: "UNSECURITY_LOAN",
+            applicationNumber: "00846/000000062/35/2020/7",
+            branch: "00844",
+            applicationStatus: "Доработка заявки",
+            clientName: "TIMUR Alisher TIMUR",
+            clientInn: "111111111",
+            modifiedDate: "05.04.2020",
+            users: [
+              {
+                userLogin: "km_user1",
+                userName: "km_user1",
+                nfoRole: "KM",
+                bpmRole: "ROLE_KM_FL"
+              },
+              {
+                userLogin: "bo_user1",
+                userName: "bo_user1",
+                nfoRole: "BO",
+                bpmRole: "ROLE_BO"
+              }
+            ]
+          },
 
-        //   {
-        //     id: 157,
-        //     applicationId: "182",
-        //     businessProcessCode: "UNSECURITY_LOAN",
-        //     applicationNumber: "00846/000000062/35/2020/7",
-        //     branch: "00844",
-        //     applicationStatus: "rПроверка заявки",
-        //     clientName: "TIMUR Alisher TIMUR",
-        //     clientInn: "111111111",
-        //     modifiedDate: "05.02.2020",
-        //     users: [
-        //       {
-        //         userLogin: "km_user1",
-        //         userName: "km_user1",
-        //         nfoRole: "KM",
-        //         bpmRole: "ROLE_KM_FL"
-        //       },
-        //       {
-        //         userLogin: "bo_user1",
-        //         userName: "bo_user1",
-        //         nfoRole: "BO",
-        //         bpmRole: "ROLE_BO"
-        //       }
-        //     ]
-        //   }
-        // ],
+          {
+            id: 157,
+            applicationId: "182",
+            businessProcessCode: "UNSECURITY_LOAN",
+            applicationNumber: "00846/000000062/35/2020/7",
+            branch: "00844",
+            applicationStatus: "rПроверка заявки",
+            clientName: "TIMUR Alisher TIMUR",
+            clientInn: "111111111",
+            modifiedDate: "05.02.2020",
+            users: [
+              {
+                userLogin: "km_user1",
+                userName: "km_user1",
+                nfoRole: "KM",
+                bpmRole: "ROLE_KM_FL"
+              },
+              {
+                userLogin: "bo_user1",
+                userName: "bo_user1",
+                nfoRole: "BO",
+                bpmRole: "ROLE_BO"
+              }
+            ]
+          }
+        ],
 
         applications: [],
 
@@ -316,13 +316,13 @@ export default {
     };
   },
   async created() {
-    try {
+    // try {
       
-      await this.$store.dispatch("authBpm")
-      const app = await this.$store.dispatch("getCreditList")
-      this.loader = false
+    //   await this.$store.dispatch("authBpm")
+    //   const app = await this.$store.dispatch("getCreditList")
+    //   this.loader = false
 
-      } catch (err) {}
+    //   } catch (err) {}
 
   },
   mounted() {

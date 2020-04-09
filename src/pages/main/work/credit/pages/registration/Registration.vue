@@ -340,6 +340,7 @@ import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
+import  { validItems } from "../../filters/valid_filter"
 
 // Vue.config.errorHandler = function(err, vm, info) {
 //   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
@@ -524,7 +525,7 @@ export default {
       if (!!this.personalData.typeCredit) {
         this.$refs.typeStepCredit.validate();
       } else {
-        this.validItems("typeStepCredit");
+        validItems(this.$refs, "typeStepCredit");
       }
 
       this.$refs.income.validate();
@@ -624,6 +625,8 @@ export default {
             data
           );
 
+          console.log('resCredit', resCredit)
+
           this.credits.reasonsList = resCredit.nextTask.input.reasonsList;
 
           const resp = {
@@ -638,19 +641,7 @@ export default {
           this.loaderPreApproval = false;
         } catch (e) {}
       }
-    },
-
-    validItems(itemsValid, itemValid = true) {
-      if (!itemValid) {
-        this.$refs[itemsValid] = {
-          hasError: true, //не валидный
-        };
-      } else {
-        this.$refs[itemsValid] = {
-          hasError: false, //валидный
-        };
-      }
-    },
+    }
   },
   components: {
     appPreApproval: PreApproval,

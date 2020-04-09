@@ -2,8 +2,10 @@ import BpmService from "../../services/bpm.service";
 
 export default {
   state: {
-    confirm: false,
+    //confirm: false,
+    confirmCredit: false,
     dictionaries: {},
+    //filesAll: [], // для фильтрации какие файлы загружены на сервер
     
     AddressType: [
       "Адрес постоянной регистрации",
@@ -234,6 +236,7 @@ export default {
       try {
         const response = await state.bpmService.uploadFiles(data)
         console.log('responseFile', response) 
+        return response
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);

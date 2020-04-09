@@ -180,7 +180,7 @@
             </template>
             
             <div v-else class="col-12 profileSubTitle">
-              8.1 {{dictionaries.MainWorkType.items[3]}}
+              8.1 {{(dictionaries.MainWorkType.items[3]).label}}
             </div>
 
             <div class="col-12 profileTitle">
@@ -254,18 +254,18 @@
             <div class="col-12 profileTitle">
               11 Поручительство и страхование
             </div>
-            <div class="col-12 profileSubTitle">11.1 Поручительство</div>
+            <!-- <div class="col-12 profileSubTitle">11.1 Поручительство</div>
             <div class="col-3">Вид поручителя</div>
-            <div class="col-9"></div>
+            <div class="col-9"></div> -->
 
-            <template v-if="!fullProfile.Guarantee.RelatedPerson.length">
+            <template v-if="fullProfile.Guarantee.RelatedPerson.length">
               <div class="col-12 dataList">
                 <div 
                   v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson"
                   :key="'RelatedPerson' + index"
                   class="row"
                 >
-                  <div class="col-12 profileSubTitle">{{'11.' + index}} Физ. лицо</div>
+                  <div class="col-12 profileSubTitle">Физ. лицо {{index + 1}}</div>
                   <div class="col-3">Отношение к клиенту</div>
                   <div class="col-9">
                     {{(dictionaries.ClientRelationType.items.find(i => i.value === guarantee.ClientRelation)).label}}
@@ -288,7 +288,9 @@
                   <div class="col-9">{{guarantee.PINPP}}</div>
                   <div class="col-3">Резиденство</div>
                   <div class="col-9">
-                    {{(fullProfile.options.confirmation.confirmation.find(i => i.value === guarantee.Resident)).label}}
+                    <!-- <template v-if="">
+                    </template> -->
+                    {{(fullProfile.options.confirmation.find(i => i.value === guarantee.Resident)).label}}
                   </div>
 
                   <div class="col-12 dataBlock">Паспортные данные:</div>
@@ -300,19 +302,6 @@
                   <div class="col-9">{{guarantee.Document.GivenDate}}</div>
                   <div class="col-3">Дата окончания действия</div>
                   <div class="col-9">{{guarantee.Document.ExpirationDate}}</div>
-
-                  <div class="col-12 dataBlock">Контактная информация:</div>
-
-                  <div class="col-12 dataList">
-                    <div 
-                      class="row"
-                      v-for="(phone, phoneIndex) of guarantee.PhoneList"
-                      :key="phone.Number"
-                    >
-                        <div class="col-3">Телефон {{ phoneIndex + 1 }}</div>
-                        <div class="col-9">{{phone.Number}}</div>
-                    </div>
-                  </div>
 
                   <div class="col-12 dataBlock">Адрес:</div>
                   <div class="col-3">Индекс</div>
@@ -333,18 +322,30 @@
                   <div class="col-9">{{guarantee.Address.Apartment}}</div>
                   <div class="col-3">Сумма поручительства</div>
                   <div class="col-9">{{guarantee.Sum}}</div>
+
+                  <div class="col-12 dataBlock">Контактная информация:</div>
+                  <div class="col-12 dataList">
+                    <div 
+                      class="row"
+                      v-for="(phone, phoneIndex) of guarantee.PhoneList"
+                      :key="phone.Number"
+                    >
+                        <div class="col-3">Телефон {{ phoneIndex + 1 }}</div>
+                        <div class="col-9">{{phone.Number}}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </template>
 
-            <template v-if="!fullProfile.Guarantee.RelatedLegalPerson.length">
+            <template v-if="fullProfile.Guarantee.RelatedLegalPerson.length">
               <div class="col-12 dataList">
                 <div 
                   class="row"
                   v-for="(guarantee, index) of fullProfile.Guarantee.RelatedLegalPerson"
                   :key="'RelatedLegalPerson' + index"
                 >
-                  <div class="col-12 profileSubTitle">{{'11.' + index}} Юр. лицо</div>
+                  <div class="col-12 profileSubTitle">Юр. лицо {{index + 1}}</div>
                   <div class="col-3">Наименование организации</div>
                   <div class="col-9">{{guarantee.Name}}</div>
                   <div class="col-12 dataBlock">Адрес:</div>
@@ -365,6 +366,7 @@
                   <div class="col-3">Сумма поручительства</div>
                   <div class="col-9">{{guarantee.Sum}}</div>
 
+                  <div class="col-12 dataBlock">Контактная информация:</div>
                   <div class="col-12 dataList">
                     <div 
                       class="row"
@@ -379,14 +381,14 @@
               </div>
             </template>
 
-            <template v-if="!fullProfile.Guarantee.Insurance.length">
+            <template v-if="fullProfile.Guarantee.Insurance.length">
             <div class="col-12 dataList">
               <div 
                 class="row"
                 v-for="(guarantee, index) of fullProfile.Guarantee.Insurance"
                 :key="'Insurance' + index"
               >
-                <div class="col-12 profileSubTitle">{{'11.' + index}} Страхование</div>
+                <div class="col-12 profileSubTitle">Страхование {{index + 1}}</div>
                 <div class="col-3">Наименование организации</div>
                 <div class="col-9">{{guarantee.OrgName}}</div>
                 <div class="col-3">ИНН страховой компании</div>
@@ -572,7 +574,7 @@
           color="primary"
           @click="callPrint('form')"
         />
-        <q-btn flat label="Закрыть" color="primary" v-close-popup />
+        <q-btn flat label="Закрыть" color="primary" v-close-popup @click="() => fullProfile.confirmCredit = false"/>
         <!-- <q-btn flat label="Закрыть" color="primary" @click="() => this.$router.push('/work/credit/sub/task/1')" /> -->
       </q-card-actions>
     </q-card>
@@ -667,7 +669,7 @@ export default {
 }
 
 .profileSubTitle {
-  background: #ededed87;
+  background: #ededed;
   color: #0e3475;
 }
 
@@ -676,6 +678,7 @@ export default {
 }
 
 .dataBlock {
+  background: #ededed;
 }
 
 .signature {

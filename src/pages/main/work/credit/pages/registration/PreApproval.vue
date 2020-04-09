@@ -43,7 +43,7 @@
                     <div 
                       class="col-6"
                       v-for="(reson, index) of this.credits.reasonsList.slice(0, Math.round(this.credits.reasonsList.length / 2))"
-                      :key="'reson' + index"
+                      :key="reson.value"
                     >
                       <q-checkbox
                         v-model="selection"
@@ -55,7 +55,7 @@
                     <div 
                       class="col-6"
                       v-for="(reson, index) of this.credits.reasonsList.slice(Math.round(this.credits.reasonsList.length / 2))"
-                      :key="'reson' + index"
+                      :key="reson.value"
                     >
                       <q-checkbox
                         v-model="selection"

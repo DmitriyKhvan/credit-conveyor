@@ -22,6 +22,9 @@ export default {
     },
     submitting() {
       return this.$store.state.credits.submitting;
+    },
+    DigID() {
+      return this.$store.state.profile.Customer.DigID;
     }
   },
   methods: {
@@ -51,7 +54,7 @@ export default {
           }
 
           this.getDataSuccess(data);
-
+          this.DigID = true
         })
         .catch(error => {
           console.log('Нет данных', error);
