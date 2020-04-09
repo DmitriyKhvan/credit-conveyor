@@ -199,7 +199,7 @@
             </div>
           </div>
 
-          <div class="col-5">
+          <div class="col-5 q-col-gutter-md">
             <!-- Family status -->
             <div class="family-status tab">
               <h4 class="tab-title" ref="familyStatus">Семейное положение</h4>
@@ -308,17 +308,18 @@
                   label="Источник дополнительного дохода"
                 />
               </div>
-
-              <!-- Credit result -->
-              <div class="row">
-                <q-btn
-                  type="submit"
-                  color="green"
-                  label="РАССЧИТАТЬ КРЕДИТ"
-                  class="q-ml-sm full-width"
-                />
-              </div>
             </div>
+
+            <!-- Credit result -->
+            <div class="row ">
+              <q-btn
+                type="submit"
+                color="green"
+                label="РАССЧИТАТЬ КРЕДИТ"
+                class="q-ml-sm full-width"
+              />
+            </div>
+
           </div>
         </div>
       </form>
@@ -661,19 +662,20 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.loaderForm {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-}
+<style lang="scss">
+.registration {
 
-.creditConveyor {
+  .loaderForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+  }
+
   .tab-title {
     background-color: #ededed;
     color: #0e3475;
-    margin-top: 20px;
+    margin-top: 10px;
     padding: 9px 11px;
     border: none;
     text-align: left;
@@ -711,10 +713,10 @@ export default {
     border-radius: 0;
   }
 
-  // .q-field--with-bottom,
-  // .q-pb-sm {
-  //   padding-bottom: 16px;
-  // }
+  .q-field--with-bottom,
+  .q-pb-sm {
+    padding-bottom: 16px;
+  }
 
   .q-field__native,
   .q-field__prefix,

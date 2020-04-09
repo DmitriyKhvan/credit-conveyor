@@ -312,7 +312,10 @@
       "choose_executive": "Choose Executive",
       "document_num": "Docmunent №",
       "content": "Content",
+      "content_err": "Please enter content",
       "resolution": "Resolution",
+      "choose_file": "Choose File",
+      "journal": "Journal",
       "tasks": {
         "new": "New",
         "accepted": "Accepted",
@@ -351,6 +354,40 @@
       },
       "credit": {
         "try_again": "Try Again"
+      },
+      "chancellery": {
+        "_self": "Канцелярия",
+        "choose_journal_err": "Пожалуста выберите журнал",
+        "regions": "Regions",
+        "inc_number": "Inc. Number",
+        "inc_date": "Inc. Date",
+        "choose_organization": "Choose organization",
+        "choose_organization_err": "Please select organization",
+        "write_from": "Write from",
+        "without_number": "Without number",
+        "out_number": "Out. number",
+        "out_date": "Out. date",
+        "without_date": "Without date",
+        "format": "Формат",
+        "page_amount": "Кол. лист",
+        "page_amount_err": "Please enter amount of pages",
+        "who_signed": "Who signed",
+        "review_file": "Review file",
+        "results": {
+          "FILE": "FILE",
+          "JOURNAL": "JOURNAL",
+          "REGION": "REGION",
+          "IN_NUMBER": "IN NUMBER",
+          "IN_DATE": "IN DATE",
+          "ORGAN": "ORGAN",
+          "WHO_SEND": "WHO SEND",
+          "OUT_NUMBER": "OUT NUMBER",
+          "OUT_DATE": "OUT DATE",
+          "FORMAT": "FORMAT",
+          "PAGE_AMOUNT": "PAGE AMOUNT",
+          "CONTENT": "CONTENT",
+          "WHO_SIGNED": "КТО ПОДПИСАЛ"
+        }
       }
     },
     "education": {
