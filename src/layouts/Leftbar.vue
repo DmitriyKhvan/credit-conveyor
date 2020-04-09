@@ -120,13 +120,17 @@ export default {
   methods: {    
     eventShow(id){
       const popup = document.getElementById(id)
-      popup.setAttribute("style", "display:none;");
-      this.show = id
+      if(popup) {
+        popup.setAttribute("style", "display:none;");
+        this.show = id
+      }
     },
     eventHide(id) {
       const popup = document.getElementById(id)
-      popup.removeAttribute("style")
-      this.show = null
+      if(popup) {
+        popup.removeAttribute("style")      
+        this.show = null
+      }
     },
     mOver (id) {
       console.log('mOver ',id)
