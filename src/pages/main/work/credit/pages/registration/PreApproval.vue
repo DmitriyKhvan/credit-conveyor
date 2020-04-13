@@ -133,6 +133,7 @@ export default {
   methods: {
     async successCredit(val) {
       this.$store.commit("toggleConfirm", val);
+      this.$store.commit("toggleLoaderForm", true)
         console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
           const response = await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
@@ -156,35 +157,19 @@ export default {
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
-        this.$store.commit("toggleConfirm", true);
+        //this.$store.commit("toggleConfirm", true);
       } else {
         this.$store.commit("toggleDisableInput", false);
         this.$store.commit("toggleConfirm", false);
 
-        this.confirmCreditData.output[0].data = false
-        this.confirmCreditData.output[1].data = this.selection
-
-        // const data = {
-        //   output: [
-        //     {
-        //       name: "confirm",
-        //       data: false
-        //     },
-        //     {
-        //       name: "reasons",
-        //       data: this.selection
-        //     }
-        //   ]
-        // };
-
+        this.credits.confirmCreditData.output[0].data = false
+        this.credits.confirmCreditData.output[1].data = this.selection
+    
         try {
           await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
-          console.log('failureCredit', this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData))
         } catch (error) {}
 
         this.$router.push("/work/credit");
-
-        console.log('creditData', data)
       }
     }
   },

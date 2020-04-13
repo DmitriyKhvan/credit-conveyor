@@ -37,11 +37,11 @@ const CreditReg = () =>
 const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
 const CreditApplications = () =>
-  import("pages/main/work/credit/pages/list/Applications.vue");
+  import("pages/main/work/credit/pages/CreditList/Applications.vue");
 const CreditTasks = () =>
-  import("pages/main/work/credit/pages/list/Tasks.vue");
+  import("pages/main/work/credit/pages/CreditList/Tasks.vue");
 const CreditTask = () =>
-  import("pages/main/work/credit/pages/list/Task.vue");
+  import("pages/main/work/credit/pages/CreditList/Task.vue");
 
 // Tools
 const Tools = () => import("pages/main/tools/Tools");

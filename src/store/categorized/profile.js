@@ -2,11 +2,11 @@ import BpmService from "../../services/bpm.service";
 
 export default {
   state: {
-    //confirm: false,
+    bpmService: new BpmService(),
     confirmCredit: false,
     dictionaries: {},
     //filesAll: [], // для фильтрации какие файлы загружены на сервер
-    
+
     AddressType: [
       "Адрес постоянной регистрации",
       "Адрес фактического проживания",
@@ -94,21 +94,7 @@ export default {
           City: "",
           Apartment: "",
           AddressType: "1"
-        },
-        // {
-        //   Building: "",
-        //   OwnershipType: null,
-        //   HouseType: "",
-        //   PostalCode: "",
-        //   Region: null,
-        //   District: "", //Надо добавить!!!
-        //   Street: "",
-        //   Block: "",
-        //   House: "",
-        //   City: "",
-        //   Apartment: "",
-        //   AddressType: 2
-        // }
+        }
       ],
 
       MaritalStatus: false,
@@ -219,25 +205,16 @@ export default {
         CommentDate: "2020-03-18T09:00:23.928+05:00"
       }
     ],
-    AttachedDocuments: [],
-
-    bpmService: new BpmService(),
-    // icon: false,
-    // loader: false,
-    // iconMessage: "",
-    // disableBtn: false,
-    // disableInput: false,
-    // submitting: false,
-    // loadMessage: ""
+    AttachedDocuments: []
   },
   actions: {
     async uploadFiles({ state, commit }, data) {
-      console.log('uploadFiles', data)
+      console.log("uploadFiles", data);
       try {
-        const response = await state.bpmService.uploadFiles(data)
-        console.log('responseFile', response) 
-        return response
-      } catch(error) {
+        const response = await state.bpmService.uploadFiles(data);
+        console.log("responseFile", response);
+        return response;
+      } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
       }
@@ -423,6 +400,183 @@ export default {
 
     setDictionaries(state, payload) {
       state.dictionaries = payload;
+    },
+
+    resetDataFullFormProfile(state) {
+      (state.Status = ""),
+        (state.ApplicationID = ""),
+        (state.ProtocolNumber = ""),
+        (state.Number = ""),
+        (state.Branch = ""),
+        (state.BODecision = ""),
+        (state.FinalDecision = ""),
+        (state.Date = ""),
+        (state.BOLogin = ""),
+        (state.Department = ""),
+        (state.ClientManagerLogin = ""),
+        (state.CreditCommiteeDecisions = [
+          {
+            Comment: "",
+            MemberOfCCFIO: "",
+            id: 0,
+            Login: "",
+            isApproved: false
+          }
+        ]),
+        (state.Customer = {
+          DigID: false,
+          Email: "",
+          FirstName: "",
+          LastName: "",
+          MiddleName: "",
+          FullName: "",
+          BirthDate: "",
+          INN: "",
+          PINPP: "",
+          ResidentFlag: false,
+          Gender: null,
+
+          Document: {
+            Series: "",
+            Number: null,
+            ExpirationDate: "",
+            GivenDate: "",
+            GUID: "",
+            Country: "",
+            DocLink: "",
+            DocumentName: 0
+          },
+
+          Education: null,
+          PhoneList: [
+            {
+              Number: ""
+            }
+          ],
+
+          AddressList: [
+            {
+              Building: "",
+              OwnershipType: null,
+              HouseType: "",
+              PostalCode: "",
+              Region: null,
+              District: "", //Надо добавить!!!
+              Street: "",
+              Block: "",
+              House: "",
+              City: "",
+              Apartment: "",
+              AddressType: "1"
+            }
+          ],
+
+          MaritalStatus: false,
+          hasChildren: false,
+          // "ChildrenNum": 0,
+          UnderAgeChildrenNum: null,
+
+          Relatives: [
+            {
+              FirstName: "",
+              FullName: "",
+              FamilyConnectionType: null,
+              LastName: "",
+              MiddleName: "",
+              BirthDate: "",
+              Document: {
+                Series: "",
+                Number: null,
+                ExpirationDate: "",
+                GivenDate: "",
+                GUID: "",
+                Country: "",
+                DocLink: "",
+                DocumentName: 0
+              }
+            }
+          ],
+
+          JobInfo: {
+            employerActivityType: null, //вид деятельности организации
+            positionType: null, // Категория занимаемой должности
+            INN: "",
+            employeesNum: null, // количество работников
+            employerName: "", // Наименование работадателя
+            totalJobExperienceMonths: null, // общий трудовой стаж
+            activeYears: null, // срок деятельности
+            position: "", // должность
+            type: "", // вид деятельности
+            lastJobExperienceMonths: null // стаж на последнем месте работы
+          },
+
+          // eжемесячные расходы
+          MonthlyExpenses: {
+            recurringExpenses: 0,
+            obligations: 0
+          },
+          // ежемесячные доходы
+          MonthlyIncome: {
+            confirmMonthlyIncome: 0,
+            hasAdditionalIncome: false,
+            additionalIncome: {
+              incomeType: 0,
+              sum: 0
+            }
+          },
+
+          PropertyInformation: {
+            Realty_new: [],
+            Transport_new: []
+          }
+        }),
+        (state.Guarantee = {
+          Insurance: [],
+          RelatedLegalPerson: [],
+          RelatedPerson: []
+        }),
+        (state.LoanInfo = {
+          LoanProduct: null, // Кредитный продукт
+          Sum: null, // Запрашиваемая сумма кредита
+          Currency: "", // Валюта
+          RepaymentType: null, // Тип пошагового кредита
+          LoanType: null, // Вид кредита
+
+          MinInterestRate: null, // Процентаня ставка по кредиту (минимальная)
+          MaxInterestRate: null, // Процентная ставка по кредиту (максимальная)
+
+          MaxDefferalRepaymentPeriod: null, // Льготный период по погашению кредита
+
+          ConvenientRepaymentTerm: null, // Удобный срок погашения в мес
+
+          MaxTermInMonths: null, // Максимальное количество месяцев на кредит
+          MinTermInMonths: null, // Минимальное количество месяцев на кредит
+
+          InitialPayment: null, // Первоначальный взнос
+
+          MaxInitialPaymentPercent: null, // Процент первоначального взноса (максимальный)
+          MinInitialPaymentPercent: null, // Процент первоначального взноса (минимальный)
+
+          LoanPurpose: "", // Цель кредитования
+
+          SellerName: "", // Наименование продавца
+
+          ProductName: "", // Наименование товара/работы/услуги
+
+          FundingSource: "", // Источник финансирования
+
+          FacilitiesForRepaymentDate: false
+        }),
+        (state.ApplicationComment = [
+          {
+            Comment: "",
+            Type: "",
+            CommentPerson: "",
+            id: 0,
+            CommentDate: "2020-03-18T09:00:23.928+05:00"
+          }
+        ]),
+        (state.AttachedDocuments = []);
     }
   },
   getters: {}

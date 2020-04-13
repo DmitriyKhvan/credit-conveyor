@@ -2683,6 +2683,7 @@
           class="q-ml-sm"
         />
 
+        <!-- Sent data full form to BPM -->
         <appSentFullProfile />
       </form>
 
@@ -2767,6 +2768,9 @@ export default {
       files: [], // для сервера, чтоб не дублировать отправку файла
       filesAll: [] // для фильтрации какие файлы загружены на сервер
     };
+  },
+  created() {
+    this.$store.commit("resetDataFullFormProfile")
   },
   mounted() {
     this.$store.state.profile.Customer.FirstName = this.$store.state.credits.personalData.name;
@@ -3301,20 +3305,23 @@ export default {
 
         try {
           const response = await this.$store.dispatch("uploadFiles", formData);
-          if (response.id) {
+          if (response.infos.length) {
             this.files = []; // удалить все файлы после загрузки на сервер
             this.loaderFile = false;
-            // for(let el of response) {
-            //   const item = this.filesAll.find(i => i.id === null)
-            //   item.id = el.id
-            // }
+            for(let el of response.infos) {
+              const item = this.filesAll.find(i => i.id === null)
+              item.id = el.id
+
+              const elSer = this.fullProfile.AttachedDocuments.find(i => i.id === null);
+              elSer.id = el.id
+            }
             //debugger
-            const elSer = this.fullProfile.AttachedDocuments.find(
-              i => i.id === null
-            );
-            elSer.id = response.id;
-            const el = this.filesAll.find(i => i.id === null);
-            el.id = response.id;
+            // const elSer = this.fullProfile.AttachedDocuments.find(
+            //   i => i.id === null
+            // );
+            // elSer.id = response.id;
+            // const el = this.filesAll.find(i => i.id === null);
+            // el.id = response.id;
           } else {
             this.loaderFile = false;
             const el = this.filesAll.find(i => i.id === null);

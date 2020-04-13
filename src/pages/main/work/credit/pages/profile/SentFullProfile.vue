@@ -8,6 +8,9 @@
   />
 </template>
 <script>
+// import CommonUtils from "@/shared/utils/CommonUtils";
+import CommonUtils from "../../../../../../shared/utils/CommonUtils";
+
 export default {
   data() {
     return {
@@ -69,16 +72,26 @@ export default {
           ],
         };
 
+        console.log(JSON.stringify(data, null, 2));
+
         try {
           const res = await this.$store.dispatch("confirmationCredit", data);
           console.log("response", JSON.stringify(res, null, 2));
+          //console.log('nextTaskId', res.nextTask.id)
 
+          if (res.nextTask.id) {
+            debugger
+            sessionStorage.removeItem("csrf_token");
+            this.$router.push("/work/credit");
+          } else {
+            throw 'Next taskId is null'
+          }
         } catch (e) {
           const errorMessage = CommonUtils.filterServerError(error);
+          console.log('errorMessage', errorMessage)
           this.$store.commit("setError", errorMessage);
           sessionStorage.removeItem("csrf_token");
         }
-        console.log(JSON.stringify(data, null, 2));
     }
   }
 }

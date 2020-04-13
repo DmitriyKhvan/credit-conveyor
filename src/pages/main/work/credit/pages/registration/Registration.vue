@@ -1,6 +1,6 @@
 <template>
   <div class="registration">
-    <div class="loaderForm" v-if="loaderForm">
+    <div class="loaderForm" v-if="credits.loaderForm">
       <appLoader />
     </div>
 
@@ -352,7 +352,7 @@ export default {
       periodCreditMin: null,
       periodCreditMax: null,
       loader: true,
-      loaderForm: true,
+      // loaderForm: true,
       loaderPreApproval: false,
       options: {
         family: [
@@ -431,7 +431,7 @@ export default {
       }
 
       console.log("typeCredits", this.options.typeCredits);
-      this.loaderForm = false;
+      this.$store.commit("toggleLoaderForm", false)
     } catch (error) {}
 
     try {

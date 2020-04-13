@@ -52,7 +52,7 @@ export default {
   computed: {
     error() {
       console.log('computed', this.$store.getters.error)
-      return this.$store.getters.error
+      return this.$store.getters.errorId
     }
   },
   watch: {

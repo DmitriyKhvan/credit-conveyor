@@ -8,10 +8,22 @@
           <tr>
             <!-- <th class="text-left"></th> -->
             <th class="text-left" colspan="2">
-              <q-input square outlined v-model="application" dense label="Введите номер заявки" />
+              <q-input
+                square
+                outlined
+                v-model="application"
+                dense
+                label="Введите номер заявки"
+              />
             </th>
             <th class="text-right">
-              <q-input square outlined v-model="client" dense label="Введите ноименование клиента" />
+              <q-input
+                square
+                outlined
+                v-model="client"
+                dense
+                label="Введите ноименование клиента"
+              />
             </th>
             <th class="text-right">
               <q-select
@@ -24,11 +36,26 @@
               />
             </th>
             <th class="text-right" colspan="2">
-              <q-input outlined square dense label="Выберите дату" v-model="date" mask="##.##.####">
+              <q-input
+                outlined
+                square
+                dense
+                label="Выберите дату"
+                v-model="date"
+                mask="##.##.####"
+              >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy transition-show="scale" transition-hide="scale" ref="qDate">
-                      <q-date mask="DD.MM.YYYY" v-model="date" @input="() => $refs.qDate.hide()" />
+                    <q-popup-proxy
+                      transition-show="scale"
+                      transition-hide="scale"
+                      ref="qDate"
+                    >
+                      <q-date
+                        mask="DD.MM.YYYY"
+                        v-model="date"
+                        @input="() => $refs.qDate.hide()"
+                      />
                     </q-popup-proxy>
                   </q-icon>
                 </template>
@@ -59,58 +86,76 @@
           <tr v-for="(item, index) of applications" :key="item.id">
             <router-link
               :to="{
-              name: 'CreditCommiteeTask',
-              params: { id: item.applicationId },
-              query: {
-                date: item.modifiedDate,
-                applicationNumber: item.applicationNumber,
-                protocolNumber: item.additionalInfo
-                  ? item.additionalInfo.protocolNumber
-                  : null
-              }
-            }"
+                name: 'CreditCommiteeTask',
+                params: { id: item.applicationId },
+                query: {
+                  date: item.modifiedDate,
+                  applicationNumber: item.applicationNumber,
+                  protocolNumber: item.additionalInfo
+                    ? item.additionalInfo.protocolNumber
+                    : null
+                }
+              }"
               tag="td"
               class="text-center number applicationRow"
-            >{{ index + 1 }}</router-link>
+            >
+              {{ index + 1 }}
+            </router-link>
 
             <router-link
               :to="'creditCommiteeTask/' + item.id"
               tag="td"
               class="text-left number applicationRow"
-            >{{ item.applicationNumber }}</router-link>
+              >{{ item.applicationNumber }}</router-link
+            >
 
             <router-link
               :to="'creditCommiteeTask/' + item.id"
               tag="td"
               class="text-left number applicationRow"
-            >{{ item.clientName }}</router-link>
+              >{{ item.clientName }}</router-link
+            >
 
             <router-link
               :to="'creditCommiteeTask/' + item.id"
               tag="td"
               class="text-left number applicationRow"
-            >{{ item.applicationStatus }}</router-link>
+              >{{ item.applicationStatus }}</router-link
+            >
 
             <router-link
               :to="'creditCommiteeTask/' + item.id"
               tag="td"
               class="text-left number applicationRow"
-            >{{ item.modifiedDate }}</router-link>
+              >{{ item.modifiedDate }}</router-link
+            >
 
             <td class="text-left print">
               <div class="text-blue q-gutter-md">
-                <router-link to="/work/credit/registration" tag="span" class="icon">
+                <router-link
+                  to="/work/credit/registration"
+                  tag="span"
+                  class="icon"
+                >
                   <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
                   <q-icon name="print" size="md" />
                   <!--  -->
-                  <q-tooltip anchor="bottom left" self="top left">Распечатать файл</q-tooltip>
+                  <q-tooltip anchor="bottom left" self="top left"
+                    >Распечатать файл</q-tooltip
+                  >
                 </router-link>
 
-                <router-link to="/work/credit/registration" tag="span" class="icon">
+                <router-link
+                  to="/work/credit/registration"
+                  tag="span"
+                  class="icon"
+                >
                   <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
                   <q-icon name="cloud_download" size="md" />
                   <!--  -->
-                  <q-tooltip anchor="bottom left" self="top left">Скачать файл</q-tooltip>
+                  <q-tooltip anchor="bottom left" self="top left"
+                    >Скачать файл</q-tooltip
+                  >
                 </router-link>
               </div>
             </td>
@@ -141,7 +186,7 @@ export default {
             applicationStatus: "Формирование выписки секретарем",
             clientName: "Elena Elena Elena",
             clientInn: "111111111",
-            modifiedDate: "2020-02-14 12:22:54.001",
+            modifiedDate: "2020-02-14 12:22:54",
             users: [
               {
                 userLogin: "km_user1",
@@ -190,7 +235,7 @@ export default {
             applicationStatus: "eДоработка заявки",
             clientName: "Petrov Ivanovovich",
             clientInn: "111111111",
-            modifiedDate: "2020-03-18 17:30:14.689",
+            modifiedDate: "2020-03-18 17:30:14",
             users: [
               {
                 userLogin: "km_user1",
@@ -216,7 +261,7 @@ export default {
             applicationStatus: "Доработка заявки",
             clientName: "TIMUR TIMUR TIMUR",
             clientInn: "111111111",
-            modifiedDate: "2020-02-18 17:30:14.689",
+            modifiedDate: "2020-02-18 17:30:14",
             users: [
               {
                 userLogin: "km_user1",
@@ -233,60 +278,60 @@ export default {
             ]
           },
 
-          {
-            id: 156,
-            applicationId: "182",
-            businessProcessCode: "UNSECURITY_LOAN",
-            applicationNumber: "00846/000000062/35/2020/7",
-            branch: "00844",
-            applicationStatus: "Доработка заявки",
-            clientName: "TIMUR Alisher TIMUR",
-            clientInn: "111111111",
-            modifiedDate: "05.04.2020",
-            users: [
-              {
-                userLogin: "km_user1",
-                userName: "km_user1",
-                nfoRole: "KM",
-                bpmRole: "ROLE_KM_FL"
-              },
-              {
-                userLogin: "bo_user1",
-                userName: "bo_user1",
-                nfoRole: "BO",
-                bpmRole: "ROLE_BO"
-              }
-            ]
-          },
+          // {
+          //   id: 156,
+          //   applicationId: "182",
+          //   businessProcessCode: "UNSECURITY_LOAN",
+          //   applicationNumber: "00846/000000062/35/2020/7",
+          //   branch: "00844",
+          //   applicationStatus: "Доработка заявки",
+          //   clientName: "TIMUR Alisher TIMUR",
+          //   clientInn: "111111111",
+          //   modifiedDate: "05.04.2020",
+          //   users: [
+          //     {
+          //       userLogin: "km_user1",
+          //       userName: "km_user1",
+          //       nfoRole: "KM",
+          //       bpmRole: "ROLE_KM_FL"
+          //     },
+          //     {
+          //       userLogin: "bo_user1",
+          //       userName: "bo_user1",
+          //       nfoRole: "BO",
+          //       bpmRole: "ROLE_BO"
+          //     }
+          //   ]
+          // },
 
-          {
-            id: 157,
-            applicationId: "182",
-            businessProcessCode: "UNSECURITY_LOAN",
-            applicationNumber: "00846/000000062/35/2020/7",
-            branch: "00844",
-            applicationStatus: "rПроверка заявки",
-            clientName: "TIMUR Alisher TIMUR",
-            clientInn: "111111111",
-            modifiedDate: "05.02.2020",
-            users: [
-              {
-                userLogin: "km_user1",
-                userName: "km_user1",
-                nfoRole: "KM",
-                bpmRole: "ROLE_KM_FL"
-              },
-              {
-                userLogin: "bo_user1",
-                userName: "bo_user1",
-                nfoRole: "BO",
-                bpmRole: "ROLE_BO"
-              }
-            ]
-          }
+          // {
+          //   id: 157,
+          //   applicationId: "182",
+          //   businessProcessCode: "UNSECURITY_LOAN",
+          //   applicationNumber: "00846/000000062/35/2020/7",
+          //   branch: "00844",
+          //   applicationStatus: "rПроверка заявки",
+          //   clientName: "TIMUR Alisher TIMUR",
+          //   clientInn: "111111111",
+          //   modifiedDate: "05.02.2020",
+          //   users: [
+          //     {
+          //       userLogin: "km_user1",
+          //       userName: "km_user1",
+          //       nfoRole: "KM",
+          //       bpmRole: "ROLE_KM_FL"
+          //     },
+          //     {
+          //       userLogin: "bo_user1",
+          //       userName: "bo_user1",
+          //       nfoRole: "BO",
+          //       bpmRole: "ROLE_BO"
+          //     }
+          //   ]
+          // }
         ],
 
-        applications: [],
+        //applications: [],
 
         total: 2
       },
@@ -316,14 +361,12 @@ export default {
     };
   },
   async created() {
-    // try {
-      
-    //   await this.$store.dispatch("authBpm")
-    //   const app = await this.$store.dispatch("getCreditList")
-    //   this.loader = false
-
-    //   } catch (err) {}
-
+    try {
+      const auth = await this.$store.dispatch("authBpm");
+      console.log("auth", auth);
+      // const app = await this.$store.dispatch("getCreditList")
+      // this.loader = false
+      } catch (err) {}
   },
   mounted() {
     const filters = document.querySelectorAll(".filter");
@@ -388,6 +431,7 @@ export default {
         if (order) {
           //
           if (itemA < itemB) {
+            console.log("sorting")
             return -1;
           }
           if (itemA > itemB) {

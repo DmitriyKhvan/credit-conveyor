@@ -1,12 +1,15 @@
 import BpmService from "../../services/bpm.service";
 import storegeService from "../../services/storage.service";
 import { decode } from "jsonwebtoken";
-import CommonUtils from "../../shared/utils/CommonUtils";
+import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   state: {
     taskId: "",
-    errorMessage: null,
+    errorMessage: {
+      id: null, // чтоб различать две одинаковые ошибки
+      message: null
+    },
     roles: {
       Администратор: "CRM",
       CreditManager: "CRM",
@@ -14,8 +17,18 @@ export default {
       CreditCommitteeMember: "CCM",
       CreditSecretary: "CS"
     },
-    confirm: false,
+    loaderForm: true, // при загрузки формы preapproval
+    confirm: false, // для модального окна расчета кредита
     errorBar: false,
+    bpmService: new BpmService(),
+    icon: false,
+    loader: false,
+    iconMessage: "",
+    scannerSerialNumber: null,
+    disableBtn: false,
+    disableInput: false,
+    submitting: false,
+    loadMessage: "",
     personalData: {
       surname: "",
       name: "",
@@ -67,15 +80,7 @@ export default {
       maxPayment: 0, // Сколько может платить в месяц
       maxSum: 0 // Сколько максимум кредита можем выдать
     },
-    bpmService: new BpmService(),
-    icon: false,
-    loader: false,
-    iconMessage: "",
-    scannerSerialNumber: null,
-    disableBtn: false,
-    disableInput: false,
-    submitting: false,
-    loadMessage: ""
+    creditTasks: []
   },
   actions: {
     async authBpm({ state, dispatch, commit }) {
@@ -175,12 +180,26 @@ export default {
       try {
         const response = await state.bpmService.confirmationCredit({taskId: getters.taskId, data});
 
-        console.log('confirmCredit taskId ', response.nextTask.id)
+        //console.log('confirmCredit taskId ', response.nextTask.id)
         if (response.nextTask.id) {
           commit("setTaskId", response.nextTask.id)
         }
         
         return response
+      } catch (error) {
+        //console.log('errorMessage', error.response)
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setError", errorMessage);
+        sessionStorage.removeItem("csrf_token");
+      }
+    },
+
+    async getRoleTasks({ state, commit }) {
+      try {
+        const response = await state.bpmService.getRoleTasks();
+        if (response.infoList.length) {
+          commit("setCreditTasks", response.infoList)
+        }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
@@ -188,9 +207,12 @@ export default {
       }
     },
 
-    async getCreditList({ state, commit }) {
+    async getUserTasks({ state, commit }) {
       try {
-        return await state.bpmService.getCreditList();
+        const response = await state.bpmService.getUserTasks();
+        if (response.infoList.length) {
+          commit("setCreditTasks", response.infoList)
+        }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
@@ -280,7 +302,8 @@ export default {
     },
 
     setError(state, error) {
-      state.errorMessage = error;
+      state.errorMessage.message = error;
+      state.errorMessage.id = new Date();
     },
 
     clearError(state) {
@@ -292,13 +315,23 @@ export default {
       state.errorBar = payload;
     },
 
+    toggleLoaderForm(state, flag) {
+      state.loaderForm = flag
+    },
+
     setTaskId(state, payload) {
       state.taskId = payload
+    },
+
+    setCreditTasks(state, payload) {
+      state.creditTasks = payload
     }
   },
   getters: {
-    error: state => state.errorMessage,
+    error: state => state.errorMessage.message,
+    errorId: state => state.errorMessage.id,
     errorBar: state => state.errorBar,
-    taskId: state => state.taskId
+    taskId: state => state.taskId,
+    creditTasks: state => state.creditTasks
   }
 };
