@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <appLoader v-if="loaderForm" />
+  <div class="registration">
+    <div class="loaderForm" v-if="loaderForm">
+      <appLoader />
+    </div>
 
     <div v-else class="q-pa-md row justify-center">
-      <form @submit.prevent.stop="onSubmit" style="width: 70%">
-        <div class="row q-gutter-md">
+      <form @submit.prevent.stop="onSubmit">
+        <div class="row q-col-gutter-md">
           <div class="col-7">
             <!-- Private data person -->
             <div class="privat-data tab">
@@ -23,7 +25,7 @@
                     label="Фамилия"
                     lazy-rules
                     :rules="[
-                      val => (val && val.length > 1) || 'Введите фамилию'
+                      (val) => (val && val.length > 1) || 'Введите фамилию',
                     ]"
                   />
                   <q-input
@@ -36,7 +38,7 @@
                     :disable="disableInput"
                     label="Имя"
                     lazy-rules
-                    :rules="[val => (val && val.length > 3) || 'Введите имя']"
+                    :rules="[(val) => (val && val.length > 3) || 'Введите имя']"
                   />
                   <q-input
                     ref="mname"
@@ -59,9 +61,9 @@
                     mask="#########"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length >= 9) ||
-                        'Количество символов должно быт болше или ровно 9'
+                      (val) =>
+                        (val && val.length == 9) ||
+                        'Количество символов должно быт ровно 9',
                     ]"
                   />
                   <q-input
@@ -74,8 +76,8 @@
                     mask="+### (##) ### ## ##"
                     lazy-rules
                     :rules="[
-                      val =>
-                        (val && val.length === 19) || 'Введите номер телефона'
+                      (val) =>
+                        (val && val.length === 19) || 'Введите номер телефона',
                     ]"
                   />
                   <q-input
@@ -90,7 +92,7 @@
                     mask="##############"
                     lazy-rules
                     :rules="[
-                      val => (val && val.length === 14) || 'Введите ПНФЛ'
+                      (val) => (val && val.length === 14) || 'Введите ПНФЛ',
                     ]"
                   />
                   <q-input
@@ -105,15 +107,18 @@
                     mask="AA#######"
                     lazy-rules
                     :rules="[
-                      val =>
+                      (val) =>
                         (val && val.length === 9) ||
-                        'Введите Серию и номер паспорта'
+                        'Введите Серию и номер паспорта',
                     ]"
                   />
                 </div>
 
                 <div class="col-5 row content-between justify-end">
-                  <div v-if="personalData.personPhoto" class="personPhoto_block">
+                  <div
+                    v-if="personalData.personPhoto"
+                    class="personPhoto_block"
+                  >
                     <img
                       :src="'data:image/png;base64,' + personalData.personPhoto"
                       alt
@@ -130,20 +135,10 @@
                 </div>
               </div>
 
-              <!-- Preloader auto compleate -->
-              <div class="row justify-center loader" v-if="loader">
-                <q-spinner-ios color="primary" size="2em" />
-                <q-tooltip :offset="[0, 8]">Пожалуйста подождите</q-tooltip>
-              </div>
-
-              <!-- Button auto complete person data -->
-              <div v-else>
-                <app-auto-complete-data></app-auto-complete-data>
-              </div>
-
-              <div class="row justify-between">
-                <div class="creditContent" ref="creditContent">
+              <div class="row q-col-gutter-md justify-between">
+                <div class="col-6">
                   <q-select
+                    ref="typeCredit"
                     square
                     outlined
                     v-model="personalData.typeCredit"
@@ -152,47 +147,63 @@
                     label="Кредитный продукт"
                     emit-value
                     map-options
-                    class="q-pb-sm"
+                    :rules="[(val) => !!val || 'Выберите кредитный продукт']"
                   />
                 </div>
-
-                <div class="creditContent" ref="creditContent">
+                <div class="col-6">
                   <q-select
+                    v-if="!!personalData.typeCredit"
+                    ref="typeStepCredit"
                     square
                     outlined
                     v-model="personalData.typeStepCredit"
                     :options="options.typeStepCredits"
                     dense
                     label="Тип погашения кредита"
-                    class="q-pb-sm"
+                    emit-value
+                    map-options
+                    :rules="[
+                      (val) => !!val || 'Выберите тип погашения кредита',
+                    ]"
                   />
                 </div>
+              </div>
 
-                <div class="col-12 text-white">
-                  <q-badge color="secondary">
-                    Model: {{ periodCredit }} (0 to 12, step 1)
-                  </q-badge>
+              <div v-if="!!personalData.typeCredit" class="col-12">
+                <h6 class="periodCredit">Выберите срок кредита</h6>
+                <q-badge color="secondary">
+                  Срок: {{ personalData.periodCredit }} ({{
+                    periodCreditMin
+                  }}
+                  до {{ periodCreditMax }})
+                </q-badge>
+                <q-slider
+                  v-model.number="personalData.periodCredit"
+                  :min="periodCreditMin"
+                  :max="periodCreditMax"
+                  :step="1"
+                  label
+                  label-always
+                  color="light-green"
+                  :rules="[(val) => !!val || 'Выберите срок кредита']"
+                />
+              </div>
 
-                  <q-slider
-                    v-model="periodCredit"
-                    :min="0"
-                    :max="12"
-                    :step="1"
-                    
-                    label
-                    label-always
-                    color="light-green"
-                  />
-                </div>
+              <div class="row col-12 justify-center items-center">
+                <!-- Preloader auto compleate -->
+                <appLoader v-if="loader" />
+
+                <!-- Button auto complete person data -->
+                <app-auto-complete-data v-else />
               </div>
             </div>
           </div>
 
-          <div class="col">
+          <div class="col-5">
             <!-- Family status -->
             <div class="family-status tab">
               <h4 class="tab-title" ref="familyStatus">Семейное положение</h4>
-              <div class="tab-content" ref="tabContent">
+              <div class="tab-content q-col-gutter-md" ref="tabContent">
                 <q-select
                   square
                   outlined
@@ -200,7 +211,8 @@
                   :options="options.family"
                   dense
                   label="Семейное положения"
-                  class="q-pb-sm"
+                  emit-value
+                  map-options
                 />
                 <q-select
                   square
@@ -209,24 +221,26 @@
                   :options="options.children"
                   dense
                   label="Есть ли дети"
-                  class="q-pb-sm"
+                  emit-value
+                  map-options
                 />
                 <q-input
-                  v-if="personalData.children == 'Да'"
+                  v-if="personalData.children"
                   square
                   outlined
-                  v-model="personalData.childrenCount"
+                  v-model.number="personalData.childrenCount"
                   mask="##"
                   dense
                   label="Количество детей до 18 лет"
-                  class="q-pb-sm"
                 />
               </div>
             </div>
 
             <!-- Expense/income -->
             <div class="expense-income tab">
-              <h4 class="tab-title" ref="expenseIncome">Ежемесячные расходы/доходы</h4>
+              <h4 class="tab-title" ref="expenseIncome">
+                Ежемесячные расходы/доходы
+              </h4>
               <div class="tab-content" ref="tabContent">
                 <q-input
                   ref="income"
@@ -238,9 +252,9 @@
                   label="Подтвержденный ежемесячный доход"
                   lazy-rules
                   :rules="[
-                    val =>
+                    (val) =>
                       (val && val.length !== null) ||
-                      'Поля должно быт заполнено'
+                      'Поля должно быт заполнено',
                   ]"
                 />
                 <q-input
@@ -272,27 +286,26 @@
                   :options="options.extIncOption"
                   dense
                   label="Наличие дополнительного дохода"
-                  class="q-pb-sm"
+                  emit-value
+                  map-options
                 />
                 <q-input
-                  v-if="personalData.externalIncome == 'Да'"
+                  v-if="personalData.externalIncome"
                   square
                   outlined
                   v-model.number="personalData.externalIncomeSize"
                   type="number"
                   dense
                   label="Размер дополнительного дохода"
-                  class="q-pb-sm"
                 />
                 <q-select
-                  v-if="personalData.externalIncome == 'Да'"
+                  v-if="personalData.externalIncome"
                   square
                   outlined
                   v-model="personalData.additionalIncomeSource"
                   :options="options.additIncSourOption"
                   dense
                   label="Источник дополнительного дохода"
-                  class="q-pb-sm"
                 />
               </div>
 
@@ -312,8 +325,9 @@
       <!-- DigID Network error! -->
       <app-dig-id-network-error></app-dig-id-network-error>
 
+      <apploaderFullScreen v-if="loaderPreApproval"></apploaderFullScreen>
       <!-- Pre-Approval -->
-      <app-pre-approval></app-pre-approval>
+      <app-pre-approval v-else></app-pre-approval>
     </div>
   </div>
 </template>
@@ -324,6 +338,7 @@ import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
 import Loader from "@/components/Loader";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 // Vue.config.errorHandler = function(err, vm, info) {
 //   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
@@ -332,64 +347,89 @@ import Loader from "@/components/Loader";
 export default {
   data() {
     return {
-      periodCredit: 0,
+      periodCreditMin: null,
+      periodCreditMax: null,
       loader: true,
-      loaderForm: false,
+      loaderForm: true,
+      loaderPreApproval: false,
       options: {
         family: [
-          "Женат",
-          "Замужем",
-          "Холост",
-          "Не замужем",
-          "Вдова",
-          "Вдовец",
-          "Разведен",
-          "Разведена",
-          "Вдовец",
-          "Гражданский брак"
+          {
+            label: "Нет",
+            value: false,
+          },
+          {
+            label: "Женат / замужем",
+            value: true,
+          },
         ],
-        children: ["Да", "Нет"],
+        children: [
+          {
+            label: "Да",
+            value: true,
+          },
+          {
+            label: "Нет",
+            value: false,
+          },
+        ],
         // MONEY //
-        extIncOption: ["Да", "Нет"], //наличие дополнительного дохода
+        extIncOption: [
+          {
+            label: "Да",
+            value: true,
+          },
+          {
+            label: "Нет",
+            value: false,
+          },
+        ], //наличие дополнительного дохода
         additIncSourOption: [
           "Работа по найму",
           "Аренда движимого имущетсва",
           "Аренда недвижимого имущества",
           "Предпринимательская деятельность",
           "Дивиденды",
-          "Другое"
+          "Другое",
         ], //источник дополнительного дохода
 
         typeCredits: [],
 
-        typeStepCredit: []
-      }
+        typeStepCredits: [],
+      },
     };
   },
   async created() {
-    this.$store.commit('clearError')
-    
+    this.$store.commit("resetPersonData");
+
     try {
+      const auth = await this.$store.dispatch("authBpm");
+      console.log("auth", auth);
 
-      const auth = await this.$store.dispatch("authBpm")
-      console.log('auth', auth)
-      const process = await this.$store.dispatch("startProcess")
+      const process = await this.$store.dispatch("startProcess");
 
-      console.log('process', process)
-      for (let typeCredit of process.userTaskInstances.user_task_instances[0].input) {
+      // console.log("process", process);
+      // this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
+
+      this.personalData.spouseCost =
+        process.userTaskCreditDetailed.input.spouseCost;
+      this.personalData.childCost =
+        process.userTaskCreditDetailed.input.childCost;
+
+      for (let typeCredit of process.userTaskCreditDetailed.input.credits) {
         const credits = {
           label: typeCredit.creditName.name,
           value: typeCredit.creditName.value,
           period: typeCredit.period,
-          paymentTypes: typeCredit.paymentTypes
-        }
+          loanRate: typeCredit.loanRateBase,
+          paymentTypes: typeCredit.paymentTypes,
+        };
 
-        this.options.typeCredits.push(credits)
+        this.options.typeCredits.push(credits);
       }
 
-      console.log(this.options.typeCredits)
+      console.log("typeCredits", this.options.typeCredits);
       this.loaderForm = false;
-
     } catch (error) {}
 
     try {
@@ -397,7 +437,7 @@ export default {
       this.$store.commit("sentScannerSerialNumber", scannerSerial);
       this.loader = false;
     } catch (err) {
-      console.log('DigId', err);
+      console.log("DigId", err);
       this.loader = false;
     }
   },
@@ -414,19 +454,62 @@ export default {
     personalData() {
       return this.$store.state.credits.personalData;
     },
-    typeCredit() {
-      return this.$store.getters.typeCredit
-    }
+    credits() {
+      return this.$store.state.credits;
+    },
   },
   watch: {
-    typeCredit(credit) {
-      console.log('Вид кредита', credit)
-      const idxCredit = this.options.typeCredits.findIndex(item => item.value == credit)
-      //this.options.typeStepCredit = 
-    }
+    "personalData.typeCredit"(credit) {
+      this.personalData.typeStepCredit = null;
+      this.options.typeStepCredits = [];
+      this.periodCreditMin = null;
+      this.periodCreditMax = null;
+      this.personalData.periodCredit = 0;
+      this.personalData.loanRate = 0;
+
+      const idxCredit = this.options.typeCredits.findIndex(
+        (item) => item.value == credit
+      );
+
+      if (idxCredit !== -1) {
+        for (let typeStepCredits of this.options.typeCredits[idxCredit]
+          .paymentTypes) {
+          const stepCredit = {
+            label: typeStepCredits.name,
+            value: typeStepCredits.value,
+          };
+          this.options.typeStepCredits.push(stepCredit);
+        }
+
+        this.periodCreditMin = Number(
+          this.options.typeCredits[idxCredit].period[0].value
+        );
+        this.periodCreditMax = Number(
+          this.options.typeCredits[idxCredit].period[1].value
+        );
+        this.personalData.periodCredit = Number(
+          this.options.typeCredits[idxCredit].period[0].value
+        );
+        this.personalData.loanRate = Number(
+          this.options.typeCredits[idxCredit].loanRate
+        );
+      }
+    },
+    "personalData.children"(status) {
+      if (!status) {
+        this.personalData.childrenCount = 0;
+      }
+    },
+
+    "personalData.externalIncome"(status) {
+      if (!status) {
+        this.personalData.externalIncomeSize = 0;
+        this.personalData.additionalIncomeSource = "";
+      }
+    },
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       this.$refs.surname.validate();
       this.$refs.name.validate();
       //this.$refs.mname.validate();
@@ -434,6 +517,14 @@ export default {
       this.$refs.phone.validate();
       this.$refs.pinpp.validate();
       this.$refs.pasport.validate();
+
+      this.$refs.typeCredit.validate();
+
+      if (!!this.personalData.typeCredit) {
+        this.$refs.typeStepCredit.validate();
+      } else {
+        this.validItems("typeStepCredit");
+      }
 
       this.$refs.income.validate();
       this.$refs.expense.validate();
@@ -447,6 +538,8 @@ export default {
         this.$refs.phone.hasError ||
         this.$refs.pinpp.hasError ||
         this.$refs.pasport.hasError ||
+        this.$refs.typeCredit.hasError ||
+        this.$refs.typeStepCredit.hasError ||
         this.$refs.income.hasError ||
         this.$refs.expense.hasError ||
         this.$refs.otherExpenses.hasError
@@ -454,141 +547,187 @@ export default {
         this.formHasError = true;
       } else {
         this.$store.commit("loadMessageChange", "");
+        this.loaderPreApproval = true;
+        const {
+          children,
+          familyStatus,
+          childrenCount,
+          typeStepCredit,
+          typeCredit,
+          income,
+          otherExpenses,
+          expense,
+          externalIncomeSize,
+          name,
+          surname,
+          mname,
+          passport,
+          phone,
+          inn,
+          pinpp,
+          periodCredit,
+          loanRate,
+          spouseCost,
+          childCost,
+        } = this.personalData;
 
-        // Настройки кредиты
-        let spouseCost = 300000; // Стоимость жены
-        let childCost = 200000; // Стоимость ребенка
-        let loanRate = 25; // Ставка по кредиту (%)
-        let creditTerm = 60; // Срок кредита (месяцы)
-
-        // Расчеты по семейному статусу
-        let spouse = 0;
-        let child = 0;
-        if (
-          this.personalData.familyStatus === "Женат" ||
-          this.personalData.familyStatus === "Замужем"
-        ) {
-          // Если женат/замужем, то добавляем расходы на супругу/супруга
-          spouse = spouseCost;
-        }
-        if (this.personalData.children === "Да") {
-          // Если есть дети, умножаем детей количество детей на их стоимость
-          child = parseInt(this.personalData.childrenCount) * childCost;
-        }
-
-        // Расчеты максимальной суммы
-        let finInc =
-          (parseInt(this.personalData.income) +
-            parseInt(this.personalData.externalIncomeSize)) *
-          0.8;
-        let finExp =
-          spouse +
-          child +
-          parseInt(this.personalData.expense) +
-          parseInt(this.personalData.otherExpenses);
-        let maxPayment = finInc - finExp;
-        let percent = loanRate / 100 / 12;
-        let maxSum = parseInt(
-          maxPayment /
-            (percent + percent / (Math.pow(1 + percent, creditTerm) - 1))
-        );
-
-        let resp = {
-          income: finInc, // Сколько дохода учитываем
-          expense: finExp, // Сколько расходов
-          maxPayment: maxPayment, // Сколько может платить в месяц
-          maxSum: maxSum // Сколько максимум кредита можем выдать
-          //preApprovalForm: true
+        const data = {
+          output: [
+            {
+              name: "preApp",
+              data: {
+                maritalInfo: {
+                  childrens: children,
+                  status: familyStatus,
+                  childrenCount: Number(childrenCount),
+                },
+                payment_id: Number(typeStepCredit),
+                loan_product_id: Number(typeCredit),
+                finance: {
+                  incomingOther: externalIncomeSize, //доп. доход
+                  expensesOther: otherExpenses, //др. переод. расходы
+                  expensesPeriodic: expense, //переод. расходы
+                  incomingConfirm: income, //ежем. доход
+                },
+                customer: {
+                  firstName: name,
+                  lastName: surname,
+                  middleName: mname,
+                  passport: {
+                    number: Number(passport.slice(2)),
+                    series: passport.slice(0, 2),
+                  },
+                  mainPhone: phone.replace(/[\s+()]/g, ""),
+                  tin: Number(inn),
+                  pinpp,
+                },
+              },
+            },
+            {
+              name: "creditProduct",
+              data: {
+                spouseCost: Number(spouseCost),
+                childCost: Number(childCost),
+                creditTerm: Number(periodCredit),
+                loanRate: Number(loanRate),
+              },
+            },
+          ],
         };
 
-        // eslint-disable-next-line
-        // console.log("Результаты вычисления", resp);
+        //console.log(JSON.stringify(data, null, 2))
 
-        this.$store.commit("toggleConfirm", true);
-        this.$store.commit("creditConfirm", resp);
+        try {
+          const resCredit = await this.$store.dispatch(
+            "calculationCredit",
+            data
+          );
 
-        console.log("jjjj", this.personalData);
-        
+          this.credits.reasonsList = resCredit.nextTask.input.reasonsList;
+
+          const resp = {
+            income: resCredit.nextTask.input.incoming, // Сколько дохода учитываем
+            expense: resCredit.nextTask.input.expenses, // Сколько расходов
+            maxPayment: resCredit.nextTask.input.payment, // Сколько может платить в месяц
+            maxSum: resCredit.nextTask.input.sum, // Сколько максимум кредита можем выдать
+          };
+
+          this.$store.commit("toggleConfirm", true);
+          this.$store.commit("creditConfirm", resp);
+          this.loaderPreApproval = false;
+        } catch (e) {}
       }
-    }
+    },
+
+    validItems(itemsValid, itemValid = true) {
+      if (!itemValid) {
+        this.$refs[itemsValid] = {
+          hasError: true, //не валидный
+        };
+      } else {
+        this.$refs[itemsValid] = {
+          hasError: false, //валидный
+        };
+      }
+    },
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
     appDigIdNetworkError: DigIdNetworkError,
-    appLoader: Loader
-  }
+    appLoader: Loader,
+    apploaderFullScreen: LoaderFullScreen,
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.tab-title {
-  background-color: #ededed;
-  color: #0e3475;
-  margin-top: 7px;
-  padding: 9px 11px;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 16px;
-  //text-transform: uppercase
+.loaderForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
 }
 
-.tab-content {
-  color: #212121;
+.creditConveyor {
+  .tab-title {
+    background-color: #ededed;
+    color: #0e3475;
+    margin-top: 20px;
+    padding: 9px 11px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+    //text-transform: uppercase
+  }
+
+  .tab-content {
+    color: #212121;
+  }
+
+  .personPhoto_block,
+  .default_personPhoto_block {
+    width: 94%;
+    height: auto;
+    border: 1px solid #acacac;
+  }
+
+  .personPhoto,
+  .default_personPhoto {
+    width: 100%;
+    display: block;
+  }
+
+  // .creditContent {
+  //   width: 48%;
+  // }
+
+  .loader {
+    margin-bottom: 15px;
+  }
+
+  .q-btn--rectangle {
+    border-radius: 0;
+  }
+
+  // .q-field--with-bottom,
+  // .q-pb-sm {
+  //   padding-bottom: 16px;
+  // }
+
+  .q-field__native,
+  .q-field__prefix,
+  .q-field__suffix {
+    color: #acacac;
+  }
+
+  .q-field__bottom {
+    padding: 1px 0 0 10px;
+  }
+
+  .periodCredit {
+    margin: 0;
+  }
 }
-
-.personPhoto_block,
-.default_personPhoto_block {
-  width: 94%;
-  height: auto;
-  border: 1px solid #acacac;
-}
-
-.personPhoto,
-.default_personPhoto {
-  width: 100%;
-  display: block;
-}
-
-.creditContent {
-  width: 48%;
-}
-
-.loader {
-  margin-bottom: 15px;
-}
-
-.q-btn--rectangle {
-  border-radius: 0;
-}
-
-.q-field--with-bottom,
-.q-pb-sm {
-  padding-bottom: 16px;
-}
-
-.q-field__native,
-.q-field__prefix,
-.q-field__suffix {
-  color: #acacac;
-}
-</style>
-
-<style lang="scss">
-.q-field__bottom {
-  padding: 1px 0 0 10px;
-}
-
-//   .q-btn--rectangle {
-//     border-radius: 0;
-//   }
-
-//   .q-field--with-bottom, .q-pb-sm {
-//     padding-bottom: 16px;
-//   }
-
-//   .q-field__native, .q-field__prefix, .q-field__suffix {
-//     color: #acacac;
-//   }
 </style>

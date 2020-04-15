@@ -2,22 +2,18 @@
   <div class="topicBlock">
     <div class="headTopic">
       <h2 class="titleTopic">{{ topicName }}</h2>
-      <div class="timeBlock">
-        <h3 class="titleTime">Оставшееся время</h3>
-        <span class="time"></span>
-      </div>
+      <appTimer />
     </div>
-    
+
     <q-card>
       <q-tabs
         v-model="tab"
-        
         dense
         class="text-grey cardVisible"
         active-color="primary"
         indicator-color="primary"
         align="justify"
-        narrow-indicator        
+        narrow-indicator
       >
         <q-tab
           v-for="(test, index) of answerTest"
@@ -26,10 +22,10 @@
           :label="index + 1"
           icon="accessibility_new"
           class="cardVisible"
-          :class="tabColor(index, test.answered)" 
-          @click="setColorView(index)"         
+          :class="tabColor(index, test.answered)"
+          @click="setColorView(index)"
         />
-          
+
         <!-- <q-tab name="alarms" label="Alarms" />
         <q-tab name="movies" label="Movies" />-->
       </q-tabs>
@@ -41,14 +37,9 @@
           <div class="text-h6">{{index + 1}}. {{ test.question_text }}</div>
 
           <!-- <q-form @submit="onSubmit(1)" class="q-gutter-md"> -->
-          <q-item
-            tag="label"
-            v-for="(variant, i) of test.variants"
-            :key="variant.id"
-          >
+          <q-item tag="label" v-for="(variant, i) of test.variants" :key="variant.id">
             <q-item-section avatar class="radioBlock">
               <q-radio
-                
                 v-model="answerTest[index].variant_text"
                 :val="variant.answer_text"
                 @input="
@@ -58,13 +49,15 @@
                     test.topic_id,
                     variant.id,
                     variant.answer_text,
-                    (duration = 0)
                   )
                 "
               />
             </q-item-section>
             <q-item-section :class="varActive(variant.id)">
-              <q-item-label caption class="varContainer"><span class="abc">{{ abc[i] }}</span> {{ variant.answer_text }}</q-item-label>
+              <q-item-label caption class="varContainer">
+                <span class="abc">{{ abc[i] }}</span>
+                {{ variant.answer_text }}
+              </q-item-label>
             </q-item-section>
           </q-item>
 
@@ -80,11 +73,11 @@
     <div class="answer_block">
       <div>
         <span class="typeAnswer blue"></span>
-        <p class="typeAnswerText">Отмеченные вопросы</p>
+        <p class="typeAnswerText">{{$t('tables.education.test.marked_questions')}}</p>
         <span class="typeAnswer green"></span>
-        <p class="typeAnswerText">Не отмеченные вопросы</p>
+        <p class="typeAnswerText">{{$t('tables.education.test.not_marked_questions')}}</p>
         <span class="typeAnswer white"></span>
-        <p class="typeAnswerText">Не посещенные вопросы</p>
+        <p class="typeAnswerText">{{$t('tables.education.test.not_visited_questions')}}</p>
       </div>
     </div>
 
@@ -92,16 +85,16 @@
       <div>
         <q-btn
           icon="keyboard_arrow_left"
-          label="Предыдущий"
+          :label="$t('tables.education.test.previous')"
           color="primary"
           @click="prevTest(1)"
           :disabled="prevDisabled"
           class="q-ml-sm"
         />
-        
+
         <q-btn
           icon="how_to_reg"
-          label="Сдать тест"
+          :label="$t('tables.education.test.end_test')"
           color="primary"
           @click="completeTest()"
           class="q-ml-sm"
@@ -109,7 +102,7 @@
 
         <q-btn
           icon-right="keyboard_arrow_right"
-          label="Следующий"
+          :label="$t('tables.education.test.next')"
           color="primary"
           @click="nextTest(1)"
           :disabled="nextDisabled"
@@ -121,6 +114,7 @@
 </template>
 <script>
 import ApiService from "@/services/api.service";
+import Timer from "./components/Timer";
 
 export default {
   data() {
@@ -141,24 +135,13 @@ export default {
       answerTest: [],
       nextDisabled: false,
       prevDisabled: true,
-      timer: null,
-      //time: "", // обратный отчет
-      timeCurQuestion: 0,
-      timerCurQuestion: null,
-      duration: 0,
+      timeCurQuestion: Date.now(),
       target_date: null,
       queue: [0],
-      //target_date: new Date().getTime() + (1000 * 3600), // установить дату обратного отсчета
-      days: null,
-      hours: null,
-      minutes: null,
-      seconds: null, // переменные для единиц времени
-      abc: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']
+      abc: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]
     };
   },
   created() {
-    //console.log(this.$router.currentRoute);
-
     this.getTests(this.id)
       .then(res => {
         this.data.session_id = "" + Math.round(Math.random() * 100000000);
@@ -168,9 +151,10 @@ export default {
         this.data.ques_amount = res.data.ques_amount;
 
         this.topic = res;
-        this.target_date = new Date().getTime() + 1000 * res.data.duration;
+        //Timer
+        const targetDate = new Date().getTime() + 1000 * res.data.duration;
 
-        this.getCountdown();
+        this.$store.commit("setTargetDate", targetDate);
 
         for (let question of this.topic.questions) {
           this.data.answers.push({
@@ -192,26 +176,18 @@ export default {
       });
   },
   mounted() {
-    this.timer = setInterval(() => {
-      this.getCountdown();
-    }, 1000);
-    this.getCountUp();
-    const tabover = document.getElementsByClassName("q-tabs__content")
-    tabover[1].style.cssText = "overflow: visible"
-    
+    const tabover = document.getElementsByClassName("q-tabs__content");
+    tabover[1].style.cssText = "overflow: visible";
   },
-  beforeDestroy() {
-    clearInterval(this.timer);
-    clearInterval(this.timerCurQuestion);
+  updated() {
+    console.log("updated");
   },
   watch: {
     tab() {
-
       // const el = document.querySelector('.q-tab--active')
       // const icon = '<i class="material-icons">accessibility_new</i>'
 
       // el.append(innerHtml);
-      
 
       if (this.tab < this.data.answers.length - 1 && this.tab > 0) {
         this.nextDisabled = false;
@@ -226,19 +202,13 @@ export default {
 
       this.queue.push(this.tab);
 
-      this.countTimeCurQuestion(2);
-
-      clearInterval(this.timerCurQuestion);
-      //this.getCountUp();
-
-      
-    },
+      this.countTimeCurQuestion(2); // 2 - предпоследний элемент
+    }
   },
-  updated () {
+  updated() {
     // this.data.answers.forEach(element => {
     //   console.log(element.variant_id)
     // });
-    
     // if(this.data.answers.variant_id) console.log('вопросы', this.data.answers.variant_id)
   },
   computed: {
@@ -247,26 +217,22 @@ export default {
     }
   },
   methods: {
-    // onSubmit(count) {
-    //   console.log(this.answerTest);
-    //   this.tab = this.tab + count;
-    //   this.answerTest = "";
-    // },
-    tabColor (i, answer) {
-      const start = this.tabView.length
-      const view = this.tabView.find(e => e === i)
-      if(answer) {
-        return 'answered'
+    tabColor(i, answer) {
+      const start = this.tabView.length;
+      const view = this.tabView.find(e => e === i);
+      if (answer) {
+        return "answered";
       } else if (view || i === 0) {
-        return 'tabView'
-      } 
+        return "tabView";
+      }
     },
-    setColorView (i) {
-      if(!this.tabView.find(e => e === i)) this.tabView.push(i)
+    setColorView(i) {
+      if (!this.tabView.find(e => e === i)) this.tabView.push(i);
     },
     varActive(id) {
-      if(this.data.answers.find(e => e.variant_id === id)) return 'varActive'      
-    },    
+      console.log("varActive");
+      if (this.data.answers.find(e => e.variant_id === id)) return "varActive";
+    },
     async getTests(id) {
       return (await ApiService.get(`/test/get?id=${id}`)).data;
     },
@@ -275,37 +241,27 @@ export default {
     },
     nextTest(count) {
       this.tab = this.tab + count;
-      this.setColorView (this.tab)
+      this.setColorView(this.tab);
     },
     prevTest(count) {
       this.tab = this.tab - count;
-      this.setColorView (this.tab)
+      this.setColorView(this.tab);
     },
-    sentAnswer(
-      index,
-      question_id,
-      topic_id,
-      variant_id,
-      variant_text,
-      duration
-    ) {
-      
-      //clearInterval(this.timerCurQuestion)
-
-      //const timeAnswer = this.answers[index].duration + this.timeCurQuestion
-
+    sentAnswer(index, question_id, topic_id, variant_id, variant_text) {
       const answer = {
         ques_id: question_id,
         topic_id,
-        variant_id,
-        duration: 0
+        variant_id
       };
+
       this.data.answers = [
         ...this.data.answers.slice(0, index),
-        answer,
+        {
+          ...this.data.answers.slice(index, index + 1)[0],
+          ...answer
+        },
         ...this.data.answers.slice(index + 1)
       ];
-      
 
       const variantAnswer = {
         question_id,
@@ -320,8 +276,8 @@ export default {
       ];
     },
     completeTest() {
-      console.log('data', this.data)
-      this.countTimeCurQuestion(1);
+      console.log("data", this.data);
+      this.countTimeCurQuestion(1); // 1 последний элемент
 
       this.data.end_time = this.curDate();
 
@@ -332,44 +288,13 @@ export default {
             quesAmount: this.data.ques_amount
           };
           this.$store.commit("sentAnswersTest", payload);
-          this.$store.commit('setResTest', res.message)
+          this.$store.commit("setResTest", res.message);
+
+          this.$router.push({ path: "/completeTest" });
         })
         .catch(err => {
           console.log(err);
         });
-      
-      
-      this.$router.push({ path: "/completeTest" });
-    },
-    getCountdown() {
-      let current_date = new Date().getTime();
-      let seconds_left = (this.target_date - current_date) / 1000;
-
-      this.days = this.pad(parseInt(seconds_left / 86400));
-      seconds_left = seconds_left % 86400;
-
-      this.hours = this.pad(parseInt(seconds_left / 3600));
-      seconds_left = seconds_left % 3600;
-
-      this.minutes = this.pad(parseInt(seconds_left / 60));
-      this.seconds = this.pad(parseInt(seconds_left % 60));
-
-      // строка обратного отсчета  + значение тега
-
-      //this.time = this.days + "</span><span>" + this.hours + "</span><span>" + this.minutes + "</span><span>" + this.seconds + "</span>";
-      this.time = this.hours + ":" + this.minutes + ":" + this.seconds;
-      if (this.time == "00:00:00") {
-        this.completeTest();
-      }
-    },
-    pad(n) {
-      return (n < 10 ? "0" : "") + n;
-    },
-    getCountUp() {
-      this.timeCurQuestion = 0;
-      this.timerCurQuestion = setInterval(() => {
-        this.timeCurQuestion = this.timeCurQuestion + 1;
-      }, 1000);
     },
 
     curDate() {
@@ -398,12 +323,15 @@ export default {
     },
 
     countTimeCurQuestion(el) {
-      // нужно оптимизировать!!!
+      this.timeCurQuestion = Math.round(
+        (Date.now() - this.timeCurQuestion) / 1000
+      ); // количество секунд
+
       const index = this.queue[this.queue.length - el];
-      //
+
       const timeAnswer =
         this.data.answers[index].duration + this.timeCurQuestion;
-      
+
       const answer = {
         ...this.data.answers[index],
         duration: timeAnswer
@@ -413,7 +341,12 @@ export default {
         answer,
         ...this.data.answers.slice(index + 1)
       ];
+
+      this.timeCurQuestion = Date.now(); // время прошедшее от 1970г. в секундах
     }
+  },
+  components: {
+    appTimer: Timer
   }
 };
 </script>
@@ -442,14 +375,12 @@ export default {
   font-size: 22px;
 }
 
-.topicBlock  .titleTime {
+.topicBlock .titleTime {
   position: relative;
   margin: 0;
   font-size: 22px;
   margin-right: 20px;
 }
-
-
 
 /* .titleTime::before {
   position: absolute;
@@ -464,7 +395,7 @@ export default {
 } */
 
 .topicBlock .time {
-  color: #ff0000
+  color: #ff0000;
 }
 
 .topicBlock .testLi {
@@ -484,10 +415,10 @@ export default {
 }
 
 .q-tab--active {
-  
 }
 
-.topicBlock .answered, .topicBlock .tabView {
+.topicBlock .answered,
+.topicBlock .tabView {
   background: #00aeef;
   color: white !important;
 }
@@ -514,7 +445,7 @@ export default {
   margin: 30px auto 0;
 }
 
-.topicBlock .q-tabs__content--align-justify .q-tab {
+/* .topicBlock .q-tabs__content--align-justify .q-tab {
   flex: 0 0 auto;
   padding: 0;
   width: 26px;
@@ -522,10 +453,17 @@ export default {
   border: 1px solid #d7d7d7;
   border-radius: 50%;
   margin-right: 20px;
-}
+} */
 
 .topicBlock .q-tab {
   min-height: 26px;
+  flex: 0 0 auto;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d7d7d7;
+  border-radius: 50%;
+  margin-right: 20px;
 }
 
 .topicBlock .q-card {
@@ -541,13 +479,12 @@ export default {
   border: 1px solid #ccc;
 }
 
-
-
 .topicBlock .radioBlock {
   display: none;
 }
 
-.topicBlock .answer_block, .topicBlock .button_block {
+.topicBlock .answer_block,
+.topicBlock .button_block {
   display: flex;
   justify-content: center;
   margin: 10px 0 40px 0;
@@ -598,7 +535,10 @@ export default {
 .topicBlock .button_block button {
   margin: 0 10px;
 }
-.radioBlock[data-v-353b6ad8], .variantBlock[data-v-353b6ad8] {border: none;}
+.radioBlock[data-v-353b6ad8],
+.variantBlock[data-v-353b6ad8] {
+  border: none;
+}
 
 .topicBlock .varActive {
   border: 1px #3d5afe solid;
@@ -621,7 +561,10 @@ export default {
   display: block !important;
   color: #3d5afe;
 }
-.topicBlock .q-tab__indicator {display: none;}
-.topicBlock .q-card {margin-top: 20px;}
-
+.topicBlock .q-tab__indicator {
+  display: none;
+}
+.topicBlock .q-card {
+  margin-top: 20px;
+}
 </style>

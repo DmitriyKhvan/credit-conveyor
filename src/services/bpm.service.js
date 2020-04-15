@@ -6,16 +6,11 @@ export default class BpmService {
   _personalUrl = "http://10.8.8.70:4000"
   _digIdUrl = "http://localhost:50000/api/Identification";
 
-  // data = {
-  //   "refresh-groups": true,
-  //   "requested-lifetime": 7200
-  // };
-
   getBPMToken = async () => {
     const responce = await axios({
       method: 'post',
       url: `${this._baseUrl}/system/login`,
-      timeout: 6000
+      timeout: 60000
     });
     
     return responce.data;
@@ -57,6 +52,26 @@ export default class BpmService {
       method: "get",
       url: `${this._digIdUrl}/DataFromService`,
       timeout: 60000
+    })
+
+    return responce.data;
+  }
+
+  calculationCredit = async ({taskId, data}) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/credit/calculation/${taskId}`,
+      data
+    })
+
+    return responce.data;
+  }
+
+  confirmationCredit = async ({taskId, data}) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/credit/confirmation/${taskId}`,
+      data
     })
 
     return responce.data;

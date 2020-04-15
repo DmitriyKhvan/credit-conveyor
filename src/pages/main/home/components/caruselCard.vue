@@ -68,68 +68,81 @@
             <span v-else>послезавтра</span> 
             Дни родждения</div>
     </div>
+  </div>
 </template>
 
 <script>
 import UserService from "./../../../../services/user.service";
 export default {
-    props: {
-        users: {
-            type: Array
-        },
-        datetime: {
-            type:String
-        },
-        slide: {
-            type:String
-        } 
+  props: {
+    users: {
+      type: Array
     },
-    data () {
-        return {
-            slides: ''
-        }
+    datetime: {
+      type: String
     },
-    created () {
-        this.slides = this.slide
-    },
-    methods: {
-        photo (id) {
-            return UserService.getUserProfilePhotoUrl(id)
-        },
-        filial (name) {
-            return name[0].name
-        },
-        work (name) {
-            let work = '' 
-            name.forEach((element, i) => {
-                if(i !== 0) {
-                    work += element.name+' / '
-                }
-            })
-            work = work.slice(0, -2)            
-            return work = work.length > 50 ? work.slice(0, 50)+'...' : work            
-        },
-        workFull (name) {
-            let work = '' 
-            name.forEach((element, i) => {
-                if(i !== 0) {
-                    work += element.name+' / '
-                }
-            })
-            return work.slice(0, -2)            
-            
-        },
-        name (last, fist, middle) {
-            return last + ' ' + fist + ' ' + middle
-        },
-        dateFormat (day) {
-            let newDay = new Date(day)
-            let month = newDay.getMonth()
-            const monthName = ['января', 'февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
-            return newDay.getDate() + ' ' + monthName[month]
-        }
+    slide: {
+      type: String
     }
-}
+  },
+  data() {
+    return {
+      slides: ""
+    };
+  },
+  created() {
+    this.slides = this.slide;
+  },
+  methods: {
+    photo(id) {
+      return UserService.getUserProfilePhotoUrl(id);
+    },
+    filial(name) {
+      return name[0].name;
+    },
+    work(name) {
+      let work = "";
+      name.forEach((element, i) => {
+        if (i !== 0) {
+          work += element.name + " / ";
+        }
+      });
+      work = work.slice(0, -2);
+      return (work = work.length > 50 ? work.slice(0, 50) + "..." : work);
+    },
+    workFull(name) {
+      let work = "";
+      name.forEach((element, i) => {
+        if (i !== 0) {
+          work += element.name + " / ";
+        }
+      });
+      return work.slice(0, -2);
+    },
+    name(last, fist, middle) {
+      return last + " " + fist + " " + middle;
+    },
+    dateFormat(day) {
+      let newDay = new Date(day);
+      let month = newDay.getMonth();
+      const monthName = [
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
+      ];
+      return newDay.getDate() + " " + monthName[month];
+    }
+  }
+};
 </script>
 
 <style>
@@ -151,39 +164,38 @@ export default {
         line-height: normal;
     }
 
-    .sliderHome .blueLight {
-        color: #0067cb;
-    }
+.sliderHome .blueLight {
+  color: #0067cb;
+}
 
-    .sliderHome .greyColor {
-        color: #999;
-        font-size: 11px;
-    }
-    
-    .sliderHome .redColor {
-        color: red;  
-    }
+.sliderHome .greyColor {
+  color: #999;
+  font-size: 11px;
+}
 
-    .sliderHome .photo {
-        height: 100px;
-        overflow: hidden;
-        border: 1px #ccc solid;
-    }
-    .sliderHome .photo  img { 
-        width: 100%;
-        height: auto;
-    }
+.sliderHome .redColor {
+  color: red;
+}
 
-    .q-carousel.q-carousel--arrows .q-carousel__slide { 
-        padding-left: 40px;
-        padding-right: 40px;
-    }
+.sliderHome .photo {
+  height: 100px;
+  overflow: hidden;
+  border: 1px #ccc solid;
+}
+.sliderHome .photo img {
+  width: 100%;
+  height: auto;
+}
 
-    .sliderHome .q-carousel__prev-arrow {
-        left: -5px;
-    }
-    .sliderHome .q-carousel__next-arrow {
-        right: -5px;
-    }
-        
+.q-carousel.q-carousel--arrows .q-carousel__slide {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.sliderHome .q-carousel__prev-arrow {
+  left: -5px;
+}
+.sliderHome .q-carousel__next-arrow {
+  right: -5px;
+}
 </style>

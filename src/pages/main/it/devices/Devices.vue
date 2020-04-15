@@ -12,10 +12,10 @@
           narrow-indicator
           inline-label
         >
-          <q-tab name="equipment" icon="personal_video" label="Оборудование" />
-          <q-tab name="brands" icon="layers" label="Производители" />
-          <q-tab name="models" icon="dvr" label="Модели" />
-          <q-tab name="details" icon="settings" label="Детали" />
+          <q-tab name="equipment" icon="personal_video">{{$t('tables.devices._self')}}</q-tab>
+          <q-tab name="brands" icon="layers">{{$t('tables.devices.marks')}}</q-tab>
+          <q-tab name="models" icon="dvr">{{$t('tables.devices.models')}}</q-tab>
+          <q-tab name="details" icon="settings">{{$t('tables.devices.details')}}</q-tab>
         </q-tabs>
 
         <q-separator />
@@ -32,13 +32,12 @@
           <q-tab-panel name="models">
             <devices-models />
           </q-tab-panel>
-          
+
           <q-tab-panel name="details">
             <devices-details />
           </q-tab-panel>
         </q-tab-panels>
-
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -56,27 +55,27 @@ export default {
     DevicesModels,
     DevicesDetails
   },
-  data () {
+  data() {
     return {
-      tab: 'equipment'
-    }
+      tab: "equipment"
+    };
   }
 };
 </script>
 
 <style>
-.tabsCol .q-field  {
+.tabsCol .q-field {
   border: 1px #ccc solid;
-  padding-left: 10px 
+  padding-left: 10px;
 }
-.tabsCol .q-tab--active  {
-  background:#2196f3 ;
+.tabsCol .q-tab--active {
+  background: #2196f3;
   color: #fff;
 }
 .tabsCol .sortable {
   color: #2196f3;
 }
 .tabsCol .q-table {
-  border-top:1px #2196f3 solid
+  border-top: 1px #2196f3 solid;
 }
 </style>

@@ -11,10 +11,14 @@ const MainService = {
       let accessToken = await TokenService.getToken();
       ApiService.setHeader(accessToken);
       store.dispatch("auth/setUserDetails", accessToken);
-      //store.dispatch("common/setLang", 'ru');
+
+      let lang = await TokenService.getKey("lang");
+      store.dispatch("common/setLang", lang);
 
       await DictService.loadAll();
-      //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
+
+      SocketService.runConnection(store.getters["auth/empId"]); // save emp id to redis socket
+
       store.dispatch("auth/loginSuccess", accessToken);
       // ApiService.mount401Interceptor();
       resolve(true);

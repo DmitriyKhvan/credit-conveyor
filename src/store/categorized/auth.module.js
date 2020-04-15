@@ -1,6 +1,4 @@
-import {
-  decode
-} from "jsonwebtoken";
+import { decode } from "jsonwebtoken";
 
 /**
  *  States
@@ -17,7 +15,9 @@ const state = {
   empId: null,
   fullName: null,
   userRoles: [],
-  moderatorsList: []
+  moderatorsList: [],
+  branchCode: null,
+  filialCode: null
 };
 
 /**
@@ -38,23 +38,23 @@ const getters = {
     return state.authenticating;
   },
   fullName: state => {
-    return state.fullName
+    return state.fullName;
   },
   userId: state => {
-    return state.userId
+    return state.userId;
   },
   empId: state => {
-    return state.empId
+    return state.empId;
   },
   username: state => {
-    return state.username
+    return state.username;
   },
   userDetails: state => {
     return {
       username: state.username,
       userId: state.userId,
       fullName: state.fullName
-    }
+    };
   },
   refreshTokenPromise: state => {
     return state.refreshTokenPromise;
@@ -63,10 +63,16 @@ const getters = {
     return state.accessToken;
   },
   userRoles: state => {
-    return state.userRoles
+    return state.userRoles;
   },
   moderatorsList: state => {
-    return state.moderatorsList
+    return state.moderatorsList;
+  },
+  branchCode: state => {
+    return state.branchCode;
+  },
+  filialCode: state => {
+    return state.filialCode;
   }
 };
 
@@ -74,44 +80,29 @@ const getters = {
  *   Actions
  */
 const actions = {
-
-  loginRequest({
-    commit
-  }) {
+  loginRequest({ commit }) {
     commit("loginRequest");
   },
-  loginSuccess({
-    commit
-  }, token) {
+  loginSuccess({ commit }, token) {
     commit("loginSuccess", token);
   },
-  setCurrenUser({
-    commit
-  }, token) {
+  setCurrenUser({ commit }, token) {
     commit("setCurrenUser", token);
   },
-  loginError({
-    commit
-  }, error) {
+  loginError({ commit }, error) {
     commit("loginError", {
       errorCode: error.errorCode,
       errorMessage: error.errorMessage
-    })
+    });
   },
-  refreshTokenPromise({
-    commit
-  }, promise) {
-    commit("refreshTokenPromise", promise)
+  refreshTokenPromise({ commit }, promise) {
+    commit("refreshTokenPromise", promise);
   },
-  logoutSuccess({
-    commit
-  }) {
+  logoutSuccess({ commit }) {
     commit("logoutSuccess");
   },
 
-  setUserDetails({
-    commit
-  }, token) {
+  setUserDetails({ commit }, token) {
     let decodedToken = decode(token);
 
     let details = {
@@ -119,21 +110,23 @@ const actions = {
       userId: decodedToken.id,
       fullName: decodedToken.full_name,
       empId: decodedToken.emp_id
-    }
+    };
     commit("setUsername", details.username);
     commit("setUserId", details.userId);
     commit("setUserFullname", details.fullName);
     commit("setEmpId", details.empId);
   },
-  setUserRoles({
-    commit
-  }, roles) {
+  setUserRoles({ commit }, roles) {
     commit("setUserRoles", roles);
   },
-  setModeratorsList({
-    commit
-  }, moderatorsList) {
+  setModeratorsList({ commit }, moderatorsList) {
     commit("setModeratorsList", moderatorsList);
+  },
+  setBranchCode({ commit }, branchCode) {
+    commit("setBranchCode", branchCode);
+  },
+  setFilialCode({ commit }, filialCode) {
+    commit("setFilialCode", filialCode);
   }
 };
 
@@ -141,7 +134,6 @@ const actions = {
  *  Mutations
  */
 const mutations = {
-
   loginRequest(state) {
     state.authenticating = true;
     state.authenticationError = "";
@@ -151,10 +143,7 @@ const mutations = {
     state.accessToken = accessToken;
     state.authenticating = false;
   },
-  loginError(state, {
-    errorCode,
-    errorMessage
-  }) {
+  loginError(state, { errorCode, errorMessage }) {
     state.authenticating = false;
     state.authenticationErrorCode = errorCode;
     state.authenticationError = errorMessage;
@@ -187,8 +176,13 @@ const mutations = {
   },
   setModeratorsList(state, moderatorsList) {
     state.moderatorsList = moderatorsList;
+  },
+  setBranchCode(state, branchCode) {
+    state.branchCode = branchCode;
+  },
+  setFilialCode(state, filialCode) {
+    state.filialCode = filialCode;
   }
-
 };
 
 export const auth = {

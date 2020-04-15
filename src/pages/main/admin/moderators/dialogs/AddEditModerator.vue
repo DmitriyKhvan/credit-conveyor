@@ -315,7 +315,7 @@ export default {
           })
           .onOk(res => {
             console.log(res[0]);
-            this.menuName = res[0].name[1]; // menu by lang#
+            this.menuName = res[0].name; // menu by lang#
             this.details.menu_id = res[0].menu_id;
           })
           .onCancel(() => {
