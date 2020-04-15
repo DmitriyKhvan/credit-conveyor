@@ -64,8 +64,8 @@ const Topic = () => import("pages/main/test/Topic.vue");
 const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
 //Chat
-const ChatPage = () => import('pages/main/chat/Chat');
-
+const ChatIndexPage = () => import('pages/main/chat/Index');
+const Notifications = () => import('pages/main/chat/notification/Notification');
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
@@ -249,7 +249,12 @@ const routes = [{
   {
     path: "chat",
     name: "Chat Page",
-    component: ChatPage
+    component: ChatIndexPage,
+    children: [{
+      path: "notification",
+      name: "Notifications",
+      component: Notifications
+    }]
   },
   {
     path: "selfdev",
