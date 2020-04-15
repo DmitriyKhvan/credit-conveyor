@@ -1,7 +1,7 @@
 const MainContainer = () => import("layouts/Main");
 const LoginPage = () => import("pages/main/auth/Login");
 const HomePage = () => import("pages/main/home/Home");
-const ChatPage = () => import("pages/main/chat/Chat");
+//const ChatPage = () => import("pages/main/chat/Chat");
 const Page404 = () => import("pages/extras/Error404");
 
 // Admin
@@ -145,34 +145,29 @@ const routes = [{
         component: CreditReg
       },
       {
-        path: "chat",
-        name: "Chat",
-        component: ChatPage
-      },
-      {
         path: "it",
         name: "IT section",
         component: It,
         children: [{
-            path: "devices",
-            name: "Devices",
-            component: Devices
-          },
-          {
-            path: "pcinfo",
-            name: "Devices Accounting",
-            component: DevicesAccounting
-          },
-          {
-            path: "history",
-            name: "Devices History",
-            component: DevicesHistory
-          },
-          {
-            path: "monitoring",
-            name: "Devices Monotoring",
-            component: DevicesMonitoring
-          }
+          path: "devices",
+          name: "Devices",
+          component: Devices
+        },
+        {
+          path: "pcinfo",
+          name: "Devices Accounting",
+          component: DevicesAccounting
+        },
+        {
+          path: "history",
+          name: "Devices History",
+          component: DevicesHistory
+        },
+        {
+          path: "monitoring",
+          name: "Devices Monotoring",
+          component: DevicesMonitoring
+        }
         ]
       },
       {
