@@ -1,6 +1,7 @@
 const MainContainer = () => import("layouts/Main");
 const LoginPage = () => import("pages/main/auth/Login");
 const HomePage = () => import("pages/main/home/Home");
+const ChatPage = () => import("pages/main/chat/Chat");
 const Page404 = () => import("pages/extras/Error404");
 
 // Admin
@@ -214,6 +215,11 @@ const routes = [{
           name: "Phones",
           component: Phones
         }]
+      },
+      {
+        path: "chat",
+        name: "Chat",
+        component: ChatPage
       },
       {
         path: "it",
