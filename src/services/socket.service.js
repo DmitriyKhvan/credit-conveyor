@@ -1,4 +1,4 @@
-import store from './../store/index';
+import store from '@/store/index';
 
 //let connection = store.getters["socket/usersCount"];
 //let socket = store.getters["socket/getSocket"];
@@ -18,9 +18,9 @@ const SocketService = {
       store.dispatch("socket/setUserCount", data);
     });
   },
-  runConnection(userId) {
+  runConnection(empId) {
     let socket = store.getters["socket/getSocket"];
-    socket.emit("online", userId);
+    socket.emit("online", empId);
     store.dispatch("socket/setOnline", true);
     console.log("user is online");
   },
@@ -34,8 +34,8 @@ const SocketService = {
     if (store.getters["socket/isOnline"]) {
       return true;
     } else {
-      let userId = store.getters["auth/userId"]
-      this.runConnection(userId);
+      let empId = store.getters["auth/empId"]
+      this.runConnection(empId);
       return true;
     }
   }

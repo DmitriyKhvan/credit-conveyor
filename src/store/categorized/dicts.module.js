@@ -81,7 +81,7 @@ const getters = {
     return state.userList.map(val => {
       return {
         text: val.name,
-        value: val.user_id
+        value: val.emp_id
       };
     });
   },

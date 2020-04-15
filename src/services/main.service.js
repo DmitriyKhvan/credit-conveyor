@@ -16,9 +16,9 @@ const MainService = {
       store.dispatch("common/setLang", lang);
 
       await DictService.loadAll();
-      console.log(store.getters["auth/userId"]);
 
-      SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
+      SocketService.runConnection(store.getters["auth/empId"]); // save emp id to redis socket
+
       store.dispatch("auth/loginSuccess", accessToken);
       // ApiService.mount401Interceptor();
       resolve(true);
