@@ -69,7 +69,7 @@
           </div>
 
           <!-- Device Model Details -->
-          <div class="row" v-for="(items, index) in details.details" :key="index">
+          <div class="row" v-for="(item, index) in details.details" :key="index">
             <div class="col-5">
               <q-input
                 outlined
@@ -83,13 +83,17 @@
               </q-input>
             </div>
             <div class="col-5">
-              <q-input
+              <q-select
                 outlined
-                clearable
-                color="purple-12"
-                class="col-xs-12 col-sm-12 col-md-6"
-                v-model="details.details[index].value"
-                :label="$t('tables.device_models.device_model_name')"
+                class="col-xs-12 col-sm-6 col-md-6"
+                v-model="item.val_id"
+                :options="deviceDetailValue"
+                stack-label
+                option-value="value"
+                option-label="text"
+                emit-value
+                map-options
+                label="Value Id"
               />
             </div>
             <div class="col-1">
@@ -109,6 +113,7 @@
               </div>
             </div>
           </div>
+          <!-- -->
         </div>
       </q-card-section>
       <q-card-section>
@@ -155,6 +160,7 @@ export default {
       deviceTypeName: null,
       deviceMarkName: null,
       deviceDetailName: [],
+      deviceDetailValue: [],
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
@@ -243,6 +249,9 @@ export default {
   },
   mixins: [dialogMix],
   created() {},
+  computed: {
+    valuesList(detail_id) {}
+  },
   methods: {
     initializeData() {
       if (!!this.data.selectedRow) {
@@ -254,7 +263,6 @@ export default {
         });
       }
     },
-
     deleteDetailItem(index) {
       this.details.details.splice(index, 1);
     },
@@ -262,7 +270,7 @@ export default {
       let aDetail = {
         id: null,
         detail_id: null,
-        value: null
+        val_id: null
       };
       this.details.details = this.details.details || [];
       this.details.details.push(aDetail);
@@ -315,12 +323,37 @@ export default {
         .onOk(res => {
           this.deviceDetailName[index] = res[0].name;
           this.details.details[index].detail_id = res[0].id;
+          this.setDetailList(res[0].id);
           console.log(this.details.details);
         })
         .onCancel(() => {
           console.log("Cancel");
         });
+    },
+    setDetailList(id) {
+      return ApiService.get(`devices/dvals?id=${id}`)
+        .then(
+          res => {
+            console.log(res.data);
+            this.deviceDetailValue = res.data.map(el => {
+              return {
+                text: el.value,
+                value: el.id
+              };
+            });
+            // set enable
+          },
+          err => {
+            console.err(err);
+          }
+        )
+        .catch(err => {
+          console.err(err);
+        });
     }
+  },
+  isValueEnabled() {
+    return;
   }
 };
 </script>

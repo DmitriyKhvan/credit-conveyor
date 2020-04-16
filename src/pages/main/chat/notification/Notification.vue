@@ -78,7 +78,7 @@ export default {
         body: null,
         user_ids: [],
         name: null,
-        user_id: null
+        emp_id: null
       },
       contentStyle: {
         backgroundColor: "rgba(0,0,0,0.02)",
@@ -139,7 +139,7 @@ export default {
       user: "auth/fullName"
     }),
     ...mapGetters({
-      user_id: "auth/userId"
+      emp_id: "auth/empId"
     }),
     ...mapGetters({
       inbox: "dicts/receivedNotifications"
@@ -155,7 +155,7 @@ export default {
     sendMessage(e) {
       e.preventDefault();
       this.form.name = this.user;
-      this.form.user_id = this.user_id;
+      this.form.emp_id = this.emp_id;
       this.socket.emit("SEND_NOTIFICATION", this.form);
 
       this.form.id = null;
