@@ -102,7 +102,7 @@ const routes = [{
     {
       path: "chancellary",
       name: "Kanselariya",
-      component: ChanRegistration,
+      component: Chancellary,
       children: [{
         path: "registration",
         name: "Kanselariya Registration",
@@ -145,30 +145,52 @@ const routes = [{
         component: CreditReg
       },
       {
-        path: "it",
-        name: "IT section",
-        component: It,
-        children: [{
-          path: "devices",
-          name: "Devices",
-          component: Devices
-        },
-        {
-          path: "pcinfo",
-          name: "Devices Accounting",
-          component: DevicesAccounting
-        },
-        {
-          path: "history",
-          name: "Devices History",
-          component: DevicesHistory
-        },
-        {
-          path: "monitoring",
-          name: "Devices Monotoring",
-          component: DevicesMonitoring
-        }
-        ]
+        path: "sub/profile",
+        name: "Profile",
+        component: CreditProfile,
+        beforeEnter: ifAuthenticated
+      }
+      ]
+    }
+    ]
+  },
+  {
+    path: "admin",
+    name: "Admin Page",
+    component: AdminPage,
+    children: [{
+      path: "users",
+      name: "Users List",
+      component: Users
+    },
+    {
+      path: "roles",
+      name: "User Roles",
+      component: Roles
+    },
+    {
+      path: "menus",
+      name: "Menus List",
+      component: Menus
+    },
+    {
+      path: "moderator",
+      name: "Moderators",
+      component: Moderators
+    },
+    {
+      path: "dictionaries",
+      name: "Dictionaries",
+      component: Dictionaries
+    },
+    {
+      path: "selfdev",
+      name: "Self Developer",
+      component: SelfDevPage,
+      children: [{
+        path: "topicPage",
+        name: "addEditTopic",
+        component: TopicPage
       },
       {
         path: "questionPage",
