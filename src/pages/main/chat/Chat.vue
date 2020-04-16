@@ -1,175 +1,196 @@
 <template>
-  <q-card>
-    <q-card-section>
-      <h4>User: {{ user }}</h4>
-      <q-separator inset />
+    
+    <q-card  class="row q-ma-lg">
+        <div class="col-8">
+            <div class="row justify-between header q-pa-md">
+                <div class="col headerDiv">
+                    <div v-if="edTitile" class="row">
+                        <q-input outlined v-model="titleChat" dense style="width:300px" />
+                        <q-btn icon="done" size="sm" @click="editTitle" color="grey-8" flat />
 
-      <q-scroll-area
-        :thumb-style="thumbStyle"
-        :content-style="contentStyle"
-        :content-active-style="contentActiveStyle"
-        style="height: 200px; max-width: 100%;"
-      >
-        <div v-for="(msg, index) in inbox" :key="index">
-          <p>{{ msg.title }}</p>
-          <p>{{ msg.body }}</p>
-          <p>
-            Sent by: {{ msg.sender_name }} at:
-            {{ formattedDate(msg.sent_at) }}
-          </p>
-          <q-separator inset />
+                    </div>
+                    <div v-else class="text-h6">{{titleChat}}</div>
+                    
+                    <div class="text-caption"><i>35 участников</i></div>
+                </div>
+                <div class="col-1 text-right">
+                    <q-btn  @click="edTitile = true" icon="create" flat/>
+                </div>
+            </div>
+
+            <div class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
+
+                <div class="row q-mb-md">
+                    <div class="avatar self-end">
+                        <q-avatar>
+                            <img src="https://cdn.quasar.dev/img/avatar.png">
+                        </q-avatar>
+                    </div>
+                    <div class="col-lg-5 col-md-8 col-sm-8 message q-pa-md">
+                        <div class="q-pb-sm">
+                            Yeah, I'm going to meet a friend of mine at the department store. I have to buy some presents for my parents.
+                        </div>
+                        <q-badge class="description">
+                            Петров А.А.
+                        </q-badge>
+                        <i>10 минут назад</i>
+                    </div>
+                    <div class="col"></div>
+                </div>
+
+                <div class="row q-mb-md">
+                    <div class="col"></div>
+                    <div class="col-lg-5 col-md-8 message_my q-pa-md">
+                        <div class="q-pb-sm">
+                            Yeah, I'm going to meet a friend of mine at the department store. I have to buy some presents for my parents.
+                        </div>
+                        <q-badge class="description_my">
+                            Вы
+                        </q-badge>
+                        <i>10 минут назад</i>
+                    </div>
+                    
+                    <div class="avatar_my self-end">
+                        <q-avatar>
+                            <img src="https://cdn.quasar.dev/img/avatar.png">
+                        </q-avatar>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row sendMesage">
+                <div class="col">
+                    <q-input outlined dense v-model="text" label="Сообщение" />
+                </div>
+                <div class="actionWidth text-center self-center"><q-btn icon="attach_file" flat/></div>
+                <div class="actionWidth self-center"><q-btn icon="subdirectory_arrow_left" outline  /></div>
+            </div>
+            
         </div>
-      </q-scroll-area>
-    </q-card-section>
+        
+        <div class="col-4 q-pa-md rightBlock">           
 
-    <q-card-section>
-      <q-form @submit.prevent="sendMessage">
-        <label>Title:</label>
-        <q-input type="text" v-model="form.title" class="form-control" />
+            <CRightBlock></CRightBlock>            
 
-        <label for="body">Message:</label>
-        <q-input type="textarea" v-model="form.body" class="form-control" />
-        <label>Users:</label>
-        <q-select
-          outlined
-          v-model="form.user_ids"
-          multiple
-          :options="userList"
-          use-chips
-          stack-label
-          option-value="value"
-          option-label="text"
-          emit-value
-          map-options
-        />
-        <q-btn label="Send" type="submit" color="primary" />
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-      </q-form>
-
-      <q-card class="mt-3" header="Form Data Result">
-        <pre class="m-0">{{ form }}</pre>
-      </q-card>
-    </q-card-section>
-  </q-card>
+        </div>
+    </q-card>
+    
 </template>
 
 <script>
+import RightGlobal from './components/RightGlobal'
+import { dom } from 'quasar'
+const { height } = dom
+
 import { mapGetters } from "vuex";
 import commonUtils from "@/shared/utils/CommonUtils";
 
 export default {
-  mounted() {
-    this.socket.on("notify", data => {
-      console.log(data);
-      this.$store.dispatch("dicts/addNotification", data);
-      this.$q.notify({
-        message: data.title,
-        color: "purple",
-        position: "bottom-right"
-      });
-    });
-  },
-  data() {
-    return {
-      message: "",
-      form: {
-        id: null,
-        title: null,
-        body: null,
-        user_ids: [],
-        name: null,
-        emp_id: null
-      },
-      contentStyle: {
-        backgroundColor: "rgba(0,0,0,0.02)",
-        color: "#555"
-      },
-
-      contentActiveStyle: {
-        backgroundColor: "#eee",
-        color: "black"
-      },
-
-      thumbStyle: {
-        right: "2px",
-        borderRadius: "5px",
-        backgroundColor: "#027be3",
-        width: "5px",
-        opacity: 0.75
-      },
-      test: [
-        {
-          title: "1",
-          body: "111",
-          sender_name: "me",
-          sent_at: new Date()
-        },
-        {
-          title: "1",
-          body: "111",
-          sender_name: "me",
-          sent_at: new Date()
-        },
-        {
-          title: "1",
-          body: "111",
-          sender_name: "me",
-          sent_at: new Date()
-        },
-        {
-          title: "1",
-          body: "111",
-          sender_name: "me",
-          sent_at: new Date()
-        }
-      ]
-    };
-  },
-  created() {
-    // this.$store.watch(
-    //   (state, getters) => getters["dicts/receivedNotifications"],
-    //   (newValue, oldValue) => {
-    //     this.inbox = this.$store.getters["dicts/receivedNotifications"];
-    //   }
-    // );
-    //console.log(this.inbox);
-  },
-  computed: {
-    ...mapGetters({
-      user: "auth/fullName"
-    }),
-    ...mapGetters({
-      emp_id: "auth/empId"
-    }),
-    ...mapGetters({
-      inbox: "dicts/receivedNotifications"
-    }),
-    ...mapGetters({
-      socket: "socket/getSocket"
-    }),
-    ...mapGetters({
-      userList: "dicts/getUserList"
-    })
-  },
-  methods: {
-    sendMessage(e) {
-      e.preventDefault();
-      this.form.name = this.user;
-      this.form.emp_id = this.emp_id;
-      this.socket.emit("SEND_NOTIFICATION", this.form);
-
-      this.form.id = null;
-      this.form.title = null;
-      this.form.body = null;
-      this.form.user_ids = [];
+    name: "Chat",
+    components: {
+        CRightBlock: RightGlobal
     },
-    formattedDate(date) {
-      return commonUtils.formattedDate(date);
-    }
-  },
-  watch: {},
-  beforeDestroy() {}
-};
+    data () {
+        return {
+            text: '',
+            heightChat: '',
+            titleChat: 'Название чата и описание',
+            edTitile: false
+        }
+    },
+    methods: {
+        editTitle () {
+            this.edTitile = false
+        }
+    },
+    computed: {
+        ...mapGetters({
+        user: "auth/fullName"
+        }),
+        ...mapGetters({
+        emp_id: "auth/empId"
+        }),
+        ...mapGetters({
+        inbox: "dicts/receivedNotifications"
+        }),
+        ...mapGetters({
+        socket: "socket/getSocket"
+        }),
+        ...mapGetters({
+        userList: "dicts/getUserList"
+        })
+    },
+    
+    mounted() {
+        this.$nextTick(() => {
+            this.heightChat = height(eee) - 240 + 'px'
+            window.onresize = () => {
+               this.heightChat = height(eee) - 240 + 'px'
+            }
+        })
+
+        this.socket.on("notify", data => {
+            console.log(data);
+            this.$store.dispatch("dicts/addNotification", data);
+            this.$q.notify({
+                message: data.title,
+                color: "purple",
+                position: "bottom-right"
+            });
+        });
+    },
+}
 </script>
 
-<style></style>
+<style scoped>
+    .avatar {
+        padding-right: 15px;
+    }
+    .avatar_my {
+        padding-left: 15px;
+    }
+    .message {
+        font-size: 14px;
+        border-radius: 10px 10px 10px 0;
+        background: #EAF3FC;
+    }
+    .message_my {
+        font-size: 14px;
+        border-radius: 10px 10px 0 10px;
+        background: #45A2F9;
+        color:#fff
+    }
+    .description {
+        font-size: 11px;
+        background: #9FB7CF;
+    }
+    .description_my {
+        font-size: 11px;
+        background: #308BE0;
+    }
+    .header {
+        border-bottom: 1px #E3E3E3 solid;
+        padding-bottom: 15px;
+    }
+    .headerDiv div {
+        line-height: 22px;
+    }
+    .rightBlock {
+        background: #EAF3FC;
+    }
+    .sendMesage {
+        border-top: 1px #E3E3E3 solid;
+        padding: 20px;
+    }
+    .messagesList {
+        height: 53vh;
+    }
+    .actionWidth {width: 64px;}
+    i {
+        font-size: 10px;
+        color: #9B9B9B;
+        padding-left: 5px;
+    }
+    .message_my i {color: #fff;}
+    </style>

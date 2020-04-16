@@ -64,8 +64,7 @@ const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
 const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
-//Chat
-const ChatPage = () => import('pages/main/chat/Chat');
+
 
 
 // Проверка на BPM token
