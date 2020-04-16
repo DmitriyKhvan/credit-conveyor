@@ -8,23 +8,30 @@
   />
 </template>
 <script>
-// import CommonUtils from "@/shared/utils/CommonUtils";
-import CommonUtils from "../../../../../../shared/utils/CommonUtils";
+import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   data() {
     return {
-
+      //curDate: new Date()
     }
   },
   computed: {
     fullProfile() {
-      return this.$store.state.profile;
+      return this.$store.state.profile.fullFormProfile
+    },
+    profile() {
+      return this.$store.state.profile
     }
   },
   methods: {
     async sentFullProfile() {
-      console.log("fullProfile", this.$store.state.profile);
+      // комментарий
+      
+      this.profile.comment.CommentDate = new window.Date()
+      this.$store.commit("addComment")
+
+      console.log("fullProfile", this.$store.state.profile.fullProfile);
         const {
           Status,
           ApplicationID,
@@ -86,9 +93,8 @@ export default {
           } else {
             throw 'Next taskId is null'
           }
-        } catch (e) {
+        } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
-          console.log('errorMessage', errorMessage)
           this.$store.commit("setError", errorMessage);
           sessionStorage.removeItem("csrf_token");
         }

@@ -12,7 +12,7 @@ export default {
     }
   },
   async created() {
-    //this.$store.commit('clearError')
+    this.$store.commit('clearCreditTasks')
     try {
       const auth = await this.$store.dispatch("authBpm")
       console.log("auth", auth);

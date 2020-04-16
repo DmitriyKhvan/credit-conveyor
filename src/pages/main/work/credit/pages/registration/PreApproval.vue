@@ -139,8 +139,8 @@ export default {
           const response = await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
 
           console.log('dictionaries', response)
-          if (response.nextTask.input[2].data) {
-            this.$store.commit("setDictionaries", response.nextTask.input[2].data) 
+          if (response.nextTask.input[1].data) {
+            this.$store.commit("setDictionaries", response.nextTask.input[1].data) 
             this.$router.push("sub/profile");
           } else {
             throw 'Data is null'

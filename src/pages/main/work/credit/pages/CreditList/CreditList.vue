@@ -161,7 +161,7 @@
               name: 'CreditTask',
               params: { id: credit.taskId },
               query: {
-                date: credit.modifiedDate,
+                date: credit.date,
                 applicationNumber: credit.applicationNumber,
                 protocolNumber: credit.additionalInfo
                   ? credit.additionalInfo.protocolNumber

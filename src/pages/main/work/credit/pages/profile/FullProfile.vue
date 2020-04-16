@@ -25,7 +25,7 @@
               <div class="col-9">
                 {{
                   dictionaries.Gender.items.find(
-                    i => i.value === Customer.Gender
+                    i => i.value == Customer.Gender
                   ).label
                 }}
                 <!-- {{getLabelDic()}} -->
@@ -70,7 +70,7 @@
               <div class="col-9">
                 {{
                   dictionaries.Graduation.items.find(
-                    i => i.value === Customer.Education
+                    i => i.value == Customer.Education
                   ).label
                 }}
               </div>
@@ -84,7 +84,7 @@
                 >
                   <div class="col-12 profileSubTitle">
                     {{ "5." + (index + 1) }}
-                    {{ fullProfile.AddressType[address.AddressType - 1] }}
+                    {{ profile.AddressType[address.AddressType - 1] }}
                   </div>
                   <div class="col-3">Индекс</div>
                   <div class="col-9">{{ address.PostalCode }}</div>
@@ -92,7 +92,7 @@
                   <div class="col-9">
                     {{
                       dictionaries.Region.items.find(
-                        i => i.value === address.Region
+                        i => i.value == address.Region
                       ).label
                     }}
                   </div>
@@ -109,13 +109,13 @@
                     <template
                       v-if="
                         dictionaries.PropertyType.items.find(
-                          i => i.value === address.OwnershipType
+                          i => i.value == address.OwnershipType
                         )
                       "
                     >
                       {{
                         dictionaries.PropertyType.items.find(
-                          i => i.value === address.OwnershipType
+                          i => i.value == address.OwnershipType
                         ).label
                       }}
                     </template>
@@ -129,13 +129,13 @@
                 <template
                   v-if="
                     dictionaries.MaritalStatus.items.find(
-                      i => i.value === Customer.MaritalStatus
+                      i => i.value == Customer.MaritalStatus
                     )
                   "
                 >
                   {{
                     dictionaries.MaritalStatus.items.find(
-                      i => i.value === Customer.MaritalStatus
+                      i => i.value == Customer.MaritalStatus
                     ).label
                   }}
                 </template>
@@ -161,7 +161,7 @@
                   <div class="col-9">
                     {{
                       dictionaries.FamilyRelation.items.find(
-                        i => i.value === relative.FamilyConnectionType
+                        i => i.value == relative.FamilyConnectionType
                       ).label
                     }}
                   </div>
@@ -210,7 +210,7 @@
                 <div class="col-9">
                   {{
                     dictionaries.BusinessType.items.find(
-                      i => i.value === Customer.JobInfo.employerActivityType
+                      i => i.value == Customer.JobInfo.employerActivityType
                     ).label
                   }}
                 </div>
@@ -298,14 +298,14 @@
               <div class="col-9">
                 <template
                   v-if="
-                    fullProfile.options.confirmation.find(
+                    profile.options.confirmation.find(
                       i =>
                         i.value === Customer.MonthlyIncome.hasAdditionalIncome
                     )
                   "
                 >
                   {{
-                    fullProfile.options.confirmation.find(
+                    profile.options.confirmation.find(
                       i =>
                         i.value === Customer.MonthlyIncome.hasAdditionalIncome
                     ).label
@@ -440,7 +440,7 @@
                       <!-- <template v-if="">
                     </template> -->
                       {{
-                        fullProfile.options.confirmation.find(
+                        profile.options.confirmation.find(
                           i => i.value === guarantee.Resident
                         ).label
                       }}
@@ -526,7 +526,7 @@
                     <div class="col-3">Район</div>
                     <div class="col-9">{{ guarantee.Address.District }}</div>
                     <div class="col-3">Улица / мкр.</div>
-                    <div class="col-9"></div>
+                    <div class="col-9">{{ guarantee.Address.Street }}</div>
                     <div class="col-3">Номер дома</div>
                     <div class="col-9">{{ guarantee.Address.House }}</div>
                     <div class="col-3">Сумма поручительства</div>
@@ -590,7 +590,7 @@
               <div class="col-3">Тип погашения</div>
               <div class="col-9">
                 {{
-                  fullProfile.options.RepaymentType.find(
+                  profile.options.RepaymentType.find(
                     i => i.value === fullProfile.LoanInfo.RepaymentType
                   ).label
                 }}
@@ -766,7 +766,7 @@
           label="Закрыть"
           color="primary"
           v-close-popup
-          @click="() => (fullProfile.confirmCredit = false)"
+          @click="() => (profile.confirmCredit = false)"
         />
         <!-- <q-btn flat label="Закрыть" color="primary" @click="() => this.$router.push('/work/credit/sub/task/1')" /> -->
       </q-card-actions>
@@ -783,10 +783,13 @@ export default {
   },
   computed: {
     fullProfile() {
+      return this.$store.state.profile.fullFormProfile;
+    },
+    profile() {
       return this.$store.state.profile;
     },
     Customer() {
-      return this.$store.state.profile.Customer;
+      return this.$store.state.profile.fullFormProfile.Customer;
     },
     dictionaries() {
       return this.$store.state.profile.dictionaries;

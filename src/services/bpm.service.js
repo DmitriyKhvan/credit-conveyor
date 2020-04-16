@@ -13,7 +13,6 @@ export default class BpmService {
       url: `${this._baseUrl}/bpm/system/login`,
       timeout: 60000
     });
-    
     return responce.data;
   }
 
@@ -22,7 +21,6 @@ export default class BpmService {
       method: 'post',
       url: `${this._baseUrl}/bpm/credit/start`
     });
-  
     return responce.data;
   }
 
@@ -97,13 +95,20 @@ export default class BpmService {
   }
 
   getUserRole = async (userId) => {
-    
     const responce = await axios({
       method: "get",
       url: `${this._personalUrl}/roles/user?id=${userId}` 
     })
-
+    
     return responce.data
+  }
+
+  getFullForm = async (taskId) => {
+    const responce = await axios({
+      method: "get",
+      url: `${this._baseUrl}/bpm/credit/fullform/${taskId}`
+    })
+    return responce
   }
 
   setHeaderBPM(csrf_token) {

@@ -45,7 +45,7 @@ export default {
       loanRate: 0, //ставка по кредиту
       spouseCost: 0,
       childCost: 0,
-      
+
       // FAMILY //
       familyStatus: false,
       children: false,
@@ -81,10 +81,13 @@ export default {
       maxSum: 0 // Сколько максимум кредита можем выдать
     },
     creditTasks: []
+   
   },
   actions: {
     async authBpm({ state, dispatch, commit }) {
+      
       try {
+        
         // получение id пользователя
         const userId = decode(await storegeService.getToken()).emp_id;
 
@@ -133,12 +136,12 @@ export default {
       try {
         const response = await state.bpmService.startProcess();
 
-        console.log('startProcess taskId ', response.userTaskCreditDetailed.id)
+        console.log("startProcess taskId ", response.userTaskCreditDetailed.id);
         if (response.userTaskCreditDetailed.id) {
-          commit("setTaskId", response.userTaskCreditDetailed.id)
+          commit("setTaskId", response.userTaskCreditDetailed.id);
         }
 
-        return response
+        return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
@@ -158,17 +161,20 @@ export default {
     //   return await state.bpmService.getUserDataFromReader();
     // },
 
-    async calculationCredit({state, commit, getters}, data) {
+    async calculationCredit({ state, commit, getters }, data) {
       try {
         //console.log('calculation', payload)
-        const response = await state.bpmService.calculationCredit({taskId: getters.taskId, data});
+        const response = await state.bpmService.calculationCredit({
+          taskId: getters.taskId,
+          data
+        });
 
-        console.log('calculCredit taskId ', response.nextTask.id)
+        console.log("calculCredit taskId ", response.nextTask.id);
         if (response.nextTask.id) {
-          commit("setTaskId", response.nextTask.id)
+          commit("setTaskId", response.nextTask.id);
         }
 
-        return response
+        return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
@@ -176,16 +182,19 @@ export default {
       }
     },
 
-    async confirmationCredit({state, commit, getters}, data) {
+    async confirmationCredit({ state, commit, getters }, data) {
       try {
-        const response = await state.bpmService.confirmationCredit({taskId: getters.taskId, data});
+        const response = await state.bpmService.confirmationCredit({
+          taskId: getters.taskId,
+          data
+        });
 
         //console.log('confirmCredit taskId ', response.nextTask.id)
         if (response.nextTask.id) {
-          commit("setTaskId", response.nextTask.id)
+          commit("setTaskId", response.nextTask.id);
         }
-        
-        return response
+
+        return response;
       } catch (error) {
         //console.log('errorMessage', error.response)
         const errorMessage = CommonUtils.filterServerError(error);
@@ -197,8 +206,9 @@ export default {
     async getRoleTasks({ state, commit }) {
       try {
         const response = await state.bpmService.getRoleTasks();
+        console.log("creditList", response);
         if (response.infoList.length) {
-          commit("setCreditTasks", response.infoList)
+          commit("setCreditTasks", response.infoList);
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -211,7 +221,7 @@ export default {
       try {
         const response = await state.bpmService.getUserTasks();
         if (response.infoList.length) {
-          commit("setCreditTasks", response.infoList)
+          commit("setCreditTasks", response.infoList);
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -316,16 +326,21 @@ export default {
     },
 
     toggleLoaderForm(state, flag) {
-      state.loaderForm = flag
+      state.loaderForm = flag;
     },
 
     setTaskId(state, payload) {
-      state.taskId = payload
+      state.taskId = payload;
     },
 
     setCreditTasks(state, payload) {
-      state.creditTasks = payload
+      state.creditTasks = payload;
+    },
+
+    clearCreditTasks(state) {
+      state.creditTasks = [];
     }
+   
   },
   getters: {
     error: state => state.errorMessage.message,

@@ -140,7 +140,7 @@
                   square
                   outlined
                   v-model="Customer.ResidentFlag"
-                  :options="fullProfile.options.confirmation"
+                  :options="profile.options.confirmation"
                   dense
                   label="Резидентство"
                   emit-value
@@ -353,7 +353,7 @@
               class="fieldset_block"
             >
               <legend class="legend_title">
-                {{ fullProfile.AddressType[address.AddressType - 1] }}
+                {{ profile.AddressType[address.AddressType - 1] }}
               </legend>
 
               <div class="tab-content" ref="tabContent">
@@ -507,7 +507,7 @@
                 label="Удалить"
                 @click="
                   confirmDeleteItem(
-                    options.AddressType[address.AddressType - 1],
+                    profile.AddressType[address.AddressType - 1],
                     removeRegistration,
                     address.AddressType
                   )
@@ -585,7 +585,7 @@
                   square
                   outlined
                   v-model="Customer.hasChildren"
-                  :options="fullProfile.options.confirmation"
+                  :options="profile.options.confirmation"
                   dense
                   label="Есть ли дети"
                   emit-value
@@ -1110,7 +1110,7 @@
                   square
                   outlined
                   v-model="Customer.MonthlyIncome.hasAdditionalIncome"
-                  :options="fullProfile.options.confirmation"
+                  :options="profile.options.confirmation"
                   dense
                   label="Наличие дополнительного дохода"
                   emit-value
@@ -1543,7 +1543,7 @@
                     square
                     outlined
                     v-model="guarantee.Resident"
-                    :options="fullProfile.options.confirmation"
+                    :options="profile.options.confirmation"
                     dense
                     label="Резидентство"
                     emit-value
@@ -2251,7 +2251,7 @@
                   square
                   outlined
                   v-model="fullProfile.LoanInfo.RepaymentType"
-                  :options="fullProfile.options.RepaymentType"
+                  :options="profile.options.RepaymentType"
                   dense
                   label="Тип пошагового кредита"
                   :rules="[val => !!val || 'Выберите тип пошагового кредита']"
@@ -2663,15 +2663,22 @@
             <div class="row q-col-gutter-md">
               <div class="col">
                 <q-input
-                  v-model="fullProfile.ApplicationComment[0].Comment"
+                  v-model="profile.comment.Comment"
                   type="textarea"
                 />
               </div>
             </div>
 
-            <div class="comments">
-              <p>test</p>
-            </div>
+            <template v-if="fullProfile.ApplicationComment.length">
+              <div 
+                class="comments"
+                v-for="comment of fullProfile.ApplicationComment"
+                :key="comment.id"
+              >
+                <p>{{comment.Comment}}</p>
+              </div>
+            </template>
+
           </div>
         </div>
 
@@ -2729,7 +2736,7 @@
       </q-dialog>
 
       <!-- credit result -->
-      <appFullProfile v-if="fullProfile.confirmCredit" />
+      <appFullProfile v-if="profile.confirmCredit" />
     </div>
   </div>
 </template>
@@ -2739,7 +2746,7 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import SentFullProfile from "./SentFullProfile";
-import UploadFiles from "./UploadFiles"
+// import UploadFiles from "./UploadFiles"
 import { validItems, validFilter } from "../../filters/valid_filter"
 
 export default {
@@ -2766,50 +2773,55 @@ export default {
       },
 
       files: [], // для сервера, чтоб не дублировать отправку файла
-      filesAll: [] // для фильтрации какие файлы загружены на сервер
+      filesAll: [], // для фильтрации какие файлы загружены на сервер
+
     };
   },
   created() {
     this.$store.commit("resetDataFullFormProfile")
   },
   mounted() {
-    this.$store.state.profile.Customer.FirstName = this.$store.state.credits.personalData.name;
-    this.$store.state.profile.Customer.LastName = this.$store.state.credits.personalData.surname;
-    this.$store.state.profile.Customer.MiddleName = this.$store.state.credits.personalData.mname;
-    this.$store.state.profile.Customer.INN = this.$store.state.credits.personalData.inn;
-    this.$store.state.profile.Customer.PhoneList[0].Number = this.$store.state.credits.personalData.phone;
-    this.$store.state.profile.Customer.PINPP = this.$store.state.credits.personalData.pinpp;
-    this.$store.state.profile.Customer.Document.Series = this.$store.state.credits.personalData.passport.slice(
+    this.Customer.FirstName = this.$store.state.credits.personalData.name;
+    this.Customer.LastName = this.$store.state.credits.personalData.surname;
+    this.Customer.MiddleName = this.$store.state.credits.personalData.mname;
+    this.Customer.INN = this.$store.state.credits.personalData.inn;
+    this.Customer.PhoneList[0].Number = this.$store.state.credits.personalData.phone;
+    this.Customer.PINPP = this.$store.state.credits.personalData.pinpp;
+    this.Customer.Document.Series = this.$store.state.credits.personalData.passport.slice(
       0,
       2
     );
-    this.$store.state.profile.Customer.Document.Number = this.$store.state.credits.personalData.passport.slice(
+    this.Customer.Document.Number = this.$store.state.credits.personalData.passport.slice(
       2
     );
 
-    this.$store.state.profile.Customer.MaritalStatus =
+    this.Customer.MaritalStatus =
       +this.$store.state.credits.personalData.familyStatus + 1 + ""; // false/true перевожу в число
-    this.$store.state.profile.Customer.hasChildren = this.$store.state.credits.personalData.children;
-    this.$store.state.profile.Customer.UnderAgeChildrenNum = this.$store.state.credits.personalData.childrenCount;
+    this.Customer.hasChildren = this.$store.state.credits.personalData.children;
+    this.Customer.UnderAgeChildrenNum = this.$store.state.credits.personalData.childrenCount;
 
-    this.$store.state.profile.Customer.MonthlyIncome.confirmMonthlyIncome = this.$store.state.credits.personalData.income;
-    this.$store.state.profile.Customer.MonthlyExpenses.recurringExpenses = this.$store.state.credits.personalData.expense;
-    this.$store.state.profile.Customer.MonthlyExpenses.obligations = this.$store.state.credits.personalData.otherExpenses;
-    this.$store.state.profile.Customer.MonthlyIncome.hasAdditionalIncome = this.$store.state.credits.personalData.externalIncome;
-    this.$store.state.profile.Customer.MonthlyIncome.additionalIncome.sum = this.$store.state.credits.personalData.externalIncomeSize;
-    this.$store.state.profile.Customer.MonthlyIncome.additionalIncome.incomeType = this.$store.state.credits.personalData.additionalIncomeSource;
+    this.Customer.MonthlyIncome.confirmMonthlyIncome = this.$store.state.credits.personalData.income;
+    this.Customer.MonthlyExpenses.recurringExpenses = this.$store.state.credits.personalData.expense;
+    this.Customer.MonthlyExpenses.obligations = this.$store.state.credits.personalData.otherExpenses;
+    this.Customer.MonthlyIncome.hasAdditionalIncome = this.$store.state.credits.personalData.externalIncome;
+    this.Customer.MonthlyIncome.additionalIncome.sum = this.$store.state.credits.personalData.externalIncomeSize;
+    this.Customer.MonthlyIncome.additionalIncome.incomeType = this.$store.state.credits.personalData.additionalIncomeSource;
   },
   computed: {
     fullProfile() {
-      return this.$store.state.profile;
+      return this.$store.state.profile.fullFormProfile;
     },
 
     Customer() {
-      return this.$store.state.profile.Customer;
+      return this.$store.state.profile.fullFormProfile.Customer;
     },
 
     dictionaries() {
       return this.$store.state.profile.dictionaries;
+    },
+
+    profile() {
+      return this.$store.state.profile
     },
 
     preApprovalData() {
@@ -2838,7 +2850,7 @@ export default {
 
     "fullProfile.LoanInfo.LoanProduct"(credit) {
       this.fullProfile.LoanInfo.RepaymentType = null;
-      this.fullProfile.options.RepaymentType = [];
+      this.profile.options.RepaymentType = [];
 
       const idx = this.dictionaries.LoanDetails.items.findIndex(
         item => item.LOAN_ID == credit
@@ -2863,7 +2875,7 @@ export default {
         this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
           idx
         ].MaxInitialPaymentPercent;
-        this.fullProfile.options.RepaymentType = this.dictionaries.LoanDetails.items[
+        this.profile.options.RepaymentType = this.dictionaries.LoanDetails.items[
           idx
         ].PaymentsType.items;
 
@@ -2880,7 +2892,7 @@ export default {
   },
   methods: {
     async onSubmit() {
-      //console.log("fullProfile", this.$store.state.profile);
+      console.log("fullProfile", this.$store.state.profile);
       console.log("submit");
 
       this.$refs.surname.validate();
@@ -3166,7 +3178,7 @@ export default {
         this.formHasError = true;
         this.bar = true;
       } else {
-        this.fullProfile.confirmCredit = true;
+        this.profile.confirmCredit = true;
       }
     },
 
@@ -3308,7 +3320,7 @@ export default {
           if (response.infos.length) {
             this.files = []; // удалить все файлы после загрузки на сервер
             this.loaderFile = false;
-            for(let el of response.infos) {
+            for (let el of response.infos) {
               const item = this.filesAll.find(i => i.id === null)
               item.id = el.id
 
@@ -3324,8 +3336,19 @@ export default {
             // el.id = response.id;
           } else {
             this.loaderFile = false;
-            const el = this.filesAll.find(i => i.id === null);
-            el.upload = true; // загрузка была, но прошла не удачна
+            // const el = this.filesAll.find(i => i.id === null);
+            // el.upload = true; // загрузка была, но прошла не удачна
+
+            this.filesAll
+                .filter(i => i.id === null)
+                .map(i => i.upload = true)
+           
+            // удалить все не загруженные файлы перед отправкой на сервер!!!!
+            // const uploadFilesServer = this.fullProfile.AttachedDocuments.filter(
+            //   i => i.id !== null
+            // );
+            // this.fullProfile.AttachedDocuments = uploadFilesServer;
+
           }
         } catch (error) {}
       }
@@ -3358,7 +3381,7 @@ export default {
     appLoader: Loader,
     appFullProfile: FullProfile,
     appSentFullProfile: SentFullProfile,
-    appUploadFiles: UploadFiles
+    // appUploadFiles: UploadFiles
   }
 };
 </script>
