@@ -39,8 +39,7 @@ export default {
   },
   computed: {
     errorBar() {
-      console.log("Причина ошибки", this.$store.getters.error);
-      return this.$store.getters.errorBar;
+      return this.$store.getters.errorBar
     },
     errorMessage() {
       return message[this.$store.getters.error] || "Что-то пошло не так";

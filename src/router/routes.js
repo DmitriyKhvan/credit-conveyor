@@ -1,7 +1,7 @@
 const MainContainer = () => import("layouts/Main");
 const LoginPage = () => import("pages/main/auth/Login");
 const HomePage = () => import("pages/main/home/Home");
-const ChatPage = () => import("pages/main/chat/Chat");
+//const ChatPage = () => import("pages/main/chat/Chat");
 const Page404 = () => import("pages/extras/Error404");
 
 // Admin
@@ -64,8 +64,9 @@ const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
 const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
-
-
+//Chat
+const ChatIndexPage = () => import('pages/main/chat/Index');
+const Notifications = () => import('pages/main/chat/notification/Notification');
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
@@ -101,7 +102,7 @@ const routes = [{
     {
       path: "chancellary",
       name: "Kanselariya",
-      component: ChanRegistration,
+      component: Chancellary,
       children: [{
         path: "registration",
         name: "Kanselariya Registration",
@@ -144,35 +145,52 @@ const routes = [{
         component: CreditReg
       },
       {
-        path: "chat",
-        name: "Chat",
-        component: ChatPage
-      },
-      {
-        path: "it",
-        name: "IT section",
-        component: It,
-        children: [{
-            path: "devices",
-            name: "Devices",
-            component: Devices
-          },
-          {
-            path: "pcinfo",
-            name: "Devices Accounting",
-            component: DevicesAccounting
-          },
-          {
-            path: "history",
-            name: "Devices History",
-            component: DevicesHistory
-          },
-          {
-            path: "monitoring",
-            name: "Devices Monotoring",
-            component: DevicesMonitoring
-          }
-        ]
+        path: "sub/profile",
+        name: "Profile",
+        component: CreditProfile,
+        beforeEnter: ifAuthenticated
+      }
+      ]
+    }
+    ]
+  },
+  {
+    path: "admin",
+    name: "Admin Page",
+    component: AdminPage,
+    children: [{
+      path: "users",
+      name: "Users List",
+      component: Users
+    },
+    {
+      path: "roles",
+      name: "User Roles",
+      component: Roles
+    },
+    {
+      path: "menus",
+      name: "Menus List",
+      component: Menus
+    },
+    {
+      path: "moderator",
+      name: "Moderators",
+      component: Moderators
+    },
+    {
+      path: "dictionaries",
+      name: "Dictionaries",
+      component: Dictionaries
+    },
+    {
+      path: "selfdev",
+      name: "Self Developer",
+      component: SelfDevPage,
+      children: [{
+        path: "topicPage",
+        name: "addEditTopic",
+        component: TopicPage
       },
       {
         path: "questionPage",
@@ -232,7 +250,12 @@ const routes = [{
   {
     path: "chat",
     name: "Chat Page",
-    component: ChatPage
+    component: ChatIndexPage,
+    children: [{
+      path: "notification",
+      name: "Notifications",
+      component: Notifications
+    }]
   },
   {
     path: "selfdev",

@@ -10,7 +10,7 @@
                   color="teal"
                   filled
                   v-model="file"
-                  label="Выберите файл"
+                  :label="$t('tables.work.choose_file')"
                   @input="uploadFile"
                 >
                   <template v-slot:prepend>
@@ -37,7 +37,7 @@
                   :options="select.journals"
                   option-value="id"
                   option-label="name_short"
-                  label="Журнал"
+                  :label="$t('tables.work.journal')"
                   filled
                   bottom-slots
                   square
@@ -45,7 +45,7 @@
                   map-options
                   lazy-rules
                   :rules="[
-                    val => (val && val.length !== null) || 'Пожалуста выберите журнал'
+                    val => (val && val.length !== null) || $t('tables.work.chancellery.choose_journal_err')
                   ]"
                 >
                   <template v-slot:prepend>
@@ -63,7 +63,7 @@
                   :options="select.regions"
                   option-value="id"
                   option-label="name_short"
-                  label="Регионы"
+                  :label="$t('tables.work.chancellery.regions')"
                   filled
                   bottom-slots
                   emit-value
@@ -81,11 +81,20 @@
 
             <div class="row">
               <div class="col-6 q-pr-sm q-pa-sm">
-                <q-input disable outlined v-model="form.in_number" label="Вх. Номер" />
+                <q-input
+                  disable
+                  outlined
+                  v-model="form.in_number"
+                  :label="$t('tables.work.chancellery.inc_number')"
+                />
               </div>
 
               <div class="col-6 q-pl-sm q-pa-sm">
-                <q-input outlined v-model="form.in_date" placeholder="Вх. Дата">
+                <q-input
+                  outlined
+                  v-model="form.in_date"
+                  :placeholder="$t('tables.work.chancellery.inc_date')"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
                       <q-popup-proxy
@@ -113,14 +122,14 @@
                   :options="select.organs"
                   option-value="id"
                   option-label="name_short"
-                  label="Выбрать организацию"
+                  :label="$t('tables.work.chancellery.choose_organization')"
                   filled
                   bottom-slots
                   emit-value
                   map-options
                   :rules="[
                     val =>
-                      (val && val.length !== null) || 'Укажите пожалуста организацию'
+                      (val && val.length !== null) || $t('tables.work.chancellery.choose_organization_err')
                   ]"
                 >
                   <template v-slot:prepend>
@@ -133,7 +142,11 @@
               </div>
 
               <div class="col-6 q-pl-sm q-pa-sm">
-                <q-input outlined v-model="form.whoIsText" label="Написать откуда" />
+                <q-input
+                  outlined
+                  v-model="form.whoIsText"
+                  :label="$t('tables.work.chancellery.write_from')"
+                />
               </div>
             </div>
 
@@ -148,7 +161,7 @@
                     outlined
                     square
                     v-model="form.out_number"
-                    :placeholder="[form.number ? 'Без номер' : 'Исх. Номер']"
+                    :placeholder="[form.number ? $t('tables.work.chancellery.without_number') : $t('tables.work.chancellery.out_number')]"
                   />
                 </div>
               </div>
@@ -163,7 +176,7 @@
                     outlined
                     square
                     v-model="form.out_date"
-                    :placeholder="[form.date ? 'Без даты' : 'Исх. Дата']"
+                    :placeholder="[form.date ? $t('tables.work.chancellery.without_date') : $t('tables.work.chancellery.out_date')]"
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
@@ -197,7 +210,7 @@
                   bottom-slots
                   emit-value
                   map-options
-                  label="Формат"
+                  :label="$t('tables.work.chancellery.format')"
                 >
                   <template v-slot:prepend>
                     <q-icon name="dashboard" @click.stop />
@@ -211,12 +224,12 @@
               <div class="col-6 q-pl-sm q-pa-sm">
                 <q-input
                   v-model="form.listCount"
-                  label="Кол. лист"
+                  :label="$t('tables.work.chancellery.page_amount')"
                   outlined
                   lazy-rules
                   :rules="[
                     val =>
-                      (val && val.length !== null) || 'Пожалуста укажите кол. листов'
+                      (val && val.length !== null) || $t('tables.work.chancellery.page_amount_err')
                   ]"
                 />
               </div>
@@ -228,10 +241,10 @@
                   v-model="form.description"
                   outlined
                   type="textarea"
-                  label="Содержание"
+                  :label="$t('tables.work.content')"
                   lazy-rules
                   :rules="[
-                  val => (val && val.length >= 10) || 'Пожалуста укажите содержание'
+                  val => (val && val.length >= 10) || $t('tables.work.content_err')
                 ]"
                 />
               </div>
@@ -239,7 +252,11 @@
 
             <div class="row">
               <div class="col q-pa-sm">
-                <q-input outlined v-model="form.signedby" label="Кто подписаль" />
+                <q-input
+                  outlined
+                  v-model="form.signedby"
+                  :label="$t('tables.work.chancellery.who_signed')"
+                />
               </div>
             </div>
 
@@ -248,11 +265,11 @@
                 <q-btn
                   color="white"
                   text-color="black"
-                  label="Сбросит"
+                  :label="$t('actions.clear')"
                   type="reset"
                   class="q-mr-sm"
                 />
-                <q-btn color="primary" label="Сохранить" type="submit" />
+                <q-btn color="primary" :label="$t('actions.save')" type="submit" />
               </div>
             </div>
           </q-form>
@@ -261,35 +278,36 @@
         <div class="col-4 q-pa-sm">
           <div class="rightBlock q-pa-md text-center" @click="newFile()">
             <img src="@/assets/file.png" alt />
-            <br />просмотреть файл
+            <br />
+            {{$t('tables.work.chancellery.review_file')}}
           </div>
           <div>
             <br />
-            <span>ФАЙЛ === {{ file.name }}</span>
+            <span>{{$t('tables.work.chancellery.results.FILE')}} === {{ file.name }}</span>
             <br />
-            <span>ЖУРНАЛ === {{ form.journal }}</span>
+            <span>{{$t('tables.work.chancellery.results.JOURNAL')}} === {{ form.journal }}</span>
             <br />
-            <span>РЕГИОН === {{ form.region }}</span>
+            <span>{{$t('tables.work.chancellery.results.REGION')}} === {{ form.region }}</span>
             <br />
-            <span>ВХ НОМЕР === {{ form.in_number }}</span>
+            <span>{{$t('tables.work.chancellery.results.IN_NUMBER')}} === {{ form.in_number }}</span>
             <br />
-            <span>ВХ ДАТА === {{ form.in_date }}</span>
+            <span>{{$t('tables.work.chancellery.results.IN_DATE')}} === {{ form.in_date }}</span>
             <br />
-            <span>ОРГАН === {{ form.organs }}</span>
+            <span>{{$t('tables.work.chancellery.results.ORGAN')}} === {{ form.organs }}</span>
             <br />
-            <span>КТО ОТПРАВИЛ === {{ form.whoIsText }}</span>
+            <span>{{$t('tables.work.chancellery.results.WHO_SEND')}} === {{ form.whoIsText }}</span>
             <br />
-            <span>ИСХ НОМЕР === {{ form.out_number }}</span>
+            <span>{{$t('tables.work.chancellery.results.OUT_NUMBER')}} === {{ form.out_number }}</span>
             <br />
-            <span>ИСХ ДАТА === {{ form.out_date }}</span>
+            <span>{{$t('tables.work.chancellery.results.OUT_DATE')}} === {{ form.out_date }}</span>
             <br />
-            <span>ФОРМАТ === {{ form.format }}</span>
+            <span>{{$t('tables.work.chancellery.results.FORMAT')}} === {{ form.format }}</span>
             <br />
-            <span>КОЛ ЛИСТ === {{ form.listCount }}</span>
+            <span>{{$t('tables.work.chancellery.results.PAGE_AMOUNT')}} === {{ form.listCount }}</span>
             <br />
-            <span>СОДЕРЖАНИЕ === {{ form.description }}</span>
+            <span>{{$t('tables.work.chancellery.results.CONTENT')}} === {{ form.description }}</span>
             <br />
-            <span>КТО ПОДПИСАЛ === {{ form.signedby }}</span>
+            <span>{{$t('tables.work.chancellery.results.WHO_SIGNED')}} === {{ form.signedby }}</span>
             <br />
           </div>
         </div>

@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 
 const state = {
-  socket: io("http://10.8.8.70:4000/"),
+  socket: io(process.env.SOCKET_URL),
   socketCount: 0,
   isOnline: false
 };

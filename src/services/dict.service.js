@@ -140,8 +140,7 @@ const DictService = {
   },
   receivedNotifications() {
     return new Promise((resolve, reject) => {
-      let empId = store.getters["auth/empId"];
-      ApiService.get(`chat/notifications/${empId}`)
+      ApiService.get(`chat/notifications`)
         .then(res => {
           let count = 0;
           res.data.forEach(el => {
