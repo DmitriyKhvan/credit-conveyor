@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import RightGlobal from '../components/RightGlobal'
+import RightGlobal from './components/RightGlobal'
 import { dom } from 'quasar'
 const { height } = dom
 
