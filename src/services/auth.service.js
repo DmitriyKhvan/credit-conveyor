@@ -38,7 +38,7 @@ const AuthService = {
             TokenService.setKey("menus", b64EncodedMenus);
 
             store.dispatch("auth/loginSuccess", token);
-            SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
+            SocketService.runConnection(store.getters["auth/empId"]); // save user id to redis socket
 
             router.push(router.history.current.query.redirect || "/");
 
@@ -141,7 +141,7 @@ const AuthService = {
       }
 
       store.dispatch("dicts/setIsAllSet", false);
-      //SocketService.stopConnection();
+      SocketService.stopConnection();
       store.dispatch("auth/logoutSuccess");
       console.log(!(await TokenService.isTokenExist()))
       if (!(await TokenService.isTokenExist())) {
