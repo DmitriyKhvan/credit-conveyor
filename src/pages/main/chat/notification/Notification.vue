@@ -14,7 +14,7 @@
           <p>{{ msg.title }}</p>
           <p>{{ msg.body }}</p>
           <p>
-            Sent by: {{ msg.sender_name }} at:
+            Sent by: {{ msg.from_name }} at:
             {{ formattedDate(msg.sent_at) }}
           </p>
           <q-separator inset />
@@ -58,17 +58,6 @@ import { mapGetters } from "vuex";
 import commonUtils from "@/shared/utils/CommonUtils";
 
 export default {
-  mounted() {
-    this.socket.on("notify", data => {
-      console.log(data);
-      this.$store.dispatch("dicts/addNotification", data);
-      this.$q.notify({
-        message: data.title,
-        color: "purple",
-        position: "bottom-right"
-      });
-    });
-  },
   data() {
     return {
       message: "",
@@ -125,15 +114,7 @@ export default {
       ]
     };
   },
-  created() {
-    // this.$store.watch(
-    //   (state, getters) => getters["dicts/receivedNotifications"],
-    //   (newValue, oldValue) => {
-    //     this.inbox = this.$store.getters["dicts/receivedNotifications"];
-    //   }
-    // );
-    //console.log(this.inbox);
-  },
+  created() {},
   computed: {
     ...mapGetters({
       user: "auth/fullName"
@@ -156,7 +137,7 @@ export default {
       e.preventDefault();
       this.form.name = this.user;
       this.form.emp_id = this.emp_id;
-      this.socket.emit("SEND_NOTIFICATION", this.form);
+      this.socket.emit("notifications", this.form);
 
       this.form.id = null;
       this.form.title = null;

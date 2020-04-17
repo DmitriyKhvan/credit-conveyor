@@ -21,6 +21,16 @@ const NotifyService = {
             timeout: 1000,
             position: "top"
         })
+    },
+    showNotification(message) {
+        Notify.create({
+            message: message,
+            color: "secondary",
+            icon: "warning",
+            actions: [{ icon: "close", color: "white" }],
+            timeout: 5000,
+            position: "bottom-right"
+        })
     }
 };
 export default NotifyService;
