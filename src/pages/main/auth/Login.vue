@@ -11,7 +11,7 @@
     >
       <div v-if="!drawer">
         <div class="block">
-          <q-img src="./../../../assets/statics/logoNew.png" style="color:red; width: 100px" />
+          <q-img src="~assets/statics/logoNew.png" style="color:red; width: 100px" />
         </div>
         <div class="block2">
           <div class="row justify-center">
@@ -144,6 +144,7 @@ import { AuthService } from "@/services/auth.service";
 import { required, minLength, between } from "vuelidate/lib/validators";
 import NotifyService from "@/services/notify.service";
 import TokenService from "@/services/storage.service";
+import LoadingService from "@/services/loading.service";
 
 export default {
   name: "names",
@@ -186,15 +187,20 @@ export default {
     handleSubmit() {
       //Perform a simple validation that email and password have been typed in
       if (!!this.credentials.username && !!this.credentials.password) {
+        LoadingService.showLoadingHourGlass();
+
         AuthService.login(this.credentials, res => {
           if (res) {
+            LoadingService.hideLoading();
             this.clearForm();
             NotifyService.showSuccessMessage("Successfully logged in");
           } else {
+            LoadingService.hideLoading();
             NotifyService.showErrorMessage("Error in login");
           }
         });
       } else {
+        LoadingService.hideLoading();
         NotifyService.showErrorMessage("Enter credentials correctly");
       }
     },
