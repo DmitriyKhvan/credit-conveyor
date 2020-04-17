@@ -5,6 +5,7 @@ import router from "./../router/index";
 import DictService from "./dict.service";
 import SocketService from "./socket.service";
 import MainService from "./main.service";
+import LoadingService from "./loading.service";
 
 class AuthenticationError extends Error {
   constructor(errorCode, message) {
@@ -107,6 +108,8 @@ const AuthService = {
   },
 
   logout: async function () {
+
+    LoadingService.showLoadingDots();
     try {
       ApiService.unmount401Interceptor();
 
@@ -154,6 +157,8 @@ const AuthService = {
       });
       throw error;
     }
+    LoadingService.hideLoading();
+
   },
 
   refreshToken() {

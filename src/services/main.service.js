@@ -3,24 +3,23 @@ import ApiService from "./../services/api.service";
 import DictService from './../services/dict.service';
 import SocketService from './../services/socket.service'
 import store from './../store/index';
+import LoadingService from "./loading.service";
 
 const MainService = {
 
   loadAllPageRefresh() {
     return new Promise(async (resolve, reject) => {
+      LoadingService.showLoadingHourGlass();
       let accessToken = await TokenService.getToken();
       ApiService.setHeader(accessToken);
       store.dispatch("auth/setUserDetails", accessToken);
-
       let lang = await TokenService.getKey("lang");
       store.dispatch("common/setLang", lang);
-
       await DictService.loadAll();
-
       SocketService.runConnection(store.getters["auth/empId"]); // save emp id to redis socket
-
       store.dispatch("auth/loginSuccess", accessToken);
       // ApiService.mount401Interceptor();
+      LoadingService.hideLoading();
       resolve(true);
     })
   },
