@@ -23,8 +23,8 @@ const DictService = {
         store.dispatch("dicts/setUserList", userList);
         let testTopicList = await this.testTopicList();
         store.dispatch("dicts/setTestTopicList", testTopicList); //
-        let receivedNotifications = await this.receivedNotifications();
-        store.dispatch("dicts/setReceivedNotifications", receivedNotifications);
+        //let receivedNotifications = await this.receivedNotifications();
+        //store.dispatch("dicts/setReceivedNotifications", receivedNotifications);
         let moderatorsList = await this.moderatorsList();
         store.dispatch("auth/setModeratorsList", moderatorsList);
         let dictTypes = await this.dictTypes();

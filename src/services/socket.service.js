@@ -1,4 +1,5 @@
 import store from '@/store/index';
+import NotifyService from './notify.service';
 
 //let connection = store.getters["socket/usersCount"];
 //let socket = store.getters["socket/getSocket"];
@@ -20,6 +21,8 @@ const SocketService = {
   },
   runConnection(empId) {
     let socket = store.getters["socket/getSocket"];
+    this.runNotifications(socket, empId);
+
     socket.emit("online", empId);
     store.dispatch("socket/setOnline", true);
     console.log("user is online");
@@ -38,6 +41,18 @@ const SocketService = {
       this.runConnection(empId);
       return true;
     }
+  },
+  runNotifications(socket, empId) {
+    socket.on("notifications", data => {
+      if (data) {
+        data.forEach(msg => {
+          store.dispatch("dicts/addNotification", msg);
+          if (msg.status == 0) {
+            NotifyService.showNotification(msg.title)
+          }
+        });
+      }
+    });
   }
 };
 export default SocketService;
