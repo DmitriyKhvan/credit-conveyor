@@ -1,4 +1,5 @@
 import store from '@/store'
+import moment from "moment";
 
 export default {
   domDecoder(str) {
@@ -97,5 +98,30 @@ export default {
       return error.message
     }
     return error
+  },
+
+  // format date (DD.MM.YYYY, h:mm:ss)
+  dateFilter(value, format = 'date') {
+    //console.log(format);
+    const options = {}; 
+  
+    if (format.includes('date')) {
+        options.day = '2-digit',
+        options.month = '2-digit',
+        options.year = 'numeric'
+    }
+  
+    if (format.includes('time')) {
+        options.hour = '2-digit',
+        options.minute = '2-digit',
+        options.second = '2-digit'
+    }
+    return new Intl.DateTimeFormat('ru-RU', options).format(new Date(value));
+  },
+
+  formattedDate(date) {
+    return moment(date)
+      .startOf("hour")
+      .fromNow(); //format("MMMM Do YYYY, h:mm:ss a");
   }
 }

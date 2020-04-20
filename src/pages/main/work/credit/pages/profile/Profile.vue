@@ -864,188 +864,191 @@
               </div>
             </div>
 
-            <template
-              v-if="
-                Customer.JobInfo.type ===
-                  dictionaries.MainWorkType.items[0].value
-              "
-            >
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="nameOfEmployer"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.employerName"
-                    dense
-                    label="Наименование работодателя"
-                    lazy-rules
-                    :rules="[
-                      val => !!val || 'Введите наименование работодателя'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="innOfEmployer"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.INN"
-                    dense
-                    label="ИНН работодателя"
-                    mask="#########"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 9) || 'Введите ИНН работодателя'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
-                    ref="typeOrganization"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.employerActivityType"
-                    :options="dictionaries.BusinessType.items"
-                    dense
-                    label="Вид деятельности организации"
-                    emit-value
-                    map-options
-                    :rules="[
-                      val => !!val || 'Выберите вид деятельности организации'
-                    ]"
-                    class="q-pb-sm"
-                  />
-                </div>
-              </div>
+            <template v-if="dictionaries.MainWorkType.items.length">
 
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    ref="amountWorkes"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.employeesNum"
-                    :options="dictionaries.employeesNum.items"
-                    dense
-                    label="Количество работников организации"
-                    emit-value
-                    map-options
-                    :rules="[
-                      val =>
-                        !!val || 'Выберите количество работников организации'
-                    ]"
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="position"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.position"
-                    dense
-                    label="Должность"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите должность']"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
-                    ref="positionCategory"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.positionType"
-                    :options="dictionaries.PositionType.items"
-                    dense
-                    label="Категория занимаемой должности"
-                    emit-value
-                    map-options
-                    :rules="[
-                      val => !!val || 'Выберите категорию занимаемой должности'
-                    ]"
-                    class="q-pb-sm"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    ref="workExperience"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.lastJobExperienceMonths"
-                    :options="dictionaries.jobPeriods.items"
-                    dense
-                    label="Стаж на поледнем месте работы"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите стаж работы']"
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
-                    ref="totalWorkExperience"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.totalJobExperienceMonths"
-                    :options="dictionaries.jobPeriods.items"
-                    dense
-                    label="Общий трудовой стаж"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите общий трудовой стаж']"
-                    class="q-pb-sm"
-                  />
-                </div>
-              </div>
-            </template>
-
-            <template
-              v-if="
-                Customer.JobInfo.type ===
-                  dictionaries.MainWorkType.items[1].value ||
+              <template
+                v-if="
                   Customer.JobInfo.type ===
-                    dictionaries.MainWorkType.items[2].value
-              "
-            >
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    ref="typeOrganization2"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.employerActivityType"
-                    :options="dictionaries.BusinessType.items"
-                    dense
-                    label="Вид деятельности организации"
-                    emit-value
-                    map-options
-                    :rules="[
-                      val => !!val || 'Выберите вид деятельности организации'
-                    ]"
-                    class="q-pb-sm"
-                  />
+                    dictionaries.MainWorkType.items[0].value
+                "
+              >
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="nameOfEmployer"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.employerName"
+                      dense
+                      label="Наименование работодателя"
+                      lazy-rules
+                      :rules="[
+                        val => !!val || 'Введите наименование работодателя'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="innOfEmployer"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.INN"
+                      dense
+                      label="ИНН работодателя"
+                      mask="#########"
+                      lazy-rules
+                      :rules="[
+                        val =>
+                          (val && val.length === 9) || 'Введите ИНН работодателя'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      ref="typeOrganization"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.employerActivityType"
+                      :options="dictionaries.BusinessType.items"
+                      dense
+                      label="Вид деятельности организации"
+                      emit-value
+                      map-options
+                      :rules="[
+                        val => !!val || 'Выберите вид деятельности организации'
+                      ]"
+                      class="q-pb-sm"
+                    />
+                  </div>
                 </div>
-                <div class="col-4">
-                  <q-select
-                    ref="activityPeriod"
-                    square
-                    outlined
-                    v-model="Customer.JobInfo.activeYears"
-                    :options="dictionaries.jobPeriods.items"
-                    dense
-                    label="Срок деятельности"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите срок деятельности']"
-                    class="q-pb-sm"
-                  />
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      ref="amountWorkes"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.employeesNum"
+                      :options="dictionaries.employeesNum.items"
+                      dense
+                      label="Количество работников организации"
+                      emit-value
+                      map-options
+                      :rules="[
+                        val =>
+                          !!val || 'Выберите количество работников организации'
+                      ]"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="position"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.position"
+                      dense
+                      label="Должность"
+                      lazy-rules
+                      :rules="[val => !!val || 'Введите должность']"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      ref="positionCategory"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.positionType"
+                      :options="dictionaries.PositionType.items"
+                      dense
+                      label="Категория занимаемой должности"
+                      emit-value
+                      map-options
+                      :rules="[
+                        val => !!val || 'Выберите категорию занимаемой должности'
+                      ]"
+                      class="q-pb-sm"
+                    />
+                  </div>
                 </div>
-              </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      ref="workExperience"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.lastJobExperienceMonths"
+                      :options="dictionaries.jobPeriods.items"
+                      dense
+                      label="Стаж на поледнем месте работы"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите стаж работы']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      ref="totalWorkExperience"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.totalJobExperienceMonths"
+                      :options="dictionaries.jobPeriods.items"
+                      dense
+                      label="Общий трудовой стаж"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите общий трудовой стаж']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+              </template>
+
+              <template
+                v-if="
+                  Customer.JobInfo.type ===
+                    dictionaries.MainWorkType.items[1].value ||
+                    Customer.JobInfo.type ===
+                      dictionaries.MainWorkType.items[2].value
+                "
+              >
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      ref="typeOrganization2"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.employerActivityType"
+                      :options="dictionaries.BusinessType.items"
+                      dense
+                      label="Вид деятельности организации"
+                      emit-value
+                      map-options
+                      :rules="[
+                        val => !!val || 'Выберите вид деятельности организации'
+                      ]"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      ref="activityPeriod"
+                      square
+                      outlined
+                      v-model="Customer.JobInfo.activeYears"
+                      :options="dictionaries.jobPeriods.items"
+                      dense
+                      label="Срок деятельности"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите срок деятельности']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+              </template>
             </template>
           </div>
         </div>
@@ -2620,7 +2623,7 @@
                         square
                         outlined
                         v-model="
-                          fullProfile.AttachedDocuments[index].DocumentName
+                          file.DocumentName
                         "
                         dense
                         label="Название файла"
@@ -2660,24 +2663,39 @@
             Комментарии по кредиту
           </h4>
           <div class="tab-content" ref="tabContent">
-            <div class="row q-col-gutter-md">
-              <div class="col">
-                <q-input
-                  v-model="profile.comment.Comment"
-                  type="textarea"
-                />
-              </div>
-            </div>
-
             <template v-if="fullProfile.ApplicationComment.length">
               <div 
                 class="comments"
                 v-for="comment of fullProfile.ApplicationComment"
                 :key="comment.id"
               >
+                <h6 class="tab-content_title">{{comment.CommentPerson}}</h6>
+                <!-- <span>{{comment.CommentDate}}</span> -->
                 <p>{{comment.Comment}}</p>
               </div>
             </template>
+
+            <!-- <q-separator /> -->
+
+            <div class="row q-col-gutter-md">
+              <div class="col">
+                <q-input
+                  v-model="creditManagerComment"
+                  type="textarea"
+                  label="Ведите комментарий"
+                  outlined
+                  dense
+                />
+              </div>
+            </div>
+
+            <!-- Add comment-->
+            <q-btn
+              color="primary"
+              label="Оставить комментарий"
+              class="q-ml-sm"
+              @click="addComment"
+            />
 
           </div>
         </div>
@@ -2743,6 +2761,7 @@
 
 <script>
 import CommonUtils from "@/shared/utils/CommonUtils";
+import UserService from "@/services/user.service";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import SentFullProfile from "./SentFullProfile";
@@ -2765,6 +2784,7 @@ export default {
       bar: false,
       GracePeriodMin: null,
       GracePeriodMax: null,
+      creditManagerComment:"",
 
       options: {
         RepaymentType: [],
@@ -2777,8 +2797,15 @@ export default {
 
     };
   },
-  created() {
+  async created() {
     this.$store.commit("resetDataFullFormProfile")
+    if (!this.$store.getters.userRole) {
+      await this.$store.dispatch("setHeaderRole", sessionStorage.getItem("userRole"))
+      await this.$store.dispatch("setHeaderBPM", sessionStorage.getItem("csrf_token"))
+      this.$store.commit("setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
+      this.$store.commit("setTaskId", sessionStorage.getItem("taskId"));
+      // console.log('dic', this.dictionaries)
+    }
   },
   mounted() {
     this.Customer.FirstName = this.$store.state.credits.personalData.name;
@@ -3285,19 +3312,14 @@ export default {
         this.files.push(uploadedFiles[i]);
         this.filesAll.push({
           name: uploadedFiles[i].name,
+          DocumentName: "",
           id: null,
           upload: false
-        });
-        this.fullProfile.AttachedDocuments.push({
-          id: null,
-          DocLink: "",
-          DocumentName: ""
         });
       }
 
       console.log("files", this.files);
       console.log("filesAll", this.filesAll);
-      console.log("BPMData", this.fullProfile.AttachedDocuments);
     },
 
     async submitFiles() {
@@ -3309,11 +3331,16 @@ export default {
         this.loaderFile = true;
 
         let formData = new FormData();
-        for (var i = 0; i < this.files.length; i++) {
+        let onlyNullId = this.filesAll.filter(i => i.id === null)
+       
+        for (let i = 0; i < this.files.length; i++) {
           let file = this.files[i];
-          // formData.append("files[" + i + "]", file);
-          formData.append("file", file);
+          let documentTypes = onlyNullId[i].DocumentName
+          formData.append("files", file);
+          formData.append("documentTypes", documentTypes);
         }
+
+        console.log('formData', formData.getAll("files"))
 
         try {
           const response = await this.$store.dispatch("uploadFiles", formData);
@@ -3323,58 +3350,56 @@ export default {
             for (let el of response.infos) {
               const item = this.filesAll.find(i => i.id === null)
               item.id = el.id
-
-              const elSer = this.fullProfile.AttachedDocuments.find(i => i.id === null);
-              elSer.id = el.id
             }
-            //debugger
-            // const elSer = this.fullProfile.AttachedDocuments.find(
-            //   i => i.id === null
-            // );
-            // elSer.id = response.id;
-            // const el = this.filesAll.find(i => i.id === null);
-            // el.id = response.id;
           } else {
             this.loaderFile = false;
-            // const el = this.filesAll.find(i => i.id === null);
-            // el.upload = true; // загрузка была, но прошла не удачна
 
+            // el.upload = true; // загрузка была, но прошла не удачна
             this.filesAll
                 .filter(i => i.id === null)
                 .map(i => i.upload = true)
-           
-            // удалить все не загруженные файлы перед отправкой на сервер!!!!
-            // const uploadFilesServer = this.fullProfile.AttachedDocuments.filter(
-            //   i => i.id !== null
-            // );
-            // this.fullProfile.AttachedDocuments = uploadFilesServer;
-
           }
         } catch (error) {}
       }
+
+      // удалить все не загруженные файлы перед отправкой на сервер!!!!
+      this.fullProfile.AttachedDocuments = this.filesAll.filter(i => i.id !== null)
+                                                              .map(i => i = {
+                                                                    id: i.id,
+                                                                    DocLink: "",
+                                                                    DocumentName: i.DocumentName
+                                                                  })
+      console.log("document", this.fullProfile.AttachedDocuments)
     },
 
     removeAllFile() {
       this.files = [];
       const uploadFiles = this.filesAll.filter(i => i.id !== null);
       this.filesAll = uploadFiles;
-
-      const uploadFilesServer = this.fullProfile.AttachedDocuments.filter(
-        i => i.id !== null
-      );
-      this.fullProfile.AttachedDocuments = uploadFilesServer;
       console.log("removeAllFile", uploadFilesServer);
-      console.log("BPM", this.fullProfile.AttachedDocuments);
     },
 
     removeFile(key) {
       this.files.splice(key - (this.filesAll.length - this.files), 1);
       this.filesAll.splice(key, 1);
-      this.fullProfile.AttachedDocuments.splice(key, 1);
     },
 
     addFiles() {
       this.$refs.files.click();
+    },
+
+    addComment() {
+      const comment = {
+              Comment: this.creditManagerComment,
+              Type: "",
+              CommentPerson: this.$store.getters["auth/username"],
+              id: null,
+              //CommentDate: ""
+            }
+
+      this.$store.commit("addComment", {commentBlock: "ApplicationComment", comment})
+      this.creditManagerComment = ""
+      console.log('comments', this.fullProfile.ApplicationComment)
     }
   },
   components: {
@@ -3495,6 +3520,10 @@ export default {
 
   .sliderCredit {
     margin: 20px 15px;
+  }
+
+  .commentCredit{
+    margin-bottom: 20px;
   }
 
   // file

@@ -6,12 +6,13 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 export default {
   state: {
     taskId: "",
+    userRole: "",
     errorMessage: {
       id: null, // чтоб различать две одинаковые ошибки
       message: null
     },
     roles: {
-      Администратор: "CRM",
+      Admin: "CRM",
       CreditManager: "CRM",
       BackOfficee: "BO",
       CreditCommitteeMember: "CCM",
@@ -84,20 +85,28 @@ export default {
    
   },
   actions: {
-    async authBpm({ state, dispatch, commit }) {
+    async authBpm({ state, dispatch, commit, getters }) {
       
       try {
-        
-        // получение id пользователя
-        const userId = decode(await storegeService.getToken()).emp_id;
+        //console.log('username', getters["auth/username"])
+        // получение empId пользователя
+        //const empId = decode(await storegeService.getToken()).emp_id;
+        const empId = getters["auth/empId"];
 
         // получение ролей пользователя
-        const role = await dispatch("getUserRole", userId);
+        const role = await dispatch("getUserRole", empId);
         console.log("userRole", role);
 
+        const userRole = role.value[0].authority
+
+        commit("setUserRole", userRole)
+
         // запись роли в header запроса
-        await dispatch("setHeaderRole", state.roles[role.value[0].name]);
+        await dispatch("setHeaderRole", state.roles[userRole]);
         //await dispatch("setHeaderRole", "ff")
+
+        // запись роли в sessionStore
+        sessionStorage.setItem("userRole", state.roles[userRole])
 
         // получение BPM token
         const csrf_token = await dispatch("getBPMToken");
@@ -116,8 +125,11 @@ export default {
       }
     },
 
-    async getUserRole({ state }, payload) {
-      return await state.bpmService.getUserRole(payload);
+    async getUserRole({ state, commit }, payload) {
+      
+      const response = await state.bpmService.getUserRole(payload);
+
+      return response
     },
 
     async getBPMToken({ state, dispatch }) {
@@ -183,15 +195,18 @@ export default {
     },
 
     async confirmationCredit({ state, commit, getters }, data) {
+      // console.log("taskId", getters.taskId)
+      // debugger
       try {
         const response = await state.bpmService.confirmationCredit({
           taskId: getters.taskId,
           data
         });
 
-        //console.log('confirmCredit taskId ', response.nextTask.id)
+        console.log('confirmCredit', response)
         if (response.nextTask.id) {
           commit("setTaskId", response.nextTask.id);
+          sessionStorage.setItem("taskId", response.nextTask.id)
         }
 
         return response;
@@ -333,7 +348,12 @@ export default {
       state.taskId = payload;
     },
 
+    setUserRole(state, payload) {
+      state.userRole = payload
+    },
+
     setCreditTasks(state, payload) {
+      payload.map(i => i.date = CommonUtils.dateFilter(i.date, "datetime"))
       state.creditTasks = payload;
     },
 
@@ -347,6 +367,7 @@ export default {
     errorId: state => state.errorMessage.id,
     errorBar: state => state.errorBar,
     taskId: state => state.taskId,
-    creditTasks: state => state.creditTasks
+    creditTasks: state => state.creditTasks,
+    userRole: state => state.userRole
   }
 };

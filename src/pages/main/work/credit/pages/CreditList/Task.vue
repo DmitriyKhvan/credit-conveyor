@@ -467,13 +467,17 @@
               <template
                 v-if="
                   dictionaries.additionalIncomeSource.items.find(
-                    i => i.value == Customer.MonthlyIncome.additionalIncome.incomeType
+                    i =>
+                      i.value ==
+                      Customer.MonthlyIncome.additionalIncome.incomeType
                   )
                 "
               >
                 {{
                   dictionaries.additionalIncomeSource.items.find(
-                    i => i.value == Customer.MonthlyIncome.additionalIncome.incomeType
+                    i =>
+                      i.value ==
+                      Customer.MonthlyIncome.additionalIncome.incomeType
                   ).label
                 }}
               </template>
@@ -481,119 +485,116 @@
           </div>
         </div>
 
-
         <h4 class="titleForm">Сведения об имуществе</h4>
         <div class="formBlock">
-          
-            <div
-              v-for="(property, index) of Customer.PropertyInformation
-                .Realty_new.items"
-              :key="'Realty_new' + index"
-            >
-              <h5 class="subTitleForm">
-                <span class="titleValue">Недвижимость {{ index + 1 }}</span>
-              </h5>
+          <div
+            v-for="(property, index) of Customer.PropertyInformation.Realty_new
+              .items"
+            :key="'Realty_new' + index"
+          >
+            <h5 class="subTitleForm">
+              <span class="titleValue">Недвижимость {{ index + 1 }}</span>
+            </h5>
 
-              <div class="row rowForm">
-                <div class="col-3 field">Вид недвижимости</div>
-                <div class="col-9 data">
-                  <template
-                    v-if="
-                      dictionaries.PropertyType.items.find(
-                        i => i.value == property.PropertyType
-                      )
-                    "
-                  >
-                    {{
-                      dictionaries.PropertyType.items.find(
-                        i => i.value == property.PropertyType
-                      ).label
-                    }}
-                  </template>
-                </div>
-              </div>
-
-              <div class="row rowForm">
-                <div class="col-2 field">Регион / область</div>
-                <div class="col-10 data">
-                  <template
-                    v-if="
-                      dictionaries.Region.items.find(
-                        i => i.value == property.Region
-                      )
-                    "
-                  >
-                    {{
-                      dictionaries.Region.items.find(
-                        i => i.value == property.Region
-                      ).label
-                    }}
-                  </template>
-                </div>
-              </div>
-
-              <div class="row rowForm">
-                <div class="col-2 field">Рыночная стоимость</div>
-                <div class="col-10 data">{{ property.MarketValue }}</div>
+            <div class="row rowForm">
+              <div class="col-3 field">Вид недвижимости</div>
+              <div class="col-9 data">
+                <template
+                  v-if="
+                    dictionaries.PropertyType.items.find(
+                      i => i.value == property.PropertyType
+                    )
+                  "
+                >
+                  {{
+                    dictionaries.PropertyType.items.find(
+                      i => i.value == property.PropertyType
+                    ).label
+                  }}
+                </template>
               </div>
             </div>
 
-            <div
-              v-for="(vehicle, index) of Customer.PropertyInformation
-                .Transport_new.items"
-              :key="'Transport_new' + index"
-            >
-              <h5 class="subTitleForm">
-                <span class="titleValue">Транспортное средство {{ index + 1 }}</span>
-              </h5>
-
-              <div class="row rowForm">
-                <div class="col-3 field">Вид транспортного средства</div>
-                <div class="col-9 data">
-                  <template
-                    v-if="
-                      dictionaries.VehicleType.items.find(
-                        i => i.value == vehicle.VehicleType
-                      )
-                    "
-                  >
-                    {{
-                      dictionaries.VehicleType.items.find(
-                        i => i.value == vehicle.VehicleType
-                      ).label
-                    }}
-                  </template>
-                </div>
-              </div>
-
-              <div class="row rowForm">
-                <div class="col-2 field">Марка транспортного средства</div>
-                <div class="col-10 data">
-                  {{ vehicle.transportBrand }}
-                </div>
-              </div>
-
-              <div class="row rowForm">
-                <div class="col-2 field">Год выпуска</div>
-                <div class="col-10 data">{{ vehicle.yearOfRelease }}</div>
-              </div>
-
-              <div class="row rowForm">
-                <div class="col-2 field">Рыночная стоимость</div>
-                <div class="col-10 data">{{ vehicle.marketValue }}</div>
+            <div class="row rowForm">
+              <div class="col-2 field">Регион / область</div>
+              <div class="col-10 data">
+                <template
+                  v-if="
+                    dictionaries.Region.items.find(
+                      i => i.value == property.Region
+                    )
+                  "
+                >
+                  {{
+                    dictionaries.Region.items.find(
+                      i => i.value == property.Region
+                    ).label
+                  }}
+                </template>
               </div>
             </div>
 
+            <div class="row rowForm">
+              <div class="col-2 field">Рыночная стоимость</div>
+              <div class="col-10 data">{{ property.MarketValue }}</div>
+            </div>
+          </div>
+
+          <div
+            v-for="(vehicle, index) of Customer.PropertyInformation
+              .Transport_new.items"
+            :key="'Transport_new' + index"
+          >
+            <h5 class="subTitleForm">
+              <span class="titleValue"
+                >Транспортное средство {{ index + 1 }}</span
+              >
+            </h5>
+
+            <div class="row rowForm">
+              <div class="col-3 field">Вид транспортного средства</div>
+              <div class="col-9 data">
+                <template
+                  v-if="
+                    dictionaries.VehicleType.items.find(
+                      i => i.value == vehicle.VehicleType
+                    )
+                  "
+                >
+                  {{
+                    dictionaries.VehicleType.items.find(
+                      i => i.value == vehicle.VehicleType
+                    ).label
+                  }}
+                </template>
+              </div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-2 field">Марка транспортного средства</div>
+              <div class="col-10 data">
+                {{ vehicle.transportBrand }}
+              </div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-2 field">Год выпуска</div>
+              <div class="col-10 data">{{ vehicle.yearOfRelease }}</div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-2 field">Рыночная стоимость</div>
+              <div class="col-10 data">{{ vehicle.marketValue }}</div>
+            </div>
+          </div>
         </div>
 
         <h4 class="titleForm">Гарантии и поручительства</h4>
         <div class="formBlock">
-
           <template v-if="fullProfile.Guarantee.RelatedPerson.items">
-
             <div
-              v-for="(guarantee, index) of fullProfile.Guarantee
-                .RelatedPerson.items"
+              v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson
+                .items"
               :key="'RelatedPerson' + index"
             >
               <div class="row rowForm">
@@ -674,7 +675,9 @@
               </div>
               <div class="row rowForm">
                 <div class="col-6 field">Дата окончания</div>
-                <div class="col-6 data">{{ guarantee.Document.ExpirationDate }}</div>
+                <div class="col-6 data">
+                  {{ guarantee.Document.ExpirationDate }}
+                </div>
               </div>
 
               <div class="row rowForm">
@@ -724,21 +727,18 @@
                 <div class="col-12 field">Контактная информация:</div>
               </div>
 
-              <div 
-                class="row rowForm" 
+              <div
+                class="row rowForm"
                 v-for="(phone, phoneIndex) of guarantee.PhoneList"
                 :key="phone.Number"
               >
                 <div class="col-6 field">Телефон {{ phoneIndex + 1 }}</div>
                 <div class="col-6 data">{{ phone.Number }}</div>
               </div>
-              
             </div>
-            
-          </template> 
+          </template>
 
           <template v-if="fullProfile.Guarantee.RelatedLegalPerson.items">
-
             <div
               v-for="(guarantee, index) of fullProfile.Guarantee
                 .RelatedLegalPerson.items"
@@ -795,24 +795,21 @@
                 <div class="col-12 field">Контактная информация:</div>
               </div>
 
-              <div 
-                class="row rowForm" 
+              <div
+                class="row rowForm"
                 v-for="(phone, phoneIndex) of guarantee.PhoneList"
                 :key="phone.Number"
               >
                 <div class="col-6 field">Телефон {{ phoneIndex + 1 }}</div>
                 <div class="col-6 data">{{ phone.Number }}</div>
               </div>
-              
             </div>
-            
           </template>
 
           <template v-if="fullProfile.Guarantee.Insurance.items">
-
             <div
-              v-for="(guarantee, index) of fullProfile.Guarantee
-                .Insurance.items"
+              v-for="(guarantee, index) of fullProfile.Guarantee.Insurance
+                .items"
               :key="'Insurance' + index"
             >
               <div class="row rowForm">
@@ -823,7 +820,7 @@
                 <div class="col-6 field">Наименование организации</div>
                 <div class="col-6 data">{{ guarantee.OrgName }}</div>
               </div>
-              
+
               <div class="row rowForm">
                 <div class="col-6 field">ИНН страховой компании</div>
                 <div class="col-6 data">{{ guarantee.INN }}</div>
@@ -833,25 +830,26 @@
                 <div class="col-6 data">{{ guarantee.Sum }}</div>
               </div>
             </div>
-            
           </template>
-
         </div>
-
 
         <h4 class="titleForm">Сведения о запрашиваемом кредите</h4>
         <div class="formBlock">
           <div class="row rowForm">
             <div class="col-6 field">Кредитный продукт</div>
             <div class="col-6 data">
-              <template v-if="dictionaries.LoanProduct.items.find(
-                  i => i.value == fullProfile.LoanInfo.LoanProduct
-                )">
-              {{
-                dictionaries.LoanProduct.items.find(
-                  i => i.value == fullProfile.LoanInfo.LoanProduct
-                ).label
-              }}
+              <template
+                v-if="
+                  dictionaries.LoanProduct.items.find(
+                    i => i.value == fullProfile.LoanInfo.LoanProduct
+                  )
+                "
+              >
+                {{
+                  dictionaries.LoanProduct.items.find(
+                    i => i.value == fullProfile.LoanInfo.LoanProduct
+                  ).label
+                }}
               </template>
             </div>
           </div>
@@ -869,14 +867,18 @@
           <div class="row rowForm">
             <div class="col-6 field">Тип погашения</div>
             <div class="col-6 data">
-              <template v-if=" profile.options.RepaymentType.find(
-                  i => i.value == fullProfile.LoanInfo.RepaymentType
-                )">
-              {{
-                profile.options.RepaymentType.find(
-                  i => i.value == fullProfile.LoanInfo.RepaymentType
-                ).label
-              }}
+              <template
+                v-if="
+                  profile.options.RepaymentType.find(
+                    i => i.value == fullProfile.LoanInfo.RepaymentType
+                  )
+                "
+              >
+                {{
+                  profile.options.RepaymentType.find(
+                    i => i.value == fullProfile.LoanInfo.RepaymentType
+                  ).label
+                }}
               </template>
             </div>
           </div>
@@ -885,62 +887,90 @@
             <div class="col-6 field">
               Процентная ставка по кредиту (максимальная)
             </div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.MaxInterestRate }}</div>
+            <div class="col-6 data">
+              {{ fullProfile.LoanInfo.MaxInterestRate }}
+            </div>
           </div>
 
           <div class="row rowForm">
             <div class="col-6 field">
               Процентная ставка по кредиту (минимальная)
             </div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.MinInterestRate }}</div>
+            <div class="col-6 data">
+              {{ fullProfile.LoanInfo.MinInterestRate }}
+            </div>
           </div>
 
-          <!-- <div class="row rowForm">
+          <div class="row rowForm">
             <div class="col-6 field">Льготный период по погашению кредита</div>
             <div class="col-6 data">{{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }}</div>
-          </div> -->
+          </div>
 
           <div class="row rowForm">
             <div class="col-6 field">Удобный срок погашения в мес</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}</div>
+            <div class="col-6 data">
+              {{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}
+            </div>
           </div>
 
           <div class="row rowForm">
-            <div class="col-6 field">Максимальное количество месяцев на кредит</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.MaxTermInMonths }}</div>
+            <div class="col-6 field">
+              Максимальное количество месяцев на кредит
+            </div>
+            <div class="col-6 data">
+              {{ fullProfile.LoanInfo.MaxTermInMonths }}
+            </div>
           </div>
 
           <div class="row rowForm">
-            <div class="col-6 field">Минимальное количество месяцев на кредит</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.MinTermInMonths }}</div>
+            <div class="col-6 field">
+              Минимальное количество месяцев на кредит
+            </div>
+            <div class="col-6 data">
+              {{ fullProfile.LoanInfo.MinTermInMonths }}
+            </div>
           </div>
 
           <div class="row rowForm">
             <div class="col-6 field">Первоначальный взнос</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.InitialPayment }}</div>
+            <div class="col-6 data">
+              {{ fullProfile.LoanInfo.InitialPayment }}
+            </div>
           </div>
 
           <div class="row rowForm">
-            <div class="col-6 field">Процент первоначального взноса (максимальный)</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
+            <div class="col-6 field">
+              Процент первоначального взноса (максимальный)
+            </div>
+            <div class="col-6 data">
+              {{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}
+            </div>
           </div>
 
           <div class="row rowForm">
-            <div class="col-6 field">Процент первоначального взноса (минимальный)</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.MinInitialPaymentPercent }}</div>
+            <div class="col-6 field">
+              Процент первоначального взноса (минимальный)
+            </div>
+            <div class="col-6 data">
+              {{ fullProfile.LoanInfo.MinInitialPaymentPercent }}
+            </div>
           </div>
 
           <div class="row rowForm">
             <div class="col-6 field">Цель кредитования</div>
             <div class="col-6 data">
-              <template v-if="dictionaries.LoanPurpose.items.find(
-                  i => i.value == fullProfile.LoanInfo.LoanPurpose
-                )">
-              {{
-                dictionaries.LoanPurpose.items.find(
-                  i => i.value == fullProfile.LoanInfo.LoanPurpose
-                ).label
-              }}
+              <template
+                v-if="
+                  dictionaries.LoanPurpose.items.find(
+                    i => i.value == fullProfile.LoanInfo.LoanPurpose
+                  )
+                "
+              >
+                {{
+                  dictionaries.LoanPurpose.items.find(
+                    i => i.value == fullProfile.LoanInfo.LoanPurpose
+                  ).label
+                }}
               </template>
             </div>
           </div>
@@ -977,24 +1007,37 @@
 
         <h4 class="titleForm">Документы</h4>
         <div class="formBlock">
-          <div class="row rowForm">
-            <div class="col-12 field">Приложение документа отсутсвтует</div>
-          </div>
+          <template v-if="fullProfile.AttachedDocuments.items">
+            <div 
+                v-for="(document, index) of fullProfile.AttachedDocuments.items"
+                :key="document.id"
+              >
+              <div class="row rowForm">
+                <div class="col-3 field">Наименование документа {{index + 1}}</div>
+                <div class="col-9 data">{{document.DocumentName}}</div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Скан документа</div>
+                <div class="col-9 data"></div>
+              </div>
+            </div>
+          </template>
+
+          <div v-else class="col-12 field">Приложение документа отсутсвтует</div>
         </div>
 
         <h4 class="titleForm">Коментарии</h4>
         <div class="formBlock">
           <div class="row rowForm">
-            <template v-if="fullProfile.ApplicationComment.items.length">
-            
-              <div 
+            <template v-if="fullProfile.ApplicationComment.items">
+              <div
                 class="col-12 field"
                 v-for="comment of fullProfile.ApplicationComment.items"
                 :key="comment.id"
               >
-                {{comment.Comment}}
+                {{ comment.Comment }}
               </div>
-
             </template>
           </div>
         </div>
@@ -1005,10 +1048,10 @@
       <div class="col-3 "></div>
       <div class="col-3">
         <q-btn
-          type="submit"
           color="green"
           label="Одобрить"
           class="q-ml-md full-width"
+          @click="creditSuccess"
         />
       </div>
       <div class="col-3">
@@ -1016,7 +1059,7 @@
           color="red"
           label="Отклонить"
           class="q-ml-md full-width"
-          @click="taskFailure"
+          @click="creditFailure"
         />
       </div>
       <div class="col-3"></div>
@@ -1024,15 +1067,18 @@
 
     <q-dialog v-model="confirm" persistent>
       <q-card class="failureCredit">
-        <q-card-section class="row titleFailureCredit">
+        <!-- <q-card-section class="row titleFailureCredit">
           <span class="q-ml-sm">Выберите причину отказа</span>
+        </q-card-section> -->
+        <q-card-section class="row titleFailureCredit">
+          <span class="q-ml-sm">Введите причину отказа</span>
         </q-card-section>
         <form
           class="failureCreditForm row q-col-gutter-md"
           @submit.prevent.stop="submitHandler"
         >
           <div class="col-12">
-            <q-select
+            <!-- <q-select
               ref="reson"
               square
               outlined
@@ -1043,15 +1089,16 @@
               lazy-rules
               :rules="[val => !!val || 'Выберите причину отказа']"
               class="q-pb-sm"
-            />
+            /> -->
 
-            <div v-if="reason === options.reason[3]" style="max-width: 100%">
+            <!-- <div v-if="reason === options.reason[3]" style="max-width: 100%"> -->
+            <div style="max-width: 100%">
               <q-input
                 ref="comment"
                 square
                 outlined
                 dense
-                v-model="text"
+                v-model="comment"
                 label="Комментарий"
                 type="textarea"
                 lazy-rules
@@ -1067,6 +1114,7 @@
               label="Отмена"
               color="red"
               v-close-popup
+              @click="() => comment=''"
             />
           </div>
           <div class="col-6">
@@ -1080,24 +1128,38 @@
         </form>
       </q-card>
     </q-dialog>
+
   </div>
 </template>
 <script>
+import { validItems, validFilter } from "../../filters/valid_filter";
+
 export default {
   data() {
     return {
+      userRole: this.$store.getters.userRole,
       confirm: false,
       reason: "",
-      text: "",
+      comment: "",
       options: {
         reason: ["причина 1", "причина 2", "причина 3", "другое"]
       }
     };
   },
   async created() {
+    console.log('userRole', this.$store.getters.userRole)
+    if (!this.$store.getters.userRole) {
+      await this.$store.dispatch("setHeaderRole", sessionStorage.getItem("userRole"))
+      await this.$store.dispatch("setHeaderBPM", sessionStorage.getItem("csrf_token"))
+      this.$store.commit("setTaskId", sessionStorage.getItem("taskId"));
+   }
+
     console.log("taskId", this.$route.params["id"]);
+    // console.log("taskId", this.$route.query.taskId);
+  //  this.$store.commit("setTaskId", this.$route.params["id"]);
+    this.$store.commit("setTaskId", this.$route.query.taskId);
     try {
-      await this.$store.dispatch("getFullForm", this.$route.params["id"]);
+      await this.$store.dispatch("getFullForm");
     } catch (error) {}
   },
   mounted() {
@@ -1120,18 +1182,55 @@ export default {
       return this.$store.state.profile;
     },
     fullProfile() {
-      return this.$store.state.profile.fullFormProfile;
+      return this.$store.getters.fullForm;
     },
     Customer() {
       return this.$store.state.profile.fullFormProfile.Customer;
     },
     dictionaries() {
       return this.$store.state.profile.dictionaries;
-    }
+    },
+    // role() {
+    //   return;
+    // }
   },
   methods: {
-    taskFailure() {
+    creditFailure() {
       this.confirm = true;
+    },
+
+    async creditSuccess() {
+
+      if (this.userRole == "BackOfficee") {
+        this.fullProfile.BOLogin = this.$store.getters["auth/username"]
+        this.fullProfile.BODecision = true // кредит одобрен
+        delete this.fullProfile.ApplicationComment.items[0].CommentDate
+      } else if (this.userRole == "CreditCommitteeMember	") {
+        const comment = {
+            Comment: "",
+            MemberOfCCFIO: "",
+            id: null,
+            Login: this.$store.getters["auth/username"],
+            isApproved: true
+          }
+
+          this.$store.commit("addComment", {commentBlock: "CreditCommiteeDecisions", comment})
+      }
+
+      const data = {
+        output: [
+          {
+            name: "application",
+            data: this.fullProfile
+          }
+        ]
+      };
+
+      console.log(JSON.stringify(data, null, 2))
+
+      try {
+        await this.$store.dispatch("confirmationCredit", data);
+      } catch (error) {}
     },
 
     toggleCreditBlock(event) {
@@ -1139,33 +1238,66 @@ export default {
       event.nextSibling.classList.toggle("close");
     },
 
-    submitHandler(event) {
-      console.log(this.$refs);
-      this.$refs.reson.validate();
+    async submitHandler(event) {
+      // console.log(this.$refs);
+      // this.$refs.reson.validate();
 
-      if (this.reason === this.options.reason[3]) {
-        this.$refs.comment.validate();
-      } else {
-        this.validItems("comment");
-      }
+      // if (this.reason === this.options.reason[3]) {
+      //   this.$refs.comment.validate();
+      // } else {
+      //   this.validItems(this.$refs, "comment");
+      // }
 
-      if (this.$refs.reson.hasError || this.$refs.comment.hasError) {
+      // if (this.$refs.reson.hasError || this.$refs.comment.hasError) {
+      //   this.formHasError = true;
+      // } else {
+      if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
-        alert("Success");
-        this.confirm = false;
-      }
-    },
+        console.log("creditFailure");
+        
+        if (this.userRole == "BackOfficee") {
 
-    validItems(itemsValid, itemValid = true) {
-      if (!itemValid) {
-        this.$refs[itemsValid] = {
-          hasError: true //не валидный
+          this.fullProfile.BOLogin = this.$store.getters["auth/username"]
+          this.fullProfile.BODecision = false // кредит отклонен
+
+          const comment = {
+                  Comment: this.comment,
+                  Type: "",
+                  CommentPerson: this.$store.getters["auth/username"],
+                  id: null,
+                  //CommentDate: ""
+                }
+
+          this.$store.commit("addComment", {commentBlock: "ApplicationComment", comment})
+
+        } else if (this.userRole == "CreditCommitteeMember	") {
+          const comment = {
+            Comment: this.comment,
+            MemberOfCCFIO: "",
+            id: null,
+            Login: this.$store.getters["auth/username"],
+            isApproved: false
+          }
+
+          this.$store.commit("addComment", {commentBlock: "CreditCommiteeDecisions", comment})
+        }
+        
+        const data = {
+        output: [
+            {
+              name: "application",
+              data: this.fullProfile
+            }
+          ]
         };
-      } else {
-        this.$refs[itemsValid] = {
-          hasError: false //валидный
-        };
+
+        console.log(JSON.stringify(data, null, 2))
+
+        try {
+          await this.$store.dispatch("confirmationCredit", data);
+        } catch (error) {}
+        this.confirm = false;
       }
     }
   }

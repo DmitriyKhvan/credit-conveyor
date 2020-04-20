@@ -70,6 +70,7 @@ export default class BpmService {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/confirmation/${taskId}`,
+      //url: `${this._baseUrl}/bpm/credit/confirmation/2078.10062`,
       data
     })
 
@@ -119,11 +120,16 @@ export default class BpmService {
     axios.defaults.headers.common["NBU-BPM-Role"] = role
   }
 
+  // getHeaderRole() {
+  //   return axios.headers.common["NBU-BPM-Role"]
+  // }
+
   uploadFiles = async (data) => {
-    const fileName = "file full form profile"
+    //const fileName = "file full form profile"
     const responce = await axios({
       method: "post",
-      url: `${this._baseUrl}/file/singlefileupload?documentType=${fileName}`,
+      //url: `${this._baseUrl}/file/singlefileupload?documentType=${fileName}`,
+      url: `${this._baseUrl}/file/multiplefileupload`,
       data,
       headers: {'Content-Type': 'multipart/form-data'}
     })

@@ -71,7 +71,6 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.url"
               label="Url"
-              :prefix="getPreUrl"
               @input="$v.details.url.$touch()"
               :rules="[val => $v.details.url.required || 'Url is required']"
               lazy-rules

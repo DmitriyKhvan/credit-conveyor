@@ -17,6 +17,7 @@ const state = {
   receivedNotifications: [],
   testTopicList: [],
   dictTypes: [],
+  countNotifications: 0,
 
   formats: null,
   journals: null,
@@ -80,7 +81,7 @@ const getters = {
     return state.userList.map(val => {
       return {
         text: val.name,
-        value: val.user_id
+        value: val.emp_id
       };
     });
   },
@@ -94,6 +95,9 @@ const getters = {
         value: val.id
       };
     });
+  },
+  getCountNotifications: (state) => {
+    return state.countNotifications;
   },
   getFormat: (state) => {
     return state.formats
@@ -140,9 +144,13 @@ const mutations = {
   },
   addNotification(state, noty) {
     state.receivedNotifications = [noty, ...state.receivedNotifications];
+    state.countNotifications++;
   },
   setDictTypes(state, types) {
     state.dictTypes = types
+  },
+  setCountNotifications(state, count) {
+    state.countNotifications = count;
   },
   setFormat: (state, payload) => {
     state.formats = payload
@@ -184,6 +192,11 @@ const actions = {
     commit
   }, icons) {
     commit("setIconsDict", icons)
+  },
+  setCountNotifications({
+    commit
+  }, count) {
+    commit("setCountNotifications", count)
   },
   setParentMenus({
     commit

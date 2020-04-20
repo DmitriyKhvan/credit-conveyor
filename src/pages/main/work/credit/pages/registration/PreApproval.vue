@@ -140,8 +140,11 @@ export default {
 
           console.log('dictionaries', response)
           if (response.nextTask.input[1].data) {
-            this.$store.commit("setDictionaries", response.nextTask.input[1].data) 
-            this.$router.push("sub/profile");
+            this.$store.commit("setDictionaries", response.nextTask.input[1].data)
+
+            sessionStorage.setItem("dictionaries", JSON.stringify(response.nextTask.input[1].data))
+
+            this.$router.push("profile");
           } else {
             throw 'Data is null'
           }

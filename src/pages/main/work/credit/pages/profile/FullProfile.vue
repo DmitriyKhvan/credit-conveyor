@@ -585,9 +585,7 @@
               <div class="col-9">{{ fullProfile.LoanInfo.Sum }}</div>
               <div class="col-3">Валюта</div>
               <div class="col-9">{{ fullProfile.LoanInfo.Currency }}</div>
-              <div class="col-3">Срок в месяцах</div>
-              <div class="col-9"></div>
-              <div class="col-3">Тип погашения</div>
+              <div class="col-3">Тип пошагового кредита</div>
               <div class="col-9">
                 {{
                   profile.options.RepaymentType.find(
@@ -595,16 +593,35 @@
                   ).label
                 }}
               </div>
-              <div class="col-3">Процентная ставка по кредиту</div>
-              <div class="col-9"></div>
-              <div class="col-3">Удобная дата погашения (число месяца)</div>
-              <div class="col-9"></div>
-              <div class="col-3">Льготный период по погашению кредита</div>
+               <div class="col-3">Процентная ставка по кредиту (максимальная)</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
+
+              <div class="col-3">Процентная ставка по кредиту (минимальная)</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.MinInitialPaymentPercent }}</div>
+
+              <div class="col-3">Льготный период по погашению кредита (число месяцев)</div>
               <div class="col-9">
-                {{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}
+                {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }}
               </div>
-              <div class="col-3">Льготный период в месяцах</div>
-              <div class="col-9"></div>
+             
+              <div class="col-3">Удобная срок погашения (число месяцев)</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}</div>
+
+              <div class="col-3">Максимальное количество месяцев на кредит</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.MaxTermInMonths }}</div>
+
+              <div class="col-3">Минимальное количество месяцев на кредит</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.MinTermInMonths }}</div>
+
+              <div class="col-3">Первоначальный взнос</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.InitialPayment }}</div>
+
+              <div class="col-3">Процент первоначального взноса (максимальный)</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
+
+              <div class="col-3">Процент первоначального взноса (минимальный)</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.MinInitialPaymentPercent }}</div>
+
               <div class="col-3">Цель кредитования</div>
               <div class="col-9">
                 {{
@@ -613,18 +630,13 @@
                   ).label
                 }}
               </div>
-              <div class="col-3">Первоначальный взнос</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.InitialPayment }}</div>
-              <div class="col-3">% первоначального взноса</div>
-              <div class="col-9">
-                {{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}
-              </div>
-              <div class="col-3">
-                Наименование продавца/производителя товара/работы/услуги
-              </div>
+
+              <div class="col-3">Наименование продавца</div>
               <div class="col-9">{{ fullProfile.LoanInfo.SellerName }}</div>
+
               <div class="col-3">Наименование товара/работы/услуги</div>
               <div class="col-9">{{ fullProfile.LoanInfo.ProductName }}</div>
+
               <div class="col-3">
                 Наименование банка продавца/производителя товара/работы/услуги
               </div>
@@ -643,10 +655,19 @@
               <div class="col-9"></div>
 
               <div class="col-12 profileTitle">13. Вложенные документы</div>
-              <div class="col-3">Наименование документа</div>
-              <div class="col-9"></div>
-              <div class="col-3">Скан документа</div>
-              <div class="col-9"></div>
+
+              <div class="col-12 dataList" v-if="fullProfile.AttachedDocuments.length">
+                  <div
+                    class="row"
+                    v-for="(document, index) of fullProfile.AttachedDocuments"
+                    :key="document.id"
+                  >
+                    <div class="col-3">Наименование документа {{index + 1}}</div>
+                    <div class="col-9">{{document.DocumentName}}</div>
+                    <div class="col-3">Скан документа</div>
+                    <div class="col-9"></div>
+                  </div>
+              </div>
 
               <div class="col-12 profileTitle">
                 14. Заключение сотрудника бек-офиса

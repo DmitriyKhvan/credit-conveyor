@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <h4>Очередь задач</h4>
+    <!-- <h4>Очередь задач</h4> -->
     <q-markup-table>
       <thead>
         <tr>
@@ -159,8 +159,9 @@
           <router-link
             :to="{
               name: 'CreditTask',
-              params: { id: credit.taskId },
+              params: { id: credit.id },
               query: {
+                taskId: credit.taskId,
                 date: credit.date,
                 applicationNumber: credit.applicationNumber,
                 protocolNumber: credit.additionalInfo
@@ -175,7 +176,15 @@
           </router-link>
 
           <router-link
-            :to="'sub/task/' + credit.taskId"
+            :to="{
+              name: 'CreditTask',
+              params: { id: credit.id },
+              query: {
+                taskId: credit.taskId,
+                date: credit.date,
+                applicationNumber: credit.applicationNumber
+              }
+            }"
             tag="td"
             class="text-left applicationNumber applicationRow"
           >
@@ -183,7 +192,15 @@
           </router-link>
 
           <router-link
-            :to="'sub/task/' + credit.taskId"
+            :to="{
+              name: 'CreditTask',
+              params: { id: credit.id },
+              query: {
+                taskId: credit.taskId,
+                date: credit.date,
+                applicationNumber: credit.applicationNumber
+              }
+            }"
             tag="td"
             class="text-left client applicationRow"
           >
@@ -191,7 +208,15 @@
           </router-link>
 
           <router-link
-            :to="'sub/task/' + credit.taskId"
+            :to="{
+              name: 'CreditTask',
+              params: { id: credit.id },
+              query: {
+                taskId: credit.taskId,
+                date: credit.date,
+                applicationNumber: credit.applicationNumber
+              }
+            }"
             tag="td"
             class="text-left manager applicationRow"
           >
@@ -199,7 +224,15 @@
           </router-link>
 
           <router-link
-            :to="'sub/task/' + credit.taskId"
+            :to="{
+              name: 'CreditTask',
+              params: { id: credit.id },
+              query: {
+                taskId: credit.taskId,
+                date: credit.date,
+                applicationNumber: credit.applicationNumber
+              }
+            }"
             tag="td"
             class="text-left MFO applicationRow"
           >
@@ -207,7 +240,15 @@
           </router-link>
 
           <router-link
-            :to="'sub/task/' + credit.taskId"
+            :to="{
+              name: 'CreditTask',
+              params: { id: credit.id },
+              query: {
+                taskId: credit.taskId,
+                date: credit.date,
+                applicationNumber: credit.applicationNumber
+              }
+            }"
             tag="td"
             class="text-left filialName applicationRow"
           >
@@ -215,7 +256,15 @@
           </router-link>
 
           <router-link
-            :to="'sub/task/' + credit.taskId"
+            :to="{
+              name: 'CreditTask',
+              params: { id: credit.id },
+              query: {
+                taskId: credit.taskId,
+                date: credit.date,
+                applicationNumber: credit.applicationNumber
+              }
+            }"
             tag="td"
             class="text-left taskName applicationRow"
           >
@@ -223,7 +272,15 @@
           </router-link>
 
           <router-link
-            :to="'sub/task/' + credit.taskId"
+            :to="{
+              name: 'CreditTask',
+              params: { id: credit.id },
+              query: {
+                taskId: credit.taskId,
+                date: credit.date,
+                applicationNumber: credit.applicationNumber
+              }
+            }"
             tag="td"
             class="text-left taskStatus applicationRow"
           >
@@ -231,7 +288,15 @@
           </router-link>
 
           <router-link
-            :to="'sub/task/' + credit.taskId"
+            :to="{
+              name: 'CreditTask',
+              params: { id: credit.id },
+              query: {
+                taskId: credit.taskId,
+                date: credit.date,
+                applicationNumber: credit.applicationNumber
+              }
+            }"
             tag="td"
             class="text-left date applicationRow"
           >
@@ -242,6 +307,14 @@
             <div class="text-blue q-gutter-md">
               <q-icon name="print" size="md" />
               <q-icon name="cloud_download" size="md" />
+              <template v-if="userRole === 'CreditSecretary'">
+                <q-btn
+                  class="full-width"
+                  label="Подписать"
+                  color="green"
+                  @click="creditSign"
+                />
+              </template>
             </div>
           </td>
         </tr>
@@ -254,6 +327,7 @@
 export default {
   data() {
     return {
+      // userRole: this.$store.getters.userRole,
       applicationNumber: "",
       client: "",
       manager: "",
@@ -326,6 +400,10 @@ export default {
 
         return conditions.every(condition => condition);
       });
+    },
+
+    userRole() {
+      return this.$store.getters.userRole
     }
   },
   methods: {
@@ -370,6 +448,10 @@ export default {
 
         return 0;
       });
+    },
+
+    creditSign() {
+      console.log('creditSign')
     }
   }
 };

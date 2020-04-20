@@ -1,6 +1,7 @@
 const MainContainer = () => import("layouts/Main");
 const LoginPage = () => import("pages/main/auth/Login");
 const HomePage = () => import("pages/main/home/Home");
+//const ChatPage = () => import("pages/main/chat/Chat");
 const Page404 = () => import("pages/extras/Error404");
 
 // Admin
@@ -52,7 +53,7 @@ const Devices = () => import("pages/main/it/devices/Devices");
 const DevicesAccounting = () => import("pages/main/it/accounting/Accounting");
 const DevicesHistory = () => import("pages/main/it/history/History");
 const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
-//education
+// Education
 const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
 const QuestionPage = () =>
   import("pages/main/admin/self_dev/questions/Questions");
@@ -62,6 +63,10 @@ const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
 const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
+
+//Chat
+const ChatIndexPage = () => import('pages/main/chat/Index');
+const Notifications = () => import('pages/main/chat/notification/Notification');
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
@@ -129,7 +134,7 @@ const routes = [{
         component: CreditTasks
       },
       {
-        path: "sub/task/:id",
+        path: "task/:id",
         name: "CreditTask",
         component: CreditTask
         //beforeEnter: ifAuthenticated,
@@ -140,7 +145,7 @@ const routes = [{
         component: CreditReg
       },
       {
-        path: "sub/profile",
+        path: "profile",
         name: "Profile",
         component: CreditProfile,
         beforeEnter: ifAuthenticated
@@ -241,6 +246,16 @@ const routes = [{
       component: DevicesMonitoring
     }
     ]
+  },
+  {
+    path: "chat",
+    name: "Chat Page",
+    component: ChatIndexPage,
+    children: [{
+      path: "notification",
+      name: "Notifications",
+      component: Notifications
+    }]
   },
   {
     path: "selfdev",

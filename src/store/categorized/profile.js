@@ -96,14 +96,6 @@ export default {
       RepaymentType: []
     },
 
-    comment: {
-      Comment: "",
-      Type: "",
-      CommentPerson: "",
-      id: 0,
-      CommentDate: ""
-    },
-
     fullFormProfile: {
       Status: "",
       ApplicationID: "",
@@ -113,7 +105,7 @@ export default {
       BODecision: "",
       FinalDecision: "",
       Date: "",
-      BOLogin: "",
+      BOLogin: "", // логин авторизованного пользователя
       Department: "",
       ClientManagerLogin: "",
       CreditCommiteeDecisions: [
@@ -282,7 +274,13 @@ export default {
         //   CommentDate: "2020-03-18T09:00:23.928+05:00"
         // }
       ],
-      AttachedDocuments: []
+      AttachedDocuments: [
+        // {
+        //   "id": null,
+        //   "DocLink": "",
+        //   "DocumentName": "1"
+        // }
+      ]
     }
   },
   actions: {
@@ -298,18 +296,19 @@ export default {
       }
     },
 
-    async getFullForm({ state, commit }, taskId) {
+    async getFullForm({ state, commit, getters }) {
       try {
-        const response = await state.bpmService.getFullForm(taskId);
+        const response = await state.bpmService.getFullForm(getters.taskId);
+
+        if (response.data.input[1].data) {
+          commit("setFullForm", response.data.input[1].data);
+          commit("setDictionaries", response.data.input[2].data);
+        }
 
         console.log(
           "response",
           JSON.stringify(response)
         );
-        if (response.data.input[1].data) {
-          commit("setFullForm", response.data.input[1].data);
-          commit("setDictionaries", response.data.input[2].data);
-        }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
@@ -488,8 +487,14 @@ export default {
     },
 
     // добавление комментария
-    addComment(state) {
-      state.fullFormProfile.ApplicationComment.push(state.comment)
+    addComment(state, payload) {
+      console.log('comment', payload)
+      debugger
+      if (Array.isArray(state.fullFormProfile[payload.commentBlock])) {
+        state.fullFormProfile[payload.commentBlock].push(payload.comment)
+      } else {
+        state.fullFormProfile[payload.commentBlock].items.push(payload.comment)
+      }
     },
 
     removeRegistration(state, payload) {

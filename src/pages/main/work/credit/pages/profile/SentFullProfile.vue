@@ -13,7 +13,6 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 export default {
   data() {
     return {
-      //curDate: new Date()
     }
   },
   computed: {
@@ -27,9 +26,6 @@ export default {
   methods: {
     async sentFullProfile() {
       // комментарий
-      
-      this.profile.comment.CommentDate = new window.Date()
-      this.$store.commit("addComment")
 
       console.log("fullProfile", this.$store.state.profile.fullProfile);
         const {

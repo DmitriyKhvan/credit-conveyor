@@ -11,23 +11,80 @@
       <q-separator inset />
 
       <q-card-section>
-        <div class="q-gutter-y-sm q-gutter-x-md column">
+        <div>
           <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.username"
-              :label="$t('auth.username')"
-              @input="$v.details.password.$touch()"
-              :rules="[
-                val => $v.details.username.required || $t('auth.usernameError'),
-                val => $v.details.username.minLength || $t('auth.usernameMinError')
-              ]"
-              lazy-rules
-            />
-            <q-input
+            <div class="col-md-12 searchBlock q-pa-sm">
+              <q-input
+                  v-model="searchUser" 
+                  @input = "selUsers"
+                  outlined
+                  placeholder="Поиск пользователя"  
+                  :rules="[
+                    val => $v.details.last_name.required || 'Добавьте пользователя'
+                  ]"
+                  lazy-rules      
+              >
+                  <template v-slot:append>
+                      <q-btn @click="clearUser" flat>
+                        <q-icon name="clear" />
+                      </q-btn>
+                      <q-icon name="search" />
+                  </template>
+              </q-input>
+
+              <div class="resultBlock q-ma-sm scroll bg-grey-2" v-if="resultUser.length !== 0 && searchUser.length !== 0">
+                <div                   
+                  v-for="user in resultUser"
+                  :key="user.EMP_ID"
+                  @click="userCliked(user)"
+                >
+                  <span v-html="user.LAST_NAME"></span>
+                  <span v-html="user.FIRST_NAME"></span>
+                  <span v-html="user.MIDDLE_NAME"></span>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-input
+                outlined
+                clearable
+                color="purple-12"
+                v-model="details.username"
+                :label="$t('auth.username')"
+                @input="$v.details.password.$touch()"
+                :rules="[
+                  val => $v.details.username.required || $t('auth.usernameError'),
+                  val => $v.details.username.minLength || $t('auth.usernameMinError')
+                ]"
+                lazy-rules
+              />
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-select
+                outlined
+                v-model="details.roles"
+                multiple
+                :options="rolesList"
+                use-chips
+                stack-label
+                option-value="value"
+                option-label="text"
+                emit-value
+                map-options
+                :label="$t('tables.users.roles')"
+                @input="$v.details.roles.$touch()"
+                :rules="[]"
+                lazy-rules
+              />
+            </div>
+            
+            
+            
+
+            <!-- <q-input
               outlined
               clearable
               color="purple-12"
@@ -42,9 +99,9 @@
                   $v.details.first_name.minLength || $t('tables.users.firstnameMinError')
               ]"
               lazy-rules
-            />
+            /> -->
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <q-input
               outlined
               clearable
@@ -78,107 +135,98 @@
               ]"
               lazy-rules
             />
+          </div> -->
+          <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-input
+                outlined
+                clearable
+                color="purple-12"
+                v-model="details.email"
+                :label="$t('tables.users.email')"
+                type="email"
+                @input="$v.details.email.$touch()"
+                :rules="[
+                  val => $v.details.email.required || $t('tables.users.emailError'),
+                  val => $v.details.email.email || $t('tables.users.emailFormError'),
+                ]"
+                lazy-rules
+              >
+                <template v-slot:prepend>
+                  <q-icon name="mail" />
+                </template>
+              </q-input>
+            </div>
+            
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-input
+                outlined
+                clearable
+                color="purple-12"
+                v-model="details.password"
+                :label="$t('tables.users.password')"
+                :type="isPwd ? 'password' : 'text'"
+                @input="$v.details.password.$touch()"
+                :rules="[
+                  val => $v.details.password.required || $t('tables.users.passwordError'),
+                  val =>
+                    $v.details.password.minLength || $t('tables.users.passwordMinError'),
+                ]"
+                lazy-rules
+              >
+                <template v-slot:prepend>
+                  <q-icon name="vpn_key" />
+                </template>
+                <template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                  />
+                </template>
+              </q-input>
+            </div>
           </div>
           <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.email"
-              :label="$t('tables.users.email')"
-              type="email"
-              @input="$v.details.email.$touch()"
-              :rules="[
-                val => $v.details.email.required || $t('tables.users.emailError'),
-                val => $v.details.email.email || $t('tables.users.emailFormError'),
-              ]"
-              lazy-rules
-            >
-              <template v-slot:prepend>
-                <q-icon name="mail" />
-              </template>
-            </q-input>
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.password"
-              :label="$t('tables.users.password')"
-              :type="isPwd ? 'password' : 'text'"
-              @input="$v.details.password.$touch()"
-              :rules="[
-                val => $v.details.password.required || $t('tables.users.passwordError'),
-                val =>
-                  $v.details.password.minLength || $t('tables.users.passwordMinError'),
-              ]"
-              lazy-rules
-            >
-              <template v-slot:prepend>
-                <q-icon name="vpn_key" />
-              </template>
-              <template v-slot:append>
-                <q-icon
-                  :name="isPwd ? 'visibility_off' : 'visibility'"
-                  class="cursor-pointer"
-                  @click="isPwd = !isPwd"
-                />
-              </template>
-            </q-input>
-          </div>
-          <div class="row">
-            <q-input
-              outlined
-              clearable
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.phone"
-              :label="$t('tables.users.phone')"
-              mask="(+998) ##-###-##-##"
-              fill-mask
-              @input="$v.details.phone.$touch()"
-              :rules="[]"
-              lazy-rules
-            />
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-input
+                outlined
+                clearable
+                color="purple-12"
+                v-model="details.phone"
+                :label="$t('tables.users.phone')"
+                mask="(+998) ##-###-##-##"
+                fill-mask
+                @input="$v.details.phone.$touch()"
+                :rules="[]"
+                lazy-rules
+              />
+            </div>
+            
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-select
+                outlined
+                color="purple-12"
+                v-model="details.status"
+                :options="stateList"
+                option-value="value"
+                option-label="key"
+                emit-value
+                map-options
+                :label="$t('tables.users.status')"
+                @input="$v.details.status.$touch()"
+                :rules="[
+                  val => $v.details.status.required || $t('tables.users.statusError')
+                ]"
+                lazy-rules
+              />
+            </div>
 
-            <q-select
-              outlined
-              color="purple-12"
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.status"
-              :options="stateList"
-              option-value="value"
-              option-label="key"
-              emit-value
-              map-options
-              :label="$t('tables.users.status')"
-              @input="$v.details.status.$touch()"
-              :rules="[
-                val => $v.details.status.required || $t('tables.users.statusError')
-              ]"
-              lazy-rules
-            />
+            
           </div>
           <div class="row">
-            <q-select
-              outlined
-              class="col-xs-12 col-sm-6 col-md-6"
-              v-model="details.roles"
-              multiple
-              :options="rolesList"
-              use-chips
-              stack-label
-              option-value="value"
-              option-label="text"
-              emit-value
-              map-options
-              :label="$t('tables.users.roles')"
-              @input="$v.details.roles.$touch()"
-              :rules="[]"
-              lazy-rules
-            />
-            <q-input
+            
+            <!-- <q-input
               outlined
               clearable
               color="purple-12"
@@ -191,7 +239,7 @@
                 val => $v.details.emp_id.required || $t('tables.users.empIdError')
               ]"
               lazy-rules
-            />
+            /> -->
           </div>
         </div>
       </q-card-section>
@@ -214,6 +262,7 @@
 <script>
 import NotifyService from "@/services/notify.service";
 import dialogMix from "@/shared/mixins/dialogMix";
+import axios from "axios";
 import {
   required,
   requiredIf,
@@ -225,6 +274,11 @@ import {
 export default {
   data() {
     return {
+      searchUser: null,
+      resultUser: [],
+      
+    
+
       isPwd: true,
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
@@ -297,9 +351,67 @@ export default {
     }
   },
   mixins: [dialogMix],
-  created() {},
-  methods: {}
+  created() {
+    
+  },
+  methods: {
+    selUsers () {
+      if(this.searchUser.length !== 0){           
+          axios
+              .get("/emps/search?name="+this.searchUser)
+              .then(response => {                    
+                  this.resultUser = response.data
+              })
+              .catch(error => {
+                  console.log('error') 
+              });
+      }
+    },
+    userCliked(user) {
+      this.details.emp_id = user.EMP_ID
+      this.details.first_name = user.FIRST_NAME
+      this.details.last_name = user.LAST_NAME
+      this.details.middle_name = user.MIDDLE_NAME
+      this.details.email = user.MAIL_ADDRESS.length > 3 ? user.MAIL_ADDRESS : null
+      this.resultUser = []
+      this.searchUser = user.LAST_NAME+' '+user.FIRST_NAME+' '+user.MIDDLE_NAME
+   
+    },
+    clearUser () {
+      this.resultUser = []
+      this.searchUser = null
+      this.details.emp_id = null
+      this.details.first_name = null
+      this.details.last_name = null
+      this.details.middle_name = null
+      this.details.email = null
+    }
+  }
 };
 </script>
 
-<style></style>
+<style scoped>
+.searchBlock {
+  position: relative;
+}
+.resultBlock {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 80%;
+  max-height: 300px;
+  z-index: 10000;
+  border-radius: 5px ;
+  padding: 10px;
+}
+.resultBlock span {padding-right: 5px;}
+.resultBlock div {
+  padding: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.resultBlock div:hover {
+  background: #e0e0e0 ;
+}
+</style>

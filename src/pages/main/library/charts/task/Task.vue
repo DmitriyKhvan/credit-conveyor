@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { GChart } from "vue-google-charts";
 export default {
   name: "Finance",
@@ -24,7 +25,7 @@ export default {
         ["Новый", 8, "#b87333"],
         ["Принял", 20, "silver"],
         ["Работаю", 8, "gold"],
-        ["Исполнено", 25, "color: #e5e4e2"]
+        ["Исполнено", 25, "#e5e4e2"]
       ],
       chartOptions: {
         title: "Количество задач за 1 календарный месяц",
@@ -34,6 +35,16 @@ export default {
         legend: { position: "none" }
       }
     };
+  },
+  created () {
+    axios
+        .get("/tasks/count")
+        .then(response => { 
+            this.chartData = response.data            
+        })
+        .catch(error => {
+            console.log('error') 
+        });
   },
   methods: {
     currentdate() {
