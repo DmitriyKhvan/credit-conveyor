@@ -51,6 +51,9 @@ export default {
       LoanPurpose: {
         items: []
       },
+      PaymentsType: {
+        items: []
+      },
       PositionType: {
         items: []
       },
@@ -289,6 +292,7 @@ export default {
       try {
         const response = await state.bpmService.uploadFiles(data);
         console.log("responseFile", response);
+
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -299,16 +303,16 @@ export default {
     async getFullForm({ state, commit, getters }) {
       try {
         const response = await state.bpmService.getFullForm(getters.taskId);
+        console.log('response', response)
+        const fullForm = (response.data.input.find(i => i.label === "application")).data
+        const dictionaries = (response.data.input.find(i => i.label === "inputDictionaries")).data
 
-        if (response.data.input[1].data) {
-          commit("setFullForm", response.data.input[1].data);
-          commit("setDictionaries", response.data.input[2].data);
+        if (fullForm) {
+          commit("setFullForm", fullForm);
+          commit("setDictionaries", dictionaries);
         }
 
-        console.log(
-          "response",
-          JSON.stringify(response)
-        );
+        return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);

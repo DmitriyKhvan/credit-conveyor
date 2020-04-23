@@ -122,6 +122,7 @@ export default {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
         sessionStorage.removeItem("csrf_token");
+        this.$router.push("/work/credit");
       }
     },
 
@@ -184,6 +185,8 @@ export default {
         console.log("calculCredit taskId ", response.nextTask.id);
         if (response.nextTask.id) {
           commit("setTaskId", response.nextTask.id);
+        } else {
+          throw 'Next task id is undefined'
         }
 
         return response;
@@ -204,14 +207,18 @@ export default {
         });
 
         console.log('confirmCredit', response)
-        if (response.nextTask.id) {
+        debugger
+        if (response.nextTask.id || response.requestedTask.state === "completed") {
+          debugger
           commit("setTaskId", response.nextTask.id);
           sessionStorage.setItem("taskId", response.nextTask.id)
+        } else {
+          throw 'Next task id is undefined'
         }
-
+        debugger
         return response;
       } catch (error) {
-        //console.log('errorMessage', error.response)
+        console.log('errorMessage', error)
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
         sessionStorage.removeItem("csrf_token");
@@ -229,6 +236,7 @@ export default {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
         sessionStorage.removeItem("csrf_token");
+        this.$router.push("/work/credit");
       }
     },
 
@@ -242,6 +250,7 @@ export default {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setError", errorMessage);
         sessionStorage.removeItem("csrf_token");
+        this.$router.push("/work/credit");
       }
     }
   },

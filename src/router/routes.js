@@ -136,8 +136,8 @@ const routes = [{
       {
         path: "task/:id",
         name: "CreditTask",
-        component: CreditTask
-        //beforeEnter: ifAuthenticated,
+        component: CreditTask,
+        beforeEnter: ifAuthenticated,
       },
       {
         path: "registration",

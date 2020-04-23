@@ -865,17 +865,17 @@
           </div>
 
           <div class="row rowForm">
-            <div class="col-6 field">Тип погашения</div>
+            <div class="col-6 field">Тип пошагового кредита</div>
             <div class="col-6 data">
               <template
                 v-if="
-                  profile.options.RepaymentType.find(
+                  dictionaries.PaymentsType.items.find(
                     i => i.value == fullProfile.LoanInfo.RepaymentType
                   )
                 "
               >
                 {{
-                  profile.options.RepaymentType.find(
+                  dictionaries.PaymentsType.items.find(
                     i => i.value == fullProfile.LoanInfo.RepaymentType
                   ).label
                 }}
@@ -1159,7 +1159,8 @@ export default {
   //  this.$store.commit("setTaskId", this.$route.params["id"]);
     this.$store.commit("setTaskId", this.$route.query.taskId);
     try {
-      await this.$store.dispatch("getFullForm");
+      const res = await this.$store.dispatch("getFullForm");
+      console.log('res', res)
     } catch (error) {}
   },
   mounted() {
@@ -1203,7 +1204,7 @@ export default {
 
       if (this.userRole == "BackOfficee") {
         this.fullProfile.BOLogin = this.$store.getters["auth/username"]
-        this.fullProfile.BODecision = true // кредит одобрен
+        this.fullProfile.BODecision = true // кредит одобрен 
         delete this.fullProfile.ApplicationComment.items[0].CommentDate
       } else if (this.userRole == "CreditCommitteeMember	") {
         const comment = {
@@ -1226,10 +1227,19 @@ export default {
         ]
       };
 
-      console.log(JSON.stringify(data, null, 2))
-
+      console.log('Что отправил', JSON.stringify(data, null, 2))
+      debugger
       try {
-        await this.$store.dispatch("confirmationCredit", data);
+        debugger
+        const res = await this.$store.dispatch("confirmationCredit", data);
+        console.log("response", JSON.stringify(res, null, 2));
+        debugger
+        if (res.nextTask.id) {
+          sessionStorage.removeItem("csrf_token");
+          this.$router.push("/work/credit");
+        } else {
+          throw 'Next task id is undefined'
+        }
       } catch (error) {}
     },
 
@@ -1255,6 +1265,7 @@ export default {
         this.formHasError = true;
       } else {
         console.log("creditFailure");
+        debugger
         
         if (this.userRole == "BackOfficee") {
 
@@ -1295,7 +1306,15 @@ export default {
         console.log(JSON.stringify(data, null, 2))
 
         try {
-          await this.$store.dispatch("confirmationCredit", data);
+          const res = await this.$store.dispatch("confirmationCredit", data);
+          console.log('resCreditFailure', res)
+          if (res.nextTask.id) {
+            debugger
+            sessionStorage.removeItem("csrf_token");
+            this.$router.push("/work/credit");
+          } else {
+            throw 'Next task id is undefined'
+          }
         } catch (error) {}
         this.confirm = false;
       }

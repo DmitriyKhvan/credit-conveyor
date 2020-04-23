@@ -87,13 +87,9 @@ export default {
             sessionStorage.removeItem("csrf_token");
             this.$router.push("/work/credit");
           } else {
-            throw 'Next taskId is null'
+            throw 'Next task id is undefined'
           }
-        } catch (error) {
-          const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("setError", errorMessage);
-          sessionStorage.removeItem("csrf_token");
-        }
+        } catch (error) {}
     }
   }
 }

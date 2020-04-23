@@ -169,10 +169,15 @@ export default {
         this.credits.confirmCreditData.output[1].data = this.selection
     
         try {
-          await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
+          const res = await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
+          if (res.requestedTask.state === "completed") {
+            debugger
+            sessionStorage.removeItem("csrf_token");
+            this.$router.push("/work/credit");
+          } else {
+            throw 'Task do not completed'
+          }
         } catch (error) {}
-
-        this.$router.push("/work/credit");
       }
     }
   },

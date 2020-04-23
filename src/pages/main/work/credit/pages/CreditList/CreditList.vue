@@ -364,13 +364,14 @@ export default {
     // Фильтры
     credits() {
       return this.$store.getters.creditTasks.filter(task => {
-        //console.log(task)
+        console.log(task.client)
         let conditions = [true];
         if (this.applicationNumber.length > 0) {
           conditions.push(task.applicationNumber.indexOf(this.applicationNumber) > -1);
         }
 
         if (this.client.length > 0) {
+          console.log("f", task.client)
           conditions.push(task.client.indexOf(this.client) > -1);
         }
 

@@ -255,6 +255,22 @@
                       'Поля должно быт заполнено'
                   ]"
                 />
+
+                <!-- Для форматирования числе -->
+                <!-- <q-input
+                  ref="income"
+                  square
+                  outlined
+                  v-model="personalData.income"
+                  dense
+                  label="Подтвержденный ежемесячный доход"
+                  lazy-rules
+                  :rules="[
+                    val =>
+                      (val && val.length !== null) ||
+                      'Поля должно быт заполнено'
+                  ]"
+                /> -->
                 <q-input
                   ref="expense"
                   square
@@ -337,6 +353,7 @@
 <script>
 // import Vue from "vue";
 import CommonUtils from "@/shared/utils/CommonUtils";
+import formatNumber from "../../filters/format_number.js";
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
@@ -526,7 +543,12 @@ export default {
         this.personalData.externalIncomeSize = 0;
         this.personalData.additionalIncomeSource = "";
       }
-    }
+    },
+    // Для форматирования числе
+    // "personalData.income"(number) {
+    //   console.log(formatNumber(number)) 
+    //   this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
+    // }
   },
   methods: {
     async onSubmit() {
@@ -638,6 +660,7 @@ export default {
         console.log(JSON.stringify(data, null, 2));
 
         try {
+         
           const resCredit = await this.$store.dispatch(
             "calculationCredit",
             data
@@ -656,8 +679,11 @@ export default {
 
           this.$store.commit("toggleConfirm", true);
           this.$store.commit("creditConfirm", resp);
+          
           this.loaderPreApproval = false;
-        } catch (e) {}
+        } catch (e) {
+          this.loaderPreApproval = false;
+        }
       }
     }
   },

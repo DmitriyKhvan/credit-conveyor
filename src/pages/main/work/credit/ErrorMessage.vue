@@ -34,7 +34,7 @@ export default {
     redirect() {
       //this.$store.commit('clearError')
       this.$store.commit("toggleErrorBar", false);
-      this.$router.push("/work/credit");
+      // this.$router.push("/work/credit");
     }
   },
   computed: {
