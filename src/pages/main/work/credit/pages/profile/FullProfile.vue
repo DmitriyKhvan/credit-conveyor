@@ -31,7 +31,13 @@
                 <!-- {{getLabelDic()}} -->
               </div>
               <div class="col-3">Резидентсво</div>
-              <div class="col-9">{{ Customer.ResidentFlag }}</div>
+              <div class="col-9">
+                {{
+                  profile.options.confirmation.find(
+                    i => i.value == Customer.ResidentFlag
+                  ).label
+                }}
+              </div>
 
               <div class="col-12 profileTitle">2. Паспортные данные</div>
               <div class="col-3">Вид документа</div>
@@ -377,7 +383,7 @@
                     {{
                       dictionaries.VehicleType.items.find(
                         i => i.value === vehicle.VehicleType
-                      ).lable
+                      ).label
                     }}
                   </div>
                   <div class="col-3">Марка транспортного средства</div>

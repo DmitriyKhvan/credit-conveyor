@@ -439,12 +439,12 @@ export default {
     };
   },
   async created() {
-    this.$store.commit("resetPersonData");
+    this.$store.commit("credits/resetPersonData");
 
     try {
-      const auth = await this.$store.dispatch("authBpm");
+      const auth = await this.$store.dispatch("credits/authBpm");
       console.log("auth", auth);
-      const process = await this.$store.dispatch("startProcess");
+      const process = await this.$store.dispatch("credits/startProcess");
       console.log("process", process);
       // this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
 
@@ -466,12 +466,12 @@ export default {
       }
 
       console.log("typeCredits", this.options.typeCredits);
-      this.$store.commit("toggleLoaderForm", false);
+      this.$store.commit("credits/toggleLoaderForm", false);
     } catch (error) {}
 
     try {
-      const scannerSerial = await this.$store.dispatch("getDigIdNumber");
-      this.$store.commit("sentScannerSerialNumber", scannerSerial);
+      const scannerSerial = await this.$store.dispatch("credits/getDigIdNumber");
+      this.$store.commit("credits/sentScannerSerialNumber", scannerSerial);
       this.loader = false;
     } catch (err) {
       console.log("DigId", err);
@@ -485,9 +485,9 @@ export default {
     disableInput() {
       return this.$store.state.credits.disableInput;
     },
-    disableBtn() {
-      return this.$store.state.credits.disableBtn;
-    },
+    // disableBtn() {
+    //   return this.$store.state.credits.disableBtn;
+    // },
     personalData() {
       return this.$store.state.credits.personalData;
     },
@@ -588,7 +588,7 @@ export default {
       ) {
         this.formHasError = true;
       } else {
-        this.$store.commit("loadMessageChange", "");
+        this.$store.commit("credits/loadMessageChange", "");
         this.loaderPreApproval = true;
         const {
           children,
@@ -662,7 +662,7 @@ export default {
         try {
          
           const resCredit = await this.$store.dispatch(
-            "calculationCredit",
+            "credits/calculationCredit",
             data
           );
 
@@ -677,8 +677,8 @@ export default {
             maxSum: resCredit.nextTask.input.sum // Сколько максимум кредита можем выдать
           };
 
-          this.$store.commit("toggleConfirm", true);
-          this.$store.commit("creditConfirm", resp);
+          this.$store.commit("credits/toggleConfirm", true);
+          this.$store.commit("credits/creditConfirm", resp);
           
           this.loaderPreApproval = false;
         } catch (e) {

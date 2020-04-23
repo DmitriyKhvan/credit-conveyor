@@ -12,12 +12,12 @@ export default {
     }
   },
   async created() {
-    this.$store.commit('clearCreditTasks')
+    this.$store.commit('credits/clearCreditTasks')
     try {
-      const auth = await this.$store.dispatch("authBpm")
+      const auth = await this.$store.dispatch("credits/authBpm")
       console.log("auth", auth);
 
-      await this.$store.dispatch("getUserTasks")
+      await this.$store.dispatch("credits/getUserTasks")
     } catch(error) {}
   },
   components: {

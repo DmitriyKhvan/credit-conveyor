@@ -132,15 +132,16 @@ export default {
   },
   methods: {
     async successCredit(val) {
-      this.$store.commit("toggleConfirm", val);
-      this.$store.commit("toggleLoaderForm", true)
+      console.log(this.$store)
+      this.$store.commit("credits/toggleConfirm", val);
+      this.$store.commit("credits/toggleLoaderForm", true)
         console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
-          const response = await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
+          const response = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
 
           console.log('dictionaries', response)
           if (response.nextTask.input[1].data) {
-            this.$store.commit("setDictionaries", response.nextTask.input[1].data)
+            this.$store.commit("profile/setDictionaries", response.nextTask.input[1].data)
 
             sessionStorage.setItem("dictionaries", JSON.stringify(response.nextTask.input[1].data))
 
@@ -151,7 +152,7 @@ export default {
 
         } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("setError", errorMessage);
+          this.$store.commit("credits/setError", errorMessage);
           sessionStorage.removeItem("csrf_token");
         }
     },
@@ -162,14 +163,14 @@ export default {
         this.formHasError = true;
         //this.$store.commit("toggleConfirm", true);
       } else {
-        this.$store.commit("toggleDisableInput", false);
-        this.$store.commit("toggleConfirm", false);
+        this.$store.commit("credits/toggleDisableInput", false);
+        this.$store.commit("credits/toggleConfirm", false);
 
         this.credits.confirmCreditData.output[0].data = false
         this.credits.confirmCreditData.output[1].data = this.selection
     
         try {
-          const res = await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
+          const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
           if (res.requestedTask.state === "completed") {
             debugger
             sessionStorage.removeItem("csrf_token");

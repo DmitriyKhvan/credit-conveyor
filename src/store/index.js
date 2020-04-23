@@ -16,9 +16,9 @@ import {
 
 import { task } from './categorized/task.module'
 
-import credits from './categorized/credits';
+import { credits } from './categorized/credits.module';
 
-import profile from './categorized/profile';
+import { profile } from './categorized/profile.module';
 
 import education from './categorized/education';
 

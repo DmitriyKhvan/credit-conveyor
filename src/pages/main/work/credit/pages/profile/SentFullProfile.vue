@@ -78,14 +78,15 @@ export default {
         console.log(JSON.stringify(data, null, 2));
 
         try {
-          const res = await this.$store.dispatch("confirmationCredit", data);
+          const res = await this.$store.dispatch("credits/confirmationCredit", data);
           console.log("response", JSON.stringify(res, null, 2));
           //console.log('nextTaskId', res.nextTask.id)
 
           if (res.nextTask.id) {
             debugger
             sessionStorage.removeItem("csrf_token");
-            this.$router.push("/work/credit");
+            this.$router.go("/work/credit")
+            debugger
           } else {
             throw 'Next task id is undefined'
           }

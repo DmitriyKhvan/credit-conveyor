@@ -1137,7 +1137,6 @@ import { validItems, validFilter } from "../../filters/valid_filter";
 export default {
   data() {
     return {
-      userRole: this.$store.getters.userRole,
       confirm: false,
       reason: "",
       comment: "",
@@ -1147,19 +1146,19 @@ export default {
     };
   },
   async created() {
-    console.log('userRole', this.$store.getters.userRole)
-    if (!this.$store.getters.userRole) {
-      await this.$store.dispatch("setHeaderRole", sessionStorage.getItem("userRole"))
-      await this.$store.dispatch("setHeaderBPM", sessionStorage.getItem("csrf_token"))
-      this.$store.commit("setTaskId", sessionStorage.getItem("taskId"));
-   }
+    console.log('userRole', this.userRole)
+    if (!this.userRole) {
+      await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
+      await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
+    }
 
     console.log("taskId", this.$route.params["id"]);
     // console.log("taskId", this.$route.query.taskId);
   //  this.$store.commit("setTaskId", this.$route.params["id"]);
-    this.$store.commit("setTaskId", this.$route.query.taskId);
+    this.$store.commit("credits/setTaskId", this.$route.query.taskId);
     try {
-      const res = await this.$store.dispatch("getFullForm");
+      const res = await this.$store.dispatch("profile/getFullForm");
       console.log('res', res)
     } catch (error) {}
   },
@@ -1183,7 +1182,7 @@ export default {
       return this.$store.state.profile;
     },
     fullProfile() {
-      return this.$store.getters.fullForm;
+      return this.$store.getters["profile/fullForm"];
     },
     Customer() {
       return this.$store.state.profile.fullFormProfile.Customer;
@@ -1191,9 +1190,9 @@ export default {
     dictionaries() {
       return this.$store.state.profile.dictionaries;
     },
-    // role() {
-    //   return;
-    // }
+    userRole() {
+      return this.$store.getters["credits/userRole"]
+    }
   },
   methods: {
     creditFailure() {
@@ -1201,12 +1200,14 @@ export default {
     },
 
     async creditSuccess() {
+      console.log('userRole', this.userRole)
 
       if (this.userRole == "BackOfficee") {
         this.fullProfile.BOLogin = this.$store.getters["auth/username"]
         this.fullProfile.BODecision = true // кредит одобрен 
-        delete this.fullProfile.ApplicationComment.items[0].CommentDate
-      } else if (this.userRole == "CreditCommitteeMember	") {
+        //delete this.fullProfile.ApplicationComment.items[0].CommentDate
+      } else if (this.userRole == "CreditCommitteeMember") {
+        debugger
         const comment = {
             Comment: "",
             MemberOfCCFIO: "",
@@ -1214,8 +1215,8 @@ export default {
             Login: this.$store.getters["auth/username"],
             isApproved: true
           }
-
-          this.$store.commit("addComment", {commentBlock: "CreditCommiteeDecisions", comment})
+          debugger
+          this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
       }
 
       const data = {
@@ -1231,7 +1232,7 @@ export default {
       debugger
       try {
         debugger
-        const res = await this.$store.dispatch("confirmationCredit", data);
+        const res = await this.$store.dispatch("credits/confirmationCredit", data);
         console.log("response", JSON.stringify(res, null, 2));
         debugger
         if (res.nextTask.id) {
@@ -1280,7 +1281,7 @@ export default {
                   //CommentDate: ""
                 }
 
-          this.$store.commit("addComment", {commentBlock: "ApplicationComment", comment})
+          this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment})
 
         } else if (this.userRole == "CreditCommitteeMember	") {
           const comment = {
@@ -1291,7 +1292,7 @@ export default {
             isApproved: false
           }
 
-          this.$store.commit("addComment", {commentBlock: "CreditCommiteeDecisions", comment})
+          this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
         }
         
         const data = {
@@ -1306,7 +1307,7 @@ export default {
         console.log(JSON.stringify(data, null, 2))
 
         try {
-          const res = await this.$store.dispatch("confirmationCredit", data);
+          const res = await this.$store.dispatch("credits/confirmationCredit", data);
           console.log('resCreditFailure', res)
           if (res.nextTask.id) {
             debugger

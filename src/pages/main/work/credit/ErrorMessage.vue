@@ -33,16 +33,16 @@ export default {
   methods: {
     redirect() {
       //this.$store.commit('clearError')
-      this.$store.commit("toggleErrorBar", false);
+      this.$store.commit("credits/toggleErrorBar", false);
       // this.$router.push("/work/credit");
     }
   },
   computed: {
     errorBar() {
-      return this.$store.getters.errorBar
+      return this.$store.getters["credits/errorBar"]
     },
     errorMessage() {
-      return message[this.$store.getters.error] || "Что-то пошло не так";
+      return message[this.$store.getters["credits/errorBar"]] || "Что-то пошло не так";
     }
   }
 };

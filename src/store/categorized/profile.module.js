@@ -1,7 +1,8 @@
 import BpmService from "../../services/bpm.service";
 import CommonUtils from "@/shared/utils/CommonUtils";
 
-export default {
+export const profile = {
+  namespaced: true,
   state: {
     bpmService: new BpmService(),
     confirmCredit: false,
@@ -112,13 +113,13 @@ export default {
       Department: "",
       ClientManagerLogin: "",
       CreditCommiteeDecisions: [
-        {
-          Comment: "",
-          MemberOfCCFIO: "",
-          id: 0,
-          Login: "",
-          isApproved: false
-        }
+        // {
+        //   Comment: "",
+        //   MemberOfCCFIO: "",
+        //   id: 0,
+        //   Login: "",
+        //   isApproved: false
+        // }
       ],
 
       Customer: {
@@ -296,13 +297,13 @@ export default {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setError", errorMessage);
+        commit("credits/setError", errorMessage, {root: true});
       }
     },
 
-    async getFullForm({ state, commit, getters }) {
+    async getFullForm({ state, commit, getters, rootGetters }) {
       try {
-        const response = await state.bpmService.getFullForm(getters.taskId);
+        const response = await state.bpmService.getFullForm(rootGetters["credits/taskId"]);
         console.log('response', response)
         const fullForm = (response.data.input.find(i => i.label === "application")).data
         const dictionaries = (response.data.input.find(i => i.label === "inputDictionaries")).data
@@ -315,7 +316,7 @@ export default {
         return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setError", errorMessage);
+        commit("credits/setError", errorMessage, {root: true});
         sessionStorage.removeItem("csrf_token");
       }
     }
@@ -535,13 +536,13 @@ export default {
         Department: "",
         ClientManagerLogin: "",
         CreditCommiteeDecisions: [
-          {
-            Comment: "",
-            MemberOfCCFIO: "",
-            id: 0,
-            Login: "",
-            isApproved: false
-          }
+          // {
+          //   Comment: "",
+          //   MemberOfCCFIO: "",
+          //   id: 0,
+          //   Login: "",
+          //   isApproved: false
+          // }
         ],
 
         Customer: {

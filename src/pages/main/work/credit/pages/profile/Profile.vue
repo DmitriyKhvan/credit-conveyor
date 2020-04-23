@@ -2798,12 +2798,13 @@ export default {
     };
   },
   async created() {
-    this.$store.commit("resetDataFullFormProfile")
-    if (!this.$store.getters.userRole) {
-      await this.$store.dispatch("setHeaderRole", sessionStorage.getItem("userRole"))
-      await this.$store.dispatch("setHeaderBPM", sessionStorage.getItem("csrf_token"))
-      this.$store.commit("setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
-      this.$store.commit("setTaskId", sessionStorage.getItem("taskId"));
+    this.$store.commit("profile/resetDataFullFormProfile")
+
+    if (!this.$store.getters["credits/userRole"]) {
+      await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
+      await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+      this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
+      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
       // console.log('dic', this.dictionaries)
     }
   },
@@ -3222,15 +3223,15 @@ export default {
     },
 
     addPhone() {
-      this.$store.commit("addPhone");
+      this.$store.commit("profile/addPhone");
     },
 
     addPhoneGuarantee(index) {
-      this.$store.commit("addPhoneGuarantee", index);
+      this.$store.commit("profile/addPhoneGuarantee", index);
     },
 
     addProperty() {
-      this.$store.commit("addProperty");
+      this.$store.commit("profile/addProperty");
     },
 
     addVehicle() {
@@ -3238,27 +3239,27 @@ export default {
         this.options.yearsOfIssueVehicle.push(i);
       }
 
-      this.$store.commit("addVehicle");
+      this.$store.commit("profile/addVehicle");
     },
 
     addInsurance() {
-      this.$store.commit("addInsurance");
+      this.$store.commit("profile/addInsurance");
     },
 
     addRelatedLegalPerson() {
-      this.$store.commit("addRelatedLegalPerson");
+      this.$store.commit("profile/addRelatedLegalPerson");
     },
 
     addRelatedPerson() {
-      this.$store.commit("addRelatedPerson");
+      this.$store.commit("profile/addRelatedPerson");
     },
 
     removeItem(payload) {
-      this.$store.commit("removeItem", payload);
+      this.$store.commit("profile/removeItem", payload);
     },
 
     removeGuarantee(payload) {
-      this.$store.commit("removeGuarantee", payload);
+      this.$store.commit("profile/removeGuarantee", payload);
     },
 
     confirmDeleteItem(name, func, item, index, index2) {
@@ -3273,23 +3274,23 @@ export default {
     },
 
     removePhoneGuarantee(payload) {
-      this.$store.commit("removePhoneGuarantee", payload);
+      this.$store.commit("profile/removePhoneGuarantee", payload);
     },
 
     addRegistration(AddressType) {
-      this.$store.commit("addRegistration", AddressType);
+      this.$store.commit("profile/addRegistration", AddressType);
     },
 
     removeRegistration(payload) {
-      this.$store.commit("removeRegistration", payload);
+      this.$store.commit("profile/removeRegistration", payload);
     },
 
     addRelative() {
-      this.$store.commit("addRelative");
+      this.$store.commit("profile/addRelative");
     },
 
     removeProperty(payload) {
-      this.$store.commit("removeProperty", payload);
+      this.$store.commit("profile/removeProperty", payload);
     },
 
     toggleForm(val) {
@@ -3343,7 +3344,7 @@ export default {
         console.log('formData', formData.getAll("files"))
 
         try {
-          const response = await this.$store.dispatch("uploadFiles", formData);
+          const response = await this.$store.dispatch("profile/uploadFiles", formData);
           if (response.infos.length) {
             this.files = []; // удалить все файлы после загрузки на сервер
             this.loaderFile = false;
@@ -3397,7 +3398,7 @@ export default {
               //CommentDate: ""
             }
 
-      this.$store.commit("addComment", {commentBlock: "ApplicationComment", comment})
+      this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment})
       this.creditManagerComment = ""
       console.log('comments', this.fullProfile.ApplicationComment)
     }

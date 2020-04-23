@@ -3,7 +3,8 @@ import storegeService from "../../services/storage.service";
 import { decode } from "jsonwebtoken";
 import CommonUtils from "@/shared/utils/CommonUtils";
 
-export default {
+export const credits = {
+  namespaced: true,
   state: {
     taskId: "",
     userRole: "",
@@ -85,13 +86,15 @@ export default {
    
   },
   actions: {
-    async authBpm({ state, dispatch, commit, getters }) {
+    async authBpm({ state, dispatch, commit, getters, rootGetters }) {
       
       try {
         //console.log('username', getters["auth/username"])
         // получение empId пользователя
         //const empId = decode(await storegeService.getToken()).emp_id;
-        const empId = getters["auth/empId"];
+       
+        const empId = rootGetters["auth/empId"];
+        console.log('empId', empId)
 
         // получение ролей пользователя
         const role = await dispatch("getUserRole", empId);
@@ -336,6 +339,7 @@ export default {
     },
 
     setError(state, error) {
+      console.log('setErr', error)
       state.errorMessage.message = error;
       state.errorMessage.id = new Date();
     },

@@ -363,15 +363,13 @@ export default {
   computed: {
     // Фильтры
     credits() {
-      return this.$store.getters.creditTasks.filter(task => {
-        console.log(task.client)
+      return this.$store.getters["credits/creditTasks"].filter(task => {
         let conditions = [true];
         if (this.applicationNumber.length > 0) {
           conditions.push(task.applicationNumber.indexOf(this.applicationNumber) > -1);
         }
 
         if (this.client.length > 0) {
-          console.log("f", task.client)
           conditions.push(task.client.indexOf(this.client) > -1);
         }
 
@@ -404,7 +402,7 @@ export default {
     },
 
     userRole() {
-      return this.$store.getters.userRole
+      return this.$store.getters["credits/userRole"]
     }
   },
   methods: {
