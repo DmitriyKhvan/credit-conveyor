@@ -1,7 +1,7 @@
 const MainContainer = () => import("layouts/Main");
 const LoginPage = () => import("pages/main/auth/Login");
 const HomePage = () => import("pages/main/home/Home");
-//const ChatPage = () => import("pages/main/chat/Chat");
+
 const Page404 = () => import("pages/extras/Error404");
 
 // Admin
@@ -67,6 +67,7 @@ const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 //Chat
 const ChatIndexPage = () => import('pages/main/chat/Index');
 const Notifications = () => import('pages/main/chat/notification/Notification');
+const ChatPage = () => import("pages/main/chat/Chat");
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
@@ -255,7 +256,14 @@ const routes = [{
       path: "notification",
       name: "Notifications",
       component: Notifications
-    }]
+    },
+    {
+      path: "mainchat",
+      name: "Main Chat",
+      component: ChatPage
+    },
+  
+    ]
   },
   {
     path: "selfdev",
@@ -284,6 +292,7 @@ const routes = [{
     onlyWhenLoggedOut: true
   }
 },
+
 {
   path: "/404",
   name: "Page404",

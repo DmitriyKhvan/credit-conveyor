@@ -10,7 +10,7 @@ const SocketService = {
 
   runAllSocketListeners() {
     this.runUsersCounter();
-    console.log(store);
+    console.log('runUsersCounter',store);
   },
   runUsersCounter() {
     let socket = store.getters["socket/getSocket"];
@@ -22,7 +22,11 @@ const SocketService = {
   runConnection(empId) {
     let socket = store.getters["socket/getSocket"];
     this.runNotifications(socket, empId);
+    this.runChat(socket, empId)
+    this.runGroup(socket, empId)
+    this.runChatList(socket, empId)
 
+    socket.emit("chat/all", empId)
     socket.emit("online", empId);
     store.dispatch("socket/setOnline", true);
     console.log("user is online");
@@ -52,6 +56,27 @@ const SocketService = {
           }
         });
       }
+    });
+  },
+  runChat(socket, empId) {
+    socket.on("chat", data => {
+      console.log('chats',data)
+      
+      // logic...
+    });
+  },
+  runChatList(socket, empId) {
+    socket.on("chat/all", data => {
+      console.log('List',data)
+      store.dispatch('setChats', data)
+      
+      // logic...
+    });
+  },
+  runGroup(socket, empId) {
+    socket.on("group", data => {
+
+      // logic...
     });
   }
 };

@@ -29,6 +29,7 @@ export default {
     axios
         .get("/emps/kvitok?uid="+id)
         .then(response => { 
+         
             this.chartData = response.data            
         })
         .catch(error => {
