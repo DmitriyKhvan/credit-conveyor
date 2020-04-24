@@ -17,6 +17,7 @@
         </div>
 
         <div class="chatsList scroll q-pt-md" :style="{height: heightRight}">
+
             <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
                 <div class="notice">10</div>
                 <div class="col">
@@ -28,14 +29,19 @@
                 </div>
             </div>
 
-            <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
+            <div
+                v-for="chat in chats" 
+                :key="chat.chat_id"
+                class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock"
+                @click="setActiveChat(chat.chat_id)"
+                >
                 <div class="avatarBlock">
                     <q-avatar>
                         <img src="https://cdn.quasar.dev/img/avatar.png">
                     </q-avatar>
                 </div>
                 <div class="col">
-                    <div class="text-subtitle1"><b>Сидоров А.А.</b></div>
+                    <div class="text-subtitle1"><b>{{chatName(chat.messages[0].to_name)}}</b></div>
                     <div class="text-caption">
                         <q-badge class="online">
                             online
@@ -50,7 +56,7 @@
                 </div>
             </div>
 
-            <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
+            <!-- <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
                 <div class="avatarBlock">
                     <q-avatar>
                         <img src="https://cdn.quasar.dev/img/avatar.png">
@@ -70,7 +76,7 @@
                 <div class="actionsBlock text-right self-center">
                     <q-btn icon="delete_outline" color="grey-8" flat />
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <AddChat></AddChat>        
@@ -99,6 +105,26 @@ export default {
             }
         })
     },
+    methods:{
+        chatName(n){
+            let arr = n.split(' ')
+            let name = arr[0] + ' '
+            arr.forEach((el, i) => {
+                if(i !== 0 && i <= 2 && el !=='') {
+                    name += el[0] + '.'
+                }
+            });
+            return name
+        },
+        setActiveChat(id){            
+            this.$store.dispatch('setActiveChat', id)
+        }
+    },
+    computed: {
+        chats(){            
+            return this.$store.getters.getChats
+        }
+    }
 }
 </script>
 

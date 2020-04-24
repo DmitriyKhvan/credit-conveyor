@@ -258,7 +258,7 @@ const routes = [{
       component: Notifications
     },
     {
-      path: "mainChat",
+      path: "mainchat",
       name: "Main Chat",
       component: ChatPage
     },
