@@ -2809,51 +2809,55 @@ export default {
     }
   },
   mounted() {
-    this.Customer.FirstName = this.$store.state.credits.personalData.name;
-    this.Customer.LastName = this.$store.state.credits.personalData.surname;
-    this.Customer.MiddleName = this.$store.state.credits.personalData.mname;
-    this.Customer.INN = this.$store.state.credits.personalData.inn;
-    this.Customer.PhoneList[0].Number = this.$store.state.credits.personalData.phone;
-    this.Customer.PINPP = this.$store.state.credits.personalData.pinpp;
-    this.Customer.Document.Series = this.$store.state.credits.personalData.passport.slice(
+    this.Customer.FirstName = this.personalData.name;
+    this.Customer.LastName = this.personalData.surname;
+    this.Customer.MiddleName = this.personalData.mname;
+    this.Customer.INN = this.personalData.inn;
+    this.Customer.PhoneList[0].Number = this.personalData.phone;
+    this.Customer.PINPP = this.personalData.pinpp;
+    this.Customer.Document.Series = this.personalData.passport.slice(
       0,
       2
     );
-    this.Customer.Document.Number = this.$store.state.credits.personalData.passport.slice(
+    this.Customer.Document.Number = this.personalData.passport.slice(
       2
     );
 
     this.Customer.MaritalStatus =
-      +this.$store.state.credits.personalData.familyStatus + 1 + ""; // false/true перевожу в число
-    this.Customer.hasChildren = this.$store.state.credits.personalData.children;
-    this.Customer.UnderAgeChildrenNum = this.$store.state.credits.personalData.childrenCount;
+      +this.personalData.familyStatus + 1 + ""; // false/true перевожу в число
+    this.Customer.hasChildren = this.personalData.children;
+    this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
 
-    this.Customer.MonthlyIncome.confirmMonthlyIncome = this.$store.state.credits.personalData.income;
-    this.Customer.MonthlyExpenses.recurringExpenses = this.$store.state.credits.personalData.expense;
-    this.Customer.MonthlyExpenses.obligations = this.$store.state.credits.personalData.otherExpenses;
-    this.Customer.MonthlyIncome.hasAdditionalIncome = this.$store.state.credits.personalData.externalIncome;
-    this.Customer.MonthlyIncome.additionalIncome.sum = this.$store.state.credits.personalData.externalIncomeSize;
-    this.Customer.MonthlyIncome.additionalIncome.incomeType = this.$store.state.credits.personalData.additionalIncomeSource;
+    this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
+    this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
+    this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
+    this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
+    this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
+    this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
   },
   computed: {
     fullProfile() {
-      return this.$store.state.profile.fullFormProfile;
+      return this.$store.getters["profile/profile"].fullFormProfile
     },
 
     Customer() {
-      return this.$store.state.profile.fullFormProfile.Customer;
+      return this.$store.getters["profile/profile"].fullFormProfile.Customer
     },
 
     dictionaries() {
-      return this.$store.state.profile.dictionaries;
+      return this.$store.getters["profile/profile"].dictionaries
     },
 
     profile() {
-      return this.$store.state.profile
+      return this.$store.getters["profile/profile"]
+    },
+
+    personalData() {
+      return this.$store.getters["credits/credits"].personalData
     },
 
     preApprovalData() {
-      return this.$store.state.credits.preApprovalData;
+      return this.$store.getters["credits/credits"].preApprovalData;
     }
   },
   watch: {

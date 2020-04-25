@@ -115,19 +115,19 @@ export default {
 
   computed: {
     disableBtn() {
-      return this.$store.state.credits.disableBtn;
+      return this.$store.getters["credits/credits"].disableBtn;
     },
     confirm() {
-      return this.$store.state.credits.confirm;
+      return this.$store.getters["credits/credits"].confirm;
     },
     preApprovalData() {
-      return this.$store.state.credits.preApprovalData;
+      return this.$store.getters["credits/credits"].preApprovalData;
     },
     personalData() {
-      return this.$store.state.credits.personalData;
+      return this.$store.getters["credits/credits"].personalData;
     },
     credits() {
-      return this.$store.state.credits;
+      return this.$store.getters["credits/credits"];
     }
   },
   methods: {
@@ -138,12 +138,13 @@ export default {
         console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
           const response = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
+          const dictionaries = (response.nextTask.input.find(i => i.label === "inputDictionaries")).data
 
           console.log('dictionaries', response)
-          if (response.nextTask.input[1].data) {
-            this.$store.commit("profile/setDictionaries", response.nextTask.input[1].data)
+          if (dictionaries) {
+            this.$store.commit("profile/setDictionaries", dictionaries)
 
-            sessionStorage.setItem("dictionaries", JSON.stringify(response.nextTask.input[1].data))
+            sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries))
 
             this.$router.push("profile");
           } else {
@@ -152,7 +153,7 @@ export default {
 
         } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("credits/setError", errorMessage);
+          this.$store.commit("credits/setMessage", errorMessage);
           sessionStorage.removeItem("csrf_token");
         }
     },

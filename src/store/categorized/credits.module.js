@@ -8,7 +8,7 @@ export const credits = {
   state: {
     taskId: "",
     userRole: "",
-    errorMessage: {
+    messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки
       message: null
     },
@@ -21,7 +21,7 @@ export const credits = {
     },
     loaderForm: true, // при загрузки формы preapproval
     confirm: false, // для модального окна расчета кредита
-    errorBar: false,
+    messageBar: false,
     bpmService: new BpmService(),
     icon: false,
     loader: false,
@@ -123,7 +123,7 @@ export const credits = {
         return csrf_token;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setError", errorMessage);
+        commit("setMessage", errorMessage);
         sessionStorage.removeItem("csrf_token");
         this.$router.push("/work/credit");
       }
@@ -160,7 +160,7 @@ export const credits = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setError", errorMessage);
+        commit("setMessage", errorMessage);
         sessionStorage.removeItem("csrf_token");
       }
     },
@@ -195,7 +195,7 @@ export const credits = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setError", errorMessage);
+        commit("setMessage", errorMessage);
         sessionStorage.removeItem("csrf_token");
       }
     },
@@ -223,7 +223,7 @@ export const credits = {
       } catch (error) {
         console.log('errorMessage', error)
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setError", errorMessage);
+        commit("setMessage", errorMessage);
         sessionStorage.removeItem("csrf_token");
       }
     },
@@ -237,7 +237,7 @@ export const credits = {
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setError", errorMessage);
+        commit("setMessage", errorMessage);
         sessionStorage.removeItem("csrf_token");
         this.$router.push("/work/credit");
       }
@@ -251,7 +251,7 @@ export const credits = {
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setError", errorMessage);
+        commit("setMessage", errorMessage);
         sessionStorage.removeItem("csrf_token");
         this.$router.push("/work/credit");
       }
@@ -338,19 +338,14 @@ export const credits = {
       state.scannerSerialNumber = payload;
     },
 
-    setError(state, error) {
-      console.log('setErr', error)
-      state.errorMessage.message = error;
-      state.errorMessage.id = new Date();
+    setMessage(state, message) {
+      console.log('setMsg', message)
+      state.messageBlock.message = message;
+      state.messageBlock.id = new Date();
     },
 
-    clearError(state) {
-      state.errorMessage = null;
-    },
-
-    toggleErrorBar(state, payload) {
-      //state.errorMessage = null;
-      state.errorBar = payload;
+    toggleMessageBar(state, payload) {
+      state.messageBar = payload;
     },
 
     toggleLoaderForm(state, flag) {
@@ -376,9 +371,10 @@ export const credits = {
    
   },
   getters: {
-    error: state => state.errorMessage.message,
-    errorId: state => state.errorMessage.id,
-    errorBar: state => state.errorBar,
+    credits: state => state,
+    message: state => state.messageBlock.message,
+    messageId: state => state.messageBlock.id,
+    messageBar: state => state.messageBar,
     taskId: state => state.taskId,
     creditTasks: state => state.creditTasks,
     userRole: state => state.userRole

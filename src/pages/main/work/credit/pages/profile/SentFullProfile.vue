@@ -17,10 +17,10 @@ export default {
   },
   computed: {
     fullProfile() {
-      return this.$store.state.profile.fullFormProfile
+      return this.$store.getters["profile/profile"].fullFormProfile
     },
     profile() {
-      return this.$store.state.profile
+      return this.$store.getters["profile/profile"]
     }
   },
   methods: {
@@ -85,7 +85,8 @@ export default {
           if (res.nextTask.id) {
             debugger
             sessionStorage.removeItem("csrf_token");
-            this.$router.go("/work/credit")
+            this.$store.commit('credits/setMessage', 'Credit complete')
+            this.$router.push("/work/credit")
             debugger
           } else {
             throw 'Next task id is undefined'

@@ -480,19 +480,19 @@ export default {
   },
   computed: {
     loadMessage() {
-      return this.$store.state.credits.loadMessage;
+      return this.$store.getters["credits/credits"].loadMessage
     },
     disableInput() {
-      return this.$store.state.credits.disableInput;
+      return this.$store.getters["credits/credits"].disableInput
     },
     // disableBtn() {
     //   return this.$store.state.credits.disableBtn;
     // },
     personalData() {
-      return this.$store.state.credits.personalData;
+      return this.$store.getters["credits/credits"].personalData
     },
     credits() {
-      return this.$store.state.credits;
+      return this.$store.getters["credits/credits"];
     }
   },
   watch: {

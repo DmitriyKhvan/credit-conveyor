@@ -297,7 +297,7 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setError", errorMessage, {root: true});
+        commit("credits/setMessage", errorMessage, {root: true});
       }
     },
 
@@ -316,7 +316,7 @@ export const profile = {
         return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setError", errorMessage, {root: true});
+        commit("credits/setMessage", errorMessage, {root: true});
         sessionStorage.removeItem("csrf_token");
       }
     }
@@ -706,6 +706,6 @@ export const profile = {
     }
   },
   getters: {
-    fullForm: state => state.fullFormProfile
+    profile: state => state
   }
 };

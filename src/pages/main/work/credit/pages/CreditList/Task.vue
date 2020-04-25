@@ -1059,7 +1059,7 @@
           color="red"
           label="Отклонить"
           class="q-ml-md full-width"
-          @click="creditFailure"
+          @click="() => confirm = true"
         />
       </div>
       <div class="col-3"></div>
@@ -1179,27 +1179,27 @@ export default {
       return this.$route.query.protocolNumber;
     },
     profile() {
-      return this.$store.state.profile;
+      return this.$store.getters["profile/profile"];
     },
     fullProfile() {
-      return this.$store.getters["profile/fullForm"];
+      return this.$store.getters["profile/profile"].fullFormProfile
     },
     Customer() {
-      return this.$store.state.profile.fullFormProfile.Customer;
+      return this.$store.getters["profile/profile"].fullFormProfile.Customer;
     },
     dictionaries() {
-      return this.$store.state.profile.dictionaries;
+      return this.$store.getters["profile/profile"].dictionaries;
     },
     userRole() {
       return this.$store.getters["credits/userRole"]
     }
   },
   methods: {
-    creditFailure() {
-      this.confirm = true;
-    },
+    // creditFailure() {
+    //   this.confirm = true;
+    // },
 
-    async creditSuccess() {
+    creditSuccess() {
       console.log('userRole', this.userRole)
 
       if (this.userRole == "BackOfficee") {
@@ -1219,37 +1219,10 @@ export default {
           this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
       }
 
-      const data = {
-        output: [
-          {
-            name: "application",
-            data: this.fullProfile
-          }
-        ]
-      };
-
-      console.log('Что отправил', JSON.stringify(data, null, 2))
-      debugger
-      try {
-        debugger
-        const res = await this.$store.dispatch("credits/confirmationCredit", data);
-        console.log("response", JSON.stringify(res, null, 2));
-        debugger
-        if (res.nextTask.id) {
-          sessionStorage.removeItem("csrf_token");
-          this.$router.push("/work/credit");
-        } else {
-          throw 'Next task id is undefined'
-        }
-      } catch (error) {}
+      this.sentData('Credit success')
     },
 
-    toggleCreditBlock(event) {
-      event.classList.toggle("closeBlock");
-      event.nextSibling.classList.toggle("close");
-    },
-
-    async submitHandler(event) {
+    submitHandler(event) {
       // console.log(this.$refs);
       // this.$refs.reson.validate();
 
@@ -1294,32 +1267,42 @@ export default {
 
           this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
         }
-        
-        const data = {
-        output: [
-            {
-              name: "application",
-              data: this.fullProfile
-            }
-          ]
-        };
 
-        console.log(JSON.stringify(data, null, 2))
-
-        try {
-          const res = await this.$store.dispatch("credits/confirmationCredit", data);
-          console.log('resCreditFailure', res)
-          if (res.nextTask.id) {
-            debugger
-            sessionStorage.removeItem("csrf_token");
-            this.$router.push("/work/credit");
-          } else {
-            throw 'Next task id is undefined'
-          }
-        } catch (error) {}
+        this.sentData('Credit failure')
+      
         this.confirm = false;
       }
-    }
+    },
+
+    async sentData(message) {
+      const data = {
+        output: [
+          {
+            name: "application",
+            data: this.fullProfile
+          }
+        ]
+      };
+      
+      try {
+        console.log('data', JSON.stringify(data, null, 2))
+        const res = await this.$store.dispatch("credits/confirmationCredit", data);
+        console.log("response", JSON.stringify(res, null, 2));
+       
+        if (res.nextTask.id) {
+          sessionStorage.removeItem("csrf_token");
+          this.$store.commit('credits/setMessage', message)
+          this.$router.push("/work/credit");
+        } else {
+          throw 'Next task id is undefined'
+        }
+      } catch (error) {}
+    },
+    
+    toggleCreditBlock(event) {
+      event.classList.toggle("closeBlock");
+      event.nextSibling.classList.toggle("close");
+    },
   }
 };
 </script>

@@ -810,16 +810,16 @@ export default {
   },
   computed: {
     fullProfile() {
-      return this.$store.state.profile.fullFormProfile;
+     return this.$store.getters["profile/profile"].fullFormProfile;
     },
     profile() {
-      return this.$store.state.profile;
+      return this.$store.getters["profile/profile"];
     },
     Customer() {
-      return this.$store.state.profile.fullFormProfile.Customer;
+      return this.$store.getters["profile/profile"].fullFormProfile.Customer;
     },
     dictionaries() {
-      return this.$store.state.profile.dictionaries;
+      return this.$store.getters["profile/profile"].dictionaries;
     }
   },
   methods: {
