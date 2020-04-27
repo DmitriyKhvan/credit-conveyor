@@ -175,6 +175,7 @@
             {{ index + 1 }}
           </router-link>
 
+          <td class="text-left applicationNumber applicationRow">
           <router-link
             :to="{
               name: 'CreditTask',
@@ -185,11 +186,11 @@
                 applicationNumber: credit.applicationNumber
               }
             }"
-            tag="td"
-            class="text-left applicationNumber applicationRow"
+            tag="a"
           >
             {{ credit.applicationNumber }}
           </router-link>
+          </td>
 
           <router-link
             :to="{
