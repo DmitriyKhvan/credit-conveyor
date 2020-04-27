@@ -22,6 +22,7 @@ const SocketService = {
   runConnection(empId) {
     let socket = store.getters["socket/getSocket"];
     this.runNotifications(socket, empId);
+    this.runChat(socket);
 
     socket.emit("online", empId);
     store.dispatch("socket/setOnline", true);
@@ -46,6 +47,7 @@ const SocketService = {
     socket.on("notifications", data => {
       if (data) {
         data.forEach(msg => {
+          console.log(msg)
           store.dispatch("dicts/addNotification", msg);
           if (msg.status == 0) {
             NotifyService.showNotification(msg.title)
@@ -53,6 +55,11 @@ const SocketService = {
         });
       }
     });
+  },
+  runChat(socket) {
+    socket.on("chat", data => {
+      console.log(data);
+    })
   }
 };
 export default SocketService;

@@ -54,11 +54,6 @@ const DevicesAccounting = () => import("pages/main/it/accounting/Accounting");
 const DevicesHistory = () => import("pages/main/it/history/History");
 const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
 // Education
-const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
-const QuestionPage = () =>
-  import("pages/main/admin/self_dev/questions/Questions");
-const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
-const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 
 const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
@@ -186,28 +181,7 @@ const routes = [{
     {
       path: "selfdev",
       name: "Self Developer",
-      component: SelfDevPage,
-      children: [{
-        path: "topicPage",
-        name: "addEditTopic",
-        component: TopicPage
-      },
-      {
-        path: "questionPage",
-        name: "Add Edit Question",
-        component: QuestionPage
-      },
-      {
-        path: "testPage",
-        name: "Add Edit Test",
-        component: TestPage
-      },
-      {
-        path: "monitoringPage",
-        name: "Add Edit Monitoring",
-        component: MonitoringPage
-      }
-      ]
+      component: SelfDevPage
     }
     ]
   },

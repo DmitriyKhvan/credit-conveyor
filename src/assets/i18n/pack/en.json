@@ -95,6 +95,7 @@
     "confirm_delete": "Are you sure you want to delete?",
     "confirm_exit": "Are you sure you want to exit?",
     "confirm_save": "Are you sure you want to save?",
+    "confirm_exit_test": "Are you sure you want to finish test?",
     "no_data": "No data found",
     "invalid_password": "Invalid password - please retry",
     "function_not_found": "Function not found or inaccessible",
