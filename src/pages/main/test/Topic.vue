@@ -276,24 +276,35 @@ export default {
       ];
     },
     completeTest() {
-      console.log("data", this.data);
-      this.countTimeCurQuestion(1); // 1 последний элемент
-
-      this.data.end_time = this.curDate();
-
-      this.sentTestAnswers(this.data)
-        .then(res => {
-          const payload = {
-            countTrueAnswers: res.message,
-            quesAmount: this.data.ques_amount
-          };
-          this.$store.commit("sentAnswersTest", payload);
-          this.$store.commit("setResTest", res.message);
-
-          this.$router.push({ path: "/completeTest" });
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: this.$t("messages.confirm_exit_test"),
+          cancel: true,
+          persistent: true
         })
-        .catch(err => {
-          console.log(err);
+        .onOk(() => {
+          this.countTimeCurQuestion(1); // 1 последний элемент
+
+          this.data.end_time = this.curDate();
+
+          this.sentTestAnswers(this.data)
+            .then(res => {
+              const payload = {
+                countTrueAnswers: res.message,
+                quesAmount: this.data.ques_amount
+              };
+              this.$store.commit("sentAnswersTest", payload);
+              this.$store.commit("setResTest", res.message);
+
+              this.$router.push({ path: "/completeTest" });
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        })
+        .onCancel(() => {
+          // console.log('>>>> Cancel')
         });
     },
 

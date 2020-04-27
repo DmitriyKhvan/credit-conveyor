@@ -144,7 +144,9 @@ const mutations = {
   },
   addNotification(state, noty) {
     state.receivedNotifications = [noty, ...state.receivedNotifications];
-    state.countNotifications++;
+    if (noty.status == 0) {
+      state.countNotifications++;
+    }
   },
   setDictTypes(state, types) {
     state.dictTypes = types
