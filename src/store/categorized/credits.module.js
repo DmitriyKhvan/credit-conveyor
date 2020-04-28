@@ -1,6 +1,4 @@
 import BpmService from "../../services/bpm.service";
-import storegeService from "../../services/storage.service";
-import { decode } from "jsonwebtoken";
 import CommonUtils from "@/shared/utils/CommonUtils";
 
 export const credits = {
@@ -246,6 +244,7 @@ export const credits = {
     async getUserTasks({ state, commit }) {
       try {
         const response = await state.bpmService.getUserTasks();
+        console.log('res', response)
         if (response.infoList.length) {
           commit("setCreditTasks", response.infoList);
         }

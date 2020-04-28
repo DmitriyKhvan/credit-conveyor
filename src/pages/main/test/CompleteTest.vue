@@ -213,10 +213,10 @@ export default {
 </script>
 
 <style>
-.topicBlock .cardVisible {
+/* .topicBlock .cardVisible {
   border-bottom: 1px blue solid;
   padding-bottom: 10px;
-}
+} */
 .topicBlock .completeBlockBg {
   border: 1px #ccc solid;
 }

@@ -53,7 +53,13 @@ const Devices = () => import("pages/main/it/devices/Devices");
 const DevicesAccounting = () => import("pages/main/it/accounting/Accounting");
 const DevicesHistory = () => import("pages/main/it/history/History");
 const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
+
 // Education
+const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
+const QuestionPage = () =>
+  import("pages/main/admin/self_dev/questions/Questions");
+const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
+const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 
 const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
@@ -140,7 +146,7 @@ const routes = [{
         component: CreditReg
       },
       {
-        path: "profile",
+        path: "profile/:id",
         name: "Profile",
         component: CreditProfile,
         beforeEnter: ifAuthenticated
@@ -203,42 +209,6 @@ const routes = [{
         component: MonitoringPage
       }
       ]
-    }
-    ]
-  },
-  {
-    path: "admin",
-    name: "Admin Page",
-    component: AdminPage,
-    children: [{
-      path: "users",
-      name: "Users List",
-      component: Users
-    },
-    {
-      path: "roles",
-      name: "User Roles",
-      component: Roles
-    },
-    {
-      path: "menus",
-      name: "Menus List",
-      component: Menus
-    },
-    {
-      path: "moderator",
-      name: "Moderators",
-      component: Moderators
-    },
-    {
-      path: "dictionaries",
-      name: "Dictionaries",
-      component: Dictionaries
-    },
-    {
-      path: "selfdev",
-      name: "Self Developer",
-      component: SelfDevPage
     }
     ]
   },

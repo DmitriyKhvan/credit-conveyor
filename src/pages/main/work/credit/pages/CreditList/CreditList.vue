@@ -156,153 +156,159 @@
       </thead>
       <tbody>
         <tr v-for="(credit, index) of credits" :key="credit.id">
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber,
-                protocolNumber: credit.additionalInfo
-                  ? credit.additionalInfo.protocolNumber
-                  : null
-              }
-            }"
-            tag="td"
-            class="text-center number applicationRow"
-          >
-            {{ index + 1 }}
-          </router-link>
-
-          <td class="text-left applicationNumber applicationRow">
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber
-              }
-            }"
-            tag="a"
-          >
-            {{ credit.applicationNumber }}
-          </router-link>
+          <td class="text-center number applicationRow">
+            <router-link
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName,
+                  protocolNumber: credit.additionalInfo
+                    ? credit.additionalInfo.protocolNumber
+                    : null
+                }
+              }"
+            >{{ index + 1 }}</router-link>
           </td>
 
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber
-              }
-            }"
-            tag="td"
-            class="text-left client applicationRow"
-          >
-            {{ credit.client }}
-          </router-link>
+          <td class="text-left applicationNumber applicationRow">
+            <router-link
+              v-if="userRole === 'CreditManager'"
+              :to="{
+                name: 'Profile',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >{{ credit.applicationNumber }}</router-link>
 
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber
-              }
-            }"
-            tag="td"
-            class="text-left manager applicationRow"
-          >
-            Наименование менеджера
-          </router-link>
+            <router-link
+              v-else
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >{{ credit.applicationNumber }}</router-link>
+          </td>
 
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber
-              }
-            }"
-            tag="td"
-            class="text-left MFO applicationRow"
-          >
-            {{ credit.filial }}
-          </router-link>
+          <td class="text-left client applicationRow">
+            <router-link
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >{{ credit.client }}</router-link>
+          </td>
+          
+          <td class="text-left manager applicationRow">
+            <router-link
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >Наименование менеджера</router-link>
+          </td>
 
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber
-              }
-            }"
-            tag="td"
-            class="text-left filialName applicationRow"
-          >
-            {{ credit.filialName }}
-          </router-link>
+          <td class="text-left MFO applicationRow">
+            <router-link
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >{{ credit.filial }}</router-link>
+          </td>
+          
+          <td class="text-left filialName applicationRow">
+            <router-link
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >{{ credit.filialName }}</router-link>
+          </td>
+          
+          <td class="text-left taskName applicationRow">
+            <router-link
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >{{ credit.taskName }}</router-link>
+          </td>
 
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber
-              }
-            }"
-            tag="td"
-            class="text-left taskName applicationRow"
-          >
-            {{ credit.taskName }}
-          </router-link>
 
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber
-              }
-            }"
-            tag="td"
-            class="text-left taskStatus applicationRow"
-          >
-            {{ credit.taskStatus }}
-          </router-link>
-
-          <router-link
-            :to="{
-              name: 'CreditTask',
-              params: { id: credit.id },
-              query: {
-                taskId: credit.taskId,
-                date: credit.date,
-                applicationNumber: credit.applicationNumber
-              }
-            }"
-            tag="td"
-            class="text-left date applicationRow"
-          >
-            {{ credit.date }}
-          </router-link>
+          <td class="text-left taskStatus applicationRow">
+            <router-link
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >{{ credit.taskStatus }}</router-link>
+          </td>
+          
+          <td class="text-left date applicationRow">
+            <router-link
+              :to="{
+                name: 'CreditTask',
+                params: { id: credit.id },
+                query: {
+                  taskId: credit.taskId,
+                  date: credit.date,
+                  applicationNumber: credit.applicationNumber,
+                  filialName: credit.filialName
+                }
+              }"
+            >{{ credit.date }}</router-link>
+          </td>
 
           <td class="text-left print">
             <div class="text-blue q-gutter-md">
@@ -425,7 +431,7 @@ export default {
 
     sortValue(idx, order = true) {
       
-      this.$store.getters.creditTasks.sort((a, b) => {
+      this.$store.getters["credits/creditTasks"].sort((a, b) => {
         const itemA = a[idx];
         const itemB = b[idx];
         if (order) {
@@ -533,5 +539,14 @@ td {
 
 .applicationRow {
   cursor: pointer;
+
+  a {
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+  }
 }
 </style>

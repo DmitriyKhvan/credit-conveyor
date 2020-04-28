@@ -2540,8 +2540,19 @@
             Загрузить документ
           </h4>
           <div class="tab-content" ref="tabContent">
-            <div class="row q-col-gutter-md">
-              <div class="col-12 uploadFileBlock">
+            <div class="row">
+              <div 
+                class="col-12 uploadFileBlock"
+                @drag.prevent.stop 
+                @dragstart.prevent.stop 
+                @dragend.prevent.stop 
+                @dragover.prevent.stop="dragoverFile" 
+                @dragenter.prevent.stop="dragenterFile" 
+                @dragleave="dragleaveFile($event)" 
+                @drop.prevent.stop
+                @drop="dropFile($event)"
+              >
+                <div ref="dragover"></div>
                 <q-field
                   ref="uploadFile"
                   :value="!!filesAll.length"
@@ -2807,33 +2818,43 @@ export default {
       this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
       // console.log('dic', this.dictionaries)
     }
+
+    if (this.taskId) {
+      this.$store.commit("credits/setTaskId", this.taskId);
+      try {
+        const res = await this.$store.dispatch("profile/getFullForm");
+        console.log('res', res)
+      } catch (error) {}
+    }
   },
   mounted() {
-    this.Customer.FirstName = this.personalData.name;
-    this.Customer.LastName = this.personalData.surname;
-    this.Customer.MiddleName = this.personalData.mname;
-    this.Customer.INN = this.personalData.inn;
-    this.Customer.PhoneList[0].Number = this.personalData.phone;
-    this.Customer.PINPP = this.personalData.pinpp;
-    this.Customer.Document.Series = this.personalData.passport.slice(
-      0,
-      2
-    );
-    this.Customer.Document.Number = this.personalData.passport.slice(
-      2
-    );
+    if (!this.taskId) {
+      this.Customer.FirstName = this.personalData.name;
+      this.Customer.LastName = this.personalData.surname;
+      this.Customer.MiddleName = this.personalData.mname;
+      this.Customer.INN = this.personalData.inn;
+      this.Customer.PhoneList[0].Number = this.personalData.phone;
+      this.Customer.PINPP = this.personalData.pinpp;
+      this.Customer.Document.Series = this.personalData.passport.slice(
+        0,
+        2
+      );
+      this.Customer.Document.Number = this.personalData.passport.slice(
+        2
+      );
 
-    this.Customer.MaritalStatus =
-      +this.personalData.familyStatus + 1 + ""; // false/true перевожу в число
-    this.Customer.hasChildren = this.personalData.children;
-    this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
+      this.Customer.MaritalStatus =
+        +this.personalData.familyStatus + 1 + ""; // false/true перевожу в число
+      this.Customer.hasChildren = this.personalData.children;
+      this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
 
-    this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
-    this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
-    this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
-    this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
-    this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
-    this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
+      this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
+      this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
+      this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
+      this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
+      this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
+      this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
+    }
   },
   computed: {
     fullProfile() {
@@ -2858,6 +2879,9 @@ export default {
 
     preApprovalData() {
       return this.$store.getters["credits/credits"].preApprovalData;
+    },
+    taskId() {
+      return this.$route.query.taskId
     }
   },
   watch: {
@@ -3310,9 +3334,41 @@ export default {
       // }
     },
 
+    dropFile(event) {
+      this.$refs.dragover.classList.remove('dragover')
+      let uploadedFiles = event.dataTransfer.files;
+      console.log('uploadFile', uploadedFiles)
+      // e.dataTransfer.files
+      this.uploadFile(uploadedFiles)
+    },
+
+    dragoverFile() {
+      this.$refs.dragover.classList.add('dragover')
+    },
+
+    dragenterFile() {
+      this.$refs.dragover.classList.add('dragover')
+    },
+
+    dragleaveFile(event) {
+      let fileBlock = this.$refs.dragover.getBoundingClientRect()
+      
+      if ((event.pageX < fileBlock.left) || 
+        (event.pageX > fileBlock.right) || 
+        (event.pageY < fileBlock.top) || 
+        (event.pageY > fileBlock.bottom)) {
+        this.$refs.dragover.classList.remove('dragover')
+      };
+    },
+
     handleFilesUpload() {
       this.loaderFile = false;
       let uploadedFiles = this.$refs.files.files;
+      console.log('uploadFile', uploadedFiles)
+      this.uploadFile(uploadedFiles)
+    },
+
+    uploadFile(uploadedFiles) {
       for (var i = 0; i < uploadedFiles.length; i++) {
         this.files.push(uploadedFiles[i]);
         this.filesAll.push({
@@ -3349,7 +3405,8 @@ export default {
 
         try {
           const response = await this.$store.dispatch("profile/uploadFiles", formData);
-          if (response.infos.length) {
+          console.log('resFile', response)
+          if (response) {
             this.files = []; // удалить все файлы после загрузки на сервер
             this.loaderFile = false;
             for (let el of response.infos) {
@@ -3357,6 +3414,7 @@ export default {
               item.id = el.id
             }
           } else {
+            debugger
             this.loaderFile = false;
 
             // el.upload = true; // загрузка была, но прошла не удачна
@@ -3533,6 +3591,7 @@ export default {
 
   // file
   .uploadFileBlock {
+    position: relative;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14),
       0 3px 1px -2px rgba(0, 0, 0, 0.12);
     border-radius: 4px;
@@ -3542,6 +3601,18 @@ export default {
     min-height: 150px;
     margin-bottom: 10px;
     padding-bottom: 10px;
+
+    .dragover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      outline: 2px dashed #5d5d5d;
+      background-color: #fafafa61;
+      outline-offset: -17px;
+      z-index: 10;
+    }
   }
 
   .uploadFile {

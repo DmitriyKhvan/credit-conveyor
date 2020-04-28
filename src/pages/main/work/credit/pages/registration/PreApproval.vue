@@ -146,7 +146,7 @@ export default {
 
             sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries))
 
-            this.$router.push("profile");
+            this.$router.push("profile/new");
           } else {
             throw 'Data is null'
           }

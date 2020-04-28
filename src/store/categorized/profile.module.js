@@ -305,12 +305,15 @@ export const profile = {
       try {
         const response = await state.bpmService.getFullForm(rootGetters["credits/taskId"]);
         console.log('response', response)
-        const fullForm = (response.data.input.find(i => i.label === "application")).data
-        const dictionaries = (response.data.input.find(i => i.label === "inputDictionaries")).data
+        
+        if (response.data.input && response.data.input.length) {
+          const fullForm = (response.data.input.find(i => i.label === "application")).data
+          const dictionaries = (response.data.input.find(i => i.label === "inputDictionaries")).data
 
-        if (fullForm) {
           commit("setFullForm", fullForm);
           commit("setDictionaries", dictionaries);
+        } else {
+          throw "Data is null"
         }
 
         return response
@@ -318,6 +321,7 @@ export const profile = {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, {root: true});
         sessionStorage.removeItem("csrf_token");
+        this.$router.push("/work/credit");
       }
     }
   },

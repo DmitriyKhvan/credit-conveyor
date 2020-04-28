@@ -16,6 +16,11 @@
         <h6 class="titleCredit">Номер заявления</h6>
         <span class="creditInfo">{{ applicationNumber }}</span>
       </div>
+
+      <div class="infoBlockItem">
+        <h6 class="titleCredit">Филиал / Подразделение</h6>
+        <span class="creditInfo">{{ filialName }}</span>
+      </div>
     </div>
 
     <!-- Form credit -->
@@ -1132,6 +1137,7 @@
   </div>
 </template>
 <script>
+import CommonUtils from "@/shared/utils/CommonUtils";
 import { validItems, validFilter } from "../../filters/valid_filter";
 
 export default {
@@ -1177,6 +1183,9 @@ export default {
     },
     protocolNumber() {
       return this.$route.query.protocolNumber;
+    },
+    filialName() {
+      return this.$route.query.filialName;
     },
     profile() {
       return this.$store.getters["profile/profile"];
@@ -1296,7 +1305,12 @@ export default {
         } else {
           throw 'Next task id is undefined'
         }
-      } catch (error) {}
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+        sessionStorage.removeItem("csrf_token");
+        // this.$router.push("/work/credit");
+      }
     },
     
     toggleCreditBlock(event) {
