@@ -140,13 +140,11 @@ export default {
           const response = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
           const dictionaries = (response.nextTask.input.find(i => i.label === "inputDictionaries")).data
 
-          console.log('dictionaries', response)
+          console.log('response', response)
           if (dictionaries) {
             this.$store.commit("profile/setDictionaries", dictionaries)
-
-            sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries))
-
-            this.$router.push("profile/new");
+            
+            this.$router.push("profile");
           } else {
             throw 'Data is null'
           }
@@ -155,6 +153,7 @@ export default {
           const errorMessage = CommonUtils.filterServerError(error);
           this.$store.commit("credits/setMessage", errorMessage);
           sessionStorage.removeItem("csrf_token");
+          this.$router.push("/work/credit")
         }
     },
     

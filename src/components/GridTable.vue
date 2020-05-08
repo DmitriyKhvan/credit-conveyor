@@ -17,6 +17,7 @@
           :filter="filter"
           :loading="loading"
         >
+        
           <template v-slot:top="props">
             <q-btn
               class="q-ml-sm"
@@ -288,9 +289,11 @@ export default {
             this.itemsArray.push(element);
           });
 
+          console.log('data', data)
           // sorting coloumns of table
           if (data.length > 0) {
             Object.keys(data[0]).map(async (k, index) => {
+              
               let sortable = this.excludeSortingColoumns.includes(k) //sortable filter
                 ? false
                 : true;

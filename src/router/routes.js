@@ -7,6 +7,7 @@ const Page404 = () => import("pages/extras/Error404");
 // Admin
 const AdminPage = () => import("pages/main/admin/admin");
 const Users = () => import("pages/main/admin/users/Users");
+const CreditUsers = () => import("pages/main/admin/creditUsers/CreditUsers");
 const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
 const Moderators = () => import("pages/main/admin/moderators/Moderators");
@@ -37,6 +38,8 @@ const CreditReg = () =>
   );
 const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
+const CreditProfileRework = () =>
+  import("pages/main/work/credit/pages/profile/ProfileRework.vue");
 const CreditApplications = () =>
   import("pages/main/work/credit/pages/CreditList/Applications.vue");
 const CreditTasks = () =>
@@ -146,9 +149,15 @@ const routes = [{
         component: CreditReg
       },
       {
-        path: "profile/:id",
+        path: "profile",
         name: "Profile",
         component: CreditProfile,
+        beforeEnter: ifAuthenticated
+      },
+      {
+        path: "profile/:id",
+        name: "ProfileRework",
+        component: CreditProfileRework,
         beforeEnter: ifAuthenticated
       }
       ]
@@ -163,6 +172,11 @@ const routes = [{
       path: "users",
       name: "Users List",
       component: Users
+    },
+    {
+      path: "creditUsers",
+      name: "Credit Users List",
+      component: CreditUsers
     },
     {
       path: "roles",

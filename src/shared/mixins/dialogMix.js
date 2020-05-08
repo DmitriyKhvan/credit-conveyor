@@ -17,6 +17,7 @@ export default {
   methods: {
     //!!! Don't change
     initializeData() {
+      console.log('data', this.data)
       if (!!this.data.selectedRow) {
         this.details = this.data.selectedRow[0];
       }

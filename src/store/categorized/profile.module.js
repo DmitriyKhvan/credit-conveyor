@@ -112,15 +112,17 @@ export const profile = {
       BOLogin: "", // логин авторизованного пользователя
       Department: "",
       ClientManagerLogin: "",
-      CreditCommiteeDecisions: [
-        // {
-        //   Comment: "",
-        //   MemberOfCCFIO: "",
-        //   id: 0,
-        //   Login: "",
-        //   isApproved: false
-        // }
-      ],
+      CreditCommiteeDecisions: {
+        items: [
+          // {
+          //   Comment: "",
+          //   MemberOfCCFIO: "",
+          //   id: 0,
+          //   Login: "",
+          //   isApproved: false
+          // }
+        ]
+      },
 
       Customer: {
         DigID: false,
@@ -147,54 +149,60 @@ export const profile = {
         },
 
         Education: null,
-        PhoneList: [
-          {
-            Number: ""
-          }
-        ],
+        PhoneList: {
+          items: [
+            {
+              Number: ""
+            }
+          ]
+        },
 
-        AddressList: [
-          {
-            Building: "",
-            OwnershipType: null,
-            HouseType: "",
-            PostalCode: "",
-            Region: null,
-            District: "", 
-            Street: "",
-            Block: "",
-            House: "",
-            City: "",
-            Apartment: "",
-            AddressType: "1"
-          }
-        ],
+        AddressList: {
+          items: [
+            {
+              Building: "",
+              OwnershipType: null,
+              HouseType: "",
+              PostalCode: "",
+              Region: null,
+              District: "", 
+              Street: "",
+              Block: "",
+              House: "",
+              City: "",
+              Apartment: "",
+              AddressType: '1'
+            }
+          ]
+        },
 
         MaritalStatus: false,
         hasChildren: false,
         // "ChildrenNum": 0,
         UnderAgeChildrenNum: null,
 
-        Relatives: [
-          {
-            FirstName: "",
-            FullName: "",
-            FamilyConnectionType: null,
-            LastName: "",
-            MiddleName: "",
-            BirthDate: "",
-            Document: {
-              Series: "",
-              Number: null,
-              ExpirationDate: "",
-              GivenDate: "",
-              GUID: "",
-              Country: "",
-              DocLink: "",
-              DocumentName: 0
+        Relatives: {
+          items: [
+            {
+              FirstName: "",
+              FullName: "",
+              FamilyConnectionType: null,
+              LastName: "",
+              MiddleName: "",
+              BirthDate: "",
+              Document: {
+                Series: "",
+                Number: null,
+                ExpirationDate: "",
+                GivenDate: "",
+                GUID: "",
+                Country: "",
+                DocLink: "",
+                DocumentName: 0
+              }
             }
-          }
-        ],
+          ]
+        },
 
         JobInfo: {
           employerActivityType: null, //вид деятельности организации
@@ -225,15 +233,25 @@ export const profile = {
         },
 
         PropertyInformation: {
-          Realty_new: [],
-          Transport_new: []
+          Realty_new: {
+            items: []
+          },
+          Transport_new: {
+            items: []
+          }
         }
       },
 
       Guarantee: {
-        Insurance: [],
-        RelatedLegalPerson: [],
-        RelatedPerson: []
+        Insurance: {
+          items: []
+        },
+        RelatedLegalPerson: {
+          items: []
+        },
+        RelatedPerson: {
+          items: []
+        }
       },
 
       LoanInfo: {
@@ -269,22 +287,26 @@ export const profile = {
         FacilitiesForRepaymentDate: false
       },
 
-      ApplicationComment: [
-        // {
-        //   Comment: "",
-        //   Type: "",
-        //   CommentPerson: "",
-        //   id: 0,
-        //   CommentDate: "2020-03-18T09:00:23.928+05:00"
-        // }
-      ],
-      AttachedDocuments: [
-        // {
-        //   "id": null,
-        //   "DocLink": "",
-        //   "DocumentName": "1"
-        // }
-      ]
+      ApplicationComment: {
+        items: [
+          // {
+          //   Comment: "",
+          //   Type: "",
+          //   CommentPerson: "",
+          //   id: 0,
+          //   CommentDate: "2020-03-18T09:00:23.928+05:00"
+          // }
+        ]
+      },
+      AttachedDocuments: {
+        items: [
+          // {
+          //   "id": null,
+          //   "DocLink": "",
+          //   "DocumentName": "1"
+          // }
+        ]
+      }
     }
   },
   actions: {
@@ -303,9 +325,10 @@ export const profile = {
 
     async getFullForm({ state, commit, getters, rootGetters }) {
       try {
+        debugger
         const response = await state.bpmService.getFullForm(rootGetters["credits/taskId"]);
         console.log('response', response)
-        
+        debugger
         if (response.data.input && response.data.input.length) {
           const fullForm = (response.data.input.find(i => i.label === "application")).data
           const dictionaries = (response.data.input.find(i => i.label === "inputDictionaries")).data
@@ -331,7 +354,7 @@ export const profile = {
     },
 
     addPhone(state) {
-      state.fullFormProfile.Customer.PhoneList.push({
+      state.fullFormProfile.Customer.PhoneList.items.push({
         Number: 998
       });
     },
@@ -339,13 +362,13 @@ export const profile = {
     addPhoneGuarantee(state, payload) {
       state.fullFormProfile.Guarantee[payload.item][
         payload.index
-      ].PhoneList.push({
+      ].PhoneList.items.push({
         Number: 998
       });
     },
 
     addProperty(state) {
-      state.fullFormProfile.Customer.PropertyInformation.Realty_new.push({
+      state.fullFormProfile.Customer.PropertyInformation.Realty_new.items.push({
         MarketValue: null,
         Region: null,
         PropertyType: null
@@ -353,7 +376,7 @@ export const profile = {
     },
 
     addVehicle(state) {
-      state.fullFormProfile.Customer.PropertyInformation.Transport_new.push({
+      state.fullFormProfile.Customer.PropertyInformation.Transport_new.items.push({
         transportBrand: "",
         yearOfRelease: null,
         VehicleType: null,
@@ -362,7 +385,7 @@ export const profile = {
     },
 
     addInsurance(state) {
-      state.fullFormProfile.Guarantee.Insurance.push({
+      state.fullFormProfile.Guarantee.Insurance.items.push({
         INN: "",
         OrgName: "",
         Sum: 0
@@ -370,7 +393,7 @@ export const profile = {
     },
 
     addRelatedLegalPerson(state) {
-      state.fullFormProfile.Guarantee.RelatedLegalPerson.push({
+      state.fullFormProfile.Guarantee.RelatedLegalPerson.items.push({
         Address: {
           Building: "",
           OwnershipType: null,
@@ -386,11 +409,13 @@ export const profile = {
           Office: "", // ???
           AddressType: null
         },
-        PhoneList: [
-          {
-            Number: 998
-          }
-        ],
+        PhoneList: {
+          items: [
+            {
+              Number: 998
+            }
+          ]
+        },
         INN: "",
         Name: "",
         Sum: 0, // Надо добавить!
@@ -444,21 +469,21 @@ export const profile = {
     },
 
     removeItem(state, payload) {
-      state.fullFormProfile.Customer[payload.item].splice(payload.index, 1);
+      state.fullFormProfile.Customer[payload.item].items.splice(payload.index, 1);
     },
 
     removeGuarantee(state, payload) {
-      state.fullFormProfile.Guarantee[payload.item].splice(payload.index, 1);
+      state.fullFormProfile.Guarantee[payload.item].items.splice(payload.index, 1);
     },
 
     removePhoneGuarantee(state, payload) {
       state.fullFormProfile.Guarantee[payload.item][
         payload.index
-      ].PhoneList.splice(payload.index2, 1);
+      ].PhoneList.items.splice(payload.index2, 1);
     },
 
     addRelative(state) {
-      state.fullFormProfile.Customer.Relatives.push({
+      state.fullFormProfile.Customer.Relatives.items.push({
         FirstName: "",
         FullName: "",
         FamilyConnectionType: null,
@@ -479,7 +504,7 @@ export const profile = {
     },
 
     addRegistration(state, AddressType) {
-      state.fullFormProfile.Customer.AddressList.push({
+      state.fullFormProfile.Customer.AddressList.items.push({
         Building: "",
         OwnershipType: null,
         HouseType: "",
@@ -499,31 +524,33 @@ export const profile = {
     addComment(state, payload) {
       console.log('comment', payload)
       debugger
-      if (Array.isArray(state.fullFormProfile[payload.commentBlock])) {
-        state.fullFormProfile[payload.commentBlock].push(payload.comment)
-      } else {
-        state.fullFormProfile[payload.commentBlock].items.push(payload.comment)
-      }
+      state.fullFormProfile[payload.commentBlock].items.push(payload.comment)
     },
 
     removeRegistration(state, payload) {
-      const idx = state.fullFormProfile.Customer.AddressList.findIndex(
+      const idx = state.fullFormProfile.Customer.AddressList.items.findIndex(
         item => item.AddressType === payload.item
       );
       if (idx !== -1) {
-        state.fullFormProfile.Customer.AddressList.splice(idx, 1);
+        state.fullFormProfile.Customer.AddressList.items.splice(idx, 1);
       }
     },
 
     removeProperty(state, payload) {
-      state.fullFormProfile.Customer.PropertyInformation[payload.item].splice(
+      state.fullFormProfile.Customer.PropertyInformation[payload.item].items.splice(
         payload.index,
         1
       );
     },
 
-    setDictionaries(state, payload) {
-      state.dictionaries = payload;
+    setDictionaries(state, dictionaries) {
+      for (let item in dictionaries) {
+        for (let value of dictionaries[item].items) {
+          value.value = Number(value.value)
+        }
+      }
+      sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries))
+      state.dictionaries = dictionaries;
     },
 
     resetDataFullFormProfile(state) {
@@ -536,19 +563,21 @@ export const profile = {
         BODecision: "",
         FinalDecision: "",
         Date: "",
-        BOLogin: "",
+        BOLogin: "", // логин авторизованного пользователя
         Department: "",
         ClientManagerLogin: "",
-        CreditCommiteeDecisions: [
-          // {
-          //   Comment: "",
-          //   MemberOfCCFIO: "",
-          //   id: 0,
-          //   Login: "",
-          //   isApproved: false
-          // }
-        ],
-
+        CreditCommiteeDecisions: {
+          items: [
+            // {
+            //   Comment: "",
+            //   MemberOfCCFIO: "",
+            //   id: 0,
+            //   Login: "",
+            //   isApproved: false
+            // }
+          ]
+        },
+  
         Customer: {
           DigID: false,
           Email: "",
@@ -561,7 +590,7 @@ export const profile = {
           PINPP: "",
           ResidentFlag: false,
           Gender: null,
-
+  
           Document: {
             Series: "",
             Number: null,
@@ -572,57 +601,63 @@ export const profile = {
             DocLink: "",
             DocumentName: 0
           },
-
+  
           Education: null,
-          PhoneList: [
-            {
-              Number: ""
-            }
-          ],
-
-          AddressList: [
-            {
-              Building: "",
-              OwnershipType: null,
-              HouseType: "",
-              PostalCode: "",
-              Region: null,
-              District: "", //Надо добавить!!!
-              Street: "",
-              Block: "",
-              House: "",
-              City: "",
-              Apartment: "",
-              AddressType: "1"
-            }
-          ],
-
+          PhoneList: {
+            items: [
+              {
+                Number: ""
+              }
+            ]
+          },
+  
+          AddressList: {
+            items: [
+              {
+                Building: "",
+                OwnershipType: null,
+                HouseType: "",
+                PostalCode: "",
+                Region: null,
+                District: "", 
+                Street: "",
+                Block: "",
+                House: "",
+                City: "",
+                Apartment: "",
+                AddressType: '1'
+              }
+            ]
+          },
+  
           MaritalStatus: false,
           hasChildren: false,
           // "ChildrenNum": 0,
           UnderAgeChildrenNum: null,
-
-          Relatives: [
-            {
-              FirstName: "",
-              FullName: "",
-              FamilyConnectionType: null,
-              LastName: "",
-              MiddleName: "",
-              BirthDate: "",
-              Document: {
-                Series: "",
-                Number: null,
-                ExpirationDate: "",
-                GivenDate: "",
-                GUID: "",
-                Country: "",
-                DocLink: "",
-                DocumentName: 0
+  
+          Relatives: {
+            items: [
+              {
+                FirstName: "",
+                FullName: "",
+                FamilyConnectionType: null,
+                LastName: "",
+                MiddleName: "",
+                BirthDate: "",
+                Document: {
+                  Series: "",
+                  Number: null,
+                  ExpirationDate: "",
+                  GivenDate: "",
+                  GUID: "",
+                  Country: "",
+                  DocLink: "",
+                  DocumentName: 0
+                }
               }
-            }
-          ],
-
+            ]
+          },
+  
           JobInfo: {
             employerActivityType: null, //вид деятельности организации
             positionType: null, // Категория занимаемой должности
@@ -635,7 +670,7 @@ export const profile = {
             type: "", // вид деятельности
             lastJobExperienceMonths: null // стаж на последнем месте работы
           },
-
+  
           // eжемесячные расходы
           MonthlyExpenses: {
             recurringExpenses: 0,
@@ -650,62 +685,82 @@ export const profile = {
               sum: 0
             }
           },
-
+  
           PropertyInformation: {
-            Realty_new: [],
-            Transport_new: []
+            Realty_new: {
+              items: []
+            },
+            Transport_new: {
+              items: []
+            }
           }
         },
-
+  
         Guarantee: {
-          Insurance: [],
-          RelatedLegalPerson: [],
-          RelatedPerson: []
+          Insurance: {
+            items: []
+          },
+          RelatedLegalPerson: {
+            items: []
+          },
+          RelatedPerson: {
+            items: []
+          }
         },
-
+  
         LoanInfo: {
           LoanProduct: null, // Кредитный продукт
           Sum: null, // Запрашиваемая сумма кредита
           Currency: "СУМ", // Валюта
           RepaymentType: null, // Тип пошагового кредита
           LoanType: null, // Вид кредита
-
+  
           MinInterestRate: null, // Процентаня ставка по кредиту (минимальная)
           MaxInterestRate: null, // Процентная ставка по кредиту (максимальная)
-
+  
           MaxDefferalRepaymentPeriod: null, // Льготный период по погашению кредита
-
+  
           ConvenientRepaymentTerm: null, // Удобный срок погашения в мес
-
+  
           MaxTermInMonths: null, // Максимальное количество месяцев на кредит
           MinTermInMonths: null, // Минимальное количество месяцев на кредит
-
+  
           InitialPayment: null, // Первоначальный взнос
-
+  
           MaxInitialPaymentPercent: null, // Процент первоначального взноса (максимальный)
           MinInitialPaymentPercent: null, // Процент первоначального взноса (минимальный)
-
+  
           LoanPurpose: "", // Цель кредитования
-
+  
           SellerName: "", // Наименование продавца
-
+  
           ProductName: "", // Наименование товара/работы/услуги
-
+  
           FundingSource: "", // Источник финансирования
-
+  
           FacilitiesForRepaymentDate: false
         },
-
-        ApplicationComment: [
-          // {
-          //   Comment: "",
-          //   Type: "",
-          //   CommentPerson: "",
-          //   id: 0,
-          //   CommentDate: "2020-03-18T09:00:23.928+05:00"
-          // }
-        ],
-        AttachedDocuments: []
+  
+        ApplicationComment: {
+          items: [
+            // {
+            //   Comment: "",
+            //   Type: "",
+            //   CommentPerson: "",
+            //   id: 0,
+            //   CommentDate: "2020-03-18T09:00:23.928+05:00"
+            // }
+          ]
+        },
+        AttachedDocuments: {
+          items: [
+            // {
+            //   "id": null,
+            //   "DocLink": "",
+            //   "DocumentName": "1"
+            // }
+          ]
+        }
       };
     }
   },

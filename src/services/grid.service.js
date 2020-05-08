@@ -18,6 +18,8 @@ const GridService = {
           }
         })
         .onOk(res => {
+          console.log('res', res)
+          debugger
           if (res.data.status == 1) {
             NotifyService.showSuccessMessage(res.data.message);
             resolve(true);

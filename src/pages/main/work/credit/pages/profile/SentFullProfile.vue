@@ -25,9 +25,8 @@ export default {
   },
   methods: {
     async sentFullProfile() {
-      // комментарий
 
-      console.log("fullProfile", this.$store.state.profile.fullProfile);
+      console.log("fullProfile", this.$store.state.profile.fullFormProfile);
         const {
           Status,
           ApplicationID,
@@ -47,6 +46,12 @@ export default {
           ApplicationComment,
           AttachedDocuments,
         } = this.fullProfile;
+
+        console.log('LoanInfo', LoanInfo)
+
+        // Потом удалить, когда все будет в числовом типе
+        LoanInfo.LoanPurpose = String(LoanInfo.LoanPurpose)
+        LoanInfo.FundingSource = String(LoanInfo.FundingSource)
 
         // удалил из объекта - Date!!!
         const data = {

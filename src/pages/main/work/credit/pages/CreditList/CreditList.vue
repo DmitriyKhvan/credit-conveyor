@@ -176,9 +176,8 @@
 
           <td class="text-left applicationNumber applicationRow">
             <router-link
-              v-if="userRole === 'CreditManager'"
               :to="{
-                name: 'Profile',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -188,20 +187,7 @@
                 }
               }"
             >{{ credit.applicationNumber }}</router-link>
-
-            <router-link
-              v-else
-              :to="{
-                name: 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-            >{{ credit.applicationNumber }}</router-link>
+            
           </td>
 
           <td class="text-left client applicationRow">
@@ -456,8 +442,19 @@ export default {
       });
     },
 
-    creditSign() {
+    async creditSign() {
       console.log('creditSign')
+      const confirmCreditData = {
+        output: [
+          {
+            name: "confirm",
+            data: true
+          }
+        ]
+      }
+      try {
+        await this.$store.dispatch("credits/confirmationCredit", confirmCreditData)
+      } catch(error){}
     }
   }
 };

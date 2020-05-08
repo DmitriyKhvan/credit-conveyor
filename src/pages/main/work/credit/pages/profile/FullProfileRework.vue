@@ -204,7 +204,7 @@
               <!-- <div class="col-3">8.1 Вид деятельности</div>
             <div class="col-9"></div> -->
 
-              <template v-if="Customer.JobInfo.type == 1">
+              <template v-if="Customer.JobInfo.type == '1'">
                 <div class="col-12 profileSubTitle">
                   8.1 {{ dictionaries.MainWorkType.items[0].label }}
                 </div>
@@ -230,7 +230,7 @@
                 <div class="col-9">
                   {{
                     dictionaries.jobPeriods.items.find(
-                      i => i.value == Customer.JobInfo.lastJobExperienceMonths
+                      i => i.value === Customer.JobInfo.lastJobExperienceMonths
                     ).label
                   }}
                 </div>
@@ -238,7 +238,7 @@
                 <div class="col-9">
                   {{
                     dictionaries.jobPeriods.items.find(
-                      i => i.value == Customer.JobInfo.totalJobExperienceMonths
+                      i => i.value === Customer.JobInfo.totalJobExperienceMonths
                     ).label
                   }}
                 </div>
@@ -246,11 +246,11 @@
 
               <template
                 v-else-if="
-                  Customer.JobInfo.type == 2 || Customer.JobInfo.type == 3
+                  Customer.JobInfo.type == '2' || Customer.JobInfo.type == '3'
                 "
               >
                 <div class="col-12 profileSubTitle">
-                  <template v-if="Customer.JobInfo.type == 2">
+                  <template v-if="Customer.JobInfo.type == '2'">
                     8.1 {{ dictionaries.MainWorkType.items[1].label }}
                   </template>
                   <template v-else>
@@ -261,7 +261,7 @@
                 <div class="col-9">
                   {{
                     dictionaries.BusinessType.items.find(
-                      i => i.value == Customer.JobInfo.employerActivityType
+                      i => i.value === Customer.JobInfo.employerActivityType
                     ).label
                   }}
                 </div>
@@ -269,7 +269,7 @@
                 <div class="col-9">
                   {{
                     dictionaries.jobPeriods.items.find(
-                      i => i.value == Customer.JobInfo.activeYears
+                      i => i.value === Customer.JobInfo.activeYears
                     ).label
                   }}
                 </div>
@@ -306,14 +306,14 @@
                   v-if="
                     profile.options.confirmation.find(
                       i =>
-                        i.value == Customer.MonthlyIncome.hasAdditionalIncome
+                        i.value === Customer.MonthlyIncome.hasAdditionalIncome
                     )
                   "
                 >
                   {{
                     profile.options.confirmation.find(
                       i =>
-                        i.value == Customer.MonthlyIncome.hasAdditionalIncome
+                        i.value === Customer.MonthlyIncome.hasAdditionalIncome
                     ).label
                   }}
                 </template>
@@ -347,7 +347,7 @@
                   <div class="col-9">
                     {{
                       dictionaries.PropertyType.items.find(
-                        i => i.value == property.PropertyType
+                        i => i.value === property.PropertyType
                       ).label
                     }}
                   </div>
@@ -355,7 +355,7 @@
                   <div class="col-9">
                     {{
                       dictionaries.Region.items.find(
-                        i => i.value == property.Region
+                        i => i.value === property.Region
                       ).label
                     }}
                   </div>
@@ -382,7 +382,7 @@
                   <div class="col-9">
                     {{
                       dictionaries.VehicleType.items.find(
-                        i => i.value == vehicle.VehicleType
+                        i => i.value === vehicle.VehicleType
                       ).label
                     }}
                   </div>
@@ -417,7 +417,7 @@
                     <div class="col-9">
                       {{
                         dictionaries.ClientRelationType.items.find(
-                          i => i.value == guarantee.ClientRelation
+                          i => i.value === guarantee.ClientRelation
                         ).label
                       }}
                     </div>
@@ -431,7 +431,7 @@
                     <div class="col-9">
                       {{
                         dictionaries.ClientRelationType.items.find(
-                          i => i.value == guarantee.ClientRelation
+                          i => i.value === guarantee.ClientRelation
                         ).label
                       }}
                     </div>
@@ -447,7 +447,7 @@
                     </template> -->
                       {{
                         profile.options.confirmation.find(
-                          i => i.value == guarantee.Resident
+                          i => i.value === guarantee.Resident
                         ).label
                       }}
                     </div>
@@ -471,7 +471,7 @@
                     <div class="col-9">
                       {{
                         dictionaries.Region.items.find(
-                          i => i.value == guarantee.Address.Region
+                          i => i.value === guarantee.Address.Region
                         ).label
                       }}
                     </div>
@@ -523,7 +523,7 @@
                     <div class="col-9">
                       {{
                         dictionaries.Region.items.find(
-                          i => i.value == guarantee.Address.Region
+                          i => i.value === guarantee.Address.Region
                         ).label
                       }}
                     </div>
@@ -595,7 +595,7 @@
               <div class="col-9">
                 {{
                   profile.options.RepaymentType.find(
-                    i => i.value == fullProfile.LoanInfo.RepaymentType
+                    i => i.value === fullProfile.LoanInfo.RepaymentType
                   ).label
                 }}
               </div>
@@ -632,7 +632,7 @@
               <div class="col-9">
                 {{
                   dictionaries.LoanPurpose.items.find(
-                    i => i.value == fullProfile.LoanInfo.LoanPurpose
+                    i => i.value === fullProfile.LoanInfo.LoanPurpose
                   ).label
                 }}
               </div>
