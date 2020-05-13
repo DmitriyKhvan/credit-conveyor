@@ -51,14 +51,14 @@ export default {
   name: "credit",
   computed: {
     error() {
-      console.log('computed', this.$store.getters.error)
-      return this.$store.getters.error
+      console.log('computed', this.$store.getters["credits/message"])
+      return this.$store.getters["credits/messageId"]
     }
   },
   watch: {
     error(serverError) {   
-      this.$store.commit('toggleErrorBar', true)
-      console.log('watch', this.$store.getters.errorBar)
+      this.$store.commit("credits/toggleMessageBar", true)
+      console.log('watch', this.$store.getters["credits/messageBar"])
     }
   },
 

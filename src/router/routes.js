@@ -1,12 +1,13 @@
 const MainContainer = () => import("layouts/Main");
 const LoginPage = () => import("pages/main/auth/Login");
 const HomePage = () => import("pages/main/home/Home");
-//const ChatPage = () => import("pages/main/chat/Chat");
+
 const Page404 = () => import("pages/extras/Error404");
 
 // Admin
 const AdminPage = () => import("pages/main/admin/admin");
 const Users = () => import("pages/main/admin/users/Users");
+const CreditUsers = () => import("pages/main/admin/creditUsers/CreditUsers");
 const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
 const Moderators = () => import("pages/main/admin/moderators/Moderators");
@@ -17,7 +18,10 @@ const SelfDevPage = () => import("pages/main/admin/self_dev/Index");
 const WorkPage = () => import("pages/main/work/Work");
 const Assistant = () =>
   import("pages/main/work/assistant/Assistant.vue");
-// chancellary  
+const Profile = () => import("pages/main/profile/Profile.vue");
+const MyData = () => import("pages/main/profile/mydata/MyData.vue");
+const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue");
+// chancellary
 const Chancellary = () =>
   import("pages/main/work/kanselariya/Chancellary.vue");
 const ChanRegistration = () =>
@@ -37,12 +41,14 @@ const CreditReg = () =>
   );
 const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
+const CreditProfileRework = () =>
+  import("pages/main/work/credit/pages/profile/ProfileRework.vue");
 const CreditApplications = () =>
-  import("pages/main/work/credit/pages/list/Applications.vue");
+  import("pages/main/work/credit/pages/CreditList/Applications.vue");
 const CreditTasks = () =>
-  import("pages/main/work/credit/pages/list/Tasks.vue");
+  import("pages/main/work/credit/pages/CreditList/Tasks.vue");
 const CreditTask = () =>
-  import("pages/main/work/credit/pages/list/Task.vue");
+  import("pages/main/work/credit/pages/CreditList/Task.vue");
 
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
@@ -53,6 +59,7 @@ const Devices = () => import("pages/main/it/devices/Devices");
 const DevicesAccounting = () => import("pages/main/it/accounting/Accounting");
 const DevicesHistory = () => import("pages/main/it/history/History");
 const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
+
 // Education
 const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
 const QuestionPage = () =>
@@ -67,6 +74,7 @@ const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 //Chat
 const ChatIndexPage = () => import('pages/main/chat/Index');
 const Notifications = () => import('pages/main/chat/notification/Notification');
+const ChatPage = () => import("pages/main/chat/Chat");
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
@@ -134,10 +142,10 @@ const routes = [{
         component: CreditTasks
       },
       {
-        path: "sub/task/:id",
+        path: "task/:id",
         name: "CreditTask",
-        component: CreditTask
-        //beforeEnter: ifAuthenticated,
+        component: CreditTask,
+        beforeEnter: ifAuthenticated,
       },
       {
         path: "registration",
@@ -145,9 +153,15 @@ const routes = [{
         component: CreditReg
       },
       {
-        path: "sub/profile",
+        path: "profile",
         name: "Profile",
         component: CreditProfile,
+        beforeEnter: ifAuthenticated
+      },
+      {
+        path: "profile/:id",
+        name: "ProfileRework",
+        component: CreditProfileRework,
         beforeEnter: ifAuthenticated
       }
       ]
@@ -162,6 +176,11 @@ const routes = [{
       path: "users",
       name: "Users List",
       component: Users
+    },
+    {
+      path: "creditUsers",
+      name: "Credit Users List",
+      component: CreditUsers
     },
     {
       path: "roles",
@@ -222,6 +241,22 @@ const routes = [{
     }]
   },
   {
+    path: "profile",
+    name: "Profile Page",
+    component: Profile,
+      children: [{
+        path: "mydata",
+        name: "My Data",
+        component: MyData
+      },
+      {
+        path: "myfinance",
+        name: "My Finance",
+        component: MyFinance
+      },
+    ]
+  },
+  {
     path: "it",
     name: "IT section",
     component: It,
@@ -255,7 +290,14 @@ const routes = [{
       path: "notification",
       name: "Notifications",
       component: Notifications
-    }]
+    },
+    {
+      path: "mainchat",
+      name: "Main Chat",
+      component: ChatPage
+    },
+
+    ]
   },
   {
     path: "selfdev",
@@ -275,6 +317,7 @@ const routes = [{
   }
   ]
 },
+
 {
   path: "/login",
   name: "Login Page",
@@ -284,6 +327,7 @@ const routes = [{
     onlyWhenLoggedOut: true
   }
 },
+
 {
   path: "/404",
   name: "Page404",

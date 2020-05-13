@@ -1,32 +1,74 @@
 <template>
-  <q-layout>
-    <q-page-container>
-      <q-tabs inline-label class="bg-primary text-white shadow-2">
-        <!-- The tabs for panels-->
-        <router-link to="/admin/selfdev/topicPage" style="text-decoration:none;color:white">
-          <q-tab name="EditTopic" icon="play_for_work">{{$t('tables.education.addEditTopic')}}</q-tab>
-        </router-link>
+  <div class="tabsCol">
+    <div class="row">
+      <div class="col-12 q-pa-lg">
+        <q-tabs
+          v-model="tab"
+          dense
+          class="bg-grey-3 text-black"
+          active-color="text-white"
+          indicator-color="primary"
+          align="justify"
+          narrow-indicator
+          inline-label
+        >
+          <q-tab name="topics" icon="personal_video">{{$t('tables.education.addEditTopic')}}</q-tab>
+          <q-tab name="questions" icon="layers">{{$t('tables.education.addEditQuestion')}}</q-tab>
+          <q-tab name="tests" icon="dvr">{{$t('tables.education.addEditTest')}}</q-tab>
+        </q-tabs>
 
-        <router-link to="/admin/selfdev/questionPage" style="text-decoration:none;color:white">
-          <q-tab
-            name="EditQuestions"
-            icon="format_indent_increase"
-          >{{$t('tables.education.addEditQuestion')}}</q-tab>
-        </router-link>
+        <q-separator />
 
-        <router-link to="/admin/selfdev/testPage" style="text-decoration:none;color:white">
-          <q-tab name="EditTest" icon="event">{{$t('tables.education.addEditTest')}}</q-tab>
-        </router-link>
+        <q-tab-panels v-model="tab" animated>
+          <q-tab-panel name="topics">
+            <topics />
+          </q-tab-panel>
 
-        <router-link to="/admin/selfdev/monitoringPage" style="text-decoration:none;color:white">
-          <q-tab name="Monitoring" icon="show_chart">{{$t('tables.education.monitoring')}}</q-tab>
-        </router-link>
-      </q-tabs>
-      <router-view></router-view>
-    </q-page-container>
-  </q-layout>
+          <q-tab-panel name="questions">
+            <questions />
+          </q-tab-panel>
+
+          <q-tab-panel name="tests">
+            <tests />
+          </q-tab-panel>
+        </q-tab-panels>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-export default [];
+import Topics from "./topics/Topics";
+import Tests from "./tests/Tests";
+import Questions from "./questions/Questions";
+
+export default {
+  components: {
+    Topics,
+    Tests,
+    Questions
+  },
+  data() {
+    return {
+      tab: "topics"
+    };
+  }
+};
 </script>
+
+<style scoped>
+.tabsCol .q-field {
+  border: 1px #ccc solid;
+  padding-left: 10px;
+}
+.tabsCol .q-tab--active {
+  background: #2196f3;
+  color: #fff;
+}
+.tabsCol .sortable {
+  color: #2196f3;
+}
+.tabsCol .q-table {
+  border-top: 1px #2196f3 solid;
+}
+</style>

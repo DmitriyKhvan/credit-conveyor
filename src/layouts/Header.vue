@@ -127,7 +127,6 @@ export default {
       this.$store.dispatch("dicts/setCountNotifications", 0);
       this.$store.getters["dicts/receivedNotifications"].forEach(element => {
         if (element.status == 0) {
-          element.status = 1;
           let statusModel = {
             id: element.id,
             status: 1

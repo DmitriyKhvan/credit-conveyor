@@ -74,7 +74,8 @@
                 <b>{{resNotMarked}}</b>
               </div>
               <div class="col-6">
-                <GChart type="ColumnChart" :data="chartData" :options="chartOptions" />
+
+                <MyGraf :tables="chartData"></MyGraf>
               </div>
             </div>
           </div>
@@ -129,7 +130,8 @@
   </div>
 </template>
 <script>
-import { GChart } from "vue-google-charts";
+
+import MyGraf from "../home/components/graf";
 import UserService from "../../../services/user.service";
 
 export default {
@@ -174,14 +176,13 @@ export default {
       return this.resResult.filter(e => e === null).length;
     },
     chartData() {
-      return [
-        // ["Year", "Правильно", "Неправильно", "Не ответил",],
-        // ["", 17, 6, 2],
-        ["", "", { role: "style" }],
-        ["", this.resRight, "red"],
-        ["", this.resWrong, "green"],
-        ["", this.resNotMarked, "grey"]
-      ];
+      return {
+         graf:[
+          [this.resRight, this.resWrong, this.resNotMarked]
+        ],
+        // names: ['Правильно', 'Не верно', 'Не отмечано'],
+        heightGlobalBlock: 100,
+      }
     }
   },
   methods: {
@@ -207,16 +208,16 @@ export default {
     console.log("store", this.$store.state.education);
   },
   components: {
-    GChart
+    MyGraf
   }
 };
 </script>
 
 <style>
-.topicBlock .cardVisible {
+/* .topicBlock .cardVisible {
   border-bottom: 1px blue solid;
   padding-bottom: 10px;
-}
+} */
 .topicBlock .completeBlockBg {
   border: 1px #ccc solid;
 }

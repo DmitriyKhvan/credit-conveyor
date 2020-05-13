@@ -73,29 +73,26 @@
             <div class="text-h6">VARIANTS</div>
           </div>
 
-          <div class="row">
-            <!--(v, index) in $v.people.$each.$iter-->
-            <table>
-              <tr v-for="(items, index) in details.variants" :key="index">
-                <td>
-                  <q-input
-                    outlined
-                    clearable
-                    color="purple-12"
-                    class="col-xs-12 col-sm-12 col-md-12"
-                    v-model="details.variants[index].answer_text"
-                    :label="$t('tables.education.textVariant')"
-                    lazy-rules
-                  />
-                </td>
-                <td>
-                  <q-radio v-model="shape" :val="index" v-on:click.native="chooseRightAnswer()" />
-                </td>
-                <td>
-                  <q-btn v-if="index>2" color="red" icon="delete" @click="removeElement(index)" />
-                </td>
-              </tr>
-            </table>
+          <!--(v, index) in $v.people.$each.$iter-->
+
+          <div v-for="(items, index) in details.variants" :key="index" class="row">
+            <div class="col-10">
+              <q-input
+                outlined
+                class="col-xs-12 col-sm-6 col-md-6"
+                clearable
+                color="purple-12"
+                v-model="details.variants[index].answer_text"
+                :label="$t('tables.education.textVariant')"
+                lazy-rules
+              />
+            </div>
+            <div class="col-1">
+              <q-radio v-model="shape" :val="index" v-on:click.native="chooseRightAnswer()" />
+            </div>
+            <div class="col-1">
+              <q-btn v-if="variantCount>3" color="red" icon="delete" @click="removeElement(index)" />
+            </div>
           </div>
 
           <div class="row">
@@ -211,6 +208,11 @@ export default {
       }
     }
     this.variantAmount = this.details.variants.length;
+  },
+  computed: {
+    variantCount() {
+      return this.variantAmount;
+    }
   },
   methods: {
     removeElement(index) {
