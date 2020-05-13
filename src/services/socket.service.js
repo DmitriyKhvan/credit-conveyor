@@ -12,7 +12,7 @@ const SocketService = {
 
   runAllSocketListeners() {
     this.runUsersCounter();
-    console.log(store);
+    console.log('runUsersCounter', store);
   },
   runUsersCounter() {
     let socket = store.getters["socket/getSocket"];
@@ -29,7 +29,11 @@ const SocketService = {
     this.runUserConnect(socket);
     this.runUserDisconnect(socket);
     this.runRemoveUser(socket);
+    this.runGroup(socket, empId)
+    this.runChatList(socket, empId)
 
+    socket.emit("chat/all", empId)
+    socket.emit("online", empId);
     store.dispatch("socket/setOnline", true);
     console.log("user is online");
   },
@@ -101,6 +105,9 @@ const SocketService = {
     let socket = store.getters["socket/getSocket"];
     //console.log(usr);
     socket.emit("uremove", usr);
-  }
+  },
+  runChatList(socket, empId) { },
+  runGroup(socket, empId) { }
 };
+
 export default SocketService;
