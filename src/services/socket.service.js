@@ -61,7 +61,7 @@ const SocketService = {
   runChat(socket, empId) {
     socket.on("chat", data => {
       console.log('chats',data)
-      
+      store.dispatch('addMessage', data)
       // logic...
     });
   },
@@ -69,7 +69,7 @@ const SocketService = {
     socket.on("chat/all", data => {
       console.log('List',data)
       store.dispatch('setChats', data)
-      
+
       // logic...
     });
   },

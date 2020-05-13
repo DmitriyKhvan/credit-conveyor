@@ -1,5 +1,5 @@
 <template>
-    
+
     <q-card  class="row q-ma-lg">
         <div class="col-8">
             <div class="row justify-between header q-pa-md">
@@ -10,7 +10,7 @@
 
                     </div>
                     <div v-else class="text-h6">{{titleChat}}</div>
-                    
+
                     <div class="text-caption"><i>35 участников</i></div>
                 </div>
                 <div class="col-1 text-right">
@@ -18,25 +18,58 @@
                 </div>
             </div>
 
-            <div class="q-pa-lg messagesList scroll" :style="{height: heightChat}">                
-                <div v-if="chatId">
+            <q-scroll-area ref='chat' class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
+                  <template v-if="chatId">
                     <div
-                        v-for="c in messages(chatId)"
-                        :key="c.id"
-                        >
-                        {{c.message}}
+                      v-for="c in messages(chatId)"
+                      :key="c.id"
+                      class="row q-mb-md"
+                    >
+                      <template v-if="emp_id === c.from_uid">
+                        <div class="col"></div>
+                        <div class="col-lg-5 col-md-8 message_my q-pa-md">
+                            <div class="q-pb-sm">
+                                {{c.message}}
+                            </div>
+                            <q-badge class="description_my">
+                                Вы
+                            </q-badge>
+                            <i>{{c.sent_at}}</i>
+                        </div>
+
+                        <div class="avatar_my self-end">
+                            <q-avatar>
+                                <img :src="getUserProfilePhotoUrl(emp_id)">
+                            </q-avatar>
+                        </div>
+                      </template>
+
+                      <template v-else>
+                        <div class="avatar self-end">
+                            <q-avatar>
+                                <img :src="getUserProfilePhotoUrl(c.from_uid)">
+                            </q-avatar>
+                        </div>
+                        <div class="col-lg-5 col-md-8 col-sm-8 message q-pa-md">
+                            <div class="q-pb-sm">
+                                {{c.message}}
+                            </div>
+                            <q-badge class="description">
+                                {{chatName(c.from_name)}}
+                            </q-badge>
+                            <i>{{c.sent_at}}</i>
+                        </div>
+                        <div class="col"></div>
+                      </template>
+
+
                     </div>
-                </div>
-                   
-                <!-- <div v-for="(msg, index) in chat" :key="index">
-                    <p>{{ msg.title }}</p>
-                    <p>{{ msg.body }}</p>
-                    <p>
-                        Sent by: {{ msg.sender_name }} at:
-                        {{ formattedDate(msg.sent_at) }}
-                    </p>
-                    <q-separator inset />
-                </div> -->
+                  </template>
+
+
+
+
+
 
                 <!-- <div class="row q-mb-md">
                     <div class="avatar self-end">
@@ -67,7 +100,7 @@
                         </q-badge>
                         <i>10 минут назад</i>
                     </div>
-                    
+
                     <div class="avatar_my self-end">
                         <q-avatar>
                             <img src="https://cdn.quasar.dev/img/avatar.png">
@@ -75,43 +108,40 @@
                     </div>
                 </div> -->
 
-                <q-card class="mt-3" header="Form Data Result">
-                    <pre class="m-0">{{ form }}</pre>
-                </q-card>
 
-            </div>
+            </q-scroll-area>
 
-            <div class="row sendMesage">
-                <q-form @submit.prevent="sendMessage">
+            <div class=" sendMesage">
+                <q-form @submit.prevent="sendMessage" class="row">
                     <div class="col">
                         <q-input outlined dense v-model="form.message" label="Сообщение" />
                     </div>
-                    <label>Users:</label>
+                    <!-- <label>Users:</label>
                     <q-select
                         outlined
                         v-model="form.to_uid"
                         :options="userList"
-                        
+
                         stack-label
                         option-value="value"
                         option-label="text"
                         emit-value
                         map-options
-                    />
+                    /> -->
                     <div class="actionWidth text-center self-center"><q-btn icon="attach_file" flat/></div>
                     <div class="actionWidth self-center"><q-btn type="submit" icon="subdirectory_arrow_left" outline  /></div>
                 </q-form>
             </div>
-            
-        </div>
-        
-        <div class="col-4 q-pa-md rightBlock">           
 
-            <CRightBlock></CRightBlock>            
+        </div>
+
+        <div class="col-4 q-pa-md rightBlock">
+
+            <CRightBlock></CRightBlock>
 
         </div>
     </q-card>
-    
+
 </template>
 
 <script>
@@ -140,9 +170,9 @@ export default {
             message: "",
             form: {
                 chat_id: "",
-                message: "Тестовое сообщение",
+                message: "",
                 from_uid: null,
-                to_uid: null, 
+                to_uid: null,
                 status: 0,
                 sent_at: new Date()
             },
@@ -155,8 +185,11 @@ export default {
         sendMessage(e) {
             e.preventDefault();
             this.form.from_uid = this.emp_id
-            
+            this.form.chat_id = this.chatId
+            this.form.to_uid = this.toUid
+
             this.socket.emit("chat", this.form)
+            this.form.message = ''
         },
         formattedDate(date) {
             return commonUtils.formattedDate(date);
@@ -165,7 +198,56 @@ export default {
             let chat = this.allChats.find(el => el.chat_id === id)
             console.log('chatArr', chat.messages)
             return chat.messages
-        }
+        },
+        chatName(n){
+            let arr = n.split(' ')
+            let name = arr[0] + ' '
+            arr.forEach((el, i) => {
+                if(i !== 0 && i <= 2 && el !=='') {
+                    name += el[0] + '.'
+                }
+            });
+            return name
+        },
+        getUserProfilePhotoUrl(emp_id) {
+          return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
+        },
+        formatDate(date) {
+          // date = Date.parse(date)
+          // console.log(date)
+          let dayOfMonth = date.getDate();
+          let month = date.getMonth() + 1;
+          let year = date.getFullYear();
+          let hour = date.getHours();
+          let minutes = date.getMinutes();
+          let diffMs = new Date() - date;
+          let diffSec = Math.round(diffMs / 1000);
+          let diffMin = diffSec / 60;
+          let diffHour = diffMin / 60;
+
+          // форматирование
+          year = year.toString().slice(-2);
+          month = month < 10 ? '0' + month : month;
+          dayOfMonth = dayOfMonth < 10 ? '0' + dayOfMonth : dayOfMonth;
+          hour = hour < 10 ? '0' + hour : hour;
+          minutes = minutes < 10 ? '0' + minutes : minutes;
+
+          if (diffSec < 1) {
+            return 'прямо сейчас';
+          } else if (diffMin < 1) {
+            return `${diffSec} сек. назад`
+          } else if (diffHour < 1) {
+            return `${diffMin} мин. назад`
+          } else {
+            return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`
+          }
+        },
+        scrollToBottom () {
+            const scrollArea = this.$refs.chat
+            const scrollTarget = scrollArea.getScrollTarget();
+            const duration = 300; // ms - use 0 to instant scroll
+            scrollArea.setScrollPosition(scrollTarget.scrollHeight, duration);
+        },
     },
     computed: {
         ...mapGetters({
@@ -187,12 +269,16 @@ export default {
             return this.$store.getters.getActiveChat
         },
         allChats(){
-            
             return this.$store.getters.getChats
+        },
+        toUid(){
+          return this.$store.getters.getToUid
         }
 
     },
-    
+    updated() {
+            this.scrollToBottom()
+    },
     mounted() {
         this.$nextTick(() => {
             this.heightChat = height(eee) - 240 + 'px'
@@ -200,13 +286,15 @@ export default {
                this.heightChat = height(eee) - 240 + 'px'
             }
         })
-        
-        
+
+
+
+
 
         // // axios
         // //     .get("/chat/private")
         // //     .then(response => {
-        // //         console.log("chats", response.data);                
+        // //         console.log("chats", response.data);
         // //     })
         // //     .catch(error => {
         // //         console.log("error Chats");
@@ -214,7 +302,7 @@ export default {
 
         // this.socket.on("/chat/private", data => {
         //     console.log('DATA', data);
-            
+
         // });
     },
 }
