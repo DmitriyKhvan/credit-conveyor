@@ -23,17 +23,19 @@ const SocketService = {
   },
   runConnection(token) {
     let socket = store.getters["socket/getSocket"];
+    let empId = store.getters["auth/empId"]
+
     this.runNotifications(socket);
     this.runChat(socket);
     this.runOnline(socket, token);
     this.runUserConnect(socket);
     this.runUserDisconnect(socket);
     this.runRemoveUser(socket);
-    this.runGroup(socket, empId)
-    this.runChatList(socket, empId)
+    //this.runGroup(socket, empId)
+    //this.runChatList(socket, empId)
 
-    socket.emit("chat/all", empId)
-    socket.emit("online", empId);
+    //socket.emit("chat/all", empId)
+    //socket.emit("online", empId);
     store.dispatch("socket/setOnline", true);
     console.log("user is online");
   },
