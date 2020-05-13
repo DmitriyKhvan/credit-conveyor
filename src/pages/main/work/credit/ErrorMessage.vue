@@ -1,22 +1,22 @@
 <template>
-  <q-dialog v-model="errorBar" persistent>
+  <q-dialog v-model="messageBar" persistent>
     <q-card>
       <q-bar>
         <div>{{$t('common.message')}}</div>
 
         <q-space />
 
-        <q-btn dense flat icon="close" @click="redirect">
+        <q-btn dense flat icon="close" @click="closeBtn">
           <q-tooltip>{{$t('actions.close')}}</q-tooltip>
         </q-btn>
       </q-bar>
 
       <q-card-section>
-        <p>{{ errorMessage }}</p>
+        <p>{{ message }}</p>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <p>{{$t('tables.work.credit.try_again')}}</p>
+        <!-- <p>{{$t('tables.work.credit.try_again')}}</p> -->
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -25,24 +25,18 @@
 <script>
 import message from "@/shared/utils/messages";
 export default {
-  data() {
-    return {
-      //bar: true
-    };
-  },
   methods: {
-    redirect() {
-      //this.$store.commit('clearError')
-      this.$store.commit("toggleErrorBar", false);
-      this.$router.push("/work/credit");
+    closeBtn() {
+      this.$store.commit("credits/toggleMessageBar", false);
+      // this.$router.push("/work/credit");
     }
   },
   computed: {
-    errorBar() {
-      return this.$store.getters.errorBar
+    messageBar() {
+      return this.$store.getters["credits/messageBar"]
     },
-    errorMessage() {
-      return message[this.$store.getters.error] || "Что-то пошло не так";
+    message() {
+      return message[this.$store.getters["credits/message"]] || "Что-то пошло не так";
     }
   }
 };

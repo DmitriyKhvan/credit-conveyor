@@ -502,7 +502,7 @@
               </div>
 
               <q-btn
-                v-if="address.AddressType == 2 || address.AddressType == 3"
+                v-if="address.AddressType == '2' || address.AddressType == '3'"
                 color="red"
                 label="Удалить"
                 @click="
@@ -516,42 +516,46 @@
               ></q-btn>
             </fieldset>
 
-            <template
-              v-if="
-                Customer.AddressList.items.findIndex(
-                  item => item.AddressType == 2
-                ) === -1
-              "
-            >
-              <h5 class="tab-content_title">
-                Данные по адресу фактического проживания отсутствуют
-              </h5>
+            <template v-if="Customer.AddressList.items">
 
-              <q-btn
-                color="primary"
-                label="Добавить адрес фактического проживания"
-                @click="addRegistration(2)"
-                class="addItem"
-              ></q-btn>
-            </template>
+              <template
+                v-if="
+                  Customer.AddressList.items.findIndex(
+                    item => item.AddressType == '2'
+                  ) === -1
+                "
+              >
+                <h5 class="tab-content_title">
+                  Данные по адресу фактического проживания отсутствуют
+                </h5>
 
-            <template
-              v-if="
-                Customer.AddressList.items.findIndex(
-                  item => item.AddressType == 3
-                ) === -1
-              "
-            >
-              <h5 class="tab-content_title">
-                Данные по адресу временной регистрации отсутствуют
-              </h5>
+                <q-btn
+                  color="primary"
+                  label="Добавить адрес фактического проживания"
+                  @click="addRegistration('2')"
+                  class="addItem"
+                ></q-btn>
+              </template>
 
-              <q-btn
-                color="primary"
-                label="Добавить адрес временной регистрации"
-                @click="addRegistration(3)"
-                class="addItem"
-              ></q-btn>
+              <template
+                v-if="
+                  Customer.AddressList.items.findIndex(
+                    item => item.AddressType == '3'
+                  ) === -1
+                "
+              >
+                <h5 class="tab-content_title">
+                  Данные по адресу временной регистрации отсутствуют
+                </h5>
+
+                <q-btn
+                  color="primary"
+                  label="Добавить адрес временной регистрации"
+                  @click="addRegistration('3')"
+                  class="addItem"
+                ></q-btn>
+              </template>
+
             </template>
           </div>
         </div>
@@ -1161,221 +1165,227 @@
             Сведения об имуществе
           </h4>
           <div class="tab-content" ref="tabContent">
-            <h5
-              v-if="!Customer.PropertyInformation.Realty_new.items.length"
-              class="tab-content_title"
-            >
-              Данные по недвижимости отсутствуют
-            </h5>
-            <fieldset
-              class="fieldset_block"
-              v-for="(property, index) of Customer.PropertyInformation
-                .Realty_new.items"
-              :key="'Realty_new' + index"
-            >
-              <legend class="legend_title">Недвижимость {{ index + 1 }}</legend>
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    ref="typeProperties"
-                    square
-                    outlined
-                    v-model="property.PropertyType"
-                    :options="dictionaries.PropertyType.items"
-                    dense
-                    label="Вид недвижимости"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите вид недвижимости']"
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
-                    ref="regionsProperties"
-                    square
-                    outlined
-                    v-model="property.Region"
-                    :options="dictionaries.Region.items"
-                    dense
-                    label="Регион / область"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите регион']"
-                    class="q-pb-sm"
-                  />
+            <template v-if="Customer.PropertyInformation.Realty_new.items">
+              <h5
+                v-if="!Customer.PropertyInformation.Realty_new.items.length"
+                class="tab-content_title"
+              >
+                Данные по недвижимости отсутствуют
+              </h5>
+              <fieldset
+                class="fieldset_block"
+                v-for="(property, index) of Customer.PropertyInformation
+                  .Realty_new.items"
+                :key="'Realty_new' + index"
+              >
+                <legend class="legend_title">Недвижимость {{ index + 1 }}</legend>
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      ref="typeProperties"
+                      square
+                      outlined
+                      v-model="property.PropertyType"
+                      :options="dictionaries.PropertyType.items"
+                      dense
+                      label="Вид недвижимости"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите вид недвижимости']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      ref="regionsProperties"
+                      square
+                      outlined
+                      v-model="property.Region"
+                      :options="dictionaries.Region.items"
+                      dense
+                      label="Регион / область"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите регион']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      ref="pricesProperties"
+                      square
+                      outlined
+                      v-model.number="property.MarketValue"
+                      type="number"
+                      dense
+                      label="Рыночная стоимость"
+                      lazy-rules
+                      :rules="[val => !!val || 'Поля должно быт заполнено']"
+                    />
+                  </div>
                 </div>
 
-                <div class="col-4">
-                  <q-input
-                    ref="pricesProperties"
-                    square
-                    outlined
-                    v-model.number="property.MarketValue"
-                    type="number"
-                    dense
-                    label="Рыночная стоимость"
-                    lazy-rules
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
-                  />
-                </div>
-              </div>
+                <q-btn
+                  color="red"
+                  label="Удалить"
+                  @click="
+                    confirmDeleteItem(
+                      'Недвижимость ' + (index + 1),
+                      removeProperty,
+                      'Realty_new',
+                      index
+                    )
+                  "
+                  class="removeItem"
+                ></q-btn>
+              </fieldset>
 
               <q-btn
-                color="red"
-                label="Удалить"
-                @click="
-                  confirmDeleteItem(
-                    'Недвижимость ' + (index + 1),
-                    removeProperty,
-                    'Realty_new',
-                    index
-                  )
-                "
-                class="removeItem"
+                color="primary"
+                label="Добавить недвижимость"
+                @click="addProperty"
+                class="addItem"
               ></q-btn>
-            </fieldset>
 
-            <q-btn
-              color="primary"
-              label="Добавить недвижимость"
-              @click="addProperty"
-              class="addItem"
-            ></q-btn>
+            </template>
 
             <!-- Vehicles -->
-            <h5
-              v-if="!Customer.PropertyInformation.Transport_new.items.length"
-              class="tab-content_title"
-            >
-              Данные по транспортным средствам отсутствуют
-            </h5>
-            <fieldset
-              class="fieldset_block"
-              v-for="(vehicle, index) of Customer.PropertyInformation
-                .Transport_new.items"
-              :key="'Transport_new' + index"
-            >
-              <legend class="legend_title">
-                Транспортное средство {{ index + 1 }}
-              </legend>
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    ref="typeVehicles"
-                    square
-                    outlined
-                    v-model="vehicle.VehicleType"
-                    :options="dictionaries.VehicleType.items"
-                    dense
-                    label="Вид транспортного средства"
-                    emit-value
-                    map-options
-                    :rules="[
-                      val => !!val || 'Выберите вид транспортного средства'
-                    ]"
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
+            <template v-if="Customer.PropertyInformation.Transport_new.items">
+              <h5
+                v-if="!Customer.PropertyInformation.Transport_new.items.length"
+                class="tab-content_title"
+              >
+                Данные по транспортным средствам отсутствуют
+              </h5>
+              <fieldset
+                class="fieldset_block"
+                v-for="(vehicle, index) of Customer.PropertyInformation
+                  .Transport_new.items"
+                :key="'Transport_new' + index"
+              >
+                <legend class="legend_title">
+                  Транспортное средство {{ index + 1 }}
+                </legend>
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      ref="typeVehicles"
+                      square
+                      outlined
+                      v-model="vehicle.VehicleType"
+                      :options="dictionaries.VehicleType.items"
+                      dense
+                      label="Вид транспортного средства"
+                      emit-value
+                      map-options
+                      :rules="[
+                        val => !!val || 'Выберите вид транспортного средства'
+                      ]"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="vehicleBrands"
+                      square
+                      outlined
+                      v-model="vehicle.transportBrand"
+                      dense
+                      label="Марка транспортного средства"
+                      lazy-rules
+                      :rules="[val => !!val || 'Поля должно быт заполнено']"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      ref="yearsOfIssue"
+                      square
+                      outlined
+                      v-model="vehicle.yearOfRelease"
+                      :options="options.yearsOfIssueVehicle"
+                      dense
+                      label="Год выпуска"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите год']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+
+                  <!-- <div class="col-4">
                   <q-input
-                    ref="vehicleBrands"
-                    square
-                    outlined
-                    v-model="vehicle.transportBrand"
-                    dense
-                    label="Марка транспортного средства"
-                    lazy-rules
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
                     ref="yearsOfIssue"
-                    square
                     outlined
-                    v-model="vehicle.yearOfRelease"
-                    :options="options.yearsOfIssueVehicle"
+                    square
                     dense
                     label="Год выпуска"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите год']"
-                    class="q-pb-sm"
-                  />
+                    v-model="vehicle.year"
+                    mask="####"
+                    lazy-rules
+                    :rules="[
+                      val => (val && val.length === 4) || 'Введите год выпуска'
+                    ]"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          transition-show="scale"
+                          transition-hide="scale"
+                          ref="qYearsOfIssue"
+                        >
+                          <q-date
+                            mask="YYYY"
+                            v-model="vehicle.year"
+                            disable-year-month="2000/1"
+                            
+                            @input="() => $refs.qYearsOfIssue[index].hide()"
+                          />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </div> -->
+                </div>
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="priceVehicles"
+                      square
+                      outlined
+                      v-model.number="vehicle.marketValue"
+                      type="number"
+                      dense
+                      label="Рыночная стоимость"
+                      lazy-rules
+                      :rules="[val => !!val || 'Введите рыночную стоимость']"
+                    />
+                  </div>
                 </div>
 
-                <!-- <div class="col-4">
-                <q-input
-                  ref="yearsOfIssue"
-                  outlined
-                  square
-                  dense
-                  label="Год выпуска"
-                  v-model="vehicle.year"
-                  mask="####"
-                  lazy-rules
-                  :rules="[
-                    val => (val && val.length === 4) || 'Введите год выпуска'
-                  ]"
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        transition-show="scale"
-                        transition-hide="scale"
-                        ref="qYearsOfIssue"
-                      >
-                        <q-date
-                          mask="YYYY"
-                          v-model="vehicle.year"
-                          disable-year-month="2000/1"
-                          
-                          @input="() => $refs.qYearsOfIssue[index].hide()"
-                        />
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div> -->
-              </div>
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="priceVehicles"
-                    square
-                    outlined
-                    v-model.number="vehicle.marketValue"
-                    type="number"
-                    dense
-                    label="Рыночная стоимость"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите рыночную стоимость']"
-                  />
-                </div>
-              </div>
+                <q-btn
+                  color="red"
+                  label="Удалить"
+                  @click="
+                    confirmDeleteItem(
+                      'Транспортное ' + (index + 1),
+                      removeProperty,
+                      'Transport_new',
+                      index
+                    )
+                  "
+                  class="removeItem"
+                ></q-btn>
+              </fieldset>
 
               <q-btn
-                color="red"
-                label="Удалить"
-                @click="
-                  confirmDeleteItem(
-                    'Транспортное ' + (index + 1),
-                    removeProperty,
-                    'Transport_new',
-                    index
-                  )
-                "
-                class="removeItem"
+                color="primary"
+                label="Добавить транспортное средство"
+                @click="addVehicle"
+                class="addItem"
               ></q-btn>
-            </fieldset>
 
-            <q-btn
-              color="primary"
-              label="Добавить транспортное средство"
-              @click="addVehicle"
-              class="addItem"
-            ></q-btn>
+            </template>
           </div>
         </div>
 
@@ -1389,685 +1399,795 @@
             Гарантии и поручительство
           </h4>
           <div class="tab-content" ref="tabContent">
-            <h5
-              v-if="!fullProfile.Guarantee.RelatedPerson.items.length"
-              class="tab-content_title"
-            >
-              Данные по физ. лицу отсутствуют
-            </h5>
 
-            <fieldset
-              class="fieldset_block"
-              v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson.items"
-              :key="'RelatedPerson' + index"
-            >
-              <legend class="legend_title">Физ. лицо {{ index + 1 }}</legend>
+            <template v-if="fullProfile.Guarantee.RelatedPerson.items">
+              <h5
+                v-if="!fullProfile.Guarantee.RelatedPerson.items.length"
+                class="tab-content_title"
+              >
+                Данные по физ. лицу отсутствуют
+              </h5>
 
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    ref="customersAttitude"
-                    square
-                    outlined
-                    v-model="guarantee.ClientRelation"
-                    :options="dictionaries.ClientRelationType.items"
-                    dense
-                    label="Отношение к клиенту"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите отношение к клиенту']"
-                    class="q-pb-sm"
-                  />
-                </div>
-
-                <div class="col-4">
-                  <q-input
-                    ref="priceGuarantees"
-                    square
-                    outlined
-                    v-model.number="guarantee.Sum"
-                    dense
-                    label="Сумма поручительства"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите сумму']"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="surnameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.LastName"
-                    dense
-                    label="Фамилия"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите фамилию']"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="nameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.FirstName"
-                    dense
-                    label="Имя"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите имя']"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="mnameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.MiddleName"
-                    dense
-                    label="Отчество"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите отчество']"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="birthdayGuarantees"
-                    outlined
-                    square
-                    dense
-                    label="Дата рождения"
-                    v-model="guarantee.BirthDate"
-                    mask="##.##.####"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 10) || 'Введите дату рождения'
-                    ]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          transition-show="scale"
-                          transition-hide="scale"
-                          ref="qDateBirthdayGuarantees"
-                        >
-                          <q-date
-                            mask="DD.MM.YYYY"
-                            v-model="guarantee.BirthDate"
-                            @input="hideDatepickerBirthdayGuarantees"
-                          />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="innGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.INN"
-                    dense
-                    label="ИНН"
-                    mask="#########"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="pinppGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.PINPP"
-                    dense
-                    label="ПИНФЛ"
-                    mask="##############"
-                    lazy-rules
-                    :rules="[
-                      val => (val && val.length === 14) || 'Введите ПНФЛ'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
-                    square
-                    outlined
-                    v-model="guarantee.Resident"
-                    :options="profile.options.confirmation"
-                    dense
-                    label="Резидентство"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="pasportSeriesGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Document.Series"
-                    dense
-                    label="Серия паспорта"
-                    mask="AA"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 2) || 'Введите Серию паспорта'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="pasportNumberGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Document.Number"
-                    dense
-                    label="Номер паспорта"
-                    mask="#######"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 7) || 'Введите Номер паспорта'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="pasportDateGuarantees"
-                    outlined
-                    square
-                    dense
-                    label="Дата выдачи паспорта"
-                    v-model="guarantee.Document.GivenDate"
-                    mask="##.##.####"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 10) ||
-                        'Введите дату выдачи паспорта'
-                    ]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          transition-show="scale"
-                          transition-hide="scale"
-                          ref="qDatePasportDateGuarantees"
-                        >
-                          <q-date
-                            mask="DD.MM.YYYY"
-                            v-model="guarantee.Document.GivenDate"
-                            @input="hideDatepickerPasportDateGuarantees"
-                          />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="pasportDateGuarantees"
-                    outlined
-                    square
-                    dense
-                    label="Дата окончания действия паспорта"
-                    v-model="guarantee.Document.ExpirationDate"
-                    mask="##.##.####"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 10) ||
-                        'Введите дату  окончания действия паспорта'
-                    ]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          transition-show="scale"
-                          transition-hide="scale"
-                          ref="qDatePasportDateGuarantees"
-                        >
-                          <q-date
-                            mask="DD.MM.YYYY"
-                            v-model="guarantee.Document.ExpirationDate"
-                            @input="hideDatepickerPasportDateGuarantees"
-                          />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="indexGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.PostalCode"
-                    dense
-                    label="Индекс"
-                    mask="######"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
-                    ref="regionGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Region"
-                    :options="dictionaries.Region.items"
-                    dense
-                    label="Регион/область"
-                    :rules="[val => !!val || 'Выберите регион/область']"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.City"
-                    dense
-                    label="Город"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.District"
-                    dense
-                    label="Район"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="streetGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Street"
-                    dense
-                    label="Улица / Мкр."
-                    :rules="[
-                      val => !!val || 'Введите наименование улицы / мкр.'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="houseNumberGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.House"
-                    dense
-                    label="Номер дома"
-                    :rules="[val => !!val || 'Введите номер дома']"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.Block"
-                    dense
-                    label="Корпус"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.Building"
-                    dense
-                    label="Строение"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.Apartment"
-                    dense
-                    label="Номер квартиры"
-                  />
-                </div>
-              </div>
-
-              <!-- phone -->
               <fieldset
                 class="fieldset_block"
-                v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
-                :key="'RelatedPerson' + phoneIndex"
+                v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson.items"
+                :key="'RelatedPerson' + index"
               >
-                <legend class="legend_title">
-                  Телефон {{ phoneIndex + 1 }}
-                </legend>
+                <legend class="legend_title">Физ. лицо {{ index + 1 }}</legend>
+
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
-                    <q-input
-                      ref="phonesGuarantees"
+                    <q-select
+                      ref="customersAttitude"
                       square
                       outlined
-                      v-model="phone.Number"
+                      v-model="guarantee.ClientRelation"
+                      :options="dictionaries.ClientRelationType.items"
                       dense
-                      label="Тел. номер"
-                      mask="+############"
+                      label="Отношение к клиенту"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите отношение к клиенту']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      ref="priceGuarantees"
+                      square
+                      outlined
+                      v-model.number="guarantee.Sum"
+                      dense
+                      label="Сумма поручительства"
                       lazy-rules
-                      :rules="[
-                        val =>
-                          (val && val.length === 13) || 'Введите номер телефона'
-                      ]"
+                      :rules="[val => !!val || 'Введите сумму']"
                     />
                   </div>
                 </div>
 
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="surnameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.LastName"
+                      dense
+                      label="Фамилия"
+                      lazy-rules
+                      :rules="[val => !!val || 'Введите фамилию']"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="nameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.FirstName"
+                      dense
+                      label="Имя"
+                      lazy-rules
+                      :rules="[val => !!val || 'Введите имя']"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="mnameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.MiddleName"
+                      dense
+                      label="Отчество"
+                      lazy-rules
+                      :rules="[val => !!val || 'Введите отчество']"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="birthdayGuarantees"
+                      outlined
+                      square
+                      dense
+                      label="Дата рождения"
+                      v-model="guarantee.BirthDate"
+                      mask="##.##.####"
+                      lazy-rules
+                      :rules="[
+                        val =>
+                          (val && val.length === 10) || 'Введите дату рождения'
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            transition-show="scale"
+                            transition-hide="scale"
+                            ref="qDateBirthdayGuarantees"
+                          >
+                            <q-date
+                              mask="DD.MM.YYYY"
+                              v-model="guarantee.BirthDate"
+                              @input="hideDatepickerBirthdayGuarantees"
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="innGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.INN"
+                      dense
+                      label="ИНН"
+                      mask="#########"
+                      lazy-rules
+                      :rules="[
+                        val =>
+                          (val && val.length === 9) ||
+                          'Количество цифр должно быть 9'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="pinppGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.PINPP"
+                      dense
+                      label="ПИНФЛ"
+                      mask="##############"
+                      lazy-rules
+                      :rules="[
+                        val => (val && val.length === 14) || 'Введите ПНФЛ'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      square
+                      outlined
+                      v-model="guarantee.Resident"
+                      :options="profile.options.confirmation"
+                      dense
+                      label="Резидентство"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="pasportSeriesGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Document.Series"
+                      dense
+                      label="Серия паспорта"
+                      mask="AA"
+                      lazy-rules
+                      :rules="[
+                        val =>
+                          (val && val.length === 2) || 'Введите Серию паспорта'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="pasportNumberGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Document.Number"
+                      dense
+                      label="Номер паспорта"
+                      mask="#######"
+                      lazy-rules
+                      :rules="[
+                        val =>
+                          (val && val.length === 7) || 'Введите Номер паспорта'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="pasportDateGuarantees"
+                      outlined
+                      square
+                      dense
+                      label="Дата выдачи паспорта"
+                      v-model="guarantee.Document.GivenDate"
+                      mask="##.##.####"
+                      lazy-rules
+                      :rules="[
+                        val =>
+                          (val && val.length === 10) ||
+                          'Введите дату выдачи паспорта'
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            transition-show="scale"
+                            transition-hide="scale"
+                            ref="qDatePasportDateGuarantees"
+                          >
+                            <q-date
+                              mask="DD.MM.YYYY"
+                              v-model="guarantee.Document.GivenDate"
+                              @input="hideDatepickerPasportDateGuarantees"
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="pasportDateGuarantees"
+                      outlined
+                      square
+                      dense
+                      label="Дата окончания действия паспорта"
+                      v-model="guarantee.Document.ExpirationDate"
+                      mask="##.##.####"
+                      lazy-rules
+                      :rules="[
+                        val =>
+                          (val && val.length === 10) ||
+                          'Введите дату  окончания действия паспорта'
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            transition-show="scale"
+                            transition-hide="scale"
+                            ref="qDatePasportDateGuarantees"
+                          >
+                            <q-date
+                              mask="DD.MM.YYYY"
+                              v-model="guarantee.Document.ExpirationDate"
+                              @input="hideDatepickerPasportDateGuarantees"
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="indexGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.PostalCode"
+                      dense
+                      label="Индекс"
+                      mask="######"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      ref="regionGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Region"
+                      :options="dictionaries.Region.items"
+                      dense
+                      label="Регион/область"
+                      :rules="[val => !!val || 'Выберите регион/область']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.City"
+                      dense
+                      label="Город"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.District"
+                      dense
+                      label="Район"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="streetGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Street"
+                      dense
+                      label="Улица / Мкр."
+                      :rules="[
+                        val => !!val || 'Введите наименование улицы / мкр.'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="houseNumberGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.House"
+                      dense
+                      label="Номер дома"
+                      :rules="[val => !!val || 'Введите номер дома']"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.Block"
+                      dense
+                      label="Корпус"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.Building"
+                      dense
+                      label="Строение"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.Apartment"
+                      dense
+                      label="Номер квартиры"
+                    />
+                  </div>
+                </div>
+
+                <!-- phone -->
+                <fieldset
+                  class="fieldset_block"
+                  v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
+                  :key="'RelatedPerson' + phoneIndex"
+                >
+                  <legend class="legend_title">
+                    Телефон {{ phoneIndex + 1 }}
+                  </legend>
+                  <div class="row q-col-gutter-md">
+                    <div class="col-4">
+                      <q-input
+                        ref="phonesGuarantees"
+                        square
+                        outlined
+                        v-model="phone.Number"
+                        dense
+                        label="Тел. номер"
+                        mask="+############"
+                        lazy-rules
+                        :rules="[
+                          val =>
+                            (val && val.length === 13) || 'Введите номер телефона'
+                        ]"
+                      />
+                    </div>
+                  </div>
+
+                  <q-btn
+                    v-if="phoneIndex > 0"
+                    color="red"
+                    label="Удалить"
+                    @click="
+                      confirmDeleteItem(
+                        'Телефон ' + (phoneIndex + 1),
+                        removePhoneGuarantee,
+                        'RelatedPerson',
+                        index,
+                        phoneIndex
+                      )
+                    "
+                    class="removeItem"
+                  ></q-btn>
+                </fieldset>
+
                 <q-btn
-                  v-if="phoneIndex > 0"
+                  color="primary"
+                  label="Добавить номер телефона"
+                  @click="addPhoneGuarantee({ item: 'RelatedPerson', index })"
+                  class="addItem"
+                ></q-btn>
+
+                <q-btn
                   color="red"
                   label="Удалить"
                   @click="
                     confirmDeleteItem(
-                      'Телефон ' + (phoneIndex + 1),
-                      removePhoneGuarantee,
+                      'Физ. лицо ' + (index + 1),
+                      removeGuarantee,
                       'RelatedPerson',
-                      index,
-                      phoneIndex
+                      index
                     )
                   "
                   class="removeItem"
                 ></q-btn>
               </fieldset>
-
               <q-btn
                 color="primary"
-                label="Добавить номер телефона"
-                @click="addPhoneGuarantee({ item: 'RelatedPerson', index })"
+                label="Добавить физ. лицо"
+                @click="addRelatedPerson"
                 class="addItem"
               ></q-btn>
 
-              <q-btn
-                color="red"
-                label="Удалить"
-                @click="
-                  confirmDeleteItem(
-                    'Физ. лицо ' + (index + 1),
-                    removeGuarantee,
-                    'RelatedPerson',
-                    index
-                  )
-                "
-                class="removeItem"
-              ></q-btn>
-            </fieldset>
-            <q-btn
-              color="primary"
-              label="Добавить физ. лицо"
-              @click="addRelatedPerson"
-              class="addItem"
-            ></q-btn>
+            </template>
 
-            <h5
-              v-if="!fullProfile.Guarantee.RelatedLegalPerson.items.length"
-              class="tab-content_title"
-            >
-              Данные по юр. лицу отсутствуют
-            </h5>
+            <template v-if="fullProfile.Guarantee.RelatedLegalPerson.items">
+              <h5
+                v-if="!fullProfile.Guarantee.RelatedLegalPerson.items.length"
+                class="tab-content_title"
+              >
+                Данные по юр. лицу отсутствуют
+              </h5>
 
-            <fieldset
-              class="fieldset_block"
-              v-for="(guarantee, index) of fullProfile.Guarantee
-                .RelatedLegalPerson.items"
-              :key="'RelatedLegalPerson' + index"
-            >
-              <legend class="legend_title">Юр. лицо {{ index + 1 }}</legend>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="priceGuarantees"
-                    square
-                    outlined
-                    v-model.number="guarantee.Sum"
-                    type="number"
-                    dense
-                    label="Сумма поручительства"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите сумму']"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="nameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Name"
-                    dense
-                    label="Имя"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите имя']"
-                  />
-                </div>
-
-                <div class="col-4">
-                  <q-input
-                    ref="innGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.INN"
-                    dense
-                    label="ИНН"
-                    mask="#########"
-                    lazy-rules
-                    :rules="[
-                      val =>
-                        (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
-                    ]"
-                  />
-                </div>
-
-                <!-- Надо добавить в BPM -->
-                <div class="col-4">
-                  <q-select
-                    ref="kindOfActivityGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Activity"
-                    :options="dictionaries.MainWorkType.items"
-                    dense
-                    label="Вид деятельности"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите вид деятельности']"
-                    class="q-pb-sm"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.PostalCode"
-                    dense
-                    label="Индекс"
-                    mask="######"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
-                    ref="regionGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Region"
-                    :options="dictionaries.Region.items"
-                    dense
-                    label="Регион/область"
-                    :rules="[val => !!val || 'Выберите регион/область']"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.City"
-                    dense
-                    label="Город"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.District"
-                    dense
-                    label="Район"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="streetGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Street"
-                    dense
-                    label="Улица / Мкр."
-                    lazy-rules
-                    :rules="[
-                      val => !!val || 'Введите наименование улицы / мкр.'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="houseNumberGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.House"
-                    dense
-                    label="Номер дома"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите номер дома']"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.Block"
-                    dense
-                    label="Корпус"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.Building"
-                    dense
-                    label="Строение"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.Office"
-                    dense
-                    label="Номер офиса"
-                  />
-                </div>
-              </div>
-
-              <!-- phone -->
               <fieldset
                 class="fieldset_block"
-                v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
-                :key="'RelatedLegalPersonPhone' + phoneIndex"
+                v-for="(guarantee, index) of fullProfile.Guarantee
+                  .RelatedLegalPerson.items"
+                :key="'RelatedLegalPerson' + index"
               >
-                <legend class="legend_title">
-                  Телефон {{ phoneIndex + 1 }}
-                </legend>
+                <legend class="legend_title">Юр. лицо {{ index + 1 }}</legend>
+
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
-                      ref="phonesGuarantees"
+                      ref="priceGuarantees"
                       square
                       outlined
-                      v-model="phone.Number"
+                      v-model.number="guarantee.Sum"
+                      type="number"
                       dense
-                      label="Тел. номер"
-                      mask="+############"
+                      label="Сумма поручительства"
+                      lazy-rules
+                      :rules="[val => !!val || 'Введите сумму']"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="nameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Name"
+                      dense
+                      label="Имя"
+                      lazy-rules
+                      :rules="[val => !!val || 'Введите имя']"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      ref="innGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.INN"
+                      dense
+                      label="ИНН"
+                      mask="#########"
                       lazy-rules
                       :rules="[
                         val =>
-                          (val && val.length === 13) || 'Введите номер телефона'
+                          (val && val.length === 9) ||
+                          'Количество цифр должно быть 9'
                       ]"
+                    />
+                  </div>
+
+                  <!-- Надо добавить в BPM -->
+                  <div class="col-4">
+                    <q-select
+                      ref="kindOfActivityGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Activity"
+                      :options="dictionaries.MainWorkType.items"
+                      dense
+                      label="Вид деятельности"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите вид деятельности']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.PostalCode"
+                      dense
+                      label="Индекс"
+                      mask="######"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      ref="regionGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Region"
+                      :options="dictionaries.Region.items"
+                      dense
+                      label="Регион/область"
+                      :rules="[val => !!val || 'Выберите регион/область']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.City"
+                      dense
+                      label="Город"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.District"
+                      dense
+                      label="Район"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="streetGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Street"
+                      dense
+                      label="Улица / Мкр."
+                      lazy-rules
+                      :rules="[
+                        val => !!val || 'Введите наименование улицы / мкр.'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="houseNumberGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.House"
+                      dense
+                      label="Номер дома"
+                      lazy-rules
+                      :rules="[val => !!val || 'Введите номер дома']"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.Block"
+                      dense
+                      label="Корпус"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.Building"
+                      dense
+                      label="Строение"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="guarantee.Address.Office"
+                      dense
+                      label="Номер офиса"
+                    />
+                  </div>
+                </div>
+
+                <!-- phone -->
+                <fieldset
+                  class="fieldset_block"
+                  v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
+                  :key="'RelatedLegalPersonPhone' + phoneIndex"
+                >
+                  <legend class="legend_title">
+                    Телефон {{ phoneIndex + 1 }}
+                  </legend>
+                  <div class="row q-col-gutter-md">
+                    <div class="col-4">
+                      <q-input
+                        ref="phonesGuarantees"
+                        square
+                        outlined
+                        v-model="phone.Number"
+                        dense
+                        label="Тел. номер"
+                        mask="+############"
+                        lazy-rules
+                        :rules="[
+                          val =>
+                            (val && val.length === 13) || 'Введите номер телефона'
+                        ]"
+                      />
+                    </div>
+                  </div>
+
+                  <q-btn
+                    v-if="phoneIndex > 0"
+                    color="red"
+                    label="Удалить"
+                    @click="
+                      confirmDeleteItem(
+                        'Телефон ' + (phoneIndex + 1),
+                        removePhoneGuarantee,
+                        'RelatedLegalPerson',
+                        index,
+                        phoneIndex
+                      )
+                    "
+                    class="removeItem"
+                  ></q-btn>
+                </fieldset>
+
+                <q-btn
+                  color="primary"
+                  label="Добавить номер телефона"
+                  @click="
+                    addPhoneGuarantee({ item: 'RelatedLegalPerson', index })
+                  "
+                  class="addItem"
+                ></q-btn>
+
+                <q-btn
+                  color="red"
+                  label="Удалить"
+                  @click="
+                    confirmDeleteItem(
+                      'Юр. лицо ' + (index + 1),
+                      removeGuarantee,
+                      'RelatedLegalPerson',
+                      index
+                    )
+                  "
+                  class="removeItem"
+                ></q-btn>
+              </fieldset>
+              <q-btn
+                color="primary"
+                label="Добавить юр. лицо"
+                @click="addRelatedLegalPerson"
+                class="addItem"
+              ></q-btn>
+            </template>
+
+            <template v-if="fullProfile.Guarantee.Insurance.items">
+              <h5
+                v-if="!fullProfile.Guarantee.Insurance.items.length"
+                class="tab-content_title"
+              >
+                Данные по стархованию отсутствуют
+              </h5>
+
+              <fieldset
+                class="fieldset_block"
+                v-for="(guarantee, index) of fullProfile.Guarantee.Insurance.items"
+                :key="'Insurance' + index"
+              >
+                <legend class="legend_title">Страхование {{ index + 1 }}</legend>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="nameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.OrgName"
+                      dense
+                      label="Наименование страховой компании"
+                      :rules="[
+                        val => !!val || 'Введите наименование страховой компании'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="innGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.INN"
+                      dense
+                      label="ИНН страховой компании"
+                      mask="#########"
+                      :rules="[
+                        val =>
+                          (val && val.length === 9) ||
+                          'Количество цифр должно быть 9'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="priceGuarantees"
+                      square
+                      outlined
+                      v-model.number="guarantee.Sum"
+                      type="number"
+                      dense
+                      label="Сумма страхового полиса"
+                      :rules="[val => !!val || 'Введите сумму']"
                     />
                   </div>
                 </div>
 
                 <q-btn
-                  v-if="phoneIndex > 0"
                   color="red"
                   label="Удалить"
                   @click="
                     confirmDeleteItem(
-                      'Телефон ' + (phoneIndex + 1),
-                      removePhoneGuarantee,
-                      'RelatedLegalPerson',
-                      index,
-                      phoneIndex
+                      'Страхование ' + (index + 1),
+                      removeGuarantee,
+                      'Insurance',
+                      index
                     )
                   "
                   class="removeItem"
@@ -2076,113 +2196,12 @@
 
               <q-btn
                 color="primary"
-                label="Добавить номер телефона"
-                @click="
-                  addPhoneGuarantee({ item: 'RelatedLegalPerson', index })
-                "
+                label="Добавить страхование"
+                @click="addInsurance"
                 class="addItem"
               ></q-btn>
+            </template>
 
-              <q-btn
-                color="red"
-                label="Удалить"
-                @click="
-                  confirmDeleteItem(
-                    'Юр. лицо ' + (index + 1),
-                    removeGuarantee,
-                    'RelatedLegalPerson',
-                    index
-                  )
-                "
-                class="removeItem"
-              ></q-btn>
-            </fieldset>
-            <q-btn
-              color="primary"
-              label="Добавить юр. лицо"
-              @click="addRelatedLegalPerson"
-              class="addItem"
-            ></q-btn>
-
-            <h5
-              v-if="!fullProfile.Guarantee.Insurance.items.length"
-              class="tab-content_title"
-            >
-              Данные по стархованию отсутствуют
-            </h5>
-
-            <fieldset
-              class="fieldset_block"
-              v-for="(guarantee, index) of fullProfile.Guarantee.Insurance.items"
-              :key="'Insurance' + index"
-            >
-              <legend class="legend_title">Страхование {{ index + 1 }}</legend>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    ref="nameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.OrgName"
-                    dense
-                    label="Наименование страховой компании"
-                    :rules="[
-                      val => !!val || 'Введите наименование страховой компании'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="innGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.INN"
-                    dense
-                    label="ИНН страховой компании"
-                    mask="#########"
-                    :rules="[
-                      val =>
-                        (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    ref="priceGuarantees"
-                    square
-                    outlined
-                    v-model.number="guarantee.Sum"
-                    type="number"
-                    dense
-                    label="Сумма страхового полиса"
-                    :rules="[val => !!val || 'Введите сумму']"
-                  />
-                </div>
-              </div>
-
-              <q-btn
-                color="red"
-                label="Удалить"
-                @click="
-                  confirmDeleteItem(
-                    'Страхование ' + (index + 1),
-                    removeGuarantee,
-                    'Insurance',
-                    index
-                  )
-                "
-                class="removeItem"
-              ></q-btn>
-            </fieldset>
-
-            <q-btn
-              color="primary"
-              label="Добавить страхование"
-              @click="addInsurance"
-              class="addItem"
-            ></q-btn>
           </div>
         </div>
 
@@ -2221,15 +2240,6 @@
                   type="number"
                   dense
                   label="Запрашиваемая сумма кредита"
-                  :rules="[
-                    val => !!val || 'Введите сумму кредита',
-
-                    preApprovalData.maxSum 
-                    ?  (val =>
-                      val <= preApprovalData.maxSum ||
-                      `Введите сумму небольше ${preApprovalData.maxSum}`)
-                    : null
-                  ]"
                 />
               </div>
               <div class="col-4">
@@ -2556,11 +2566,12 @@
                 @drop="dropFile($event)"
               >
                 <div ref="dragover"></div>
-                <q-field
+                <!-- <q-field
                   ref="uploadFile"
                   :value="!!filesAll.length"
                   :rules="[val => !!val || 'Загрузите файлы']"
-                >
+                > -->
+                <q-field>
                   <div class="uploadFile">
                     <div class="row items-center">
                       <div class="loaderFile" v-if="loaderFile">
@@ -2677,16 +2688,19 @@
             Комментарии по кредиту
           </h4>
           <div class="tab-content" ref="tabContent">
-            <template v-if="fullProfile.ApplicationComment.items.length">
-              <div 
-                class="comments"
-                v-for="comment of fullProfile.ApplicationComment.items"
-                :key="comment.id"
-              >
-                <h6 class="tab-content_title">{{comment.CommentPerson}}</h6>
-                <!-- <span>{{comment.CommentDate}}</span> -->
-                <p>{{comment.Comment}}</p>
-              </div>
+
+            <template v-if="fullProfile.ApplicationComment.items">
+              <template v-if="fullProfile.ApplicationComment.items.length">
+                <div 
+                  class="comments"
+                  v-for="comment of fullProfile.ApplicationComment.items"
+                  :key="comment.id"
+                >
+                  <h6 class="tab-content_title">{{comment.CommentPerson}}</h6>
+                  <!-- <span>{{comment.CommentDate}}</span> -->
+                  <p>{{comment.Comment}}</p>
+                </div>
+              </template>
             </template>
 
             <!-- <q-separator /> -->
@@ -2768,7 +2782,7 @@
       </q-dialog>
 
       <!-- credit result -->
-      <appFullProfile v-if="profile.confirmCredit" />
+      <appFullProfileRework v-if="profile.confirmCredit" />
     </div>
   </div>
 </template>
@@ -2777,7 +2791,7 @@
 import CommonUtils from "@/shared/utils/CommonUtils";
 import UserService from "@/services/user.service";
 import Loader from "@/components/Loader";
-import FullProfile from "./FullProfile";
+import FullProfileRework from "./FullProfileRework";
 import SentFullProfile from "./SentFullProfile";
 // import UploadFiles from "./UploadFiles"
 import { validItems, validFilter } from "../../filters/valid_filter"
@@ -2789,7 +2803,7 @@ export default {
       loaderForm: false,
       loaderFile: false,
       isValid: true, //валидация Email
-      //sameRegistration: "",
+      sameRegistration: "",
       confirm: false,
       // confirmCredit: false,
       itemName: "",
@@ -2812,8 +2826,9 @@ export default {
     };
   },
   async created() {
+    debugger
     this.$store.commit("profile/resetDataFullFormProfile")
-
+    debugger
     if (!this.$store.getters["credits/userRole"]) {
       debugger
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
@@ -2822,7 +2837,7 @@ export default {
       this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
       // console.log('dic', this.dictionaries)
     }
-    
+
     if (this.taskId) {
       debugger
       this.$store.commit("credits/setTaskId", this.taskId);
@@ -2830,41 +2845,11 @@ export default {
         const res = await this.$store.dispatch("profile/getFullForm");
         console.log('res', res)
       } catch (error) {}
-    } 
-    
-  },
-  mounted() {
-    if (!this.taskId) {
-      this.Customer.FirstName = this.personalData.name;
-      this.Customer.LastName = this.personalData.surname;
-      this.Customer.MiddleName = this.personalData.mname;
-      this.Customer.INN = this.personalData.inn;
-      this.Customer.PhoneList.items[0].Number = this.personalData.phone;
-      this.Customer.PINPP = this.personalData.pinpp;
-      this.Customer.Document.Series = this.personalData.passport.slice(
-        0,
-        2
-      );
-      this.Customer.Document.Number = this.personalData.passport.slice(
-        2
-      );
-
-      this.Customer.MaritalStatus =
-        +this.personalData.familyStatus + 1; // false/true перевожу в число
-      this.Customer.hasChildren = this.personalData.children;
-      this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
-
-      this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
-      this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
-      this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
-      this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
-      this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
-      this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
     }
   },
   computed: {
     fullProfile() {
-      console.log(this.$store.getters["profile/profile"].fullFormProfile)
+      debugger
       return this.$store.getters["profile/profile"].fullFormProfile
     },
 
@@ -2903,13 +2888,13 @@ export default {
       }
     },
 
-    // sameRegistration(flag) {
-    //   if (flag) {
-    //     this.removeRegistration({ item: "2" });
-    //   } else {
-    //     this.addRegistration("2");
-    //   }
-    // },
+    sameRegistration(flag) {
+      if (flag) {
+        this.removeRegistration({ item: "2" });
+      } else {
+        this.addRegistration("2");
+      }
+    },
 
     "fullProfile.LoanInfo.LoanProduct"(credit) {
       this.fullProfile.LoanInfo.RepaymentType = null;
@@ -2955,6 +2940,7 @@ export default {
   },
   methods: {
     async onSubmit() {
+      debugger
       console.log("fullProfile", this.$store.state.profile);
       console.log("submit");
 
@@ -3133,7 +3119,9 @@ export default {
       }
 
       this.$refs.productCredit.validate();
-      this.$refs.priceCredit.validate();
+
+      //запрашиваемая сумма кредита
+      //this.$refs.priceCredit.validate();
 
       if (this.$refs.productCredit.validate()) {
         this.$refs.typeRepayment.validate();
@@ -3151,14 +3139,9 @@ export default {
       this.$refs.sellerName.validate();
       this.$refs.productName.validate();
       this.$refs.sourceFinancs.validate();
-      
-      if (!this.fullProfile.AttachedDocuments.items.length) {
-        
-        this.$refs.uploadFile.validate();
-      } else {
-        validItems(this.$refs, "uploadFile");
-      }
-      
+
+      //this.$refs.uploadFile.validate();
+
       // console.log('files', this.$refs.files);
       // debugger
 
@@ -3231,7 +3214,7 @@ export default {
         this.$refs.phonesGuaranteesValid.hasError ||
         //info credit
         this.$refs.productCredit.hasError ||
-        this.$refs.priceCredit.hasError ||
+        //this.$refs.priceCredit.hasError ||
         this.$refs.typeRepayment.hasError ||
         // this.$refs.periodRepayment.hasError ||
         this.$refs.comfortablePeriodRepayment.hasError ||
@@ -3240,8 +3223,8 @@ export default {
         this.$refs.purposeCredit.hasError ||
         this.$refs.sellerName.hasError ||
         this.$refs.productName.hasError ||
-        this.$refs.sourceFinancs.hasError ||
-        this.$refs.uploadFile.hasError
+        this.$refs.sourceFinancs.hasError
+        //this.$refs.uploadFile.hasError
       ) {
         this.formHasError = true;
         this.bar = true;
@@ -3276,7 +3259,7 @@ export default {
 
     addVehicle() {
       for (let i = 2000; i <= new Date().getFullYear(); i++) {
-        this.options.yearsOfIssueVehicle.push(String(i));
+        this.options.yearsOfIssueVehicle.push(i);
       }
 
       this.$store.commit("profile/addVehicle");
@@ -3444,7 +3427,7 @@ export default {
                                                                     DocLink: "",
                                                                     DocumentName: i.DocumentName
                                                                   })
-      console.log("document", this.fullProfile.AttachedDocuments)
+      console.log("document", this.fullProfile.AttachedDocuments.items)
     },
 
     removeAllFile() {
@@ -3473,12 +3456,12 @@ export default {
 
       this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment})
       this.creditManagerComment = ""
-      console.log('comments', this.fullProfile.ApplicationComment)
+      console.log('comments', this.fullProfile.ApplicationComment.items)
     }
   },
   components: {
     appLoader: Loader,
-    appFullProfile: FullProfile,
+    appFullProfileRework: FullProfileRework,
     appSentFullProfile: SentFullProfile,
     // appUploadFiles: UploadFiles
   }

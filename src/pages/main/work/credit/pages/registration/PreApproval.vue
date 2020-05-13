@@ -43,7 +43,7 @@
                     <div 
                       class="col-6"
                       v-for="(reson, index) of this.credits.reasonsList.slice(0, Math.round(this.credits.reasonsList.length / 2))"
-                      :key="'reson' + index"
+                      :key="reson.value"
                     >
                       <q-checkbox
                         v-model="selection"
@@ -55,7 +55,7 @@
                     <div 
                       class="col-6"
                       v-for="(reson, index) of this.credits.reasonsList.slice(Math.round(this.credits.reasonsList.length / 2))"
-                      :key="'reson' + index"
+                      :key="reson.value"
                     >
                       <q-checkbox
                         v-model="selection"
@@ -115,40 +115,45 @@ export default {
 
   computed: {
     disableBtn() {
-      return this.$store.state.credits.disableBtn;
+      return this.$store.getters["credits/credits"].disableBtn;
     },
     confirm() {
-      return this.$store.state.credits.confirm;
+      return this.$store.getters["credits/credits"].confirm;
     },
     preApprovalData() {
-      return this.$store.state.credits.preApprovalData;
+      return this.$store.getters["credits/credits"].preApprovalData;
     },
     personalData() {
-      return this.$store.state.credits.personalData;
+      return this.$store.getters["credits/credits"].personalData;
     },
     credits() {
-      return this.$store.state.credits;
+      return this.$store.getters["credits/credits"];
     }
   },
   methods: {
     async successCredit(val) {
-      this.$store.commit("toggleConfirm", val);
+      console.log(this.$store)
+      this.$store.commit("credits/toggleConfirm", val);
+      this.$store.commit("credits/toggleLoaderForm", true)
         console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
-          const response = await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
+          const response = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
+          const dictionaries = (response.nextTask.input.find(i => i.label === "inputDictionaries")).data
 
-          console.log('dictionaries', response)
-          if (response.nextTask.input[2].data) {
-            this.$store.commit("setDictionaries", response.nextTask.input[2].data) 
-            this.$router.push("sub/profile");
+          console.log('response', response)
+          if (dictionaries) {
+            this.$store.commit("profile/setDictionaries", dictionaries)
+            
+            this.$router.push("profile");
           } else {
             throw 'Data is null'
           }
 
         } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("setError", errorMessage);
+          this.$store.commit("credits/setMessage", errorMessage);
           sessionStorage.removeItem("csrf_token");
+          this.$router.push("/work/credit")
         }
     },
     
@@ -156,35 +161,24 @@ export default {
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
-        this.$store.commit("toggleConfirm", true);
+        //this.$store.commit("toggleConfirm", true);
       } else {
-        this.$store.commit("toggleDisableInput", false);
-        this.$store.commit("toggleConfirm", false);
+        this.$store.commit("credits/toggleDisableInput", false);
+        this.$store.commit("credits/toggleConfirm", false);
 
-        this.confirmCreditData.output[0].data = false
-        this.confirmCreditData.output[1].data = this.selection
-
-        // const data = {
-        //   output: [
-        //     {
-        //       name: "confirm",
-        //       data: false
-        //     },
-        //     {
-        //       name: "reasons",
-        //       data: this.selection
-        //     }
-        //   ]
-        // };
-
+        this.credits.confirmCreditData.output[0].data = false
+        this.credits.confirmCreditData.output[1].data = this.selection
+    
         try {
-          await this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData)
-          console.log('failureCredit', this.$store.dispatch('confirmationCredit', this.credits.confirmCreditData))
+          const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
+          if (res.requestedTask.state === "completed") {
+            debugger
+            sessionStorage.removeItem("csrf_token");
+            this.$router.push("/work/credit");
+          } else {
+            throw 'Task do not completed'
+          }
         } catch (error) {}
-
-        this.$router.push("/work/credit");
-
-        console.log('creditData', data)
       }
     }
   },

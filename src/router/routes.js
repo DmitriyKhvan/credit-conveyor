@@ -7,6 +7,7 @@ const Page404 = () => import("pages/extras/Error404");
 // Admin
 const AdminPage = () => import("pages/main/admin/admin");
 const Users = () => import("pages/main/admin/users/Users");
+const CreditUsers = () => import("pages/main/admin/creditUsers/CreditUsers");
 const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
 const Moderators = () => import("pages/main/admin/moderators/Moderators");
@@ -40,12 +41,14 @@ const CreditReg = () =>
   );
 const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
+const CreditProfileRework = () =>
+  import("pages/main/work/credit/pages/profile/ProfileRework.vue");
 const CreditApplications = () =>
-  import("pages/main/work/credit/pages/list/Applications.vue");
+  import("pages/main/work/credit/pages/CreditList/Applications.vue");
 const CreditTasks = () =>
-  import("pages/main/work/credit/pages/list/Tasks.vue");
+  import("pages/main/work/credit/pages/CreditList/Tasks.vue");
 const CreditTask = () =>
-  import("pages/main/work/credit/pages/list/Task.vue");
+  import("pages/main/work/credit/pages/CreditList/Task.vue");
 
 // Tools
 const Tools = () => import("pages/main/tools/Tools");
@@ -56,7 +59,13 @@ const Devices = () => import("pages/main/it/devices/Devices");
 const DevicesAccounting = () => import("pages/main/it/accounting/Accounting");
 const DevicesHistory = () => import("pages/main/it/history/History");
 const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
+
 // Education
+const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
+const QuestionPage = () =>
+  import("pages/main/admin/self_dev/questions/Questions");
+const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
+const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 
 const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
@@ -133,10 +142,10 @@ const routes = [{
         component: CreditTasks
       },
       {
-        path: "sub/task/:id",
+        path: "task/:id",
         name: "CreditTask",
-        component: CreditTask
-        //beforeEnter: ifAuthenticated,
+        component: CreditTask,
+        beforeEnter: ifAuthenticated,
       },
       {
         path: "registration",
@@ -144,9 +153,15 @@ const routes = [{
         component: CreditReg
       },
       {
-        path: "sub/profile",
+        path: "profile",
         name: "Profile",
         component: CreditProfile,
+        beforeEnter: ifAuthenticated
+      },
+      {
+        path: "profile/:id",
+        name: "ProfileRework",
+        component: CreditProfileRework,
         beforeEnter: ifAuthenticated
       }
       ]
@@ -161,6 +176,11 @@ const routes = [{
       path: "users",
       name: "Users List",
       component: Users
+    },
+    {
+      path: "creditUsers",
+      name: "Credit Users List",
+      component: CreditUsers
     },
     {
       path: "roles",
@@ -185,7 +205,28 @@ const routes = [{
     {
       path: "selfdev",
       name: "Self Developer",
-      component: SelfDevPage
+      component: SelfDevPage,
+      children: [{
+        path: "topicPage",
+        name: "addEditTopic",
+        component: TopicPage
+      },
+      {
+        path: "questionPage",
+        name: "Add Edit Question",
+        component: QuestionPage
+      },
+      {
+        path: "testPage",
+        name: "Add Edit Test",
+        component: TestPage
+      },
+      {
+        path: "monitoringPage",
+        name: "Add Edit Monitoring",
+        component: MonitoringPage
+      }
+      ]
     }
     ]
   },
