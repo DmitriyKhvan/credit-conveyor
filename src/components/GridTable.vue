@@ -289,7 +289,7 @@ export default {
             this.itemsArray.push(element);
           });
 
-          console.log('data', data)
+          //console.log('data', data)
           // sorting coloumns of table
           if (data.length > 0) {
             Object.keys(data[0]).map(async (k, index) => {

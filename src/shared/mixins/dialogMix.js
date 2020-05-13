@@ -17,7 +17,7 @@ export default {
   methods: {
     //!!! Don't change
     initializeData() {
-      console.log('data', this.data)
+      //console.log('data', this.data)
       if (!!this.data.selectedRow) {
         this.details = this.data.selectedRow[0];
       }
@@ -38,6 +38,7 @@ export default {
     },
     submitForm() {
       this.$store.dispatch("common/setLoading", true);
+      //console.log(this.details)
       ApiService.post(this.data.props.addEdit, this.details)
         .then(
           response => {

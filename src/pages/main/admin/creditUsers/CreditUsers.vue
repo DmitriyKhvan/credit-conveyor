@@ -26,9 +26,9 @@ export default {
       props: {
         caption: this.$t("tables.users._self"),
         tablePath: "credit/config",
-        rowId: "user_id",
-        addEdit: "auth/users", // url
-        delete: "auth/users", //
+        rowId: "id",
+        addEdit: "credit/config", // url
+        delete: "/credit/config", //
         defaultSort: [],
         excludedColumns: [
           "user_id",
@@ -59,7 +59,7 @@ export default {
           }
         ],
         paginationConfig: {
-          sortBy: "username",
+          sortBy: "name",
           descending: false,
           page: 1,
           rowsPerPage: 5
@@ -91,6 +91,7 @@ export default {
     },
 
     deleteRow(row) {
+      console.log(row)
       GridService.deleteRecord(row, this.props)
         .then(
           ok => {

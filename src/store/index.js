@@ -18,6 +18,8 @@ import { task } from './categorized/task.module'
 
 import { credits } from './categorized/credits.module';
 
+import { creditsAdmin } from './categorized/creditsAdmin.module';
+
 import { profile } from './categorized/profile.module';
 
 import education from './categorized/education';
@@ -36,6 +38,7 @@ const store = new Vuex.Store({
     common,
     task,
     credits,
+    creditsAdmin,
     profile,
     education,
     birthdays
