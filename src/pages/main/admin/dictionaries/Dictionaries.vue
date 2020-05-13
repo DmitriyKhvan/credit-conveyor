@@ -1,9 +1,11 @@
 <template>
-  <div class="col">
-    <!-- <icons />
-    <icons-type />-->
-    <types />
-    <list />
+  <div class="row">
+    <div class="col-6">
+      <types />
+    </div>
+    <div class="col-6">
+      <list />
+    </div>
   </div>
 </template>
 
