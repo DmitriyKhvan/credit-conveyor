@@ -117,7 +117,6 @@ export default {
     },
     logout() {
       AuthService.logout();
-      console.log("logged out");
     },
     getPhotoUrl(emp_id) {
       return UserService.getUserProfilePhotoUrl(emp_id);

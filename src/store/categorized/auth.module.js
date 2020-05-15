@@ -17,7 +17,30 @@ const state = {
   userRoles: [],
   moderatorsList: [],
   branchCode: null,
-  filialCode: null
+  filialCode: null,
+  activeUsers: [
+    // {
+    //   emp_id: 12,
+    //   emp_name: "John Doe",
+    //   socket_id: "SA121asdadadSASA",
+    //   access_token: "7Ssaw123ddsfsd23",
+    //   login_time: new Date()
+    // },
+    // {
+    //   emp_id: 14,
+    //   emp_name: "John Doe2",
+    //   socket_id: "SA121asdadadSASA",
+    //   access_token: "7Ssaw123ddsfsd23",
+    //   login_time: new Date()
+    // },
+    // {
+    //   emp_id: 16,
+    //   emp_name: "John Doe3",
+    //   socket_id: "SA121asdadadSASA",
+    //   access_token: "7Ssaw123ddsfsd23",
+    //   login_time: new Date()
+    // }
+  ]
 };
 
 /**
@@ -39,9 +62,6 @@ const getters = {
   },
   fullName: state => {
     return state.fullName;
-  },
-  userId: state => {
-    return state.userId;
   },
   empId: state => {
     return state.empId;
@@ -73,6 +93,9 @@ const getters = {
   },
   filialCode: state => {
     return state.filialCode;
+  },
+  activeUsers: state => {
+    return state.activeUsers
   }
 };
 
@@ -107,12 +130,10 @@ const actions = {
 
     let details = {
       username: decodedToken.username,
-      userId: decodedToken.id,
       fullName: decodedToken.full_name,
       empId: decodedToken.emp_id
     };
     commit("setUsername", details.username);
-    commit("setUserId", details.userId);
     commit("setUserFullname", details.fullName);
     commit("setEmpId", details.empId);
   },
@@ -127,6 +148,15 @@ const actions = {
   },
   setFilialCode({ commit }, filialCode) {
     commit("setFilialCode", filialCode);
+  },
+  setActiveUsers({ commit }, user) {
+    commit("setActiveUsers", user);
+  },
+  disconnectActiveUser({ commit }, socketId) {
+    commit("disconnectActiveUser", socketId);
+  },
+  removeActiveUser({ commit }, index) {
+    commit("removeActiveUser", index)
   }
 };
 
@@ -161,13 +191,9 @@ const mutations = {
   setUsername(state, username) {
     state.username = username;
   },
-  setUserId(state, userId) {
-    state.userId = userId;
-  },
   setEmpId(state, empId) {
     state.empId = empId;
   },
-
   setUserFullname(state, fullName) {
     state.fullName = fullName;
   },
@@ -182,6 +208,22 @@ const mutations = {
   },
   setFilialCode(state, filialCode) {
     state.filialCode = filialCode;
+  },
+  setActiveUsers(state, user) {
+    state.activeUsers.push(user);
+  },
+  disconnectActiveUser(state, socketId) {
+    let usrs = state.activeUsers;
+    for (let i = 0; i < usrs.length; i++) {
+      if (usrs[i].socket_id == socketId) {
+        usrs.splice(i, 1);
+        break;
+      }
+    }
+  },
+  removeActiveUser(state, index) {
+    let usrs = state.activeUsers;
+    usrs.splice(index, 1);
   }
 };
 

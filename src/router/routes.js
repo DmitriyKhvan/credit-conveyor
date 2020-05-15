@@ -1,7 +1,7 @@
 const MainContainer = () => import("layouts/Main");
 const LoginPage = () => import("pages/main/auth/Login");
 const HomePage = () => import("pages/main/home/Home");
-//const ChatPage = () => import("pages/main/chat/Chat");
+
 const Page404 = () => import("pages/extras/Error404");
 
 // Admin
@@ -18,7 +18,10 @@ const SelfDevPage = () => import("pages/main/admin/self_dev/Index");
 const WorkPage = () => import("pages/main/work/Work");
 const Assistant = () =>
   import("pages/main/work/assistant/Assistant.vue");
-// chancellary  
+const Profile = () => import("pages/main/profile/Profile.vue");
+const MyData = () => import("pages/main/profile/mydata/MyData.vue");
+const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue");
+// chancellary
 const Chancellary = () =>
   import("pages/main/work/kanselariya/Chancellary.vue");
 const ChanRegistration = () =>
@@ -71,6 +74,7 @@ const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 //Chat
 const ChatIndexPage = () => import('pages/main/chat/Index');
 const Notifications = () => import('pages/main/chat/notification/Notification');
+const ChatPage = () => import("pages/main/chat/Chat");
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
@@ -237,6 +241,22 @@ const routes = [{
     }]
   },
   {
+    path: "profile",
+    name: "Profile Page",
+    component: Profile,
+      children: [{
+        path: "mydata",
+        name: "My Data",
+        component: MyData
+      },
+      {
+        path: "myfinance",
+        name: "My Finance",
+        component: MyFinance
+      },
+    ]
+  },
+  {
     path: "it",
     name: "IT section",
     component: It,
@@ -270,7 +290,14 @@ const routes = [{
       path: "notification",
       name: "Notifications",
       component: Notifications
-    }]
+    },
+    {
+      path: "mainchat",
+      name: "Main Chat",
+      component: ChatPage
+    },
+
+    ]
   },
   {
     path: "selfdev",
@@ -290,6 +317,7 @@ const routes = [{
   }
   ]
 },
+
 {
   path: "/login",
   name: "Login Page",
@@ -299,6 +327,7 @@ const routes = [{
     onlyWhenLoggedOut: true
   }
 },
+
 {
   path: "/404",
   name: "Page404",
