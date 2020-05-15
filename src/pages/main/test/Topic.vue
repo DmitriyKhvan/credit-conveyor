@@ -294,6 +294,7 @@ export default {
                 countTrueAnswers: res.message,
                 quesAmount: this.data.ques_amount
               };
+              console.log('resultTest', payload)
               this.$store.commit("sentAnswersTest", payload);
               this.$store.commit("setResTest", res.message);
 

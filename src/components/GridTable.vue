@@ -136,6 +136,42 @@
               <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
             </div>
           </template>
+
+          <!-- <template v-slot:body="props">
+            <q-tr :props="props">
+              
+              <q-td v-for="key in visibleColumns" 
+                :key="key" 
+                :props="props">
+                <q-badge color="green">
+                  {{ props.row[key] }}
+                </q-badge>
+                <template v-if="Array.isArray(props.row[key])">
+                  массив
+                </template>
+              </q-td>
+            </q-tr>
+          </template> -->
+
+          <!-- <template v-slot:body-cell="props">
+            <q-td :props="props">
+              {{props}}
+              <q-badge color="blue" :label="props.value" />
+            </q-td>
+          </template> -->
+
+          <!-- <template v-slot:header="props">
+            <q-tr :props="props">
+              <q-th
+                v-for="col in props.cols"
+                :key="col.name"
+                :props="props"
+                class="text-italic text-purple"
+              >
+                {{ col.label }}
+              </q-th>
+            </q-tr>
+          </template> -->
         </q-table>
       <!-- </q-card-section>
     </q-card> -->
@@ -303,6 +339,21 @@ export default {
                 label: k.replace("_", " ").toUpperCase(),
                 align: "center",
                 sortable: sortable,
+                format: (val, row) => {
+                  if(Array.isArray(val)) {
+                    const lastIdx = val.length - 1
+                    return val.map((i, idx) => {
+                      if (lastIdx !== idx) {
+                        return i + ', '
+                      } else {
+                        return i
+                      }
+                    })
+                    // return `${val}`
+                  } else {
+                    return `${val}`
+                  }
+                },
                 field: k
               });
               // exluding check filter
