@@ -20,10 +20,14 @@ const TokenService = {
   getKey(key) {
     return new Promise((res, rej) => {
       let val = localStorage.getItem(key);
-      res(val)
+      res(val);
     })
   },
   setKey(key, value) {
+    localStorage.setItem(key, value);
+  },
+  replaceKey(key, value) {
+    localStorage.removeItem(key);
     localStorage.setItem(key, value);
   },
   removeKey(key) {
@@ -31,8 +35,8 @@ const TokenService = {
   },
   isKeyExist(key) {
     return new Promise((res, rej) => {
-      let isExist = (Boolean)(localStorage.getItem(key) !== null);
-      res(isExist);
+      // let isExist = (Boolean)(localStorage.getItem(key) !== null);
+      res((Boolean)(localStorage.getItem(key) !== null));
     });
   },
   getKeyFromCookies(key) {
@@ -67,12 +71,15 @@ const TokenService = {
   },
   saveToken(accessToken) {
     localStorage.setItem(TOKEN_KEY, accessToken);
-
     //Cookies.set(TOKEN_KEY, accessToken);
   },
   removeToken() {
     //Cookies.remove(TOKEN_KEY);
     localStorage.removeItem(TOKEN_KEY)
+  },
+  replaceToken(token) {
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.setItem(TOKEN_KEY, token);
   },
   isTokenExist() {
     return new Promise((res, rej) => {

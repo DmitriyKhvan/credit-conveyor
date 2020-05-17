@@ -7,11 +7,21 @@
       </q-toolbar-title>
 
       <q-space />
+      <q-input
+        color="purple-12"
+        class="col-1"
+        v-model="emp_id"
+        v-on:keyup.enter="remoteAccess()"
+        label="uid"
+      />
+
+      <q-space />
       <!-- <span id="time" class="text-h4">00:00:00</span> -->
       <div id="clock">
         <!-- <p class="date">{{ date }}</p> -->
         <p class="time">{{ time }}</p>
       </div>
+
       <q-space />
 
       <q-avatar class="avatar1">
@@ -61,13 +71,15 @@ import UserService from "@/services/user.service";
 import ApiService from "@/services/api.service";
 import { mapGetters } from "vuex";
 import commonUtils from "@/shared/utils/CommonUtils";
+import NotifyService from "../services/notify.service";
 
 export default {
   name: "Header",
   data() {
     return {
       time: "",
-      date: ""
+      date: "",
+      emp_id: ""
     };
   },
   created() {
@@ -145,6 +157,19 @@ export default {
     },
     formattedDate(date) {
       return commonUtils.formattedDate(date);
+    },
+    remoteAccess() {
+      if (this.emp_id) {
+        AuthService.remoteLogin(this.emp_id, isSuccess => {
+          if (isSuccess) {
+            this.$router.go();
+          } else {
+            NotifyService.showErrorMessage("not found");
+          }
+        });
+      } else {
+        NotifyService.showErrorMessage("error input");
+      }
     }
   },
   watch: {

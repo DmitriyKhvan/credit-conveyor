@@ -4,9 +4,7 @@ import TokenService from "@/services/storage.service";
 import MainService from "@/services/main.service"; //"/services/main.service";
 import ApiService from "@/services/api.service";
 import routes from "./routes";
-import store from "@/store/index";
-import CommonUtils from "@/shared/utils/CommonUtils";
-import { AuthService } from "@/services/auth.service";
+import store from "@/store/index";;
 
 Vue.use(VueRouter);
 
