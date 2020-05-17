@@ -1,10 +1,12 @@
-import ApiService from "./../services/api.service";
-import TokenService from "./../services/storage.service";
-import store from "./../store/index";
-import router from "./../router/index";
+import ApiService from "@/services/api.service";
+import TokenService from "@/services/storage.service";
+import store from "@/store/index";
+import router from "@/router/index";
 import DictService from "./dict.service";
 import SocketService from "./socket.service";
 import LoadingService from "./loading.service";
+import CommonUtils from "../shared/utils/CommonUtils";
+import NotifyService from "./notify.service";
 
 class AuthenticationError extends Error {
   constructor(errorCode, message) {
@@ -39,7 +41,7 @@ const AuthService = {
             TokenService.setKey("menus", b64EncodedMenus);
 
             store.dispatch("auth/loginSuccess", token);
-            SocketService.runConnection(token); // save user id to redis socket
+            SocketService.runConnection(); // save user id to redis socket
 
             router.push(router.history.current.query.redirect || "/");
 
@@ -127,21 +129,9 @@ const AuthService = {
           throw err;
         });
 
-
       ApiService.removeHeader();
 
-      //await MainService.clearStorage();
-
-      if ((await TokenService.isTokenExist())) {
-        console.log("removing token")
-        TokenService.removeToken();
-      }
-      if ((await TokenService.isCookieExist("lang"))) {
-        TokenService.removeKeyFromCookies("lang");
-      }
-      if (await TokenService.isKeyExist("menus")) {
-        TokenService.removeKey("menus");
-      }
+      await MainService.clearStorage();
 
       store.dispatch("dicts/setIsAllSet", false);
       SocketService.stopConnection();
@@ -249,6 +239,66 @@ const AuthService = {
         );
       }
     });
+  },
+  remoteLogin: async function (emp_id, callback) {
+
+    let empId = CommonUtils.valueOf(emp_id);
+
+    if (empId) {
+      if (empId == -1) { // if wanted to go back
+        let admin_token = await TokenService.getKey("admin_token");
+
+        // if admin_token not exist then there was no remote access
+        if (admin_token == null) {
+          callback(false);
+        } else { // otherwise there have been remote acesses so clear to return back
+          TokenService.replaceToken(admin_token);
+          TokenService.removeKey("admin_token");
+          TokenService.removeKey("menus");
+          callback(true)
+        }
+      }
+      else { // if tried to remote access
+
+        const requestData = {
+          method: "post",
+          url: "auth/remoteLogin",
+          data: {
+            emp_id: empId
+          }
+        };
+
+        try {
+          const resp = await ApiService.customRequest(requestData);
+          console.log(resp.data);
+
+          if (resp.data.status == 1) {
+            let token = resp.data.access_token;
+            let adminKey = await TokenService.getKey("admin_token");
+            if (adminKey == null) {
+              TokenService.setKey("admin_token", await TokenService.getToken());
+            }
+            TokenService.replaceToken(token);
+            TokenService.removeKey("menus");
+            callback(true);
+          } else {
+            callback(null);
+          }
+        } catch (error) {
+          console.error("Error occured !!!");
+          callback(null);
+
+          throw new AuthenticationError(
+            error.response.status,
+            error.response.data.detail
+          );
+        }
+
+      }
+    }
+    else {
+      NotifyService.showErrorMessage("erronous input")
+    }
   }
 };
 

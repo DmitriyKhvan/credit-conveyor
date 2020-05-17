@@ -103,16 +103,16 @@ export default {
   // format date (DD.MM.YYYY, h:mm:ss)
   dateFilter(value, format = 'date') {
     //console.log(format);
-    const options = {}; 
-  
+    const options = {};
+
     if (format.includes('date')) {
-        options.day = '2-digit',
+      options.day = '2-digit',
         options.month = '2-digit',
         options.year = 'numeric'
     }
-  
+
     if (format.includes('time')) {
-        options.hour = '2-digit',
+      options.hour = '2-digit',
         options.minute = '2-digit',
         options.second = '2-digit'
     }
@@ -123,5 +123,17 @@ export default {
     return moment(date)
       .startOf("hour")
       .fromNow(); //format("MMMM Do YYYY, h:mm:ss a");
+  },
+  valueOf(inp) {
+    //console.log(param);
+    let param = inp.trim();
+    if (
+      param === undefined ||
+      param === "undefined" ||
+      param === "null" ||
+      param === ""
+    )
+      return null;
+    else return param;
   }
 }

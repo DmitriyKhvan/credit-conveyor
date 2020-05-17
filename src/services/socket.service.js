@@ -21,13 +21,13 @@ const SocketService = {
       store.dispatch("socket/setUserCount", data);
     });
   },
-  runConnection(token) {
+  runConnection() {
     let socket = store.getters["socket/getSocket"];
     let empId = store.getters["auth/empId"]
 
     this.runNotifications(socket);
     this.runChat(socket);
-    this.runOnline(socket, token);
+    this.runOnline(socket);
     this.runUserConnect(socket);
     this.runUserDisconnect(socket);
     this.runRemoveUser(socket);
@@ -72,7 +72,7 @@ const SocketService = {
       console.log(data);
     })
   },
-  runOnline(socket, atoken) {
+  runOnline(socket) {
     let uname = store.getters['auth/fullName'];
     //let token = store.getters['auth/token'];
     let empId = store.getters["auth/empId"]
@@ -81,7 +81,6 @@ const SocketService = {
       emp_id: empId,
       emp_name: uname,
       socket_id: socket.id,
-      token: atoken,
       login_time: CommonUtils.formattedDate(new Date)
     };
 
