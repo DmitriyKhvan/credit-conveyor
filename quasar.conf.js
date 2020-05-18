@@ -15,6 +15,7 @@ module.exports = function (ctx) {
       "calendar",
       "vuelidate",
       "vuehtml",
+      "extra-plugins"
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css

@@ -1,5 +1,6 @@
 import ApiService from "@/services/api.service";
 import TokenService from "@/services/storage.service";
+import MainService from "@/services/main.service";
 import store from "@/store/index";
 import router from "@/router/index";
 import DictService from "./dict.service";

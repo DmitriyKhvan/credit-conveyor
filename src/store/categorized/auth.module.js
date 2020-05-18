@@ -19,28 +19,9 @@ const state = {
   branchCode: null,
   filialCode: null,
   activeUsers: [
-    // {
-    //   emp_id: 12,
-    //   emp_name: "John Doe",
-    //   socket_id: "SA121asdadadSASA",
-    //   access_token: "7Ssaw123ddsfsd23",
-    //   login_time: new Date()
-    // },
-    // {
-    //   emp_id: 14,
-    //   emp_name: "John Doe2",
-    //   socket_id: "SA121asdadadSASA",
-    //   access_token: "7Ssaw123ddsfsd23",
-    //   login_time: new Date()
-    // },
-    // {
-    //   emp_id: 16,
-    //   emp_name: "John Doe3",
-    //   socket_id: "SA121asdadadSASA",
-    //   access_token: "7Ssaw123ddsfsd23",
-    //   login_time: new Date()
-    // }
-  ]
+  ],
+  isUserLogged: false,
+  logoutTime: 600000 // 10min
 };
 
 /**
@@ -48,8 +29,11 @@ const state = {
  */
 
 const getters = {
+  logoutTime: state => {
+    return state.logoutTime;
+  },
   loggedIn: state => {
-    return state.accessToken ? true : false;
+    return state.isUserLogged;
   },
   authenticationErrorCode: state => {
     return state.authenticationErrorCode;
@@ -124,7 +108,9 @@ const actions = {
   logoutSuccess({ commit }) {
     commit("logoutSuccess");
   },
-
+  setUserLogged({ commit }) {
+    commit("setUserLogged");
+  },
   setUserDetails({ commit }, token) {
     let decodedToken = decode(token);
 
@@ -172,6 +158,7 @@ const mutations = {
   loginSuccess(state, accessToken) {
     state.accessToken = accessToken;
     state.authenticating = false;
+    state.isUserLogged = true;
   },
   loginError(state, { errorCode, errorMessage }) {
     state.authenticating = false;
@@ -180,12 +167,16 @@ const mutations = {
   },
   logoutSuccess(state) {
     state.accessToken = "";
+    state.isUserLogged = false;
   },
   setToken(state, accessToken) {
     state.accessToken = accessToken;
   },
   refreshTokenPromise(state, promise) {
     state.refreshTokenPromise = promise;
+  },
+  setUserLogged(state) {
+    state.isUserLogged = true;
   },
   // REVIEW  All UserDetails can be mutated at once
   setUsername(state, username) {

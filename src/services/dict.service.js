@@ -1,5 +1,5 @@
 import ApiService from "./api.service";
-import store from './../store/index';
+import store from '@/store/index';
 
 const DictService = {
 
