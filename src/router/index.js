@@ -56,6 +56,8 @@ router.beforeEach(async (to, from, next) => {
     ApiService.mount401Interceptor(); //
     // reloads all Dicts
     await MainService.loadAllPageRefresh();
+    store.dispatch("auth/setUserLogged");
+    //store.state.idleVue.isIdle = true;
   }
 
   //!! LAST

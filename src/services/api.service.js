@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {
   AuthService
-} from './../services/auth.service'
+} from '@/services/auth.service'
 
 const ApiService = {
   _401interceptor: null,
@@ -20,7 +20,7 @@ const ApiService = {
     axios.defaults.headers.common = {}
   },
 
-  
+
 
   get(resource) {
     return axios.get(resource)
