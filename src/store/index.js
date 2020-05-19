@@ -22,7 +22,7 @@ import { creditsAdmin } from './categorized/creditsAdmin.module';
 
 import { profile } from './categorized/profile.module';
 
-import education from './categorized/education';
+import { education } from './categorized/education.module';
 
 import birthdays from './birthdays'
 import chats from './chat'

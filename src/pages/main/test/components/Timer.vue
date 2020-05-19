@@ -9,7 +9,7 @@
 export default {
   data() {
     return {
-      time: this.targetDate,
+      time: "",
       timer: null,
       days: null,
       hours: null,
@@ -23,6 +23,7 @@ export default {
     }, 1000);
   },
   beforeDestroy() {
+    console.log('beforeDestroy')
     clearInterval(this.timer);
   },
   computed: {
@@ -49,7 +50,8 @@ export default {
       //this.time = this.days + "</span><span>" + this.hours + "</span><span>" + this.minutes + "</span><span>" + this.seconds + "</span>";
       this.time = this.hours + ":" + this.minutes + ":" + this.seconds;
       if (this.time == "00:00:00") {
-        this.completeTest();
+        //this.completeTest();
+        this.$emit("completeTest");
       }
     },
     pad(n) {

@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-import ApiService from "@/services/api.service";
+
 export default {
   data() {
     return {
@@ -38,21 +38,26 @@ export default {
       topics: []
     };
   },
-  created() {
-    Promise.all([this.getTopics()])
-      .then(
-        res => {
-          console.log(res[0]);
-          this.topics = res[0];
-        },
-        err => {
-          console.error(err);
-        }
-      )
-      .catch(err => {
-        console.error(err);
-        throw err;
-      });
+  async created() {
+
+    try {
+      this.topics = await this.$store.dispatch("education/getTopics")
+    } catch(error) {}
+
+    // Promise.all([this.getTopics()])
+    //   .then(
+    //     res => {
+    //       console.log(res[0]);
+    //       this.topics = res[0];
+    //     },
+    //     err => {
+    //       console.error(err);
+    //     }
+    //   )
+    //   .catch(err => {
+    //     console.error(err);
+    //     throw err;
+    //   });
   },
   methods: {
     getIdTopic(id, name, event) {
@@ -67,10 +72,7 @@ export default {
       // this.selectedTopic = "selectedTopic"
       this.disabled = false;
 
-      this.$store.commit("setTopicName", name);
-    },
-    async getTopics() {
-      return (await ApiService.get("/test/cat")).data;
+      this.$store.commit("education/setTopicName", name);
     }
   }
 };
