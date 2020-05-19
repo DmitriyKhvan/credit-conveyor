@@ -24,6 +24,7 @@ import education from './categorized/education';
 
 import birthdays from './birthdays'
 import chats from './chat'
+import my_personal from './my_personal'
 
 
 Vue.use(Vuex);
@@ -40,7 +41,8 @@ const store = new Vuex.Store({
     profile,
     education,
     birthdays,
-    chats
+    chats,
+    my_personal
   },
 
   // enable strict mode (adds overhead!)

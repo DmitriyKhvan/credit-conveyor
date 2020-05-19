@@ -21,17 +21,19 @@
           развития и внедерения новых
           продуктов > Отдел разработки ПО
         </div>
+
         <div class="menu">
-          <div class="active"><q-icon name="account_box" size="xs" class="q-pr-sm" /> Мои данные</div>
-          <div><q-icon name="work" size="xs" class="q-pr-sm" /> Документы</div>
-          <div><q-icon name="contacts" size="xs" class="q-pr-sm" /> Личные</div>
-          <div><q-icon name="person" size="xs" class="q-pr-sm" /> Паспорт</div>
-          <div><q-icon name="people" size="xs" class="q-pr-sm" /> Родственники</div>
-          <div><q-icon name="school" size="xs" class="q-pr-sm" /> Образование</div>
-          <div><q-icon name="trending_up" size="xs" class="q-pr-sm" /> Карьера</div>
-          <div><q-icon name="memory" size="xs" class="q-pr-sm" /> Трудовой деятельность</div>
-          <div><q-icon name="chrome_reader_mode" size="xs" class="q-pr-sm" /> Контракт</div>
-          <div><q-icon name="assignment_turned_in" size="xs" class="q-pr-sm" /> Отметки</div>
+          <div @click="menu(0)" :class="menuId == 0 ? 'active' : ''"><q-icon name="account_box" size="xs" class="q-pr-sm" /> Мои данные</div>
+          <div @click="menu(1)" :class="menuId == 1 ? 'active' : ''"><q-icon name="work" size="xs" class="q-pr-sm" /> Документы</div>
+          <div @click="menu(2)" :class="menuId == 2 ? 'active' : ''"><q-icon name="contacts" size="xs" class="q-pr-sm" /> Личные</div>
+          <div @click="menu(3)" :class="menuId == 3 ? 'active' : ''"><q-icon name="person" size="xs" class="q-pr-sm" /> Паспорт</div>
+          <div @click="menu(4)" :class="menuId == 4 ? 'active' : ''"><q-icon name="people" size="xs" class="q-pr-sm" /> Родственники</div>
+          <div @click="menu(5)" :class="menuId == 5 ? 'active' : ''"><q-icon name="menu_book" size="xs" class="q-pr-sm" /> Пое/Наг/Выб</div>
+          <div @click="menu(6)" :class="menuId == 6 ? 'active' : ''"><q-icon name="school" size="xs" class="q-pr-sm" /> Образование</div>
+          <div @click="menu(7)" :class="menuId == 7 ? 'active' : ''"><q-icon name="trending_up" size="xs" class="q-pr-sm" /> Карьера</div>
+          <div @click="menu(8)" :class="menuId == 8 ? 'active' : ''"><q-icon name="memory" size="xs" class="q-pr-sm" /> Трудовой деятельность</div>
+          <div @click="menu(9)" :class="menuId == 9 ? 'active' : ''"><q-icon name="chrome_reader_mode" size="xs" class="q-pr-sm" /> Контракт</div>
+          <div @click="menu(10)" :class="menuId == 10 ? 'active' : ''"><q-icon name="assignment_turned_in" size="xs" class="q-pr-sm" /> Отметки</div>
         </div>
       </div>
     </div>
@@ -44,6 +46,9 @@ export default {
     getUserProfilePhotoUrl(emp_id) {
       return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
     },
+    menu(id) {
+      this.$store.dispatch('setMenuId', id)
+    }
   },
   computed: {
     ...mapGetters({
@@ -52,6 +57,9 @@ export default {
     ...mapGetters({
     emp_id: "auth/empId"
     }),
+    menuId () {
+      return this.$store.getters.getMenuId
+    }
   }
 }
 </script>
