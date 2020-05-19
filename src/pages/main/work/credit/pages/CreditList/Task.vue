@@ -1049,8 +1049,8 @@
       </div>
     </div>
 
-    <div class="row q-col-gutter-md">
-      <div class="col-3 "></div>
+    <div class="row q-col-gutter-md btn-decision">
+      
       <div class="col-3">
         <q-btn
           color="green"
@@ -1064,10 +1064,25 @@
           color="red"
           label="Отклонить"
           class="q-ml-md full-width"
-          @click="() => confirm = true"
+          @click="() => {
+            confirm = true
+            isApproved = 'N'
+          }"
         />
       </div>
-      <div class="col-3"></div>
+
+      <div v-if="userRole === 'CreditCommitteeMember'" class="col-3">
+        <q-btn
+          color="blue"
+          label="На доработку"
+          class="q-ml-md full-width"
+          @click="() => {
+            confirm = true
+            isApproved = 'R'
+          }"
+        />
+      </div>
+      
     </div>
 
     <q-dialog v-model="confirm" persistent>
@@ -1119,7 +1134,10 @@
               label="Отмена"
               color="red"
               v-close-popup
-              @click="() => comment=''"
+              @click="() => {
+                comment=''
+                isApproved='Y'
+              }"
             />
           </div>
           <div class="col-6">
@@ -1146,6 +1164,7 @@ export default {
       confirm: false,
       reason: "",
       comment: "",
+      isApproved: "Y",
       options: {
         reason: ["причина 1", "причина 2", "причина 3", "другое"]
       }
@@ -1153,6 +1172,7 @@ export default {
   },
   async created() {
     console.log('userRole', this.userRole)
+    console.log('fullProfile', this.fullProfile)
     if (!this.userRole) {
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
@@ -1222,7 +1242,7 @@ export default {
             MemberOfCCFIO: "",
             id: null,
             Login: this.$store.getters["auth/username"],
-            isApproved: true
+            isApproved: this.isApproved
           }
           debugger
           this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
@@ -1265,13 +1285,13 @@ export default {
 
           this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment})
 
-        } else if (this.userRole == "CreditCommitteeMember	") {
+        } else if (this.userRole == "CreditCommitteeMember") {
           const comment = {
             Comment: this.comment,
             MemberOfCCFIO: "",
             id: null,
             Login: this.$store.getters["auth/username"],
-            isApproved: false
+            isApproved: this.isApproved
           }
 
           this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
@@ -1432,5 +1452,9 @@ export default {
 
 .close {
   display: none;
+}
+
+.btn-decision {
+  justify-content: center;
 }
 </style>
