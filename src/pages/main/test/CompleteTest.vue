@@ -109,7 +109,7 @@
                   track-color="grey-4"
                   class="q-ma-md"
                 >
-                  <span class="resultText">1,75</span>
+                  <span class="resultText">{{ avarageTime }}</span>
                 </q-circular-progress>
                 <div
                   class="lineHeightNormal text-caption text-center"
@@ -151,20 +151,11 @@ export default {
     };
   },
   computed: {
-    countTrueAnswers() {
-      return this.$store.state.education.countTrueAnswers;
-    },
-    quesAmount() {
-      return this.$store.state.education.quesAmount;
-    },
     topicName() {
-      return this.$store.getters.getTopicState.topicName;
-    },
-    answerTest() {
-      return this.$store.getters.getTopicState.answerTest;
+      return this.$store.getters["education/getTopicState"].topicName;
     },
     resResult() {
-      return this.$store.getters.getTopicState.res;
+      return this.$store.getters["education/getTopicState"].res;
     },
     resRight() {
       return this.resResult.filter(e => e === true).length;
@@ -183,6 +174,10 @@ export default {
         // names: ['Правильно', 'Не верно', 'Не отмечано'],
         heightGlobalBlock: 100,
       }
+    },
+    avarageTime() {
+      
+      //return this.$store.getters.topicData.answers.filter(i => i.)
     }
   },
   methods: {

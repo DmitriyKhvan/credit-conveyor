@@ -2,7 +2,9 @@
   <div class="topicBlock">
     <div class="headTopic">
       <h2 class="titleTopic">{{ topicName }}</h2>
-      <appTimer />
+      <appTimer 
+        @completeTest="sentTestAnswers"
+      />
     </div>
 
     <q-card>
@@ -113,7 +115,6 @@
   </div>
 </template>
 <script>
-import ApiService from "@/services/api.service";
 import Timer from "./components/Timer";
 
 export default {
@@ -141,39 +142,35 @@ export default {
       abc: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"]
     };
   },
-  created() {
-    this.getTests(this.id)
-      .then(res => {
-        this.data.session_id = "" + Math.round(Math.random() * 100000000);
-        this.data.test_id = res.data.test_id;
-        this.data.start_time = this.curDate();
-        this.data.end_time = null;
-        this.data.ques_amount = res.data.ques_amount;
+  async created() {
+    try {
+      const res = await this.$store.dispatch("education/getTests", this.id)
 
-        this.topic = res;
-        //Timer
-        const targetDate = new Date().getTime() + 1000 * res.data.duration;
+      console.log('question', res)
+      this.data.session_id = "" + Math.round(Math.random() * 100000000);
+      this.data.test_id = res.data.test_id;
+      this.data.start_time = this.curDate();
+      this.data.end_time = null;
+      this.data.ques_amount = res.data.ques_amount - 1;
 
-        this.$store.commit("setTargetDate", targetDate);
+      this.topic = res;
 
-        for (let question of this.topic.questions) {
-          this.data.answers.push({
-            ques_id: question.id,
-            topic_id: question.topic_id,
-            variant_id: null,
-            duration: 0
-          });
+      for (let question of this.topic.questions) {
+        this.data.answers.push({
+          ques_id: question.id,
+          topic_id: question.topic_id,
+          variant_id: null,
+          duration: 0
+        });
 
-          this.answerTest.push({
-            question_id: question.id,
-            variant_text: "",
-            answered: false
-          });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+        this.answerTest.push({
+          question_id: question.id,
+          variant_text: "",
+          answered: false
+        });
+      }
+
+    } catch(error) {}                    
   },
   mounted() {
     const tabover = document.getElementsByClassName("q-tabs__content");
@@ -205,12 +202,6 @@ export default {
       this.countTimeCurQuestion(2); // 2 - предпоследний элемент
     }
   },
-  updated() {
-    // this.data.answers.forEach(element => {
-    //   console.log(element.variant_id)
-    // });
-    // if(this.data.answers.variant_id) console.log('вопросы', this.data.answers.variant_id)
-  },
   computed: {
     topicName() {
       return this.$store.state.education.topicName;
@@ -232,12 +223,6 @@ export default {
     varActive(id) {
       console.log("varActive");
       if (this.data.answers.find(e => e.variant_id === id)) return "varActive";
-    },
-    async getTests(id) {
-      return (await ApiService.get(`/test/get?id=${id}`)).data;
-    },
-    async sentTestAnswers(data) {
-      return (await ApiService.post("/test/answer", data)).data;
     },
     nextTest(count) {
       this.tab = this.tab + count;
@@ -284,29 +269,22 @@ export default {
           persistent: true
         })
         .onOk(() => {
-          this.countTimeCurQuestion(1); // 1 последний элемент
-
-          this.data.end_time = this.curDate();
-
-          this.sentTestAnswers(this.data)
-            .then(res => {
-              const payload = {
-                countTrueAnswers: res.message,
-                quesAmount: this.data.ques_amount
-              };
-              console.log('resultTest', payload)
-              this.$store.commit("sentAnswersTest", payload);
-              this.$store.commit("setResTest", res.message);
-
-              this.$router.push({ path: "/completeTest" });
-            })
-            .catch(err => {
-              console.log(err);
-            });
+          this.sentTestAnswers()
         })
         .onCancel(() => {
           // console.log('>>>> Cancel')
         });
+    },
+
+    async sentTestAnswers() {
+      this.countTimeCurQuestion(1); // 1 последний элемент
+      this.data.end_time = this.curDate();
+
+      console.log('answers', this.data)
+
+      try {
+        await this.$store.dispatch("education/sentTestAnswers", this.data)
+      } catch(error) {}
     },
 
     curDate() {
@@ -408,6 +386,7 @@ export default {
 
 .topicBlock .time {
   color: #ff0000;
+  width: 85px;
 }
 
 .topicBlock .testLi {
