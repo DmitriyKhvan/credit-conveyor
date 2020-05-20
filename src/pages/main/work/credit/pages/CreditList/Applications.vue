@@ -15,7 +15,7 @@ export default {
     this.$store.commit('credits/clearCreditTasks')
     try {
       const auth = await this.$store.dispatch("credits/authBpm")
-      console.log("auth", auth);
+      //console.log("auth", auth);
 
       await this.$store.dispatch("credits/getRoleTasks")
     } catch(error) {}

@@ -825,7 +825,7 @@ export default {
   methods: {
     callPrint(strid) {
       const head = document.querySelector("head");
-      console.log(head);
+      
       const prtContent = document.getElementById(strid);
       const WinPrint = window.open(
         "",

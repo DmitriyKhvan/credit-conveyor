@@ -400,7 +400,7 @@ export default {
   },
   methods: {
     toggleFilter(event) {
-      console.log("индекс", event.getAttribute("idx"));
+      
       const idx = event.getAttribute("idx");
       for (let item of document.querySelectorAll(".active")) {
         if (item !== event) {
@@ -443,7 +443,7 @@ export default {
     },
 
     async creditSign() {
-      console.log('creditSign')
+      
       const confirmCreditData = {
         output: [
           {

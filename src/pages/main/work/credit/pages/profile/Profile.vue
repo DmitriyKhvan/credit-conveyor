@@ -2815,7 +2815,6 @@ export default {
     this.$store.commit("profile/resetDataFullFormProfile")
 
     if (!this.$store.getters["credits/userRole"]) {
-      debugger
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
       this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
@@ -2824,7 +2823,6 @@ export default {
     }
     
     if (this.taskId) {
-      debugger
       this.$store.commit("credits/setTaskId", this.taskId);
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
@@ -3160,7 +3158,6 @@ export default {
       }
       
       // console.log('files', this.$refs.files);
-      // debugger
 
       if (
         this.$refs.surname.hasError ||
@@ -3426,7 +3423,6 @@ export default {
               item.id = el.id
             }
           } else {
-            debugger
             this.loaderFile = false;
 
             // el.upload = true; // загрузка была, но прошла не удачна
