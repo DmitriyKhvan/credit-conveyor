@@ -29,12 +29,12 @@ export default {
   },
   methods: {
     autoCompleate() {
-      this.$store.commit('toggleSubmitting', true);
-      this.$store.commit('toggleDisableBtn', true);
-      this.$store.commit('toggleDisableInput', true);
-      this.$store.commit('loadMessageChange', "Данные загружаются");
+      this.$store.commit('credits/toggleSubmitting', true);
+      this.$store.commit('credits/toggleDisableBtn', true);
+      this.$store.commit('credits/toggleDisableInput', true);
+      this.$store.commit('credits/loadMessageChange', "Данные загружаются");
 
-      this.$store.dispatch('getUserDataFromService')
+      this.$store.dispatch('credits/getUserDataFromService')
         .then(res => {
           console.log("Данные: ", res)
 
@@ -64,13 +64,13 @@ export default {
             loader: false,
             message: "Возникла проблема. Не удалось считать данные. Введите данные вручную"
           }
-          this.$store.commit('errorLoadData', data);
+          this.$store.commit('credits/errorLoadData', data);
 
-          this.$store.commit('toggleSubmitting', false);
-          this.$store.commit('toggleDisableInput', false);
-          this.$store.commit('toggleScannerSerialNumber', false);
-          this.$store.commit('toggleDisableBtn', false);
-          this.$store.commit('loadMessageChange', "Ошибка сети. Введите данные вручную");
+          this.$store.commit('credits/toggleSubmitting', false);
+          this.$store.commit('credits/toggleDisableInput', false);
+          this.$store.commit('credits/toggleScannerSerialNumber', false);
+          this.$store.commit('credits/toggleDisableBtn', false);
+          this.$store.commit('credits/loadMessageChange', "Ошибка сети. Введите данные вручную");
 
           // const data = {
           //   flag: true,
@@ -116,11 +116,11 @@ export default {
     }, 
 
     getDataSuccess(data) {
-      this.$store.commit('sentPersonData', data);
-      this.$store.commit('toggleSubmitting', false); //loader on button
-      this.$store.commit('toggleDisableBtn', false);
-      this.$store.commit('loadMessageChange', "");
-      this.$store.commit('sentScannerSerialNumber', null); //close button auto compleate
+      this.$store.commit('credits/sentPersonData', data);
+      this.$store.commit('credits/toggleSubmitting', false); //loader on button
+      this.$store.commit('credits/toggleDisableBtn', false);
+      this.$store.commit('credits/loadMessageChange', "");
+      this.$store.commit('credits/sentScannerSerialNumber', null); //close button auto compleate
     }
   }
 };
