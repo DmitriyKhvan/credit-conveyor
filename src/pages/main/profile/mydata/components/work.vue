@@ -2,7 +2,7 @@
   <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
 
       <div class="row table_border">
-        <div class="table_title"><q-icon name="account_box" size="sm" class="q-pr-sm" /> Трудовая ДЕЯТЕЛЬНОСТЬ</div>
+        <div class="table_title"><q-icon name="memory" size="sm" class="q-pr-sm" /> Трудовая ДЕЯТЕЛЬНОСТЬ</div>
 
         <table style="width:100%">
           <tr>

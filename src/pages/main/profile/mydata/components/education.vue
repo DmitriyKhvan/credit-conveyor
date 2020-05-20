@@ -66,30 +66,13 @@ export default {
   data () {
     return {
       datas: [],
-      icons: ['thumb_down', 'gavel', 'credit_card', 'pie_chart', 'playlist_add_check', 'thumb_up', 'policy', 'security'],
       titles: {
-        at_the_position : 'На занимаемой должности',
-        in_bank: 'В Банке',
-        before_bank: 'До банка',
-        salary: 'Оклад',
-        discharge: 'Разряд',
-        allowance: 'Надбавка',
-        work_time: 'Время работы',
-        lanch_time: 'Перерыв на обед',
-        work_type: 'Тип времени работы',
-        condition: 'Состояние',
-        main: 'Основной',
-        istikbol: '"Истикбол"',
-        access: 'Допуск'
-      }
-
-      // [
-      //   ['На занимаемой должности', 'В Банке', 'До банка'],
-      //   ['Оклад', 'Разряд', 'Надбавка'],
-      //   ['Время работы', 'Перерыв на обед', 'Тип времени работы'],
-      //   ['Состояние', 'Основной', '"Истикбол"'],
-      //   ['Допуск']
-      // ]
+        OBRAZ_NAME: 'Образование',
+        UCH_STEP_NAME: 'Ученная степень',
+        UCH_ZVN_NAME: 'Ученное звание',
+        BANK_SPEC: 'Банковскую спец-ность',
+      },
+      icons: ['school', 'layers', 'public', 'call_made']
     }
   },
   computed: {
@@ -100,11 +83,9 @@ export default {
   },
   created () {
       axios
-        .get("/emps/data/career?uid=" + this.emp_id)
+        .get("/emps/data/education?uid=" + this.emp_id)
         .then(response => {
-          console.log(response.data)
           this.datas = response.data
-          // this.mydata = response.data[0].data
         })
         .catch(error => {
             console.log('error')

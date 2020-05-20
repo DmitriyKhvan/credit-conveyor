@@ -103,7 +103,6 @@ export default {
       axios
         .get("/emps/data/awards?uid=" + this.emp_id)
         .then(response => {
-          console.log(response.data)
           this.titleOne = response.data[0].title
           this.titleTwo = response.data[1].title
           this.titleThree = response.data[2].title
