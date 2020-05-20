@@ -8,6 +8,7 @@
     <work v-if="menuId == 8"></work>
     <trips v-if="menuId == 5"></trips>
     <career v-if="menuId == 7"></career>
+    <education v-if="menuId == 6"></education>
   </div>
 </template>
 <script>
@@ -17,6 +18,7 @@ import relatives from './components/relatives'
 import work from './components/work'
 import trips from './components/trips'
 import career from './components/career'
+import education from './components/education'
 import axios from "axios"
 import { mapGetters } from "vuex"
 import RightBlock from '../components/Left'
@@ -29,7 +31,8 @@ export default {
     relatives,
     work,
     trips,
-    career
+    career,
+    education
   },
   data () {
     return {

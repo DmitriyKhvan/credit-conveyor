@@ -2,7 +2,7 @@
   <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
 
       <div class="row table_border">
-        <div class="table_title"><q-icon name="account_box" size="sm" class="q-pr-sm" /> РОДСТВИННИКИ</div>
+        <div class="table_title"><q-icon name="group" size="sm" class="q-pr-sm" /> РОДСТВИННИКИ</div>
 
           <table style="width:100%">
             <tr>
