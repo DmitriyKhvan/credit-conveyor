@@ -1236,7 +1236,6 @@ export default {
         this.fullProfile.BODecision = true // кредит одобрен 
         //delete this.fullProfile.ApplicationComment.items[0].CommentDate
       } else if (this.userRole == "CreditCommitteeMember") {
-        debugger
         const comment = {
             Comment: "",
             MemberOfCCFIO: "",
@@ -1244,7 +1243,6 @@ export default {
             Login: this.$store.getters["auth/username"],
             isApproved: this.isApproved
           }
-          debugger
           this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
       }
 
@@ -1267,8 +1265,7 @@ export default {
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
-        console.log("creditFailure");
-        debugger
+        // console.log("creditFailure");
         
         if (this.userRole == "BackOfficee") {
 

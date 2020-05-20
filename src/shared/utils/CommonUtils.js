@@ -31,7 +31,6 @@ export default {
     }
   },
   isValueExistInObject(arr, key, value) {
-    //debugger
     let searchVal;
 
     if (value.search('\/sub\/') != -1) {

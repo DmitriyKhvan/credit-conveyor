@@ -88,11 +88,9 @@ export default {
           //console.log('nextTaskId', res.nextTask.id)
 
           if (res.nextTask.id) {
-            debugger
             sessionStorage.removeItem("csrf_token");
             this.$store.commit('credits/setMessage', 'Credit complete')
             this.$router.push("/work/credit")
-            debugger
           } else {
             throw 'Next task id is undefined'
           }

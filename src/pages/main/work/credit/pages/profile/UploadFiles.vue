@@ -163,7 +163,6 @@ export default {
             //   const item = this.filesAll.find(i => i.id === null)
             //   item.id = el.id
             // }
-            //debugger
             const elSer = this.fullProfile.AttachedDocuments.find(
               i => i.id === null
             );

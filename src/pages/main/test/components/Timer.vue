@@ -23,7 +23,7 @@ export default {
     }, 1000);
   },
   beforeDestroy() {
-    console.log('beforeDestroy')
+    //console.log('beforeDestroy')
     clearInterval(this.timer);
   },
   computed: {

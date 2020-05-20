@@ -41,8 +41,8 @@ const CreditReg = () =>
   );
 const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
-const CreditProfileRework = () =>
-  import("pages/main/work/credit/pages/profile/ProfileRework.vue");
+// const CreditProfileRework = () =>
+//   import("pages/main/work/credit/pages/profile/ProfileRework.vue");
 const CreditApplications = () =>
   import("pages/main/work/credit/pages/CreditList/Applications.vue");
 const CreditTasks = () =>
@@ -158,12 +158,12 @@ const routes = [{
         component: CreditProfile,
         beforeEnter: ifAuthenticated
       },
-      {
-        path: "profile/:id",
-        name: "ProfileRework",
-        component: CreditProfileRework,
-        beforeEnter: ifAuthenticated
-      }
+      // {
+      //   path: "profile/:id",
+      //   name: "ProfileRework",
+      //   component: CreditProfileRework,
+      //   beforeEnter: ifAuthenticated
+      // }
       ]
     }
     ]

@@ -146,7 +146,6 @@ export default {
     try {
       const res = await this.$store.dispatch("education/getTests", this.id)
 
-      console.log('question', res)
       this.data.session_id = "" + Math.round(Math.random() * 100000000);
       this.data.test_id = res.data.test_id;
       this.data.start_time = this.curDate();
@@ -175,9 +174,6 @@ export default {
   mounted() {
     const tabover = document.getElementsByClassName("q-tabs__content");
     tabover[1].style.cssText = "overflow: visible";
-  },
-  updated() {
-    console.log("updated");
   },
   watch: {
     tab() {
@@ -221,7 +217,7 @@ export default {
       if (!this.tabView.find(e => e === i)) this.tabView.push(i);
     },
     varActive(id) {
-      console.log("varActive");
+      //console.log("varActive");
       if (this.data.answers.find(e => e.variant_id === id)) return "varActive";
     },
     nextTest(count) {
@@ -279,8 +275,6 @@ export default {
     async sentTestAnswers() {
       this.countTimeCurQuestion(1); // 1 последний элемент
       this.data.end_time = this.curDate();
-
-      console.log('answers', this.data)
 
       try {
         await this.$store.dispatch("education/sentTestAnswers", this.data)
