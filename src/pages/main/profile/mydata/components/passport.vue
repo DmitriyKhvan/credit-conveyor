@@ -2,7 +2,7 @@
   <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
 
       <div v-if="mydata" class="row table_border">
-        <div class="table_title"><q-icon name="account_box" size="sm" class="q-pr-sm" /> ПАСПОРТ</div>
+        <div class="table_title"><q-icon name="art_track" size="sm" class="q-pr-sm" /> ПАСПОРТ</div>
         <div class="col-12 q-pa-md table_bg">
 
 

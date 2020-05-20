@@ -22,10 +22,10 @@
           продуктов > Отдел разработки ПО
         </div>
 
-        <div class="menu">
+        <div class="menu" v-if="curRouter !== 'My Finance'">
           <div @click="menu(0)" :class="menuId == 0 ? 'active' : ''"><q-icon name="account_box" size="xs" class="q-pr-sm" /> Мои данные</div>
           <div @click="menu(1)" :class="menuId == 1 ? 'active' : ''"><q-icon name="work" size="xs" class="q-pr-sm" /> Документы</div>
-          <div @click="menu(2)" :class="menuId == 2 ? 'active' : ''"><q-icon name="contacts" size="xs" class="q-pr-sm" /> Личные</div>
+          <!-- <div @click="menu(2)" :class="menuId == 2 ? 'active' : ''"><q-icon name="contacts" size="xs" class="q-pr-sm" /> Личные</div> -->
           <div @click="menu(3)" :class="menuId == 3 ? 'active' : ''"><q-icon name="person" size="xs" class="q-pr-sm" /> Паспорт</div>
           <div @click="menu(4)" :class="menuId == 4 ? 'active' : ''"><q-icon name="people" size="xs" class="q-pr-sm" /> Родственники</div>
           <div @click="menu(5)" :class="menuId == 5 ? 'active' : ''"><q-icon name="menu_book" size="xs" class="q-pr-sm" /> Пое/Наг/Выб</div>
@@ -59,6 +59,9 @@ export default {
     }),
     menuId () {
       return this.$store.getters.getMenuId
+    },
+    curRouter () {
+      return this.$router.currentRoute.name
     }
   }
 }
