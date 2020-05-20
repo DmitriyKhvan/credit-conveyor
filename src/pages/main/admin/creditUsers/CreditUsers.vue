@@ -91,7 +91,6 @@ export default {
     },
 
     deleteRow(row) {
-      console.log(row)
       GridService.deleteRecord(row, this.props)
         .then(
           ok => {

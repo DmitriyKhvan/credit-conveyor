@@ -192,7 +192,7 @@ export default {
     },
     resRightProcentCount() {
       const procent = this.resResult.length / 100;
-      console.log(this.resResult.length);
+      
       return Math.round(this.resRight / procent);
     },
     getPhotoUrl(emp_id) {
@@ -200,7 +200,7 @@ export default {
     }
   },
   mounted() {
-    console.log("store", this.$store.state.education);
+    //console.log("store", this.$store.state.education);
   },
   components: {
     MyGraf

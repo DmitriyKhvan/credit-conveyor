@@ -200,23 +200,21 @@ export const credits = {
 
     async confirmationCredit({ state, commit, getters }, data) {
       // console.log("taskId", getters.taskId)
-      // debugger
       try {
         const response = await state.bpmService.confirmationCredit({
           taskId: getters.taskId,
           data
         });
 
-        console.log('confirmCredit', response)
-        debugger
+        //console.log('confirmCredit', response)
         if (response.nextTask.id || response.requestedTask.state === "completed") {
-          debugger
+         
           commit("setTaskId", response.nextTask.id);
           sessionStorage.setItem("taskId", response.nextTask.id)
         } else {
           throw 'Next task id is undefined'
         }
-        debugger
+        
         return response;
       } catch (error) {
         console.log('errorMessage', error)

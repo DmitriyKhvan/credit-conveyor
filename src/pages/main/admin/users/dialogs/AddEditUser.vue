@@ -250,8 +250,6 @@ export default {
       if (this.details.name.length > 3) {
         ApiService.get("/emps/search?name=" + this.details.name)
           .then(response => {
-            console.log(response.data);
-
             this.resultUser = response.data;
           })
           .catch(error => {

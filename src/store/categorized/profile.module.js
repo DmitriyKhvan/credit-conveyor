@@ -325,10 +325,9 @@ export const profile = {
 
     async getFullForm({ state, commit, getters, rootGetters }) {
       try {
-        debugger
         const response = await state.bpmService.getFullForm(rootGetters["credits/taskId"]);
-        console.log('response', response)
-        debugger
+        //console.log('response', response)
+
         if (response.data.input && response.data.input.length) {
           const fullForm = (response.data.input.find(i => i.label === "application")).data
           const dictionaries = (response.data.input.find(i => i.label === "inputDictionaries")).data
@@ -424,7 +423,7 @@ export const profile = {
     },
 
     addRelatedPerson(state) {
-      state.fullFormProfile.Guarantee.RelatedPerson.push({
+      state.fullFormProfile.Guarantee.RelatedPerson.items.push({
         Address: {
           Building: "",
           OwnershipType: null,
@@ -460,7 +459,6 @@ export const profile = {
             Number: 998
           }
         ],
-        FullName: "",
         Resident: false,
         LastName: "",
         PINPP: "",
@@ -522,8 +520,8 @@ export const profile = {
 
     // добавление комментария
     addComment(state, payload) {
-      console.log('comment', payload)
-      debugger
+      //console.log('comment', payload)
+
       state.fullFormProfile[payload.commentBlock].items.push(payload.comment)
     },
 

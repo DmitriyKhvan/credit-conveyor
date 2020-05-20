@@ -307,7 +307,6 @@ export default {
   },
   mixins: [dialogMix],
   created() {
-    console.log('details', this.details)
     try {
       this.$store.dispatch("creditsAdmin/getFilials")
     } catch(error) {}
@@ -325,7 +324,6 @@ export default {
               .get("/credit/commitee/search?name="+this.searchUser)
               .then(response => {                    
                   this.resultUser = response.data
-                  console.log('searchRes', response.data)
               })
               .catch(error => {
                   console.log('error') 
@@ -333,7 +331,6 @@ export default {
       }
     },
     userCliked(user) {
-      console.log('user', user)
       this.details.emp_id = user.emp_id
       this.details.fio = user.fio
       this.details.role_name = user.role_name

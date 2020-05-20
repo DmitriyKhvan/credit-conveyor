@@ -172,7 +172,6 @@ export default {
         try {
           const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
           if (res.requestedTask.state === "completed") {
-            debugger
             sessionStorage.removeItem("csrf_token");
             this.$router.push("/work/credit");
           } else {
