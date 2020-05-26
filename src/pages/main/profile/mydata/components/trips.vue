@@ -1,6 +1,6 @@
 <template>
   <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
-
+    <q-scroll-area class="scrollBlock">
       <div class="row table_border">
         <div class="table_title"><q-icon name="transfer_within_a_station" size="sm" class="q-pr-sm" /> {{titleOne}}</div>
 
@@ -72,7 +72,7 @@
           </tr>
         </table>
       </div>
-
+    </q-scroll-area>
     </div>
 </template>
 <script>
@@ -121,6 +121,9 @@ export default {
 }
 </script>
 <style scoped>
+  .scrollBlock {
+    height: calc(100vh - 130px);
+  }
   .table_bg {
     background: #EAF3FC;
     border-radius: 5px;
@@ -130,7 +133,7 @@ export default {
     border-radius: 5px;
     position: relative;
     padding: 30px 10px 10px;
-    margin-top: 20px;
+    margin-top: 25px;
     margin-bottom: 40px;
   }
   .table_title {

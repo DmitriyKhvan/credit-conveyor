@@ -1,6 +1,6 @@
 <template>
   <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
-
+    <q-scroll-area class="scrollBlock">
       <div
         v-for="(n, i) in datas"
         :key="n.title"
@@ -55,7 +55,7 @@
         </template>
 
       </div>
-
+    </q-scroll-area>
     </div>
 </template>
 <script>
@@ -114,6 +114,9 @@ export default {
 }
 </script>
 <style scoped>
+  .scrollBlock {
+    height: calc(100vh - 130px);
+  }
   .table_bg {
     background: #EAF3FC;
     border-radius: 5px;
@@ -123,7 +126,7 @@ export default {
     border-radius: 5px;
     position: relative;
     padding: 30px 10px 10px;
-    margin-top: 20px;
+    margin-top: 25px;
     margin-bottom: 40px;
   }
   .table_title {
@@ -168,7 +171,7 @@ export default {
     border-radius: 5px;
     position: relative;
     padding: 30px 10px 10px;
-    margin-top: 20px;
+    margin-top: 25px;
   }
   .table_title {
     text-transform: uppercase;
