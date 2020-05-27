@@ -16,10 +16,13 @@
       </div>
       <div class="row">
         <div class="q-pa-sm q-my-md bg-white otdel">
-          НБУ > Республиканский Отдел > ДИТ
-          Управление инновационного >
-          развития и внедерения новых
-          продуктов > Отдел разработки ПО
+          <span
+            v-for="(n, i) in work"
+            :key="i"
+          >
+            <span v-html="n.name"></span>
+            <q-icon name="play_arrow" />
+          </span>
         </div>
 
         <div class="menu" v-if="curRouter !== 'My Finance'">
@@ -34,14 +37,23 @@
           <div @click="menu(8)" :class="menuId == 8 ? 'active' : ''"><q-icon name="memory" size="xs" class="q-pr-sm" /> Трудовой деятельность</div>
           <div @click="menu(9)" :class="menuId == 9 ? 'active' : ''"><q-icon name="chrome_reader_mode" size="xs" class="q-pr-sm" /> Контракт</div>
           <div @click="menu(10)" :class="menuId == 10 ? 'active' : ''"><q-icon name="assignment_turned_in" size="xs" class="q-pr-sm" /> Отметки</div>
+          <div @click="menu(11)" :class="menuId == 11 ? 'active' : ''"><q-icon name="local_airport" size="xs" class="q-pr-sm" /> Командировки</div>
+          <div @click="menu(12)" :class="menuId == 12 ? 'active' : ''"><q-icon name="add_box" size="xs" class="q-pr-sm" /> Больничный лист</div>
+          <div @click="menu(13)" :class="menuId == 13 ? 'active' : ''"><q-icon name="directions_run" size="xs" class="q-pr-sm" /> Отпуски</div>
         </div>
       </div>
     </div>
 </template>
 
 <script>
+import axios from "axios"
 import { mapGetters } from "vuex";
 export default {
+  data () {
+    return {
+      work: null
+    }
+  },
   methods: {
     getUserProfilePhotoUrl(emp_id) {
       return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
@@ -63,6 +75,17 @@ export default {
     curRouter () {
       return this.$router.currentRoute.name
     }
+  },
+  created () {
+      axios
+        .get("/emps/data/department?uid=" + this.emp_id)
+        .then(response => {
+          console.log(response.data)
+          this.work = response.data
+        })
+        .catch(error => {
+            console.log('error')
+        });
   }
 }
 </script>

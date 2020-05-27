@@ -144,7 +144,7 @@ export default {
             for (var i = arr.length - 1, j = 1; i >= 0; i--, j++) {
                 str_temp = arr[i] + str_temp;
                 if (j % 3 == 0) {
-                    str_temp = ',' + str_temp;
+                    str_temp = '.' + str_temp;
                 }
             }
             str_temp = str_temp.length === 8 ? str_temp.slice(1) : str_temp
