@@ -64,55 +64,38 @@
             </template>
 
             <template v-else>
-            <div
-                v-for="chat in chats"
-                :key="chat.chat_id"
-                :class="chatId === chat.chat_id ? 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock active' : 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock'"
-                @click="setActiveChat(chat.chat_id, chat.messages[0].to_uid)"
-                >
-                <div class="avatarBlock">
-                    <q-avatar>
-                        <img :src="getUserProfilePhotoUrl(chat.from_uid)">
-                    </q-avatar>
-                </div>
-                <div class="col">
-                    <div class="text-subtitle1" v-if="chat.messages[0].to_name"><b>{{chatName(chat.messages[0].to_name)}}</b></div>
-                    <div class="text-caption">
-                        <q-badge class="online">
-                            online
-                        </q-badge>
-                    </div>
-                </div>
-                <!-- <div class="actionsBlock noBorder text-right self-center">
-                    <q-btn icon="chat_bubble_outline" color="grey-8" flat />
-                </div> -->
-                <div class="actionsBlock text-right actions self-center">
-                    <q-btn icon="delete_outline" color="grey-8" flat />
-                </div>
-            </div>
+              {{chats}}
+              <div
+                  v-for="chat in chats"
+                  :key="chat.chat_id"
+                  :class="chatId === chat.chat_id ? 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock active' : 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock'"
+
+                  >
+                  <div class="avatarBlock" @click="selectChat(chat.chat_id)">
+                      <q-avatar>
+                          <img :src="getUserProfilePhotoUrl(chat.to_uid)">
+                      </q-avatar>
+                  </div>
+                  <div class="col" @click="selectChat(chat.chat_id)">
+                      <div class="text-subtitle1"><b v-html="chat.to_name"></b></div>
+                      <div class="text-caption">
+                          <q-badge class="online">
+                              online
+                          </q-badge>
+                      </div>
+                  </div>
+
+                  <div class="actionsBlock text-right actions self-center">
+                    <q-btn
+                        icon="delete_outline"
+                        color="grey-8"
+                        flat
+                        @click="deleteChat(chat.chat_id)"
+                    />
+                  </div>
+              </div>
             </template>
 
-            <!-- <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
-                <div class="avatarBlock">
-                    <q-avatar>
-                        <img src="https://cdn.quasar.dev/img/avatar.png">
-                    </q-avatar>
-                </div>
-                <div class="col">
-                    <div class="text-subtitle1"><b>Петров А.А.</b></div>
-                    <div class="text-caption">
-                        <q-badge class="offline">
-                            offline
-                        </q-badge>
-                    </div>
-                </div>
-                <div class="actionsBlock noBorder text-right self-center">
-                    <q-btn icon="chat_bubble_outline" color="grey-8" flat />
-                </div>
-                <div class="actionsBlock text-right self-center">
-                    <q-btn icon="delete_outline" color="grey-8" flat />
-                </div>
-            </div> -->
         </div>
 
         <AddChat></AddChat>
@@ -120,6 +103,8 @@
 </template>
 
 <script>
+
+import { mapGetters } from "vuex";
 import axios from "axios"
 import AddChat from './AddChat'
 import { dom } from 'quasar'
@@ -156,10 +141,16 @@ export default {
             });
             return name
         },
+        selectChat (id) {
+          this.$store.dispatch('setActiveChat', id)
+        },
         setActiveChat(id, toUid){
-            console.log(toUid)
-            if(id != '') this.$store.dispatch('setActiveChat', id)
             this.$store.dispatch('setToUid', toUid)
+            this.result = []
+            this.socket.emit("private/create", {
+              from_uid: this.emp_id, // kto sozdaet chat
+              to_uid: toUid    // s kem
+            });
         },
         getUserProfilePhotoUrl(emp_id) {
           return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
@@ -169,23 +160,59 @@ export default {
           axios
               .get("/emps/search?name="+this.searchUser)
               .then(response => {
-                console.log('Users', response.data)
-                  this.result = response.data
+                this.result = response.data
               })
               .catch(error => {
                   console.log('error')
               });
         },
+        deleteChat(id){
+            this.socket.emit("chat/delete", id)
+        }
 
     },
     computed: {
+        ...mapGetters({
+          emp_id: "auth/empId"
+        }),
+        ...mapGetters({
+          socket: "socket/getSocket"
+        }),
         chats(){
-          console.log('chats', this.$store.getters.getChats)
-            return this.$store.getters.getChats
+          return this.$store.getters.getChats
         },
         chatId(){
             return this.$store.getters.getActiveChat
         },
+    },
+    created () {
+      this.socket.on("private/create", data => {
+        let name = ''
+        axios
+          .get("/emps/info?id="+data.to_uid)
+          .then(response => {
+            name = response.data.LAST_NAME +' '+response.data.FIRST_NAME[0]+'. '+response.data.MIDDLE_NAME[0]+'.'
+            const chat = {
+              chat_id: data.id,
+              from_uid: data.from_uid,
+              to_uid: data.to_uid,
+              to_name: name,
+              messages: []
+            }
+            this.$store.dispatch('addChat', chat )
+            this.$store.dispatch('setActiveChat', data.id)
+          })
+          .catch(error => {
+              console.log('error')
+          });
+
+      })
+
+      this.socket.on("chat/delete", data => {
+          this.$store.dispatch('deleteChat', data)
+      })
+
+
     }
 }
 </script>

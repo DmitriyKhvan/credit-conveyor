@@ -19,13 +19,14 @@
             </div>
 
             <q-scroll-area ref='chat' class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
-                  <template v-if="chatId">
+
+                  <template v-if="chatMessages">
                     <div
-                      v-for="c in messages(chatId)"
+                      v-for="c in chatMessages"
                       :key="c.id"
                       class="row q-mb-md"
                     >
-                      <template v-if="emp_id === c.from_uid">
+                      <template v-if="emp_id === c.emp_id || emp_id === c.from_uid">
                         <div class="col"></div>
                         <div class="col-lg-5 col-md-8 message_my q-pa-md">
                             <div class="q-pb-sm">
@@ -47,7 +48,7 @@
                       <template v-else>
                         <div class="avatar self-end">
                             <q-avatar>
-                                <img :src="getUserProfilePhotoUrl(c.from_uid)">
+                                <img :src="getUserProfilePhotoUrl(c.emp_id)">
                             </q-avatar>
                         </div>
                         <div class="col-lg-5 col-md-8 col-sm-8 message q-pa-md">
@@ -55,7 +56,7 @@
                                 {{c.message}}
                             </div>
                             <q-badge class="description">
-                                {{chatName(c.from_name)}}
+                                {{chatName(c.name)}}
                             </q-badge>
                             <i>{{c.sent_at}}</i>
                         </div>
@@ -114,20 +115,9 @@
             <div class=" sendMesage">
                 <q-form @submit.prevent="sendMessage" class="row">
                     <div class="col">
-                        <q-input outlined dense v-model="form.message" label="Сообщение" />
+                        <q-input ref="input" outlined dense v-model="form.message" label="Сообщение" />
                     </div>
-                    <!-- <label>Users:</label>
-                    <q-select
-                        outlined
-                        v-model="form.to_uid"
-                        :options="userList"
 
-                        stack-label
-                        option-value="value"
-                        option-label="text"
-                        emit-value
-                        map-options
-                    /> -->
                     <div class="actionWidth text-center self-center"><q-btn icon="attach_file" flat/></div>
                     <div class="actionWidth self-center"><q-btn type="submit" icon="subdirectory_arrow_left" outline  /></div>
                 </q-form>
@@ -167,14 +157,11 @@ export default {
             titleChat: 'Название чата и описание',
             edTitile: false,
 
-            message: "",
+
             form: {
-                chat_id: "",
+                chat_id: null,
                 message: "",
-                from_uid: null,
-                to_uid: null,
-                status: 0,
-                sent_at: new Date()
+                from_uid: null
             },
         }
     },
@@ -183,21 +170,19 @@ export default {
             this.edTitile = false
         },
         sendMessage(e) {
-            e.preventDefault();
+            // e.preventDefault();
             this.form.from_uid = this.emp_id
             this.form.chat_id = this.chatId
-            this.form.to_uid = this.toUid
-
-            this.socket.emit("chat", this.form)
-            this.form.message = ''
+            this.socket.emit("msg/send", this.form)
+            this.$refs.input.focus()
         },
         formattedDate(date) {
             return commonUtils.formattedDate(date);
         },
         messages(id){
-            let chat = this.allChats.find(el => el.chat_id === id)
-            console.log('chatArr', chat.messages)
-            return chat.messages
+            // let chat = this.allChats.find(el => el.chat_id === id)
+            // console.log('chatArr', chat.messages)
+            // return chat.messages
         },
         chatName(n){
             let arr = n.split(' ')
@@ -248,38 +233,47 @@ export default {
             const duration = 300; // ms - use 0 to instant scroll
             scrollArea.setScrollPosition(scrollTarget.scrollHeight, duration);
         },
+
     },
     computed: {
         ...mapGetters({
-        user: "auth/fullName"
+          user: "auth/fullName"
         }),
         ...mapGetters({
-        emp_id: "auth/empId"
+          emp_id: "auth/empId"
         }),
         ...mapGetters({
-        inbox: "dicts/receivedNotifications"
+          inbox: "dicts/receivedNotifications"
         }),
         ...mapGetters({
-        socket: "socket/getSocket"
+          socket: "socket/getSocket"
         }),
         ...mapGetters({
-        userList: "dicts/getUserList"
+          userList: "dicts/getUserList"
         }),
         chatId(){
-            return this.$store.getters.getActiveChat
+          return this.$store.getters.getActiveChat
         },
         allChats(){
             return this.$store.getters.getChats
         },
         toUid(){
           return this.$store.getters.getToUid
-        }
+        },
+        chatMessages(){
+          if(this.chatId){
+            return this.$store.getters.getChatById(this.chatId).messages
+          }
+        },
+        activeChatId(){
+            return this.$store.getters.getActiveChat
+        },
 
     },
     updated() {
             this.scrollToBottom()
     },
-    mounted() {
+    created() {
         this.$nextTick(() => {
             this.heightChat = height(eee) - 240 + 'px'
             window.onresize = () => {
@@ -287,23 +281,31 @@ export default {
             }
         })
 
+      this.socket.emit("chat/all", this.emp_id);
+
+      this.socket.on("chat/all", data => {
+        const chats =[]
+        data.forEach(el=>{
+
+          const ch = {
+            chat_id: el.chat_id,
+            from_uid: this.emp_id,
+            to_uid: el.details[0].emp_id,
+            to_name: el.details[0].name,
+            messages: el.messages !== null ? el.messages : []
+          }
+          chats.push(ch)
+        })
+        this.$store.dispatch('setChat', chats)
+      });
+
+      this.socket.on("msg/send", data => {
+        this.$store.dispatch('addMessage', data)
+        this.form.message = ''
+      })
 
 
 
-
-        // // axios
-        // //     .get("/chat/private")
-        // //     .then(response => {
-        // //         console.log("chats", response.data);
-        // //     })
-        // //     .catch(error => {
-        // //         console.log("error Chats");
-        // //     });
-
-        // this.socket.on("/chat/private", data => {
-        //     console.log('DATA', data);
-
-        // });
     },
 }
 </script>
