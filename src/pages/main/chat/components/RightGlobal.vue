@@ -25,7 +25,7 @@
 
         <div class="chatsList scroll q-pt-md" :style="{height: heightRight}">
 
-            <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
+            <!-- <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
                 <div class="notice">10</div>
                 <div class="col">
                     <div class="text-subtitle1"><b>Название чата</b></div>
@@ -34,7 +34,7 @@
                 <div class="text-right actionsBlock self-center">
                     <q-btn icon="delete_outline"  color="grey-8" flat />
                 </div>
-            </div>
+            </div> -->
 
             <template v-if="result.length > 0">
             <div
@@ -64,7 +64,7 @@
             </template>
 
             <template v-else>
-              {{chats}}
+              <!-- {{chats}} -->
               <div
                   v-for="chat in chats"
                   :key="chat.chat_id"
@@ -187,6 +187,7 @@ export default {
     },
     created () {
       this.socket.on("private/create", data => {
+        console.log('created Chat')
         let name = ''
         axios
           .get("/emps/info?id="+data.to_uid)
@@ -201,6 +202,7 @@ export default {
             }
             this.$store.dispatch('addChat', chat )
             this.$store.dispatch('setActiveChat', data.id)
+            this.searchUser = ''
           })
           .catch(error => {
               console.log('error')
