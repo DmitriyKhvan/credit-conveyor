@@ -26,7 +26,7 @@ const SocketService = {
     let empId = store.getters["auth/empId"]
     this.runNotifications(socket, empId);
     this.runChat(socket, empId)
-    this.runGroup(socket, empId)
+    //this.runGroup(socket, empId)
     this.runChatList(socket, empId)
     this.runOnline(socket);
 
