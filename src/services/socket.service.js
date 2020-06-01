@@ -17,7 +17,7 @@ const SocketService = {
   runUsersCounter() {
     let socket = store.getters["socket/getSocket"];
     socket.on("count", data => {
-      console.log("countinRUN: ", data);
+      //console.log("countinRUN: ", data);
       store.dispatch("socket/setUserCount", data);
     });
   },
@@ -58,7 +58,7 @@ const SocketService = {
     socket.on("notifications", data => {
       if (data) {
         data.forEach(msg => {
-          console.log(msg)
+          //console.log(msg)
           store.dispatch("dicts/addNotification", msg);
           if (msg.status == 0) {
             NotifyService.showNotification(msg.title)
@@ -84,11 +84,15 @@ const SocketService = {
       login_time: CommonUtils.formattedDate(new Date)
     };
 
-    console.log({ online: data });
+    //console.log({ online: data });
     socket.emit("online", data);
   },
   runUserConnect(socket) {
     socket.on("uconnect", usr => {
+      let xlength = store.getters["auth/activeUsers"].length;
+      console.length(xlength);
+
+      usr.index = xlength + 1;
       store.dispatch("auth/setActiveUsers", usr);
     });
   },
