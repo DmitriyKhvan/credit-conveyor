@@ -187,6 +187,7 @@ export default {
     },
     created () {
       this.socket.on("private/create", data => {
+        console.log('created Chat')
         let name = ''
         axios
           .get("/emps/info?id="+data.to_uid)
@@ -201,6 +202,7 @@ export default {
             }
             this.$store.dispatch('addChat', chat )
             this.$store.dispatch('setActiveChat', data.id)
+            this.searchUser = ''
           })
           .catch(error => {
               console.log('error')

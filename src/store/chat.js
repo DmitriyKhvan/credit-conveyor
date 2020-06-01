@@ -20,10 +20,30 @@ export default {
         },
         addMessage (state, payload){
           let chat = state.chats.find(el => el.chat_id === payload.chat_id)
-          chat.messages.push(payload.messages[0])
+          const message = {
+            id: payload.messages[0].id,
+            emp_id: payload.messages[0].from_uid,
+            message: payload.messages[0].message,
+            sent_at: payload.messages[0].sent_at,
+            name: payload.messages[0].user_fio
+          }
+          if(chat) {
+            chat.messages.push(message)
+          } else {
+            const newChat = {
+              chat_id: payload.chat_id,
+              from_uid: payload.messages[0].from_uid,
+              to_uid: '',
+              to_name: '',
+              messages: [message]
+            }
+            state.chats.push(newChat)
+          }
+
         },
         deleteChat(state, id){
           state.chats = state.chats.filter(el => el.chat_id !== id)
+          state.activeChat = null
         }
 
     },

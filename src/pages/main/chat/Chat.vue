@@ -17,12 +17,12 @@
                     <q-btn  @click="edTitile = true" icon="create" flat/>
                 </div>
             </div>
+             <q-scroll-area ref='chat' class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
 
-            <q-scroll-area ref='chat' class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
 
-                  <template v-if="chatMessages">
+                  <template v-if="messages(chatId, allChats)">
                     <div
-                      v-for="c in chatMessages"
+                      v-for="c in messages(chatId, allChats)"
                       :key="c.id"
                       class="row q-mb-md"
                     >
@@ -66,48 +66,6 @@
 
                     </div>
                   </template>
-
-
-
-
-
-
-                <!-- <div class="row q-mb-md">
-                    <div class="avatar self-end">
-                        <q-avatar>
-                            <img src="https://cdn.quasar.dev/img/avatar.png">
-                        </q-avatar>
-                    </div>
-                    <div class="col-lg-5 col-md-8 col-sm-8 message q-pa-md">
-                        <div class="q-pb-sm">
-                            Yeah, I'm going to meet a friend of mine at the department store. I have to buy some presents for my parents.
-                        </div>
-                        <q-badge class="description">
-                            Петров А.А.
-                        </q-badge>
-                        <i>10 минут назад</i>
-                    </div>
-                    <div class="col"></div>
-                </div>
-
-                <div class="row q-mb-md">
-                    <div class="col"></div>
-                    <div class="col-lg-5 col-md-8 message_my q-pa-md">
-                        <div class="q-pb-sm">
-                            Yeah, I'm going to meet a friend of mine at the department store. I have to buy some presents for my parents.
-                        </div>
-                        <q-badge class="description_my">
-                            Вы
-                        </q-badge>
-                        <i>10 минут назад</i>
-                    </div>
-
-                    <div class="avatar_my self-end">
-                        <q-avatar>
-                            <img src="https://cdn.quasar.dev/img/avatar.png">
-                        </q-avatar>
-                    </div>
-                </div> -->
 
 
             </q-scroll-area>
@@ -157,7 +115,6 @@ export default {
             titleChat: 'Название чата и описание',
             edTitile: false,
 
-
             form: {
                 chat_id: null,
                 message: "",
@@ -179,11 +136,7 @@ export default {
         formattedDate(date) {
             return commonUtils.formattedDate(date);
         },
-        messages(id){
-            // let chat = this.allChats.find(el => el.chat_id === id)
-            // console.log('chatArr', chat.messages)
-            // return chat.messages
-        },
+
         chatName(n){
             let arr = n.split(' ')
             let name = arr[0] + ' '
@@ -233,6 +186,12 @@ export default {
             const duration = 300; // ms - use 0 to instant scroll
             scrollArea.setScrollPosition(scrollTarget.scrollHeight, duration);
         },
+        messages(id, chats){
+          if(id){
+            let chat = chats.find(mes => mes.chat_id === id)
+            return chat.messages
+          }
+        }
 
     },
     computed: {
@@ -260,11 +219,7 @@ export default {
         toUid(){
           return this.$store.getters.getToUid
         },
-        chatMessages(){
-          if(this.chatId){
-            return this.$store.getters.getChatById(this.chatId).messages
-          }
-        },
+
         activeChatId(){
             return this.$store.getters.getActiveChat
         },
@@ -289,7 +244,7 @@ export default {
 
           const ch = {
             chat_id: el.chat_id,
-            from_uid: this.emp_id,
+            emp_id: this.emp_id,
             to_uid: el.details[0].emp_id,
             to_name: el.details[0].name,
             messages: el.messages !== null ? el.messages : []
@@ -300,6 +255,7 @@ export default {
       });
 
       this.socket.on("msg/send", data => {
+        console.log('send', data)
         this.$store.dispatch('addMessage', data)
         this.form.message = ''
       })
