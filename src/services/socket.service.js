@@ -1,6 +1,6 @@
 import store from '@/store/index';
 import NotifyService from './notify.service';
-
+import CommonUtils from "@/shared/utils/CommonUtils"
 //let connection = store.getters["socket/usersCount"];
 //let socket = store.getters["socket/getSocket"];
 
@@ -21,13 +21,14 @@ const SocketService = {
   },
   runConnection(empId) {
     let socket = store.getters["socket/getSocket"];
+
     this.runNotifications(socket, empId);
     this.runChat(socket, empId)
     this.runGroup(socket, empId)
     this.runChatList(socket, empId)
+    this.runOnline(socket);
 
     socket.emit("chat/all", empId)
-    socket.emit("online", empId);
     store.dispatch("socket/setOnline", true);
     console.log("user is online");
   },
@@ -59,25 +60,39 @@ const SocketService = {
     });
   },
   runChat(socket, empId) {
-    socket.on("chat", data => {
-      console.log('chats',data)
-      store.dispatch('addMessage', data)
-      // logic...
-    });
+    // socket.on("chat", data => {
+    //   console.log('chats',data)
+    //   store.dispatch('addMessage', data)
+    //   // logic...
+    // });
   },
   runChatList(socket, empId) {
-    socket.on("chat/all", data => {
-      console.log('List',data)
-      store.dispatch('setChats', data)
+    // socket.on("chat/all", data => {
+    //   console.log('List',data)
+    //   store.dispatch('setChats', data)
 
-      // logic...
-    });
+    //   // logic...
+    // });
   },
   runGroup(socket, empId) {
     socket.on("group", data => {
 
       // logic...
     });
-  }
+  },
+  runOnline(socket) {
+    let uname = store.getters['auth/fullName'];
+    let empId = store.getters["auth/empId"]
+
+    let data = {
+      emp_id: empId,
+      emp_name: uname,
+      socket_id: socket.id,
+      login_time: CommonUtils.formattedDate(new Date)
+    };
+
+    console.log({ online: data });
+    socket.emit("online", data);
+  },
 };
 export default SocketService;
