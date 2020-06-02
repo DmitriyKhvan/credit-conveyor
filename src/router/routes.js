@@ -19,6 +19,10 @@ const WorkPage = () => import("pages/main/work/Work");
 const Assistant = () =>
   import("pages/main/work/assistant/Assistant.vue");
 const Profile = () => import("pages/main/profile/Profile.vue");
+const Settings = () => import("pages/main/profile/settings/Settings.vue");
+const ThemesAdmin = () => import("pages/main/profile/settings/ThemesAdmin.vue");
+const ThemesUser = () => import("pages/main/profile/settings/ThemesUser.vue");
+
 const MyData = () => import("pages/main/profile/mydata/MyData.vue");
 const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue");
 // chancellary
@@ -253,6 +257,22 @@ const routes = [{
         path: "myfinance",
         name: "My Finance",
         component: MyFinance
+      },
+      {
+        path: "settings",
+        name: "Settings",
+        component: Settings,
+          children: [{
+            path: "themesAdmin",
+            name: "ThemesAdmin",
+            component: ThemesAdmin
+          },
+          {
+            path: "themesUser",
+            name: "ThemesUser",
+            component: ThemesUser
+          }
+        ]
       },
     ]
   },

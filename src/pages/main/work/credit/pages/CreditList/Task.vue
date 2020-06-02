@@ -1066,7 +1066,7 @@
           class="q-ml-md full-width"
           @click="() => {
             confirm = true
-            isApproved = 'N'
+            commentCC.Decision = 'N'
           }"
         />
       </div>
@@ -1078,7 +1078,7 @@
           class="q-ml-md full-width"
           @click="() => {
             confirm = true
-            isApproved = 'R'
+            commentCC.Decision = 'R'
           }"
         />
       </div>
@@ -1136,7 +1136,7 @@
               v-close-popup
               @click="() => {
                 comment=''
-                isApproved='Y'
+                commentCC.Decision='Y'
               }"
             />
           </div>
@@ -1162,12 +1162,25 @@ export default {
   data() {
     return {
       confirm: false,
-      reason: "",
+      // reason: "",
       comment: "",
-      isApproved: "Y",
-      options: {
-        reason: ["причина 1", "причина 2", "причина 3", "другое"]
+      commentBO: {
+        Comment: this.comment,
+        Type: "",
+        CommentPerson: this.$store.getters["auth/username"],
+        //id: 0,
+        //CommentDate: ""
+      },
+      commentCC: {
+        Comment: this.comment,
+        MemberOfCCFIO: "",
+        Id: 0,
+        Login: this.$store.getters["auth/username"],
+        Decision: "Y"
       }
+      // options: {
+      //   reason: ["причина 1", "причина 2", "причина 3", "другое"]
+      // }
     };
   },
   async created() {
@@ -1236,14 +1249,7 @@ export default {
         this.fullProfile.BODecision = true // кредит одобрен 
         //delete this.fullProfile.ApplicationComment.items[0].CommentDate
       } else if (this.userRole == "CreditCommitteeMember") {
-        const comment = {
-            Comment: "",
-            MemberOfCCFIO: "",
-            id: null,
-            Login: this.$store.getters["auth/username"],
-            isApproved: this.isApproved
-          }
-          this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
+          this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment: this.commentCC})
       }
 
       this.sentData('Credit success')
@@ -1272,26 +1278,10 @@ export default {
           this.fullProfile.BOLogin = this.$store.getters["auth/username"]
           this.fullProfile.BODecision = false // кредит отклонен
 
-          const comment = {
-                  Comment: this.comment,
-                  Type: "",
-                  CommentPerson: this.$store.getters["auth/username"],
-                  id: null,
-                  //CommentDate: ""
-                }
-
-          this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment})
+          this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment: this.commentBO})
 
         } else if (this.userRole == "CreditCommitteeMember") {
-          const comment = {
-            Comment: this.comment,
-            MemberOfCCFIO: "",
-            id: null,
-            Login: this.$store.getters["auth/username"],
-            isApproved: this.isApproved
-          }
-
-          this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment})
+          this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment: this.commentCC})
         }
 
         this.sentData('Credit failure')
