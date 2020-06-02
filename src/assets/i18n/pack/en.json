@@ -16,9 +16,18 @@
     "delay": "Delay",
     "choose": "- Select -",
     "all": "- Select all -",
-    "not_all": "- Unselect all -"
+    "not_all": "- Unselect all -",
+    "double_click": "Double Click",
+    "status": "Status",
+    "from": "From",
+    "created": "Created",
+    "new": "New",
+    "size": "Size",
+    "file": "File",
+    "message": "Message"
   },
   "actions": {
+    "open": "Open",
     "details": "Details",
     "add": "Add",
     "edit": "Edit",
@@ -69,7 +78,13 @@
     "automatic_value": "Generated automatically",
     "author": "Author",
     "executor": "Executor",
-    "view_type": "View type"
+    "view_type": "View type",
+    "submit": "Добавить",
+    "cancel": "Отмена",
+    "print": "Print",
+    "send": "Send",
+    "redirect": "Redirect",
+    "sort": "Sort"
   },
   "messages": {
     "accessDenied": "Access Denied",
@@ -80,6 +95,7 @@
     "confirm_delete": "Are you sure you want to delete?",
     "confirm_exit": "Are you sure you want to exit?",
     "confirm_save": "Are you sure you want to save?",
+    "confirm_exit_test": "Are you sure you want to finish test?",
     "no_data": "No data found",
     "invalid_password": "Invalid password - please retry",
     "function_not_found": "Function not found or inaccessible",
@@ -140,7 +156,20 @@
       "side": "Side",
       "over": "Over"
     },
-    "backdrop": "Backdrop"
+    "backdrop": "Backdrop",
+    "notification": {
+      "_self": "Уведомления"
+    },
+    "results": {
+      "myResults": "My results"
+    },
+    "caruselCard": {
+      "birthday": "Birthday",
+      "employees": "employee(s)",
+      "today": "today",
+      "tomorrow": "tomorrow",
+      "aftertomorrow": "day after tomorrow"
+    }
   },
   "users": {
     "_self": "Users",
@@ -243,7 +272,8 @@
     },
     "device_marks": {
       "_self": "Device Marks Table",
-      "add_edit": "Create/Edit Device Mark"
+      "add_edit": "Create/Edit Device Mark",
+      "deviceCharacteresticsName": "Device Characterestics Name"
     },
     "device_details": {
       "_self": "Device Details Table",
@@ -251,10 +281,158 @@
     },
     "device_models": {
       "_self": "Device Types Model",
-      "add_edit": "Create/Edit Device Model"
+      "add_edit": "Create/Edit Device Model",
+      "device_model_name": "Device Model Name",
+      "device_type": "Device Type",
+      "device_mark": "Device Mark",
+      "device_details": "Device Details"
+    },
+    "devices": {
+      "_self": "Devices",
+      "marks": "Marks",
+      "models": "Models",
+      "details": "Details",
+      "add_edit_devices": "Add/Edit Devices",
+      "device_serial_number": "Device Serial Number",
+      "branch": "Branch",
+      "filial": "Filial",
+      "description": "Description",
+      "inventory": "Inventory",
+      "status": "Status",
+      "made_date": "Made Date",
+      "bought_date": "Bought Date"
+    },
+    "devices_history": {
+      "add_edit_history": "Добавить/Изменить Историю",
+      "device": "Device",
+      "user": "User",
+      "status": "Status"
+    },
+    "work": {
+      "choose_executor": "Choose Executor",
+      "choose_executive": "Choose Executive",
+      "document_num": "Docmunent №",
+      "content": "Content",
+      "content_err": "Please enter content",
+      "resolution": "Resolution",
+      "choose_file": "Choose File",
+      "journal": "Journal",
+      "tasks": {
+        "new": "New",
+        "accepted": "Accepted",
+        "working": "Working",
+        "finished": "Finished",
+        "actions": "Actions",
+        "redirect": "Redirect",
+        "sort": "Sort",
+        "responsibles": "Responsibles",
+        "from": "From",
+        "dialog_task": {
+          "document_num": "Docmunent №",
+          "choose_executor": "Choose Executor",
+          "update": "Update"
+        },
+        "dialog_hierarchy": {
+          "resp_for_doc_num": "Responsibles for document №"
+        }
+      },
+      "assistant": {
+        "sent": "Sent",
+        "no_result": "No results",
+        "choose_template": "Choose template",
+        "not_signed": "Not signed",
+        "signed": "Signed",
+        "name": "Name",
+        "journal": "Journal",
+        "organ": "Organ",
+        "pages": "Pages",
+        "not_reviewed": "Not reviewed",
+        "task": "Task",
+        "task_template": "Task template",
+        "dialog": {
+          "resp_for_doc_num": "Ответсвенные по документу №"
+        }
+      },
+      "credit": {
+        "try_again": "Try Again"
+      },
+      "chancellery": {
+        "_self": "Канцелярия",
+        "choose_journal_err": "Пожалуста выберите журнал",
+        "regions": "Regions",
+        "inc_number": "Inc. Number",
+        "inc_date": "Inc. Date",
+        "choose_organization": "Choose organization",
+        "choose_organization_err": "Please select organization",
+        "write_from": "Write from",
+        "without_number": "Without number",
+        "out_number": "Out. number",
+        "out_date": "Out. date",
+        "without_date": "Without date",
+        "format": "Формат",
+        "page_amount": "Кол. лист",
+        "page_amount_err": "Please enter amount of pages",
+        "who_signed": "Who signed",
+        "review_file": "Review file",
+        "results": {
+          "FILE": "FILE",
+          "JOURNAL": "JOURNAL",
+          "REGION": "REGION",
+          "IN_NUMBER": "IN NUMBER",
+          "IN_DATE": "IN DATE",
+          "ORGAN": "ORGAN",
+          "WHO_SEND": "WHO SEND",
+          "OUT_NUMBER": "OUT NUMBER",
+          "OUT_DATE": "OUT DATE",
+          "FORMAT": "FORMAT",
+          "PAGE_AMOUNT": "PAGE AMOUNT",
+          "CONTENT": "CONTENT",
+          "WHO_SIGNED": "КТО ПОДПИСАЛ"
+        }
+      }
     },
     "education": {
-      "topicName": "Topic Name"
+      "topicName": "Topic Name",
+      "topicNameError": "Topic name error",
+      "addEditTopic": "Add/Edit Topic",
+      "addEditQuestion": "Add/Edit Question",
+      "levelOfQuestion": "Complexity of Question",
+      "levelQuestionError": "Error on inserting Complexity of Question",
+      "questionName": "Enter Question",
+      "textVariant": "Text of Variant",
+      "addEditTest": "Add/Edit Test",
+      "description": "Description",
+      "duration": "Duration (in minutes)",
+      "hideStatus": "Show/Hide Test",
+      "testAmount": "Test Amount",
+      "addEditTestError": "Error on inserting Test",
+      "monitoring": "Мониторинг",
+      "test": {
+        "choose_test": "Choose Test",
+        "begin_test": "Begin Test",
+        "marked_questions": "Marked questions",
+        "not_marked_questions": "Not marked questions",
+        "not_visited_questions": "Not visited questions",
+        "previous": "Previous",
+        "end_test": "End Test",
+        "next": "Next",
+        "time_left": "Time left",
+        "completed": {
+          "end1": "Congratulations, You have successfully passed the test!",
+          "end2": "Wish You great success, great achievements in life,",
+          "end3": "further work on the way of prsperity of our bank!",
+          "efficiency": "Efficiency",
+          "your_result": "Your Result",
+          "right_answers": "Right answers",
+          "wrong_answers": "Wrong answers",
+          "not_answered": "Not answered",
+          "total_time": "Total time",
+          "hours": "hour(s)",
+          "minutes": "minute(s)",
+          "seconds": "second(s)",
+          "avg_time_for_one_question": "Average time for one question"
+        }
+      }
     }
   }
 }

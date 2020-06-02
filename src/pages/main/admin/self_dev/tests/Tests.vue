@@ -1,7 +1,6 @@
 <template>
   <div id="addEditTopicPage">
     <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
-    <router-view />
   </div>
 </template>
 
@@ -30,7 +29,8 @@ export default {
           "created_by",
           "creation_date",
           "updated_by",
-          "update_date"
+          "update_date",
+          "topics"
         ],
         excludeSortingColoumns: [],
         enableAddEdit: true,

@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Add Edit Device Model</div>
+          <div class="text-h6">{{$t('tables.device_models.add_edit')}}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -19,7 +19,7 @@
               color="purple-12"
               class="col-xs-12 col-sm-12 col-md-6"
               v-model="details.name"
-              label="Device Model Name"
+              :label="$t('tables.device_models.device_model_name')"
               :rules="[
                 val =>
                   $v.details.name.required || 'Device Model Name is required'
@@ -30,7 +30,7 @@
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              label="Device Type"
+              :label="$t('tables.device_models.device_type')"
               :value="deviceTypeName"
               @dblclick="selectDeviceType()"
               readonly="readonly"
@@ -40,7 +40,7 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
           </div>
@@ -49,7 +49,7 @@
             <q-input
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
-              label="Device Mark"
+              :label="$t('tables.device_models.device_mark')"
               :value="deviceMarkName"
               @dblclick="selectDeviceMark()"
               readonly="readonly"
@@ -59,37 +59,41 @@
               ]"
               lazy-rules
             >
-              <template v-slot:hint>Double Click</template>
+              <template v-slot:hint>{{$t('common.double_click')}}</template>
             </q-input>
             <!--  -->
           </div>
 
           <div class="row justify-between">
-            <div class="text-h6">DETAILS</div>
+            <div class="text-h6">{{$t('tables.devices.details')}}</div>
           </div>
 
           <!-- Device Model Details -->
-          <div class="row" v-for="(items, index) in details.details" :key="index">
+          <div class="row" v-for="(item, index) in details.details" :key="index">
             <div class="col-5">
               <q-input
                 outlined
                 class="col-xs-12 col-sm-12 col-md-6"
-                label="Device Detail"
+                :label="$t('tables.device_models.device_details')"
                 :value="deviceDetailName[index]"
                 @dblclick="selectDeviceDetail(index)"
                 readonly="readonly"
               >
-                <template v-slot:hint>Double Click</template>
+                <template v-slot:hint>{{$t('common.double_click')}}</template>
               </q-input>
             </div>
             <div class="col-5">
-              <q-input
+              <q-select
                 outlined
-                clearable
-                color="purple-12"
-                class="col-xs-12 col-sm-12 col-md-6"
-                v-model="details.details[index].value"
-                label="Device Model Name"
+                class="col-xs-12 col-sm-6 col-md-6"
+                v-model="item.val_id"
+                :options="deviceDetailValue"
+                stack-label
+                option-value="value"
+                option-label="text"
+                emit-value
+                map-options
+                label="Value Id"
               />
             </div>
             <div class="col-1">
@@ -103,26 +107,32 @@
                   @click="deleteDetailItem(index)"
                 >
                   <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-                    <span>Delete</span>
+                    <span>{{$t('actions.delete')}}</span>
                   </q-tooltip>
                 </q-btn>
               </div>
             </div>
           </div>
+          <!-- -->
         </div>
       </q-card-section>
       <q-card-section>
         <q-btn color="teal" @click="addDetailItem()">
           <q-icon left size="2em" name="add" />
-          <div>Add</div>
+          <div>{{$t('actions.add')}}</div>
         </q-btn>
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
+        <q-btn
+          color="primary"
+          :disable="$v.details.$invalid"
+          :label="$t('actions.submit')"
+          @click="submitForm"
+        >
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
-        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
+        <q-btn color="primary" :label="$t('actions.cancel')" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -150,6 +160,7 @@ export default {
       deviceTypeName: null,
       deviceMarkName: null,
       deviceDetailName: [],
+      deviceDetailValue: [],
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
@@ -238,6 +249,9 @@ export default {
   },
   mixins: [dialogMix],
   created() {},
+  computed: {
+    valuesList(detail_id) {}
+  },
   methods: {
     initializeData() {
       if (!!this.data.selectedRow) {
@@ -249,7 +263,6 @@ export default {
         });
       }
     },
-
     deleteDetailItem(index) {
       this.details.details.splice(index, 1);
     },
@@ -257,7 +270,7 @@ export default {
       let aDetail = {
         id: null,
         detail_id: null,
-        value: null
+        val_id: null
       };
       this.details.details = this.details.details || [];
       this.details.details.push(aDetail);
@@ -310,12 +323,37 @@ export default {
         .onOk(res => {
           this.deviceDetailName[index] = res[0].name;
           this.details.details[index].detail_id = res[0].id;
+          this.setDetailList(res[0].id);
           console.log(this.details.details);
         })
         .onCancel(() => {
           console.log("Cancel");
         });
+    },
+    setDetailList(id) {
+      return ApiService.get(`devices/dvals?id=${id}`)
+        .then(
+          res => {
+            console.log(res.data);
+            this.deviceDetailValue = res.data.map(el => {
+              return {
+                text: el.value,
+                value: el.id
+              };
+            });
+            // set enable
+          },
+          err => {
+            console.err(err);
+          }
+        )
+        .catch(err => {
+          console.err(err);
+        });
     }
+  },
+  isValueEnabled() {
+    return;
   }
 };
 </script>

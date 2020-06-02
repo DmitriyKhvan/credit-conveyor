@@ -1,7 +1,6 @@
 <template>
   <div id="addEditTopicPage">
     <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
-    <router-view />
   </div>
 </template>
 

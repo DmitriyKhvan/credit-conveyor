@@ -3,6 +3,8 @@
 // } from "../services/dict.service";
 // import TokenService from "../services/storage.service";
 
+import store from "../index";
+
 const state = {
   menus: [],
   parentMenus: [],
@@ -13,7 +15,14 @@ const state = {
   menuList: [],
   userList: [],
   receivedNotifications: [],
-  testTopicList: []
+  testTopicList: [],
+  dictTypes: [],
+  countNotifications: 0,
+
+  formats: null,
+  journals: null,
+  organs: null,
+  regions: null
 };
 
 const getters = {
@@ -39,16 +48,19 @@ const getters = {
   getIconsDict(state) {
     return state.icons.map(val => {
       return {
-        text: val.name, //<i class="${val.class}"></i> ${val.name}
+        text: val.name,
         value: val.class
       };
     });
   },
   getParentMenus(state) {
+    let lang = store.state.common.langNum;
+
     return state.parentMenus.map(val => {
       return {
-        text: val.name[0], // TODO add lang <i class="${val.class}"></i> ${val.name}
-        value: val.menu_id
+        text: val.name[lang] + '\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + val.url,
+        value: val.menu_id,
+        url: val.url
       };
     });
   },
@@ -68,14 +80,38 @@ const getters = {
   getUserList: state => {
     return state.userList.map(val => {
       return {
-        text: val.name, // TODO add lang <i class="${val.class}"></i> ${val.name}
-        value: val.user_id
+        text: val.name,
+        value: val.emp_id
       };
     });
   },
   receivedNotifications: state => {
     return state.receivedNotifications;
+  },
+  getDictTypes: state => {
+    return state.dictTypes.map(val => {
+      return {
+        text: val.name,
+        value: val.id
+      };
+    });
+  },
+  getCountNotifications: (state) => {
+    return state.countNotifications;
+  },
+  getFormat: (state) => {
+    return state.formats
+  },
+  getJournal: (state) => {
+    return state.journals
+  },
+  getOrgan: (state) => {
+    return state.organs
+  },
+  getRegion: (state) => {
+    return state.regions
   }
+
 };
 
 const mutations = {
@@ -108,6 +144,27 @@ const mutations = {
   },
   addNotification(state, noty) {
     state.receivedNotifications = [noty, ...state.receivedNotifications];
+    if (noty.status == 0) {
+      state.countNotifications++;
+    }
+  },
+  setDictTypes(state, types) {
+    state.dictTypes = types
+  },
+  setCountNotifications(state, count) {
+    state.countNotifications = count;
+  },
+  setFormat: (state, payload) => {
+    state.formats = payload
+  },
+  setJournal: (state, payload) => {
+    state.journals = payload
+  },
+  setOrgan: (state, payload) => {
+    state.organs = payload
+  },
+  setRegion: (state, payload) => {
+    state.regions = payload
   }
 };
 
@@ -138,6 +195,11 @@ const actions = {
   }, icons) {
     commit("setIconsDict", icons)
   },
+  setCountNotifications({
+    commit
+  }, count) {
+    commit("setCountNotifications", count)
+  },
   setParentMenus({
     commit
   }, parentMenus) {
@@ -162,8 +224,24 @@ const actions = {
     commit
   }, noty) {
     commit("addNotification", noty);
+  },
+  setDictTypes({
+    commit
+  }, types) {
+    commit("setDictTypes", types);
+  },
+  setFormat: ({ commit }, formats) => {
+    commit("setFormat", formats)
+  },
+  setJournal: ({ commit }, journals) => {
+    commit("setJournal", journals)
+  },
+  setOrgan: ({ commit }, organs) => {
+    commit("setOrgan", organs)
+  },
+  setRegion: ({ commit }, regions) => {
+    commit("setRegion", regions)
   }
-
 };
 //
 export const dicts = {

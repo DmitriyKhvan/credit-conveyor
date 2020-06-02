@@ -1,10 +1,12 @@
 <template>
-  <div>
-    <appLoader v-if="loaderForm" />
+  <div class="registration">
+    <div class="loaderForm" v-if="credits.loaderForm">
+      <appLoader />
+    </div>
 
     <div v-else class="q-pa-md row justify-center">
-      <form @submit.prevent.stop="onSubmit" style="width: 70%">
-        <div class="row q-gutter-md">
+      <form @submit.prevent.stop="onSubmit" class="preapprovForm">
+        <div class="row q-col-gutter-md">
           <div class="col-7">
             <!-- Private data person -->
             <div class="privat-data tab">
@@ -133,19 +135,8 @@
                 </div>
               </div>
 
-              <!-- Preloader auto compleate -->
-              <div class="row justify-center loader" v-if="loader">
-                <q-spinner-ios color="primary" size="2em" />
-                <q-tooltip :offset="[0, 8]">Пожалуйста подождите</q-tooltip>
-              </div>
-
-              <!-- Button auto complete person data -->
-              <div v-else>
-                <app-auto-complete-data></app-auto-complete-data>
-              </div>
-
-              <div class="row justify-between">
-                <div class="creditContent">
+              <div class="row q-col-gutter-md justify-between">
+                <div class="col-6">
                   <q-select
                     ref="typeCredit"
                     square
@@ -157,12 +148,11 @@
                     emit-value
                     map-options
                     :rules="[val => !!val || 'Выберите кредитный продукт']"
-                    class="q-pb-sm"
                   />
                 </div>
-
-                <div v-if="!!personalData.typeCredit" class="creditContent">
+                <div class="col-6">
                   <q-select
+                    v-if="!!personalData.typeCredit"
                     ref="typeStepCredit"
                     square
                     outlined
@@ -173,36 +163,45 @@
                     emit-value
                     map-options
                     :rules="[val => !!val || 'Выберите тип погашения кредита']"
-                    class="q-pb-sm"
                   />
                 </div>
+              </div>
 
-                <div v-if="!!personalData.typeCredit" class="col-12">
-                  <h6 class="periodCredit">Выберите срок кредита</h6>
-                  <q-badge color="secondary">
-                    Срок: {{ personalData.periodCredit }} ({{ periodCreditMin }} до
-                    {{ periodCreditMax }})
-                  </q-badge>
-                  <q-slider
-                    v-model.number="personalData.periodCredit"
-                    :min="periodCreditMin"
-                    :max="periodCreditMax"
-                    :step="1"
-                    label
-                    label-always
-                    color="light-green"
-                    :rules="[val => !!val || 'Выберите срок кредита']"
-                  />
-                </div>
+              <div v-if="!!personalData.typeCredit" class="col-12">
+                <h6 class="periodCredit">Выберите срок кредита</h6>
+                <q-badge color="secondary">
+                  Срок: {{ personalData.periodCredit }} ({{
+                    periodCreditMin
+                  }}
+                  до {{ periodCreditMax }})
+                </q-badge>
+                <q-slider
+                  v-model.number="personalData.periodCredit"
+                  :min="periodCreditMin"
+                  :max="periodCreditMax"
+                  :step="1"
+                  label
+                  label-always
+                  color="light-green"
+                  :rules="[val => !!val || 'Выберите срок кредита']"
+                />
+              </div>
+
+              <div class="row col-12 justify-center items-center">
+                <!-- Preloader auto compleate -->
+                <appLoader v-if="loader" />
+
+                <!-- Button auto complete person data -->
+                <app-auto-complete-data v-else />
               </div>
             </div>
           </div>
 
-          <div class="col">
+          <div class="col-5">
             <!-- Family status -->
             <div class="family-status tab">
               <h4 class="tab-title" ref="familyStatus">Семейное положение</h4>
-              <div class="tab-content" ref="tabContent">
+              <div class="tab-content q-col-gutter-md" ref="tabContent">
                 <q-select
                   square
                   outlined
@@ -212,7 +211,6 @@
                   label="Семейное положения"
                   emit-value
                   map-options
-                  class="q-pb-sm"
                 />
                 <q-select
                   square
@@ -223,7 +221,6 @@
                   label="Есть ли дети"
                   emit-value
                   map-options
-                  class="q-pb-sm"
                 />
                 <q-input
                   v-if="personalData.children"
@@ -233,7 +230,6 @@
                   mask="##"
                   dense
                   label="Количество детей до 18 лет"
-                  class="q-pb-sm"
                 />
               </div>
             </div>
@@ -259,6 +255,22 @@
                       'Поля должно быт заполнено'
                   ]"
                 />
+
+                <!-- Для форматирования числе -->
+                <!-- <q-input
+                  ref="income"
+                  square
+                  outlined
+                  v-model="personalData.income"
+                  dense
+                  label="Подтвержденный ежемесячный доход"
+                  lazy-rules
+                  :rules="[
+                    val =>
+                      (val && val.length !== null) ||
+                      'Поля должно быт заполнено'
+                  ]"
+                /> -->
                 <q-input
                   ref="expense"
                   square
@@ -281,48 +293,50 @@
                   lazy-rules
                   :rules="['Поля должно быт заполнено']"
                 />
-                <q-select
-                  square
-                  outlined
-                  v-model="personalData.externalIncome"
-                  :options="options.extIncOption"
-                  dense
-                  label="Наличие дополнительного дохода"
-                  emit-value
-                  map-options
-                  class="q-pb-sm"
-                />
-                <q-input
-                  v-if="personalData.externalIncome"
-                  square
-                  outlined
-                  v-model.number="personalData.externalIncomeSize"
-                  type="number"
-                  dense
-                  label="Размер дополнительного дохода"
-                  class="q-pb-sm"
-                />
-                <q-select
-                  v-if="personalData.externalIncome"
-                  square
-                  outlined
-                  v-model="personalData.additionalIncomeSource"
-                  :options="options.additIncSourOption"
-                  dense
-                  label="Источник дополнительного дохода"
-                  class="q-pb-sm"
-                />
+                
+                <div class="q-col-gutter-md">
+                  <q-select
+                    square
+                    outlined
+                    v-model="personalData.externalIncome"
+                    :options="options.extIncOption"
+                    dense
+                    label="Наличие дополнительного дохода"
+                    emit-value
+                    map-options
+                  />
+                  <q-input
+                    v-if="personalData.externalIncome"
+                    square
+                    outlined
+                    v-model.number="personalData.externalIncomeSize"
+                    type="number"
+                    dense
+                    label="Размер дополнительного дохода"
+                  />
+                  <q-select
+                    v-if="personalData.externalIncome"
+                    square
+                    outlined
+                    v-model="personalData.additionalIncomeSource"
+                    :options="options.additIncSourOption"
+                    dense
+                    label="Источник дополнительного дохода"
+                    emit-value
+                    map-options
+                  />
+                </div>
               </div>
+            </div>
 
-              <!-- Credit result -->
-              <div class="row">
-                <q-btn
-                  type="submit"
-                  color="green"
-                  label="РАССЧИТАТЬ КРЕДИТ"
-                  class="q-ml-sm full-width"
-                />
-              </div>
+            <!-- Credit result -->
+            <div class="row calCreditBtn">
+              <q-btn
+                type="submit"
+                color="green"
+                label="РАССЧИТАТЬ КРЕДИТ"
+                class="q-ml-sm full-width"
+              />
             </div>
           </div>
         </div>
@@ -332,18 +346,20 @@
 
       <apploaderFullScreen v-if="loaderPreApproval"></apploaderFullScreen>
       <!-- Pre-Approval -->
-      <app-pre-approval  v-else></app-pre-approval>
+      <app-pre-approval v-else></app-pre-approval>
     </div>
   </div>
 </template>
 <script>
 // import Vue from "vue";
 import CommonUtils from "@/shared/utils/CommonUtils";
+import formatNumber from "../../filters/format_number.js";
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import DigIdNetworkError from "./DigIdNetworkError";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
+import { validItems } from "../../filters/valid_filter";
 
 // Vue.config.errorHandler = function(err, vm, info) {
 //   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
@@ -355,7 +371,7 @@ export default {
       periodCreditMin: null,
       periodCreditMax: null,
       loader: true,
-      loaderForm: true,
+      // loaderForm: true,
       loaderPreApproval: false,
       options: {
         family: [
@@ -390,12 +406,30 @@ export default {
           }
         ], //наличие дополнительного дохода
         additIncSourOption: [
-          "Работа по найму",
-          "Аренда движимого имущетсва",
-          "Аренда недвижимого имущества",
-          "Предпринимательская деятельность",
-          "Дивиденды",
-          "Другое"
+          {
+            label: "Работа по найму",
+            value: "11"
+          },
+          {
+            label: "Аренда движимого имущества",
+            value: "12"
+          },
+          {
+            label: "Аренда недвижимого имущества",
+            value: "13"
+          },
+          {
+            label: "Предпринимательская деятельность",
+            value: "14"
+          },
+          {
+            label: "Дивиденды",
+            value: "15"
+          },
+          {
+            label: "Другое",
+            value: "16"
+          }
         ], //источник дополнительного дохода
 
         typeCredits: [],
@@ -405,19 +439,19 @@ export default {
     };
   },
   async created() {
+    this.$store.commit("credits/resetPersonData");
 
-    this.$store.commit("resetPersonData")
-    
     try {
-      const auth = await this.$store.dispatch("authBpm");
+      const auth = await this.$store.dispatch("credits/authBpm");
       console.log("auth", auth);
-
-      const process = await this.$store.dispatch("startProcess");
+      const process = await this.$store.dispatch("credits/startProcess");
       console.log("process", process);
+      // this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
 
-      this.$store.commit("setTaskId", process.userTaskCreditDetailed.id)
-      this.personalData.spouseCost = process.userTaskCreditDetailed.input.spouseCost
-      this.personalData.childCost = process.userTaskCreditDetailed.input.childCost
+      this.personalData.spouseCost =
+        process.userTaskCreditDetailed.input.spouseCost;
+      this.personalData.childCost =
+        process.userTaskCreditDetailed.input.childCost;
 
       for (let typeCredit of process.userTaskCreditDetailed.input.credits) {
         const credits = {
@@ -431,13 +465,13 @@ export default {
         this.options.typeCredits.push(credits);
       }
 
-      console.log('typeCredits', this.options.typeCredits);
-      this.loaderForm = false;
+      console.log("typeCredits", this.options.typeCredits);
+      this.$store.commit("credits/toggleLoaderForm", false);
     } catch (error) {}
 
     try {
-      const scannerSerial = await this.$store.dispatch("getDigIdNumber");
-      this.$store.commit("sentScannerSerialNumber", scannerSerial);
+      const scannerSerial = await this.$store.dispatch("credits/getDigIdNumber");
+      this.$store.commit("credits/sentScannerSerialNumber", scannerSerial);
       this.loader = false;
     } catch (err) {
       console.log("DigId", err);
@@ -446,24 +480,24 @@ export default {
   },
   computed: {
     loadMessage() {
-      return this.$store.state.credits.loadMessage;
+      return this.$store.getters["credits/credits"].loadMessage
     },
     disableInput() {
-      return this.$store.state.credits.disableInput;
+      return this.$store.getters["credits/credits"].disableInput
     },
-    disableBtn() {
-      return this.$store.state.credits.disableBtn;
-    },
+    // disableBtn() {
+    //   return this.$store.state.credits.disableBtn;
+    // },
     personalData() {
-      return this.$store.state.credits.personalData;
+      return this.$store.getters["credits/credits"].personalData
     },
     credits() {
-      return this.$store.state.credits
+      return this.$store.getters["credits/credits"];
     }
   },
   watch: {
-    "personalData.typeCredit" (credit) {
-      this.personalData.typeStepCredit = null
+    "personalData.typeCredit"(credit) {
+      this.personalData.typeStepCredit = null;
       this.options.typeStepCredits = [];
       this.periodCreditMin = null;
       this.periodCreditMax = null;
@@ -498,18 +532,23 @@ export default {
         );
       }
     },
-    "personalData.children" (status) {
+    "personalData.children"(status) {
       if (!status) {
-        this.personalData.childrenCount = 0
+        this.personalData.childrenCount = 0;
       }
     },
 
-    "personalData.externalIncome" (status) {
+    "personalData.externalIncome"(status) {
       if (!status) {
-        this.personalData.externalIncomeSize = 0
-        this.personalData.additionalIncomeSource = ""
+        this.personalData.externalIncomeSize = 0;
+        this.personalData.additionalIncomeSource = "";
       }
-    }
+    },
+    // Для форматирования числе
+    // "personalData.income"(number) {
+    //   console.log(formatNumber(number)) 
+    //   this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
+    // }
   },
   methods: {
     async onSubmit() {
@@ -526,7 +565,7 @@ export default {
       if (!!this.personalData.typeCredit) {
         this.$refs.typeStepCredit.validate();
       } else {
-        this.validItems("typeStepCredit");
+        validItems(this.$refs, "typeStepCredit");
       }
 
       this.$refs.income.validate();
@@ -541,17 +580,15 @@ export default {
         this.$refs.phone.hasError ||
         this.$refs.pinpp.hasError ||
         this.$refs.pasport.hasError ||
-
         this.$refs.typeCredit.hasError ||
         this.$refs.typeStepCredit.hasError ||
-
         this.$refs.income.hasError ||
         this.$refs.expense.hasError ||
         this.$refs.otherExpenses.hasError
       ) {
         this.formHasError = true;
       } else {
-        this.$store.commit("loadMessageChange", "");
+        this.$store.commit("credits/loadMessageChange", "");
         this.loaderPreApproval = true;
         const {
           children,
@@ -573,7 +610,7 @@ export default {
           periodCredit,
           loanRate,
           spouseCost,
-          childCost,
+          childCost
         } = this.personalData;
 
         const data = {
@@ -602,7 +639,7 @@ export default {
                     number: Number(passport.slice(2)),
                     series: passport.slice(0, 2)
                   },
-                  mainPhone: phone.replace(/[\s+()]/g, ''),
+                  mainPhone: phone.replace(/[\s+()]/g, ""),
                   tin: Number(inn),
                   pinpp
                 }
@@ -620,18 +657,18 @@ export default {
           ]
         };
 
-        const taskId = this.$store.getters.taskId
+        console.log(JSON.stringify(data, null, 2));
 
         try {
-          const resCredit = await this.$store.dispatch('calculationCredit', {taskId, data})
-          console.log('resCredit', resCredit)
+         
+          const resCredit = await this.$store.dispatch(
+            "credits/calculationCredit",
+            data
+          );
 
-          this.credits.reasonsList = resCredit.nextTask.input.reasonsList
+          console.log("resCredit", resCredit);
 
-          console.log('resons', this.$store.state.credits.reasonsList)
-
-          //Вставить следующий task_id
-          this.$store.commit("setTaskId", resCredit.nextTask.id)
+          this.credits.reasonsList = resCredit.nextTask.input.reasonsList;
 
           const resp = {
             income: resCredit.nextTask.input.incoming, // Сколько дохода учитываем
@@ -640,111 +677,102 @@ export default {
             maxSum: resCredit.nextTask.input.sum // Сколько максимум кредита можем выдать
           };
 
-          this.$store.commit("toggleConfirm", true);
-          this.$store.commit("creditConfirm", resp);
+          this.$store.commit("credits/toggleConfirm", true);
+          this.$store.commit("credits/creditConfirm", resp);
+          
           this.loaderPreApproval = false;
-
-        } catch (e) {}
-
-        console.log("personalData", this.$store.state.credits.personalData);
-        console.log('data', data)
+        } catch (e) {
+          this.loaderPreApproval = false;
+        }
       }
-    },
-
-    validItems(itemsValid, itemValid = true) {
-      if (!itemValid) {
-        this.$refs[itemsValid] = {
-          hasError: true //не валидный
-        };
-      } else {
-        this.$refs[itemsValid] = {
-          hasError: false //валидный
-        };
-      }
-    },
+    }
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
     appDigIdNetworkError: DigIdNetworkError,
     appLoader: Loader,
-    apploaderFullScreen: LoaderFullScreen,
+    apploaderFullScreen: LoaderFullScreen
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.tab-title {
-  background-color: #ededed;
-  color: #0e3475;
-  margin-top: 7px;
-  padding: 9px 11px;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 16px;
-  //text-transform: uppercase
-}
-
-.tab-content {
-  color: #212121;
-}
-
-.personPhoto_block,
-.default_personPhoto_block {
-  width: 94%;
-  height: auto;
-  border: 1px solid #acacac;
-}
-
-.personPhoto,
-.default_personPhoto {
-  width: 100%;
-  display: block;
-}
-
-.creditContent {
-  width: 48%;
-}
-
-.loader {
-  margin-bottom: 15px;
-}
-
-.q-btn--rectangle {
-  border-radius: 0;
-}
-
-.q-field--with-bottom,
-.q-pb-sm {
-  padding-bottom: 16px;
-}
-
-.q-field__native,
-.q-field__prefix,
-.q-field__suffix {
-  color: #acacac;
-}
-</style>
-
 <style lang="scss">
-.q-field__bottom {
-  padding: 1px 0 0 10px;
+.registration {
+
+  .preapprovForm {
+    width: 80%
+  }
+
+  .loaderForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+  }
+
+  .tab-title {
+    background-color: #ededed;
+    color: #0e3475;
+    margin-top: 10px;
+    padding: 9px 11px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+    //text-transform: uppercase
+  }
+
+  .tab-content {
+    color: #212121;
+  }
+
+  .personPhoto_block,
+  .default_personPhoto_block {
+    width: 94%;
+    height: auto;
+    border: 1px solid #acacac;
+  }
+
+  .personPhoto,
+  .default_personPhoto {
+    width: 100%;
+    display: block;
+  }
+
+  // .creditContent {
+  //   width: 48%;
+  // }
+
+  .loader {
+    margin-bottom: 15px;
+  }
+
+  .q-btn--rectangle {
+    border-radius: 0;
+  }
+
+  .q-field--with-bottom,
+  .q-pb-sm {
+    padding-bottom: 16px;
+  }
+
+  .q-field__native,
+  .q-field__prefix,
+  .q-field__suffix {
+    color: #acacac;
+  }
+
+  .q-field__bottom {
+    padding: 1px 0 0 10px;
+  }
+
+  .periodCredit {
+    margin: 0;
+  }
+
+  .calCreditBtn {
+    padding-top: 16px;
+  }
 }
-
-.periodCredit {
-  margin: 0;
-}
-
-//   .q-btn--rectangle {
-//     border-radius: 0;
-//   }
-
-//   .q-field--with-bottom, .q-pb-sm {
-//     padding-bottom: 16px;
-//   }
-
-//   .q-field__native, .q-field__prefix, .q-field__suffix {
-//     color: #acacac;
-//   }
 </style>

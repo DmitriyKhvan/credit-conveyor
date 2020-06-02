@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { GChart } from "vue-google-charts";
 export default {
   name: "Finance",
@@ -14,14 +15,7 @@ export default {
   data() {
     return {
       // Array will be automatically processed with visualization.arrayToDataTable function
-      chartData: [
-        ["Year", "Аванс", "Премия", "Зарплата", "Питания"],
-        ["Сентябрь", 1000, 1500, 1200, 250],
-        ["Октябрь", 1170, 2000, 1200, 250],
-        ["Ноябрь", 660, 1800, 1200, 250],
-        ["Декабрь", 1040, 1700, 1221, 406],
-        ["Январь", 800, 1100, 1471, 406]
-      ],
+      chartData: [],
       chartOptions: {
         title: "Мои доходы за последный 5 месяцев",
         subtitle: "Sales, Expenses, and Profit: 2014-2017",
@@ -30,6 +24,18 @@ export default {
       }
     };
   },
+  created () {
+    const id = this.$store.getters["auth/empId"]
+    axios
+        .get("/emps/kvitok?uid="+id)
+        .then(response => { 
+         
+            this.chartData = response.data            
+        })
+        .catch(error => {
+            console.log('error') 
+        });
+  },  
   methods: {
     currentdate() {
       let date = new Date();

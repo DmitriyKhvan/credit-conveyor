@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Header</div>
+          <div class="text-h6">{{$t('tables.education.addEditTopic')}}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -19,13 +19,13 @@
               color="purple-12"
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name"
-              label="Name"
+              label="Название темы"
               @input="$v.details.name.$touch()"
               :rules="[
                       val => $v.details.name.required || 'Name is required'
                       ]"
               lazy-rules
-            />
+            ></q-input>
             <q-select
               outlined
               color="purple-12"
@@ -36,7 +36,7 @@
               option-label="key"
               emit-value
               map-options
-              label="Status"
+              label="Статус"
               @input="$v.details.status.$touch()"
               :rules="[
                       val => $v.details.status.required || 'Status is required'
@@ -73,8 +73,8 @@ export default {
     return {
       isLoading: this.$store.getters["common/isLoading"],
       stateList: [
-        { key: "Active", value: 1 },
-        { key: "Passive", value: 0 }
+        { key: "Показать", value: 1 },
+        { key: "Скрыть", value: 0 }
       ],
       isValidated: true,
       // !!! Dont change. Functions in dialogMixin depends on name "details"

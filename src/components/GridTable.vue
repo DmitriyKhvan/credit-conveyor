@@ -1,143 +1,194 @@
 <template>
-  <div class="q-pa-md">
-    <q-card class="primary">
+  <div class>
+    <!-- <q-card class="primary">
       <q-card-section>{{caption}}</q-card-section>
-      <q-card-section>
-        <q-table
-          :dense="$q.screen.lt.md"
-          :grid="$q.screen.xs"
-          :title="caption"
-          :data="itemsArray"
-          :columns="fields"
-          :[selectionKey]="selectMode"
-          :selected.sync="selectedRows"
-          :row-key="rowId"
-          :visible-columns="visibleColumns"
-          :pagination.sync="defaultPaginationConfig"
-          :filter="filter"
-          :loading="loading"
+    <q-card-section>-->
+    <q-table
+      :dense="$q.screen.lt.md"
+      :grid="$q.screen.xs"
+      :title="caption"
+      :data="itemsArray"
+      :columns="fields"
+      :[selectionKey]="selectMode"
+      :selected.sync="selectedRows"
+      :row-key="rowId"
+      :visible-columns="visibleColumns"
+      :pagination.sync="defaultPaginationConfig"
+      :filter="filter"
+      :loading="loading"
+    >
+      <template v-slot:top="props">
+        <q-btn
+          class="q-ml-sm"
+          color="primary"
+          :disable="loading"
+          @click="addRow"
+          :icon="'add'"
+          :disabled="!enableAddEdit"
+          v-if="showAdd"
         >
-          <template v-slot:top="props">
-            <q-btn
-              class="q-ml-sm"
-              color="primary"
-              :disable="loading"
-              @click="addRow"
-              :icon="'add'"
-              :disabled="!enableAddEdit"
-            >
-              <q-tooltip
-                transition-show="scale"
-                transition-hide="scale"
-                anchor="top middle"
-                self="bottom middle"
-              >Add a new record to table</q-tooltip>
-            </q-btn>
-            <q-btn
-              class="q-ml-sm"
-              color="primary"
-              :disable="!enableAddEdit || !isSelected"
-              @click="editRow"
-              :icon="'edit'"
-            >
-              <q-tooltip
-                transition-show="scale"
-                transition-hide="scale"
-                anchor="top middle"
-                self="bottom middle"
-              >Edit and Update table record</q-tooltip>
-            </q-btn>
-            <q-btn
-              class="q-ml-sm"
-              color="primary"
-              :disable="!enableDelete || !isSelected"
-              @click="removeRow"
-              :icon="'delete'"
-            >
-              <q-tooltip
-                transition-show="scale"
-                transition-hide="scale"
-                anchor="top middle"
-                self="bottom middle"
-              >Remove selected rows</q-tooltip>
-            </q-btn>
-            <q-btn
-              class="q-ml-sm"
-              color="primary"
-              :disable="!isSelected"
-              @click="viewRow"
-              :icon="'remove_red_eye'"
-              v-if="enableView"
-            >
-              <q-tooltip
-                transition-show="scale"
-                transition-hide="scale"
-                anchor="top middle"
-                self="bottom middle"
-              >View data</q-tooltip>
-            </q-btn>
-            <q-btn
-              class="q-ml-sm"
-              color="primary"
-              :disable="loading"
-              @click="refreshTable"
-              :icon="'refresh'"
-              v-if="enableView "
-            >
-              <q-tooltip
-                transition-show="scale"
-                transition-hide="scale"
-                anchor="top middle"
-                self="bottom middle"
-              >Refresh</q-tooltip>
-            </q-btn>
-            <!-- Dynamic Buttons -->
-            <q-btn
-              v-for="i in extraButtons"
-              :key="i.functionName"
-              class="q-ml-sm"
-              color="primary"
-              :icon="i.icon"
-              @click="$emit(`${i.functionName}`)"
-            >
-              <q-tooltip
-                transition-show="scale"
-                transition-hide="scale"
-                anchor="top middle"
-                self="bottom middle"
-              >{{i.tooltip}}</q-tooltip>
-            </q-btn>
-            <!--  -->
+          <q-tooltip
+            transition-show="scale"
+            transition-hide="scale"
+            anchor="top middle"
+            self="bottom middle"
+            >Add a new record to table</q-tooltip
+          >
+        </q-btn>
+        <q-btn
+          class="q-ml-sm"
+          color="primary"
+          :disable="!enableAddEdit || !isSelected"
+          @click="editRow"
+          :icon="'edit'"
+          v-if="showEdit"
+        >
+          <q-tooltip
+            transition-show="scale"
+            transition-hide="scale"
+            anchor="top middle"
+            self="bottom middle"
+            >Edit and Update table record</q-tooltip
+          >
+        </q-btn>
+        <q-btn
+          class="q-ml-sm"
+          color="primary"
+          :disable="!enableDelete || !isSelected"
+          @click="removeRow"
+          :icon="'delete'"
+          v-if="showDelete"
+        >
+          <q-tooltip
+            transition-show="scale"
+            transition-hide="scale"
+            anchor="top middle"
+            self="bottom middle"
+            >Remove selected rows</q-tooltip
+          >
+        </q-btn>
+        <q-btn
+          class="q-ml-sm"
+          color="primary"
+          :disable="!isSelected"
+          @click="viewRow"
+          :icon="'remove_red_eye'"
+          v-if="showView"
+        >
+          <q-tooltip
+            transition-show="scale"
+            transition-hide="scale"
+            anchor="top middle"
+            self="bottom middle"
+            >View data</q-tooltip
+          >
+        </q-btn>
+        <q-btn
+          class="q-ml-sm"
+          color="primary"
+          :disable="loading"
+          @click="refreshTable"
+          :icon="'refresh'"
+          v-if="showRefresh"
+        >
+          <q-tooltip
+            transition-show="scale"
+            transition-hide="scale"
+            anchor="top middle"
+            self="bottom middle"
+            >Refresh</q-tooltip
+          >
+        </q-btn>
+        <!-- Dynamic Buttons -->
+        <q-btn
+          v-for="i in extraButtons"
+          :key="i.functionName"
+          class="q-ml-sm"
+          color="primary"
+          :icon="i.icon"
+          @click="$emit(`${i.functionName}`)"
+        >
+          <q-tooltip
+            transition-show="scale"
+            transition-hide="scale"
+            anchor="top middle"
+            self="bottom middle"
+            >{{ i.tooltip }}</q-tooltip
+          >
+        </q-btn>
+        <!--  -->
 
-            <q-space />
+        <q-space />
 
-            <q-input borderless dense debounce="300" color="primary" v-model="filter">
-              <template v-slot:append>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-            <q-btn
-              flat
-              round
-              dense
-              :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-              @click="props.toggleFullscreen"
-              class="q-ml-md"
-            />
+        <q-input
+          borderless
+          dense
+          debounce="300"
+          color="primary"
+          v-model="filter"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
           </template>
-          <template v-slot:loading>
-            <q-inner-loading showing color="primary" />
-          </template>
-          <template v-slot:no-data="{ icon, message, filter }">
-            <div class="full-width row flex-center text-accent q-gutter-sm">
-              <q-icon size="2em" name="sentiment_dissatisfied" />
-              <span>Well this is sad... {{ message }}</span>
-              <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
-            </div>
-          </template>
-        </q-table>
-      </q-card-section>
-    </q-card>
+        </q-input>
+        <q-btn
+          flat
+          round
+          dense
+          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+          @click="props.toggleFullscreen"
+          class="q-ml-md"
+        />
+      </template>
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
+      <template v-slot:no-data="{ icon, message, filter }">
+        <div class="full-width row flex-center text-accent q-gutter-sm">
+          <q-icon size="2em" name="sentiment_dissatisfied" />
+          <span>Well this is sad... {{ message }}</span>
+          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+        </div>
+      </template>
+
+      <!-- <template v-slot:body="props">
+            <q-tr :props="props">
+              
+              <q-td v-for="key in visibleColumns" 
+                :key="key" 
+                :props="props">
+                <q-badge color="green">
+                  {{ props.row[key] }}
+                </q-badge>
+                <template v-if="Array.isArray(props.row[key])">
+                  массив
+                </template>
+              </q-td>
+            </q-tr>
+          </template> -->
+
+      <!-- <template v-slot:body-cell="props">
+            <q-td :props="props">
+              {{props}}
+              <q-badge color="blue" :label="props.value" />
+            </q-td>
+          </template> -->
+
+      <!-- <template v-slot:header="props">
+            <q-tr :props="props">
+              <q-th
+                v-for="col in props.cols"
+                :key="col.name"
+                :props="props"
+                class="text-italic text-purple"
+              >
+                {{ col.label }}
+              </q-th>
+            </q-tr>
+          </template> -->
+    </q-table>
+    <!-- </q-card-section>
+    </q-card> -->
   </div>
 </template>
 
@@ -199,6 +250,26 @@ export default {
       default: true
     },
     enableSelect: {
+      type: Boolean,
+      default: true
+    },
+    showAdd: {
+      type: Boolean,
+      default: true
+    },
+    showEdit: {
+      type: Boolean,
+      default: true
+    },
+    showDelete: {
+      type: Boolean,
+      default: true
+    },
+    showView: {
+      type: Boolean,
+      default: false
+    },
+    showRefresh: {
       type: Boolean,
       default: true
     },
@@ -288,6 +359,7 @@ export default {
             this.itemsArray.push(element);
           });
 
+          //console.log('data', data)
           // sorting coloumns of table
           if (data.length > 0) {
             Object.keys(data[0]).map(async (k, index) => {
@@ -300,6 +372,21 @@ export default {
                 label: k.replace("_", " ").toUpperCase(),
                 align: "center",
                 sortable: sortable,
+                format: (val, row) => {
+                  if (Array.isArray(val)) {
+                    const lastIdx = val.length - 1;
+                    return val.map((i, idx) => {
+                      if (lastIdx !== idx) {
+                        return i + ", ";
+                      } else {
+                        return i;
+                      }
+                    });
+                    // return `${val}`
+                  } else {
+                    return `${val}`;
+                  }
+                },
                 field: k
               });
               // exluding check filter

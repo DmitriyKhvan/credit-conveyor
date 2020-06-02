@@ -1,6 +1,12 @@
 <template>
   <q-page-container>
-    <q-layout view="hHh lpR fFf" container style="height: 100vh" class="shadow-2">
+    <q-layout
+      view="hHh lpR fFf"
+      container
+      style="height: calc(100vh - 50px)"
+      class="shadow-2"
+      id="eee"
+    >
       <q-header reveal elevated class="bg-primary text-white" height-hint="98">
         <bread-crumb :list="list()" />
         <sub-header-tab :path="path" />
@@ -14,8 +20,9 @@
 </template>
 
 <script>
-import BreadCrumb from "./../components/BreadCrumb";
-import SubHeaderTab from "./../components/SubHeaderTab";
+import BreadCrumb from "@/components/BreadCrumb";
+import SubHeaderTab from "@/components/SubHeaderTab";
+
 export default {
   name: "Content",
   components: {
@@ -27,6 +34,7 @@ export default {
     // console.log(this.$route.path);
     //this.path = this.$route.path;
   },
+
   data() {
     return {
       data: null

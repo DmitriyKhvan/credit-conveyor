@@ -14,7 +14,19 @@ import NotifyService from "@/services/notify.service";
 import GridService from "@/services/grid.service";
 
 export default {
-  created() {},
+  created() {
+    // let modList = this.$store.getters["auth/moderatorsList"];
+    // let onlyMenuIds = [];
+    // modList.forEach(element => {
+    //   onlyMenuIds.push(element.menu_id);
+    // });
+    // ApiService.get("menus/user").then(res => {
+    //   let filtered = res.data.filter(x => {
+    //     return !onlyMenuIds.includes(x.menu_id);
+    //   });
+    //   console.log(filtered);
+    // });
+  },
   data() {
     return {
       props: {
@@ -27,7 +39,7 @@ export default {
         excludedColumns: [
           "id",
           "emp_id",
-          "role_id",
+          "menu_id",
           "branch_code",
           "filial_code"
         ],

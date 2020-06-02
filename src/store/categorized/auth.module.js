@@ -1,6 +1,4 @@
-import {
-  decode
-} from "jsonwebtoken";
+import { decode } from "jsonwebtoken";
 
 /**
  *  States
@@ -16,7 +14,33 @@ const state = {
   userId: null,
   empId: null,
   fullName: null,
-  userRoles: []
+  userRoles: [],
+  moderatorsList: [],
+  branchCode: null,
+  filialCode: null,
+  activeUsers: [
+    // {
+    //   emp_id: 12,
+    //   emp_name: "John Doe",
+    //   socket_id: "SA121asdadadSASA",
+    //   access_token: "7Ssaw123ddsfsd23",
+    //   login_time: new Date()
+    // },
+    // {
+    //   emp_id: 14,
+    //   emp_name: "John Doe2",
+    //   socket_id: "SA121asdadadSASA",
+    //   access_token: "7Ssaw123ddsfsd23",
+    //   login_time: new Date()
+    // },
+    // {
+    //   emp_id: 16,
+    //   emp_name: "John Doe3",
+    //   socket_id: "SA121asdadadSASA",
+    //   access_token: "7Ssaw123ddsfsd23",
+    //   login_time: new Date()
+    // }
+  ]
 };
 
 /**
@@ -37,23 +61,20 @@ const getters = {
     return state.authenticating;
   },
   fullName: state => {
-    return state.fullName
-  },
-  userId: state => {
-    return state.userId
+    return state.fullName;
   },
   empId: state => {
-    return state.empId
+    return state.empId;
   },
   username: state => {
-    return state.username
+    return state.username;
   },
   userDetails: state => {
     return {
       username: state.username,
       userId: state.userId,
       fullName: state.fullName
-    }
+    };
   },
   refreshTokenPromise: state => {
     return state.refreshTokenPromise;
@@ -62,7 +83,19 @@ const getters = {
     return state.accessToken;
   },
   userRoles: state => {
-    return state.userRoles
+    return state.userRoles;
+  },
+  moderatorsList: state => {
+    return state.moderatorsList;
+  },
+  branchCode: state => {
+    return state.branchCode;
+  },
+  filialCode: state => {
+    return state.filialCode;
+  },
+  activeUsers: state => {
+    return state.activeUsers
   }
 };
 
@@ -70,61 +103,60 @@ const getters = {
  *   Actions
  */
 const actions = {
-
-  loginRequest({
-    commit
-  }) {
+  loginRequest({ commit }) {
     commit("loginRequest");
   },
-  loginSuccess({
-    commit
-  }, token) {
+  loginSuccess({ commit }, token) {
     commit("loginSuccess", token);
   },
-  setCurrenUser({
-    commit
-  }, token) {
+  setCurrenUser({ commit }, token) {
     commit("setCurrenUser", token);
   },
-  loginError({
-    commit
-  }, error) {
+  loginError({ commit }, error) {
     commit("loginError", {
       errorCode: error.errorCode,
       errorMessage: error.errorMessage
-    })
+    });
   },
-  refreshTokenPromise({
-    commit
-  }, promise) {
-    commit("refreshTokenPromise", promise)
+  refreshTokenPromise({ commit }, promise) {
+    commit("refreshTokenPromise", promise);
   },
-  logoutSuccess({
-    commit
-  }) {
+  logoutSuccess({ commit }) {
     commit("logoutSuccess");
   },
 
-  setUserDetails({
-    commit
-  }, token) {
+  setUserDetails({ commit }, token) {
     let decodedToken = decode(token);
 
     let details = {
       username: decodedToken.username,
-      userId: decodedToken.id,
       fullName: decodedToken.full_name,
       empId: decodedToken.emp_id
-    }
+    };
     commit("setUsername", details.username);
-    commit("setUserId", details.userId);
     commit("setUserFullname", details.fullName);
     commit("setEmpId", details.empId);
   },
-  setUserRoles({
-    commit
-  }, roles) {
+  setUserRoles({ commit }, roles) {
     commit("setUserRoles", roles);
+  },
+  setModeratorsList({ commit }, moderatorsList) {
+    commit("setModeratorsList", moderatorsList);
+  },
+  setBranchCode({ commit }, branchCode) {
+    commit("setBranchCode", branchCode);
+  },
+  setFilialCode({ commit }, filialCode) {
+    commit("setFilialCode", filialCode);
+  },
+  setActiveUsers({ commit }, user) {
+    commit("setActiveUsers", user);
+  },
+  disconnectActiveUser({ commit }, socketId) {
+    commit("disconnectActiveUser", socketId);
+  },
+  removeActiveUser({ commit }, index) {
+    commit("removeActiveUser", index)
   }
 };
 
@@ -132,7 +164,6 @@ const actions = {
  *  Mutations
  */
 const mutations = {
-
   loginRequest(state) {
     state.authenticating = true;
     state.authenticationError = "";
@@ -142,10 +173,7 @@ const mutations = {
     state.accessToken = accessToken;
     state.authenticating = false;
   },
-  loginError(state, {
-    errorCode,
-    errorMessage
-  }) {
+  loginError(state, { errorCode, errorMessage }) {
     state.authenticating = false;
     state.authenticationErrorCode = errorCode;
     state.authenticationError = errorMessage;
@@ -163,20 +191,40 @@ const mutations = {
   setUsername(state, username) {
     state.username = username;
   },
-  setUserId(state, userId) {
-    state.userId = userId;
-  },
   setEmpId(state, empId) {
     state.empId = empId;
   },
-
   setUserFullname(state, fullName) {
     state.fullName = fullName;
   },
   setUserRoles(state, userRoles) {
     state.userRoles = userRoles;
+  },
+  setModeratorsList(state, moderatorsList) {
+    state.moderatorsList = moderatorsList;
+  },
+  setBranchCode(state, branchCode) {
+    state.branchCode = branchCode;
+  },
+  setFilialCode(state, filialCode) {
+    state.filialCode = filialCode;
+  },
+  setActiveUsers(state, user) {
+    state.activeUsers.push(user);
+  },
+  disconnectActiveUser(state, socketId) {
+    let usrs = state.activeUsers;
+    for (let i = 0; i < usrs.length; i++) {
+      if (usrs[i].socket_id == socketId) {
+        usrs.splice(i, 1);
+        break;
+      }
+    }
+  },
+  removeActiveUser(state, index) {
+    let usrs = state.activeUsers;
+    usrs.splice(index, 1);
   }
-
 };
 
 export const auth = {

@@ -1,3 +1,6 @@
+import store from '@/store'
+import moment from "moment";
+
 export default {
   domDecoder(str) {
     let parser = new DOMParser();
@@ -28,7 +31,6 @@ export default {
     }
   },
   isValueExistInObject(arr, key, value) {
-    //debugger
     let searchVal;
 
     if (value.search('\/sub\/') != -1) {
@@ -42,6 +44,8 @@ export default {
     if (arr !== null) {
       for (let k = 0; k < arr.length; k++) {
         if (arr[k][key] == searchVal) {
+          // set branchcode, filialcode
+          this.setRoleLevel(arr[k]['menu_id']);
           return true;
         } else {
           if (arr[k]['children'] != null) {
@@ -61,9 +65,9 @@ export default {
       if (menus[i].url == url) {
         return [];
       }
-      if (menus[i]['children'] !== null) {
+      if (menus[i]['children'] !== null && url.match(/\/[\w\.]*\/[\w\.]*/) !== null) {
         for (let j = 0; j < menus[i]['children'].length; j++) {
-          if (menus[i]['children'][j].url == url) {
+          if (menus[i]['children'][j].url == url.match(/\/[\w\.]*\/[\w\.]*/)[0]) {
             if (menus[i]['children'][j]['children'] != null) {
               return menus[i]['children'][j]['children'];
             } else return [];
@@ -73,13 +77,50 @@ export default {
     }
     return null;
   },
-
+  setRoleLevel(menu_id) {
+    store.dispatch('auth/setBranchCode', null);
+    store.dispatch('auth/setFilialCode', null);
+    let modList = store.getters["auth/moderatorsList"]
+    if (modList) {
+      modList.forEach(element => {
+        if (element.menu_id == menu_id) {
+          store.dispatch('auth/setBranchCode', element.branch_code);
+          store.dispatch('auth/setFilialCode', element.filial_code);
+        }
+      });
+    }
+  },
   filterServerError(error) {
     if (error.response) {
       return error.response.data.message
-    } else {
+    } else if (error.message) {
       return error.message
     }
-    //return console.log(error.config);
+    return error
+  },
+
+  // format date (DD.MM.YYYY, h:mm:ss)
+  dateFilter(value, format = 'date') {
+    //console.log(format);
+    const options = {}; 
+  
+    if (format.includes('date')) {
+        options.day = '2-digit',
+        options.month = '2-digit',
+        options.year = 'numeric'
+    }
+  
+    if (format.includes('time')) {
+        options.hour = '2-digit',
+        options.minute = '2-digit',
+        options.second = '2-digit'
+    }
+    return new Intl.DateTimeFormat('ru-RU', options).format(new Date(value));
+  },
+
+  formattedDate(date) {
+    return moment(date)
+      .startOf("hour")
+      .fromNow(); //format("MMMM Do YYYY, h:mm:ss a");
   }
 }

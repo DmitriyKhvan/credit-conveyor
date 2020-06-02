@@ -39,7 +39,7 @@ export default {
         loader: false,
         message: ""
       }
-      this.$store.commit("errorLoadData", data);
+      this.$store.commit("credits/errorLoadData", data);
     }
   }
 }

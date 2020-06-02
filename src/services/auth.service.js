@@ -4,7 +4,7 @@ import store from "./../store/index";
 import router from "./../router/index";
 import DictService from "./dict.service";
 import SocketService from "./socket.service";
-import MainService from "./main.service";
+import LoadingService from "./loading.service";
 
 class AuthenticationError extends Error {
   constructor(errorCode, message) {
@@ -21,39 +21,40 @@ const AuthService = {
       this.authenticate(credentials)
         .then(
           async (token) => {
-              store.dispatch("auth/setUserDetails", token);
-              store.dispatch("common/setLang", credentials.lang.value); // set lang
+            store.dispatch("auth/setUserDetails", token);
+            store.dispatch("common/setLang", credentials.lang.value); // set lang
 
-              TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
+            TokenService.setKeyToCookies("lang", credentials.lang.value); // store lang in cookie so once page updated it doesnt loose lang selected in login page
 
-              await DictService.loadAll();
-              //=== currentMenus
-              let b64EncodedMenus = btoa(
-                unescape(
-                  encodeURIComponent(
-                    JSON.stringify(store.getters["dicts/getMenuList"])
-                  )
+            await DictService.loadAll();
+            //=== currentMenus
+            let b64EncodedMenus = btoa(
+              unescape(
+                encodeURIComponent(
+                  JSON.stringify(store.getters["dicts/getMenuList"])
                 )
-              );
-              TokenService.setKey("menus", b64EncodedMenus);
+              )
+            );
 
-              store.dispatch("auth/loginSuccess", token);
-              //SocketService.runConnection(store.getters["auth/userId"]); // save user id to redis socket
+            TokenService.setKey("menus", b64EncodedMenus);
 
-              router.push(router.history.current.query.redirect || "/");
+            store.dispatch("auth/loginSuccess", token);
+            SocketService.runConnection(token); // save user id to redis socket
 
-              callback(true);
-            },
-            error => {
-              console.error("Error occured here 1 !!!");
+            router.push(router.history.current.query.redirect || "/");
 
-              store.dispatch("auth/loginError", {
-                errorCode: 500,
-                errorMessage: "Can't get token"
-              });
-              callback(false);
-              //throw new AuthenticationError(500, "Can't get token")
-            }
+            callback(true);
+          },
+          error => {
+            console.error("Error occured here 1 !!!");
+
+            store.dispatch("auth/loginError", {
+              errorCode: 500,
+              errorMessage: "Can't get token"
+            });
+            callback(false);
+            //throw new AuthenticationError(500, "Can't get token")
+          }
         )
         .catch(error => {
           console.error("Error occured here 2 !!!");
@@ -107,6 +108,8 @@ const AuthService = {
   },
 
   logout: async function () {
+
+    LoadingService.showLoadingDots();
     try {
       ApiService.unmount401Interceptor();
 
@@ -141,9 +144,9 @@ const AuthService = {
       }
 
       store.dispatch("dicts/setIsAllSet", false);
-      //SocketService.stopConnection();
+      SocketService.stopConnection();
       store.dispatch("auth/logoutSuccess");
-      console.log(!(await TokenService.isTokenExist()))
+
       if (!(await TokenService.isTokenExist())) {
         router.push("/login");
       }
@@ -154,6 +157,8 @@ const AuthService = {
       });
       throw error;
     }
+    LoadingService.hideLoading();
+
   },
 
   refreshToken() {

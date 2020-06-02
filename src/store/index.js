@@ -1,8 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import example from "./module-example";
-
 import {
   auth
 } from "./categorized/auth.module";
@@ -16,11 +14,18 @@ import {
   common
 } from "./categorized/common.module";
 
-import credits from './categorized/credits';
+import { task } from './categorized/task.module'
 
-import profile from './categorized/profile';
+import { credits } from './categorized/credits.module';
 
-import education from './categorized/education';
+import { creditsAdmin } from './categorized/creditsAdmin.module';
+
+import { profile } from './categorized/profile.module';
+
+import { education } from './categorized/education.module';
+
+import birthdays from './birthdays'
+import chats from './chat'
 
 
 Vue.use(Vuex);
@@ -28,14 +33,17 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   namespaced: true,
   modules: {
-    example,
     auth,
     dicts,
     socket,
     common,
+    task,
     credits,
+    creditsAdmin,
     profile,
-    education
+    education,
+    birthdays,
+    chats
   },
 
   // enable strict mode (adds overhead!)

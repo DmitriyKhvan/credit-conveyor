@@ -1,13 +1,20 @@
 <template>
-  <div class="col">
-    <icons />
-    <icons-type />
+  <div class="row">
+    <div class="col-6">
+      <types />
+    </div>
+    <div class="col-6">
+      <list />
+    </div>
   </div>
 </template>
 
 <script>
-import Icons from "./icons/Icons";
-import IconsType from "./icons/IconsType";
+// import Icons from "./icons/Icons";
+// import IconsType from "./icons/IconsType";
+
+import Types from "./types/Types";
+import List from "./list/List";
 
 export default {
   data() {
@@ -15,8 +22,10 @@ export default {
   },
   created() {},
   components: {
-    Icons,
-    IconsType
+    // Icons,
+    // IconsType,
+    List,
+    Types
   }
 };
 </script>

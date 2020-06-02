@@ -84,70 +84,62 @@
             />
           </div>
 
-          <div class="row">
-            <table>
-              <tr class="row" v-for="(items, index) in details.topics" :key="index">
-                <q-card-actions style="border:1px solid blue">
-                  <!--{{topicList[index].id}} -->
-
-                  <td class="col-4">
-                    <q-select
-                      outlined
-                      clearable
-                      :options="topicList"
-                      color="purple-12"
-                      class="col-xs-12 col-sm-6 col-md-6"
-                      v-model="details.topics[index].id"
-                      option-value="value"
-                      option-label="text"
-                      emit-value
-                      map-options
-                      :label="$t('tables.education.topicName')"
-                      lazy-rules
-                    />
-                  </td>
-                  <td class="col-2">
-                    <q-input
-                      type="number"
-                      outlined
-                      clearable
-                      color="purple-12"
-                      class="col-xs-12 col-sm-6 col-md-6"
-                      v-model="details.topics[index].easy"
-                      :label="$t('tables.education.testAmount')"
-                      placeholder="easy"
-                    />
-                  </td>
-                  <td class="col-2">
-                    <q-input
-                      type="number"
-                      outlined
-                      clearable
-                      color="purple-12"
-                      class="col-xs-12 col-sm-6 col-md-6"
-                      v-model="details.topics[index].medium"
-                      :label="$t('tables.education.testAmount')"
-                      placeholder="medium"
-                    />
-                  </td>
-                  <td class="col-2">
-                    <q-input
-                      type="number"
-                      outlined
-                      clearable
-                      color="purple-12"
-                      class="col-xs-12 col-sm-6 col-md-6"
-                      v-model="details.topics[index].hard"
-                      :label="$t('tables.education.testAmount')"
-                      placeholder="hard"
-                    />
-                  </td>
-                  <td class="col-2">
-                    <q-btn color="red" icon="delete" @click="removeElement(index)" />
-                  </td>
-                </q-card-actions>
-              </tr>
-            </table>
+          <div class="row" v-for="(items, index) in details.topics" :key="index">
+            <div class="col-4">
+              <q-select
+                outlined
+                clearable
+                :options="topicList"
+                color="purple-12"
+                class="col-xs-12 col-sm-6 col-md-6"
+                v-model="details.topics[index].id"
+                option-value="value"
+                option-label="text"
+                emit-value
+                map-options
+                :label="$t('tables.education.topicName')"
+                lazy-rules
+              />
+            </div>
+            <div class="col-2">
+              <q-input
+                type="number"
+                outlined
+                clearable
+                color="purple-12"
+                class="col-xs-12 col-sm-6 col-md-6"
+                v-model="details.topics[index].easy"
+                :label="$t('tables.education.testAmount')"
+                placeholder="easy"
+              />
+            </div>
+            <div class="col-2">
+              <q-input
+                type="number"
+                outlined
+                clearable
+                color="purple-12"
+                class="col-xs-12 col-sm-6 col-md-6"
+                v-model="details.topics[index].medium"
+                :label="$t('tables.education.testAmount')"
+                placeholder="medium"
+              />
+            </div>
+            <div class="col-2">
+              <q-input
+                type="number"
+                outlined
+                clearable
+                color="purple-12"
+                class="col-xs-12 col-sm-6 col-md-6"
+                v-model="details.topics[index].hard"
+                :label="$t('tables.education.testAmount')"
+                placeholder="hard"
+              />
+            </div>
+            <div class="col-2" style="text-align: center">
+              <q-btn color="red" style="height: 100%" icon="delete" @click="removeElement(index)" />
+            </div>
           </div>
           <div>
             <div class="row">

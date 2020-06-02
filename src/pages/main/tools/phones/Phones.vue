@@ -10,9 +10,12 @@ export default {
     StructureBank
   },
   data() {
-    return {};
+    return {
+    };
   },
-  methods: {},
+  methods: {
+
+  },
   beforeCreate() {}
 };
 </script>

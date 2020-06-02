@@ -1,26 +1,25 @@
 <template>
-<div>
-  <div class="creditMenu">
-    <!-- <q-toolbar class="bg-grey-3"> -->
+<div class="creditConveyor">
+  <!-- <div class="creditMenu">
     <q-btn 
       class="subMenuCredit"
       flat  
       to="/work/credit/registration"
-    >
+    > -->
       <!-- Надо подумать как добавить outline параметр для реверсии цвета!!! -->
-      <q-icon 
+      <!-- <q-icon 
         name="library_add" 
-      />
+      /> -->
       <!--  -->
-      <q-tooltip anchor="bottom left" self="top left">
+      <!-- <q-tooltip anchor="bottom left" self="top left">
         Форма регистрации клиента
       </q-tooltip>
       <q-toolbar-title>
         Cоздать заявку
       </q-toolbar-title>
-    </q-btn>
+    </q-btn> -->
 
-    <q-btn class="subMenuCredit" flat icon="library_books" to="/work/credit/applications">
+    <!-- <q-btn class="subMenuCredit" flat icon="library_books" to="/work/credit/applications">
       <q-tooltip anchor="bottom left" self="top left">
         Список заявок
       </q-tooltip>
@@ -37,10 +36,8 @@
         Очередь задач
       </q-toolbar-title>
     </q-btn>
-
-    <!-- </q-toolbar> -->
-    
-  </div>
+  </div> -->
+  
   <router-view></router-view>
 
   <!-- Server error message -->
@@ -54,14 +51,14 @@ export default {
   name: "credit",
   computed: {
     error() {
-      console.log('computed', this.$store.getters.error)
-      return this.$store.getters.error
+      console.log('computed', this.$store.getters["credits/message"])
+      return this.$store.getters["credits/messageId"]
     }
   },
   watch: {
     error(serverError) {   
-      this.$store.commit('toggleErrorBar', true)
-      console.log('watch', this.$store.getters.errorBar)
+      this.$store.commit("credits/toggleMessageBar", true)
+      console.log('watch', this.$store.getters["credits/messageBar"])
     }
   },
 
