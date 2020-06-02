@@ -33,8 +33,8 @@ export default {
             const newChat = {
               chat_id: payload.chat_id,
               from_uid: payload.messages[0].from_uid,
-              to_uid: '',
-              to_name: '',
+              to_uid: payload.messages[0].from_uid,
+              to_name: payload.messages[0].user_fio,
               messages: [message]
             }
             state.chats.push(newChat)

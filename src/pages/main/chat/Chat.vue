@@ -35,7 +35,7 @@
                             <q-badge class="description_my">
                                 Вы
                             </q-badge>
-                            <i>{{c.sent_at}}</i>
+                            <i>{{formatDate(c.sent_at)}}</i>
                         </div>
 
                         <div class="avatar_my self-end">
@@ -151,34 +151,36 @@ export default {
           return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
         },
         formatDate(date) {
-          // date = Date.parse(date)
-          // console.log(date)
-          let dayOfMonth = date.getDate();
-          let month = date.getMonth() + 1;
-          let year = date.getFullYear();
-          let hour = date.getHours();
-          let minutes = date.getMinutes();
-          let diffMs = new Date() - date;
-          let diffSec = Math.round(diffMs / 1000);
-          let diffMin = diffSec / 60;
-          let diffHour = diffMin / 60;
+          let current_datetime = new Date(date)
+          let formatted_date = current_datetime.getFullYear() + "." + (current_datetime.getMonth() + 1) + "." + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes()
+          return formatted_date
 
-          // форматирование
-          year = year.toString().slice(-2);
-          month = month < 10 ? '0' + month : month;
-          dayOfMonth = dayOfMonth < 10 ? '0' + dayOfMonth : dayOfMonth;
-          hour = hour < 10 ? '0' + hour : hour;
-          minutes = minutes < 10 ? '0' + minutes : minutes;
+          // let dayOfMonth = date.getDate();
+          // let month = date.getMonth() + 1;
+          // let year = date.getFullYear();
+          // let hour = date.getHours();
+          // let minutes = date.getMinutes();
+          // let diffMs = new Date() - date;
+          // let diffSec = Math.round(diffMs / 1000);
+          // let diffMin = diffSec / 60;
+          // let diffHour = diffMin / 60;
 
-          if (diffSec < 1) {
-            return 'прямо сейчас';
-          } else if (diffMin < 1) {
-            return `${diffSec} сек. назад`
-          } else if (diffHour < 1) {
-            return `${diffMin} мин. назад`
-          } else {
-            return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`
-          }
+          // // форматирование
+          // year = year.toString().slice(-2);
+          // month = month < 10 ? '0' + month : month;
+          // dayOfMonth = dayOfMonth < 10 ? '0' + dayOfMonth : dayOfMonth;
+          // hour = hour < 10 ? '0' + hour : hour;
+          // minutes = minutes < 10 ? '0' + minutes : minutes;
+
+          // if (diffSec < 1) {
+          //   return 'прямо сейчас';
+          // } else if (diffMin < 1) {
+          //   return `${diffSec} сек. назад`
+          // } else if (diffHour < 1) {
+          //   return `${diffMin} мин. назад`
+          // } else {
+          //   return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`
+          // }
         },
         scrollToBottom () {
             const scrollArea = this.$refs.chat
