@@ -216,6 +216,10 @@ export default {
       })
 
 
+    },
+    beforeDestroy(){
+      this.socket.removeListener('private/create')
+      this.socket.removeListener('chat/delete')
     }
 }
 </script>
