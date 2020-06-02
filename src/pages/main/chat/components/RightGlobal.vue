@@ -39,20 +39,18 @@
             <template v-if="result.length > 0">
             <div
                 v-for="user in result"
-                :key="user.EMP_ID"
+                :key="user.emp_id"
                 class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock"
-                @click="setActiveChat('', user.EMP_ID)"
+                @click="setActiveChat('', user.emp_id)"
                 >
                 <div class="avatarBlock">
                     <q-avatar>
-                        <img :src="getUserProfilePhotoUrl(user.EMP_ID)">
+                        <img :src="getUserProfilePhotoUrl(user.emp_id)">
                     </q-avatar>
                 </div>
                 <div class="col">
                     <div class="text-subtitle1"><b>
-                      <span class="user" v-html="user.LAST_NAME"></span>
-                      <span v-html="user.LAST_NAME[0]"></span>.
-                      <span v-html="user.LAST_NAME[0]"></span>.
+                      <span class="user" v-html="user.name"></span>
                     </b></div>
                     <div class="text-caption">
                         <q-badge class="online">
@@ -147,10 +145,12 @@ export default {
         setActiveChat(id, toUid){
             this.$store.dispatch('setToUid', toUid)
             this.result = []
-            this.socket.emit("private/create", {
-              from_uid: this.emp_id, // kto sozdaet chat
-              to_uid: toUid    // s kem
-            });
+            if(this.chats.find(ch => ch.to_uid === toUid)){ return}
+              this.socket.emit("private/create", {
+                from_uid: this.emp_id, // kto sozdaet chat
+                to_uid: toUid    // s kem
+              });
+
         },
         getUserProfilePhotoUrl(emp_id) {
           return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
@@ -158,8 +158,9 @@ export default {
         selUsers () {
           if(this.searchUser === '') {this.result = []}
           axios
-              .get("/emps/search?name="+this.searchUser)
+              .get("/emps/reg/search?name="+this.searchUser)
               .then(response => {
+
                 this.result = response.data
               })
               .catch(error => {
