@@ -258,9 +258,11 @@ export default {
         this.details = this.data.selectedRow[0];
         this.deviceTypeName = this.data.selectedRow[0].type_name;
         this.deviceMarkName = this.data.selectedRow[0].mark_name;
-        this.data.selectedRow[0].details.forEach((element, index) => {
-          this.deviceDetailName[index] = element.detail_name;
-        });
+        if (this.data.selectedRow[0].details) {
+          this.data.selectedRow[0].details.forEach((element, index) => {
+            this.deviceDetailName[index] = element.detail_name;
+          });
+        }
       }
     },
     deleteDetailItem(index) {
@@ -284,7 +286,7 @@ export default {
           data: this.deviceTypeDialogProps
         })
         .onOk(res => {
-          console.log(res);
+          //console.log(res);
           this.deviceTypeName = res[0].name_ru;
           this.details.type_id = res[0].id;
           this.deviceDetailDialogProps.filterColumn.push({

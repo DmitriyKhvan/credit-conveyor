@@ -102,24 +102,23 @@ export const profile = {
 
     fullFormProfile: {
       Status: "",
-      ApplicationID: "",
-      ProtocolNumber: "",
-      Number: "",
-      Branch: "",
-      BODecision: "",
-      FinalDecision: "",
-      Date: "",
+      // ApplicationID: "",
+      // ProtocolNumber: "",
+      // Number: "",
+      // Branch: "",
+      BODecision: false,
+      // FinalDecision: "",
+      // Date: "",
       BOLogin: "", // логин авторизованного пользователя
-      Department: "",
-      ClientManagerLogin: "",
+      // Department: "",
+      ClientManagerLogin: "", // при авторизации
       CreditCommiteeDecisions: {
         items: [
           // {
           //   Comment: "",
           //   MemberOfCCFIO: "",
-          //   id: 0,
           //   Login: "",
-          //   isApproved: false
+          //   Decision: "" (Y/N/R)
           // }
         ]
       },
@@ -143,7 +142,7 @@ export const profile = {
           ExpirationDate: "",
           GivenDate: "",
           GUID: "",
-          Country: "",
+          Country: "Uzbekistan",
           DocLink: "",
           DocumentName: 0
         },
@@ -171,21 +170,21 @@ export const profile = {
               House: "",
               City: "",
               Apartment: "",
-              AddressType: '1'
+              AddressType: 'Адрес постоянной регистрации'
             }
           ]
         },
 
-        MaritalStatus: false,
+        MaritalStatus: 0,
         hasChildren: false,
         // "ChildrenNum": 0,
-        UnderAgeChildrenNum: null,
+        UnderAgeChildrenNum: 0,
 
         Relatives: {
           items: [
             {
               FirstName: "",
-              FullName: "",
+              // FullName: "",
               FamilyConnectionType: null,
               LastName: "",
               MiddleName: "",
@@ -208,13 +207,13 @@ export const profile = {
           employerActivityType: null, //вид деятельности организации
           positionType: null, // Категория занимаемой должности
           INN: "",
-          employeesNum: null, // количество работников
+          employeesNum: 0, // количество работников
           employerName: "", // Наименование работадателя
-          totalJobExperienceMonths: null, // общий трудовой стаж
-          activeYears: null, // срок деятельности
+          totalJobExperienceMonths: 0, // общий трудовой стаж
+          activeYears: 0, // срок деятельности
           position: "", // должность
           type: "", // вид деятельности
-          lastJobExperienceMonths: null // стаж на последнем месте работы
+          lastJobExperienceMonths: 0 // стаж на последнем месте работы
         },
 
         // eжемесячные расходы
@@ -256,35 +255,38 @@ export const profile = {
 
       LoanInfo: {
         LoanProduct: null, // Кредитный продукт
-        Sum: null, // Запрашиваемая сумма кредита
+        Sum: 0, // Запрашиваемая сумма кредита
         Currency: "СУМ", // Валюта
-        RepaymentType: null, // Тип пошагового кредита
+        RepaymentType: null, // Тип погашения кредита
         LoanType: null, // Вид кредита
 
-        MinInterestRate: null, // Процентаня ставка по кредиту (минимальная)
-        MaxInterestRate: null, // Процентная ставка по кредиту (максимальная)
+        MinInterestRate: 0.0, // Процентаня ставка по кредиту (минимальная)
+        MaxInterestRate: 0.0, // Процентная ставка по кредиту (максимальная)
 
-        MaxDefferalRepaymentPeriod: null, // Льготный период по погашению кредита
+        MaxDefferalRepaymentPeriod: 0, // Льготный период по погашению кредита
 
-        ConvenientRepaymentTerm: null, // Удобный срок погашения в мес
+        ConvenientRepaymentTerm: 0, // Удобный день погашения в мес 1 - 31
 
-        MaxTermInMonths: null, // Максимальное количество месяцев на кредит
-        MinTermInMonths: null, // Минимальное количество месяцев на кредит
+        TermInMonth: 0, //Количество месяцев на кредит (удобный срок погашения в мес)
 
-        InitialPayment: null, // Первоначальный взнос
+        MaxTermInMonths: 0, // Максимальное количество месяцев на кредит
+        MinTermInMonths: 0, // Минимальное количество месяцев на кредит
 
-        MaxInitialPaymentPercent: null, // Процент первоначального взноса (максимальный)
-        MinInitialPaymentPercent: null, // Процент первоначального взноса (минимальный)
+        InitialPayment: 0, // Первоначальный взнос
 
-        LoanPurpose: "", // Цель кредитования
+        MaxInitialPaymentPercent: 0.0, // Процент первоначального взноса (максимальный)
+        MinInitialPaymentPercent: 0.0, // Процент первоначального взноса (минимальный)
+
+        LoanPurpose: null, // Цель кредитования
 
         SellerName: "", // Наименование продавца
 
         ProductName: "", // Наименование товара/работы/услуги
 
-        FundingSource: "", // Источник финансирования
+        FundingSource: null, // Источник финансирования
 
-        FacilitiesForRepaymentDate: false
+        FacilitiesForRepaymentDate: false,
+        //InitialPaymentPercent: 0 
       },
 
       ApplicationComment: {
@@ -293,8 +295,6 @@ export const profile = {
           //   Comment: "",
           //   Type: "",
           //   CommentPerson: "",
-          //   id: 0,
-          //   CommentDate: "2020-03-18T09:00:23.928+05:00"
           // }
         ]
       },
@@ -359,7 +359,8 @@ export const profile = {
     },
 
     addPhoneGuarantee(state, payload) {
-      state.fullFormProfile.Guarantee[payload.item][
+      console.log('guaranteePhone', payload)
+      state.fullFormProfile.Guarantee[payload.item].items[
         payload.index
       ].PhoneList.items.push({
         Number: 998
@@ -395,18 +396,18 @@ export const profile = {
       state.fullFormProfile.Guarantee.RelatedLegalPerson.items.push({
         Address: {
           Building: "",
-          OwnershipType: null,
+          OwnershipType: 0,
           HouseType: "",
           PostalCode: "",
           Region: null,
           Street: "",
-          District: "", //Надо добавить!!!
+          District: "",
           Block: "",
           House: "",
           City: "",
           Apartment: "",
-          Office: "", // ???
-          AddressType: null
+          OfficeNum: "",
+          AddressType: ""
         },
         PhoneList: {
           items: [
@@ -417,8 +418,8 @@ export const profile = {
         },
         INN: "",
         Name: "",
-        Sum: 0, // Надо добавить!
-        Activity: "" // Надо добавить!
+        Sum: 0, 
+        Activity: ""
       });
     },
 
@@ -426,20 +427,20 @@ export const profile = {
       state.fullFormProfile.Guarantee.RelatedPerson.items.push({
         Address: {
           Building: "",
-          OwnershipType: null,
+          OwnershipType: 0,
           HouseType: "",
           PostalCode: "",
           Region: null,
           Street: "",
-          District: "", //Надо добавить!!!
+          District: "", 
           Block: "",
           House: "",
           City: "",
           Apartment: "",
-          AddressType: null
+          AddressType: ""
         },
         FirstName: "",
-        NameENG: "",
+        //NameENG: "",
         INN: "",
         Sum: 0,
         MiddleName: "",
@@ -453,12 +454,14 @@ export const profile = {
           DocLink: "",
           DocumentName: 0
         },
-        ClientRelation: null,
-        PhoneList: [
-          {
-            Number: 998
-          }
-        ],
+        ClientRelation: 0,
+        PhoneList: {
+          items: [
+            {
+              Number: 998
+            }
+          ]
+        },
         Resident: false,
         LastName: "",
         PINPP: "",
@@ -475,7 +478,7 @@ export const profile = {
     },
 
     removePhoneGuarantee(state, payload) {
-      state.fullFormProfile.Guarantee[payload.item][
+      state.fullFormProfile.Guarantee[payload.item].items[
         payload.index
       ].PhoneList.items.splice(payload.index2, 1);
     },
@@ -483,8 +486,8 @@ export const profile = {
     addRelative(state) {
       state.fullFormProfile.Customer.Relatives.items.push({
         FirstName: "",
-        FullName: "",
-        FamilyConnectionType: null,
+        // FullName: "",
+        FamilyConnectionType: 0,
         LastName: "",
         MiddleName: "",
         BirthDate: "",
@@ -508,7 +511,7 @@ export const profile = {
         HouseType: "",
         PostalCode: "",
         Region: null,
-        District: "", //Надо добавить!!!
+        District: "", 
         Street: "",
         Block: "",
         House: "",
@@ -541,37 +544,72 @@ export const profile = {
       );
     },
 
+    // setDictionaries(state, dictionaries) {
+    //   for (let item in dictionaries) {
+    //     for (let value of dictionaries[item].items) {
+          
+    //       if (!value.value) {
+            
+    //          for (let i in value) {
+    //           // debugger
+    //            if (typeof value[i] === 'object' && value[i] != null) {
+    //             //  this.setDictionaries(state, value[i])
+    //             for (let k of value[i].items) {
+    //               k.value = Number(k.value)
+    //             }
+    //            }
+    //          }
+    //       }else {
+    //         value.value = Number(value.value)
+    //       }
+    //       //value.value = Number(value.value)
+    //     }
+    //   }
+    //   sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries))
+    //   state.dictionaries = dictionaries;
+    // },
+
     setDictionaries(state, dictionaries) {
-      for (let item in dictionaries) {
-        for (let value of dictionaries[item].items) {
-          value.value = Number(value.value)
+      function objectTransform(dictionaries) {
+        for (let item in dictionaries) {
+          if (typeof dictionaries[item] === "object" && dictionaries[item] != null) {
+            for (let value of dictionaries[item].items) {
+              if (!value.value) {
+                objectTransform(value);
+              } else {
+                value.value = Number(value.value);
+              }
+              //value.value = Number(value.value)
+            }
+          }
         }
+
+        return dictionaries
       }
-      sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries))
-      state.dictionaries = dictionaries;
+      sessionStorage.setItem("dictionaries", JSON.stringify(objectTransform(dictionaries)))
+      state.dictionaries = objectTransform(dictionaries);
     },
 
     resetDataFullFormProfile(state) {
       state.fullFormProfile = {
         Status: "",
-        ApplicationID: "",
-        ProtocolNumber: "",
-        Number: "",
-        Branch: "",
-        BODecision: "",
-        FinalDecision: "",
-        Date: "",
+        // ApplicationID: "",
+        // ProtocolNumber: "",
+        // Number: "",
+        // Branch: "",
+        BODecision: false,
+        // FinalDecision: "",
+        // Date: "",
         BOLogin: "", // логин авторизованного пользователя
-        Department: "",
-        ClientManagerLogin: "",
+        // Department: "",
+        ClientManagerLogin: "", // при авторизации
         CreditCommiteeDecisions: {
           items: [
             // {
             //   Comment: "",
             //   MemberOfCCFIO: "",
-            //   id: 0,
             //   Login: "",
-            //   isApproved: false
+            //   Decision: "" (Y/N/R)
             // }
           ]
         },
@@ -595,7 +633,7 @@ export const profile = {
             ExpirationDate: "",
             GivenDate: "",
             GUID: "",
-            Country: "",
+            Country: "Uzbekistan",
             DocLink: "",
             DocumentName: 0
           },
@@ -623,21 +661,21 @@ export const profile = {
                 House: "",
                 City: "",
                 Apartment: "",
-                AddressType: '1'
+                AddressType: 'Адрес постоянной регистрации'
               }
             ]
           },
   
-          MaritalStatus: false,
+          MaritalStatus: 0,
           hasChildren: false,
           // "ChildrenNum": 0,
-          UnderAgeChildrenNum: null,
+          UnderAgeChildrenNum: 0,
   
           Relatives: {
             items: [
               {
                 FirstName: "",
-                FullName: "",
+                // FullName: "",
                 FamilyConnectionType: null,
                 LastName: "",
                 MiddleName: "",
@@ -660,13 +698,13 @@ export const profile = {
             employerActivityType: null, //вид деятельности организации
             positionType: null, // Категория занимаемой должности
             INN: "",
-            employeesNum: null, // количество работников
+            employeesNum: 0, // количество работников
             employerName: "", // Наименование работадателя
-            totalJobExperienceMonths: null, // общий трудовой стаж
-            activeYears: null, // срок деятельности
+            totalJobExperienceMonths: 0, // общий трудовой стаж
+            activeYears: 0, // срок деятельности
             position: "", // должность
             type: "", // вид деятельности
-            lastJobExperienceMonths: null // стаж на последнем месте работы
+            lastJobExperienceMonths: 0 // стаж на последнем месте работы
           },
   
           // eжемесячные расходы
@@ -708,35 +746,38 @@ export const profile = {
   
         LoanInfo: {
           LoanProduct: null, // Кредитный продукт
-          Sum: null, // Запрашиваемая сумма кредита
+          Sum: 0, // Запрашиваемая сумма кредита
           Currency: "СУМ", // Валюта
-          RepaymentType: null, // Тип пошагового кредита
+          RepaymentType: null, // Тип погашения кредита
           LoanType: null, // Вид кредита
   
-          MinInterestRate: null, // Процентаня ставка по кредиту (минимальная)
-          MaxInterestRate: null, // Процентная ставка по кредиту (максимальная)
+          MinInterestRate: 0.0, // Процентаня ставка по кредиту (минимальная)
+          MaxInterestRate: 0.0, // Процентная ставка по кредиту (максимальная)
   
-          MaxDefferalRepaymentPeriod: null, // Льготный период по погашению кредита
+          MaxDefferalRepaymentPeriod: 0, // Льготный период по погашению кредита
   
-          ConvenientRepaymentTerm: null, // Удобный срок погашения в мес
+          ConvenientRepaymentTerm: 0, // Удобный день погашения в мес 1 - 31
   
-          MaxTermInMonths: null, // Максимальное количество месяцев на кредит
-          MinTermInMonths: null, // Минимальное количество месяцев на кредит
+          TermInMonth: 0, //Количество месяцев на кредит (удобный срок погашения в мес)
   
-          InitialPayment: null, // Первоначальный взнос
+          MaxTermInMonths: 0, // Максимальное количество месяцев на кредит
+          MinTermInMonths: 0, // Минимальное количество месяцев на кредит
   
-          MaxInitialPaymentPercent: null, // Процент первоначального взноса (максимальный)
-          MinInitialPaymentPercent: null, // Процент первоначального взноса (минимальный)
+          InitialPayment: 0, // Первоначальный взнос
   
-          LoanPurpose: "", // Цель кредитования
+          MaxInitialPaymentPercent: 0.0, // Процент первоначального взноса (максимальный)
+          MinInitialPaymentPercent: 0.0, // Процент первоначального взноса (минимальный)
+  
+          LoanPurpose: null, // Цель кредитования
   
           SellerName: "", // Наименование продавца
   
           ProductName: "", // Наименование товара/работы/услуги
   
-          FundingSource: "", // Источник финансирования
+          FundingSource: null, // Источник финансирования
   
-          FacilitiesForRepaymentDate: false
+          FacilitiesForRepaymentDate: false,
+          //InitialPaymentPercent: 0 
         },
   
         ApplicationComment: {
@@ -745,8 +786,6 @@ export const profile = {
             //   Comment: "",
             //   Type: "",
             //   CommentPerson: "",
-            //   id: 0,
-            //   CommentDate: "2020-03-18T09:00:23.928+05:00"
             // }
           ]
         },
@@ -759,7 +798,7 @@ export const profile = {
             // }
           ]
         }
-      };
+      }
     }
   },
   getters: {
