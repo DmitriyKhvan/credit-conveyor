@@ -130,14 +130,16 @@ export default {
     },
     methods:{
         chatName(n){
-            let arr = n.split(' ')
-            let name = arr[0] + ' '
-            arr.forEach((el, i) => {
-                if(i !== 0 && i <= 2 && el !=='') {
-                    name += el[0] + '.'
-                }
-            });
-            return name
+          if(n){
+              let arr = n.split(' ')
+              let name = arr[0] + ' '
+              arr.forEach((el, i) => {
+                  if(i !== 0 && i <= 2 && el !=='') {
+                      name += el[0] + '.'
+                  }
+              });
+              return name
+            }
         },
         selectChat (id) {
           this.$store.dispatch('setActiveChat', id)
@@ -145,7 +147,7 @@ export default {
         setActiveChat(id, toUid){
             this.$store.dispatch('setToUid', toUid)
             this.result = []
-            if(this.chats.find(ch => ch.to_uid === toUid)){ return}
+            if(this.chats.find(ch => ch.to_uid === toUid)){return}
               this.socket.emit("private/create", {
                 from_uid: this.emp_id, // kto sozdaet chat
                 to_uid: toUid    // s kem
@@ -157,15 +159,16 @@ export default {
         },
         selUsers () {
           if(this.searchUser === '') {this.result = []}
-          axios
-              .get("/emps/reg/search?name="+this.searchUser)
-              .then(response => {
-
-                this.result = response.data
-              })
-              .catch(error => {
-                  console.log('error')
-              });
+          if(this.searchUser !== '') {
+            axios
+                .get("/emps/reg/search?name="+this.searchUser)
+                .then(response => {
+                  this.result = response.data
+                })
+                .catch(error => {
+                    console.log('error')
+                });
+          }
         },
         deleteChat(id){
             this.socket.emit("chat/delete", id)
@@ -188,7 +191,6 @@ export default {
     },
     created () {
       this.socket.on("private/create", data => {
-        console.log('created Chat')
         let name = ''
         axios
           .get("/emps/info?id="+data.to_uid)
@@ -216,6 +218,10 @@ export default {
       })
 
 
+    },
+    beforeDestroy(){
+      this.socket.removeListener('private/create')
+      this.socket.removeListener('chat/delete')
     }
 }
 </script>

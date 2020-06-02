@@ -133,6 +133,7 @@ export default {
             this.form.chat_id = this.chatId
             this.socket.emit("msg/send", this.form)
             this.$refs.inputMessage.focus()
+
         },
         formattedDate(date) {
             return commonUtils.formattedDate(date);
@@ -155,33 +156,6 @@ export default {
           let current_datetime = new Date(date)
           let formatted_date = current_datetime.getFullYear() + "." + (current_datetime.getMonth() + 1) + "." + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes()
           return formatted_date
-
-          // let dayOfMonth = date.getDate();
-          // let month = date.getMonth() + 1;
-          // let year = date.getFullYear();
-          // let hour = date.getHours();
-          // let minutes = date.getMinutes();
-          // let diffMs = new Date() - date;
-          // let diffSec = Math.round(diffMs / 1000);
-          // let diffMin = diffSec / 60;
-          // let diffHour = diffMin / 60;
-
-          // // форматирование
-          // year = year.toString().slice(-2);
-          // month = month < 10 ? '0' + month : month;
-          // dayOfMonth = dayOfMonth < 10 ? '0' + dayOfMonth : dayOfMonth;
-          // hour = hour < 10 ? '0' + hour : hour;
-          // minutes = minutes < 10 ? '0' + minutes : minutes;
-
-          // if (diffSec < 1) {
-          //   return 'прямо сейчас';
-          // } else if (diffMin < 1) {
-          //   return `${diffSec} сек. назад`
-          // } else if (diffHour < 1) {
-          //   return `${diffMin} мин. назад`
-          // } else {
-          //   return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`
-          // }
         },
         scrollToBottom () {
             const scrollArea = this.$refs.chat
@@ -243,24 +217,28 @@ export default {
 
       this.socket.on("chat/all", data => {
         const chats =[]
-        data.forEach(el=>{
+        if(data) {
+          data.forEach(el=>{
+            const ch = {
+              chat_id: el.chat_id,
+              emp_id: this.emp_id,
+              to_uid: el.details[0].emp_id,
+              to_name: el.details[0].name,
+              messages: el.messages !== null ? el.messages : []
+            }
+            chats.push(ch)
+          })
+          this.$store.dispatch('setChat', chats)
+        }
 
-          const ch = {
-            chat_id: el.chat_id,
-            emp_id: this.emp_id,
-            to_uid: el.details[0].emp_id,
-            to_name: el.details[0].name,
-            messages: el.messages !== null ? el.messages : []
-          }
-          chats.push(ch)
-        })
-        this.$store.dispatch('setChat', chats)
       });
 
       this.socket.on("msg/send", data => {
         console.log('send', data)
         this.$store.dispatch('addMessage', data)
-        this.form.message = ''
+        if(data.messages[0].from_uid === this.emp_id) {
+          this.form.message = ''
+        }
       })
 
 
