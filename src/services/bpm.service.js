@@ -5,7 +5,8 @@ export default class BpmService {
   // _baseUrlLocal = "http://10.8.7.71:8070/bpm"
   _personalUrl = "http://10.8.8.70:4000"
   _digIdUrl = "http://localhost:50000/api/Identification"
-  _baseUrl = "http://10.8.8.90:8070"
+  // _baseUrl = "http://10.8.8.90:8070"
+  _baseUrl = "http://10.8.8.86:8070"
 
   getBPMToken = async () => {
     const responce = await axios({
@@ -133,6 +134,26 @@ export default class BpmService {
       url: `${this._baseUrl}/file/multiplefileupload`,
       data,
       headers: {'Content-Type': 'multipart/form-data'}
+    })
+
+    return responce.data
+  }
+
+  creatFile = async (data) => {
+    const responce = await axios({
+      method: "post", 
+      url: `${this._baseUrl}/file/edocument`,
+      data
+    })
+
+    return responce.data
+  }
+
+  getFile = async (id) => {
+    const responce = await axios({
+      method: "get",
+      url: `${this._baseUrl}/file/edocument/${id}`,
+      responseType: "arraybuffer"
     })
 
     return responce.data

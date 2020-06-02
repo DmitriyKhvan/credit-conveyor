@@ -353,7 +353,7 @@
               class="fieldset_block"
             >
               <legend class="legend_title">
-                {{ profile.AddressType[address.AddressType - 1] }}
+                {{ address.AddressType }}
               </legend>
 
               <div class="tab-content" ref="tabContent">
@@ -502,12 +502,12 @@
               </div>
 
               <q-btn
-                v-if="address.AddressType == 2 || address.AddressType == 3"
+                v-if="address.AddressType !== 'Адрес постоянной регистрации'"
                 color="red"
                 label="Удалить"
                 @click="
                   confirmDeleteItem(
-                    profile.AddressType[address.AddressType - 1],
+                    address.AddressType,
                     removeRegistration,
                     address.AddressType
                   )
@@ -519,7 +519,7 @@
             <template
               v-if="
                 Customer.AddressList.items.findIndex(
-                  item => item.AddressType == 2
+                  item => item.AddressType == 'Адрес фактического проживания'
                 ) === -1
               "
             >
@@ -530,7 +530,7 @@
               <q-btn
                 color="primary"
                 label="Добавить адрес фактического проживания"
-                @click="addRegistration(2)"
+                @click="addRegistration('Адрес фактического проживания')"
                 class="addItem"
               ></q-btn>
             </template>
@@ -538,7 +538,7 @@
             <template
               v-if="
                 Customer.AddressList.items.findIndex(
-                  item => item.AddressType == 3
+                  item => item.AddressType == 'Адрес временной регистрации'
                 ) === -1
               "
             >
@@ -549,7 +549,7 @@
               <q-btn
                 color="primary"
                 label="Добавить адрес временной регистрации"
-                @click="addRegistration(3)"
+                @click="addRegistration('Адрес временной регистрации')"
                 class="addItem"
               ></q-btn>
             </template>
@@ -1426,6 +1426,7 @@
                     square
                     outlined
                     v-model.number="guarantee.Sum"
+                    type="number"
                     dense
                     label="Сумма поручительства"
                     lazy-rules
@@ -2022,7 +2023,7 @@
                   <q-input
                     square
                     outlined
-                    v-model="guarantee.Address.Office"
+                    v-model="guarantee.Address.OfficeNum"
                     dense
                     label="Номер офиса"
                   />
@@ -2348,7 +2349,7 @@
                   ref="comfortablePeriodRepayment"
                   square
                   outlined
-                  v-model.number="fullProfile.LoanInfo.ConvenientRepaymentTerm"
+                  v-model.number="fullProfile.LoanInfo.TermInMonth"
                   type="number"
                   dense
                   label="Удобный срок погашения в мес"
@@ -2394,6 +2395,27 @@
                     val =>
                       !!val ||
                       'Введите максимальное количество месяцев на кредит'
+                  ]"
+                />
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-4">
+                <q-input
+                  ref="comfortableDayRepayment"
+                  square
+                  outlined
+                  v-model.number="fullProfile.LoanInfo.ConvenientRepaymentTerm"
+                  type="number"
+                  dense
+                  label="Удобный день погашения"
+                  mask="##"
+                  lazy-rules
+                  :rules="[
+                    val => !!val || 'Введите удобный день погашения',
+                    val =>
+                      val > 0 && val < 32 || `Введите удобный день погашения (1-31)`
                   ]"
                 />
               </div>
@@ -2696,7 +2718,7 @@
                 <q-input
                   v-model="creditManagerComment"
                   type="textarea"
-                  label="Ведите комментарий"
+                  label="Введите комментарий"
                   outlined
                   dense
                 />
@@ -2879,6 +2901,7 @@ export default {
     },
 
     personalData() {
+      console.log('personalData', this.$store.getters["credits/credits"].personalData)
       return this.$store.getters["credits/credits"].personalData
     },
 
@@ -3143,6 +3166,7 @@ export default {
 
       // this.$refs.periodRepayment.validate();
       this.$refs.comfortablePeriodRepayment.validate();
+      this.$refs.comfortableDayRepayment.validate();
       // this.$refs.typeCredit.validate();
       this.$refs.initialFee.validate();
       this.$refs.purposeCredit.validate();
@@ -3232,6 +3256,7 @@ export default {
         this.$refs.typeRepayment.hasError ||
         // this.$refs.periodRepayment.hasError ||
         this.$refs.comfortablePeriodRepayment.hasError ||
+        this.$refs.comfortableDayRepayment.hasError ||
         // this.$refs.typeCredit.hasError ||
         this.$refs.initialFee.hasError ||
         this.$refs.purposeCredit.hasError ||
@@ -3273,7 +3298,7 @@ export default {
 
     addVehicle() {
       for (let i = 2000; i <= new Date().getFullYear(); i++) {
-        this.options.yearsOfIssueVehicle.push(String(i));
+        this.options.yearsOfIssueVehicle.push(i);
       }
 
       this.$store.commit("profile/addVehicle");
@@ -3420,7 +3445,7 @@ export default {
             this.loaderFile = false;
             for (let el of response.infos) {
               const item = this.filesAll.find(i => i.id === null)
-              item.id = el.id
+              item.id = Number(el.id)
             }
           } else {
             this.loaderFile = false;
@@ -3463,7 +3488,7 @@ export default {
               Comment: this.creditManagerComment,
               Type: "",
               CommentPerson: this.$store.getters["auth/username"],
-              id: null,
+              //id: 0,
               //CommentDate: ""
             }
 

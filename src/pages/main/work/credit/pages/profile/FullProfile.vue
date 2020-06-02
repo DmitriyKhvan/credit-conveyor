@@ -90,7 +90,8 @@
                 >
                   <div class="col-12 profileSubTitle">
                     {{ "5." + (index + 1) }}
-                    {{ profile.AddressType[address.AddressType - 1] }}
+                    <!-- {{ profile.AddressType[address.AddressType - 1] }} -->
+                    {{ address.AddressType }}
                   </div>
                   <div class="col-3">Индекс</div>
                   <div class="col-9">{{ address.PostalCode }}</div>

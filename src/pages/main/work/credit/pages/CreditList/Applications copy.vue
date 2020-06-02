@@ -22,7 +22,7 @@
                 outlined
                 v-model="client"
                 dense
-                label="Введите ноименование клиента"
+                label="Введите наименование клиента"
               />
             </th>
             <th class="text-right">

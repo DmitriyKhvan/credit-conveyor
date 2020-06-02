@@ -43,7 +43,7 @@
               label="Введите наименование МФО"
             />
           </th>
- 
+
           <th class="text-left filialName">
             <q-input
               square
@@ -171,7 +171,8 @@
                     : null
                 }
               }"
-            >{{ index + 1 }}</router-link>
+              >{{ index + 1 }}</router-link
+            >
           </td>
 
           <td class="text-left applicationNumber applicationRow">
@@ -186,8 +187,8 @@
                   filialName: credit.filialName
                 }
               }"
-            >{{ credit.applicationNumber }}</router-link>
-            
+              >{{ credit.applicationNumber }}</router-link
+            >
           </td>
 
           <td class="text-left client applicationRow">
@@ -202,9 +203,10 @@
                   filialName: credit.filialName
                 }
               }"
-            >{{ credit.client }}</router-link>
+              >{{ credit.client }}</router-link
+            >
           </td>
-          
+
           <td class="text-left manager applicationRow">
             <router-link
               :to="{
@@ -217,7 +219,8 @@
                   filialName: credit.filialName
                 }
               }"
-            >Наименование менеджера</router-link>
+              >Наименование менеджера</router-link
+            >
           </td>
 
           <td class="text-left MFO applicationRow">
@@ -232,9 +235,10 @@
                   filialName: credit.filialName
                 }
               }"
-            >{{ credit.filial }}</router-link>
+              >{{ credit.filial }}</router-link
+            >
           </td>
-          
+
           <td class="text-left filialName applicationRow">
             <router-link
               :to="{
@@ -247,9 +251,10 @@
                   filialName: credit.filialName
                 }
               }"
-            >{{ credit.filialName }}</router-link>
+              >{{ credit.filialName }}</router-link
+            >
           </td>
-          
+
           <td class="text-left taskName applicationRow">
             <router-link
               :to="{
@@ -262,9 +267,9 @@
                   filialName: credit.filialName
                 }
               }"
-            >{{ credit.taskName }}</router-link>
+              >{{ credit.taskName }}</router-link
+            >
           </td>
-
 
           <td class="text-left taskStatus applicationRow">
             <router-link
@@ -278,9 +283,10 @@
                   filialName: credit.filialName
                 }
               }"
-            >{{ credit.taskStatus }}</router-link>
+              >{{ credit.taskStatus }}</router-link
+            >
           </td>
-          
+
           <td class="text-left date applicationRow">
             <router-link
               :to="{
@@ -293,13 +299,16 @@
                   filialName: credit.filialName
                 }
               }"
-            >{{ credit.date }}</router-link>
+              >{{ credit.date }}</router-link
+            >
           </td>
 
           <td class="text-left print">
             <div class="text-blue q-gutter-md">
-              <q-icon name="print" size="md" />
-              <q-icon name="cloud_download" size="md" />
+              <q-btn icon="print" @click="printFile()" />
+              <!-- <q-btn icon="print" @click="printJS(link)" /> -->
+              <q-btn icon="cloud_download" @click="downloadFile()" />
+
               <template v-if="userRole === 'CreditSecretary'">
                 <q-btn
                   class="full-width"
@@ -313,14 +322,53 @@
         </tr>
       </tbody>
     </q-markup-table>
+    <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
   </div>
 </template>
 
 <script>
+import printJS from "print-js";
+
 export default {
   data() {
     return {
       // userRole: this.$store.getters.userRole,
+      fileData: {
+        type: "protocol",
+        lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
+        data: {
+          protocol_initiative_unit: "",
+          protocol_client_inn: "",
+          protocol_lending_currency: "",
+          protocol_loan_amount: "",
+          protocol_repayment_type: "",
+          protocol_customer_name: "",
+          protocol_term: "",
+          protocol_grace_period: "",
+          protocol_finance_source: "",
+          protocol_loan_product: "",
+          protocol_loan_type: "",
+          protocol_percent_rate: "",
+          protocol_credit_rating: "",
+          protocol_request_number: "",
+          protocol_loan_specialist_position: "",
+          protocol_loan_specialist_fio: "",
+          protocol_number: "",
+          protocol_filial: "",
+          protocol_committee_decision_number: "",
+          protocol_committee_decision_date: "",
+          protocol_guarantor_name: "",
+          protocol_guarantor_value: "",
+          protocol_insurance_name: "",
+          protocol_insurance_value: "",
+          protocol_additional_name: "",
+          protocol_additional_value: "",
+          protocol_special_name: "",
+          protocol_special_value: "",
+          protocol_secretary_fio: ""
+        }
+      },
+      link: null,
       applicationNumber: "",
       client: "",
       manager: "",
@@ -348,6 +396,7 @@ export default {
     };
   },
   mounted() {
+    // console.log('lang', this.$store.getters["common/getLangNum"])
     const filters = document.querySelectorAll(".filter");
     for (let filter of filters) {
       filter.addEventListener("click", () => this.toggleFilter(filter));
@@ -359,7 +408,9 @@ export default {
       return this.$store.getters["credits/creditTasks"].filter(task => {
         let conditions = [true];
         if (this.applicationNumber.length > 0) {
-          conditions.push(task.applicationNumber.indexOf(this.applicationNumber) > -1);
+          conditions.push(
+            task.applicationNumber.indexOf(this.applicationNumber) > -1
+          );
         }
 
         if (this.client.length > 0) {
@@ -377,7 +428,7 @@ export default {
         if (this.filialName.length > 0) {
           conditions.push(task.filialName.indexOf(this.filialName) > -1);
         }
-        
+
         if (this.taskName.length > 0) {
           conditions.push(task.taskName.indexOf(this.taskName) > -1);
         }
@@ -395,12 +446,11 @@ export default {
     },
 
     userRole() {
-      return this.$store.getters["credits/userRole"]
+      return this.$store.getters["credits/userRole"];
     }
   },
   methods: {
     toggleFilter(event) {
-      
       const idx = event.getAttribute("idx");
       for (let item of document.querySelectorAll(".active")) {
         if (item !== event) {
@@ -416,7 +466,6 @@ export default {
     },
 
     sortValue(idx, order = true) {
-      
       this.$store.getters["credits/creditTasks"].sort((a, b) => {
         const itemA = a[idx];
         const itemB = b[idx];
@@ -443,7 +492,6 @@ export default {
     },
 
     async creditSign() {
-      
       const confirmCreditData = {
         output: [
           {
@@ -451,10 +499,38 @@ export default {
             data: true
           }
         ]
-      }
+      };
       try {
-        await this.$store.dispatch("credits/confirmationCredit", confirmCreditData)
-      } catch(error){}
+        await this.$store.dispatch(
+          "credits/confirmationCredit",
+          confirmCreditData
+        );
+      } catch (error) {}
+    },
+
+    async printFile() {
+      try {
+        const url = await this.$store.dispatch(
+          "credits/getFile",
+          this.fileData
+        );
+        printJS(url);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {}
+    },
+
+    async downloadFile(fileName = "file") {
+      try {
+        const url = await this.$store.dispatch(
+          "credits/getFile",
+          this.fileData
+        );
+        let link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+      } catch (error) {}
     }
   }
 };

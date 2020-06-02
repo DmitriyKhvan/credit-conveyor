@@ -25,19 +25,19 @@ export default {
   },
   methods: {
     async sentFullProfile() {
-
+      this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
       console.log("fullProfile", this.$store.state.profile.fullFormProfile);
         const {
           Status,
-          ApplicationID,
-          ProtocolNumber,
-          Number,
-          Branch,
+          // ApplicationID,
+          // ProtocolNumber,
+          // Number,
+          // Branch,
           BODecision,
-          FinalDecision,
-          Date,
+          // FinalDecision,
+          // Date,
           BOLogin,
-          Department,
+          // Department,
           ClientManagerLogin,
           CreditCommiteeDecisions,
           Customer,
@@ -47,11 +47,13 @@ export default {
           AttachedDocuments,
         } = this.fullProfile;
 
-        console.log('LoanInfo', LoanInfo)
-
-        // Потом удалить, когда все будет в числовом типе
-        LoanInfo.LoanPurpose = String(LoanInfo.LoanPurpose)
-        LoanInfo.FundingSource = String(LoanInfo.FundingSource)
+        console.log('Customer', Customer)
+        //ClientManagerLogin = "man"
+        Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`
+        Customer.Document.Number = Number(Customer.Document.Number)
+        Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
+        Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
+        //LoanInfo.RepaymentType = Number(LoanInfo.RepaymentType)
 
         // удалил из объекта - Date!!!
         const data = {
@@ -60,14 +62,14 @@ export default {
               name: "application",
               data: {
                 Status,
-                ApplicationID,
-                ProtocolNumber,
-                Number,
-                Branch,
+                // ApplicationID,
+                // ProtocolNumber,
+                // Number,
+                // Branch,
                 BODecision,
-                FinalDecision,
+                // FinalDecision,
                 BOLogin,
-                Department,
+                // Department,
                 ClientManagerLogin,
                 CreditCommiteeDecisions,
                 Customer,

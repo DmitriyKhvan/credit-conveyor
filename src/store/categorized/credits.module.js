@@ -252,6 +252,29 @@ export const credits = {
         sessionStorage.removeItem("csrf_token");
         this.$router.push("/work/credit");
       }
+    },
+
+    async creatFile({state}, fileData) {
+      try {
+        return await state.bpmService.creatFile(fileData)
+      } catch(error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+      }
+    },
+
+    async getFile({state, commit, dispatch}, fileData) {
+      try {
+        // const file = await dispatch('creatFile', fileData)
+        // const response = await state.bpmService.getFile(file.infos[0].id)
+        const response = await state.bpmService.getFile(293)
+        const blob = new Blob([response], { type: "application/pdf" })
+        return window.URL.createObjectURL(blob)
+    
+      } catch(error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+      }
     }
   },
   mutations: {
@@ -319,7 +342,7 @@ export const credits = {
 
         // FAMILY //
         familyStatus: "",
-        children: "",
+        children: false,
         childrenCount: 0,
         // MONEY //
         income: 0, //подтвержденный ежемесячный доход

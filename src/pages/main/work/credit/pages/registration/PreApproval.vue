@@ -142,6 +142,7 @@ export default {
 
           console.log('response', response)
           if (dictionaries) {
+            console.log('dic', JSON.stringify(dictionaries, null, 2))
             this.$store.commit("profile/setDictionaries", dictionaries)
             
             this.$router.push("profile");
