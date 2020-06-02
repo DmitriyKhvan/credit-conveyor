@@ -58,7 +58,7 @@
                             <q-badge class="description">
                                 {{chatName(c.name)}}
                             </q-badge>
-                            <i>{{c.sent_at}}</i>
+                            <i>{{formatDate(c.sent_at)}}</i>
                         </div>
                         <div class="col"></div>
                       </template>
@@ -73,7 +73,7 @@
             <div class=" sendMesage">
                 <q-form @submit.prevent="sendMessage" class="row">
                     <div class="col">
-                        <q-input ref="input" outlined dense v-model="form.message" label="Сообщение" />
+                        <q-input ref="inputMessage" outlined dense v-model="form.message" label="Сообщение" />
                     </div>
 
                     <div class="actionWidth text-center self-center"><q-btn icon="attach_file" flat/></div>
@@ -127,11 +127,12 @@ export default {
             this.edTitile = false
         },
         sendMessage(e) {
-            // e.preventDefault();
+          this.count++
+            e.preventDefault();
             this.form.from_uid = this.emp_id
             this.form.chat_id = this.chatId
             this.socket.emit("msg/send", this.form)
-            this.$refs.input.focus()
+            this.$refs.inputMessage.focus()
         },
         formattedDate(date) {
             return commonUtils.formattedDate(date);
@@ -265,6 +266,10 @@ export default {
 
 
     },
+    beforeDestroy(){
+      this.socket.removeListener('msg/send')
+      this.socket.removeListener('chat/all')
+    }
 }
 </script>
 
