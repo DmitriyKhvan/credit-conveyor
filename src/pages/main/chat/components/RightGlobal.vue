@@ -75,7 +75,7 @@
                       </q-avatar>
                   </div>
                   <div class="col" @click="selectChat(chat.chat_id)">
-                      <div class="text-subtitle1"><b v-html="chat.to_name"></b></div>
+                      <div class="text-subtitle1"><b>{{chatName(chat.to_name)}}</b></div>
                       <div class="text-caption">
                           <q-badge class="online">
                               online
