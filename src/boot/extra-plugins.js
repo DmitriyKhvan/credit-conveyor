@@ -1,9 +1,14 @@
-import Vue from 'vue'
-import IdleVue from 'idle-vue'
+import Vue from 'vue';
+import IdleVue from 'idle-vue';
+import store from "@/store/index";
 
 const eventsHub = new Vue()
+const logoutTime = store.getters["auth/logoutTime"]
 
-Vue.use(IdleVue, {
+const options = {
   eventEmitter: eventsHub,
-  idleTime: 10000 // 10s
-})
+  idleTime: logoutTime, // 10s
+  store
+};
+
+Vue.use(IdleVue, options);

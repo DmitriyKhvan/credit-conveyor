@@ -17,15 +17,16 @@
                     <q-btn  @click="edTitile = true" icon="create" flat/>
                 </div>
             </div>
+             <q-scroll-area ref='chat' class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
 
-            <q-scroll-area ref='chat' class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
-                  <template v-if="chatId">
+
+                  <template v-if="messages(chatId, allChats)">
                     <div
-                      v-for="c in messages(chatId)"
+                      v-for="c in messages(chatId, allChats)"
                       :key="c.id"
                       class="row q-mb-md"
                     >
-                      <template v-if="emp_id === c.from_uid">
+                      <template v-if="emp_id === c.emp_id || emp_id === c.from_uid">
                         <div class="col"></div>
                         <div class="col-lg-5 col-md-8 message_my q-pa-md">
                             <div class="q-pb-sm">
@@ -34,7 +35,7 @@
                             <q-badge class="description_my">
                                 Вы
                             </q-badge>
-                            <i>{{c.sent_at}}</i>
+                            <i>{{formatDate(c.sent_at)}}</i>
                         </div>
 
                         <div class="avatar_my self-end">
@@ -47,7 +48,7 @@
                       <template v-else>
                         <div class="avatar self-end">
                             <q-avatar>
-                                <img :src="getUserProfilePhotoUrl(c.from_uid)">
+                                <img :src="getUserProfilePhotoUrl(c.emp_id)">
                             </q-avatar>
                         </div>
                         <div class="col-lg-5 col-md-8 col-sm-8 message q-pa-md">
@@ -55,9 +56,9 @@
                                 {{c.message}}
                             </div>
                             <q-badge class="description">
-                                {{chatName(c.from_name)}}
+                                {{chatName(c.name)}}
                             </q-badge>
-                            <i>{{c.sent_at}}</i>
+                            <i>{{formatDate(c.sent_at)}}</i>
                         </div>
                         <div class="col"></div>
                       </template>
@@ -67,67 +68,14 @@
                   </template>
 
 
-
-
-
-
-                <!-- <div class="row q-mb-md">
-                    <div class="avatar self-end">
-                        <q-avatar>
-                            <img src="https://cdn.quasar.dev/img/avatar.png">
-                        </q-avatar>
-                    </div>
-                    <div class="col-lg-5 col-md-8 col-sm-8 message q-pa-md">
-                        <div class="q-pb-sm">
-                            Yeah, I'm going to meet a friend of mine at the department store. I have to buy some presents for my parents.
-                        </div>
-                        <q-badge class="description">
-                            Петров А.А.
-                        </q-badge>
-                        <i>10 минут назад</i>
-                    </div>
-                    <div class="col"></div>
-                </div>
-
-                <div class="row q-mb-md">
-                    <div class="col"></div>
-                    <div class="col-lg-5 col-md-8 message_my q-pa-md">
-                        <div class="q-pb-sm">
-                            Yeah, I'm going to meet a friend of mine at the department store. I have to buy some presents for my parents.
-                        </div>
-                        <q-badge class="description_my">
-                            Вы
-                        </q-badge>
-                        <i>10 минут назад</i>
-                    </div>
-
-                    <div class="avatar_my self-end">
-                        <q-avatar>
-                            <img src="https://cdn.quasar.dev/img/avatar.png">
-                        </q-avatar>
-                    </div>
-                </div> -->
-
-
             </q-scroll-area>
 
             <div class=" sendMesage">
                 <q-form @submit.prevent="sendMessage" class="row">
                     <div class="col">
-                        <q-input outlined dense v-model="form.message" label="Сообщение" />
+                        <q-input ref="inputMessage" outlined dense v-model="form.message" label="Сообщение" />
                     </div>
-                    <!-- <label>Users:</label>
-                    <q-select
-                        outlined
-                        v-model="form.to_uid"
-                        :options="userList"
 
-                        stack-label
-                        option-value="value"
-                        option-label="text"
-                        emit-value
-                        map-options
-                    /> -->
                     <div class="actionWidth text-center self-center"><q-btn icon="attach_file" flat/></div>
                     <div class="actionWidth self-center"><q-btn type="submit" icon="subdirectory_arrow_left" outline  /></div>
                 </q-form>
@@ -167,14 +115,10 @@ export default {
             titleChat: 'Название чата и описание',
             edTitile: false,
 
-            message: "",
             form: {
-                chat_id: "",
+                chat_id: null,
                 message: "",
-                from_uid: null,
-                to_uid: null,
-                status: 0,
-                sent_at: new Date()
+                from_uid: null
             },
         }
     },
@@ -183,22 +127,18 @@ export default {
             this.edTitile = false
         },
         sendMessage(e) {
+          this.count++
             e.preventDefault();
             this.form.from_uid = this.emp_id
             this.form.chat_id = this.chatId
-            this.form.to_uid = this.toUid
+            this.socket.emit("msg/send", this.form)
+            this.$refs.inputMessage.focus()
 
-            this.socket.emit("chat", this.form)
-            this.form.message = ''
         },
         formattedDate(date) {
             return commonUtils.formattedDate(date);
         },
-        messages(id){
-            let chat = this.allChats.find(el => el.chat_id === id)
-            console.log('chatArr', chat.messages)
-            return chat.messages
-        },
+
         chatName(n){
             let arr = n.split(' ')
             let name = arr[0] + ' '
@@ -213,34 +153,9 @@ export default {
           return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
         },
         formatDate(date) {
-          // date = Date.parse(date)
-          // console.log(date)
-          let dayOfMonth = date.getDate();
-          let month = date.getMonth() + 1;
-          let year = date.getFullYear();
-          let hour = date.getHours();
-          let minutes = date.getMinutes();
-          let diffMs = new Date() - date;
-          let diffSec = Math.round(diffMs / 1000);
-          let diffMin = diffSec / 60;
-          let diffHour = diffMin / 60;
-
-          // форматирование
-          year = year.toString().slice(-2);
-          month = month < 10 ? '0' + month : month;
-          dayOfMonth = dayOfMonth < 10 ? '0' + dayOfMonth : dayOfMonth;
-          hour = hour < 10 ? '0' + hour : hour;
-          minutes = minutes < 10 ? '0' + minutes : minutes;
-
-          if (diffSec < 1) {
-            return 'прямо сейчас';
-          } else if (diffMin < 1) {
-            return `${diffSec} сек. назад`
-          } else if (diffHour < 1) {
-            return `${diffMin} мин. назад`
-          } else {
-            return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`
-          }
+          let current_datetime = new Date(date)
+          let formatted_date = current_datetime.getFullYear() + "." + (current_datetime.getMonth() + 1) + "." + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes()
+          return formatted_date
         },
         scrollToBottom () {
             const scrollArea = this.$refs.chat
@@ -248,38 +163,49 @@ export default {
             const duration = 300; // ms - use 0 to instant scroll
             scrollArea.setScrollPosition(scrollTarget.scrollHeight, duration);
         },
+        messages(id, chats){
+          if(id){
+            let chat = chats.find(mes => mes.chat_id === id)
+            return chat.messages
+          }
+        }
+
     },
     computed: {
         ...mapGetters({
-        user: "auth/fullName"
+          user: "auth/fullName"
         }),
         ...mapGetters({
-        emp_id: "auth/empId"
+          emp_id: "auth/empId"
         }),
         ...mapGetters({
-        inbox: "dicts/receivedNotifications"
+          inbox: "dicts/receivedNotifications"
         }),
         ...mapGetters({
-        socket: "socket/getSocket"
+          socket: "socket/getSocket"
         }),
         ...mapGetters({
-        userList: "dicts/getUserList"
+          userList: "dicts/getUserList"
         }),
         chatId(){
-            return this.$store.getters.getActiveChat
+          return this.$store.getters.getActiveChat
         },
         allChats(){
             return this.$store.getters.getChats
         },
         toUid(){
           return this.$store.getters.getToUid
-        }
+        },
+
+        activeChatId(){
+            return this.$store.getters.getActiveChat
+        },
 
     },
     updated() {
             this.scrollToBottom()
     },
-    mounted() {
+    created() {
         this.$nextTick(() => {
             this.heightChat = height(eee) - 240 + 'px'
             window.onresize = () => {
@@ -287,24 +213,41 @@ export default {
             }
         })
 
+      this.socket.emit("chat/all", this.emp_id);
+
+      this.socket.on("chat/all", data => {
+        const chats =[]
+        if(data) {
+          data.forEach(el=>{
+            const ch = {
+              chat_id: el.chat_id,
+              emp_id: this.emp_id,
+              to_uid: el.details[0].emp_id,
+              to_name: el.details[0].name,
+              messages: el.messages !== null ? el.messages : []
+            }
+            chats.push(ch)
+          })
+          this.$store.dispatch('setChat', chats)
+        }
+
+      });
+
+      this.socket.on("msg/send", data => {
+        console.log('send', data)
+        this.$store.dispatch('addMessage', data)
+        if(data.messages[0].from_uid === this.emp_id) {
+          this.form.message = ''
+        }
+      })
 
 
 
-
-        // // axios
-        // //     .get("/chat/private")
-        // //     .then(response => {
-        // //         console.log("chats", response.data);
-        // //     })
-        // //     .catch(error => {
-        // //         console.log("error Chats");
-        // //     });
-
-        // this.socket.on("/chat/private", data => {
-        //     console.log('DATA', data);
-
-        // });
     },
+    beforeDestroy(){
+      this.socket.removeListener('msg/send')
+      this.socket.removeListener('chat/all')
+    }
 }
 </script>
 

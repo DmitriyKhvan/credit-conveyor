@@ -2,50 +2,71 @@
   <div class="row">
     <right-block></right-block>
 
-    <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
-      <div class="row table_border">
-        <div class="table_title"><q-icon name="account_box" size="sm" class="q-pr-sm" /> ДОКУМЕНТЫ</div>
-        <div class="col-12 q-pa-md table_bg">
 
-          <div class="block_global">
-            <div class="left_bg">
-              Место рождения
-            </div>
-            <div class="right_bg">
-              Узбекистан Ташкент Мерзо Улугбекский р-н
-            </div>
-          </div>
 
-          <div class="block_global">
-            <div class="left_bg">
-              Место рождения
-            </div>
-            <div class="right_bg">
-              Узбекистан Ташкент Мерзо Улугбекский р-н
-            </div>
-          </div>
+      <personal v-if="menuId == 0"></personal>
+      <passport v-if="menuId == 3"></passport>
+      <relatives v-if="menuId == 4"></relatives>
+      <work v-if="menuId == 8"></work>
+      <trips v-if="menuId == 5"></trips>
+      <career v-if="menuId == 7"></career>
+      <education v-if="menuId == 6"></education>
+      <contract v-if="menuId == 9"></contract>
+      <businesstrip v-if="menuId == 11"></businesstrip>
+      <medicallist v-if="menuId == 12"></medicallist>
+      <vacations v-if="menuId == 13"></vacations>
 
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script>
-
+import personal from './components/my'
+import passport from './components/passport'
+import relatives from './components/relatives'
+import work from './components/work'
+import trips from './components/trips'
+import career from './components/career'
+import education from './components/education'
+import contract from './components/contract'
+import businesstrip from './components/businesstrip'
+import medicallist from './components/medicallist'
+import vacations from './components/vacations'
+import axios from "axios"
+import { mapGetters } from "vuex"
 import RightBlock from '../components/Left'
 export default {
   name: 'MyData',
-  created () {
-    console.log('My Data')
-  },
   components: {
-    RightBlock
+    personal,
+    RightBlock,
+    passport,
+    relatives,
+    work,
+    trips,
+    career,
+    education,
+    contract,
+    businesstrip,
+    medicallist,
+    vacations
   },
+  data () {
+    return {
+
+    }
+  },
+  computed: {
+    menuId () {
+      return this.$store.getters.getMenuId
+    }
+  },
+  methods: {
+
+  }
 
 }
 </script>
 <style scoped>
-  .table_bg {
+  /* .table_bg {
     background: #EAF3FC;
     border-radius: 5px;
   }
@@ -87,5 +108,5 @@ export default {
     background: url('../../../../assets/images/table_dot.png') repeat-x;
     background-position: 0 12px;
     margin: 5px 0;
-  }
+  } */
 </style>
