@@ -14,7 +14,7 @@
         <q-item clickable v-ripple>
           <q-item-section avatar>
             <!-- <q-icon name="inbox" /> -->
-            <q-img src="~assets/statics/logo.svg" style="width:25px" class="titleLogo" />
+            <q-img src="~assets/statics/logo.png" style="width:25px" class="titleLogo" />
           </q-item-section>
 
           <q-item-section>
