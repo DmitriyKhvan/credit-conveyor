@@ -145,9 +145,9 @@ export default {
           this.$store.dispatch('setActiveChat', id)
         },
         setActiveChat(id, toUid){
-            this.$store.dispatch('setToUid', toUid)
+            if(this.emp_id !== toUid) this.$store.dispatch('setToUid', toUid)
             this.result = []
-            if(this.chats.find(ch => ch.to_uid === toUid)){return}
+            if(this.chats.find(ch => ch.to_uid === toUid) || this.emp_id === toUid){return}
               this.socket.emit("private/create", {
                 from_uid: this.emp_id, // kto sozdaet chat
                 to_uid: toUid    // s kem
@@ -177,17 +177,11 @@ export default {
     },
     computed: {
         ...mapGetters({
-          emp_id: "auth/empId"
+          emp_id: "auth/empId",
+          socket: "socket/getSocket",
+          chatId: 'getActiveChat',
+          chats: 'getChats'
         }),
-        ...mapGetters({
-          socket: "socket/getSocket"
-        }),
-        chats(){
-          return this.$store.getters.getChats
-        },
-        chatId(){
-            return this.$store.getters.getActiveChat
-        },
     },
     created () {
       this.socket.on("private/create", data => {
