@@ -33,7 +33,7 @@
                         {{a.PAY_NAME}}
                       </div>
                       <div class="right_bg">
-                        {{a.SUMM}}
+                        {{formatNum(a.SUMM)}}
                       </div>
                     </div>
                   </template>
@@ -58,7 +58,7 @@
 
                       <div v-if="b.HOURS" class="right_bg rbg" v-html="b.HOURS"></div>
                       <div v-if="b.DAYS" class="right_bg rbg" v-html="b.DAYS"></div>
-                      <div class="right_bg" v-html="b.SUMM"></div>
+                      <div class="right_bg" v-html="formatNum(b.SUMM)"></div>
                     </div>
                   </template>
 
@@ -82,7 +82,7 @@
                       :key="c.PAY_NAME"
                     >
                       <div class="left_bg" v-html="c.PAY_NAME"></div>
-                      <div class="right_bg" v-html="c.SUMM"></div>
+                      <div class="right_bg" v-html="formatNum(c.SUMM)"></div>
                     </div>
                   </template>
                 </div>
@@ -102,7 +102,7 @@
                       :key="d.PAY_NAME"
                     >
                       <div class="left_bg" v-html="d.PAY_NAME"></div>
-                      <div class="right_bg" v-html="d.SUMM"></div>
+                      <div class="right_bg" v-html="formatNum(d.SUMM)"></div>
                     </div>
                   </template>
                 </div>
@@ -134,6 +134,25 @@ export default {
   },
 
   methods: {
+    formatNum (str) {
+        str = Math.round(str)
+        str = String(str)
+        str = str.replace(/(\.(.*))/g, '');
+        var arr = str.split('');
+        var str_temp = '';
+        if (str.length > 3) {
+            for (var i = arr.length - 1, j = 1; i >= 0; i--, j++) {
+                str_temp = arr[i] + str_temp;
+                if (j % 3 == 0) {
+                    str_temp = '.' + str_temp;
+                }
+            }
+            str_temp = str_temp.length === 8 ? str_temp.slice(1) : str_temp
+            return str_temp;
+        } else {
+            return str;
+        }
+    },
     monthData (arr){
       axios({
         url: '/emps/kvitok/month',
@@ -141,7 +160,6 @@ export default {
         data: arr
       })
       .then(response => {
-          console.log('arr', response.data);
 
           response.data[0].array[0].forEach(el => {
             this.blockOne.push(el)
@@ -181,7 +199,6 @@ export default {
     axios
       .get("/emps/kvitok/dates?uid=" + this.emp_id)
       .then(response => {
-        console.log('Dates', response.data.data)
           response.data.data.forEach(el => {
             let arr = {
               label: el.text,
@@ -190,7 +207,6 @@ export default {
             this.options.push(arr)
           });
           this.model = this.options[0]
-          console.log('option 0', this.model)
           this.monthData({
               uid: this.emp_id,
               date: this.options[0].value

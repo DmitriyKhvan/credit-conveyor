@@ -15,6 +15,7 @@ module.exports = function (ctx) {
       "calendar",
       "vuelidate",
       "vuehtml",
+      "extra-plugins"
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -47,7 +48,9 @@ module.exports = function (ctx) {
       // * true   - Import everything from Quasar
       //            (not treeshaking Quasar; biggest bundle size; convenient)
       all: "auto",
-      components: [],
+      components: [
+        'QScrollArea'
+      ],
       directives: [],
       // Quasar plugins
       plugins: ["Notify", "Cookies", "Dialog", "Loading"],

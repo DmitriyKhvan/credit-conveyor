@@ -1,143 +1,97 @@
 <template>
-  <q-layout view="hHh Lpr lff">
-    <q-drawer
-      side="right"
-      v-model="leftDrawerOpen"
-      show-if-above
-      :mini="drawer"
-      :width="400"
-      :breakpoint="500"
-      bordered
-    >
-      <div v-if="!drawer">
-        <div class="block">
-          <q-img src="~assets/statics/logoNew.png" style="color:red; width: 100px" />
-        </div>
-        <div class="block2">
-          <div class="row justify-center">
-            <div class="column self-center">
-              <q-card class="my-card" style="width: 360px" flat>
-                <q-card-section class="row justify-center">
-                  <span>{{ $t("auth._self") }}</span>
-                </q-card-section>
-                <q-form>
-                  <q-card-section>
-                    <!-- LOGIN -->
-                    <q-input
-                      dense
-                      square
-                      outlined
-                      clearable
-                      v-model.trim="credentials.username"
-                      :placeholder="$t('auth.username')"
-                      v-on:keyup.enter="handleSubmit()"
-                      @input="$v.credentials.username.$touch()"
-                      :rules="[
-                        val =>
-                          $v.credentials.username.required ||
-                          $t('auth.usernameError'),
-                        val =>
-                          $v.credentials.username.minLength ||
-                          $t('auth.usernameMinError')
-                      ]"
-                      lazy-rules
-                    >
-                      <template v-slot:prepend>
-                        <q-icon name="account_circle" />
-                      </template>
-                    </q-input>
-                    <!-- Password -->
-                    <q-input
-                      dense
-                      square
-                      outlined
-                      clearable
-                      v-model="credentials.password"
-                      :placeholder="$t('auth.password')"
-                      v-on:keyup.enter="handleSubmit()"
-                      :type="showPass ? 'text' : 'password'"
-                      @input="$v.credentials.password.$touch()"
-                      :rules="[
-                        val =>
-                          $v.credentials.password.required ||
-                          $t('auth.passwordError'),
-                        val =>
-                          $v.credentials.password.minLength ||
-                          $t('auth.passwordMinError')
-                      ]"
-                      lazy-rules
-                    >
-                      <template v-slot:prepend>
-                        <q-icon name="vpn_key" />
-                      </template>
-                      <template v-slot:append>
-                        <q-btn
-                          round
-                          dense
-                          flat
-                          :icon="showPass ? 'o_visibility' : 'o_visibility_off'"
-                          @click="showPass = !showPass"
-                        />
-                      </template>
-                    </q-input>
-                    <q-select
-                      outlined
-                      class="col-xs-12 col-sm-6 col-md-6"
-                      v-model="credentials.lang"
-                      :options="langsList"
-                      option-value="value"
-                      option-label="text"
-                      map-options
-                      @input="
-                        lang => {
-                          onLangChange(lang.value);
-                        }
-                      "
-                      :rules="[
-                        val =>
-                          $v.credentials.lang.required ||
-                          $t('auth.languageError')
-                      ]"
-                      lazy-rules
-                    >
-                      <template v-slot:prepend>
-                        <q-icon name="language" />
-                      </template>
-                    </q-select>
-                  </q-card-section>
-                  <q-card-section>
-                    <q-btn
-                      class="full-width"
-                      color="primary"
-                      :disable="$v.credentials.$invalid"
-                      @click="handleSubmit()"
-                      v-on:keyup.enter="handleSubmit()"
-                    >{{ $t("auth.signin") }}</q-btn>
-                  </q-card-section>
-                </q-form>
-              </q-card>
+  <div class="bg">
+    <div class="wrap">
+      <div class="leftBlock">
+        <div class="loginBlock">
+          <div class="title">ВОЙДИТЕ В АККАУНТ</div>
+
+          <q-form>
+            <div class="input">
+              <q-input
+                outlined
+                label="Введите логин"
+                v-model.trim="credentials.username"
+                :placeholder="$t('auth.username')"
+                v-on:keyup.enter="handleSubmit()"
+                @input="$v.credentials.username.$touch()"
+                :rules="[
+                  val =>
+                    $v.credentials.username.required ||
+                    $t('auth.usernameError'),
+                  val =>
+                    $v.credentials.username.minLength ||
+                    $t('auth.usernameMinError')
+                ]"
+                lazy-rules
+              />
             </div>
-          </div>
+            <div class="input">
+              <q-input
+                outlined
+                label="Введите пароль"
+                v-model="credentials.password"
+                :placeholder="$t('auth.password')"
+                v-on:keyup.enter="handleSubmit()"
+                :type="showPass ? 'text' : 'password'"
+                @input="$v.credentials.password.$touch()"
+                :rules="[
+                  val =>
+                    $v.credentials.password.required ||
+                    $t('auth.passwordError'),
+                  val =>
+                    $v.credentials.password.minLength ||
+                    $t('auth.passwordMinError')
+                ]"
+                lazy-rules
+              />
+            </div>
+            <div class="checksBlock">
+              <div class="checkElement">
+                <q-checkbox v-model="teal" label="Запомнить меня" />
+              </div>
+              <div class="text-right">Забыли пароль?</div>
+            </div>
+            <q-btn
+              color="primary"
+              label="Войти"
+              size="lg"
+              class="full-width btnPad"
+              :disable="$v.credentials.$invalid"
+              @click="handleSubmit()"
+              v-on:keyup.enter="handleSubmit()"
+            />
+            <div class="lang">
+              <div>Ўзб</div>
+              <div>O’zb</div>
+              <div class="active">Ру</div>
+              <div>Eng</div>
+            </div>
+            <div v-if="loginError" class="alert">
+              <div><q-icon name="error" size="md" class="text-red" /></div>
+              <div>Проверьте логин, правильность пароля и срок его действия</div>
+            </div>
+
+          </q-form>
+
         </div>
       </div>
-
-      <q-page-sticky position="bottom-right" :offset="[-15, 55]">
-        <q-btn fab color="blue" style="width: 30px; height: 30px;" @click="drawer = !drawer">
-          <q-icon
-            :name="drawer ? 'keyboard_arrow_left' : 'keyboard_arrow_right'"
-            class="absolute-center"
-          />
-        </q-btn>
-      </q-page-sticky>
-    </q-drawer>
-
-    <q-page-container>
-      <q-img
-        src="http://imkoniyat.uz/wp-content/uploads/2014/11/tashkent.jpg"
-        style="width: 100%; height: 100vh; filter: blur(5px);"
-      />
-    </q-page-container>
-  </q-layout>
+      <!-- правый блок -->
+      <div class="rightBlock">
+          <div class="press">
+            <div class="title">Новости и анонсы</div>
+            <q-scroll-area class="scrollBlock">
+              <div class="pressBlock" v-for="p in 10" :key="p">
+                <div class="img"><img src="./assets/photo.png"></div>
+                <div class="text">
+                  В УЗБЕКИСТАНЕ ОТМЕНЯТ СТИКЕРЫ И РАЗРЕШАТ ПОЛЬЗОВАТЬСЯ АВТОМОБИЛЕМ БЕЗ ОГРАНИЧЕНИЙ
+                  <div>16.05.2020 <q-icon class="more" name="keyboard_arrow_down" size="md" /></div>
+                </div>
+              </div>
+            </q-scroll-area>
+          </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import { AuthService } from "@/services/auth.service";
@@ -150,8 +104,6 @@ export default {
   name: "names",
   data() {
     return {
-      drawer: false,
-      leftDrawerOpen: false,
       showPass: false,
       credentials: {
         username: null,
@@ -165,7 +117,8 @@ export default {
         { text: "English", value: "en" },
         { text: "O'zbek Lotin", value: "uz" }
       ],
-      loginError: false
+      loginError: false,
+
     };
   },
   validations: {
@@ -197,11 +150,13 @@ export default {
           } else {
             LoadingService.hideLoading();
             NotifyService.showErrorMessage("Error in login");
+            this.loginError = true
           }
         });
       } else {
         LoadingService.hideLoading();
-        NotifyService.showErrorMessage("Enter credentials correctly");
+        this.loginError = true
+        // NotifyService.showErrorMessage("Enter credentials correctly");
       }
     },
     clearForm() {
@@ -218,31 +173,145 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-.block {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 5em;
-  width: 8em;
-}
-.block2 {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 3em;
-  width: 8em;
-  font-family: "Open Sans", sans-serif;
-}
-.block3 {
-  margin-left: 10px;
-  margin-right: 10px;
-  display: grid;
-  grid-template-columns: 30% 30% 30%;
+<style scoped>
+  @font-face {
+    font-family: 'OpenSans';
+    src: url(./assets/fonts/OpenSans-Regular.ttf);
+  }
 
-  grid-gap: 10px;
-  background-color: red;
-}
-.item {
-  border: 1px solid #ccc;
-  align-self: center;
-}
+  .bg {
+    width: 100%;
+    height: 100vh;
+    background: url('./assets/bg.png') 100% 100% no-repeat;
+    background-size: cover;
+    font-family: 'OpenSans';
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 22px;
+    color: #787E8C;
+    display: flex;
+    align-items: center;
+  }
+  .wrap {
+    display: flex;
+    width: 100%;
+  }
+  .leftBlock {
+    width: 50%;
+
+  }
+  .loginBlock {
+    width: 412px;
+    margin: 0 auto;
+    padding: 40px;
+    background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1), rgba(255,255,255,0.8));
+    border-radius: 5px;
+    box-shadow: 0 0 10px #888888;
+  }
+  .title {
+    text-align: center;
+    padding-bottom: 35px;
+    font-size: 20px;
+    text-transform: uppercase;
+  }
+  .input {
+
+  }
+  .checksBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .checkElement {
+    margin-left: -10px;
+  }
+  .lang {
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-around;
+  }
+  .lang .active, .lang div:hover {
+    color: #6BA7DE;
+    cursor: pointer;
+  }
+  .alert {
+    display: flex;
+    align-items: center;
+    border-left: 4px #CB3535 solid;
+    border-radius: 5px;
+    padding: 20px 20px 20px 10px;
+    background: #fff;
+    line-height: 19px;
+    font-size: 14px;
+    margin-top: 35px;
+  }
+  .alert div + div {
+    padding-left: 10px;
+  }
+  .rightBlock {
+    width: 50%;
+  }
+  .pressBlock {
+    display: flex;
+  }
+  .press {
+    background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1), rgba(255,255,255,0.8));
+    border-radius: 5px;
+    box-shadow: 0 0 10px #888888;
+    margin-right: 50px;
+    padding: 40px 30px 0 30px;
+    color: #44494D;
+  }
+  .scrollBlock {
+    height: 475px;
+  }
+  .pressBlock {
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(208, 208, 208, 0.5);
+    cursor: pointer;
+  }
+  .img {
+    width: 130px;
+  }
+  .img img {
+    width: 100%;
+    height: auto;
+    border-radius: 2px;
+  }
+  .text {
+    text-transform: uppercase;
+    padding-left: 20px;
+    font-weight: bold;
+  }
+  .text div {
+    color: #44494D;
+    font-size: 12px;
+    font-weight: normal;
+    padding-top: 10px;
+    position: relative;
+  }
+  .more {
+    display: none;
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    margin-left: -10px;
+  }
+  .text:hover .more, .text div:hover .more, .pressBlock:hover .more {display: block;}
+
+</style>
+<style>
+  .btnPad {
+    margin: 35px 0;
+    padding: 8px;
+    font-size: 16px;
+  }
+  .btnPad div {
+    font-size: 16px;
+  }
+  .input .q-field--outlined .q-field__control {
+    background: #F2F2F2;
+  }
 </style>

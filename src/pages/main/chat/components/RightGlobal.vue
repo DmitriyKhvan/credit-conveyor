@@ -25,7 +25,7 @@
 
         <div class="chatsList scroll q-pt-md" :style="{height: heightRight}">
 
-            <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
+            <!-- <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
                 <div class="notice">10</div>
                 <div class="col">
                     <div class="text-subtitle1"><b>Название чата</b></div>
@@ -34,25 +34,23 @@
                 <div class="text-right actionsBlock self-center">
                     <q-btn icon="delete_outline"  color="grey-8" flat />
                 </div>
-            </div>
+            </div> -->
 
             <template v-if="result.length > 0">
             <div
                 v-for="user in result"
-                :key="user.EMP_ID"
+                :key="user.emp_id"
                 class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock"
-                @click="setActiveChat('', user.EMP_ID)"
+                @click="setActiveChat('', user.emp_id)"
                 >
                 <div class="avatarBlock">
                     <q-avatar>
-                        <img :src="getUserProfilePhotoUrl(user.EMP_ID)">
+                        <img :src="getUserProfilePhotoUrl(user.emp_id)">
                     </q-avatar>
                 </div>
                 <div class="col">
                     <div class="text-subtitle1"><b>
-                      <span class="user" v-html="user.LAST_NAME"></span>
-                      <span v-html="user.LAST_NAME[0]"></span>.
-                      <span v-html="user.LAST_NAME[0]"></span>.
+                      <span class="user" v-html="user.name"></span>
                     </b></div>
                     <div class="text-caption">
                         <q-badge class="online">
@@ -64,55 +62,38 @@
             </template>
 
             <template v-else>
-            <div
-                v-for="chat in chats"
-                :key="chat.chat_id"
-                :class="chatId === chat.chat_id ? 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock active' : 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock'"
-                @click="setActiveChat(chat.chat_id, chat.messages[0].to_uid)"
-                >
-                <div class="avatarBlock">
-                    <q-avatar>
-                        <img :src="getUserProfilePhotoUrl(chat.from_uid)">
-                    </q-avatar>
-                </div>
-                <div class="col">
-                    <div class="text-subtitle1" v-if="chat.messages[0].to_name"><b>{{chatName(chat.messages[0].to_name)}}</b></div>
-                    <div class="text-caption">
-                        <q-badge class="online">
-                            online
-                        </q-badge>
-                    </div>
-                </div>
-                <!-- <div class="actionsBlock noBorder text-right self-center">
-                    <q-btn icon="chat_bubble_outline" color="grey-8" flat />
-                </div> -->
-                <div class="actionsBlock text-right actions self-center">
-                    <q-btn icon="delete_outline" color="grey-8" flat />
-                </div>
-            </div>
+              <!-- {{chats}} -->
+              <div
+                  v-for="chat in chats"
+                  :key="chat.chat_id"
+                  :class="chatId === chat.chat_id ? 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock active' : 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock'"
+
+                  >
+                  <div class="avatarBlock" @click="selectChat(chat.chat_id)">
+                      <q-avatar>
+                          <img :src="getUserProfilePhotoUrl(chat.to_uid)">
+                      </q-avatar>
+                  </div>
+                  <div class="col" @click="selectChat(chat.chat_id)">
+                      <div class="text-subtitle1"><b>{{chatName(chat.to_name)}}</b></div>
+                      <div class="text-caption">
+                          <q-badge class="online">
+                              online
+                          </q-badge>
+                      </div>
+                  </div>
+
+                  <div class="actionsBlock text-right actions self-center">
+                    <q-btn
+                        icon="delete_outline"
+                        color="grey-8"
+                        flat
+                        @click="deleteChat(chat.chat_id)"
+                    />
+                  </div>
+              </div>
             </template>
 
-            <!-- <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
-                <div class="avatarBlock">
-                    <q-avatar>
-                        <img src="https://cdn.quasar.dev/img/avatar.png">
-                    </q-avatar>
-                </div>
-                <div class="col">
-                    <div class="text-subtitle1"><b>Петров А.А.</b></div>
-                    <div class="text-caption">
-                        <q-badge class="offline">
-                            offline
-                        </q-badge>
-                    </div>
-                </div>
-                <div class="actionsBlock noBorder text-right self-center">
-                    <q-btn icon="chat_bubble_outline" color="grey-8" flat />
-                </div>
-                <div class="actionsBlock text-right self-center">
-                    <q-btn icon="delete_outline" color="grey-8" flat />
-                </div>
-            </div> -->
         </div>
 
         <AddChat></AddChat>
@@ -120,6 +101,8 @@
 </template>
 
 <script>
+
+import { mapGetters } from "vuex";
 import axios from "axios"
 import AddChat from './AddChat'
 import { dom } from 'quasar'
@@ -147,45 +130,92 @@ export default {
     },
     methods:{
         chatName(n){
-            let arr = n.split(' ')
-            let name = arr[0] + ' '
-            arr.forEach((el, i) => {
-                if(i !== 0 && i <= 2 && el !=='') {
-                    name += el[0] + '.'
-                }
-            });
-            return name
+          if(n){
+              let arr = n.split(' ')
+              let name = arr[0] + ' '
+              arr.forEach((el, i) => {
+                  if(i !== 0 && i <= 2 && el !=='') {
+                      name += el[0] + '.'
+                  }
+              });
+              return name
+            }
+        },
+        selectChat (id) {
+          this.$store.dispatch('setActiveChat', id)
         },
         setActiveChat(id, toUid){
-            console.log(toUid)
-            if(id != '') this.$store.dispatch('setActiveChat', id)
-            this.$store.dispatch('setToUid', toUid)
+            if(this.emp_id !== toUid) this.$store.dispatch('setToUid', toUid)
+            this.result = []
+            if(this.chats.find(ch => ch.to_uid === toUid) || this.emp_id === toUid){return}
+              this.socket.emit("private/create", {
+                from_uid: this.emp_id, // kto sozdaet chat
+                to_uid: toUid    // s kem
+              });
+
         },
         getUserProfilePhotoUrl(emp_id) {
           return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
         },
         selUsers () {
           if(this.searchUser === '') {this.result = []}
-          axios
-              .get("/emps/search?name="+this.searchUser)
-              .then(response => {
-                console.log('Users', response.data)
+          if(this.searchUser !== '') {
+            axios
+                .get("/emps/reg/search?name="+this.searchUser)
+                .then(response => {
                   this.result = response.data
-              })
-              .catch(error => {
-                  console.log('error')
-              });
+                })
+                .catch(error => {
+                    console.log('error')
+                });
+          }
         },
+        deleteChat(id){
+            this.socket.emit("chat/delete", id)
+        }
 
     },
     computed: {
-        chats(){
-          console.log('chats', this.$store.getters.getChats)
-            return this.$store.getters.getChats
-        },
-        chatId(){
-            return this.$store.getters.getActiveChat
-        },
+        ...mapGetters({
+          emp_id: "auth/empId",
+          socket: "socket/getSocket",
+          chatId: 'getActiveChat',
+          chats: 'getChats'
+        }),
+    },
+    created () {
+      this.socket.on("private/create", data => {
+        let name = ''
+        axios
+          .get("/emps/info?id="+data.to_uid)
+          .then(response => {
+            name = response.data.LAST_NAME +' '+response.data.FIRST_NAME[0]+'. '+response.data.MIDDLE_NAME[0]+'.'
+            const chat = {
+              chat_id: data.id,
+              from_uid: data.from_uid,
+              to_uid: data.to_uid,
+              to_name: name,
+              messages: []
+            }
+            this.$store.dispatch('addChat', chat )
+            this.$store.dispatch('setActiveChat', data.id)
+            this.searchUser = ''
+          })
+          .catch(error => {
+              console.log('error')
+          });
+
+      })
+
+      this.socket.on("chat/delete", data => {
+          this.$store.dispatch('deleteChat', data)
+      })
+
+
+    },
+    beforeDestroy(){
+      this.socket.removeListener('private/create')
+      this.socket.removeListener('chat/delete')
     }
 }
 </script>

@@ -6,7 +6,7 @@
 export default {
   name: 'ProfilePage',
   created () {
-    console.log('Profile')
+
   }
 }
 </script>

@@ -2248,11 +2248,12 @@
               </div>
             </div>
 
-            <div
-              v-if="!!fullProfile.LoanInfo.LoanProduct"
-              class="row q-col-gutter-md"
-            >
-              <div class="col-4">
+            <div class="row q-col-gutter-md">
+              <!-- если не овердрафт -->
+              <div 
+                v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
+                class="col-4"
+              >
                 <q-select
                   ref="typeRepayment"
                   square
@@ -2260,8 +2261,8 @@
                   v-model="fullProfile.LoanInfo.RepaymentType"
                   :options="profile.options.RepaymentType"
                   dense
-                  label="Тип пошагового кредита"
-                  :rules="[val => !!val || 'Выберите тип пошагового кредита']"
+                  label="Тип графика гашения"
+                  :rules="[val => !!val || 'Выберите тип графика гашения']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -2291,7 +2292,7 @@
                   v-model="fullProfile.LoanInfo.MinInterestRate"
                   dense
                   disable
-                  label="Процентаня ставка по кредиту (минимальная)"
+                  label="Процентная ставка по кредиту (минимальная)"
                   :rules="[
                     val => !!val || 'Введите минимальную процентную ставку'
                   ]"
@@ -2505,35 +2506,7 @@
                   class="q-pb-sm"
                 />
               </div>
-              <div class="col-4">
-                <q-input
-                  ref="sellerName"
-                  square
-                  outlined
-                  v-model="fullProfile.LoanInfo.SellerName"
-                  dense
-                  label="Наименование продавца"
-                  lazy-rules
-                  :rules="[val => !!val || 'Введите наименование продавца']"
-                />
-              </div>
-              <div class="col-4">
-                <q-input
-                  ref="productName"
-                  square
-                  outlined
-                  v-model="fullProfile.LoanInfo.ProductName"
-                  dense
-                  label="Наименование товара/работы/услуги"
-                  lazy-rules
-                  :rules="[
-                    val => !!val || 'Введите наименование товара/работы/услуги'
-                  ]"
-                />
-              </div>
-            </div>
 
-            <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
                   ref="sourceFinancs"
@@ -2549,9 +2522,111 @@
                   class="q-pb-sm"
                 />
               </div>
-              <div class="col-4"></div>
-              <div class="col-4"></div>
+
             </div>
+
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+              <div class="row q-col-gutter-md">
+                <div class="col-4">
+                  <q-input
+                    ref="sellerName"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.SellerName"
+                    dense
+                    label="Наименование продавца/производителя товара/работы/услуги"
+                    lazy-rules
+                    :rules="[val => !!val || 'Введите наименование продавца/производителя товара/работы/услуги']"
+                  />
+                </div>
+                <div class="col-4">
+                  <q-input
+                    ref="productName"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.ProductName"
+                    dense
+                    label="Наименование товара/работы/услуги"
+                    lazy-rules
+                    :rules="[
+                      val => !!val || 'Введите наименование товара/работы/услуги'
+                    ]"
+                  />
+                </div>
+              
+                <!-- <div class="col-4">
+                  <q-input
+                    ref="sellerName"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.SellerName"
+                    dense
+                    label="Наименование банка продавца/производителя товара/работы/услуги"
+                    lazy-rules
+                    :rules="[val => !!val || 'Введите наименование банка продавца/производителя товара/работы/услуги']"
+                  />
+                </div> -->
+              </div>
+
+              <!-- <div class="row q-col-gutter-md">
+                <div class="col-4">
+                  <q-input
+                    ref="sellerName"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.SellerName"
+                    dense
+                    label="Расчетный счет продавца/производителя товара/работы/услуги"
+                    lazy-rules
+                    :rules="[val => !!val || 'Введите расчетный счет продавца/производителя товара/работы/услуги']"
+                  />
+                </div>
+                <div class="col-4">
+                  <q-input
+                    ref="sellerName"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.SellerName"
+                    dense
+                    label="Номер договора с продавцом/поставщиком  товара/работы/услуги"
+                    lazy-rules
+                    :rules="[val => !!val || 'Введите номер договора с продавцом/поставщиком  товара/работы/услуги']"
+                  />
+                </div>
+                <div class="col-4">
+                  
+                  <q-input
+                    ref="birthday"
+                    outlined
+                    square
+                    dense
+                    label="Дата договора с продавцом/поставщиком товара/работы/услуги"
+                    v-model="Customer.BirthDate"
+                    mask="##.##.####"
+                    :rules="[
+                      val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги'
+                    ]"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          transition-show="scale"
+                          transition-hide="scale"
+                          ref="qDateContract"
+                        >
+                          <q-date
+                            mask="DD.MM.YYYY"
+                            v-model="Customer.BirthDate"
+                            @input="() => $refs.qDateContract.hide()"
+                          />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+             
+                </div>
+              </div> -->
+            </template>
           </div>
         </div>
 
@@ -2970,7 +3045,8 @@ export default {
           idx
         ].GracePeriodMax;
 
-        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
+        // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
+        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
       }
     }
   },

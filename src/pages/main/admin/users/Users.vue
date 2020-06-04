@@ -8,6 +8,9 @@
       ref="gridTable"
     ></grid-table>
 
+    <active-users />
+
+    <!--
     <q-scroll-area style="height: 500px; max-width: 100%; margin-top: 10px;">
       <q-list bordered>
         <q-item class="row" v-for="(item,index) in activeUsers" :key="index" clickable>
@@ -15,29 +18,29 @@
           <q-item-section class="col-1">{{item.emp_id}}</q-item-section>
           <q-item-section class="col-2">{{item.emp_name}}</q-item-section>
           <q-item-section class="col-2">{{item.socket_id}}</q-item-section>
-          <!-- <q-item-section class="col-2">{{item.token}}</q-item-section> -->
           <q-item-section class="col-2">{{item.login_time}}</q-item-section>
           <q-item-section class="col-1">
             <q-btn color="primary" label="KILL" @click="killUser(item, index)" />
           </q-item-section>
-
           <q-item-section></q-item-section>
         </q-item>
       </q-list>
     </q-scroll-area>
+    -->
   </div>
 </template>
 
 <script>
-import GridTable from "@/components/GridTable";
-import AddEditUser from "./dialogs/AddEditUser";
-
 import { Dialog } from "quasar";
 import ApiService from "@/services/api.service";
 import NotifyService from "@/services/notify.service";
 import GridService from "@/services/grid.service";
 import SocketService from "@/services/socket.service";
 import { mapGetters } from "vuex";
+
+import GridTable from "@/components/GridTable";
+import AddEditUser from "./dialogs/AddEditUser";
+import ActiveUsers from "./ActiveUsers";
 
 export default {
   created() {},
@@ -89,7 +92,8 @@ export default {
     };
   },
   components: {
-    GridTable
+    GridTable,
+    ActiveUsers
   },
   computed: {
     ...mapGetters({

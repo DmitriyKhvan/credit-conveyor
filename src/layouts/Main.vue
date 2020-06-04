@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf">
     <s-header />
     <s-leftbar />
     <s-content />
@@ -21,8 +21,26 @@ export default {
   data() {
     return {};
   },
-  beforeCreate: function() {}
+  async created() {
+    console.log('main')
+    await this.$store.dispatch("themes/getThemes")
+  }
 };
 </script>
 
-<style></style>
+<style>
+  @font-face {
+    font-family: 'OpenSans';
+    src: url(../assets/fonts/OpenSans-Regular.ttf);
+  }
+
+  body {
+    font-family: 'OpenSans';
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+
+</style>

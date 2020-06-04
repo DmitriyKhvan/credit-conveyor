@@ -1,5 +1,5 @@
 import ApiService from "./api.service";
-import store from './../store/index';
+import store from '@/store/index';
 
 const DictService = {
 
@@ -13,14 +13,14 @@ const DictService = {
         store.dispatch("dicts/setRolesDict", allroles);
         let menuItems = await DictService.menuList();
         store.dispatch("dicts/setMenuList", menuItems.items);
-        let iconTypes = await this.iconTypes();
-        store.dispatch("dicts/setIconTypes", iconTypes);
-        let icons = await this.icons();
-        store.dispatch("dicts/setIconsDict", icons);
+        //let iconTypes = await this.iconTypes();
+        //store.dispatch("dicts/setIconTypes", iconTypes);
+        //let icons = await this.icons();
+        //store.dispatch("dicts/setIconsDict", icons);
         let parentMenus = await this.parentMenus();
         store.dispatch("dicts/setParentMenus", parentMenus);
-        let userList = await this.userList();
-        store.dispatch("dicts/setUserList", userList);
+        //let userList = await this.userList();
+        //store.dispatch("dicts/setUserList", userList);
         let testTopicList = await this.testTopicList();
         store.dispatch("dicts/setTestTopicList", testTopicList); //
         //let receivedNotifications = await this.receivedNotifications();
@@ -61,33 +61,33 @@ const DictService = {
         });
     });
   },
-
-  iconTypes() {
-    return new Promise((resolve, reject) => {
-      ApiService.get("dicts/icontype")
-        .then(res => {
-          resolve(res.data);
-        })
-        .catch(err => {
-          console.error(err);
-          reject(err);
-        });
-    });
-  },
-
-  icons() {
-    return new Promise((resolve, reject) => {
-      ApiService.get("dicts/icons")
-        .then(res => {
-          resolve(res.data);
-        })
-        .catch(err => {
-          console.error(err);
-          reject(err);
-        });
-    });
-  },
-
+  /*
+    iconTypes() {
+      return new Promise((resolve, reject) => {
+        ApiService.get("dicts/icontype")
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            console.error(err);
+            reject(err);
+          });
+      });
+    },
+  
+    icons() {
+      return new Promise((resolve, reject) => {
+        ApiService.get("dicts/icons")
+          .then(res => {
+            resolve(res.data);
+          })
+          .catch(err => {
+            console.error(err);
+            reject(err);
+          });
+      });
+    },
+  */
   parentMenus() {
     return new Promise((resolve, reject) => {
       ApiService.get("dicts/menus")

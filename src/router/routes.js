@@ -77,8 +77,11 @@ const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
 //Chat
 const ChatIndexPage = () => import('pages/main/chat/Index');
-const Notifications = () => import('pages/main/chat/notification/Notification');
+const Notifications = () => import('pages/main/chat/Test');
 const ChatPage = () => import("pages/main/chat/Chat");
+
+//test
+const NewLogin = () => import('pages/main/auth/newlogin')
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
