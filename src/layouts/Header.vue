@@ -1,12 +1,13 @@
 <template>
-  <q-header elevated style="background:linear-gradient(145deg,#FDFEFE 20%,#014a88 75%);">
+  <!-- <q-header elevated style="background:linear-gradient(145deg,#FDFEFE 20%,#014a88 75%);"> -->
+  <q-header elevated :style="'background:' + themes.headerColor">
     <q-toolbar>
       <q-toolbar-title>
         <q-img src="~assets/statics/logo.svg" style="width:25px" class="titleLogo" />
         <span class="titleOrg">O'ZMILLIYBANK</span>
       </q-toolbar-title>
 
-      <q-space />
+      <!-- <q-space /> -->
       <!-- <span id="time" class="text-h4">00:00:00</span> -->
       <div id="clock">
         <!-- <p class="date">{{ date }}</p> -->
@@ -105,6 +106,9 @@ export default {
     }),
     ...mapGetters({
       count: "dicts/getCountNotifications"
+    }),
+    ...mapGetters({
+      themes: "themes/themes"
     })
   },
   methods: {

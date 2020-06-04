@@ -152,17 +152,17 @@
                 </div>
                 <div class="col-6">
                   <q-select
-                    v-if="!!personalData.typeCredit"
+                    v-if="!!personalData.typeCredit && personalData.typeCredit != 3"
                     ref="typeStepCredit"
                     square
                     outlined
                     v-model="personalData.typeStepCredit"
                     :options="options.typeStepCredits"
                     dense
-                    label="Тип погашения кредита"
+                    label="Тип графика гашения"
                     emit-value
                     map-options
-                    :rules="[val => !!val || 'Выберите тип погашения кредита']"
+                    :rules="[val => !!val || 'Выберите тип графика гашения']"
                   />
                 </div>
               </div>
@@ -562,7 +562,7 @@ export default {
 
       this.$refs.typeCredit.validate();
 
-      if (!!this.personalData.typeCredit) {
+      if (!!this.personalData.typeCredit && this.personalData.typeCredit != 3) {
         this.$refs.typeStepCredit.validate();
       } else {
         validItems(this.$refs, "typeStepCredit");

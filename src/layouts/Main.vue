@@ -21,7 +21,10 @@ export default {
   data() {
     return {};
   },
-  beforeCreate: function() {}
+  async created() {
+    console.log('main')
+    await this.$store.dispatch("themes/getThemes")
+  }
 };
 </script>
 
