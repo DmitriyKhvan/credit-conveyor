@@ -155,7 +155,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(credit, index) of credits" :key="credit.id">
+        <!-- <tr v-for="(credit, index) of credits" :key="credit.id"> -->
+        <tr v-for="(credit, index) of [1]" :key="index">
           <td class="text-center number applicationRow">
             <router-link
               :to="{
