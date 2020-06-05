@@ -61,10 +61,14 @@
               v-on:keyup.enter="handleSubmit()"
             />
             <div class="lang">
-              <div>Ўзб</div>
-              <div>O’zb</div>
-              <div class="active">Ру</div>
-              <div>Eng</div>
+              <div
+                v-for="l in langsList"
+                :key="l.value"
+                @click="onLangChange(l)"
+                :class="l.value === credentials.lang.value ? 'active': ''"
+              >
+                {{l.text}}
+              </div>
             </div>
             <div v-if="loginError" class="alert">
               <div><q-icon name="error" size="md" class="text-red" /></div>
@@ -108,14 +112,15 @@ export default {
       credentials: {
         username: null,
         password: null,
-        lang: { text: "Русский", value: "ru" }
+        lang: { text: "Ру", value: "ru" }
       },
+      teal: true,
       message: "",
       langsList: [
-        { text: "Русский", value: "ru" }, // uz, ru, en
-        { text: "Узбек крилл", value: "uzkr" },
-        { text: "English", value: "en" },
-        { text: "O'zbek Lotin", value: "uz" }
+        { text: "Ўзб", value: "uzkr" },
+        { text: "Ру", value: "ru" },
+        { text: "O’zb", value: "uz" },
+        { text: "Eng", value: "en" },
       ],
       loginError: false,
 
@@ -137,7 +142,9 @@ export default {
     }
   },
   methods: {
+
     handleSubmit() {
+      this.loginError = false
       //Perform a simple validation that email and password have been typed in
       if (!!this.credentials.username && !!this.credentials.password) {
         LoadingService.showLoadingHourGlass();
@@ -146,16 +153,18 @@ export default {
           if (res) {
             LoadingService.hideLoading();
             this.clearForm();
-            NotifyService.showSuccessMessage("Successfully logged in");
+            NotifyService.showSuccessMessage("Удачно вошли в систему");
           } else {
             LoadingService.hideLoading();
-            NotifyService.showErrorMessage("Error in login");
+            // NotifyService.showErrorMessage("Error in login");
             this.loginError = true
+
           }
         });
       } else {
         LoadingService.hideLoading();
         this.loginError = true
+
         // NotifyService.showErrorMessage("Enter credentials correctly");
       }
     },
@@ -165,7 +174,9 @@ export default {
       this.$v.credentials.$reset(); // TODO resetting validation
     },
     onLangChange(lang) {
+      console.log(lang)
       this.$i18n.locale = lang;
+      this.credentials.lang = lang
     }
   },
   beforeCreate: function() {
@@ -176,7 +187,7 @@ export default {
 <style scoped>
   @font-face {
     font-family: 'OpenSans';
-    src: url(./assets/fonts/OpenSans-Regular.ttf);
+    src: url(../../../assets/fonts/OpenSans-Regular.ttf);
   }
 
   .bg {
