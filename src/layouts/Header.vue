@@ -208,6 +208,10 @@ export default {
 
 <style lang="scss">
 .header {
+  .q-toolbar {
+    min-height: 70px;
+  }
+
   .q-layout__section--marginal {
     background: #fff;
   }
@@ -229,14 +233,12 @@ export default {
     top: 5px;
   }
   .avatar1 {
-    position: relative;
-    right: 60px;
+    
   }
   .titleName {
     color: #282D30;;
     font-weight: bold;
-    position: relative;
-    right: 50px;
+    margin: 0 40px 0 8px;
   }
   .icon-color {
     color: #A0A5BA;
@@ -246,7 +248,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;
+    // flex-grow: 1;
     font-weight: bold;
     color: #A0A5BA;;
     .time {
