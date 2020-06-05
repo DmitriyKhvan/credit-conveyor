@@ -208,6 +208,10 @@ export default {
 
 <style lang="scss">
 .header {
+  .q-toolbar {
+    min-height: 70px;
+  }
+
   .q-layout__section--marginal {
     background: #fff;
   }

@@ -8,20 +8,27 @@
     :width="255"
     :mini-width="77"
   >
-    <q-list>
-      <!-- <q-item-label header>{{ $t("layout.menu_label") }}</q-item-label> -->
-      <q-list>
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <!-- <q-icon name="inbox" /> -->
-            <q-img src="~assets/statics/logo.png" style="width:25px" class="titleLogo" />
-          </q-item-section>
 
-          <q-item-section>
-            <span class="logo__title">Национальный банк</span>
-          </q-item-section>
-        </q-item>
-      </q-list>
+    <q-list class="logo">
+      <q-item 
+        clickable 
+        v-ripple
+        to="/"
+      >
+        <q-item-section avatar>
+          <!-- <q-icon name="inbox" /> -->
+          <q-img src="~assets/statics/logo.png" style="width:25px" class="titleLogo" />
+        </q-item-section>
+
+        <q-item-section>
+          <span class="logo__title">Национальный банк</span>
+        </q-item-section>
+      </q-item>
+    </q-list>
+
+    <q-list class="menu">
+      <!-- <q-item-label header>{{ $t("layout.menu_label") }}</q-item-label> -->
+      
       <div v-for="(menus, index) in menusList" :key="index" class="menuLabel">
         <q-list
           v-if="getChildMenus(menus).length !== 0"
@@ -75,7 +82,7 @@
     <q-page-sticky>
       <q-btn
         fab
-        color="blue"
+        color="white"
         style="width: 30px; height: 30px;"
         @click="isLeftDrawerClosed = !isLeftDrawerClosed"
       >
@@ -183,12 +190,25 @@ export default {
 <style lang="scss">
 .leftBar {
   .q-item {
-    padding: 8px 16px 8px 26px;
+    padding: 10px 16px 10px 26px;
+    min-height: 52px;
   }
 
-  .logo__title {
-    font-weight: bold;
-    color: #000000;
+  .logo {
+    display: flex;
+    min-height: 70px;
+    &__title {
+      font-weight: bold;
+      color: #000000;
+    }
+
+    .cursor-pointer {
+      width: 100%;
+    }
+  }
+
+  .menu {
+    margin-top: 33px;
   }
 
   .q-item__section--avatar {
@@ -199,7 +219,7 @@ export default {
     color: #74798C;
   }
 
-  .q-item.q-router-link--active, .q-item--active {
+  .menu .q-item.q-router-link--active, .menu .q-item--active {
     color: #000000;
     padding-left: 0;
 
@@ -290,9 +310,13 @@ export default {
   }
 
   .fixed-bottom-right, .absolute-bottom-right {
-    bottom: 50%;
+    bottom: 20%;
     right: 0;
     transform: translate(50%, 0)!important;
+
+    .absolute-center {
+      color: #74798C;
+    }
   }
 }
 </style>
