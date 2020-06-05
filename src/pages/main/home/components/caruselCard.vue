@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="column fonts" style="height:100%">
         <q-carousel
             v-model="slides"
             transition-prev="scale"
@@ -10,20 +10,42 @@
             control-color="grey"
             padding
             arrows
-            height="240px"
+
             infinite
-            class="sliderHome"
-        >                
+            class="sliderHome col"
+        >
             <q-carousel-slide
                 v-for="user in users"
-                :key="user.EMP_ID" 
-                :name="user.LAST_NAME" 
-                class="column no-wrap flex-center"
+                :key="user.EMP_ID"
+                :name="user.LAST_NAME"
+                class="column no-wrap items-center q-pa-none q-ma-none"
             >
-            <q-card class="userBirthday">
+              <q-avatar size="75px">
+                <img :src="photo(user.EMP_ID)" alt="">
+              </q-avatar>
+              <div class="name" v-html="name(user.LAST_NAME, user.FIRST_NAME, user.MIDDLE_NAME )"></div>
+              <div class="postname">
+                <span v-html="user.POST_NAME.substring(50, 0)"></span>
+                  <span v-if="user.POST_NAME.length > 50">...</span>
+                  <q-tooltip
+                      anchor="top middle"
+                      self="bottom middle"
+                      :offset="[10, 10]"
+                      v-if="user.POST_NAME.length > 50"
+                  >
+                      <div v-html="user.POST_NAME"></div>
+                  </q-tooltip>
+              </div>
+              <div class="bithText text-center">
+                и еще {{ users.length }} сотрудников отмечают день рождения
+              </div>
+
+
+
+            <!-- <q-card class="userBirthday">
                 <div class="userPad">
                 <div v-if="user.get_department_tree" class="blue q-pb-sm text-weight-bold" v-html="filial(user.get_department_tree)"></div>
-                
+
                 <div class="row">
                     <div class="col-4 photo">
                         <img :src="photo(user.EMP_ID)" alt="">
@@ -33,9 +55,9 @@
                         <div class="blueLight text-caption">
                             <span v-html="user.POST_NAME.substring(50, 0)"></span>
                             <span v-if="user.POST_NAME.length > 50">...</span>
-                            <q-tooltip 
-                                anchor="top middle" 
-                                self="bottom middle" 
+                            <q-tooltip
+                                anchor="top middle"
+                                self="bottom middle"
                                 :offset="[10, 10]"
                                 v-if="user.POST_NAME.length > 50"
                             >
@@ -54,25 +76,36 @@
                 </div>
                 <div class="row q-pt-md justify-between">
                     <div class="col-4 greyColor vertical-middle">День рождение {{dateFormat(user.BIRTH_DATE)}}</div>
-                    <div class="col-8 redColor text-right"><q-icon name="card_giftcard" style="font-size: 1.6em" /></div>  
+                    <div class="col-8 redColor text-right"><q-icon name="card_giftcard" style="font-size: 1.6em" /></div>
                 </div>
-                </div>                      
-            </q-card>
+                </div>
+            </q-card> -->
             </q-carousel-slide>
         </q-carousel>
-        <div class="text-center q-pa-sm">
-            <span class="redColor">{{ users.length }}</span> 
-            сотрудников отмечают 
+
+        <div class="column">
+
+          <div class="text-center">
+            <span v-if="datetime === 'today'">Сегодня</span>
+            <span v-else-if="datetime === 'tomorrow'">Завтра</span>
+            <span v-else>Послезавтра</span>
+          </div>
+        </div>
+
+        <!-- <div class="text-center q-pa-sm">
+            <span class="redColor">{{ users.length }}</span>
+            сотрудников отмечают
             <span v-if="datetime === 'today'">сегодня</span>
             <span v-else-if="datetime === 'tomorrow'">завтра</span>
-            <span v-else>послезавтра</span> 
-            Дни родждения</div>
-    </div>
+            <span v-else>послезавтра</span>
+            Дни родждения
+    </div> -->
   </div>
 </template>
 
 <script>
 import UserService from "./../../../../services/user.service";
+import axios from "axios";
 export default {
   props: {
     users: {
@@ -87,11 +120,14 @@ export default {
   },
   data() {
     return {
-      slides: ""
+      slides: "",
+
     };
   },
   created() {
     this.slides = this.slide;
+
+
   },
   methods: {
     photo(id) {
@@ -120,7 +156,7 @@ export default {
       return work.slice(0, -2);
     },
     name(last, fist, middle) {
-      return last + " " + fist + " " + middle;
+      return last + " " + fist
     },
     dateFormat(day) {
       let newDay = new Date(day);
@@ -146,13 +182,46 @@ export default {
 </script>
 
 <style>
+@font-face {
+    font-family: 'OpenSans';
+    src: url(../../../../assets/fonts/OpenSans-Regular.ttf);
+  }
+.fonts {
+  font-family: 'OpenSans';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  color: #20253A;
+}
+.name {
+  font-size: 16px;
+  padding: 15px 0 5px;
+  font-weight: bold;
+}
+.postname {
+  font-style: italic;
+  color: #0054FE
+}
+.bithText {
+  font-style: italic;
+  color: #74798C;
+}
+  .cardUser {
+    display: flex;
+    justify-content: center;
+  }
+  .q-carousel {
+    height: auto;
+    padding: 0;
+    margin: 0;
+  }
     .sliderHome .userBirthday {
-        width: 320px;
-        background: url('./../../../../assets/images/naqsh.png') repeat-y 10px 0
+        width: 100%;
+        box-shadow: none;
+        background: none;
     }
     .sliderHome .userPad {
         padding: 10px;
-        padding-left: 45px;
         line-height: normal;
     }
     .sliderHome .blue {
@@ -177,25 +246,17 @@ export default {
   color: red;
 }
 
-.sliderHome .photo {
-  height: 100px;
-  overflow: hidden;
-  border: 1px #ccc solid;
-}
-.sliderHome .photo img {
-  width: 100%;
-  height: auto;
-}
+
 
 .q-carousel.q-carousel--arrows .q-carousel__slide {
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .sliderHome .q-carousel__prev-arrow {
-  left: -5px;
+  display: none;
 }
 .sliderHome .q-carousel__next-arrow {
-  right: -5px;
+  display: none;
 }
 </style>
