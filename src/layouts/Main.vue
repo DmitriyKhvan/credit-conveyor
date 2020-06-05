@@ -8,8 +8,6 @@
 </template>
 
 <script>
-import axios from "axios";
-import store from "../store/index";
 export default {
   components: {
     SHeader: () => import("./Header"),
@@ -21,11 +19,28 @@ export default {
   data() {
     return {};
   },
-  beforeCreate: function() {}
+  beforeCreate: function() {},
+  async created() {
+    console.log("main");
+    await this.$store.dispatch("themes/getThemes");
+  }
 };
 </script>
 
 <style>
+@font-face {
+  font-family: "OpenSans";
+  src: url(../assets/fonts/OpenSans-Regular.ttf);
+}
+
+body {
+  font-family: "OpenSans";
+  font-size: 14px;
+}
+
+p {
+  margin: 0;
+}
 .contentBg {
   background: #f5f6fa;
 }
