@@ -1,5 +1,5 @@
 <template>
-  <q-footer elevated class="bg-grey-8">
+  <q-footer elevated class="bg-grey-8" :style="'background' + themes.footerColor">
     <q-bar>
       <div>
         <span class="ml-1">NBU &copy; 2020 IT Department.</span>
@@ -12,7 +12,15 @@
 </template>
 
 <script>
-export default {};
+import { mapGetters } from "vuex";
+
+export default {
+   computed: {
+    ...mapGetters({
+      themes: "themes/themes"
+    })
+  }
+};
 </script>
 
 <style>

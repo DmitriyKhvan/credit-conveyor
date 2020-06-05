@@ -47,7 +47,7 @@ export const credits = {
       childCost: 0,
 
       // FAMILY //
-      familyStatus: false,
+      familyStatus: "",
       children: false,
       childrenCount: 0,
       // MONEY //

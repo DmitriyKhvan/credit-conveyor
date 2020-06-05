@@ -133,7 +133,7 @@ export const profile = {
         BirthDate: "",
         INN: "",
         PINPP: "",
-        ResidentFlag: false,
+        ResidentFlag: "",
         Gender: null,
 
         Document: {
@@ -257,7 +257,7 @@ export const profile = {
         LoanProduct: null, // Кредитный продукт
         Sum: 0, // Запрашиваемая сумма кредита
         Currency: "СУМ", // Валюта
-        RepaymentType: null, // Тип погашения кредита
+        RepaymentType: null, // Тип графика гашения
         LoanType: null, // Вид кредита
 
         MinInterestRate: 0.0, // Процентаня ставка по кредиту (минимальная)
@@ -624,7 +624,7 @@ export const profile = {
           BirthDate: "",
           INN: "",
           PINPP: "",
-          ResidentFlag: false,
+          ResidentFlag: "",
           Gender: null,
   
           Document: {
@@ -748,7 +748,7 @@ export const profile = {
           LoanProduct: null, // Кредитный продукт
           Sum: 0, // Запрашиваемая сумма кредита
           Currency: "СУМ", // Валюта
-          RepaymentType: null, // Тип погашения кредита
+          RepaymentType: null, // Тип графика гашения
           LoanType: null, // Вид кредита
   
           MinInterestRate: 0.0, // Процентаня ставка по кредиту (минимальная)
