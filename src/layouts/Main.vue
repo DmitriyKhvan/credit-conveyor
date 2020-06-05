@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf" class="contentBg">
     <s-header />
     <s-leftbar />
     <s-content />
@@ -25,4 +25,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+  .contentBg {
+    background: #F5F6FA;
+  }
+</style>

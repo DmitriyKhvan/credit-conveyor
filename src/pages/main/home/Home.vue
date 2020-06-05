@@ -1,5 +1,33 @@
 <template>
-  <div>
+  <div class="col">
+    <work></work>
+    <div class="row q-px-md">
+      <div class="col q-px-md">
+        <div class="radBg">
+          <s-graf v-if="graf" :tables="graf" height="120" title="Мои доходы за последние 6 месяцев"/>
+        </div>
+      </div>
+      <div class="col-md-3 q-px-md ">
+        <div class="cordUsers">
+          <s-notificatons></s-notificatons>
+        </div>
+      </div>
+    </div>
+
+    <div class="row q-pa-md">
+      <div class="col q-pa-md">
+        <div class="calendar">
+          <s-calendar></s-calendar>
+        </div>
+      </div>
+      <div class="col-3 q-pa-md">
+        <div class="calendar">
+          <s-results></s-results>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div>
     <div class="row q-col-gutter-lg q-pa-md">
       <div class="col-lg-9 col-md-12">
         <div class="row">
@@ -20,14 +48,14 @@
                   />
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12 text-center">
-                  <s-graf v-if="result" :tables="result" height="120" title="Мои результаты"/> 
+                  <s-graf v-if="result" :tables="result" height="120" title="Мои результаты"/>
                   <q-circular-progress
                     v-else
                     indeterminate
                     size="50px"
                     color="primary"
                     class="q-ma-md"
-                  />                 
+                  />
                 </div>
               </div>
             </q-card>
@@ -51,27 +79,30 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
 // import Finance from "../library/charts/finance/Finance";
 // import Task from "../library/charts/task/Task";
+import Work from "./components/work";
+
 import Notifications from "./components/notifications";
 import Calendar from "./components/calendar";
 import Results from "./components/results";
 import Graf from "./components/graf";
+
 import axios from "axios";
 
 export default {
   name: "Home",
   components: {
-    // SFinance: Finance,
-    // STask: Task,
+
     SNotificatons: Notifications,
     SCalendar: Calendar,
     SResults: Results,
-    SGraf: Graf
+    SGraf: Graf,
+    Work,
   },
   data () {
     return {
@@ -83,29 +114,30 @@ export default {
     const id = this.$store.getters["auth/empId"]
     axios
         .get("/emps/kvitok?uid="+id)
-        .then(response => {             
-            this.graf = response.data                
+        .then(response => {
+            this.graf = response.data
         })
         .catch(error => {
-            console.log('error') 
+            console.log('error')
         });
-
-    axios
-        .get("/tasks/count")
-        .then(response => {           
-            this.result = response.data            
-        })
-        .catch(error => {
-            console.log('error') 
-        });
-
-    
-    
   }
 };
 </script>
 
-<style lang="sass" scoped>
-.height100
-  height: 100%
+<style scoped>
+.radBg {
+  background: #fff;
+  border-radius: 5px;
+  padding: 40px;
+}
+.cordUsers {
+  padding: 24px;
+  background: #fff;
+  border-radius: 5px;
+}
+.calendar {
+  padding: 35px;
+  background: #fff;
+  border-radius: 5px;
+}
 </style>
