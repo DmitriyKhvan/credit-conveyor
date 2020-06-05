@@ -207,18 +207,6 @@ export default {
     }
   }
 
-  .menu {
-    margin-top: 33px;
-  }
-
-  .q-item__section--avatar {
-    min-width: 50px;
-  }
-
-  .q-item__section--side, .cursor-pointer {
-    color: #74798C;
-  }
-
   .menu .q-item.q-router-link--active, .menu .q-item--active {
     color: #000000;
     padding-left: 0;
@@ -237,32 +225,44 @@ export default {
     }
   }
 
-  .subMenu {
-    .cursor-pointer::before {
-      content: "";
-      width: 6px;
-      height: 6px;
-      border: 1px solid #74798C;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      margin-top: -3px;
-      margin-left: 29px;
-      background: none;
-    }
+  .menu {
+    margin-top: 33px;
 
-    .q-item.q-router-link--active::before, .q-item--active::before {
-      border: 1px solid #0054FE;
-      background: #0054FE;
-    }
+    .subMenu {
+      .cursor-pointer::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border: 1px solid #74798C;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        margin-top: -3px;
+        margin-left: 29px;
+        background: none;
+      }
 
-    .q-item__section--avatar {
-      padding-left: 0!important;
-    }
+      .q-item.q-router-link--active::before, .q-item--active::before {
+        border: 1px solid #0054FE;
+        background: #0054FE;
+      }
 
-    .q-item.q-router-link--active, .q-item--active {
-      padding-left: 26px;
+      .q-item__section--avatar {
+        padding-left: 0!important;
+      }
+
+      .q-item.q-router-link--active, .q-item--active {
+        padding-left: 26px;
+      }
     }
+  }
+
+  .q-item__section--avatar {
+    min-width: 50px;
+  }
+
+  .q-item__section--side, .cursor-pointer {
+    color: #74798C;
   }
 
   .q-expansion-item--standard.q-expansion-item--expanded > div > .q-expansion-item__border {
