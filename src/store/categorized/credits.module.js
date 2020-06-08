@@ -267,7 +267,7 @@ export const credits = {
       try {
         // const file = await dispatch('creatFile', fileData)
         // const response = await state.bpmService.getFile(file.infos[0].id)
-        const response = await state.bpmService.getFile(341)
+        const response = await state.bpmService.getFile(346)
         const blob = new Blob([response], { type: "application/pdf" })
         return window.URL.createObjectURL(blob)
     
