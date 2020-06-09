@@ -152,17 +152,25 @@
           >
             <h5 class="subTitleForm">
               <span class="titleValue">{{
-                profile.AddressType[address.AddressType - 1]
+                address.AddressType
               }}</span>
             </h5>
 
             <div class="row rowForm">
               <div class="col-4 field">Регион / область</div>
               <div class="col-8 data" colspan="6">
-                {{
-                  dictionaries.Region.items.find(i => i.value == address.Region)
-                    .label
-                }}
+                <template
+                  v-if="
+                    dictionaries.Region.items.find(
+                      i => i.value == address.Region
+                    )
+                  "
+                >
+                  {{
+                    dictionaries.Region.items.find(i => i.value == address.Region)
+                      .label
+                  }}
+                </template>
               </div>
             </div>
             <div class="row rowForm">
@@ -596,7 +604,7 @@
 
         <h4 class="titleForm">Гарантии и поручительства</h4>
         <div class="formBlock">
-          <template v-if="fullProfile.Guarantee.RelatedPerson.items">
+          <template v-if="fullProfile.Guarantee.RelatedPerson.items.length">
             <div
               v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson
                 .items"
@@ -743,7 +751,7 @@
             </div>
           </template>
 
-          <template v-if="fullProfile.Guarantee.RelatedLegalPerson.items">
+          <template v-if="fullProfile.Guarantee.RelatedLegalPerson.items.length">
             <div
               v-for="(guarantee, index) of fullProfile.Guarantee
                 .RelatedLegalPerson.items"
@@ -811,7 +819,7 @@
             </div>
           </template>
 
-          <template v-if="fullProfile.Guarantee.Insurance.items">
+          <template v-if="fullProfile.Guarantee.Insurance.items.length">
             <div
               v-for="(guarantee, index) of fullProfile.Guarantee.Insurance
                 .items"
@@ -1186,6 +1194,7 @@ export default {
   async created() {
     console.log('userRole', this.userRole)
     console.log('fullProfile', this.fullProfile)
+    debugger
     if (!this.userRole) {
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))

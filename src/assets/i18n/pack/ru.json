@@ -439,6 +439,13 @@
   },
 
   "creditUsers" : {
-    "role_name": "Роль"
+    "role_name": "Роль",
+    "role_type": "id роли",
+    "fio": "ФИО",
+    "mfos": "МФО",
+    "amount_max": "Максимальная сумма",
+    "amount_min": "Минимальная сумма",
+    "isspecial": "Специальный",
+    "status": "Статус"
   }
 }
