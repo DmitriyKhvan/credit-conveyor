@@ -366,10 +366,14 @@ export default {
               let sortable = this.excludeSortingColoumns.includes(k) //sortable filter
                 ? false
                 : true;
+
+              console.log('creditUser', this.$t(`creditUsers.${k}`))  
+              const label = this.$t(`creditUsers.${k}`) ? this.$t(`creditUsers.${k}`) : k
+              console.log('label', label)
               this.fields.push({
                 name: k,
                 required: false,
-                label: k.replace("_", " ").toUpperCase(),
+                label: label.replace("_", " ").toUpperCase(),
                 align: "center",
                 sortable: sortable,
                 format: (val, row) => {

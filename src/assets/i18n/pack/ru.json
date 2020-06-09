@@ -436,5 +436,9 @@
         }
       }
     }
+  },
+
+  "creditUsers" : {
+    "role_name": "Роль"
   }
 }
