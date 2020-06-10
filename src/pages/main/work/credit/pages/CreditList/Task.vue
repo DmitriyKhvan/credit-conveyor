@@ -989,16 +989,6 @@
           </div>
 
           <div class="row rowForm">
-            <div class="col-6 field">Наименование продавца</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.SellerName }}</div>
-          </div>
-
-          <div class="row rowForm">
-            <div class="col-6 field">Наименование товара/работы/услуги</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.ProductName }}</div>
-          </div>
-
-          <div class="row rowForm">
             <div class="col-6 field">Источник финансирования</div>
             <div class="col-6 data">
               <template
@@ -1016,6 +1006,38 @@
               </template>
             </div>
           </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Наименование продавца/производителя товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.nameProduction }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Наименование товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.nameService }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Наименование банка продавца/производителя товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.nameBankProd }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Расчетный счет продавца/производителя товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.billProd }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Номер договора с продавцом/поставщиком  товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.agreementNumber }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Дата договора с продавцом/поставщиком товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.agreementDate }}</div>
+          </div>
+
+          
         </div>
 
         <h4 class="titleForm">Документы</h4>
@@ -1194,7 +1216,6 @@ export default {
   async created() {
     console.log('userRole', this.userRole)
     console.log('fullProfile', this.fullProfile)
-    debugger
     if (!this.userRole) {
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))

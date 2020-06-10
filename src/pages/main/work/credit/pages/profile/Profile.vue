@@ -426,12 +426,16 @@
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
-                    <q-input
+                    <q-select
                       square
                       outlined
                       v-model="address.District"
+                      :options="dictionaries.Districts.items"
                       dense
                       label="Район"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
                     />
                   </div>
                 </div>
@@ -1726,13 +1730,17 @@
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.District"
-                    dense
-                    label="Район"
-                  />
+                  <q-select
+                      square
+                      outlined
+                      v-model="guarantee.Address.District"
+                      :options="dictionaries.Districts.items"
+                      dense
+                      label="Район"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
                 </div>
               </div>
 
@@ -1986,13 +1994,25 @@
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
-                  <q-input
+                  <!-- <q-input
                     square
                     outlined
                     v-model="guarantee.Address.District"
                     dense
                     label="Район"
-                  />
+                  />  -->
+
+                  <q-select
+                      square
+                      outlined
+                      v-model="guarantee.Address.District"
+                      :options="dictionaries.Districts.items"
+                      dense
+                      label="Район"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
                 </div>
               </div>
 
@@ -3463,8 +3483,7 @@ export default {
         this.formHasError = true;
         this.bar = true;
       } else {
-        this.profile.confirmCredit = true;
-
+        
         if (submitForm) {
           this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
         console.log("fullProfile", this.$store.state.profile.fullFormProfile);
@@ -3538,6 +3557,8 @@ export default {
             throw 'Next task id is undefined'
           }
         } catch (error) {}
+        } else {
+          this.profile.confirmCredit = true;
         }
       }
     },

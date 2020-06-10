@@ -70,6 +70,9 @@ export const profile = {
       Region: {
         items: []
       },
+      Districts: {
+        items: []
+      },
       jobPeriods: {
         items: []
       },
@@ -144,7 +147,8 @@ export const profile = {
           GUID: "",
           Country: "Uzbekistan",
           DocLink: "",
-          DocumentName: 0
+          DocumentName: 0,
+          //GivenPlace: ""
         },
 
         Education: null,
@@ -164,7 +168,7 @@ export const profile = {
               HouseType: "",
               PostalCode: "",
               Region: null,
-              District: "",
+              District: null,
               Street: "",
               Block: "",
               House: "",
@@ -419,7 +423,7 @@ export const profile = {
           PostalCode: "",
           Region: null,
           Street: "",
-          District: "",
+          District: null,
           Block: "",
           House: "",
           City: "",
@@ -450,7 +454,7 @@ export const profile = {
           PostalCode: "",
           Region: null,
           Street: "",
-          District: "",
+          District: null,
           Block: "",
           House: "",
           City: "",
@@ -535,7 +539,7 @@ export const profile = {
         HouseType: "",
         PostalCode: "",
         Region: null,
-        District: "",
+        District: null,
         Street: "",
         Block: "",
         House: "",
@@ -684,7 +688,7 @@ export const profile = {
                 HouseType: "",
                 PostalCode: "",
                 Region: null,
-                District: "",
+                District: null,
                 Street: "",
                 Block: "",
                 House: "",

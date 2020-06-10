@@ -104,7 +104,6 @@ export const credits = {
 
         // запись роли в header запроса
         await dispatch("setHeaderRole", state.roles[userRole]);
-        //await dispatch("setHeaderRole", "ff")
 
         // запись роли в sessionStore
         sessionStorage.setItem("userRole", state.roles[userRole])
