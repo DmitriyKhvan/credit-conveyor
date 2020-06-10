@@ -28,7 +28,7 @@ const SocketService = {
     this.runChat(socket, empId)
     //this.runGroup(socket, empId)
     this.runChatList(socket, empId)
-    this.runOnline(socket);
+    this.runOnline(socket, empId);
 
     socket.emit("chat/all", empId)
     //store.dispatch("socket/setOnline", true);
@@ -40,8 +40,6 @@ const SocketService = {
     let empId = store.getters["auth/empId"];
 
     socket.emit("offline", empId);
-
-    //store.dispatch("socket/setOnline", false);
     console.log("user is offline");
   },
   isOnline() {
@@ -94,9 +92,8 @@ const SocketService = {
       store.dispatch("auth/disconnectActiveUser", users);
     });
   },
-  runOnline(socket) {
+  runOnline(socket, empId) {
     let uname = store.getters['auth/fullName'];
-    let empId = store.getters["auth/empId"]
 
     let data = {
       emp_id: empId,
@@ -105,7 +102,7 @@ const SocketService = {
       login_time: CommonUtils.formattedDate(new Date)
     };
 
-    console.log({ online: data });
+    // console.log({ online: data });
     socket.emit("online", data);
   },
 };
