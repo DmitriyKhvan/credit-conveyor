@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr lFf" class="contentBg">
+  <q-layout view="lHh Lpr lFf" class="contentBg">
     <s-header />
     <s-leftbar />
     <s-content />
@@ -13,17 +13,17 @@ export default {
     SHeader: () => import("./Header"),
     SLeftbar: () => import("./Leftbar"),
     SContent: () => import("./Content"),
-    SFooter: () => import("./Footor")
+    SFooter: () => import("./Footor"),
   },
 
   data() {
     return {};
   },
-  beforeCreate: function() {},
+  beforeCreate: function () {},
   async created() {
     console.log("main");
     await this.$store.dispatch("themes/getThemes");
-  }
+  },
 };
 </script>
 
