@@ -1,11 +1,6 @@
 <template>
   <div>
-    <grid-table
-      v-bind="props"
-      @addEdit="addEditRow"
-      @delRow="deleteRow"
-      ref="gridTable"
-    ></grid-table>
+    <grid-table v-bind="props" @addEdit="addEditRow" @delRow="deleteRow" ref="gridTable"></grid-table>
   </div>
 </template>
 
@@ -28,18 +23,7 @@ export default {
         addEdit: "devices/history", // url
         delete: "devices/history", //
         defaultSort: [],
-        excludedColumns: [
-          "id",
-          "emp_id",
-          "dev_id",
-          "type_id",
-          "mark_id",
-          "status",
-          "model_id",
-          "assigned_by",
-          "updated_by",
-          "updated_at"
-        ],
+        excludedColumns: ["id"],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,
