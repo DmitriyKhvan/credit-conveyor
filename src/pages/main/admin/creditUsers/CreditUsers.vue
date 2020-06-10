@@ -31,16 +31,7 @@ export default {
         delete: "/credit/config", //
         defaultSort: [],
         excludedColumns: [
-          "user_id",
-          "roles",
-          "first_name",
-          "last_name",
-          "middle_name",
-          "status",
-          "created_by",
-          "creation_date",
-          "updated_by",
-          "update_date"
+          "special"
         ],
         excludeSortingColoumns: [],
         enableAddEdit: true,

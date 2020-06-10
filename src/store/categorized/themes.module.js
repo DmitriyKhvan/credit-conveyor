@@ -12,7 +12,6 @@ export const themes = {
     async editThemes({commit}, settings) {
       try {
         const { data } = await ApiService.post('settings/user', settings)
-        console.log('themes', data)
         if (data.status == 1) {
           commit("editThemes", settings)
           NotifyService.showSuccessMessage('Изменения применены');
@@ -26,7 +25,6 @@ export const themes = {
     async getThemes({commit, rootGetters}) {
       try {
         const { data } = await ApiService.get(`settings/user?id=${rootGetters["auth/empId"]}`)
-        console.log('themes', data)
         if (data.id) {
           commit("editThemes", data)
           //NotifyService.showSuccessMessage('Изменения применены');
