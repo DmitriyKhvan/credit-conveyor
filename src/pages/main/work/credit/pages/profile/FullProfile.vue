@@ -638,16 +638,6 @@
                 }}
               </div>
 
-              <div class="col-3">Наименование продавца</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.SellerName }}</div>
-
-              <div class="col-3">Наименование товара/работы/услуги</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.ProductName }}</div>
-
-              <div class="col-3">
-                Наименование банка продавца/производителя товара/работы/услуги
-              </div>
-              <div class="col-9"></div>
               <div class="col-3">Источник финансирования</div>
               <div class="col-9">
                 {{
@@ -656,6 +646,27 @@
                   ).label
                 }}
               </div>
+
+              <div class="col-3">Наименование продавца/производителя товара/работы/услуги</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameProduction }}</div>
+
+              <div class="col-3">Наименование товара/работы/услуги</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameService }}</div>
+
+              <div class="col-3">
+                Наименование банка продавца/производителя товара/работы/услуги
+              </div>
+              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameBankProd }}</div>
+
+              <div class="col-3">Расчетный счет продавца/производителя товара/работы/услуги</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.billProd }}</div>
+
+              <div class="col-3">Номер договора с продавцом/поставщиком  товара/работы/услуги</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.agreementNumber }}</div>
+
+              <div class="col-3">Дата договора с продавцом/поставщиком товара/работы/услуги</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.agreementDate }}</div>
+             
               <div class="col-3">В рамках специальной программы</div>
               <div class="col-9"></div>
               <div class="col-3">Название программы</div>

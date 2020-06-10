@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" class="contentBg">
     <s-header />
     <s-leftbar />
     <s-content />
@@ -8,8 +8,6 @@
 </template>
 
 <script>
-import axios from "axios";
-import store from "../store/index";
 export default {
   components: {
     SHeader: () => import("./Header"),
@@ -41,6 +39,10 @@ export default {
 
   p {
     margin: 0;
+  }
+
+  .contentBg {
+    background: #F5F6FA;
   }
 
 </style>

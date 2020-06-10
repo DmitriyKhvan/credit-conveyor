@@ -152,17 +152,25 @@
           >
             <h5 class="subTitleForm">
               <span class="titleValue">{{
-                profile.AddressType[address.AddressType - 1]
+                address.AddressType
               }}</span>
             </h5>
 
             <div class="row rowForm">
               <div class="col-4 field">Регион / область</div>
               <div class="col-8 data" colspan="6">
-                {{
-                  dictionaries.Region.items.find(i => i.value == address.Region)
-                    .label
-                }}
+                <template
+                  v-if="
+                    dictionaries.Region.items.find(
+                      i => i.value == address.Region
+                    )
+                  "
+                >
+                  {{
+                    dictionaries.Region.items.find(i => i.value == address.Region)
+                      .label
+                  }}
+                </template>
               </div>
             </div>
             <div class="row rowForm">
@@ -596,7 +604,7 @@
 
         <h4 class="titleForm">Гарантии и поручительства</h4>
         <div class="formBlock">
-          <template v-if="fullProfile.Guarantee.RelatedPerson.items">
+          <template v-if="fullProfile.Guarantee.RelatedPerson.items.length">
             <div
               v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson
                 .items"
@@ -743,7 +751,7 @@
             </div>
           </template>
 
-          <template v-if="fullProfile.Guarantee.RelatedLegalPerson.items">
+          <template v-if="fullProfile.Guarantee.RelatedLegalPerson.items.length">
             <div
               v-for="(guarantee, index) of fullProfile.Guarantee
                 .RelatedLegalPerson.items"
@@ -811,7 +819,7 @@
             </div>
           </template>
 
-          <template v-if="fullProfile.Guarantee.Insurance.items">
+          <template v-if="fullProfile.Guarantee.Insurance.items.length">
             <div
               v-for="(guarantee, index) of fullProfile.Guarantee.Insurance
                 .items"
@@ -981,16 +989,6 @@
           </div>
 
           <div class="row rowForm">
-            <div class="col-6 field">Наименование продавца</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.SellerName }}</div>
-          </div>
-
-          <div class="row rowForm">
-            <div class="col-6 field">Наименование товара/работы/услуги</div>
-            <div class="col-6 data">{{ fullProfile.LoanInfo.ProductName }}</div>
-          </div>
-
-          <div class="row rowForm">
             <div class="col-6 field">Источник финансирования</div>
             <div class="col-6 data">
               <template
@@ -1008,6 +1006,38 @@
               </template>
             </div>
           </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Наименование продавца/производителя товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.nameProduction }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Наименование товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.nameService }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Наименование банка продавца/производителя товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.nameBankProd }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Расчетный счет продавца/производителя товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.billProd }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Номер договора с продавцом/поставщиком  товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.agreementNumber }}</div>
+          </div>
+
+          <div class="row rowForm">
+            <div class="col-6 field">Дата договора с продавцом/поставщиком товара/работы/услуги</div>
+            <div class="col-6 data">{{ fullProfile.LoanInfo.consumerLoan.agreementDate }}</div>
+          </div>
+
+          
         </div>
 
         <h4 class="titleForm">Документы</h4>
