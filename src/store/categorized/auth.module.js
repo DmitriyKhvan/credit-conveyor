@@ -18,10 +18,10 @@ const state = {
   moderatorsList: [],
   branchCode: null,
   filialCode: null,
-  activeUsers: [
-  ],
+  activeUsers: [],
+  onlineUsers: [],
   isUserLogged: false,
-  logoutTime: 600000 // 10min
+  logoutTime: 600000 // 100min
 };
 
 /**
@@ -79,7 +79,10 @@ const getters = {
     return state.filialCode;
   },
   activeUsers: state => {
-    return state.activeUsers
+    return state.activeUsers;
+  },
+  onlineUsers: state => {
+    return state.onlineUsers;
   }
 };
 
@@ -135,15 +138,12 @@ const actions = {
   setFilialCode({ commit }, filialCode) {
     commit("setFilialCode", filialCode);
   },
-  setActiveUsers({ commit }, user) {
-    commit("setActiveUsers", user);
+  setActiveUsers({ commit }, users) {
+    commit("setActiveUsers", users);
   },
-  disconnectActiveUser({ commit }, socketId) {
-    commit("disconnectActiveUser", socketId);
+  setOnlineUsers({ commit }, users) {
+    commit("setOnlineUsers", users);
   },
-  removeActiveUser({ commit }, index) {
-    commit("removeActiveUser", index)
-  }
 };
 
 /**
@@ -200,21 +200,11 @@ const mutations = {
   setFilialCode(state, filialCode) {
     state.filialCode = filialCode;
   },
-  setActiveUsers(state, user) {
-    state.activeUsers.push(user);
+  setActiveUsers(state, users) {
+    state.activeUsers = users;
   },
-  disconnectActiveUser(state, socketId) {
-    let usrs = state.activeUsers;
-    for (let i = 0; i < usrs.length; i++) {
-      if (usrs[i].socket_id == socketId) {
-        usrs.splice(i, 1);
-        break;
-      }
-    }
-  },
-  removeActiveUser(state, index) {
-    let usrs = state.activeUsers;
-    usrs.splice(index, 1);
+  setOnlineUsers(state, users) {
+    state.onlineUsers = users;
   }
 };
 
