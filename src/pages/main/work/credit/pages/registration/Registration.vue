@@ -453,7 +453,7 @@ export default {
          const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
         const credits = {
           label: i.label,
-          value: i.value,
+          value: Number(i.value),
           period: Loan_dict.terms_list.items,
           loanRate: Loan_dict.loan_rate_base,
           paymentTypes: Loan_dict.payment_type.items
@@ -507,7 +507,12 @@ export default {
 
       if (idxCredit !== -1) {
 
-        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes
+        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
 
         this.periodCreditMin = Number(
           this.options.typeCredits[idxCredit].period[0].value

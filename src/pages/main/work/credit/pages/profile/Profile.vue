@@ -258,6 +258,18 @@
               </div>
 
               <div class="col-4">
+                <q-input
+                  square
+                  outlined
+                  v-model="Customer.Document.GivenPlace"
+                  dense
+                  label="Кем выдан паспорт"
+                />
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-4">
                 <q-select
                   ref="education"
                   square
@@ -437,6 +449,30 @@
                       map-options
                       class="q-pb-sm"
                     />
+
+                    <!-- <q-select
+                      square
+                      outlined
+                      filled
+                      v-model="address.District"
+                      use-input
+                      input-debounce="0"
+                      label="Район"
+                      :options="dictionaries.Districts.items"
+                      @filter="filterFn"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                      behavior="menu"
+                    >
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            Нет результата
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select> -->
                   </div>
                 </div>
 
@@ -833,6 +869,18 @@
                       </q-icon>
                     </template>
                   </q-input>
+                </div>
+
+                <div class="col-4">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="relative.Document.GivenPlace"
+                      dense
+                      label="Кем выдан паспорт"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1688,6 +1736,16 @@
                     </template>
                   </q-input>
                 </div>
+
+                <div class="col-4">
+                  <q-input
+                    square
+                    outlined
+                    v-model="guarantee.Document.GivenPlace"
+                    dense
+                    label="Кем выдан паспорт"
+                  />
+                </div>
               </div>
 
               <div class="row q-col-gutter-md">
@@ -2462,7 +2520,7 @@
                   :rules="[
                     val => !!val || 'Введите удобный день погашения',
                     val =>
-                      val > 0 && val < 32 || `Введите удобный день погашения (1-31)`
+                      val > 0 && val < 29 || `Введите удобный день погашения (1-31)`
                   ]"
                 />
               </div>
@@ -2489,7 +2547,9 @@
             </div> -->
 
             <div class="row q-col-gutter-md">
-              <div class="col-4">
+              <div 
+                v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
+                class="col-4">
                 <q-input
                   ref="initialFee"
                   square
@@ -3011,6 +3071,10 @@ export default {
       this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
       this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
       this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
+
+      this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
+      this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
+      this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
     }
   },
   computed: {
@@ -3119,7 +3183,9 @@ export default {
     // },
 
     "fullProfile.LoanInfo.LoanProduct"(credit) {
-      this.fullProfile.LoanInfo.RepaymentType = null;
+      console.log("Аннуит, диффер")
+
+      //this.fullProfile.LoanInfo.RepaymentType = null;
       this.profile.options.RepaymentType = [];
 
       const idx = this.dictionaries.LoanDetails.items.findIndex(
@@ -3347,19 +3413,10 @@ export default {
       this.$refs.productCredit.validate();
       this.$refs.priceCredit.validate();
 
-      if (this.$refs.productCredit.validate()) {
-        this.$refs.typeRepayment.validate();
-        // console.log('typeRepayment', this.fullProfile.LoanInfo.RepaymentType)
-        // console.log('typeRepayment', this.$refs.typeRepayment.validate())
-      } else {
-        validItems(this.$refs, "typeRepayment");
-      }
-
       // this.$refs.periodRepayment.validate();
       this.$refs.comfortablePeriodRepayment.validate();
       this.$refs.comfortableDayRepayment.validate();
       // this.$refs.typeCredit.validate();
-      this.$refs.initialFee.validate();
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
@@ -3378,6 +3435,15 @@ export default {
         validItems(this.$refs, "billProd");
         validItems(this.$refs, "agreementNumber");
         validItems(this.$refs, "agreementDate");
+      }
+
+      //если не овердрафт
+      if (!!this.fullProfile.LoanInfo.LoanProduct && this.fullProfile.LoanInfo.LoanProduct !== 3) {
+        this.$refs.typeRepayment.validate();
+        this.$refs.initialFee.validate();
+      } else {
+        validItems(this.$refs, "typeRepayment");
+        validItems(this.$refs, "initialFee");
       }
 
       if (!this.fullProfile.AttachedDocuments.items.length) {
@@ -3789,6 +3855,21 @@ export default {
     },
     reverseDate(val) {
       return val.slice(-4) + val.slice(2, 6) + val.slice(0, 2)
+    },
+
+    filterFn (val, update) {
+      console.log('filterFn', val)
+      // if (val === '') {
+      //   update(() => {
+      //     this.options = stringOptions
+      //   })
+      //   return
+      // }
+
+      // update(() => {
+      //   const needle = val.toLowerCase()
+      //   this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      // })
     }
   },
   components: {

@@ -594,11 +594,18 @@
               <div class="col-9">{{ fullProfile.LoanInfo.Currency }}</div>
               <div class="col-3">Тип пошагового кредита</div>
               <div class="col-9">
+
+                <template
+                 v-if="profile.options.RepaymentType.find(
+                    i => i.value == fullProfile.LoanInfo.RepaymentType
+                  )" 
+                >
                 {{
                   profile.options.RepaymentType.find(
                     i => i.value == fullProfile.LoanInfo.RepaymentType
                   ).label
                 }}
+                </template>
               </div>
                <div class="col-3">Процентная ставка по кредиту (максимальная)</div>
               <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
