@@ -1,6 +1,11 @@
 <template>
     <div>
-        <q-btn class="q-mt-md full-width" color="green-6" label="Добавить Чат" @click="dialog = true" />
+        <q-btn
+            icon="edit"
+            color="grey-8"
+            flat
+            @click="dialog = true"
+        />
 
         <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
             <q-card style="width: 500px">
@@ -9,7 +14,7 @@
                     <div class="q-pa-sm">
                         <div class="row q-pb-md">
                             <div class="col">
-                                <q-input outlined v-model="title" label="Название Чата" dense />
+                                <b>{{title}}</b>
                             </div>
                         </div>
 
@@ -80,8 +85,7 @@
 
 
                 <q-card-actions align="center" class="q-pa-md">
-                    <q-btn label="Отменить" class="q-mr-sm" @click="clearForm()" v-close-popup />
-                    <q-btn label="Сохранить" color="primary" @click="createGroup()" v-close-popup />
+                    <q-btn label="Закрыть" class="q-mr-sm" @click="clearForm()" v-close-popup />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -92,13 +96,15 @@
 import { mapGetters } from "vuex";
 import axios from "axios"
 export default {
+    props: ['id'],
     data () {
         return {
             dialog: false,
             title: '',
             searchUser: '',
             result: [],
-            users: []
+            users: [],
+            group: null
         }
     },
     computed: {
@@ -108,8 +114,10 @@ export default {
           chatId: 'getActiveChat',
           chats: 'getChats'
         }),
+
     },
     methods: {
+
       getUserProfilePhotoUrl(emp_id) {
         return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
       },
@@ -127,58 +135,80 @@ export default {
         }
       },
       addUser(user){
-        if(!this.users.find(el => el.emp_id === user.emp_id) && this.emp_id !== user.emp_id) this.users.push(user)
+        if(!this.users.find(el => el.emp_id === user.emp_id) && user.emp_id !== this.emp_id) {
+          let usr = this.users.slice()
+          usr.push({name: user.name, emp_id: user.emp_id})
+
+          const arr = {
+            chat_id: this.group.chat_id,
+            self_uid: this.emp_id, // emp_id user katoriy dobavlaet
+            new_uid:  user.emp_id, // emp_id user katoriy dobavlaetsa
+            name: this.group.to_name,	 // nazvaniya gruppa
+            description: '',	// opisaniya gruppa
+            creator: this.group.creator, // emp_id sozdatel
+            creator_fio: this.group.creator_fio, // fio sozdatel
+            members: usr // spisok uchastniki
+          }
+
+          this.socket.emit('group/usr/add', arr)
+        }
         this.searchUser = ''
         this.result = []
       },
       delUser(id){
-        this.users = this.users.filter(el => el.emp_id !== id)
-      },
-      createGroup(){
-        if(this.users.length !==0 && this.title){
-          let usersIds = []
-          this.users.forEach(el => {
-            usersIds.push(el.emp_id)
-          })
-          const group = {
-            name: this.title,
-            description: 'описание',
-            creator: this.emp_id,
-            users: usersIds
-          }
-
-          this.socket.emit('group/create', group)
-
+        const arr = {
+          chat_id: this.group.chat_id,
+          emp_id: id
         }
+        this.socket.emit('group/usr/remove', arr)
+        // this.users = this.users.filter(el => el.emp_id !== id)
       },
+
       clearForm(){
-        this.users = []
+        // this.users = []
         this.searchUser = ''
         this.result = []
       }
     },
     created(){
-      this.socket.on('group/create', data => {
 
-        const chat = {
-          type: 2,
-          chat_id: data.id,
-          emp_id: data.creator,
-          to_name: data.name,
-          members: data.members,
-          messages: [],
-          creator: data.creator,
-          creator_fio: data.creator_fio
-        }
+      const group = this.chats.find(el => el.chat_id === this.id)
+      this.group = group
+      this.users = group.members === null ? [] : group.members
+      this.title = group.to_name
 
-        this.$store.dispatch('addChat', chat )
-        this.$store.dispatch('setActiveChat', data.id)
-
-        this.users = []
-        this.searchUser = ''
-        this.result = []
+      this.socket.on('group/usr/new', data => {
+        console.log('group/usr/new')
+        this.$store.dispatch('addUserToGroup', data )
+      })
+      this.socket.on('group/usr/joined', data => {
+        console.log('group/usr/joined', data)
+        this.$store.dispatch('addUserToGroup', data )
+        this.users.push({name: data.new_uname, emp_id: data.new_uid})
+      })
+      this.socket.on('group/usr/drop', data => {
+        console.log('group/usr/drop')
+        this.$store.dispatch('deleteChat', data )
+      })
+      this.socket.on('group/usr/left', data => {
+        console.log('group/usr/left')
+        this.users = this.users.filter(el => el.emp_id !== data.emp_id)
+        this.$store.dispatch('delUserGroup', data )
+      })
+      this.socket.on('group/usr/remove', data => {
+        console.log('group/usr/remove')
+        this.users = this.users.filter(el => el.emp_id !== data.emp_id)
+        this.$store.dispatch('delUserGroup', data )
       })
     },
+    beforeDestroy(){
+      this.socket.removeListener('group/usr/new')
+      this.socket.removeListener('group/usr/joined')
+      this.socket.removeListener('group/usr/add')
+      this.socket.removeListener('group/usr/remove')
+      this.socket.removeListener('group/usr/drop')
+      this.socket.removeListener('group/usr/left')
+    }
 
 }
 </script>

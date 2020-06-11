@@ -9,9 +9,9 @@
                         <q-btn icon="done" size="sm" @click="editTitle" color="grey-8" flat />
 
                     </div>
-                    <div v-else class="text-h6">{{titleChat}}</div>
+                    <div v-else class="text-h6">{{titleName()}}</div>
 
-                    <div class="text-caption"><i>35 участников</i></div>
+                    <div class="text-caption"><i>{{countUsers()}} участников</i></div>
                 </div>
                 <div class="col-1 text-right">
                     <q-btn  @click="edTitile = true" icon="create" flat/>
@@ -123,6 +123,25 @@ export default {
         }
     },
     methods: {
+        titleName(){
+          if(this.chatId){
+            return this.allChats.find(ch => ch.chat_id === this.chatId).to_name
+          } else {
+            return 'Выберите чат'
+          }
+        },
+        countUsers(){
+          const chat = this.allChats.find(ch => ch.chat_id === this.chatId)
+          if(this.chatId){
+            if(chat.type === 2){
+              return chat.members.length + 1
+            } else {
+              return '2'
+            }
+          } else {
+            return '0'
+          }
+        },
         editTitle () {
             this.edTitile = false
         },
@@ -173,37 +192,18 @@ export default {
     },
     computed: {
         ...mapGetters({
-          user: "auth/fullName"
+          user: "auth/fullName",
+          emp_id: "auth/empId",
+          inbox: "dicts/receivedNotifications",
+          socket: "socket/getSocket",
+          userList: "dicts/getUserList",
+          chatId: 'getActiveChat',
+          allChats: 'getChats',
+          toUid: 'getToUid',
         }),
-        ...mapGetters({
-          emp_id: "auth/empId"
-        }),
-        ...mapGetters({
-          inbox: "dicts/receivedNotifications"
-        }),
-        ...mapGetters({
-          socket: "socket/getSocket"
-        }),
-        ...mapGetters({
-          userList: "dicts/getUserList"
-        }),
-        chatId(){
-          return this.$store.getters.getActiveChat
-        },
-        allChats(){
-            return this.$store.getters.getChats
-        },
-        toUid(){
-          return this.$store.getters.getToUid
-        },
-
-        activeChatId(){
-            return this.$store.getters.getActiveChat
-        },
-
     },
     updated() {
-            this.scrollToBottom()
+      this.scrollToBottom()
     },
     created() {
         this.$nextTick(() => {
@@ -217,15 +217,30 @@ export default {
 
       this.socket.on("chat/all", data => {
         const chats =[]
+        console.log('chat all', data)
         if(data) {
           data.forEach(el=>{
-            const ch = {
-              chat_id: el.chat_id,
-              emp_id: this.emp_id,
-              to_uid: el.details[0].emp_id,
-              to_name: el.details[0].name,
-              messages: el.messages !== null ? el.messages : []
+            let ch = {}
+            if(el.type === 1){
+              ch = {
+                type: el.type,
+                chat_id: el.chat_id,
+                emp_id: this.emp_id,
+                to_uid: el.details[0].emp_id,
+                to_name: el.details[0].name,
+                messages: el.messages !== null ? el.messages : []
+              }
+            } else {
+              ch = {
+                type: 2,
+                chat_id: el.chat_id,
+                emp_id: el.creator,
+                to_name: el.details[0].name,
+                members: el.details[0].members,
+                messages: el.messages !== null ? el.messages : []
+              }
             }
+
             chats.push(ch)
           })
           this.$store.dispatch('setChat', chats)
@@ -234,7 +249,6 @@ export default {
       });
 
       this.socket.on("msg/send", data => {
-        console.log('send', data)
         this.$store.dispatch('addMessage', data)
         if(data.messages[0].from_uid === this.emp_id) {
           this.form.message = ''

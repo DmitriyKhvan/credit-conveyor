@@ -69,20 +69,29 @@
                   :class="chatId === chat.chat_id ? 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock active' : 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock'"
 
                   >
-                  <div class="avatarBlock" @click="selectChat(chat.chat_id)">
+                  <div v-if="chat.type === 1" class="avatarBlock" @click="selectChat(chat.chat_id)">
                       <q-avatar>
                           <img :src="getUserProfilePhotoUrl(chat.to_uid)">
                       </q-avatar>
                   </div>
                   <div class="col" @click="selectChat(chat.chat_id)">
-                      <div class="text-subtitle1"><b>{{chatName(chat.to_name)}}</b></div>
+                      <div v-if="chat.type === 1" class="text-subtitle1"><b>{{chatName(chat.to_name)}}</b></div>
+                      <div v-else class="text-subtitle1"><b>{{chat.to_name}}</b></div>
                       <div class="text-caption">
-                          <q-badge class="online">
+                          <q-badge
+                            class="online"
+                            v-if="chat.type === 1">
                               online
                           </q-badge>
+                          <div v-if="chat.type === 2 && chat.members !== null">
+                            {{chat.members.length + 1}}  участников
+                          </div>
                       </div>
                   </div>
 
+                  <div v-if="chat.type === 2" class="actionsBlock text-right actions self-center">
+                    <edit-group :id="chat.chat_id"></edit-group>
+                  </div>
                   <div class="actionsBlock text-right actions self-center">
                     <q-btn
                         icon="delete_outline"
@@ -105,12 +114,14 @@
 import { mapGetters } from "vuex";
 import axios from "axios"
 import AddChat from './AddChat'
+import EditGroup from './EditGroup'
 import { dom } from 'quasar'
 const { height } = dom
 
 export default {
     components: {
-        AddChat
+        AddChat,
+        EditGroup
     },
     data () {
         return {
@@ -145,7 +156,7 @@ export default {
           this.$store.dispatch('setActiveChat', id)
         },
         setActiveChat(id, toUid){
-            if(this.emp_id !== toUid) this.$store.dispatch('setToUid', toUid)
+            if(this.emp_id !== toUid && this.emp_id !== toUid) this.$store.dispatch('setToUid', toUid)
             this.result = []
             if(this.chats.find(ch => ch.to_uid === toUid) || this.emp_id === toUid){return}
               this.socket.emit("private/create", {
@@ -191,6 +202,7 @@ export default {
           .then(response => {
             name = response.data.LAST_NAME +' '+response.data.FIRST_NAME[0]+'. '+response.data.MIDDLE_NAME[0]+'.'
             const chat = {
+              type: 1,
               chat_id: data.id,
               from_uid: data.from_uid,
               to_uid: data.to_uid,
@@ -208,6 +220,8 @@ export default {
       })
 
       this.socket.on("chat/delete", data => {
+        console.log('xxx')
+        console.log('del', data)
           this.$store.dispatch('deleteChat', data)
       })
 
@@ -216,6 +230,10 @@ export default {
     beforeDestroy(){
       this.socket.removeListener('private/create')
       this.socket.removeListener('chat/delete')
+      this.socket.removeListener('group/create')
+      this.socket.removeListener('group/usr/new')
+      this.socket.removeListener('group/usr/joined')
+      this.socket.removeListener('group/usr/add')
     }
 }
 </script>
