@@ -59,7 +59,7 @@
                         </div>
                         <div v-else class="content scroll q-pb-md">
                             <div
-                              v-for="i in users" :key="i.emp_id"
+                              v-for="i in usersChat" :key="i.emp_id"
                               class="row q-py-sm q-px-md q-mb-sm justify-between roundedBlock"
                             >
                                 <div class="avatarBlock">
@@ -114,6 +114,11 @@ export default {
           chatId: 'getActiveChat',
           chats: 'getChats'
         }),
+        usersChat(){
+          const group = this.chats.find(el => el.chat_id === this.id)
+
+          return group.members
+        }
 
     },
     methods: {
@@ -168,7 +173,8 @@ export default {
         // this.users = []
         this.searchUser = ''
         this.result = []
-      }
+      },
+
     },
     created(){
 
@@ -184,20 +190,19 @@ export default {
       this.socket.on('group/usr/joined', data => {
         console.log('group/usr/joined', data)
         this.$store.dispatch('addUserToGroup', data )
-        this.users.push({name: data.new_uname, emp_id: data.new_uid})
       })
       this.socket.on('group/usr/drop', data => {
         console.log('group/usr/drop')
         this.$store.dispatch('deleteChat', data )
       })
       this.socket.on('group/usr/left', data => {
-        console.log('group/usr/left')
-        this.users = this.users.filter(el => el.emp_id !== data.emp_id)
+        console.log('group/usr/left', data)
+        console.log(this.chats)
+
         this.$store.dispatch('delUserGroup', data )
       })
       this.socket.on('group/usr/remove', data => {
         console.log('group/usr/remove')
-        this.users = this.users.filter(el => el.emp_id !== data.emp_id)
         this.$store.dispatch('delUserGroup', data )
       })
     },
