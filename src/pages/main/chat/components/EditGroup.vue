@@ -116,7 +116,6 @@ export default {
         }),
         usersChat(){
           const group = this.chats.find(el => el.chat_id === this.id)
-
           return group.members
         }
 
@@ -141,7 +140,7 @@ export default {
       },
       addUser(user){
         if(!this.users.find(el => el.emp_id === user.emp_id) && user.emp_id !== this.emp_id) {
-          let usr = this.users.slice()
+          let usr = this.usersChat.slice(0)
           usr.push({name: user.name, emp_id: user.emp_id})
 
           const arr = {
