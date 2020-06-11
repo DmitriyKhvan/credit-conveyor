@@ -249,6 +249,7 @@ export default {
       });
 
       this.socket.on("msg/send", data => {
+        console.log('msg/send', data)
         this.$store.dispatch('addMessage', data)
         if(data.messages[0].from_uid === this.emp_id) {
           this.form.message = ''
@@ -261,6 +262,13 @@ export default {
     beforeDestroy(){
       this.socket.removeListener('msg/send')
       this.socket.removeListener('chat/all')
+
+      this.socket.removeListener('group/usr/new')
+      this.socket.removeListener('group/usr/joined')
+      this.socket.removeListener('group/usr/add')
+      this.socket.removeListener('group/usr/remove')
+      this.socket.removeListener('group/usr/drop')
+      this.socket.removeListener('group/usr/left')
     }
 }
 </script>
