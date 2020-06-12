@@ -3,15 +3,8 @@
         <div class="col-8">
             <div class="row justify-between header q-pa-md">
                 <div class="col headerDiv">
-                    <div v-if="edTitile" class="row">
-                        <q-input outlined v-model="titleChat" dense style="width:300px" />
-                        <q-btn icon="done" size="sm" @click="editTitle" color="grey-8" flat />
-                    </div>
-                    <div v-else class="text-h6">{{titleName()}}</div>
+                    <div class="text-h6">{{titleName()}}</div>
                     <div class="text-caption"><i>{{countUsers()}} участников</i></div>
-                </div>
-                <div class="col-1 text-right">
-                    <q-btn  @click="edTitile = true" icon="create" flat/>
                 </div>
             </div>
              <q-scroll-area ref='chat' class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
