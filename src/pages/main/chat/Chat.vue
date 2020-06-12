@@ -1,5 +1,4 @@
 <template>
-
     <q-card  class="row q-ma-lg">
         <div class="col-8">
             <div class="row justify-between header q-pa-md">
@@ -7,10 +6,8 @@
                     <div v-if="edTitile" class="row">
                         <q-input outlined v-model="titleChat" dense style="width:300px" />
                         <q-btn icon="done" size="sm" @click="editTitle" color="grey-8" flat />
-
                     </div>
                     <div v-else class="text-h6">{{titleName()}}</div>
-
                     <div class="text-caption"><i>{{countUsers()}} участников</i></div>
                 </div>
                 <div class="col-1 text-right">
@@ -18,8 +15,6 @@
                 </div>
             </div>
              <q-scroll-area ref='chat' class="q-pa-lg messagesList scroll" :style="{height: heightChat}">
-
-
                   <template v-if="messages(chatId, allChats)">
                     <div
                       v-for="c in messages(chatId, allChats)"
@@ -37,14 +32,12 @@
                             </q-badge>
                             <i>{{formatDate(c.sent_at)}}</i>
                         </div>
-
                         <div class="avatar_my self-end">
                             <q-avatar>
                                 <img :src="getUserProfilePhotoUrl(emp_id)">
                             </q-avatar>
                         </div>
                       </template>
-
                       <template v-else>
                         <div class="avatar self-end">
                             <q-avatar>
@@ -62,31 +55,21 @@
                         </div>
                         <div class="col"></div>
                       </template>
-
-
                     </div>
                   </template>
-
-
             </q-scroll-area>
-
             <div class=" sendMesage">
                 <q-form @submit.prevent="sendMessage" class="row">
                     <div class="col">
                         <q-input ref="inputMessage" outlined dense v-model="form.message" label="Сообщение" />
                     </div>
-
                     <div class="actionWidth text-center self-center"><q-btn icon="attach_file" flat/></div>
                     <div class="actionWidth self-center"><q-btn type="submit" icon="subdirectory_arrow_left" outline  /></div>
                 </q-form>
             </div>
-
         </div>
-
         <div class="col-4 q-pa-md rightBlock">
-
             <CRightBlock></CRightBlock>
-
         </div>
     </q-card>
 
@@ -96,11 +79,8 @@
 import RightGlobal from './components/RightGlobal'
 import { dom } from 'quasar'
 const { height } = dom
-
 import { mapGetters } from "vuex";
 import commonUtils from "@/shared/utils/CommonUtils";
-
-
 import axios from "axios";
 
 export default {
@@ -112,9 +92,7 @@ export default {
         return {
             text: '',
             heightChat: '',
-            titleChat: 'Название чата и описание',
             edTitile: false,
-
             form: {
                 chat_id: null,
                 message: "",
@@ -143,21 +121,18 @@ export default {
           }
         },
         editTitle () {
-            this.edTitile = false
+          this.edTitile = false
         },
         sendMessage(e) {
-          this.count++
-            e.preventDefault();
-            this.form.from_uid = this.emp_id
-            this.form.chat_id = this.chatId
-            this.socket.emit("msg/send", this.form)
-            this.$refs.inputMessage.focus()
-
+          e.preventDefault();
+          this.form.from_uid = this.emp_id
+          this.form.chat_id = this.chatId
+          this.socket.emit("msg/send", this.form)
+          this.$refs.inputMessage.focus()
         },
         formattedDate(date) {
             return commonUtils.formattedDate(date);
         },
-
         chatName(n){
             let arr = n.split(' ')
             let name = arr[0] + ' '
@@ -188,7 +163,6 @@ export default {
             return chat.messages
           }
         }
-
     },
     computed: {
         ...mapGetters({
@@ -206,18 +180,15 @@ export default {
       this.scrollToBottom()
     },
     created() {
-        this.$nextTick(() => {
+      this.$nextTick(() => {
+        this.heightChat = height(eee) - 240 + 'px'
+        window.onresize = () => {
             this.heightChat = height(eee) - 240 + 'px'
-            window.onresize = () => {
-               this.heightChat = height(eee) - 240 + 'px'
-            }
-        })
-
+        }
+      })
       this.socket.emit("chat/all", this.emp_id);
-
       this.socket.on("chat/all", data => {
         const chats =[]
-        console.log('chat all', data)
         if(data) {
           data.forEach(el=>{
             let ch = {}
@@ -240,29 +211,22 @@ export default {
                 messages: el.messages !== null ? el.messages : []
               }
             }
-
             chats.push(ch)
           })
           this.$store.dispatch('setChat', chats)
         }
-
       });
 
       this.socket.on("msg/send", data => {
-        console.log('msg/send', data)
         this.$store.dispatch('addMessage', data)
         if(data.messages[0].from_uid === this.emp_id) {
           this.form.message = ''
         }
       })
-
-
-
     },
     beforeDestroy(){
       this.socket.removeListener('msg/send')
       this.socket.removeListener('chat/all')
-
       this.socket.removeListener('group/usr/new')
       this.socket.removeListener('group/usr/joined')
       this.socket.removeListener('group/usr/add')
@@ -323,4 +287,4 @@ export default {
         padding-left: 5px;
     }
     .message_my i {color: #fff;}
-    </style>
+</style>
