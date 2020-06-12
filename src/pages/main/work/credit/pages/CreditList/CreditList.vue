@@ -160,7 +160,7 @@
           <td class="text-center number applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -195,7 +195,7 @@
           <td class="text-left client applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -211,7 +211,7 @@
           <td class="text-left manager applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -227,7 +227,7 @@
           <td class="text-left MFO applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -243,7 +243,7 @@
           <td class="text-left filialName applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -259,7 +259,7 @@
           <td class="text-left taskName applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -275,7 +275,7 @@
           <td class="text-left taskStatus applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -291,7 +291,7 @@
           <td class="text-left date applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,

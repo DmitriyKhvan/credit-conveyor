@@ -3,7 +3,10 @@
     <q-dialog v-model="confirm" persistent>
       <q-card class="preApprovalBlock">
         <q-card-section class="column items-start">
-          <div class="text-h6">Заявка на кредит</div>
+          <div class="preApprovalBlock__title">
+            <div class="text-h6">Заявка на кредит</div>
+            <q-btn class="print" icon="print" @click="printFile()" disable/>
+          </div>
           <div class="creditBackground">
             <h4 class="personName">
               {{
@@ -103,6 +106,7 @@
 <script>
 import formatNumber from "../../filters/format_number.js";
 import CommonUtils from "@/shared/utils/CommonUtils";
+import printJS from "print-js";
 
 export default {
   data() {
@@ -170,8 +174,10 @@ export default {
         this.credits.confirmCreditData.output[0].data = false
         this.credits.confirmCreditData.output[1].data = this.selection
     
+        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
           const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
+          console.log('res', res)
           if (res.requestedTask.state === "completed") {
             sessionStorage.removeItem("csrf_token");
             this.$router.push("/work/credit");
@@ -180,7 +186,18 @@ export default {
           }
         } catch (error) {}
       }
-    }
+    },
+
+    async printFile() {
+      try {
+        const url = await this.$store.dispatch(
+          "credits/getFile",
+          this.fileData
+        );
+        printJS(url);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {}
+    },
   },
 
   filters: {
@@ -192,6 +209,20 @@ export default {
 .preApprovalBlock {
   width: 510px;
   min-height: 290px;
+
+  &__title {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .print {
+    width: 10%;
+
+    .q-btn__wrapper::before {
+      box-shadow: none;
+    }
+  }
 
   .items-start {
     padding: 0;

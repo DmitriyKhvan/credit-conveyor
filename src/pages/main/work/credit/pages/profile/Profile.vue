@@ -3036,7 +3036,7 @@ export default {
       this.$store.commit("credits/setTaskId", this.taskId);
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
-        console.log('res', res)
+        console.log('resggggggggggggggggggggg', res)
       } catch (error) {}
     } 
     
@@ -3184,9 +3184,25 @@ export default {
 
     "fullProfile.LoanInfo.LoanProduct"(credit) {
       console.log("Аннуит, диффер")
-
-      //this.fullProfile.LoanInfo.RepaymentType = null;
+      this.fullProfile.LoanInfo.RepaymentType = null;
       this.profile.options.RepaymentType = [];
+
+      // для синхронизации с Preapprov
+      if (this.personalData.typeStepCredit) {
+        this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
+        this.personalData.typeStepCredit = null
+      }
+
+      this.fullProfile.LoanInfo.consumerLoan = {
+          nameBankProd: "",    // Наименование банка
+          nameService: "",     // Наименование товара/работы/услуги
+          agreementDate: "",   // Дата договора
+          nameProduction: "",  // Наименование продавца
+          billProd: "",        // Расчетный счет продавца
+          agreementNumber: "", // Номер договора
+          idBankProd: 0
+        }
+      this.fullProfile.LoanInfo.InitialPayment = 0
 
       const idx = this.dictionaries.LoanDetails.items.findIndex(
         item => item.LOAN_ID == credit

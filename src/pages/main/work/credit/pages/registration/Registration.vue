@@ -585,6 +585,20 @@ export default {
         this.formHasError = true;
       } else {
         this.$store.commit("credits/loadMessageChange", "");
+
+        this.credits.confirmCreditData = {
+          output: [
+            {
+              name: "confirm",
+              data: true
+            },
+            {
+              name: "reasons",
+              data: []
+            }
+          ]
+        }
+
         this.loaderPreApproval = true;
         const {
           children,

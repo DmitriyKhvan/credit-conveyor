@@ -248,11 +248,17 @@
             <div class="row rowForm">
               <div class="col-2 field">Отношение к клиенту</div>
               <div class="col-10 data">
-                {{
-                  dictionaries.FamilyRelation.items.find(
-                    i => i.value == relative.FamilyConnectionType
-                  ).label
-                }}
+                <template
+                  v-if="dictionaries.FamilyRelation.items.find(
+                      i => i.value == relative.FamilyConnectionType
+                    )"
+                >
+                  {{
+                    dictionaries.FamilyRelation.items.find(
+                      i => i.value == relative.FamilyConnectionType
+                    ).label
+                  }}
+                </template>
               </div>
             </div>
 
