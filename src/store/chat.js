@@ -50,12 +50,9 @@ export default {
           const user = chat.members.push({name: payload.new_uname, emp_id: payload.new_uid})
         },
         delUserGroup(state, payload){
-
           let chat = state.chats.find(ch => ch.chat_id === payload.chat_id)
           chat.members = chat.members.filter(user => user.emp_id !== payload.emp_id)
-          console.log(state.chats)
         }
-
     },
     actions: {
         setChat({commit}, payload){
@@ -85,10 +82,10 @@ export default {
     },
     getters: {
         getChats(state){
-            return state.chats
+          return state.chats
         },
         getActiveChat(state){
-            return state.activeChat
+          return state.activeChat
         },
         getToUid(state){
           return state.to_uid

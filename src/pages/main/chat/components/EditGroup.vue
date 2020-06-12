@@ -6,10 +6,8 @@
             flat
             @click="dialog = true"
         />
-
         <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
             <q-card style="width: 500px">
-
                 <q-card-section>
                     <div class="q-pa-sm">
                         <div class="row q-pb-md">
@@ -17,7 +15,6 @@
                                 <b>{{title}}</b>
                             </div>
                         </div>
-
                         <div class="row q-pb-md">
                             <div class="col">
                                 <q-input
@@ -34,8 +31,6 @@
                                 </q-input>
                             </div>
                         </div>
-
-
                         <div class="content scroll q-pb-md" v-if="result.length !== 0">
                             <div
                                 v-for="i in result" :key="i.emp_id"
@@ -47,7 +42,7 @@
                                     </q-avatar>
                                 </div>
                                 <div class="col">
-                                    <div class="text-subtitle1" @click="addUser(i)"><b>{{i.name}}</b></div>
+                                    <div class="text-subtitle1" @click="addUser(i)"><b v-html="i.name"></b></div>
                                     <div class="text-caption" @click="addUser(i)">
                                         <q-badge class="online">
                                             online
@@ -68,7 +63,7 @@
                                     </q-avatar>
                                 </div>
                                 <div class="col">
-                                    <div class="text-subtitle1"><b>{{i.name}}</b></div>
+                                    <div class="text-subtitle1"><b v-html="i.name"></b></div>
                                     <div class="text-caption">
                                         <q-badge class="online">
                                             online
@@ -82,8 +77,6 @@
                         </div>
                     </div>
                 </q-card-section>
-
-
                 <q-card-actions align="center" class="q-pa-md">
                     <q-btn label="Закрыть" class="q-mr-sm" @click="clearForm()" v-close-popup />
                 </q-card-actions>
@@ -118,10 +111,8 @@ export default {
           const group = this.chats.find(el => el.chat_id === this.id)
           return group.members
         }
-
     },
     methods: {
-
       getUserProfilePhotoUrl(emp_id) {
         return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
       },
@@ -142,7 +133,6 @@ export default {
         if(!this.users.find(el => el.emp_id === user.emp_id) && user.emp_id !== this.emp_id) {
           let usr = this.usersChat.slice(0)
           usr.push({name: user.name, emp_id: user.emp_id})
-
           const arr = {
             chat_id: this.group.chat_id,
             self_uid: this.emp_id, // emp_id user katoriy dobavlaet
@@ -153,7 +143,6 @@ export default {
             creator_fio: this.group.creator_fio, // fio sozdatel
             members: usr // spisok uchastniki
           }
-
           this.socket.emit('group/usr/add', arr)
         }
         this.searchUser = ''
@@ -165,23 +154,17 @@ export default {
           emp_id: id
         }
         this.socket.emit('group/usr/remove', arr)
-        // this.users = this.users.filter(el => el.emp_id !== id)
       },
-
       clearForm(){
-        // this.users = []
         this.searchUser = ''
         this.result = []
       },
-
     },
     created(){
-
       const group = this.chats.find(el => el.chat_id === this.id)
       this.group = group
       this.users = group.members === null ? [] : group.members
       this.title = group.to_name
-
       this.socket.on('group/usr/new', data => {
         console.log('group/usr/new')
         this.$store.dispatch('addUserToGroup', data )
@@ -213,7 +196,6 @@ export default {
       this.socket.removeListener('group/usr/drop')
       this.socket.removeListener('group/usr/left')
     }
-
 }
 </script>
 

@@ -1,10 +1,8 @@
 <template>
     <div>
-        <q-btn class="q-mt-md full-width" color="green-6" label="Добавить Чат" @click="dialog = true" />
-
+        <q-btn class="q-mt-md full-width" color="green-6" label="Создать группу" @click="dialog = true" />
         <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
             <q-card style="width: 500px">
-
                 <q-card-section>
                     <div class="q-pa-sm">
                         <div class="row q-pb-md">
@@ -29,8 +27,6 @@
                                 </q-input>
                             </div>
                         </div>
-
-
                         <div class="content scroll q-pb-md" v-if="result.length !== 0">
                             <div
                                 v-for="i in result" :key="i.emp_id"
@@ -42,7 +38,7 @@
                                     </q-avatar>
                                 </div>
                                 <div class="col">
-                                    <div class="text-subtitle1" @click="addUser(i)"><b>{{i.name}}</b></div>
+                                    <div class="text-subtitle1" @click="addUser(i)"><b v-html="i.name"></b></div>
                                     <div class="text-caption" @click="addUser(i)">
                                         <q-badge class="online">
                                             online
@@ -63,7 +59,7 @@
                                     </q-avatar>
                                 </div>
                                 <div class="col">
-                                    <div class="text-subtitle1"><b>{{i.name}}</b></div>
+                                    <div class="text-subtitle1"><b v-html="i.name"></b></div>
                                     <div class="text-caption">
                                         <q-badge class="online">
                                             online
@@ -77,8 +73,6 @@
                         </div>
                     </div>
                 </q-card-section>
-
-
                 <q-card-actions align="center" class="q-pa-md">
                     <q-btn label="Отменить" class="q-mr-sm" @click="clearForm()" v-close-popup />
                     <q-btn label="Сохранить" color="primary" @click="createGroup()" v-close-popup />
@@ -146,9 +140,7 @@ export default {
             creator: this.emp_id,
             users: usersIds
           }
-
           this.socket.emit('group/create', group)
-
         }
       },
       clearForm(){
@@ -159,7 +151,6 @@ export default {
     },
     created(){
       this.socket.on('group/create', data => {
-
         const chat = {
           type: 2,
           chat_id: data.id,
@@ -170,10 +161,8 @@ export default {
           creator: data.creator,
           creator_fio: data.creator_fio
         }
-
         this.$store.dispatch('addChat', chat )
         this.$store.dispatch('setActiveChat', data.id)
-
         this.users = []
         this.searchUser = ''
         this.result = []

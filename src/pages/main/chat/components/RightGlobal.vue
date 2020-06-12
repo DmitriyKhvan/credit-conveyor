@@ -5,7 +5,6 @@
                 Чаты
             </div>
         </div>
-
         <div class="row q-mb-md">
             <div class="col">
                 <q-input
@@ -22,20 +21,7 @@
                 </q-input>
             </div>
         </div>
-
         <div class="chatsList scroll q-pt-md" :style="{height: heightRight}">
-
-            <!-- <div class="row q-py-sm q-px-md q-mb-md justify-between roundedBlock">
-                <div class="notice">10</div>
-                <div class="col">
-                    <div class="text-subtitle1"><b>Название чата</b></div>
-                    <div class="text-caption grey"><i>35 участников</i></div>
-                </div>
-                <div class="text-right actionsBlock self-center">
-                    <q-btn icon="delete_outline"  color="grey-8" flat />
-                </div>
-            </div> -->
-
             <template v-if="result.length > 0">
             <div
                 v-for="user in result"
@@ -60,7 +46,6 @@
                 </div>
             </div>
             </template>
-
             <template v-else>
               <!-- {{chats}} -->
               <div
@@ -75,8 +60,8 @@
                       </q-avatar>
                   </div>
                   <div class="col" @click="selectChat(chat.chat_id)">
-                      <div v-if="chat.type === 1" class="text-subtitle1"><b>{{chatName(chat.to_name)}}</b></div>
-                      <div v-else class="text-subtitle1"><b>{{chat.to_name}}</b></div>
+                      <div v-if="chat.type === 1" class="text-subtitle1"><b v-html="chatName(chat.to_name)"></b></div>
+                      <div v-else class="text-subtitle1"><b v-html="chat.to_name"></b></div>
                       <div class="text-caption">
                           <q-badge
                             class="online"
@@ -88,7 +73,6 @@
                           </div>
                       </div>
                   </div>
-
                   <div v-if="chat.type === 2" class="actionsBlock text-right actions self-center">
                     <edit-group :id="chat.chat_id"></edit-group>
                   </div>
@@ -97,20 +81,17 @@
                         icon="delete_outline"
                         color="grey-8"
                         flat
-                        @click="deleteChat(chat.chat_id)"
+                        @click="deleteChat(chat)"
                     />
                   </div>
               </div>
             </template>
-
         </div>
-
         <AddChat></AddChat>
     </div>
 </template>
 
 <script>
-
 import { mapGetters } from "vuex";
 import axios from "axios"
 import AddChat from './AddChat'
@@ -130,7 +111,6 @@ export default {
            result: [],
         }
     },
-
     mounted() {
         this.$nextTick(() => {
             this.heightRight = height(eee) - 290 + 'px'
@@ -181,10 +161,16 @@ export default {
                 });
           }
         },
-        deleteChat(id){
-            this.socket.emit("chat/delete", id)
+        deleteChat(chat){
+          if(chat.type === 1 || chat.emp_id === this.emp_id){
+            this.socket.emit("chat/delete", chat.chat_id)
+          } else {
+            this.socket.emit("group/usr/leav", {
+              chat_id: chat.chat_id,
+  	          emp_id: this.emp_id
+            })
+          }
         }
-
     },
     computed: {
         ...mapGetters({
@@ -216,16 +202,18 @@ export default {
           .catch(error => {
               console.log('error')
           });
-
       })
-
       this.socket.on("chat/delete", data => {
-        console.log('xxx')
-        console.log('del', data)
-          this.$store.dispatch('deleteChat', data)
+        this.$store.dispatch('deleteChat', data)
       })
-
-
+      this.socket.on("group/grp/leave", data => {
+        console.log('group/grp/leave')
+        this.$store.dispatch('delUserGroup', data)
+      })
+      this.socket.on("group/usr/leave", data => {
+        console.log('group/usr/leave')
+        this.$store.dispatch('deleteChat', data)
+      })
     },
     beforeDestroy(){
       this.socket.removeListener('private/create')
@@ -234,12 +222,13 @@ export default {
       this.socket.removeListener('group/usr/new')
       this.socket.removeListener('group/usr/joined')
       this.socket.removeListener('group/usr/add')
+      this.socket.removeListener('group/grp/leave')
+      this.socket.removeListener('group/usr/leave')
     }
 }
 </script>
 
 <style scoped>
-
     .roundedBlock {
         border-radius: 5px;
         cursor: pointer;
@@ -276,12 +265,9 @@ export default {
     .offline {
         background: #BABABA;
     }
-
-
     .searchBg {
         background: #CADFF3;
     }
-
     .rightTitle {
         background: #fff;
         border-radius: 5px;
