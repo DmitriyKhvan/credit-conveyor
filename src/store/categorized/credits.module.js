@@ -47,7 +47,7 @@ export const credits = {
       childCost: 0,
 
       // FAMILY //
-      familyStatus: false,
+      familyStatus: "",
       children: false,
       childrenCount: 0,
       // MONEY //
@@ -104,7 +104,6 @@ export const credits = {
 
         // запись роли в header запроса
         await dispatch("setHeaderRole", state.roles[userRole]);
-        //await dispatch("setHeaderRole", "ff")
 
         // запись роли в sessionStore
         sessionStorage.setItem("userRole", state.roles[userRole])
@@ -267,7 +266,7 @@ export const credits = {
       try {
         // const file = await dispatch('creatFile', fileData)
         // const response = await state.bpmService.getFile(file.infos[0].id)
-        const response = await state.bpmService.getFile(293)
+        const response = await state.bpmService.getFile(346)
         const blob = new Blob([response], { type: "application/pdf" })
         return window.URL.createObjectURL(blob)
     

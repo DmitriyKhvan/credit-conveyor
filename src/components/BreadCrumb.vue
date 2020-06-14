@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <q-bar dark>
-      <q-breadcrumbs active-color="white" style="font-size: 16px">
+  <div class="breadCrumbs">
+    <q-bar>
+      <q-breadcrumbs active-color="black" style="font-size: 16px">
         <template v-slot:separator>
-          <q-icon size="1.5em" name="chevron_right" color="primary" />
+          <q-icon size="1.5em" name="chevron_right" />
         </template>
         <q-breadcrumbs-el :key="index" v-for="(routeObject, index) in routeRecords">
           <span class="active" v-if="isLast(index)">{{ getName(routeObject) }}</span>
@@ -38,3 +38,26 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+  .breadCrumbs {
+    .q-bar {
+      background: none;
+    }
+
+    .q-breadcrumbs__el {
+      font-weight: bold;
+      a {
+        color: #282D30;
+        text-decoration: none;
+      }
+      .active {
+        color: #000000;
+        font-size: 14px;
+      }
+    }
+
+    .q-breadcrumbs__separator i {
+      color: #A0A5BA !important;
+    }
+  }
+</style>

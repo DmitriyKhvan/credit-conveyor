@@ -193,7 +193,12 @@
                   :rules="[
                     val =>
                       (val && val.length === 10) ||
-                      'Введите дату выдачи паспорта'
+                      'Введите дату выдачи паспорта',
+
+                      Customer.Document.ExpirationDate
+                      ? (val => reverseDate(val) < reverseDate(Customer.Document.ExpirationDate) ||
+                      'Неверная дата')
+                      : null
                   ]"
                 >
                   <template v-slot:append>
@@ -227,7 +232,11 @@
                   :rules="[
                     val =>
                       (val && val.length === 10) ||
-                      'Введите дату окончания действия паспорта'
+                      'Введите дату окончания действия паспорта',
+                      Customer.Document.GivenDate 
+                      ? (val => reverseDate(val) > reverseDate(Customer.Document.GivenDate) ||
+                      'Неверная дата')
+                      : null
                   ]"
                 >
                   <template v-slot:append>
@@ -417,12 +426,16 @@
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
-                    <q-input
+                    <q-select
                       square
                       outlined
                       v-model="address.District"
+                      :options="dictionaries.Districts.items"
                       dense
                       label="Район"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
                     />
                   </div>
                 </div>
@@ -738,7 +751,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    ref="relatives_pasportDate"
+                    ref="relatives_pasportDateStart"
                     outlined
                     square
                     dense
@@ -749,7 +762,11 @@
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
-                        'Введите дату выдачи паспорта'
+                        'Введите дату выдачи паспорта',
+                        relative.Document.ExpirationDate
+                        ? (val => reverseDate(val) < reverseDate(relative.Document.ExpirationDate) ||
+                        'Неверная дата')
+                        : null
                     ]"
                   >
                     <template v-slot:append>
@@ -777,7 +794,7 @@
 
                 <div class="col-4">
                   <q-input
-                    ref="relatives_pasportDate"
+                    ref="relatives_pasportDateFinish"
                     outlined
                     square
                     dense
@@ -788,7 +805,11 @@
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
-                        'Введите дату окончания паспорта'
+                        'Введите дату окончания паспорта',
+                        relative.Document.GivenDate
+                        ? (val => reverseDate(val) > reverseDate(relative.Document.GivenDate) ||
+                        'Неверная дата')
+                        : null
                     ]"
                   >
                     <template v-slot:append>
@@ -1592,7 +1613,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
-                    ref="pasportDateGuarantees"
+                    ref="pasportDateGuaranteesStart"
                     outlined
                     square
                     dense
@@ -1603,7 +1624,11 @@
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
-                        'Введите дату выдачи паспорта'
+                        'Введите дату выдачи паспорта',
+                        guarantee.Document.ExpirationDate
+                        ? (val => reverseDate(val) < reverseDate(guarantee.Document.ExpirationDate) ||
+                        'Неверная дата')
+                        : null
                     ]"
                   >
                     <template v-slot:append>
@@ -1628,7 +1653,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    ref="pasportDateGuarantees"
+                    ref="pasportDateGuaranteesFinish"
                     outlined
                     square
                     dense
@@ -1639,7 +1664,11 @@
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
-                        'Введите дату  окончания действия паспорта'
+                        'Введите дату  окончания действия паспорта',
+                        guarantee.Document.GivenDate
+                        ? (val => reverseDate(val) > reverseDate(guarantee.Document.GivenDate) ||
+                        'Неверная дата')
+                        : null
                     ]"
                   >
                     <template v-slot:append>
@@ -1701,13 +1730,17 @@
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
-                  <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.District"
-                    dense
-                    label="Район"
-                  />
+                  <q-select
+                      square
+                      outlined
+                      v-model="guarantee.Address.District"
+                      :options="dictionaries.Districts.items"
+                      dense
+                      label="Район"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
                 </div>
               </div>
 
@@ -1961,13 +1994,25 @@
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
-                  <q-input
+                  <!-- <q-input
                     square
                     outlined
                     v-model="guarantee.Address.District"
                     dense
                     label="Район"
-                  />
+                  />  -->
+
+                  <q-select
+                      square
+                      outlined
+                      v-model="guarantee.Address.District"
+                      :options="dictionaries.Districts.items"
+                      dense
+                      label="Район"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
                 </div>
               </div>
 
@@ -2109,7 +2154,7 @@
               v-if="!fullProfile.Guarantee.Insurance.items.length"
               class="tab-content_title"
             >
-              Данные по стархованию отсутствуют
+              Данные по страхованию отсутствуют
             </h5>
 
             <fieldset
@@ -2248,11 +2293,12 @@
               </div>
             </div>
 
-            <div
-              v-if="!!fullProfile.LoanInfo.LoanProduct"
-              class="row q-col-gutter-md"
-            >
-              <div class="col-4">
+            <div class="row q-col-gutter-md">
+              <!-- если не овердрафт -->
+              <div 
+                v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
+                class="col-4"
+              >
                 <q-select
                   ref="typeRepayment"
                   square
@@ -2260,8 +2306,8 @@
                   v-model="fullProfile.LoanInfo.RepaymentType"
                   :options="profile.options.RepaymentType"
                   dense
-                  label="Тип пошагового кредита"
-                  :rules="[val => !!val || 'Выберите тип пошагового кредита']"
+                  label="Тип графика гашения"
+                  :rules="[val => !!val || 'Выберите тип графика гашения']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -2291,7 +2337,7 @@
                   v-model="fullProfile.LoanInfo.MinInterestRate"
                   dense
                   disable
-                  label="Процентаня ставка по кредиту (минимальная)"
+                  label="Процентная ставка по кредиту (минимальная)"
                   :rules="[
                     val => !!val || 'Введите минимальную процентную ставку'
                   ]"
@@ -2356,7 +2402,8 @@
                   mask="##"
                   lazy-rules
                   :rules="[
-                    val => !!val || 'Введите Удобный срок погашения в мес'
+                    val => !!val || 'Введите удобный срок погашения в мес',
+                    val => val > 0 || 'Неверный срок погашения'
                   ]"
                 />
               </div>
@@ -2505,35 +2552,7 @@
                   class="q-pb-sm"
                 />
               </div>
-              <div class="col-4">
-                <q-input
-                  ref="sellerName"
-                  square
-                  outlined
-                  v-model="fullProfile.LoanInfo.SellerName"
-                  dense
-                  label="Наименование продавца"
-                  lazy-rules
-                  :rules="[val => !!val || 'Введите наименование продавца']"
-                />
-              </div>
-              <div class="col-4">
-                <q-input
-                  ref="productName"
-                  square
-                  outlined
-                  v-model="fullProfile.LoanInfo.ProductName"
-                  dense
-                  label="Наименование товара/работы/услуги"
-                  lazy-rules
-                  :rules="[
-                    val => !!val || 'Введите наименование товара/работы/услуги'
-                  ]"
-                />
-              </div>
-            </div>
 
-            <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
                   ref="sourceFinancs"
@@ -2549,9 +2568,111 @@
                   class="q-pb-sm"
                 />
               </div>
-              <div class="col-4"></div>
-              <div class="col-4"></div>
+
             </div>
+
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+              <div class="row q-col-gutter-md">
+                <div class="col-4">
+                  <q-input
+                    ref="nameProduction"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.consumerLoan.nameProduction"
+                    dense
+                    label="Наименование продавца/производителя товара/работы/услуги"
+                    lazy-rules
+                    :rules="[val => !!val || 'Введите наименование продавца/производителя товара/работы/услуги']"
+                  />
+                </div>
+                <div class="col-4">
+                  <q-input
+                    ref="productName"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.consumerLoan.nameService"
+                    dense
+                    label="Наименование товара/работы/услуги"
+                    lazy-rules
+                    :rules="[
+                      val => !!val || 'Введите наименование товара/работы/услуги'
+                    ]"
+                  />
+                </div>
+              
+                <div class="col-4">
+                  <q-input
+                    ref="nameBankProd"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.consumerLoan.nameBankProd"
+                    dense
+                    label="Наименование банка продавца/производителя товара/работы/услуги"
+                    lazy-rules
+                    :rules="[val => !!val || 'Введите наименование банка продавца/производителя товара/работы/услуги']"
+                  />
+                </div>
+              </div>
+
+              <div class="row q-col-gutter-md">
+                <div class="col-4">
+                  <q-input
+                    ref="billProd"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.consumerLoan.billProd"
+                    dense
+                    label="Расчетный счет продавца/производителя товара/работы/услуги"
+                    lazy-rules
+                    :rules="[val => !!val || 'Введите расчетный счет продавца/производителя товара/работы/услуги']"
+                  />
+                </div>
+                <div class="col-4">
+                  <q-input
+                    ref="agreementNumber"
+                    square
+                    outlined
+                    v-model="fullProfile.LoanInfo.consumerLoan.agreementNumber"
+                    dense
+                    label="Номер договора с продавцом/поставщиком  товара/работы/услуги"
+                    lazy-rules
+                    :rules="[val => !!val || 'Введите номер договора с продавцом/поставщиком  товара/работы/услуги']"
+                  />
+                </div>
+                <div class="col-4">
+                  
+                  <q-input
+                    ref="agreementDate"
+                    outlined
+                    square
+                    dense
+                    label="Дата договора с продавцом/поставщиком товара/работы/услуги"
+                    v-model="fullProfile.LoanInfo.consumerLoan.agreementDate"
+                    mask="##.##.####"
+                    :rules="[
+                      val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги'
+                    ]"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          transition-show="scale"
+                          transition-hide="scale"
+                          ref="qDateContract"
+                        >
+                          <q-date
+                            mask="DD.MM.YYYY"
+                            v-model="fullProfile.LoanInfo.consumerLoan.agreementDate"
+                            @input="() => $refs.qDateContract.hide()"
+                          />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+             
+                </div>
+              </div>
+            </template>
           </div>
         </div>
 
@@ -2738,14 +2859,21 @@
 
         <!-- Print version button-->
         <q-btn
-          type="submit"
+          @click="onSubmit(false)"
           color="primary"
           label="Версия для печати"
           class="q-ml-sm"
         />
 
         <!-- Sent data full form to BPM -->
-        <appSentFullProfile />
+        <!-- <appSentFullProfile /> -->
+
+        <q-btn
+          type="submit"
+          color="primary"
+          label="Оформить кредит"
+          class="q-ml-sm"
+        />
       </form>
 
       <!-- confirm -->
@@ -2869,8 +2997,11 @@ export default {
         2
       );
 
-      this.Customer.MaritalStatus =
-        +this.personalData.familyStatus + 1; // false/true перевожу в число
+      // this.Customer.MaritalStatus =
+      //   +this.personalData.familyStatus + 1; // false/true перевожу в число
+
+      this.Customer.MaritalStatus = this.personalData.familyStatus
+
       this.Customer.hasChildren = this.personalData.children;
       this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
 
@@ -2913,6 +3044,61 @@ export default {
     }
   },
   watch: {
+    "Customer.Document.GivenDate"(val) {
+      if (this.Customer.Document.ExpirationDate) {
+        this.$refs.pasportDateFinish.validate();
+      } 
+    },
+
+    "Customer.Document.ExpirationDate"(val) {
+      if (this.Customer.Document.GivenDate) {
+        this.$refs.pasportDateStart.validate();
+      }
+    },
+
+    "Customer.Relatives.items": {
+      handler: function(val) {
+        val.forEach(i => {
+          if (i.Document.ExpirationDate) {
+            this.$refs.relatives_pasportDateFinish.forEach(i => {
+              i.validate()
+            })
+          }
+          if(i.Document.GivenDate) {
+            this.$refs.relatives_pasportDateStart.forEach(i => {
+              i.validate()
+            })
+          }
+        })
+        // this.$refs.relatives_pasportDateStart.forEach(i => {
+        //   i.validate()
+        // })
+      },
+      deep: true      
+    },
+
+    "fullProfile.Guarantee.RelatedPerson.items": {
+      handler: function(val) {
+        console.log(val)
+        val.forEach(i => {
+          if (i.Document.ExpirationDate) {
+            this.$refs.pasportDateGuaranteesFinish.forEach(i => {
+              i.validate()
+            })
+          }
+          if(i.Document.GivenDate) {
+            this.$refs.pasportDateGuaranteesStart.forEach(i => {
+              i.validate()
+            })
+          }
+        })
+        // this.$refs.relatives_pasportDateStart.forEach(i => {
+        //   i.validate()
+        // })
+      },
+      deep: true      
+    },
+
     "Customer.Email"() {
       if (
         this.Customer.Email !== "" &&
@@ -2970,14 +3156,16 @@ export default {
           idx
         ].GracePeriodMax;
 
-        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
+        // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
+        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
       }
     }
   },
   methods: {
-    async onSubmit() {
+    async onSubmit(submitForm = true) {
+
       console.log("fullProfile", this.$store.state.profile);
-      console.log("submit");
+      console.log("submit", submitForm);
 
       this.$refs.surname.validate();
       this.$refs.name.validate();
@@ -3014,7 +3202,8 @@ export default {
         "relativesPasportNumberValid",
         "relatives_pasportNumber"
       );
-      validFilter(this.$refs, "relativesPasportDateValid", "relatives_pasportDate");
+      validFilter(this.$refs, "relativesPasportDateStartValid", "relatives_pasportDateStart");
+      validFilter(this.$refs, "relativesPasportDateFinishValid", "relatives_pasportDateFinish");
 
       this.$refs.kindOfActivity.validate();
 
@@ -3097,7 +3286,8 @@ export default {
           "pasportNumberGuaranteesValid",
           "pasportNumberGuarantees"
         );
-        validFilter(this.$refs, "pasportDateGuaranteesValid", "pasportDateGuarantees");
+        validFilter(this.$refs, "pasportDateGuaranteesStartValid", "pasportDateGuaranteesStart");
+        validFilter(this.$refs, "pasportDateGuaranteesFinishValid", "pasportDateGuaranteesFinish");
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(this.$refs, "houseNumberGuaranteesValid", "houseNumberGuarantees");
@@ -3113,7 +3303,8 @@ export default {
         validItems(this.$refs, "pinppGuaranteesValid");
         validItems(this.$refs, "pasportSeriesGuaranteesValid");
         validItems(this.$refs, "pasportNumberGuaranteesValid");
-        validItems(this.$refs, "pasportDateGuaranteesValid");
+        validItems(this.$refs, "pasportDateGuaranteesStartValid");
+        validItems(this.$refs, "pasportDateGuaranteesFinishValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
         validItems(this.$refs, "houseNumberGuaranteesValid");
@@ -3170,10 +3361,25 @@ export default {
       // this.$refs.typeCredit.validate();
       this.$refs.initialFee.validate();
       this.$refs.purposeCredit.validate();
-      this.$refs.sellerName.validate();
-      this.$refs.productName.validate();
       this.$refs.sourceFinancs.validate();
-      
+
+      //если потребительский кредит
+      if (this.fullProfile.LoanInfo.LoanProduct == 2) {
+        this.$refs.nameProduction.validate();
+        this.$refs.productName.validate();
+        this.$refs.nameBankProd.validate();
+        this.$refs.billProd.validate();
+        this.$refs.agreementNumber.validate();
+        this.$refs.agreementDate.validate();
+      } else {
+        validItems(this.$refs, "nameProduction");
+        validItems(this.$refs, "productName");
+        validItems(this.$refs, "nameBankProd");
+        validItems(this.$refs, "billProd");
+        validItems(this.$refs, "agreementNumber");
+        validItems(this.$refs, "agreementDate");
+      }
+
       if (!this.fullProfile.AttachedDocuments.items.length) {
         
         this.$refs.uploadFile.validate();
@@ -3208,7 +3414,8 @@ export default {
         this.$refs.relativesBirthdayValid.hasError ||
         this.$refs.relativesPasportSeriesValid.hasError ||
         this.$refs.relativesPasportNumberValid.hasError ||
-        this.$refs.relativesPasportDateValid.hasError ||
+        this.$refs.relativesPasportDateStartValid.hasError ||
+        this.$refs.relativesPasportDateFinishValid.hasError ||
         //kind of activity
         this.$refs.kindOfActivity.hasError ||
         this.$refs.nameOfEmployer.hasError ||
@@ -3245,7 +3452,8 @@ export default {
         this.$refs.pinppGuaranteesValid.hasError ||
         this.$refs.pasportSeriesGuaranteesValid.hasError ||
         this.$refs.pasportNumberGuaranteesValid.hasError ||
-        this.$refs.pasportDateGuaranteesValid.hasError ||
+        this.$refs.pasportDateGuaranteesStartValid.hasError ||
+        this.$refs.pasportDateGuaranteesFinishValid.hasError ||
         this.$refs.regionGuaranteesValid.hasError ||
         this.$refs.streetGuaranteesValid.hasError ||
         this.$refs.houseNumberGuaranteesValid.hasError ||
@@ -3260,15 +3468,98 @@ export default {
         // this.$refs.typeCredit.hasError ||
         this.$refs.initialFee.hasError ||
         this.$refs.purposeCredit.hasError ||
-        this.$refs.sellerName.hasError ||
+       
+        // если потребительский кредит
+        this.$refs.nameProduction.hasError ||
         this.$refs.productName.hasError ||
+        this.$refs.nameBankProd.hasError ||
+        this.$refs.billProd.hasError ||
+        this.$refs.agreementNumber.hasError ||
+        this.$refs.agreementDate.hasError ||
+
         this.$refs.sourceFinancs.hasError ||
         this.$refs.uploadFile.hasError
       ) {
         this.formHasError = true;
         this.bar = true;
       } else {
-        this.profile.confirmCredit = true;
+        
+        if (submitForm) {
+          this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
+        console.log("fullProfile", this.$store.state.profile.fullFormProfile);
+        const {
+          Status,
+          // ApplicationID,
+          // ProtocolNumber,
+          // Number,
+          // Branch,
+          BODecision,
+          // FinalDecision,
+          // Date,
+          BOLogin,
+          // Department,
+          ClientManagerLogin,
+          CreditCommiteeDecisions,
+          Customer,
+          Guarantee,
+          LoanInfo,
+          ApplicationComment,
+          AttachedDocuments,
+        } = this.fullProfile;
+
+        console.log('Customer', Customer)
+        //ClientManagerLogin = "man"
+        Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`
+        Customer.Document.Number = Number(Customer.Document.Number)
+        Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
+        Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
+        //LoanInfo.RepaymentType = Number(LoanInfo.RepaymentType)
+
+        // удалил из объекта - Date!!!
+        const data = {
+          output: [
+            {
+              name: "application",
+              data: {
+                Status,
+                // ApplicationID,
+                // ProtocolNumber,
+                // Number,
+                // Branch,
+                BODecision,
+                // FinalDecision,
+                BOLogin,
+                // Department,
+                ClientManagerLogin,
+                CreditCommiteeDecisions,
+                Customer,
+                Guarantee,
+                LoanInfo,
+                ApplicationComment,
+                AttachedDocuments,
+              },
+            },
+          ],
+        };
+
+        console.log(JSON.stringify(data, null, 2));
+
+        try {
+          const res = await this.$store.dispatch("credits/confirmationCredit", data);
+          console.log("response", JSON.stringify(res, null, 2));
+          //console.log('nextTaskId', res.nextTask.id)
+
+          if (res.nextTask.id) {
+            sessionStorage.removeItem("csrf_token");
+            this.$store.commit('credits/setMessage', 'Credit complete')
+            this.$router.push("/work/credit")
+          } else {
+            throw 'Next task id is undefined'
+          }
+        } catch (error) {}
+        } else {
+          this.profile.confirmCredit = true;
+        }
       }
     },
 
@@ -3495,6 +3786,9 @@ export default {
       this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment})
       this.creditManagerComment = ""
       console.log('comments', this.fullProfile.ApplicationComment)
+    },
+    reverseDate(val) {
+      return val.slice(-4) + val.slice(2, 6) + val.slice(0, 2)
     }
   },
   components: {

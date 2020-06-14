@@ -1,91 +1,50 @@
 <template>
-  <div class="global" ref="global" :style="{height: heightGlobalBlock+'px'}">
-    <div class="left" :style="{width: leftWidth()}">
-      <div v-for="(g, index) in grid()" :key="index" :style="{height: grafBlockHight(g)}">
-        <span>{{formatNum(g)}}</span>
-      </div>
-    </div>
-
-    <div class="content" :style="{height: heightGlobalBlock+'px'}">
-      <div class="centerBlock" v-for="(block, i) in graf" :key="i+block" :style="widthBlock()">
-        <div
-          class="block"
-          v-for="(b, e) in block"
-          :key="e"
-          :style="{height: grafBlockHight(b), width: widthMinBlock(), backgroundColor: bColor(e)}"
-        >
-          <q-tooltip
-            anchor="top middle"
-            self="bottom middle"
-            :offset="[10, 10]"
-          >сумма: {{formatNum(b)}}</q-tooltip>
+  <div class="col fonts">
+    <div class="row q-pb-lg">
+      <div class="col-md-4 colorsTitle">Уведомления</div>
+      <div class="col">
+        <div class="row colors items-end">
+          <div class="col colorg justify-end" v-for="(n, s) in names" :key="s+n">
+            {{n}}
+            <div :style="{background: color[s]}"></div>
+          </div>
         </div>
-        <div v-if="months" class="blockMonth">{{months[i]}}</div>
       </div>
-
-      <div
-        class="gridTable"
-        v-for="(gTab, k) in grid()"
-        :key="k+gTab"
-        :style="{height: gridTableHeight(gTab)}"
-      ></div>
     </div>
 
-    <div v-if="names" class="right">
-      <div class="rightBlock" v-for="(n, s) in names" :key="s+n">
-        <div class="colorBg" :style="{background: color[s]}"></div>
-        <div class="textR">{{n}}</div>
+    <div class="global" ref="global" :style="{height: heightGlobalBlock+'px'}">
+      <div class="content" :style="{height: heightGlobalBlock+'px'}">
+        <div class="centerBlock" v-for="(block, i) in graf" :key="i+block" :style="widthBlock()">
+          <div
+            class="block"
+            v-for="(b, e) in block"
+            :key="e"
+            :style="{height: grafBlockHight(b), width: widthMinBlock(), backgroundColor: bColor(e)}"
+          >
+            <q-tooltip
+              anchor="top middle"
+              self="bottom middle"
+              :offset="[10, 10]"
+            >сумма: {{formatNum(b)}}</q-tooltip>
+          </div>
+          <div v-if="months" class="blockMonth">{{months[i]}}</div>
+        </div>
+
+        <div
+          class="gridTable"
+          v-for="(gTab, k) in grid()"
+          :key="k+gTab"
+          :style="{height: gridTableHeight(gTab)}"
+        ></div>
+      </div>
+
+      <div class="left" :style="{width: leftWidth()}">
+        <div v-for="(g, index) in grid()" :key="index" :style="{height: grafBlockHight(g)}">
+          <span>{{formatNum(g)}}</span>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- <div class="grafGlobal">
-    <div class="text-subtitle2" style="padding-left:80px"><b>{{title}}</b></div>
-    <div class="graf">
-        <div
-        v-for="(g, f) in ggrids"
-        :key="g[f]"
-        :style="ggrid(g)"
-        class="grafGrid">
-            <div>{{formatNum(g)}}</div>
-        </div>
-
-
-        <div
-            class="graf_block"
-            :style="{width: widthBlocks}"
-            v-for="(b, i) in graf"
-            :key="b[i]"
-            >
-            <span class="month">{{months[i]}}</span>
-            <div
-
-                v-for="(o, e) in b"
-                :key="o[e]"
-                :style="blockDiv(o)"
-                :class="b.length > 1? color[e] : color[i]"
-                >
-
-                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-                    сумма: {{formatNum(o)}}
-                </q-tooltip>
-            </div>
-        </div>
-
-        <div class="colors">
-            <div
-                class="row"
-                v-for="(c,e) in names"
-                :key="e"
-            >
-                <div class="col-6 box">
-                    <div :class="color[e]"></div>
-                </div>
-                <div class="col-6">{{c}}</div>
-            </div>
-        </div>
-    </div>
-  </div>-->
 </template>
 
 <script>
@@ -108,7 +67,7 @@ export default {
       ],
       months: null,
       names: null,
-      color: ["red", "green", "grey", "blue", "orange"],
+      color: ["#FF4A4A", "#00FE19", "#8C959A", "#0054FE", "#FDCC0C"],
       heightGlobalBlock: 200
     };
   },
@@ -121,18 +80,6 @@ export default {
   },
 
   methods: {
-    // blockDiv (num){
-    //     const height = num / this.constProc + 'px'
-    //     const width = 100 / this.countNums + '%'
-    //     return `width: ${width}; height: ${height};`
-    // },
-    // ggrid (num) {
-
-    //     const height = num / this.constProc + 'px'
-    //     // console.log(num)
-    //     return `height: ${height};`
-    // },
-
     bColor(num) {
       return this.color[num];
     },
@@ -146,7 +93,7 @@ export default {
     },
     maxNum() {
       let arr = [];
-      //console.log(this.graf.length)
+      console.log(this.graf.length);
       for (let i = 0; i < this.graf.length; i++) {
         for (let e = 0; e < this.graf[i].length; e++) {
           arr.push(this.graf[i][e]);
@@ -210,7 +157,7 @@ export default {
     },
     leftWidth() {
       const num = String(this.maxNum()).length;
-      return Number(num) * 10 + "px";
+      return Number(num) * 5 + "px";
     },
     formatNum(str) {
       str = String(str);
@@ -234,6 +181,33 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: "OpenSans";
+  src: url(../../../../assets/fonts/OpenSans-Regular.ttf);
+}
+.fonts {
+  font-family: "OpenSans";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  color: #20253a;
+}
+.colorsTitle {
+  font-weight: bold;
+  font-size: 15px;
+}
+.colorg {
+  display: flex;
+  align-items: center;
+  justify-content: flex=end;
+}
+.colorg div {
+  width: 10px;
+  height: 10px;
+  background: #000;
+  border-radius: 10px;
+  margin: 0 5px;
+}
 .global {
   width: 100%;
   height: 300px;
@@ -249,7 +223,7 @@ export default {
   align-items: flex-end;
   justify-content: space-around;
   position: relative;
-  border-bottom: 1px #000 solid;
+  border-bottom: 1px #dedede solid;
 }
 .centerBlock {
   display: flex;
@@ -262,17 +236,21 @@ export default {
   height: 50px;
   border-right: 1px #fff solid;
   z-index: 1;
+  border-radius: 10px 10px 0 0;
 }
 .blockMonth {
   position: absolute;
   left: 0;
-  bottom: -20px;
-  font-size: 11px;
+  bottom: -25px;
+  font-size: 13px;
+  color: #9b9eac;
 }
 .left {
   width: 100px;
   position: relative;
   font-size: 11px;
+  margin-left: 5px;
+  color: #9b9eac;
 }
 .left div {
   height: 50px;
@@ -280,7 +258,6 @@ export default {
   right: 0;
   bottom: 0;
   width: 100%;
-  text-align: right;
 }
 .left div span {
   position: relative;
@@ -288,7 +265,7 @@ export default {
   padding-right: 10px;
 }
 .gridTable {
-  border-top: 1px #ccc solid;
+  border-top: 1px dashed #dedede;
   position: absolute;
   left: 0;
   bottom: 0;
@@ -307,69 +284,4 @@ export default {
   height: 15px;
   margin: 0 10px;
 }
-/* .grafGlobal {
-        padding: 20px 0;
-    }
-    .graf {
-        height: 200px;
-        margin: 0 120px 0 80px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: flex-end;
-        border-bottom: 1px #000 solid;
-        position: relative;
-    }
-    .red {background: red;}
-    .green {background: #7cb342;}
-    .grey {background: #9129a3;}
-    .blue {background: #1276c9;}
-    .orange {background: #ff8f00;}
-
-    .graf_block {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-end;
-        width: 20%;
-        position: relative;
-        z-index: 1000;
-    }
-    .graf_block div {
-        width: 30%;
-        height: 50px;
-        border-left: 1px #fff solid;
-    }
-    .grafGrid {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        border-top: 1px #e0e0e0 solid;
-    }
-    .grafGrid div {
-        position: absolute;
-        left: -110px;
-        top: -10px;
-        text-align: right;
-        width: 100px;
-        font-size: 12px;
-    }
-    .month {
-        position: absolute;
-        left: 0;
-        bottom: -20px;
-        font-size: 11px;
-    }
-    .colors {
-        position: absolute;
-        right: -80px;
-        top: 0;
-        font-size: 12px;
-        width: 60px;
-        padding-top: 20px;
-    }
-    .box div {
-        height: 15px;
-        margin: 0 5px 5px 0;
-    } */
 </style>

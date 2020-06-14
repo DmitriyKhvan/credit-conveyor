@@ -8,7 +8,7 @@
       id="eee"
     >
       <q-header reveal elevated class="bg-primary text-white" height-hint="98">
-        <bread-crumb :list="list()" />
+        <!-- <bread-crumb :list="list()" /> -->
         <sub-header-tab :path="path" />
       </q-header>
 
@@ -20,13 +20,13 @@
 </template>
 
 <script>
-import BreadCrumb from "@/components/BreadCrumb";
+// import BreadCrumb from "@/components/BreadCrumb";
 import SubHeaderTab from "@/components/SubHeaderTab";
 
 export default {
   name: "Content",
   components: {
-    BreadCrumb,
+    // BreadCrumb,
     SubHeaderTab
   },
   created() {
