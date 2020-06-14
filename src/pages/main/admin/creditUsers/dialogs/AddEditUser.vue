@@ -191,6 +191,43 @@
             </div>
           </div>
           <div class="row">
+            <template v-if="details.role_name == 'CreditCommitteeMember'">
+              <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-select
+                outlined
+                v-model="details.groups"
+                multiple
+                :options="groups"
+                use-chips
+                stack-label
+                option-value="value"
+                option-label="label"
+                emit-value
+                map-options
+                label="Группа кредитного комитета"
+                @input="$v.details.mfos.$touch()"
+                :rules="[
+                  val => $v.details.mfos.required || 'Введите MFO'
+                ]"
+                lazy-rules
+                options-selected-class="text-deep-orange"
+              >
+                <template v-slot:option="scope">
+                  <q-item
+                    v-bind="scope.itemProps"
+                    v-on="scope.itemEvents"
+                  >
+                    <q-item-section>
+                      <div :class="scope.opt.class">
+                         <q-item-label v-html="scope.opt.label" />
+                      </div>
+                      <!-- <q-item-label caption>{{ scope.opt.description }}</q-item-label> -->
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            </template>
           </div>
         </div>
       </q-card-section>
@@ -229,7 +266,7 @@ export default {
       resultUser: [],
       
       isPwd: true,
-      isLoading: this.filials,
+      isLoading: this.$store.getters["common/getLoading"],
       stateList: [
         { key: "Active", value: 1 },
         { key: "Passive", value: 0 }
@@ -265,7 +302,10 @@ export default {
         role_type: null,
         role_name: null,
         special: null,
-        status: null
+        status: null,
+        is_chairman: true,
+        is_risk_manager: true,
+        groups: []
       }
     };
   },
@@ -295,6 +335,15 @@ export default {
       status: {
         required
       },
+      is_chairman: {
+        required
+      },
+      is_risk_manager: {
+        required
+      },
+      groups: {
+        required
+      }
     }
   },
   props: {

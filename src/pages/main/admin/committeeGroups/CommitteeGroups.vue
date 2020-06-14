@@ -25,10 +25,10 @@ export default {
     return {
       props: {
         caption: this.$t("tables.users._self"),
-        tablePath: "credit/config", // url for list
+        tablePath: "credit/groups", // url for list
         rowId: "id",
-        addEdit: "credit/config", // url
-        delete: "/credit/config", //
+        addEdit: "credit/groups", // url
+        delete: "credit/groups", //
         defaultSort: [],
         excludedColumns: [
           "special"

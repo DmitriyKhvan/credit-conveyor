@@ -554,9 +554,16 @@ export const profile = {
 
     // добавление комментария
     addComment(state, payload) {
-      //console.log('comment', payload)
-
-      state.fullFormProfile[payload.commentBlock].items.push(payload.comment);
+      console.log('comment', payload)
+      if (payload.commentBlock == 'CreditCommiteeDecisions') {
+        const idx = state.fullFormProfile[payload.commentBlock].items.findIndex(i => i.Login == payload.comment.Login)
+        state.fullFormProfile[payload.commentBlock].items[idx] = {
+          ...state.fullFormProfile[payload.commentBlock].items[idx],
+          ...payload.comment
+        }
+      } else {
+        state.fullFormProfile[payload.commentBlock].items.push(payload.comment);
+      }
     },
 
     removeRegistration(state, payload) {

@@ -100,10 +100,10 @@ export const credits = {
 
         const userRole = role.value[0].authority
 
-        commit("setUserRole", userRole)
-
         // запись роли в header запроса
         await dispatch("setHeaderRole", state.roles[userRole]);
+
+        commit("setUserRole", state.roles[userRole])
 
         // запись роли в sessionStore
         sessionStorage.setItem("userRole", state.roles[userRole])
@@ -264,9 +264,14 @@ export const credits = {
 
     async getFile({state, commit, dispatch}, fileData) {
       try {
-        // const file = await dispatch('creatFile', fileData)
-        // const response = await state.bpmService.getFile(file.infos[0].id)
-        const response = await state.bpmService.getFile(346)
+        let response;
+        if (typeof fileData == 'object') {
+          const file = await dispatch('creatFile', fileData)
+          response = await state.bpmService.getFile(file.infos[0].id)
+        } else {
+          response = await state.bpmService.getFile(fileData)
+        }
+        
         const blob = new Blob([response], { type: "application/pdf" })
         return window.URL.createObjectURL(blob)
     

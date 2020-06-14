@@ -232,7 +232,7 @@ export default {
       resultUser: [],
       
       isPwd: true,
-      isLoading: this.filials,
+      isLoading: this.$store.getters["common/getLoading"],
       stateList: [
         { key: "Active", value: 1 },
         { key: "Passive", value: 0 }

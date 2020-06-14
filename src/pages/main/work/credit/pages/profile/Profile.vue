@@ -1458,6 +1458,15 @@
             Гарантии и поручительство
           </h4>
           <div class="tab-content" ref="tabContent">
+            <q-field
+              ref="guaranteesValid"
+              :value="!!guaranteeCount.length"
+              :rules="[
+                val => !!val || 'Добавьте гарантию или поручительство',
+                val => (totalGuaranteesSum - fullProfile.LoanInfo.Sum >= fullProfile.LoanInfo.Sum / 4) ||
+                      'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%'
+              ]"
+            >
             <h5
               v-if="!fullProfile.Guarantee.RelatedPerson.items.length"
               class="tab-content_title"
@@ -1915,6 +1924,7 @@
                 color="red"
                 label="Удалить"
                 @click="
+                  guaranteeCount.splice(0, 1)
                   confirmDeleteItem(
                     'Физ. лицо ' + (index + 1),
                     removeGuarantee,
@@ -1928,7 +1938,7 @@
             <q-btn
               color="primary"
               label="Добавить физ. лицо"
-              @click="addRelatedPerson"
+              @click="addRelatedPerson('RelatedPerson')"
               class="addItem"
             ></q-btn>
 
@@ -2191,6 +2201,7 @@
                 color="red"
                 label="Удалить"
                 @click="
+                  guaranteeCount.splice(0, 1)
                   confirmDeleteItem(
                     'Юр. лицо ' + (index + 1),
                     removeGuarantee,
@@ -2204,7 +2215,7 @@
             <q-btn
               color="primary"
               label="Добавить юр. лицо"
-              @click="addRelatedLegalPerson"
+              @click="addRelatedLegalPerson('RelatedLegalPerson')"
               class="addItem"
             ></q-btn>
 
@@ -2270,6 +2281,7 @@
                 color="red"
                 label="Удалить"
                 @click="
+                  guaranteeCount.splice(0, 1)
                   confirmDeleteItem(
                     'Страхование ' + (index + 1),
                     removeGuarantee,
@@ -2284,9 +2296,10 @@
             <q-btn
               color="primary"
               label="Добавить страхование"
-              @click="addInsurance"
+              @click="addInsurance('Insurance')"
               class="addItem"
             ></q-btn>
+            </q-field>
           </div>
         </div>
 
@@ -3016,6 +3029,8 @@ export default {
         yearsOfIssueVehicle: []
       },
 
+      guaranteeCount: [],
+      totalGuaranteesSum: 0, // сумма всех гарантий и поручительств
       files: [], // для сервера, чтоб не дублировать отправку файла
       filesAll: [], // для фильтрации какие файлы загружены на сервер
 
@@ -3024,7 +3039,7 @@ export default {
   async created() {
     this.$store.commit("profile/resetDataFullFormProfile")
 
-    if (!this.$store.getters["credits/userRole"]) {
+    if (sessionStorage.getItem("csrf_token")) {
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
       this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
@@ -3036,7 +3051,27 @@ export default {
       this.$store.commit("credits/setTaskId", this.taskId);
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
-        console.log('resggggggggggggggggggggg', res)
+        //console.log('resggggggggggggggggggggg', res)
+        const { data } = res.data.input.find(i => i.label == 'application')
+        const uploadedFiles = data.AttachedDocuments.items
+        const guarantees = data.Guarantee
+
+        for (let file of uploadedFiles) {
+          this.filesAll.push({
+            name: "",
+            DocumentName: file.DocumentName,
+            id: file.id,
+            upload: true
+          });
+        }
+
+        for (let guarantee in guarantees) {
+          //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
+          for (let i of guarantees[guarantee].items) {
+            this.guaranteeCount.push("guarantee")
+          }
+        }
+
       } catch (error) {}
     } 
     
@@ -3144,6 +3179,7 @@ export default {
     "fullProfile.Guarantee.RelatedPerson.items": {
       handler: function(val) {
         console.log(val)
+        this.guaranteesValid() //сумма всех гарантий
         val.forEach(i => {
           if (i.Document.ExpirationDate) {
             this.$refs.pasportDateGuaranteesFinish.forEach(i => {
@@ -3159,6 +3195,22 @@ export default {
         // this.$refs.relatives_pasportDateStart.forEach(i => {
         //   i.validate()
         // })
+      },
+      deep: true      
+    },
+
+    "fullProfile.Guarantee.Insurance.items": {
+      handler: function(val) {
+        console.log('Insurance',val)
+        this.guaranteesValid()
+      },
+      deep: true      
+    },
+
+    "fullProfile.Guarantee.RelatedLegalPerson.items": {
+      handler: function(val) {
+        console.log(val)
+        this.guaranteesValid()
       },
       deep: true      
     },
@@ -3468,8 +3520,18 @@ export default {
       } else {
         validItems(this.$refs, "uploadFile");
       }
+
+      if (!this.fullProfile.Guarantee.Insurance.items.length ||
+          !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
+          !this.fullProfile.Guarantee.RelatedPerson.items.length 
+        ) {
+          this.guaranteesValid()
+      } else {
+        validItems(this.$refs, "guaranteesValid");
+        
+      }
       
-      // console.log('files', this.$refs.files);
+      console.log('files', this.$refs.files);
 
       if (
         this.$refs.surname.hasError ||
@@ -3560,7 +3622,8 @@ export default {
         this.$refs.agreementDate.hasError ||
 
         this.$refs.sourceFinancs.hasError ||
-        this.$refs.uploadFile.hasError
+        this.$refs.uploadFile.hasError ||
+        this.$refs.guaranteesValid.hasError
       ) {
         this.formHasError = true;
         this.bar = true;
@@ -3677,15 +3740,18 @@ export default {
       this.$store.commit("profile/addVehicle");
     },
 
-    addInsurance() {
+    addInsurance(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addInsurance");
     },
 
-    addRelatedLegalPerson() {
+    addRelatedLegalPerson(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addRelatedLegalPerson");
     },
 
-    addRelatedPerson() {
+    addRelatedPerson(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addRelatedPerson");
     },
 
@@ -3776,7 +3842,7 @@ export default {
     },
 
     uploadFile(uploadedFiles) {
-      for (var i = 0; i < uploadedFiles.length; i++) {
+      for (let i = 0; i < uploadedFiles.length; i++) {
         this.files.push(uploadedFiles[i]);
         this.filesAll.push({
           name: uploadedFiles[i].name,
@@ -3873,6 +3939,23 @@ export default {
       return val.slice(-4) + val.slice(2, 6) + val.slice(0, 2)
     },
 
+    guaranteesValid() {
+      this.totalGuaranteesSum = 0
+      for (let guarantee of this.fullProfile.Guarantee.Insurance.items) {
+        this.totalGuaranteesSum = this.totalGuaranteesSum + guarantee.Sum
+      }
+
+      for (let guarantee of this.fullProfile.Guarantee.RelatedLegalPerson.items) {
+        this.totalGuaranteesSum = this.totalGuaranteesSum + guarantee.Sum
+      }
+
+      for (let guarantee of this.fullProfile.Guarantee.RelatedPerson.items) {
+        this.totalGuaranteesSum = this.totalGuaranteesSum + guarantee.Sum
+      }
+      console.log('totalGuaranteesSum',this.totalGuaranteesSum)
+      this.$refs.guaranteesValid.validate();
+    },
+
     filterFn (val, update) {
       console.log('filterFn', val)
       // if (val === '') {
@@ -3949,7 +4032,16 @@ export default {
     .tab-content_title {
       font-size: 16px;
       margin: 0 0 10px;
+      color: #212121;
     }
+
+    .q-field--auto-height .q-field__control-container {
+      display: block;
+    }
+
+    // .q-field--auto-height .q-field__control, .q-field--auto-height .q-field__native {
+    //   min-height: 40px;
+    // }
   }
 
   .fieldset_block,
