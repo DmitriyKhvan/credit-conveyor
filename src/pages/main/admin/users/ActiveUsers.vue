@@ -2,14 +2,14 @@
   <div class="q-pa-md">
     <q-table
       title="Treats"
-      :data="data"
+      :data="activeUsers"
       :columns="columns"
       row-key="index"
       selection="single"
       :selected.sync="selected"
     >
       <template v-slot:top>
-        <q-btn color="primary" label="Remove" @click="removeUser" :disable="!isSelected" />
+        <q-btn color="primary" label="Remove" @click="removeUser()" :disable="!isSelected" />
       </template>
     </q-table>
 
@@ -19,7 +19,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-
+import SocketService from "@/services/socket.service";
 export default {
   created() {},
   data() {
@@ -42,20 +42,6 @@ export default {
         { name: "emp_name", label: "Employee Name", field: "emp_name" },
         { name: "socket_id", label: "Socket Id", field: "socket_id" },
         { name: "login_time", label: "Login Time", field: "login_time" }
-      ],
-      data: [
-        {
-          emp_id: 159,
-          emp_name: "namaeee",
-          socket_id: 24,
-          login_time: 4.0
-        },
-        {
-          emp_id: 159,
-          emp_name: "namaeee2",
-          socket_id: 24,
-          login_time: 4.0
-        }
       ]
     };
   },
@@ -70,6 +56,8 @@ export default {
   methods: {
     removeUser() {
       console.log(this.selected);
+      let socketId = this.selected[0].socket_id;
+      SocketService.removeVisitor(socketId);
     }
   }
 };

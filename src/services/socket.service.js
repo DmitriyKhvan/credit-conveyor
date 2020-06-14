@@ -28,6 +28,10 @@ const SocketService = {
     this.runChat(socket, empId)
     //this.runGroup(socket, empId)
     this.runChatList(socket, empId)
+    this.runOnlineUsers(socket);
+    this.runActiveUsers(socket);
+    this.runLogout(socket);
+
     this.runOnline(socket, empId);
 
     socket.emit("chat/all", empId)
@@ -80,16 +84,21 @@ const SocketService = {
     // });
   },
   runOnlineUsers(socket) {
-    socket.on("users/online", users => {
-      let xlength = store.getters["auth/activeUsers"].length;
-      console.length(xlength);
-      usr.index = xlength + 1;
-      store.dispatch("auth/setActiveUsers", usr);
+    socket.on("users/online", userList => {
+      // let xlength = store.getters["auth/activeUsers"].length;
+      // console.length(xlength);
+      // user.index = xlength + 1;
+      //store.dispatch("auth/setActiveUsers", userList);
+      console.log(userList);
     });
   },
   runActiveUsers(socket) {
-    socket.on("users/active", users => {
-      store.dispatch("auth/disconnectActiveUser", users);
+    socket.on("users/active", userList => {
+      //let xlength = store.getters["auth/activeUsers"].length;
+      //user.index = xlength + 1;
+      console.log({ userList });
+
+      store.dispatch("auth/setActiveUsers", userList);
     });
   },
   runOnline(socket, empId) {
@@ -105,6 +114,17 @@ const SocketService = {
     // console.log({ online: data });
     socket.emit("online", data);
   },
+  runLogout(socket) {
+    socket.on('logout', _ => {
+      AuthService.logout();
+    });
+  },
+  // function calls from other files
+  removeVisitor(socketId) {
+    let socket = store.getters["socket/getSocket"];
+    socket.emit('users/remove', socketId);
+  }
+
 };
 
 export default SocketService;
