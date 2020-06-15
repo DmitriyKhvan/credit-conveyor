@@ -47,7 +47,7 @@
             </div>
             </template>
             <template v-else>
-              {{chats}}
+              <!-- {{chats}} -->
               <div
                   v-for="chat in chats"
                   :key="chat.chat_id"
