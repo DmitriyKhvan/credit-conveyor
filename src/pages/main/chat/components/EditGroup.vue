@@ -109,7 +109,7 @@ export default {
         }),
         usersChat(){
           const group = this.chats.find(el => el.chat_id === this.id)
-          return group.members
+          return group.members ? group.members : []
         }
     },
     methods: {
@@ -131,7 +131,8 @@ export default {
       },
       addUser(user){
         if(!this.users.find(el => el.emp_id === user.emp_id) && user.emp_id !== this.emp_id) {
-          let usr = this.usersChat.slice(0)
+          let usr = this.usersChat.lenght !==0 ? this.usersChat.slice(0) : []
+          console.log(user)
           usr.push({name: user.name, emp_id: user.emp_id})
           const arr = {
             chat_id: this.group.chat_id,
@@ -165,36 +166,10 @@ export default {
       this.group = group
       this.users = group.members === null ? [] : group.members
       this.title = group.to_name
-      this.socket.on('group/usr/new', data => {
-        console.log('group/usr/new')
-        this.$store.dispatch('addUserToGroup', data )
-      })
-      this.socket.on('group/usr/joined', data => {
-        console.log('group/usr/joined', data)
-        this.$store.dispatch('addUserToGroup', data )
-      })
-      this.socket.on('group/usr/drop', data => {
-        console.log('group/usr/drop')
-        this.$store.dispatch('deleteChat', data )
-      })
-      this.socket.on('group/usr/left', data => {
-        console.log('group/usr/left', data)
-        console.log(this.chats)
 
-        this.$store.dispatch('delUserGroup', data )
-      })
-      this.socket.on('group/usr/remove', data => {
-        console.log('group/usr/remove')
-        this.$store.dispatch('delUserGroup', data )
-      })
     },
     beforeDestroy(){
-      this.socket.removeListener('group/usr/new')
-      this.socket.removeListener('group/usr/joined')
-      this.socket.removeListener('group/usr/add')
-      this.socket.removeListener('group/usr/remove')
-      this.socket.removeListener('group/usr/drop')
-      this.socket.removeListener('group/usr/left')
+
     }
 }
 </script>

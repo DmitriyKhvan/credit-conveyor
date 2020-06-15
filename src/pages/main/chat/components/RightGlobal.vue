@@ -47,7 +47,7 @@
             </div>
             </template>
             <template v-else>
-              <!-- {{chats}} -->
+              {{chats}}
               <div
                   v-for="chat in chats"
                   :key="chat.chat_id"
@@ -68,22 +68,34 @@
                             v-if="chat.type === 1">
                               online
                           </q-badge>
-                          <div v-if="chat.type === 2 && chat.members !== null">
-                            {{chat.members.length + 1}}  участников
+                          <div v-if="chat.type === 2">
+                            {{chat.members !== null ? chat.members.length + 1 : 0}}  участников
                           </div>
                       </div>
                   </div>
                   <div v-if="chat.type === 2" class="actionsBlock text-right actions self-center">
                     <edit-group :id="chat.chat_id"></edit-group>
                   </div>
-                  <div class="actionsBlock text-right actions self-center">
-                    <q-btn
-                        icon="delete_outline"
-                        color="grey-8"
-                        flat
-                        @click="deleteChat(chat)"
-                    />
-                  </div>
+                  <template v-if="chat.type === 2">
+                    <div v-if="chat.creator === emp_id" class="actionsBlock text-right actions self-center">
+                      <q-btn
+                          icon="delete_outline"
+                          color="grey-8"
+                          flat
+                          @click="deleteChat(chat)"
+                      />
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="actionsBlock text-right actions self-center">
+                      <q-btn
+                          icon="delete_outline"
+                          color="grey-8"
+                          flat
+                          @click="deleteChat(chat)"
+                      />
+                    </div>
+                  </template>
               </div>
             </template>
         </div>
@@ -121,7 +133,7 @@ export default {
     },
     methods:{
         chatName(n){
-          if(n){
+          if(n.length !== 0 && n !== null){
               let arr = n.split(' ')
               let name = arr[0] + ' '
               arr.forEach((el, i) => {
@@ -187,7 +199,8 @@ export default {
     },
     created () {
       this.socket.on("private/create", data => {
-        let name = ''
+        console.log("private/create", data)
+        let name = 'private/create'
         axios
           .get("/emps/info?id="+data.to_uid)
           .then(response => {
@@ -209,26 +222,61 @@ export default {
           });
       })
       this.socket.on("chat/delete", data => {
+        console.log('chat/delete', data)
         this.$store.dispatch('deleteChat', data)
       })
       this.socket.on("group/grp/leave", data => {
         console.log('group/grp/leave')
         this.$store.dispatch('delUserGroup', data)
+
       })
       this.socket.on("group/usr/leave", data => {
         console.log('group/usr/leave')
         this.$store.dispatch('deleteChat', data)
+      })
+
+      this.socket.on('group/usr/new', data => {
+        console.log('group/usr/new')
+        this.$store.dispatch('addUserToGroup', data )
+      })
+      this.socket.on('group/usr/joined', data => {
+        console.log('group/usr/joined', data)
+        this.$store.dispatch('addUserToGroup', data )
+      })
+      this.socket.on('group/usr/drop', data => {
+        console.log('group/usr/drop')
+        this.$store.dispatch('deleteChat', data )
+      })
+      this.socket.on('group/usr/left', data => {
+        console.log('group/usr/left', data)
+
+        this.$store.dispatch('delUserGroup', data )
+        const users = this.chats.find(ch => ch.chat_id === data.chat_id)
+        if(users.members.length === 0) {
+          this.socket.emit("chat/delete", data.chat_id)
+        }
+      })
+      this.socket.on('group/usr/remove', data => {
+        console.log('group/usr/remove')
+        this.$store.dispatch('delUserGroup', data )
       })
     },
     beforeDestroy(){
       this.socket.removeListener('private/create')
       this.socket.removeListener('chat/delete')
       this.socket.removeListener('group/create')
+
+
+
+      this.socket.removeListener('group/grp/leave')
+      this.socket.removeListener('group/usr/leave')
+
       this.socket.removeListener('group/usr/new')
       this.socket.removeListener('group/usr/joined')
       this.socket.removeListener('group/usr/add')
-      this.socket.removeListener('group/grp/leave')
-      this.socket.removeListener('group/usr/leave')
+      this.socket.removeListener('group/usr/remove')
+      this.socket.removeListener('group/usr/drop')
+      this.socket.removeListener('group/usr/left')
     }
 }
 </script>

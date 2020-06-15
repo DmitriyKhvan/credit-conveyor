@@ -105,7 +105,7 @@ export default {
           const chat = this.allChats.find(ch => ch.chat_id === this.chatId)
           if(this.chatId){
             if(chat.type === 2){
-              return chat.members.length + 1
+              return chat.members.length !== null ? chat.members.length + 1 : 0
             } else {
               return '2'
             }
@@ -127,14 +127,17 @@ export default {
             return commonUtils.formattedDate(date);
         },
         chatName(n){
-            let arr = n.split(' ')
-            let name = arr[0] + ' '
-            arr.forEach((el, i) => {
-                if(i !== 0 && i <= 2 && el !=='') {
-                    name += el[0] + '.'
-                }
-            });
-            return name
+          console.log('n')
+          if(n.length !== 0){
+              let arr = n.split(' ')
+              let name = arr[0] + ' '
+              arr.forEach((el, i) => {
+                  if(i !== 0 && i <= 2 && el !=='') {
+                      name += el[0] + '.'
+                  }
+              });
+              return name
+            }
         },
         getUserProfilePhotoUrl(emp_id) {
           return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
@@ -190,8 +193,8 @@ export default {
                 type: el.type,
                 chat_id: el.chat_id,
                 emp_id: this.emp_id,
-                to_uid: el.details[0].emp_id,
-                to_name: el.details[0].name,
+                to_uid: el.details !== null ? el.details[0].emp_id : [],
+                to_name: el.details !== null ? el.details[0].name: [],
                 messages: el.messages !== null ? el.messages : []
               }
             } else {
@@ -199,8 +202,8 @@ export default {
                 type: 2,
                 chat_id: el.chat_id,
                 emp_id: el.creator,
-                to_name: el.details[0].name,
-                members: el.details[0].members,
+                to_name: el.details !== null ? el.details[0].name: [],
+                members: el.details !== null ? el.details[0].members : [],
                 messages: el.messages !== null ? el.messages : []
               }
             }
