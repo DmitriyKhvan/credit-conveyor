@@ -248,11 +248,17 @@
             <div class="row rowForm">
               <div class="col-2 field">Отношение к клиенту</div>
               <div class="col-10 data">
-                {{
-                  dictionaries.FamilyRelation.items.find(
-                    i => i.value == relative.FamilyConnectionType
-                  ).label
-                }}
+                <template
+                  v-if="dictionaries.FamilyRelation.items.find(
+                      i => i.value == relative.FamilyConnectionType
+                    )"
+                >
+                  {{
+                    dictionaries.FamilyRelation.items.find(
+                      i => i.value == relative.FamilyConnectionType
+                    ).label
+                  }}
+                </template>
               </div>
             </div>
 
@@ -1049,13 +1055,18 @@
               >
               <div class="row rowForm">
                 <div class="col-3 field">Наименование документа {{index + 1}}</div>
-                <div class="col-9 data">{{document.DocumentName}}</div>
+                <div class="col-5 data">
+                  {{document.DocumentName}}
+                </div>
+                <div class="col-4 field">
+                  <q-btn color="primary" label="Просмотреть" @click="printFile(document.id)" />
+                </div>
               </div>
 
-              <div class="row rowForm">
+              <!-- <div class="row rowForm">
                 <div class="col-3 field">Скан документа</div>
                 <div class="col-9 data"></div>
-              </div>
+              </div> -->
             </div>
           </template>
 
@@ -1064,17 +1075,25 @@
 
         <h4 class="titleForm">Коментарии</h4>
         <div class="formBlock">
-          <div class="row rowForm">
-            <template v-if="fullProfile.ApplicationComment.items">
-              <div
-                class="col-12 field"
-                v-for="comment of fullProfile.ApplicationComment.items"
-                :key="comment.id"
-              >
-                {{ comment.Comment }}
+          <template v-if="fullProfile.ApplicationComment.items">
+            <div
+              v-for="comment of fullProfile.ApplicationComment.items"
+              :key="comment.id"
+            >
+              <div class="row rowForm">
+                <div
+                  class="col-3 field"
+                >
+                  {{ comment.CommentPerson }}
+                </div>
+                <div class="col-9 data">
+                  {{ comment.Comment }}
+                </div> 
               </div>
-            </template>
-          </div>
+            </div>
+          
+          </template>
+         
         </div>
       </div>
     </div>
@@ -1101,7 +1120,7 @@
         />
       </div>
 
-      <div v-if="userRole === 'CreditCommitteeMember'" class="col-3">
+      <div v-if="userRole === 'CCM'" class="col-3">
         <q-btn
           color="blue"
           label="На доработку"
@@ -1142,13 +1161,34 @@
             /> -->
 
             <!-- <div v-if="reason === options.reason[3]" style="max-width: 100%"> -->
-            <div style="max-width: 100%">
+            <div 
+              v-if="userRole == 'BO'"
+              style="max-width: 100%"
+            >
               <q-input
                 ref="comment"
                 square
                 outlined
                 dense
-                v-model="comment"
+                v-model="commentBO.Comment"
+                label="Комментарий"
+                type="textarea"
+                lazy-rules
+                :rules="[val => !!val || 'Напишите комментарий']"
+                class="q-pb-sm"
+              />
+            </div>
+
+            <div 
+              v-else
+              style="max-width: 100%"
+            >
+              <q-input
+                ref="comment"
+                square
+                outlined
+                dense
+                v-model="commentCC.Comment"
                 label="Комментарий"
                 type="textarea"
                 lazy-rules
@@ -1182,41 +1222,68 @@
       </q-card>
     </q-dialog>
 
+    <div
+      ref="modalView"
+      class="modalView"
+    >
+      <q-btn @click="closeModal" icon="close" color="black" round/>
+      <iframe 
+        ref="pdfviewer" 
+        class="pdfviewer"
+        src="" 
+        type="application/pdf"  
+        width="100%" 
+      >
+      </iframe>
+    </div>
+
+    <apploaderFullScreen v-if="loader"></apploaderFullScreen>
+
   </div>
 </template>
 <script>
 import CommonUtils from "@/shared/utils/CommonUtils";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 import { validItems, validFilter } from "../../filters/valid_filter";
 
 export default {
   data() {
     return {
+      loader: false,
       confirm: false,
-      // reason: "",
-      comment: "",
+      BODecision: true,
+      userRole: this.$store.getters["credits/userRole"],
+
       commentBO: {
-        Comment: this.comment,
+        Comment: "",
         Type: "",
         CommentPerson: this.$store.getters["auth/username"],
         //id: 0,
         //CommentDate: ""
       },
+
       commentCC: {
-        Comment: this.comment,
-        MemberOfCCFIO: "",
+        Comment: "",
+        //MemberOfCCFIO: "",
         Id: 0,
         Login: this.$store.getters["auth/username"],
-        Decision: "Y"
-      }
+        Decision: "Y",
+        isChairman: null,
+        isRiskManager: null
+      },
+
+
+      // reason: "",
       // options: {
       //   reason: ["причина 1", "причина 2", "причина 3", "другое"]
       // }
     };
   },
   async created() {
-    console.log('userRole', this.userRole)
+    console.log('empId', this.$store.getters["auth/empId"])
     console.log('fullProfile', this.fullProfile)
-    if (!this.userRole) {
+    if (sessionStorage.getItem("csrf_token")) {
+      this.userRole = sessionStorage.getItem("userRole");
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
       this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
@@ -1262,26 +1329,20 @@ export default {
     dictionaries() {
       return this.$store.getters["profile/profile"].dictionaries;
     },
-    userRole() {
-      return this.$store.getters["credits/userRole"]
-    }
+    // userRole() {
+    //   return this.$store.getters["credits/userRole"]
+    // }
   },
   methods: {
-    // creditFailure() {
-    //   this.confirm = true;
-    // },
-
     creditSuccess() {
       console.log('userRole', this.userRole)
+      console.log('fulForm', this.fullProfile)
 
-      if (this.userRole == "BackOfficee") {
-        this.fullProfile.BOLogin = this.$store.getters["auth/username"]
-        this.fullProfile.BODecision = true // кредит одобрен 
-        //delete this.fullProfile.ApplicationComment.items[0].CommentDate
-      } else if (this.userRole == "CreditCommitteeMember") {
-          this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment: this.commentCC})
+      if (this.userRole == "BO") {
+        this.BODecision = true // кредит одобрен 
+      } else if (this.userRole == "CCM") {
+        this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment: this.commentCC})
       }
-
       this.sentData('Credit success')
     },
 
@@ -1303,14 +1364,12 @@ export default {
       } else {
         // console.log("creditFailure");
         
-        if (this.userRole == "BackOfficee") {
+        if (this.userRole == "BO") {
 
-          this.fullProfile.BOLogin = this.$store.getters["auth/username"]
-          this.fullProfile.BODecision = false // кредит отклонен
-
+          this.BODecision = false // кредит отклонен
           this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment: this.commentBO})
 
-        } else if (this.userRole == "CreditCommitteeMember") {
+        } else if (this.userRole == "CCM") {
           this.$store.commit("profile/addComment", {commentBlock: "CreditCommiteeDecisions", comment: this.commentCC})
         }
 
@@ -1321,14 +1380,35 @@ export default {
     },
 
     async sentData(message) {
-      const data = {
-        output: [
-          {
-            name: "application",
-            data: this.fullProfile
-          }
-        ]
-      };
+      this.loader = true;
+      let data = {}
+      if (this.userRole == "BO") {
+        data = {
+          output: [
+            {
+              name: "BOLogin",
+              data: this.$store.getters["auth/username"]
+            },
+            {
+              name: "BODecision",
+              data: this.BODecision
+            },
+            {
+              name: "ApplicationComment",
+              data: this.fullProfile.ApplicationComment.items
+            },
+          ]
+        }
+      } else if (this.userRole == "CCM") {
+        data = {
+          output: [
+            {
+              name: "CreditCommiteeDecisions",
+              data: this.fullProfile.CreditCommiteeDecisions.items
+            }
+          ]
+        }
+      }
       
       try {
         console.log('data', JSON.stringify(data, null, 2))
@@ -1342,9 +1422,11 @@ export default {
         } else {
           throw 'Next task id is undefined'
         }
+        this.loader = false;
       } catch (error) {
+        this.loader = false;
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("setMessage", errorMessage);
+        this.$store.commit("credits/setMessage", errorMessage);
         sessionStorage.removeItem("csrf_token");
         // this.$router.push("/work/credit");
       }
@@ -1354,6 +1436,27 @@ export default {
       event.classList.toggle("closeBlock");
       event.nextSibling.classList.toggle("close");
     },
+
+    async printFile(id) {
+      try {
+        const url = await this.$store.dispatch(
+          "credits/getFile",
+          id
+        );
+        this.$refs.modalView.style.display = "block"
+        this.$refs.pdfviewer.setAttribute('height', document.body.clientHeight - 150)
+        this.$refs.pdfviewer.setAttribute('src', url)
+        // printJS(url);
+        // window.URL.revokeObjectURL(url);
+      } catch (error) {}
+    },
+
+    closeModal() {
+      this.$refs.modalView.style.display = "none"
+    }
+  },
+  components: {
+    apploaderFullScreen: LoaderFullScreen
   }
 };
 </script>
@@ -1473,5 +1576,21 @@ export default {
 
 .btn-decision {
   justify-content: center;
+}
+
+.modalView {
+  display: none;
+  position:fixed;
+  top: 48px;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  // overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+
+  button {
+    float: right;
+  }
 }
 </style>

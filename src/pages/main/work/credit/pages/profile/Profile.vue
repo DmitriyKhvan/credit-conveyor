@@ -108,11 +108,10 @@
                   ref="pinpp"
                   square
                   outlined
-                  v-model="Customer.PINPP"
+                  v-model.lazy="Customer.PINPP"
                   dense
                   label="ПИНФЛ"
                   mask="##############"
-                  lazy-rules
                   :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
                 />
               </div>
@@ -125,7 +124,6 @@
                   :options="dictionaries.Gender.items"
                   dense
                   label="Пол"
-                  lazy-rules
                   :rules="[val => !!val || 'Выберите пол']"
                   emit-value
                   map-options
@@ -156,6 +154,7 @@
                   outlined
                   v-model="Customer.Document.Series"
                   dense
+                  lazy-rules
                   label="Серия паспорта"
                   mask="AA"
                   :rules="[
@@ -228,7 +227,6 @@
                   label="Дата окончания действия паспорта"
                   v-model="Customer.Document.ExpirationDate"
                   mask="##.##.####"
-                  lazy-rules
                   :rules="[
                     val =>
                       (val && val.length === 10) ||
@@ -257,6 +255,18 @@
                 </q-input>
               </div>
 
+              <div class="col-4">
+                <q-input
+                  square
+                  outlined
+                  v-model="Customer.Document.GivenPlace"
+                  dense
+                  label="Кем выдан паспорт"
+                />
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
                   ref="education"
@@ -366,8 +376,8 @@
               </legend>
 
               <div class="tab-content" ref="tabContent">
-                <!-- <div
-                  v-if="address.AddressType === 2"
+                <div
+                  v-if="address.AddressType === 'Адрес фактического проживания'"
                   class="row q-col-gutter-md"
                 >
                   <div class="col-4">
@@ -375,7 +385,7 @@
                       square
                       outlined
                       v-model="sameRegistration"
-                      :options="fullProfile.options.confirmation"
+                      :options="profile.options.confirmation"
                       dense
                       label="Совпадает ли с адресом постоянной регистрации"
                       emit-value
@@ -383,7 +393,7 @@
                       class="q-pb-sm"
                     />
                   </div>
-                </div> -->
+                </div>
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -437,6 +447,30 @@
                       map-options
                       class="q-pb-sm"
                     />
+
+                    <!-- <q-select
+                      square
+                      outlined
+                      filled
+                      v-model="address.District"
+                      use-input
+                      input-debounce="0"
+                      label="Район"
+                      :options="dictionaries.Districts.items"
+                      @filter="filterFn"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                      behavior="menu"
+                    >
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            Нет результата
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select> -->
                   </div>
                 </div>
 
@@ -515,7 +549,7 @@
               </div>
 
               <q-btn
-                v-if="address.AddressType !== 'Адрес постоянной регистрации'"
+                v-if="address.AddressType == 'Адрес временной регистрации'"
                 color="red"
                 label="Удалить"
                 @click="
@@ -652,6 +686,7 @@
                     outlined
                     v-model="relative.LastName"
                     dense
+                    lazy-rules
                     label="Фамилия"
                     :rules="[val => !!val || 'Введите фамилию']"
                   />
@@ -690,7 +725,6 @@
                     label="Дата рождения"
                     v-model="relative.BirthDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения'
@@ -758,7 +792,6 @@
                     label="Дата выдачи паспорта"
                     v-model="relative.Document.GivenDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -801,7 +834,6 @@
                     label="Дата окончания действия паспорта"
                     v-model="relative.Document.ExpirationDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -833,6 +865,18 @@
                       </q-icon>
                     </template>
                   </q-input>
+                </div>
+
+                <div class="col-4">
+                  <div class="col-4">
+                    <q-input
+                      square
+                      outlined
+                      v-model="relative.Document.GivenPlace"
+                      dense
+                      label="Кем выдан паспорт"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1410,6 +1454,15 @@
             Гарантии и поручительство
           </h4>
           <div class="tab-content" ref="tabContent">
+            <q-field
+              ref="guaranteesValid"
+              :value="!!guaranteeCount.length"
+              :rules="[
+                val => !!val || 'Добавьте гарантию или поручительство',
+                val => (totalGuaranteesSum - fullProfile.LoanInfo.Sum >= fullProfile.LoanInfo.Sum * 0.25) ||
+                      'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%'
+              ]"
+            >
             <h5
               v-if="!fullProfile.Guarantee.RelatedPerson.items.length"
               class="tab-content_title"
@@ -1505,7 +1558,6 @@
                     label="Дата рождения"
                     v-model="guarantee.BirthDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения'
@@ -1620,7 +1672,6 @@
                     label="Дата выдачи паспорта"
                     v-model="guarantee.Document.GivenDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -1660,7 +1711,6 @@
                     label="Дата окончания действия паспорта"
                     v-model="guarantee.Document.ExpirationDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -1687,6 +1737,16 @@
                       </q-icon>
                     </template>
                   </q-input>
+                </div>
+
+                <div class="col-4">
+                  <q-input
+                    square
+                    outlined
+                    v-model="guarantee.Document.GivenPlace"
+                    dense
+                    label="Кем выдан паспорт"
+                  />
                 </div>
               </div>
 
@@ -1870,7 +1930,7 @@
             <q-btn
               color="primary"
               label="Добавить физ. лицо"
-              @click="addRelatedPerson"
+              @click="addRelatedPerson('RelatedPerson')"
               class="addItem"
             ></q-btn>
 
@@ -2146,7 +2206,7 @@
             <q-btn
               color="primary"
               label="Добавить юр. лицо"
-              @click="addRelatedLegalPerson"
+              @click="addRelatedLegalPerson('RelatedLegalPerson')"
               class="addItem"
             ></q-btn>
 
@@ -2226,9 +2286,10 @@
             <q-btn
               color="primary"
               label="Добавить страхование"
-              @click="addInsurance"
+              @click="addInsurance('Insurance')"
               class="addItem"
             ></q-btn>
+            </q-field>
           </div>
         </div>
 
@@ -2462,7 +2523,7 @@
                   :rules="[
                     val => !!val || 'Введите удобный день погашения',
                     val =>
-                      val > 0 && val < 32 || `Введите удобный день погашения (1-31)`
+                      val > 0 && val < 29 || `Введите удобный день погашения (1-31)`
                   ]"
                 />
               </div>
@@ -2489,7 +2550,9 @@
             </div> -->
 
             <div class="row q-col-gutter-md">
-              <div class="col-4">
+              <div 
+                v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
+                class="col-4">
                 <q-input
                   ref="initialFee"
                   square
@@ -2701,7 +2764,7 @@
                 <div ref="dragover"></div>
                 <q-field
                   ref="uploadFile"
-                  :value="!!filesAll.length"
+                  :value="!!filesAll.find(file => file.id != null)"
                   :rules="[val => !!val || 'Загрузите файлы']"
                 >
                   <div class="uploadFile">
@@ -2920,6 +2983,8 @@
       <!-- credit result -->
       <appFullProfile v-if="profile.confirmCredit" />
     </div>
+
+    <apploaderFullScreen v-if="loader"></apploaderFullScreen>
   </div>
 </template>
 
@@ -2929,6 +2994,7 @@ import UserService from "@/services/user.service";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import SentFullProfile from "./SentFullProfile";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 // import UploadFiles from "./UploadFiles"
 import { validItems, validFilter } from "../../filters/valid_filter"
 
@@ -2938,8 +3004,9 @@ export default {
     return {
       loaderForm: false,
       loaderFile: false,
+      loader: false, // прелодер
       isValid: true, //валидация Email
-      //sameRegistration: "",
+      sameRegistration: null,
       confirm: false,
       // confirmCredit: false,
       itemName: "",
@@ -2956,6 +3023,8 @@ export default {
         yearsOfIssueVehicle: []
       },
 
+      guaranteeCount: [],
+      totalGuaranteesSum: 0, // сумма всех гарантий и поручительств
       files: [], // для сервера, чтоб не дублировать отправку файла
       filesAll: [], // для фильтрации какие файлы загружены на сервер
 
@@ -2964,7 +3033,7 @@ export default {
   async created() {
     this.$store.commit("profile/resetDataFullFormProfile")
 
-    if (!this.$store.getters["credits/userRole"]) {
+    if (sessionStorage.getItem("csrf_token")) {
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
       this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
@@ -2976,7 +3045,27 @@ export default {
       this.$store.commit("credits/setTaskId", this.taskId);
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
-        console.log('res', res)
+        console.log('resggggggggggggggggggggg', res)
+        const { data } = res.data.input.find(i => i.label == 'application')
+        const uploadedFiles = data.AttachedDocuments.items
+        const guarantees = data.Guarantee
+
+        for (let file of uploadedFiles) {
+          this.filesAll.push({
+            name: "",
+            DocumentName: file.DocumentName,
+            id: file.id,
+            upload: true
+          });
+        }
+
+        for (let guarantee in guarantees) {
+          //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
+          for (let i of guarantees[guarantee].items) {
+            this.guaranteeCount.push("guarantee")
+          }
+        }
+
       } catch (error) {}
     } 
     
@@ -3011,6 +3100,10 @@ export default {
       this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
       this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
       this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
+
+      this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
+      this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
+      this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
     }
   },
   computed: {
@@ -3045,12 +3138,14 @@ export default {
   },
   watch: {
     "Customer.Document.GivenDate"(val) {
+      console.log('GivenDate', val)
       if (this.Customer.Document.ExpirationDate) {
         this.$refs.pasportDateFinish.validate();
       } 
     },
 
     "Customer.Document.ExpirationDate"(val) {
+      console.log('ExpirationDate', val)
       if (this.Customer.Document.GivenDate) {
         this.$refs.pasportDateStart.validate();
       }
@@ -3080,6 +3175,7 @@ export default {
     "fullProfile.Guarantee.RelatedPerson.items": {
       handler: function(val) {
         console.log(val)
+        this.guaranteesValid() //сумма всех гарантий
         val.forEach(i => {
           if (i.Document.ExpirationDate) {
             this.$refs.pasportDateGuaranteesFinish.forEach(i => {
@@ -3099,6 +3195,22 @@ export default {
       deep: true      
     },
 
+    "fullProfile.Guarantee.Insurance.items": {
+      handler: function(val) {
+        console.log('Insurance',val)
+        this.guaranteesValid()
+      },
+      deep: true      
+    },
+
+    "fullProfile.Guarantee.RelatedLegalPerson.items": {
+      handler: function(val) {
+        console.log(val)
+        this.guaranteesValid()
+      },
+      deep: true      
+    },
+
     "Customer.Email"() {
       if (
         this.Customer.Email !== "" &&
@@ -3110,17 +3222,37 @@ export default {
       }
     },
 
-    // sameRegistration(flag) {
-    //   if (flag) {
-    //     this.removeRegistration({ item: "2" });
-    //   } else {
-    //     this.addRegistration("2");
-    //   }
-    // },
+    sameRegistration(flag) {
+      if (flag) {
+        this.removeRegistration({ item: "Адрес фактического проживания" });
+        this.sameRegistration = null
+      } 
+      // else {
+      //   this.addRegistration("Адрес фактического проживания");
+      // }
+    },
 
     "fullProfile.LoanInfo.LoanProduct"(credit) {
+      console.log("Аннуит, диффер")
       this.fullProfile.LoanInfo.RepaymentType = null;
       this.profile.options.RepaymentType = [];
+
+      // для синхронизации с Preapprov
+      if (this.personalData.typeStepCredit) {
+        this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
+        this.personalData.typeStepCredit = null
+      }
+
+      this.fullProfile.LoanInfo.consumerLoan = {
+          nameBankProd: "",    // Наименование банка
+          nameService: "",     // Наименование товара/работы/услуги
+          agreementDate: "",   // Дата договора
+          nameProduction: "",  // Наименование продавца
+          billProd: "",        // Расчетный счет продавца
+          agreementNumber: "", // Номер договора
+          idBankProd: 0
+        }
+      this.fullProfile.LoanInfo.InitialPayment = 0
 
       const idx = this.dictionaries.LoanDetails.items.findIndex(
         item => item.LOAN_ID == credit
@@ -3347,19 +3479,10 @@ export default {
       this.$refs.productCredit.validate();
       this.$refs.priceCredit.validate();
 
-      if (this.$refs.productCredit.validate()) {
-        this.$refs.typeRepayment.validate();
-        // console.log('typeRepayment', this.fullProfile.LoanInfo.RepaymentType)
-        // console.log('typeRepayment', this.$refs.typeRepayment.validate())
-      } else {
-        validItems(this.$refs, "typeRepayment");
-      }
-
       // this.$refs.periodRepayment.validate();
       this.$refs.comfortablePeriodRepayment.validate();
       this.$refs.comfortableDayRepayment.validate();
       // this.$refs.typeCredit.validate();
-      this.$refs.initialFee.validate();
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
@@ -3380,14 +3503,33 @@ export default {
         validItems(this.$refs, "agreementDate");
       }
 
+      //если не овердрафт
+      if (!!this.fullProfile.LoanInfo.LoanProduct && this.fullProfile.LoanInfo.LoanProduct !== 3) {
+        this.$refs.typeRepayment.validate();
+        this.$refs.initialFee.validate();
+      } else {
+        validItems(this.$refs, "typeRepayment");
+        validItems(this.$refs, "initialFee");
+      }
+
       if (!this.fullProfile.AttachedDocuments.items.length) {
         
         this.$refs.uploadFile.validate();
       } else {
         validItems(this.$refs, "uploadFile");
       }
+
+      if (!this.fullProfile.Guarantee.Insurance.items.length ||
+          !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
+          !this.fullProfile.Guarantee.RelatedPerson.items.length 
+        ) {
+          this.guaranteesValid()
+      } else {
+        validItems(this.$refs, "guaranteesValid");
+        
+      }
       
-      // console.log('files', this.$refs.files);
+      console.log('files', this.$refs.files);
 
       if (
         this.$refs.surname.hasError ||
@@ -3478,14 +3620,16 @@ export default {
         this.$refs.agreementDate.hasError ||
 
         this.$refs.sourceFinancs.hasError ||
-        this.$refs.uploadFile.hasError
+        this.$refs.uploadFile.hasError ||
+        this.$refs.guaranteesValid.hasError
       ) {
         this.formHasError = true;
         this.bar = true;
       } else {
         
         if (submitForm) {
-          this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
+        this.loader = true;
+        this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
         console.log("fullProfile", this.$store.state.profile.fullFormProfile);
         const {
           Status,
@@ -3556,7 +3700,10 @@ export default {
           } else {
             throw 'Next task id is undefined'
           }
-        } catch (error) {}
+          this.loader = false;
+        } catch (error) {
+          this.loader = false;
+        }
         } else {
           this.profile.confirmCredit = true;
         }
@@ -3595,15 +3742,18 @@ export default {
       this.$store.commit("profile/addVehicle");
     },
 
-    addInsurance() {
+    addInsurance(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addInsurance");
     },
 
-    addRelatedLegalPerson() {
+    addRelatedLegalPerson(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addRelatedLegalPerson");
     },
 
-    addRelatedPerson() {
+    addRelatedPerson(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addRelatedPerson");
     },
 
@@ -3612,6 +3762,7 @@ export default {
     },
 
     removeGuarantee(payload) {
+      this.guaranteeCount.pop()
       this.$store.commit("profile/removeGuarantee", payload);
     },
 
@@ -3694,7 +3845,7 @@ export default {
     },
 
     uploadFile(uploadedFiles) {
-      for (var i = 0; i < uploadedFiles.length; i++) {
+      for (let i = 0; i < uploadedFiles.length; i++) {
         this.files.push(uploadedFiles[i]);
         this.filesAll.push({
           name: uploadedFiles[i].name,
@@ -3789,12 +3940,41 @@ export default {
     },
     reverseDate(val) {
       return val.slice(-4) + val.slice(2, 6) + val.slice(0, 2)
+    },
+
+    guaranteesValid() {
+      this.totalGuaranteesSum = 0
+
+      for (let guarantee in this.fullProfile.Guarantee) {
+        for (let i of this.fullProfile.Guarantee[guarantee].items) {
+          this.totalGuaranteesSum = this.totalGuaranteesSum + i.Sum
+        }
+      }
+
+      console.log('totalGuaranteesSum',this.totalGuaranteesSum)
+      this.$refs.guaranteesValid.validate();
+    },
+
+    filterFn (val, update) {
+      console.log('filterFn', val)
+      // if (val === '') {
+      //   update(() => {
+      //     this.options = stringOptions
+      //   })
+      //   return
+      // }
+
+      // update(() => {
+      //   const needle = val.toLowerCase()
+      //   this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      // })
     }
   },
   components: {
     appLoader: Loader,
     appFullProfile: FullProfile,
     appSentFullProfile: SentFullProfile,
+    apploaderFullScreen: LoaderFullScreen
     // appUploadFiles: UploadFiles
   }
 };
@@ -3852,8 +4032,29 @@ export default {
     .tab-content_title {
       font-size: 16px;
       margin: 0 0 10px;
+      color: #212121;
+    }
+
+    .q-field--auto-height .q-field__control-container {
+      display: block;
     }
   }
+
+  .guarantees {
+      .q-field__control {
+        color: #212121;
+      }
+
+      .q-field--auto-height .q-field__control, .q-field--auto-height, .q-field__native {
+        min-height: 40px;
+      }
+
+      .q-field--standard .q-field__control:after {
+        border-width: 0;
+        height: 0;
+      }
+  }
+
 
   .fieldset_block,
   .legend_title {

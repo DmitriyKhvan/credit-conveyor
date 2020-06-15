@@ -148,7 +148,7 @@ export const profile = {
           Country: "Uzbekistan",
           DocLink: "",
           DocumentName: 0,
-          //GivenPlace: ""
+          GivenPlace: ""
         },
 
         Education: null,
@@ -175,6 +175,20 @@ export const profile = {
               City: "",
               Apartment: "",
               AddressType: "Адрес постоянной регистрации"
+            },
+            {
+              Building: "",
+              OwnershipType: null,
+              HouseType: "",
+              PostalCode: "",
+              Region: null,
+              District: null,
+              Street: "",
+              Block: "",
+              House: "",
+              City: "",
+              Apartment: "",
+              AddressType: "Адрес фактического проживания"
             }
           ]
         },
@@ -201,7 +215,8 @@ export const profile = {
                 GUID: "",
                 Country: "",
                 DocLink: "",
-                DocumentName: 0
+                DocumentName: 0,
+                GivenPlace: ""
               }
             }
           ]
@@ -474,7 +489,8 @@ export const profile = {
           GUID: "",
           Country: "",
           DocLink: "",
-          DocumentName: 0
+          DocumentName: 0,
+          GivenPlace: ""
         },
         ClientRelation: 0,
         PhoneList: {
@@ -484,7 +500,7 @@ export const profile = {
             }
           ]
         },
-        Resident: false,
+        Resident: null,
         LastName: "",
         PINPP: "",
         BirthDate: ""
@@ -527,7 +543,8 @@ export const profile = {
           GUID: "",
           Country: "",
           DocLink: "",
-          DocumentName: 0
+          DocumentName: 0,
+          GivenPlace: ""
         }
       });
     },
@@ -551,9 +568,16 @@ export const profile = {
 
     // добавление комментария
     addComment(state, payload) {
-      //console.log('comment', payload)
-
-      state.fullFormProfile[payload.commentBlock].items.push(payload.comment);
+      console.log('comment', payload)
+      if (payload.commentBlock == 'CreditCommiteeDecisions') {
+        const idx = state.fullFormProfile[payload.commentBlock].items.findIndex(i => i.Login == payload.comment.Login)
+        state.fullFormProfile[payload.commentBlock].items[idx] = {
+          ...state.fullFormProfile[payload.commentBlock].items[idx],
+          ...payload.comment
+        }
+      } else {
+        state.fullFormProfile[payload.commentBlock].items.push(payload.comment);
+      }
     },
 
     removeRegistration(state, payload) {
@@ -668,7 +692,8 @@ export const profile = {
             GUID: "",
             Country: "Uzbekistan",
             DocLink: "",
-            DocumentName: 0
+            DocumentName: 0,
+            GivenPlace: ""
           },
 
           Education: null,
@@ -695,6 +720,20 @@ export const profile = {
                 City: "",
                 Apartment: "",
                 AddressType: "Адрес постоянной регистрации"
+              },
+              {
+                Building: "",
+                OwnershipType: null,
+                HouseType: "",
+                PostalCode: "",
+                Region: null,
+                District: null,
+                Street: "",
+                Block: "",
+                House: "",
+                City: "",
+                Apartment: "",
+                AddressType: "Адрес фактического проживания"
               }
             ]
           },
@@ -721,7 +760,8 @@ export const profile = {
                   GUID: "",
                   Country: "",
                   DocLink: "",
-                  DocumentName: 0
+                  DocumentName: 0,
+                  GivenPlace: ""
                 }
               }
             ]
