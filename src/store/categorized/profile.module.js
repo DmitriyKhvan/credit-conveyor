@@ -175,6 +175,20 @@ export const profile = {
               City: "",
               Apartment: "",
               AddressType: "Адрес постоянной регистрации"
+            },
+            {
+              Building: "",
+              OwnershipType: null,
+              HouseType: "",
+              PostalCode: "",
+              Region: null,
+              District: null,
+              Street: "",
+              Block: "",
+              House: "",
+              City: "",
+              Apartment: "",
+              AddressType: "Адрес фактического проживания"
             }
           ]
         },
@@ -486,7 +500,7 @@ export const profile = {
             }
           ]
         },
-        Resident: false,
+        Resident: null,
         LastName: "",
         PINPP: "",
         BirthDate: ""
@@ -706,6 +720,20 @@ export const profile = {
                 City: "",
                 Apartment: "",
                 AddressType: "Адрес постоянной регистрации"
+              },
+              {
+                Building: "",
+                OwnershipType: null,
+                HouseType: "",
+                PostalCode: "",
+                Region: null,
+                District: null,
+                Street: "",
+                Block: "",
+                House: "",
+                City: "",
+                Apartment: "",
+                AddressType: "Адрес фактического проживания"
               }
             ]
           },

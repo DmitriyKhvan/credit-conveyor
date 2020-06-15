@@ -108,11 +108,10 @@
                   ref="pinpp"
                   square
                   outlined
-                  v-model="Customer.PINPP"
+                  v-model.lazy="Customer.PINPP"
                   dense
                   label="ПИНФЛ"
                   mask="##############"
-                  lazy-rules
                   :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
                 />
               </div>
@@ -125,7 +124,6 @@
                   :options="dictionaries.Gender.items"
                   dense
                   label="Пол"
-                  lazy-rules
                   :rules="[val => !!val || 'Выберите пол']"
                   emit-value
                   map-options
@@ -156,6 +154,7 @@
                   outlined
                   v-model="Customer.Document.Series"
                   dense
+                  lazy-rules
                   label="Серия паспорта"
                   mask="AA"
                   :rules="[
@@ -228,7 +227,6 @@
                   label="Дата окончания действия паспорта"
                   v-model="Customer.Document.ExpirationDate"
                   mask="##.##.####"
-                  lazy-rules
                   :rules="[
                     val =>
                       (val && val.length === 10) ||
@@ -378,8 +376,8 @@
               </legend>
 
               <div class="tab-content" ref="tabContent">
-                <!-- <div
-                  v-if="address.AddressType === 2"
+                <div
+                  v-if="address.AddressType === 'Адрес фактического проживания'"
                   class="row q-col-gutter-md"
                 >
                   <div class="col-4">
@@ -387,7 +385,7 @@
                       square
                       outlined
                       v-model="sameRegistration"
-                      :options="fullProfile.options.confirmation"
+                      :options="profile.options.confirmation"
                       dense
                       label="Совпадает ли с адресом постоянной регистрации"
                       emit-value
@@ -395,7 +393,7 @@
                       class="q-pb-sm"
                     />
                   </div>
-                </div> -->
+                </div>
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -551,7 +549,7 @@
               </div>
 
               <q-btn
-                v-if="address.AddressType !== 'Адрес постоянной регистрации'"
+                v-if="address.AddressType == 'Адрес временной регистрации'"
                 color="red"
                 label="Удалить"
                 @click="
@@ -688,6 +686,7 @@
                     outlined
                     v-model="relative.LastName"
                     dense
+                    lazy-rules
                     label="Фамилия"
                     :rules="[val => !!val || 'Введите фамилию']"
                   />
@@ -726,7 +725,6 @@
                     label="Дата рождения"
                     v-model="relative.BirthDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения'
@@ -794,7 +792,6 @@
                     label="Дата выдачи паспорта"
                     v-model="relative.Document.GivenDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -837,7 +834,6 @@
                     label="Дата окончания действия паспорта"
                     v-model="relative.Document.ExpirationDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -1463,7 +1459,7 @@
               :value="!!guaranteeCount.length"
               :rules="[
                 val => !!val || 'Добавьте гарантию или поручительство',
-                val => (totalGuaranteesSum - fullProfile.LoanInfo.Sum >= fullProfile.LoanInfo.Sum / 4) ||
+                val => (totalGuaranteesSum - fullProfile.LoanInfo.Sum >= fullProfile.LoanInfo.Sum * 0.25) ||
                       'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%'
               ]"
             >
@@ -1562,7 +1558,6 @@
                     label="Дата рождения"
                     v-model="guarantee.BirthDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения'
@@ -1677,7 +1672,6 @@
                     label="Дата выдачи паспорта"
                     v-model="guarantee.Document.GivenDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -1717,7 +1711,6 @@
                     label="Дата окончания действия паспорта"
                     v-model="guarantee.Document.ExpirationDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -1924,7 +1917,6 @@
                 color="red"
                 label="Удалить"
                 @click="
-                  guaranteeCount.splice(0, 1)
                   confirmDeleteItem(
                     'Физ. лицо ' + (index + 1),
                     removeGuarantee,
@@ -2201,7 +2193,6 @@
                 color="red"
                 label="Удалить"
                 @click="
-                  guaranteeCount.splice(0, 1)
                   confirmDeleteItem(
                     'Юр. лицо ' + (index + 1),
                     removeGuarantee,
@@ -2281,7 +2272,6 @@
                 color="red"
                 label="Удалить"
                 @click="
-                  guaranteeCount.splice(0, 1)
                   confirmDeleteItem(
                     'Страхование ' + (index + 1),
                     removeGuarantee,
@@ -2774,7 +2764,7 @@
                 <div ref="dragover"></div>
                 <q-field
                   ref="uploadFile"
-                  :value="!!filesAll.length"
+                  :value="!!filesAll.find(file => file.id != null)"
                   :rules="[val => !!val || 'Загрузите файлы']"
                 >
                   <div class="uploadFile">
@@ -2993,6 +2983,8 @@
       <!-- credit result -->
       <appFullProfile v-if="profile.confirmCredit" />
     </div>
+
+    <apploaderFullScreen v-if="loader"></apploaderFullScreen>
   </div>
 </template>
 
@@ -3002,6 +2994,7 @@ import UserService from "@/services/user.service";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import SentFullProfile from "./SentFullProfile";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 // import UploadFiles from "./UploadFiles"
 import { validItems, validFilter } from "../../filters/valid_filter"
 
@@ -3011,8 +3004,9 @@ export default {
     return {
       loaderForm: false,
       loaderFile: false,
+      loader: false, // прелодер
       isValid: true, //валидация Email
-      //sameRegistration: "",
+      sameRegistration: null,
       confirm: false,
       // confirmCredit: false,
       itemName: "",
@@ -3051,7 +3045,7 @@ export default {
       this.$store.commit("credits/setTaskId", this.taskId);
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
-        //console.log('resggggggggggggggggggggg', res)
+        console.log('resggggggggggggggggggggg', res)
         const { data } = res.data.input.find(i => i.label == 'application')
         const uploadedFiles = data.AttachedDocuments.items
         const guarantees = data.Guarantee
@@ -3144,12 +3138,14 @@ export default {
   },
   watch: {
     "Customer.Document.GivenDate"(val) {
+      console.log('GivenDate', val)
       if (this.Customer.Document.ExpirationDate) {
         this.$refs.pasportDateFinish.validate();
       } 
     },
 
     "Customer.Document.ExpirationDate"(val) {
+      console.log('ExpirationDate', val)
       if (this.Customer.Document.GivenDate) {
         this.$refs.pasportDateStart.validate();
       }
@@ -3226,13 +3222,15 @@ export default {
       }
     },
 
-    // sameRegistration(flag) {
-    //   if (flag) {
-    //     this.removeRegistration({ item: "2" });
-    //   } else {
-    //     this.addRegistration("2");
-    //   }
-    // },
+    sameRegistration(flag) {
+      if (flag) {
+        this.removeRegistration({ item: "Адрес фактического проживания" });
+        this.sameRegistration = null
+      } 
+      // else {
+      //   this.addRegistration("Адрес фактического проживания");
+      // }
+    },
 
     "fullProfile.LoanInfo.LoanProduct"(credit) {
       console.log("Аннуит, диффер")
@@ -3630,7 +3628,8 @@ export default {
       } else {
         
         if (submitForm) {
-          this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
+        this.loader = true;
+        this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
         console.log("fullProfile", this.$store.state.profile.fullFormProfile);
         const {
           Status,
@@ -3701,7 +3700,10 @@ export default {
           } else {
             throw 'Next task id is undefined'
           }
-        } catch (error) {}
+          this.loader = false;
+        } catch (error) {
+          this.loader = false;
+        }
         } else {
           this.profile.confirmCredit = true;
         }
@@ -3760,6 +3762,7 @@ export default {
     },
 
     removeGuarantee(payload) {
+      this.guaranteeCount.pop()
       this.$store.commit("profile/removeGuarantee", payload);
     },
 
@@ -3941,17 +3944,13 @@ export default {
 
     guaranteesValid() {
       this.totalGuaranteesSum = 0
-      for (let guarantee of this.fullProfile.Guarantee.Insurance.items) {
-        this.totalGuaranteesSum = this.totalGuaranteesSum + guarantee.Sum
+
+      for (let guarantee in this.fullProfile.Guarantee) {
+        for (let i of this.fullProfile.Guarantee[guarantee].items) {
+          this.totalGuaranteesSum = this.totalGuaranteesSum + i.Sum
+        }
       }
 
-      for (let guarantee of this.fullProfile.Guarantee.RelatedLegalPerson.items) {
-        this.totalGuaranteesSum = this.totalGuaranteesSum + guarantee.Sum
-      }
-
-      for (let guarantee of this.fullProfile.Guarantee.RelatedPerson.items) {
-        this.totalGuaranteesSum = this.totalGuaranteesSum + guarantee.Sum
-      }
       console.log('totalGuaranteesSum',this.totalGuaranteesSum)
       this.$refs.guaranteesValid.validate();
     },
@@ -3975,6 +3974,7 @@ export default {
     appLoader: Loader,
     appFullProfile: FullProfile,
     appSentFullProfile: SentFullProfile,
+    apploaderFullScreen: LoaderFullScreen
     // appUploadFiles: UploadFiles
   }
 };
@@ -4038,11 +4038,23 @@ export default {
     .q-field--auto-height .q-field__control-container {
       display: block;
     }
-
-    // .q-field--auto-height .q-field__control, .q-field--auto-height .q-field__native {
-    //   min-height: 40px;
-    // }
   }
+
+  .guarantees {
+      .q-field--auto-height .q-field__native {
+        min-height: 40px !important;
+      }
+
+      .q-field--auto-height .q-field__control {
+        min-height: 30px;
+      }
+
+      .q-field--standard .q-field__control:after {
+        border-width: 0;
+        height: 0;
+      }
+  }
+
 
   .fieldset_block,
   .legend_title {

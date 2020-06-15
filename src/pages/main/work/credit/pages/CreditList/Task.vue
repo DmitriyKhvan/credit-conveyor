@@ -1222,15 +1222,34 @@
       </q-card>
     </q-dialog>
 
+    <div
+      ref="modalView"
+      class="modalView"
+    >
+      <q-btn @click="closeModal" icon="close" color="black" round/>
+      <iframe 
+        ref="pdfviewer" 
+        class="pdfviewer"
+        src="" 
+        type="application/pdf"  
+        width="100%" 
+      >
+      </iframe>
+    </div>
+
+    <apploaderFullScreen v-if="loader"></apploaderFullScreen>
+
   </div>
 </template>
 <script>
 import CommonUtils from "@/shared/utils/CommonUtils";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 import { validItems, validFilter } from "../../filters/valid_filter";
 
 export default {
   data() {
     return {
+      loader: false,
       confirm: false,
       BODecision: true,
       userRole: this.$store.getters["credits/userRole"],
@@ -1361,6 +1380,7 @@ export default {
     },
 
     async sentData(message) {
+      this.loader = true;
       let data = {}
       if (this.userRole == "BO") {
         data = {
@@ -1402,7 +1422,9 @@ export default {
         } else {
           throw 'Next task id is undefined'
         }
+        this.loader = false;
       } catch (error) {
+        this.loader = false;
         const errorMessage = CommonUtils.filterServerError(error);
         this.$store.commit("credits/setMessage", errorMessage);
         sessionStorage.removeItem("csrf_token");
@@ -1421,10 +1443,20 @@ export default {
           "credits/getFile",
           id
         );
-        printJS(url);
-        window.URL.revokeObjectURL(url);
+        this.$refs.modalView.style.display = "block"
+        this.$refs.pdfviewer.setAttribute('height', document.body.clientHeight - 150)
+        this.$refs.pdfviewer.setAttribute('src', url)
+        // printJS(url);
+        // window.URL.revokeObjectURL(url);
       } catch (error) {}
+    },
+
+    closeModal() {
+      this.$refs.modalView.style.display = "none"
     }
+  },
+  components: {
+    apploaderFullScreen: LoaderFullScreen
   }
 };
 </script>
@@ -1544,5 +1576,21 @@ export default {
 
 .btn-decision {
   justify-content: center;
+}
+
+.modalView {
+  display: none;
+  position:fixed;
+  top: 48px;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  // overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+
+  button {
+    float: right;
+  }
 }
 </style>

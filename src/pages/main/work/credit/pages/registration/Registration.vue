@@ -84,13 +84,12 @@
                     ref="pinpp"
                     square
                     outlined
-                    v-model="personalData.pinpp"
+                    v-model.lazy="personalData.pinpp"
                     dense
                     :hint="loadMessage"
                     :disable="disableInput"
                     label="ПИНФЛ"
                     mask="##############"
-                    lazy-rules
                     :rules="[
                       val => (val && val.length === 14) || 'Введите ПНФЛ'
                     ]"
