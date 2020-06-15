@@ -12,7 +12,7 @@
 
 <script>
 import GridTable from "@/components/GridTable";
-import AddEditUser from "./dialogs/AddEditUser";
+import AddEditGroup from "./dialogs/AddEditGroup";
 
 // import { Dialog } from "quasar";
 // import ApiService from "@/services/api.service";
@@ -25,10 +25,10 @@ export default {
     return {
       props: {
         caption: this.$t("tables.users._self"),
-        tablePath: "credit/config",
+        tablePath: "credit/groups", // url for list
         rowId: "id",
-        addEdit: "credit/config", // url
-        delete: "/credit/config", //
+        addEdit: "credit/groups", // url
+        delete: "credit/groups", //
         defaultSort: [],
         excludedColumns: [
           "special"
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     addEditRow(selected) {
-      GridService.addEditRecord(AddEditUser, selected, this.props, this)
+      GridService.addEditRecord(AddEditGroup, selected, this.props, this)
         .then(
           ok => {
             if (ok) {

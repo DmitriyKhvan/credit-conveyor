@@ -70,6 +70,9 @@ export const profile = {
       Region: {
         items: []
       },
+      Districts: {
+        items: []
+      },
       jobPeriods: {
         items: []
       },
@@ -144,7 +147,8 @@ export const profile = {
           GUID: "",
           Country: "Uzbekistan",
           DocLink: "",
-          DocumentName: 0
+          DocumentName: 0,
+          GivenPlace: ""
         },
 
         Education: null,
@@ -164,13 +168,27 @@ export const profile = {
               HouseType: "",
               PostalCode: "",
               Region: null,
-              District: "", 
+              District: null,
               Street: "",
               Block: "",
               House: "",
               City: "",
               Apartment: "",
-              AddressType: 'Адрес постоянной регистрации'
+              AddressType: "Адрес постоянной регистрации"
+            },
+            {
+              Building: "",
+              OwnershipType: null,
+              HouseType: "",
+              PostalCode: "",
+              Region: null,
+              District: null,
+              Street: "",
+              Block: "",
+              House: "",
+              City: "",
+              Apartment: "",
+              AddressType: "Адрес фактического проживания"
             }
           ]
         },
@@ -197,7 +215,8 @@ export const profile = {
                 GUID: "",
                 Country: "",
                 DocLink: "",
-                DocumentName: 0
+                DocumentName: 0,
+                GivenPlace: ""
               }
             }
           ]
@@ -279,14 +298,24 @@ export const profile = {
 
         LoanPurpose: null, // Цель кредитования
 
-        SellerName: "", // Наименование продавца
+        //SellerName: "", // Наименование продавца
 
-        ProductName: "", // Наименование товара/работы/услуги
+        //ProductName: "", // Наименование товара/работы/услуги
 
         FundingSource: null, // Источник финансирования
 
         FacilitiesForRepaymentDate: false,
-        //InitialPaymentPercent: 0 
+
+        consumerLoan: {
+          nameBankProd: "",    // Наименование банка
+          nameService: "",     // Наименование товара/работы/услуги
+          agreementDate: "",   // Дата договора
+          nameProduction: "",  // Наименование продавца
+          billProd: "",        // Расчетный счет продавца
+          agreementNumber: "", // Номер договора
+          idBankProd: 0
+        }
+        //InitialPaymentPercent: 0
       },
 
       ApplicationComment: {
@@ -319,29 +348,35 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, {root: true});
+        commit("credits/setMessage", errorMessage, { root: true });
       }
     },
 
     async getFullForm({ state, commit, getters, rootGetters }) {
       try {
-        const response = await state.bpmService.getFullForm(rootGetters["credits/taskId"]);
+        const response = await state.bpmService.getFullForm(
+          rootGetters["credits/taskId"]
+        );
         //console.log('response', response)
 
         if (response.data.input && response.data.input.length) {
-          const fullForm = (response.data.input.find(i => i.label === "application")).data
-          const dictionaries = (response.data.input.find(i => i.label === "inputDictionaries")).data
+          const fullForm = response.data.input.find(
+            i => i.label === "application"
+          ).data;
+          const dictionaries = response.data.input.find(
+            i => i.label === "inputDictionaries"
+          ).data;
 
           commit("setFullForm", fullForm);
           commit("setDictionaries", dictionaries);
         } else {
-          throw "Data is null"
+          throw "Data is null";
         }
 
-        return response
+        return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, {root: true});
+        commit("credits/setMessage", errorMessage, { root: true });
         sessionStorage.removeItem("csrf_token");
         this.$router.push("/work/credit");
       }
@@ -359,7 +394,7 @@ export const profile = {
     },
 
     addPhoneGuarantee(state, payload) {
-      console.log('guaranteePhone', payload)
+      console.log("guaranteePhone", payload);
       state.fullFormProfile.Guarantee[payload.item].items[
         payload.index
       ].PhoneList.items.push({
@@ -376,12 +411,14 @@ export const profile = {
     },
 
     addVehicle(state) {
-      state.fullFormProfile.Customer.PropertyInformation.Transport_new.items.push({
-        transportBrand: "",
-        yearOfRelease: null,
-        VehicleType: null,
-        marketValue: null
-      });
+      state.fullFormProfile.Customer.PropertyInformation.Transport_new.items.push(
+        {
+          transportBrand: "",
+          yearOfRelease: null,
+          VehicleType: null,
+          marketValue: null
+        }
+      );
     },
 
     addInsurance(state) {
@@ -401,7 +438,7 @@ export const profile = {
           PostalCode: "",
           Region: null,
           Street: "",
-          District: "",
+          District: null,
           Block: "",
           House: "",
           City: "",
@@ -418,7 +455,7 @@ export const profile = {
         },
         INN: "",
         Name: "",
-        Sum: 0, 
+        Sum: 0,
         Activity: ""
       });
     },
@@ -432,7 +469,7 @@ export const profile = {
           PostalCode: "",
           Region: null,
           Street: "",
-          District: "", 
+          District: null,
           Block: "",
           House: "",
           City: "",
@@ -452,7 +489,8 @@ export const profile = {
           GUID: "",
           Country: "",
           DocLink: "",
-          DocumentName: 0
+          DocumentName: 0,
+          GivenPlace: ""
         },
         ClientRelation: 0,
         PhoneList: {
@@ -462,7 +500,7 @@ export const profile = {
             }
           ]
         },
-        Resident: false,
+        Resident: null,
         LastName: "",
         PINPP: "",
         BirthDate: ""
@@ -470,11 +508,17 @@ export const profile = {
     },
 
     removeItem(state, payload) {
-      state.fullFormProfile.Customer[payload.item].items.splice(payload.index, 1);
+      state.fullFormProfile.Customer[payload.item].items.splice(
+        payload.index,
+        1
+      );
     },
 
     removeGuarantee(state, payload) {
-      state.fullFormProfile.Guarantee[payload.item].items.splice(payload.index, 1);
+      state.fullFormProfile.Guarantee[payload.item].items.splice(
+        payload.index,
+        1
+      );
     },
 
     removePhoneGuarantee(state, payload) {
@@ -499,7 +543,8 @@ export const profile = {
           GUID: "",
           Country: "",
           DocLink: "",
-          DocumentName: 0
+          DocumentName: 0,
+          GivenPlace: ""
         }
       });
     },
@@ -511,7 +556,7 @@ export const profile = {
         HouseType: "",
         PostalCode: "",
         Region: null,
-        District: "", 
+        District: null,
         Street: "",
         Block: "",
         House: "",
@@ -523,9 +568,16 @@ export const profile = {
 
     // добавление комментария
     addComment(state, payload) {
-      //console.log('comment', payload)
-
-      state.fullFormProfile[payload.commentBlock].items.push(payload.comment)
+      console.log('comment', payload)
+      if (payload.commentBlock == 'CreditCommiteeDecisions') {
+        const idx = state.fullFormProfile[payload.commentBlock].items.findIndex(i => i.Login == payload.comment.Login)
+        state.fullFormProfile[payload.commentBlock].items[idx] = {
+          ...state.fullFormProfile[payload.commentBlock].items[idx],
+          ...payload.comment
+        }
+      } else {
+        state.fullFormProfile[payload.commentBlock].items.push(payload.comment);
+      }
     },
 
     removeRegistration(state, payload) {
@@ -538,18 +590,17 @@ export const profile = {
     },
 
     removeProperty(state, payload) {
-      state.fullFormProfile.Customer.PropertyInformation[payload.item].items.splice(
-        payload.index,
-        1
-      );
+      state.fullFormProfile.Customer.PropertyInformation[
+        payload.item
+      ].items.splice(payload.index, 1);
     },
 
     // setDictionaries(state, dictionaries) {
     //   for (let item in dictionaries) {
     //     for (let value of dictionaries[item].items) {
-          
+
     //       if (!value.value) {
-            
+
     //          for (let i in value) {
     //           // debugger
     //            if (typeof value[i] === 'object' && value[i] != null) {
@@ -572,7 +623,10 @@ export const profile = {
     setDictionaries(state, dictionaries) {
       function objectTransform(dictionaries) {
         for (let item in dictionaries) {
-          if (typeof dictionaries[item] === "object" && dictionaries[item] != null) {
+          if (
+            typeof dictionaries[item] === "object" &&
+            dictionaries[item] != null
+          ) {
             for (let value of dictionaries[item].items) {
               if (!value.value) {
                 objectTransform(value);
@@ -584,9 +638,12 @@ export const profile = {
           }
         }
 
-        return dictionaries
+        return dictionaries;
       }
-      sessionStorage.setItem("dictionaries", JSON.stringify(objectTransform(dictionaries)))
+      sessionStorage.setItem(
+        "dictionaries",
+        JSON.stringify(objectTransform(dictionaries))
+      );
       state.dictionaries = objectTransform(dictionaries);
     },
 
@@ -613,7 +670,7 @@ export const profile = {
             // }
           ]
         },
-  
+
         Customer: {
           DigID: false,
           Email: "",
@@ -626,7 +683,7 @@ export const profile = {
           PINPP: "",
           ResidentFlag: "",
           Gender: null,
-  
+
           Document: {
             Series: "",
             Number: null,
@@ -635,9 +692,10 @@ export const profile = {
             GUID: "",
             Country: "Uzbekistan",
             DocLink: "",
-            DocumentName: 0
+            DocumentName: 0,
+            GivenPlace: ""
           },
-  
+
           Education: null,
           PhoneList: {
             items: [
@@ -646,7 +704,7 @@ export const profile = {
               }
             ]
           },
-  
+
           AddressList: {
             items: [
               {
@@ -655,22 +713,36 @@ export const profile = {
                 HouseType: "",
                 PostalCode: "",
                 Region: null,
-                District: "", 
+                District: null,
                 Street: "",
                 Block: "",
                 House: "",
                 City: "",
                 Apartment: "",
-                AddressType: 'Адрес постоянной регистрации'
+                AddressType: "Адрес постоянной регистрации"
+              },
+              {
+                Building: "",
+                OwnershipType: null,
+                HouseType: "",
+                PostalCode: "",
+                Region: null,
+                District: null,
+                Street: "",
+                Block: "",
+                House: "",
+                City: "",
+                Apartment: "",
+                AddressType: "Адрес фактического проживания"
               }
             ]
           },
-  
+
           MaritalStatus: 0,
           hasChildren: false,
           // "ChildrenNum": 0,
           UnderAgeChildrenNum: 0,
-  
+
           Relatives: {
             items: [
               {
@@ -688,12 +760,13 @@ export const profile = {
                   GUID: "",
                   Country: "",
                   DocLink: "",
-                  DocumentName: 0
+                  DocumentName: 0,
+                  GivenPlace: ""
                 }
               }
             ]
           },
-  
+
           JobInfo: {
             employerActivityType: null, //вид деятельности организации
             positionType: null, // Категория занимаемой должности
@@ -706,7 +779,7 @@ export const profile = {
             type: "", // вид деятельности
             lastJobExperienceMonths: 0 // стаж на последнем месте работы
           },
-  
+
           // eжемесячные расходы
           MonthlyExpenses: {
             recurringExpenses: 0,
@@ -721,7 +794,7 @@ export const profile = {
               sum: 0
             }
           },
-  
+
           PropertyInformation: {
             Realty_new: {
               items: []
@@ -731,7 +804,7 @@ export const profile = {
             }
           }
         },
-  
+
         Guarantee: {
           Insurance: {
             items: []
@@ -743,43 +816,53 @@ export const profile = {
             items: []
           }
         },
-  
+
         LoanInfo: {
           LoanProduct: null, // Кредитный продукт
           Sum: 0, // Запрашиваемая сумма кредита
           Currency: "СУМ", // Валюта
           RepaymentType: null, // Тип графика гашения
           LoanType: null, // Вид кредита
-  
+
           MinInterestRate: 0.0, // Процентаня ставка по кредиту (минимальная)
           MaxInterestRate: 0.0, // Процентная ставка по кредиту (максимальная)
-  
+
           MaxDefferalRepaymentPeriod: 0, // Льготный период по погашению кредита
-  
+
           ConvenientRepaymentTerm: 0, // Удобный день погашения в мес 1 - 31
-  
+
           TermInMonth: 0, //Количество месяцев на кредит (удобный срок погашения в мес)
-  
+
           MaxTermInMonths: 0, // Максимальное количество месяцев на кредит
           MinTermInMonths: 0, // Минимальное количество месяцев на кредит
-  
+
           InitialPayment: 0, // Первоначальный взнос
-  
+
           MaxInitialPaymentPercent: 0.0, // Процент первоначального взноса (максимальный)
           MinInitialPaymentPercent: 0.0, // Процент первоначального взноса (минимальный)
-  
+
           LoanPurpose: null, // Цель кредитования
-  
-          SellerName: "", // Наименование продавца
-  
-          ProductName: "", // Наименование товара/работы/услуги
-  
+
+          // SellerName: "", // Наименование продавца
+
+          // ProductName: "", // Наименование товара/работы/услуги
+
           FundingSource: null, // Источник финансирования
-  
+
           FacilitiesForRepaymentDate: false,
-          //InitialPaymentPercent: 0 
+
+          consumerLoan: {
+            nameBankProd: "",    // Наименование банка
+            nameService: "",     // Наименование товара/работы/услуги
+            agreementDate: "",   // Дата договора
+            nameProduction: "",  // Наименование продавца
+            billProd: "",        // Расчетный счет продавца
+            agreementNumber: "", // Номер договора
+            idBankProd: 0
+          }
+          //InitialPaymentPercent: 0
         },
-  
+
         ApplicationComment: {
           items: [
             // {
@@ -798,7 +881,7 @@ export const profile = {
             // }
           ]
         }
-      }
+      };
     }
   },
   getters: {

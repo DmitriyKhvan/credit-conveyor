@@ -160,7 +160,7 @@
           <td class="text-center number applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -179,7 +179,7 @@
           <td class="text-left applicationNumber applicationRow">
             <router-link
               :to="{
-                name: userRole === 'CreditManager' ? 'Profile' : 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -195,7 +195,7 @@
           <td class="text-left client applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -211,7 +211,7 @@
           <td class="text-left manager applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -227,7 +227,7 @@
           <td class="text-left MFO applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -243,7 +243,7 @@
           <td class="text-left filialName applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -259,7 +259,7 @@
           <td class="text-left taskName applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -275,7 +275,7 @@
           <td class="text-left taskStatus applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -291,7 +291,7 @@
           <td class="text-left date applicationRow">
             <router-link
               :to="{
-                name: 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -310,7 +310,7 @@
               <!-- <q-btn icon="print" @click="printJS(link)" /> -->
               <q-btn icon="cloud_download" @click="downloadFile()" />
 
-              <template v-if="userRole === 'CreditSecretary'">
+              <template v-if="userRole === 'CS'">
                 <q-btn
                   class="full-width"
                   label="Подписать"

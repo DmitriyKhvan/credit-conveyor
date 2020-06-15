@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" class="contentBg">
     <s-header />
     <s-leftbar />
     <s-content />
@@ -8,39 +8,40 @@
 </template>
 
 <script>
-import axios from "axios";
-import store from "../store/index";
 export default {
   components: {
     SHeader: () => import("./Header"),
     SLeftbar: () => import("./Leftbar"),
     SContent: () => import("./Content"),
-    SFooter: () => import("./Footor")
+    SFooter: () => import("./Footor"),
   },
 
   data() {
     return {};
   },
+  beforeCreate: function () {},
   async created() {
-    console.log('main')
-    await this.$store.dispatch("themes/getThemes")
-  }
+    console.log("main");
+    await this.$store.dispatch("themes/getThemes");
+  },
 };
 </script>
 
 <style>
-  @font-face {
-    font-family: 'OpenSans';
-    src: url(../assets/fonts/OpenSans-Regular.ttf);
-  }
+@font-face {
+  font-family: "OpenSans";
+  src: url(../assets/fonts/OpenSans-Regular.ttf);
+}
 
-  body {
-    font-family: 'OpenSans';
-    font-size: 14px;
-  }
+body {
+  font-family: "OpenSans";
+  font-size: 14px;
+}
 
-  p {
-    margin: 0;
-  }
-
+p {
+  margin: 0;
+}
+.contentBg {
+  background: #f5f6fa;
+}
 </style>

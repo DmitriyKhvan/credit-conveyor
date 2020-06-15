@@ -84,13 +84,12 @@
                     ref="pinpp"
                     square
                     outlined
-                    v-model="personalData.pinpp"
+                    v-model.lazy="personalData.pinpp"
                     dense
                     :hint="loadMessage"
                     :disable="disableInput"
                     label="ПИНФЛ"
                     mask="##############"
-                    lazy-rules
                     :rules="[
                       val => (val && val.length === 14) || 'Введите ПНФЛ'
                     ]"
@@ -374,16 +373,7 @@ export default {
       // loaderForm: true,
       loaderPreApproval: false,
       options: {
-        family: [
-          {
-            label: "Нет",
-            value: false
-          },
-          {
-            label: "Женат / замужем",
-            value: true
-          }
-        ],
+        family: [],
         children: [
           {
             label: "Да",
@@ -446,24 +436,30 @@ export default {
       console.log("auth", auth);
       const process = await this.$store.dispatch("credits/startProcess");
       console.log("process", process);
-      // this.$store.commit("setTaskId", process.userTaskCreditDetailed.id);
 
       this.personalData.spouseCost =
-        process.userTaskCreditDetailed.input.spouseCost;
+        (process.userTaskCreditDetailed.input.find(i => i.label == "spouseCost")).data;
       this.personalData.childCost =
-        process.userTaskCreditDetailed.input.childCost;
+        (process.userTaskCreditDetailed.input.find(i => i.label == "childCost")).data;
 
-      for (let typeCredit of process.userTaskCreditDetailed.input.credits) {
+      this.options.family = 
+        (process.userTaskCreditDetailed.input.find(i => i.label == "maritalStatus")).data.items;
+
+      const loan_product_list = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
+      const loan_product_dict = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_dict")
+
+      loan_product_list.data.items.forEach(i => {
+         const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
         const credits = {
-          label: typeCredit.creditName.name,
-          value: typeCredit.creditName.value,
-          period: typeCredit.period,
-          loanRate: typeCredit.loanRateBase,
-          paymentTypes: typeCredit.paymentTypes
+          label: i.label,
+          value: Number(i.value),
+          period: Loan_dict.terms_list.items,
+          loanRate: Loan_dict.loan_rate_base,
+          paymentTypes: Loan_dict.payment_type.items
         };
 
         this.options.typeCredits.push(credits);
-      }
+      })
 
       console.log("typeCredits", this.options.typeCredits);
       this.$store.commit("credits/toggleLoaderForm", false);
@@ -509,14 +505,13 @@ export default {
       );
 
       if (idxCredit !== -1) {
-        for (let typeStepCredits of this.options.typeCredits[idxCredit]
-          .paymentTypes) {
-          const stepCredit = {
-            label: typeStepCredits.name,
-            value: typeStepCredits.value
-          };
-          this.options.typeStepCredits.push(stepCredit);
-        }
+
+        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
 
         this.periodCreditMin = Number(
           this.options.typeCredits[idxCredit].period[0].value
@@ -589,6 +584,20 @@ export default {
         this.formHasError = true;
       } else {
         this.$store.commit("credits/loadMessageChange", "");
+
+        this.credits.confirmCreditData = {
+          output: [
+            {
+              name: "confirm",
+              data: true
+            },
+            {
+              name: "reasons",
+              data: []
+            }
+          ]
+        }
+
         this.loaderPreApproval = true;
         const {
           children,
@@ -620,7 +629,8 @@ export default {
               data: {
                 maritalInfo: {
                   childrens: children,
-                  status: familyStatus,
+                  status: this.options.family.find(i => i.value == familyStatus) ? (this.options.family.find(i => i.value == familyStatus)).label : "",
+                  statusId: Number(familyStatus),
                   childrenCount: Number(childrenCount)
                 },
                 payment_id: Number(typeStepCredit),
