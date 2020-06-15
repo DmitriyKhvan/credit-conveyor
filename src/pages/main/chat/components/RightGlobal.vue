@@ -200,26 +200,33 @@ export default {
     created () {
       this.socket.on("private/create", data => {
         console.log("private/create", data)
-        let name = 'private/create'
-        axios
-          .get("/emps/info?id="+data.to_uid)
-          .then(response => {
-            name = response.data.LAST_NAME +' '+response.data.FIRST_NAME[0]+'. '+response.data.MIDDLE_NAME[0]+'.'
-            const chat = {
-              type: 1,
-              chat_id: data.id,
-              from_uid: data.from_uid,
-              to_uid: data.to_uid,
-              to_name: name,
-              messages: []
-            }
-            this.$store.dispatch('addChat', chat )
-            this.$store.dispatch('setActiveChat', data.id)
-            this.searchUser = ''
-          })
-          .catch(error => {
-              console.log('error')
-          });
+        let chat = {}
+        let name = ''
+        if(data.to_uid !== this.emp_id){
+          name = data.to_name.split(" ")
+          chat = {
+            type: 1,
+            chat_id: data.id,
+            from_uid: data.from_uid,
+            to_uid: data.to_uid,
+            to_name: name[0] +' '+ name[1][0] +'. '+ name[2][0] + '. ',
+            messages: []
+          }
+        } else {
+          name = data.from_name.split(" ")
+          chat = {
+            type: 1,
+            chat_id: data.id,
+            from_uid: data.to_uid,
+            to_uid: data.from_uid,
+            to_name: name[0] +' '+ name[1] +'. '+ name[2] + '. ',
+            messages: []
+          }
+        }
+
+        this.$store.dispatch('addChat', chat )
+        this.$store.dispatch('setActiveChat', data.id)
+        this.searchUser = ''
       })
       this.socket.on("chat/delete", data => {
         console.log('chat/delete', data)
