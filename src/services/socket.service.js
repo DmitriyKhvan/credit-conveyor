@@ -85,19 +85,11 @@ const SocketService = {
   },
   runOnlineUsers(socket) {
     socket.on("users/online", userList => {
-      // let xlength = store.getters["auth/activeUsers"].length;
-      // console.length(xlength);
-      // user.index = xlength + 1;
-      //store.dispatch("auth/setActiveUsers", userList);
-      console.log(userList);
+      store.dispatch("auth/setOnlineUsers", userList);
     });
   },
   runActiveUsers(socket) {
     socket.on("users/active", userList => {
-      //let xlength = store.getters["auth/activeUsers"].length;
-      //user.index = xlength + 1;
-      console.log({ userList });
-
       store.dispatch("auth/setActiveUsers", userList);
     });
   },

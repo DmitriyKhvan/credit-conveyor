@@ -4,11 +4,14 @@
     <q-btn label="create" @click="create()" />
     <q-btn label="leave" @click="leave()" />
     <q-btn label="active" @click="active()" />
+    <q-btn label="isoNline" @click="isUserOnline()" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import UserService from "@/services/user.service";
+
 export default {
   created() {
     console.log(this.socket);
@@ -58,6 +61,10 @@ export default {
     },
     active() {
       this.socket.emit("users/active");
+    },
+    isUserOnline() {
+      let isOnline = UserService.isUserOnline(18073);
+      console.log(isOnline);
     }
   }
 };
