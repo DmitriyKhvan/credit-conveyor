@@ -4041,12 +4041,12 @@ export default {
   }
 
   .guarantees {
-      .q-field--auto-height .q-field__native {
-        min-height: 40px !important;
+      .q-field__control {
+        color: #212121;
       }
 
-      .q-field--auto-height .q-field__control {
-        min-height: 30px;
+      .q-field--auto-height .q-field__control, .q-field--auto-height, .q-field__native {
+        min-height: 40px;
       }
 
       .q-field--standard .q-field__control:after {
