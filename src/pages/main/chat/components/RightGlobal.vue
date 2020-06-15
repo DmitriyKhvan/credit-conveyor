@@ -162,12 +162,15 @@ export default {
           }
         },
         deleteChat(chat){
-          if(chat.type === 1 || chat.emp_id === this.emp_id){
+          if(chat.type === 1){
+            console.log('delete chat click', chat.chat_id)
+            this.socket.emit("chat/delete", chat.chat_id)
+          } else if(chat.emp_id === this.emp_id){
             console.log('delete chat click', chat.chat_id)
             this.socket.emit("chat/delete", chat.chat_id)
           } else {
             console.log('Leav user click', chat.chat_id)
-            this.socket.emit("group/usr/leav", {
+            this.socket.emit("group/usr/leave", {
               chat_id: chat.chat_id,
   	          emp_id: this.emp_id
             })
