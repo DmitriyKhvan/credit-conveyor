@@ -212,6 +212,16 @@
           <div class="row">
             
               <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+<!-- 
+                <q-select
+          filled
+          v-model="modelMultiple"
+          multiple
+          :options="options"
+          use-chips
+          stack-label
+          label="Multiple selection"
+        /> -->
               <q-select
                 outlined
                 v-model="details.groups"
@@ -224,27 +234,13 @@
                 emit-value
                 map-options
                 label="Группа кредитного комитета"
-                @input="$v.details.mfos.$touch()"
+                @input="$v.details.groups.$touch()"
                 :rules="[
-                  val => $v.details.mfos.required || 'Введите MFO'
+                  val => $v.details.groups.required || 'Введите группу кредитного комитета'
                 ]"
                 lazy-rules
                 options-selected-class="text-deep-orange"
-              >
-                <template v-slot:option="scope">
-                  <q-item
-                    v-bind="scope.itemProps"
-                    v-on="scope.itemEvents"
-                  >
-                    <q-item-section>
-                      <div :class="scope.opt.class">
-                         <q-item-label v-html="scope.opt.label" />
-                      </div>
-                      <!-- <q-item-label caption>{{ scope.opt.description }}</q-item-label> -->
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              />
             </div>
             
           </div>
@@ -356,12 +352,12 @@ export default {
       status: {
         required
       },
-      is_chairman: {
-        required
-      },
-      is_risk_manager: {
-        required
-      },
+      // is_chairman: {
+      //   required
+      // },
+      // is_risk_manager: {
+      //   required
+      // },
       groups: {
         required
       }
