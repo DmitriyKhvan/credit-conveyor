@@ -190,18 +190,37 @@
               />
             </div>
           </div>
+
+          <template v-if="details.role_name == 'CreditCommitteeMember'">
           <div class="row">
-            <template v-if="details.role_name == 'CreditCommitteeMember'">
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-checkbox
+                v-model="details.is_chairman"
+                color="secondary"
+                label="is_chairman"
+              />
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-checkbox
+                v-model="details.is_risk_manager"
+                color="secondary"
+                label="is_risk_manager"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            
               <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
               <q-select
                 outlined
                 v-model="details.groups"
                 multiple
-                :options="groups"
+                :options="committeeGroups"
                 use-chips
                 stack-label
-                option-value="value"
-                option-label="label"
+                option-value="id"
+                option-label="name"
                 emit-value
                 map-options
                 label="Группа кредитного комитета"
@@ -227,9 +246,11 @@
                 </template>
               </q-select>
             </div>
-            </template>
+            
           </div>
+          </template>
         </div>
+
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
@@ -268,12 +289,12 @@ export default {
       isPwd: true,
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
-        { key: "Active", value: 1 },
-        { key: "Passive", value: 0 }
+        { key: "Active", value: true },
+        { key: "Passive", value: false }
       ],
        specialList: [
-        { key: "Да", value: 1 },
-        { key: "Нет", value: 0 }
+        { key: "Да", value: true },
+        { key: "Нет", value: false }
       ],
       isValidated: true,
       rolesList: this.$store.getters["dicts/getRolesDict"],
@@ -303,8 +324,8 @@ export default {
         role_name: null,
         special: null,
         status: null,
-        is_chairman: true,
-        is_risk_manager: true,
+        is_chairman: false,
+        is_risk_manager: false,
         groups: []
       }
     };
@@ -364,7 +385,30 @@ export default {
     filials() {
       // console.log(JSON.stringify(this.$store.getters["creditsAdmin/getFilials"], null, 2))
       return this.$store.getters["creditsAdmin/getFilials"]
+    },
+
+    committeeGroups() {
+      return this.$store.getters["creditsAdmin/getCommitteeGroups"]
     }
+  },
+  watch: {
+    "details.mfos"(val) {
+      console.log('mfos', val)
+      // console.log('mfos', this.mfos)
+        try {
+          this.$store.dispatch("creditsAdmin/getCommitteeGroups", val[0])
+        } catch(error) {}
+      
+    },
+
+    // "details.role_name"(val) {
+    //   console.log('role_name', val)
+    //   if (val == 'CreditCommitteeMember') {
+    //     try {
+    //       this.$store.dispatch("creditsAdmin/getCommitteeGroups")
+    //     } catch(error) {}
+    //   }
+    // }
   },
   methods: {
     selUsers () {

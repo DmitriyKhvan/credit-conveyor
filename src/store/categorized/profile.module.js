@@ -357,7 +357,7 @@ export const profile = {
         const response = await state.bpmService.getFullForm(
           rootGetters["credits/taskId"]
         );
-        //console.log('response', response)
+        console.log('response', response)
 
         if (response.data.input && response.data.input.length) {
           const fullForm = response.data.input.find(

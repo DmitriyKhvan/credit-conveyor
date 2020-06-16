@@ -227,7 +227,7 @@
           <td class="text-left MFO applicationRow">
             <router-link
               :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                name: userRole === 'CRM' ? 'Profile' : userRole === 'CCM' ? 'CreditTask' : null,
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -524,7 +524,8 @@ export default {
       try {
         const url = await this.$store.dispatch(
           "credits/getFile",
-          this.fileData
+          // this.fileData
+          556
         );
         let link = document.createElement("a");
         link.href = url;

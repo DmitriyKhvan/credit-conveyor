@@ -398,27 +398,27 @@ export default {
         additIncSourOption: [
           {
             label: "Работа по найму",
-            value: "11"
+            value: 11
           },
           {
             label: "Аренда движимого имущества",
-            value: "12"
+            value: 12
           },
           {
             label: "Аренда недвижимого имущества",
-            value: "13"
+            value: 13
           },
           {
             label: "Предпринимательская деятельность",
-            value: "14"
+            value: 14
           },
           {
             label: "Дивиденды",
-            value: "15"
+            value: 15
           },
           {
             label: "Другое",
-            value: "16"
+            value: 16
           }
         ], //источник дополнительного дохода
 
@@ -443,7 +443,16 @@ export default {
         (process.userTaskCreditDetailed.input.find(i => i.label == "childCost")).data;
 
       this.options.family = 
-        (process.userTaskCreditDetailed.input.find(i => i.label == "maritalStatus")).data.items;
+        (process.userTaskCreditDetailed.input
+        .find(i => i.label == "maritalStatus")).data.items
+        .map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
+
+      console.log('family', this.options.family)
 
       const loan_product_list = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
       const loan_product_dict = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_dict")
