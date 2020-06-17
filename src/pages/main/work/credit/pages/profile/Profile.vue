@@ -413,6 +413,7 @@
                       square
                       outlined
                       v-model="address.Region"
+                      
                       :options="dictionaries.Region.items"
                       dense
                       label="Регион/область"
@@ -1262,6 +1263,7 @@
                     outlined
                     v-model="property.Region"
                     :options="dictionaries.Region.items"
+                    
                     dense
                     label="Регион / область"
                     emit-value
@@ -1769,6 +1771,7 @@
                     outlined
                     v-model="guarantee.Address.Region"
                     :options="dictionaries.Region.items"
+                    @input="onChange($event, index, 'RelatedPerson')"
                     dense
                     label="Регион/область"
                     :rules="[val => !!val || 'Выберите регион/область']"
@@ -3151,6 +3154,16 @@ export default {
       }
     },
 
+    // "Customer.AddressList.items": {
+    //   handler: function(val) {
+    //     console.log(val)
+    //     val.forEach(i => {
+    //       i.Region
+    //     })
+    //   },
+    //   deep: true 
+    // },
+
     "Customer.Relatives.items": {
       handler: function(val) {
         val.forEach(i => {
@@ -3710,6 +3723,10 @@ export default {
       }
     },
 
+    onChange(event, idx, guarantee) {
+            console.log('event', event, idx, guarantee)
+        },
+
     hideDatepickerBirthdayGuarantees() {
       for (let datepicker of this.$refs.qDateBirthdayGuarantees) {
         datepicker.hide();
@@ -3735,7 +3752,7 @@ export default {
     },
 
     addVehicle() {
-      for (let i = 2000; i <= new Date().getFullYear(); i++) {
+      for (let i = 1980; i <= new Date().getFullYear(); i++) {
         this.options.yearsOfIssueVehicle.push(i);
       }
 
