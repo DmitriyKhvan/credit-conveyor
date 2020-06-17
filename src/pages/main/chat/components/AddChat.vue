@@ -40,8 +40,11 @@
                                 <div class="col">
                                     <div class="text-subtitle1" @click="addUser(i)"><b v-html="i.name"></b></div>
                                     <div class="text-caption" @click="addUser(i)">
-                                        <q-badge class="online">
+                                        <q-badge v-if="onlineView(i.emp_id)" class="online">
                                             online
+                                        </q-badge>
+                                        <q-badge v-else class="offline">
+                                            offline
                                         </q-badge>
                                     </div>
                                 </div>
@@ -61,8 +64,11 @@
                                 <div class="col">
                                     <div class="text-subtitle1"><b v-html="i.name"></b></div>
                                     <div class="text-caption">
-                                        <q-badge class="online">
+                                        <q-badge v-if="onlineView(i.emp_id)" class="online">
                                             online
+                                        </q-badge>
+                                        <q-badge v-else class="offline">
+                                            offline
                                         </q-badge>
                                     </div>
                                 </div>
@@ -83,6 +89,7 @@
 </template>
 
 <script>
+import UserService from "@/services/user.service"
 import { mapGetters } from "vuex";
 import axios from "axios"
 export default {
@@ -104,6 +111,9 @@ export default {
         }),
     },
     methods: {
+      onlineView(emp_id){
+        return UserService.isUserOnline(emp_id)
+      },
       getUserProfilePhotoUrl(emp_id) {
         return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
       },
@@ -162,7 +172,7 @@ export default {
           creator_fio: data.creator_fio
         }
         this.$store.dispatch('addChat', chat )
-        this.$store.dispatch('setActiveChat', data.id)
+
         this.users = []
         this.searchUser = ''
         this.result = []
