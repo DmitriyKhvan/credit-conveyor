@@ -157,6 +157,20 @@ export default {
             let chat = chats.find(mes => mes.chat_id === id)
             return chat.messages
           }
+        },
+        countReset(id){
+          const chat = {
+            chat_id: id,
+            emp_id: this.emp_id
+          }
+          axios
+            .post("/chat/resetcount", chat)
+            .then(response => {
+              this.$store.dispatch('delChatCount', id)
+            })
+            .catch(error => {
+              console.log('error')
+            });
         }
     },
     computed: {
@@ -202,7 +216,7 @@ export default {
                 count: el.count,
                 type: 2,
                 chat_id: el.chat_id,
-                emp_id: el.creator,
+                emp_id: el.details !== null ? el.details[0].creator : [],
                 to_name: el.details !== null ? el.details[0].name: [],
                 members: el.details !== null ? el.details[0].members : [],
                 messages: el.messages !== null ? el.messages : []
@@ -216,6 +230,9 @@ export default {
 
       this.socket.on("msg/send", data => {
         this.$store.dispatch('addMessage', data)
+        if(this.chatId === data.chat_id){
+          this.countReset(data.chat_id)
+        }
         if(data.messages[0].from_uid === this.emp_id) {
           this.form.message = ''
         }

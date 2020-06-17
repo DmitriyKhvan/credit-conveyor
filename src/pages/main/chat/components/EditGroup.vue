@@ -76,7 +76,7 @@
                                         </q-badge>
                                     </div>
                                 </div>
-                                <div class="actionsBlock actions self-center">
+                                <div v-if="emp_id === creatorId" class="actionsBlock actions self-center">
                                     <q-btn @click="delUser(i.emp_id)" icon="delete_outline" color="grey-8" flat />
                                 </div>
                             </div>
@@ -117,6 +117,9 @@ export default {
         usersChat(){
           const group = this.chats.find(el => el.chat_id === this.id)
           return group.members ? group.members : []
+        },
+        creatorId(){
+          return this.chats.find(ch => ch.chat_id === this.id).emp_id
         }
     },
     methods: {

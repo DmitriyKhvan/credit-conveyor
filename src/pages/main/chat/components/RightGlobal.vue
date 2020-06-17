@@ -84,7 +84,7 @@
                     <edit-group :id="chat.chat_id"></edit-group>
                   </div>
                   <template v-if="chat.type === 2">
-                    <div v-if="chat.creator === emp_id" class="actionsBlock text-right actions self-center">
+                    <div v-if="chat.emp_id === emp_id" class="actionsBlock text-right actions self-center">
                       <q-btn
                           icon="delete_outline"
                           color="grey-8"
