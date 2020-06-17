@@ -52,6 +52,10 @@ export default {
         delUserGroup(state, payload){
           let chat = state.chats.find(ch => ch.chat_id === payload.chat_id)
           chat.members = chat.members.filter(user => user.emp_id !== payload.emp_id)
+        },
+        delChatCount(state, id){
+          let chat = state.chats.find(ch => ch.chat_id === id)
+          chat.count = 0
         }
     },
     actions: {
@@ -78,6 +82,9 @@ export default {
         },
         delUserGroup({commit}, payload){
           commit('delUserGroup', payload)
+        },
+        delChatCount({commit}, id){
+          commit('delChatCount', id)
         }
     },
     getters: {

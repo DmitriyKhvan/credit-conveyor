@@ -39,8 +39,11 @@
                       <span class="user" v-html="user.name"></span>
                     </b></div>
                     <div class="text-caption">
-                        <q-badge class="online">
+                        <q-badge v-if="onlineView(user.emp_id)" class="online">
                             online
+                        </q-badge>
+                        <q-badge v-else class="offline">
+                            offline
                         </q-badge>
                     </div>
                 </div>
@@ -54,6 +57,7 @@
                   :class="chatId === chat.chat_id ? 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock active' : 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock'"
 
                   >
+                  <div v-if="chat.count !== 0 && chat.count" class="notice">{{chat.count}}</div>
                   <div v-if="chat.type === 1" class="avatarBlock" @click="selectChat(chat.chat_id)">
                       <q-avatar>
                           <img :src="getUserProfilePhotoUrl(chat.to_uid)">
@@ -63,11 +67,14 @@
                       <div v-if="chat.type === 1" class="text-subtitle1"><b v-html="chatName(chat.to_name)"></b></div>
                       <div v-else class="text-subtitle1"><b v-html="chat.to_name"></b></div>
                       <div class="text-caption">
-                          <q-badge
-                            class="online"
-                            v-if="chat.type === 1">
-                              online
-                          </q-badge>
+                          <template v-if="chat.type === 1">
+                            <q-badge v-if="onlineView(chat.to_uid)" class="online">
+                                online
+                            </q-badge>
+                            <q-badge v-else class="offline">
+                                offline
+                            </q-badge>
+                          </template>
                           <div v-if="chat.type === 2">
                             {{chat.members !== null ? chat.members.length + 1 : 0}}  участников
                           </div>
@@ -104,6 +111,7 @@
 </template>
 
 <script>
+import UserService from "@/services/user.service"
 import { mapGetters } from "vuex";
 import axios from "axios"
 import AddChat from './AddChat'
@@ -132,6 +140,9 @@ export default {
         })
     },
     methods:{
+        onlineView(emp_id){
+          return UserService.isUserOnline(emp_id)
+        },
         chatName(n){
           if(n.length !== 0 && n !== null){
               let arr = n.split(' ')
@@ -146,6 +157,19 @@ export default {
         },
         selectChat (id) {
           this.$store.dispatch('setActiveChat', id)
+          const chat = {
+            chat_id: id,
+            emp_id: this.emp_id
+          }
+
+          axios
+              .post("/chat/resetcount", chat)
+              .then(response => {
+                this.$store.dispatch('delChatCount', id)
+              })
+              .catch(error => {
+                console.log('error')
+              });
         },
         setActiveChat(id, toUid){
             if(this.emp_id !== toUid && this.emp_id !== toUid) this.$store.dispatch('setToUid', toUid)
@@ -175,13 +199,11 @@ export default {
         },
         deleteChat(chat){
           if(chat.type === 1){
-            console.log('delete chat click', chat.chat_id)
             this.socket.emit("chat/delete", chat.chat_id)
           } else if(chat.emp_id === this.emp_id){
             console.log('delete chat click', chat.chat_id)
             this.socket.emit("chat/delete", chat.chat_id)
           } else {
-            console.log('Leav user click', chat.chat_id)
             this.socket.emit("group/usr/leave", {
               chat_id: chat.chat_id,
   	          emp_id: this.emp_id
@@ -199,7 +221,6 @@ export default {
     },
     created () {
       this.socket.on("private/create", data => {
-        console.log("private/create", data)
         let chat = {}
         let name = ''
         if(data.to_uid !== this.emp_id){
@@ -225,37 +246,39 @@ export default {
         }
 
         this.$store.dispatch('addChat', chat )
-        this.$store.dispatch('setActiveChat', data.id)
+        // this.$store.dispatch('setActiveChat', data.id)
         this.searchUser = ''
+
+
       })
       this.socket.on("chat/delete", data => {
-        console.log('chat/delete', data)
+        // console.log('chat/delete', data)
         this.$store.dispatch('deleteChat', data)
       })
       this.socket.on("group/grp/leave", data => {
-        console.log('group/grp/leave')
+        // console.log('group/grp/leave')
         this.$store.dispatch('delUserGroup', data)
 
       })
       this.socket.on("group/usr/leave", data => {
-        console.log('group/usr/leave')
+        // console.log('group/usr/leave')
         this.$store.dispatch('deleteChat', data)
       })
 
       this.socket.on('group/usr/new', data => {
-        console.log('group/usr/new')
+        // console.log('group/usr/new')
         this.$store.dispatch('addUserToGroup', data )
       })
       this.socket.on('group/usr/joined', data => {
-        console.log('group/usr/joined', data)
+        // console.log('group/usr/joined', data)
         this.$store.dispatch('addUserToGroup', data )
       })
       this.socket.on('group/usr/drop', data => {
-        console.log('group/usr/drop')
+        // console.log('group/usr/drop')
         this.$store.dispatch('deleteChat', data )
       })
       this.socket.on('group/usr/left', data => {
-        console.log('group/usr/left', data)
+        // console.log('group/usr/left', data)
 
         this.$store.dispatch('delUserGroup', data )
         const users = this.chats.find(ch => ch.chat_id === data.chat_id)
@@ -267,17 +290,14 @@ export default {
         console.log('group/usr/remove')
         this.$store.dispatch('delUserGroup', data )
       })
+
     },
     beforeDestroy(){
       this.socket.removeListener('private/create')
       this.socket.removeListener('chat/delete')
       this.socket.removeListener('group/create')
-
-
-
       this.socket.removeListener('group/grp/leave')
       this.socket.removeListener('group/usr/leave')
-
       this.socket.removeListener('group/usr/new')
       this.socket.removeListener('group/usr/joined')
       this.socket.removeListener('group/usr/add')
@@ -298,7 +318,7 @@ export default {
     .notice {
         position: absolute;
         top: -7px;
-        left: 0;
+        left: 5px;
         background: #FF6868;
         color: #fff;
         text-align: center;

@@ -127,7 +127,6 @@ export default {
             return commonUtils.formattedDate(date);
         },
         chatName(n){
-          console.log('n')
           if(n.length !== 0){
               let arr = n.split(' ')
               let name = arr[0] + ' '
@@ -190,6 +189,7 @@ export default {
             let ch = {}
             if(el.type === 1){
               ch = {
+                count: el.count,
                 type: el.type,
                 chat_id: el.chat_id,
                 emp_id: this.emp_id,
@@ -199,6 +199,7 @@ export default {
               }
             } else {
               ch = {
+                count: el.count,
                 type: 2,
                 chat_id: el.chat_id,
                 emp_id: el.creator,
@@ -218,6 +219,7 @@ export default {
         if(data.messages[0].from_uid === this.emp_id) {
           this.form.message = ''
         }
+        this.socket.emit("chat/all", this.emp_id);
       })
     },
     beforeDestroy(){
