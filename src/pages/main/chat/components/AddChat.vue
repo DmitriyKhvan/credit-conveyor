@@ -172,7 +172,7 @@ export default {
           creator_fio: data.creator_fio
         }
         this.$store.dispatch('addChat', chat )
-        this.$store.dispatch('setActiveChat', data.id)
+
         this.users = []
         this.searchUser = ''
         this.result = []
