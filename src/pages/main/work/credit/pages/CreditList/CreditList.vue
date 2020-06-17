@@ -158,7 +158,11 @@
         <tr v-for="(credit, index) of credits" :key="credit.id">
         <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
           <td class="text-center number applicationRow">
+            <template v-if="userRole === 'CS'" >
+              {{ index + 1 }}
+            </template>
             <router-link
+              v-else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
@@ -177,7 +181,11 @@
           </td>
 
           <td class="text-left applicationNumber applicationRow">
+            <template v-if="userRole === 'CS'" >
+              {{ credit.applicationNumber }}
+            </template>
             <router-link
+              v-else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
@@ -193,7 +201,11 @@
           </td>
 
           <td class="text-left client applicationRow">
+            <template v-if="userRole === 'CS'" >
+              {{ credit.client }}
+            </template>
             <router-link
+              else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
@@ -209,7 +221,11 @@
           </td>
 
           <td class="text-left manager applicationRow">
+            <template v-if="userRole === 'CS'" >
+              Наименование менеджера
+            </template>
             <router-link
+              v-else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
@@ -225,9 +241,13 @@
           </td>
 
           <td class="text-left MFO applicationRow">
+            <template v-if="userRole === 'CS'" >
+              {{ credit.filial }}
+            </template>
             <router-link
+              v-else
               :to="{
-                name: userRole === 'CRM' ? 'Profile' : userRole === 'CCM' ? 'CreditTask' : null,
+                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
                 query: {
                   taskId: credit.taskId,
@@ -241,7 +261,11 @@
           </td>
 
           <td class="text-left filialName applicationRow">
+            <template v-if="userRole === 'CS'" >
+              {{ credit.filialName }}
+            </template>
             <router-link
+              v-else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
@@ -257,7 +281,11 @@
           </td>
 
           <td class="text-left taskName applicationRow">
+            <template v-if="userRole === 'CS'" >
+              {{ credit.taskName }}
+            </template>
             <router-link
+              v-else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
@@ -273,7 +301,11 @@
           </td>
 
           <td class="text-left taskStatus applicationRow">
+            <template v-if="userRole === 'CS'" >
+              {{ credit.taskStatus }}
+            </template>
             <router-link
+              v-else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
@@ -289,7 +321,11 @@
           </td>
 
           <td class="text-left date applicationRow">
+            <template v-if="userRole === 'CS'" >
+              {{ credit.date }}
+            </template>
             <router-link
+              v-else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },

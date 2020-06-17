@@ -21,7 +21,7 @@
                   outlined
                   placeholder="Поиск пользователя"  
                   :rules="[
-                    val => $v.details.fio.required || 'Добавьте пользователя'
+                    val => $v.details.emp_name.required || 'Добавьте пользователя'
                   ]"
                   lazy-rules      
               >
@@ -208,20 +208,13 @@
               />
             </div>
           </div>
+          </template>
 
+          <template v-if="details.role_name == 'CreditCommitteeMember' || details.role_name == 'CreditSecretary'">
           <div class="row">
             
               <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
-<!-- 
-                <q-select
-          filled
-          v-model="modelMultiple"
-          multiple
-          :options="options"
-          use-chips
-          stack-label
-          label="Multiple selection"
-        /> -->
+
               <q-select
                 outlined
                 v-model="details.groups"
@@ -235,9 +228,6 @@
                 map-options
                 label="Группа кредитного комитета"
                 @input="$v.details.groups.$touch()"
-                :rules="[
-                  val => $v.details.groups.required || 'Введите группу кредитного комитета'
-                ]"
                 lazy-rules
                 options-selected-class="text-deep-orange"
               />
@@ -312,7 +302,7 @@ export default {
       details: {
         id: null,
         emp_id: null,
-        fio: "",
+        emp_name: "",
         mfos: [],
         amount_min: "",
         amount_max: "",
@@ -330,7 +320,7 @@ export default {
     details: {
       id: {},
       emp_id: {},
-      fio: {
+      emp_name: {
         required,
         minLength: minLength(3)
       },
@@ -358,9 +348,9 @@ export default {
       // is_risk_manager: {
       //   required
       // },
-      groups: {
-        required
-      }
+      // groups: {
+      //   required
+      // }
     }
   },
   props: {
@@ -373,6 +363,7 @@ export default {
   },
   mixins: [dialogMix],
   created() {
+    this.searchUser = this.details.emp_name
     try {
       this.$store.dispatch("creditsAdmin/getFilials")
     } catch(error) {}
@@ -422,10 +413,11 @@ export default {
     userCliked(user) {
       console.log('user',user)
       this.details.emp_id = user.emp_id
-      this.details.fio = user.fio
+      this.details.emp_name = user.fio
       this.details.role_name = user.role_name
       this.details.role_type = user.role_type
       if (user.mfo) {
+        this.details.mfos = []
         this.details.mfos.push(user.mfo)
       } else {
         this.details.mfos = user.mfos
@@ -439,7 +431,7 @@ export default {
       this.resultUser = []
       this.searchUser = null
       this.details.emp_id = null
-      this.details.fio = null
+      this.details.emp_name = null
     },
 
     // filterFn (val, update, abort) {

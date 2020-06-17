@@ -621,8 +621,10 @@ export const profile = {
     // },
 
     setDictionaries(state, dictionaries) {
+      
       function objectTransform(dictionaries) {
         for (let item in dictionaries) {
+          if(item == "Branches") continue
           if (
             typeof dictionaries[item] === "object" &&
             dictionaries[item] != null
