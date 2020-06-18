@@ -106,6 +106,7 @@
 <script>
 import formatNumber from "../../filters/format_number.js";
 import CommonUtils from "@/shared/utils/CommonUtils";
+// import LoaderFullScreen from "@/components/LoaderFullScreen";
 import printJS from "print-js";
 
 export default {
@@ -163,6 +164,7 @@ export default {
     },
     
     async failureCredit() {
+      this.$emit('loader', true)
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
@@ -179,6 +181,8 @@ export default {
           const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
           console.log('res', res)
           if (res.requestedTask.state === "completed") {
+            this.$emit('loader', false)
+            this.$store.commit("credits/setMessage", "Credit failure");
             sessionStorage.removeItem("csrf_token");
             this.$router.push("/work/credit");
           } else {

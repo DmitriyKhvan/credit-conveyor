@@ -348,9 +348,9 @@ export default {
       // is_risk_manager: {
       //   required
       // },
-      // groups: {
-      //   required
-      // }
+      groups: {
+        required
+      }
     }
   },
   props: {

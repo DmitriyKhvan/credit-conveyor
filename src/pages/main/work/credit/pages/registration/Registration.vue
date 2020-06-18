@@ -199,9 +199,10 @@
           <div class="col-5">
             <!-- Family status -->
             <div class="family-status tab">
-              <h4 class="tab-title" ref="familyStatus">Семейное положение</h4>
+              <h4 class="tab-title">Семейное положение</h4>
               <div class="tab-content q-col-gutter-md" ref="tabContent">
                 <q-select
+                  ref="familyStatus"
                   square
                   outlined
                   v-model="personalData.familyStatus"
@@ -210,6 +211,7 @@
                   label="Семейное положения"
                   emit-value
                   map-options
+                  :rules="[val => !!val || 'Выберите семейное положение']"
                 />
                 <q-select
                   square
@@ -345,7 +347,7 @@
 
       <apploaderFullScreen v-if="loaderPreApproval"></apploaderFullScreen>
       <!-- Pre-Approval -->
-      <app-pre-approval v-else></app-pre-approval>
+      <app-pre-approval @loader="($event) => loaderPreApproval = $event"  v-else></app-pre-approval>
     </div>
   </div>
 </template>
@@ -454,10 +456,10 @@ export default {
 
       console.log('family', this.options.family)
 
-      const loan_product_list = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
+      const loan_product_listt = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
       const loan_product_dict = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_dict")
 
-      loan_product_list.data.items.forEach(i => {
+      loan_product_listt.data.items.forEach(i => {
          const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
         const credits = {
           label: i.label,
@@ -572,6 +574,7 @@ export default {
         validItems(this.$refs, "typeStepCredit");
       }
 
+      this.$refs.familyStatus.validate();
       this.$refs.income.validate();
       this.$refs.expense.validate();
       this.$refs.otherExpenses.validate();
@@ -586,6 +589,7 @@ export default {
         this.$refs.pasport.hasError ||
         this.$refs.typeCredit.hasError ||
         this.$refs.typeStepCredit.hasError ||
+        this.$refs.familyStatus.hasError ||
         this.$refs.income.hasError ||
         this.$refs.expense.hasError ||
         this.$refs.otherExpenses.hasError
@@ -704,7 +708,13 @@ export default {
           this.loaderPreApproval = false;
         }
       }
-    }
+    },
+
+    // Не устроил кредит
+    // toggleLoader(val) {
+    //   console.log(val)
+    //   this.loaderPreApproval = val
+    // }
   },
   components: {
     appPreApproval: PreApproval,

@@ -174,7 +174,8 @@ export const profile = {
               House: "",
               City: "",
               Apartment: "",
-              AddressType: "Адрес постоянной регистрации"
+              AddressType: "Адрес постоянной регистрации",
+              Districts: []
             },
             {
               Building: "",
@@ -188,7 +189,8 @@ export const profile = {
               House: "",
               City: "",
               Apartment: "",
-              AddressType: "Адрес фактического проживания"
+              AddressType: "Адрес фактического проживания",
+              Districts: []
             }
           ]
         },
@@ -377,7 +379,8 @@ export const profile = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
-        sessionStorage.removeItem("csrf_token");
+        // sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     }
@@ -456,7 +459,8 @@ export const profile = {
         INN: "",
         Name: "",
         Sum: 0,
-        Activity: ""
+        Activity: "",
+        Districts: []
       });
     },
 
@@ -503,8 +507,19 @@ export const profile = {
         Resident: null,
         LastName: "",
         PINPP: "",
-        BirthDate: ""
+        BirthDate: "",
+        Districts: []
       });
+    },
+
+    setDistricts(state, payload) {
+      state.fullFormProfile.Customer[payload.item].items[payload.idx].District = null
+      state.fullFormProfile.Customer[payload.item].items[payload.idx].Districts = payload.districts
+    },
+
+    setDistrictsGuarantee(state, payload) {
+      state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Address.District = null
+      state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Districts = payload.districts
     },
 
     removeItem(state, payload) {
@@ -562,7 +577,8 @@ export const profile = {
         House: "",
         City: "",
         Apartment: "",
-        AddressType
+        AddressType,
+        Districts: []
       });
     },
 
@@ -594,31 +610,6 @@ export const profile = {
         payload.item
       ].items.splice(payload.index, 1);
     },
-
-    // setDictionaries(state, dictionaries) {
-    //   for (let item in dictionaries) {
-    //     for (let value of dictionaries[item].items) {
-
-    //       if (!value.value) {
-
-    //          for (let i in value) {
-    //           // debugger
-    //            if (typeof value[i] === 'object' && value[i] != null) {
-    //             //  this.setDictionaries(state, value[i])
-    //             for (let k of value[i].items) {
-    //               k.value = Number(k.value)
-    //             }
-    //            }
-    //          }
-    //       }else {
-    //         value.value = Number(value.value)
-    //       }
-    //       //value.value = Number(value.value)
-    //     }
-    //   }
-    //   sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries))
-    //   state.dictionaries = dictionaries;
-    // },
 
     setDictionaries(state, dictionaries) {
       
@@ -721,7 +712,8 @@ export const profile = {
                 House: "",
                 City: "",
                 Apartment: "",
-                AddressType: "Адрес постоянной регистрации"
+                AddressType: "Адрес постоянной регистрации",
+                Districts: []
               },
               {
                 Building: "",
@@ -735,7 +727,8 @@ export const profile = {
                 House: "",
                 City: "",
                 Apartment: "",
-                AddressType: "Адрес фактического проживания"
+                AddressType: "Адрес фактического проживания",
+                Districts: []
               }
             ]
           },

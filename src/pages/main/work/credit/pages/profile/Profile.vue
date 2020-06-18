@@ -234,7 +234,9 @@
                       Customer.Document.GivenDate 
                       ? (val => reverseDate(val) > reverseDate(Customer.Document.GivenDate) ||
                       'Неверная дата')
-                      : null
+                      : null,
+                      val => reverseDate(val) > reverseDate(currentDate) || 
+                      'Неверная дата'
                   ]"
                 >
                   <template v-slot:append>
@@ -413,7 +415,7 @@
                       square
                       outlined
                       v-model="address.Region"
-                      
+                      @input="setDistricts($event, index, 'AddressList')"
                       :options="dictionaries.Region.items"
                       dense
                       label="Регион/область"
@@ -441,7 +443,7 @@
                       square
                       outlined
                       v-model="address.District"
-                      :options="dictionaries.Districts.items"
+                      :options="address.Districts.items"
                       dense
                       label="Район"
                       emit-value
@@ -842,7 +844,9 @@
                         relative.Document.GivenDate
                         ? (val => reverseDate(val) > reverseDate(relative.Document.GivenDate) ||
                         'Неверная дата')
-                        : null
+                        : null,
+                        val => reverseDate(val) > reverseDate(currentDate) ||
+                        'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -1720,7 +1724,9 @@
                         guarantee.Document.GivenDate
                         ? (val => reverseDate(val) > reverseDate(guarantee.Document.GivenDate) ||
                         'Неверная дата')
-                        : null
+                        : null,
+                        val => reverseDate(val) > reverseDate(currentDate) ||
+                        'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -1771,7 +1777,7 @@
                     outlined
                     v-model="guarantee.Address.Region"
                     :options="dictionaries.Region.items"
-                    @input="onChange($event, index, 'RelatedPerson')"
+                    @input="setDistrictsGuarantee($event, index, 'RelatedPerson')"
                     dense
                     label="Регион/область"
                     :rules="[val => !!val || 'Выберите регион/область']"
@@ -1797,7 +1803,7 @@
                       square
                       outlined
                       v-model="guarantee.Address.District"
-                      :options="dictionaries.Districts.items"
+                      :options="guarantee.Districts.items"
                       dense
                       label="Район"
                       emit-value
@@ -2036,6 +2042,7 @@
                     outlined
                     v-model="guarantee.Address.Region"
                     :options="dictionaries.Region.items"
+                    @input="setDistrictsGuarantee($event, index, 'RelatedLegalPerson')"
                     dense
                     label="Регион/область"
                     :rules="[val => !!val || 'Выберите регион/область']"
@@ -2069,7 +2076,7 @@
                       square
                       outlined
                       v-model="guarantee.Address.District"
-                      :options="dictionaries.Districts.items"
+                      :options="guarantee.Districts.items"
                       dense
                       label="Район"
                       emit-value
@@ -2526,7 +2533,7 @@
                   :rules="[
                     val => !!val || 'Введите удобный день погашения',
                     val =>
-                      val > 0 && val < 29 || `Введите удобный день погашения (1-31)`
+                      val > 0 && val < 29 || `Введите удобный день погашения (1-28)`
                   ]"
                 />
               </div>
@@ -2689,8 +2696,12 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.billProd"
                     dense
                     label="Расчетный счет продавца/производителя товара/работы/услуги"
+                    mask="#########################"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите расчетный счет продавца/производителя товара/работы/услуги']"
+                    :rules="[
+                      val => !!val || 'Введите расчетный счет продавца/производителя товара/работы/услуги',
+                      val =>  val.length < 26 || 'Введите не более 25 цифр'
+                    ]"
                   />
                 </div>
                 <div class="col-4">
@@ -2716,7 +2727,9 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.agreementDate"
                     mask="##.##.####"
                     :rules="[
-                      val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги'
+                      val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
+                      val => reverseDate(val) > reverseDate(currentDate) || 
+                      'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -2988,6 +3001,8 @@
     </div>
 
     <apploaderFullScreen v-if="loader"></apploaderFullScreen>
+
+    <p>Текущая дата {{currentDate}}</p>
   </div>
 </template>
 
@@ -3005,6 +3020,7 @@ export default {
   name: "profile",
   data() {
     return {
+      currentDate: CommonUtils.dateFilter(new Date()),
       loaderForm: false,
       loaderFile: false,
       loader: false, // прелодер
@@ -3153,16 +3169,6 @@ export default {
         this.$refs.pasportDateStart.validate();
       }
     },
-
-    // "Customer.AddressList.items": {
-    //   handler: function(val) {
-    //     console.log(val)
-    //     val.forEach(i => {
-    //       i.Region
-    //     })
-    //   },
-    //   deep: true 
-    // },
 
     "Customer.Relatives.items": {
       handler: function(val) {
@@ -3723,9 +3729,22 @@ export default {
       }
     },
 
-    onChange(event, idx, guarantee) {
-            console.log('event', event, idx, guarantee)
-        },
+    setDistricts(event, idx, item) {
+        //console.log('event', event, idx, item)
+        const districts = this.getDistricts(event)
+        this.$store.commit("profile/setDistricts", {idx, item, districts})
+    },
+
+    setDistrictsGuarantee(event, idx, guarantee) {
+        //console.log('event', event, idx, guarantee)
+        const districts = this.getDistricts(event)
+        this.$store.commit("profile/setDistrictsGuarantee", {idx, guarantee, districts})
+    },
+
+    getDistricts(id) {
+      const { region_id } = this.dictionaries.Region.items.find(i => i.value == id)
+      return this.dictionaries.Districts.items[0][region_id]
+    },
 
     hideDatepickerBirthdayGuarantees() {
       for (let datepicker of this.$refs.qDateBirthdayGuarantees) {

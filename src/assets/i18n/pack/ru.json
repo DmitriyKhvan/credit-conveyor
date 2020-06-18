@@ -450,5 +450,11 @@
     "is_risk_manager": "Управляющий рисками",
     "is_chairman": "Председатель",
     "groups": "группы"
+  },
+
+  "breadCrumbs" : {
+    "Main": "Главная",
+    "Work": "Работа",
+    "Credit": "Кредит"
   }
 }

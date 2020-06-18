@@ -47,7 +47,7 @@ export const credits = {
       childCost: 0,
 
       // FAMILY //
-      familyStatus: "",
+      familyStatus: null,
       children: false,
       childrenCount: 0,
       // MONEY //
@@ -121,7 +121,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        //sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     },
@@ -158,7 +159,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        // sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
       }
     },
 
@@ -185,6 +187,7 @@ export const credits = {
         console.log("calculCredit taskId ", response.nextTask.id);
         if (response.nextTask.id) {
           commit("setTaskId", response.nextTask.id);
+          sessionStorage.setItem("taskId", response.nextTask.id)
         } else {
           throw 'Next task id is undefined'
         }
@@ -193,7 +196,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        // sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
       }
     },
 
@@ -219,7 +223,8 @@ export const credits = {
         console.log('errorMessage', error)
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        // sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
       }
     },
 
@@ -233,7 +238,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        // sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     },
@@ -248,7 +254,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        // sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     },
@@ -345,7 +352,7 @@ export const credits = {
         childCost: 0,
 
         // FAMILY //
-        familyStatus: "",
+        familyStatus: null,
         children: false,
         childrenCount: 0,
         // MONEY //
