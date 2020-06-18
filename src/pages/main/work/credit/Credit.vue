@@ -12,6 +12,9 @@ import ErrorMessage from './ErrorMessage'
 
 export default {
   name: "credit",
+  created() {
+    this.$store.commit("credits/resetMessageBar")
+  },
   computed: {
     error() {
       console.log('computed', this.$store.getters["credits/message"])
@@ -20,6 +23,7 @@ export default {
   },
   watch: {
     error(serverError) {   
+      console.log('serverError', serverError)
       this.$store.commit("credits/toggleMessageBar", true)
       console.log('watch', this.$store.getters["credits/messageBar"])
     }

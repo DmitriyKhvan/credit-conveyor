@@ -2321,6 +2321,7 @@
                   outlined
                   v-model="fullProfile.LoanInfo.LoanProduct"
                   :options="dictionaries.LoanProduct.items"
+                  @input="onChangeLoan($event)"
                   dense
                   label="Кредитный продукт"
                   :rules="[val => !!val || 'Выберите кредитный продукт']"
@@ -3251,66 +3252,66 @@ export default {
       // }
     },
 
-    "fullProfile.LoanInfo.LoanProduct"(credit) {
-      console.log("Аннуит, диффер")
-      this.fullProfile.LoanInfo.RepaymentType = null;
-      this.profile.options.RepaymentType = [];
+    // "fullProfile.LoanInfo.LoanProduct"(credit) {
+    //   console.log("Аннуит, диффер")
+    //   this.fullProfile.LoanInfo.RepaymentType = null;
+    //   this.profile.options.RepaymentType = [];
 
-      // для синхронизации с Preapprov
-      if (this.personalData.typeStepCredit) {
-        this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
-        this.personalData.typeStepCredit = null
-      }
+    //   // для синхронизации с Preapprov
+    //   if (this.personalData.typeStepCredit) {
+    //     this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
+    //     this.personalData.typeStepCredit = null
+    //   }
 
-      this.fullProfile.LoanInfo.consumerLoan = {
-          nameBankProd: "",    // Наименование банка
-          nameService: "",     // Наименование товара/работы/услуги
-          agreementDate: "",   // Дата договора
-          nameProduction: "",  // Наименование продавца
-          billProd: "",        // Расчетный счет продавца
-          agreementNumber: "", // Номер договора
-          idBankProd: 0
-        }
-      this.fullProfile.LoanInfo.InitialPayment = 0
+    //   this.fullProfile.LoanInfo.consumerLoan = {
+    //       nameBankProd: "",    // Наименование банка
+    //       nameService: "",     // Наименование товара/работы/услуги
+    //       agreementDate: "",   // Дата договора
+    //       nameProduction: "",  // Наименование продавца
+    //       billProd: "",        // Расчетный счет продавца
+    //       agreementNumber: "", // Номер договора
+    //       idBankProd: 0
+    //     }
+    //   this.fullProfile.LoanInfo.InitialPayment = 0
 
-      const idx = this.dictionaries.LoanDetails.items.findIndex(
-        item => item.LOAN_ID == credit
-      );
-      //console.log(idx);
-      if (idx !== -1) {
-        this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
-          idx
-        ].MinTermInMonths;
-        this.fullProfile.LoanInfo.MaxTermInMonths = this.dictionaries.LoanDetails.items[
-          idx
-        ].MaxTermInMonths;
-        this.fullProfile.LoanInfo.MinInterestRate = this.dictionaries.LoanDetails.items[
-          idx
-        ].MinInterestRate;
-        this.fullProfile.LoanInfo.MaxInterestRate = this.dictionaries.LoanDetails.items[
-          idx
-        ].MaxInterestRate;
-        this.fullProfile.LoanInfo.MinInitialPaymentPercent = this.dictionaries.LoanDetails.items[
-          idx
-        ].MinimumPaymentPercent;
-        this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
-          idx
-        ].MaxInitialPaymentPercent;
-        this.profile.options.RepaymentType = this.dictionaries.LoanDetails.items[
-          idx
-        ].PaymentsType.items;
+    //   const idx = this.dictionaries.LoanDetails.items.findIndex(
+    //     item => item.LOAN_ID == credit
+    //   );
+    //   //console.log(idx);
+    //   if (idx !== -1) {
+    //     this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].MinTermInMonths;
+    //     this.fullProfile.LoanInfo.MaxTermInMonths = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].MaxTermInMonths;
+    //     this.fullProfile.LoanInfo.MinInterestRate = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].MinInterestRate;
+    //     this.fullProfile.LoanInfo.MaxInterestRate = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].MaxInterestRate;
+    //     this.fullProfile.LoanInfo.MinInitialPaymentPercent = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].MinimumPaymentPercent;
+    //     this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].MaxInitialPaymentPercent;
+    //     this.profile.options.RepaymentType = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].PaymentsType.items;
 
-        this.GracePeriodMin = this.dictionaries.LoanDetails.items[
-          idx
-        ].GracePeriodMin;
-        this.GracePeriodMax = this.dictionaries.LoanDetails.items[
-          idx
-        ].GracePeriodMax;
+    //     this.GracePeriodMin = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].GracePeriodMin;
+    //     this.GracePeriodMax = this.dictionaries.LoanDetails.items[
+    //       idx
+    //     ].GracePeriodMax;
 
-        // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
-        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
-      }
-    }
+    //     // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
+    //     this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
+    //   }
+    // }
   },
   methods: {
     async onSubmit(submitForm = true) {
@@ -3726,6 +3727,67 @@ export default {
         } else {
           this.profile.confirmCredit = true;
         }
+      }
+    },
+
+    onChangeLoan(credit) {
+      console.log("Аннуит, диффер")
+      this.fullProfile.LoanInfo.RepaymentType = null;
+      this.profile.options.RepaymentType = [];
+
+      // для синхронизации с Preapprov
+      // if (this.personalData.typeStepCredit) {
+      //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
+      //   this.personalData.typeStepCredit = null
+      // }
+
+      this.fullProfile.LoanInfo.consumerLoan = {
+          nameBankProd: "",    // Наименование банка
+          nameService: "",     // Наименование товара/работы/услуги
+          agreementDate: "",   // Дата договора
+          nameProduction: "",  // Наименование продавца
+          billProd: "",        // Расчетный счет продавца
+          agreementNumber: "", // Номер договора
+          idBankProd: 0
+        }
+      this.fullProfile.LoanInfo.InitialPayment = 0
+
+      const idx = this.dictionaries.LoanDetails.items.findIndex(
+        item => item.LOAN_ID == credit
+      );
+      //console.log(idx);
+      if (idx !== -1) {
+        this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
+          idx
+        ].MinTermInMonths;
+        this.fullProfile.LoanInfo.MaxTermInMonths = this.dictionaries.LoanDetails.items[
+          idx
+        ].MaxTermInMonths;
+        this.fullProfile.LoanInfo.MinInterestRate = this.dictionaries.LoanDetails.items[
+          idx
+        ].MinInterestRate;
+        this.fullProfile.LoanInfo.MaxInterestRate = this.dictionaries.LoanDetails.items[
+          idx
+        ].MaxInterestRate;
+        this.fullProfile.LoanInfo.MinInitialPaymentPercent = this.dictionaries.LoanDetails.items[
+          idx
+        ].MinimumPaymentPercent;
+        this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
+          idx
+        ].MaxInitialPaymentPercent;
+        this.profile.options.RepaymentType = this.dictionaries.LoanDetails.items[
+          idx
+        ].PaymentsType.items;
+
+        this.GracePeriodMin = this.dictionaries.LoanDetails.items[
+          idx
+        ].GracePeriodMin;
+        this.GracePeriodMax = this.dictionaries.LoanDetails.items[
+          idx
+        ].GracePeriodMax;
+
+        // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
+        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
       }
     },
 

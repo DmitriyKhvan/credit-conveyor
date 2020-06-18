@@ -365,6 +365,10 @@ export const credits = {
       };
     },
 
+    resetMessageBar(state) {
+      state.messageBar = false
+    },
+
     toggleScannerSerialNumber(state, payload) {
       state.scannerSerialNumber = payload;
     },
