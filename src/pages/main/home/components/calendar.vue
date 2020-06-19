@@ -50,7 +50,7 @@
           <td class="tdbg"><div>4</div></td>
           <td class="tdbg"><div>5</div></td>
         </tr>
-        <tr>
+        <!-- <tr>
           <td><div>6</div></td>
           <td><div>7</div></td>
           <td class="active"><div>8</div></td>
@@ -85,7 +85,7 @@
           <td></td>
           <td class="tdbg"></td>
           <td class="tdbg"></td>
-        </tr>
+        </tr> -->
       </table>
     </div>
   </div>
