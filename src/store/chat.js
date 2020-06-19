@@ -56,6 +56,10 @@ export default {
         delChatCount(state, id){
           let chat = state.chats.find(ch => ch.chat_id === id)
           chat.count = 0
+        },
+        addCount(state, id){
+          let chat = state.chats.find(ch => ch.chat_id === id)
+          chat.count = chat.count + 1
         }
     },
     actions: {
@@ -85,6 +89,9 @@ export default {
         },
         delChatCount({commit}, id){
           commit('delChatCount', id)
+        },
+        addCount({commit}, id){
+          commit('addCount', id)
         }
     },
     getters: {
