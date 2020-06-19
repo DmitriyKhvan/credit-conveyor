@@ -273,12 +273,16 @@ export default {
         font-size: 14px;
         border-radius: 10px 10px 10px 0;
         background: #EAF3FC;
+
+        word-wrap: break-word;
     }
     .message_my {
         font-size: 14px;
         border-radius: 10px 10px 0 10px;
         background: #45A2F9;
-        color:#fff
+        color:#fff;
+
+        word-wrap: break-word;
     }
     .description {
         font-size: 11px;

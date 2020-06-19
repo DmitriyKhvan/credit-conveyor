@@ -37,12 +37,11 @@ const SocketService = {
     socket.on("msg/send", (data) => {
       console.log(".ON - msg/send", data);
       store.dispatch("addMessage", data);
-      console.log(store.getters.getActiveChat);
+      const activeChat = store.getters.getActiveChat
+        ? store.getters.getActiveChat
+        : 0;
 
-      if (
-        store.getters.getActiveChat === data.chat_id &&
-        data.messages[0].from_uid !== empId
-      ) {
+      if (activeChat === data.chat_id && data.messages[0].from_uid !== empId) {
         console.log("Reset Count");
         const chat = {
           chat_id: data.chat_id,
@@ -51,13 +50,15 @@ const SocketService = {
         axios
           .post("/chat/resetcount", chat)
           .then((response) => {
+            console.log("reset log");
             store.dispatch("delChatCount", data.chat_id);
           })
           .catch((error) => {
             console.log("error");
           });
       }
-      if (store.getters.getActiveChat !== data.chat_id) {
+
+      if (activeChat !== data.chat_id) {
         store.dispatch("addCount", data.chat_id);
       }
     });
