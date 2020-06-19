@@ -120,9 +120,10 @@ export default {
           e.preventDefault();
           this.form.from_uid = this.emp_id
           this.form.chat_id = this.chatId
-          console.log('.EMIT - msg/send', this.form)
-          this.socket.emit("msg/send", this.form)
-
+          if(this.form.message){
+            console.log('.EMIT - msg/send', this.form)
+            this.socket.emit("msg/send", this.form)
+          }
           this.$refs.inputMessage.focus()
         },
         formattedDate(date) {
@@ -237,6 +238,9 @@ export default {
         if(this.chatId === data.chat_id && data.messages[0].from_uid !== this.emp_id){
           console.log('Reset Count')
           this.countReset(data.chat_id)
+        }
+        if(this.chatId !== data.chat_id){
+          this.$store.dispatch('addCount', data.chat_id)
         }
         if(data.messages[0].from_uid === this.emp_id) {
           this.form.message = ''
