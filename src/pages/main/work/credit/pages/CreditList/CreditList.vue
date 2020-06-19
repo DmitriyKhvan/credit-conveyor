@@ -342,12 +342,13 @@
 
           <td class="text-left print">
             <div class="text-blue q-gutter-md">
-              <q-btn icon="print" @click="printFile()" />
+              <q-btn disable icon="print" @click="printFile()" />
               <!-- <q-btn icon="print" @click="printJS(link)" /> -->
-              <q-btn icon="cloud_download" @click="downloadFile()" />
+              <q-btn disable icon="cloud_download" @click="downloadFile()" />
 
               <template v-if="userRole === 'CS'">
                 <q-btn
+                  disable
                   class="full-width"
                   label="Подписать"
                   color="green"

@@ -158,13 +158,14 @@ export default {
         } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
           this.$store.commit("credits/setMessage", errorMessage);
-          sessionStorage.removeItem("csrf_token");
+          sessionStorage.clear();
           this.$router.push("/work/credit")
         }
     },
     
     async failureCredit() {
       this.$emit('loader', true)
+
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
@@ -182,13 +183,20 @@ export default {
           console.log('res', res)
           if (res.requestedTask.state === "completed") {
             this.$emit('loader', false)
+
             this.$store.commit("credits/setMessage", "Credit failure");
-            sessionStorage.removeItem("csrf_token");
+            
+            sessionStorage.clear()
             this.$router.push("/work/credit");
           } else {
             throw 'Task do not completed'
           }
-        } catch (error) {}
+        } catch (error) {
+          const errorMessage = CommonUtils.filterServerError(error);
+          this.$store.commit("credits/setMessage", errorMessage);
+          sessionStorage.clear();
+          this.$router.push("/work/credit")
+        }
       }
     },
 

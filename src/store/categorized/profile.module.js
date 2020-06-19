@@ -447,7 +447,8 @@ export const profile = {
           City: "",
           Apartment: "",
           OfficeNum: "",
-          AddressType: ""
+          AddressType: "",
+          Districts: []
         },
         PhoneList: {
           items: [
@@ -459,8 +460,7 @@ export const profile = {
         INN: "",
         Name: "",
         Sum: 0,
-        Activity: "",
-        Districts: []
+        Activity: ""
       });
     },
 
@@ -478,7 +478,8 @@ export const profile = {
           House: "",
           City: "",
           Apartment: "",
-          AddressType: ""
+          AddressType: "",
+          Districts: []
         },
         FirstName: "",
         //NameENG: "",
@@ -507,8 +508,7 @@ export const profile = {
         Resident: null,
         LastName: "",
         PINPP: "",
-        BirthDate: "",
-        Districts: []
+        BirthDate: ""
       });
     },
 
@@ -519,7 +519,7 @@ export const profile = {
 
     setDistrictsGuarantee(state, payload) {
       state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Address.District = null
-      state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Districts = payload.districts
+      state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Address.Districts = payload.districts
     },
 
     removeItem(state, payload) {

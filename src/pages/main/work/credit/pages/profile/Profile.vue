@@ -1803,7 +1803,7 @@
                       square
                       outlined
                       v-model="guarantee.Address.District"
-                      :options="guarantee.Districts.items"
+                      :options="guarantee.Address.Districts.items"
                       dense
                       label="Район"
                       emit-value
@@ -2076,7 +2076,7 @@
                       square
                       outlined
                       v-model="guarantee.Address.District"
-                      :options="guarantee.Districts.items"
+                      :options="guarantee.Address.Districts.items"
                       dense
                       label="Район"
                       emit-value
@@ -3002,8 +3002,6 @@
     </div>
 
     <apploaderFullScreen v-if="loader"></apploaderFullScreen>
-
-    <p>Текущая дата {{currentDate}}</p>
   </div>
 </template>
 
@@ -3723,6 +3721,10 @@ export default {
           this.loader = false;
         } catch (error) {
           this.loader = false;
+          const errorMessage = CommonUtils.filterServerError(error);
+          this.$store.commit("credits/setMessage", errorMessage);
+          sessionStorage.clear()
+          this.$router.push("/work/credit");
         }
         } else {
           this.profile.confirmCredit = true;

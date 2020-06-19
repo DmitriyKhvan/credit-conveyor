@@ -550,7 +550,7 @@ export default {
         this.personalData.additionalIncomeSource = "";
       }
     },
-    // Для форматирования числе
+    // Для форматирования чисeл
     // "personalData.income"(number) {
     //   console.log(formatNumber(number)) 
     //   this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
