@@ -205,7 +205,7 @@
               {{ credit.client }}
             </template>
             <router-link
-              else
+              v-else
               :to="{
                 name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
                 params: { id: credit.id },
