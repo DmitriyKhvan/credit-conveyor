@@ -231,22 +231,22 @@ export default {
         }
       });
 
-      this.socket.on("msg/send", data => {
-        console.log('.ON - msg/send', data)
-        this.$store.dispatch('addMessage', data)
+      // this.socket.on("msg/send", data => {
+      //   console.log('.ON - msg/send', data)
+      //   this.$store.dispatch('addMessage', data)
 
-        if(this.chatId === data.chat_id && data.messages[0].from_uid !== this.emp_id){
-          console.log('Reset Count')
-          this.countReset(data.chat_id)
-        }
-        if(this.chatId !== data.chat_id){
-          this.$store.dispatch('addCount', data.chat_id)
-        }
-        if(data.messages[0].from_uid === this.emp_id) {
-          this.form.message = ''
-        }
-        // this.socket.emit("chat/all", this.emp_id);
-      })
+      //   if(this.chatId === data.chat_id && data.messages[0].from_uid !== this.emp_id){
+      //     console.log('Reset Count')
+      //     this.countReset(data.chat_id)
+      //   }
+      //   if(this.chatId !== data.chat_id){
+      //     this.$store.dispatch('addCount', data.chat_id)
+      //   }
+      //   if(data.messages[0].from_uid === this.emp_id) {
+      //     this.form.message = ''
+      //   }
+      //   // this.socket.emit("chat/all", this.emp_id);
+      // })
     },
     beforeDestroy(){
       this.socket.removeListener('msg/send')
