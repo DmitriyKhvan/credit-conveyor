@@ -162,6 +162,7 @@ export default {
     created(){
       this.socket.on('group/create', data => {
         const chat = {
+          count: 0,
           type: 2,
           chat_id: data.id,
           emp_id: data.creator,

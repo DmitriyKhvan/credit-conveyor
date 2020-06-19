@@ -164,10 +164,10 @@ export default {
 
           if(this.chats.find(ch => ch.chat_id === id).count !== 0){
             console.log('Reset count')
+            this.$store.dispatch('delChatCount', id)
             axios
                 .post("/chat/resetcount", chat)
                 .then(response => {
-                  this.$store.dispatch('delChatCount', id)
                 })
                 .catch(error => {
                   console.log('error')
@@ -229,6 +229,7 @@ export default {
         if(data.to_uid !== this.emp_id){
           name = data.to_name.split(" ")
           chat = {
+            count: 0,
             type: 1,
             chat_id: data.id,
             from_uid: data.from_uid,
@@ -239,6 +240,7 @@ export default {
         } else {
           name = data.from_name.split(" ")
           chat = {
+            count: 0,
             type: 1,
             chat_id: data.id,
             from_uid: data.to_uid,
