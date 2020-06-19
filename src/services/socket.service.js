@@ -2,6 +2,7 @@ import store from '@/store/index';
 import NotifyService from './notify.service';
 import CommonUtils from '@/shared/utils/CommonUtils';
 import { AuthService } from './auth.service';
+import axios from "axios";
 
 //let connection = store.getters["socket/usersCount"];
 //let socket = store.getters["socket/getSocket"];
@@ -32,9 +33,38 @@ const SocketService = {
     this.runActiveUsers(socket);
     this.runLogout(socket);
 
+    socket.emit("chat/all", empId)
+
+    socket.on("msg/send", data => {
+      console.log('.ON - msg/send', data)
+      store.dispatch('addMessage', data)
+      console.log(store.getters.getActiveChat)
+
+      if(store.getters.getActiveChat === data.chat_id && data.messages[0].from_uid !== empId){
+        console.log('Reset Count')
+        const chat = {
+          chat_id: data.chat_id,
+          emp_id: empId
+        }
+        axios
+          .post("/chat/resetcount", chat)
+          .then(response => {
+            store.dispatch('delChatCount', data.chat_id)
+          })
+          .catch(error => {
+            console.log('error')
+          });
+      }
+      if(store.getters.getActiveChat !== data.chat_id){
+        store.dispatch('addCount', data.chat_id)
+      }
+
+    })
+
+
     this.runOnline(socket, empId);
 
-    socket.emit("chat/all", empId)
+
     //store.dispatch("socket/setOnline", true);
     //console.log("user is online");
 

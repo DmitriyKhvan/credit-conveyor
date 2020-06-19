@@ -162,14 +162,17 @@ export default {
             emp_id: this.emp_id
           }
 
-          axios
-              .post("/chat/resetcount", chat)
-              .then(response => {
-                this.$store.dispatch('delChatCount', id)
-              })
-              .catch(error => {
-                console.log('error')
-              });
+          if(this.chats.find(ch => ch.chat_id === id).count !== 0){
+            console.log('Reset count')
+            axios
+                .post("/chat/resetcount", chat)
+                .then(response => {
+                  this.$store.dispatch('delChatCount', id)
+                })
+                .catch(error => {
+                  console.log('error')
+                });
+          }
         },
         setActiveChat(id, toUid){
             if(this.emp_id !== toUid && this.emp_id !== toUid) this.$store.dispatch('setToUid', toUid)
