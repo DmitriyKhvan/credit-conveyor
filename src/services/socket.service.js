@@ -32,9 +32,30 @@ const SocketService = {
     this.runActiveUsers(socket);
     this.runLogout(socket);
 
+    socket.emit("chat/all", empId)
+
+    socket.on("msg/send", data => {
+      console.log('.ON - msg/send', data)
+      store.dispatch('addMessage', data)
+      console.log(store.getters.getActiveChat)
+
+      if(store.getters.getActiveChat === data.chat_id && data.messages[0].from_uid !== empId){
+        console.log('Reset Count')
+        // this.countReset(data.chat_id)
+      }
+      if(store.getters.getActiveChat !== data.chat_id){
+        store.dispatch('addCount', data.chat_id)
+      }
+      if(data.messages[0].from_uid === empId) {
+        // this.form.message = ''
+      }
+
+    })
+
+
     this.runOnline(socket, empId);
 
-    socket.emit("chat/all", empId)
+
     //store.dispatch("socket/setOnline", true);
     //console.log("user is online");
 
