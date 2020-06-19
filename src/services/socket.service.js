@@ -2,6 +2,7 @@ import store from '@/store/index';
 import NotifyService from './notify.service';
 import CommonUtils from '@/shared/utils/CommonUtils';
 import { AuthService } from './auth.service';
+import axios from "axios";
 
 //let connection = store.getters["socket/usersCount"];
 //let socket = store.getters["socket/getSocket"];
@@ -41,13 +42,21 @@ const SocketService = {
 
       if(store.getters.getActiveChat === data.chat_id && data.messages[0].from_uid !== empId){
         console.log('Reset Count')
-        // this.countReset(data.chat_id)
+        const chat = {
+          chat_id: data.chat_id,
+          emp_id: empId
+        }
+        axios
+          .post("/chat/resetcount", chat)
+          .then(response => {
+            store.dispatch('delChatCount', data.chat_id)
+          })
+          .catch(error => {
+            console.log('error')
+          });
       }
       if(store.getters.getActiveChat !== data.chat_id){
         store.dispatch('addCount', data.chat_id)
-      }
-      if(data.messages[0].from_uid === empId) {
-        // this.form.message = ''
       }
 
     })

@@ -125,6 +125,7 @@ export default {
             this.socket.emit("msg/send", this.form)
           }
           this.$refs.inputMessage.focus()
+          this.form.message = ''
         },
         formattedDate(date) {
             return commonUtils.formattedDate(date);
