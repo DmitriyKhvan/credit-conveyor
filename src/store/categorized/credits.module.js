@@ -17,7 +17,7 @@ export const credits = {
       CreditCommitteeMember: "CCM",
       CreditSecretary: "CS"
     },
-    loaderForm: true, // при загрузки формы preapproval
+    
     confirm: false, // для модального окна расчета кредита
     messageBar: false,
     bpmService: new BpmService(),
@@ -80,7 +80,20 @@ export const credits = {
       maxPayment: 0, // Сколько может платить в месяц
       maxSum: 0 // Сколько максимум кредита можем выдать
     },
-    creditTasks: []
+    creditTasks: [],
+
+    options: {
+      confirmation: [
+        {
+          label: "Да",
+          value: true
+        },
+        {
+          label: "Нет",
+          value: false
+        }
+      ]
+    }
    
   },
   actions: {
@@ -382,10 +395,6 @@ export const credits = {
 
     toggleMessageBar(state, payload) {
       state.messageBar = payload;
-    },
-
-    toggleLoaderForm(state, flag) {
-      state.loaderForm = flag;
     },
 
     setTaskId(state, payload) {

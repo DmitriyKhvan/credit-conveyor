@@ -1,6 +1,6 @@
 <template>
   <div class="registration">
-    <div class="loaderForm" v-if="credits.loaderForm">
+    <div class="loaderForm" v-if="loaderForm">
       <appLoader />
     </div>
 
@@ -217,7 +217,7 @@
                   square
                   outlined
                   v-model="personalData.children"
-                  :options="options.children"
+                  :options="credits.options.confirmation"
                   dense
                   label="Есть ли дети"
                   emit-value
@@ -300,7 +300,7 @@
                     square
                     outlined
                     v-model="personalData.externalIncome"
-                    :options="options.extIncOption"
+                    :options="credits.options.confirmation"
                     dense
                     label="Наличие дополнительного дохода"
                     emit-value
@@ -343,16 +343,19 @@
         </div>
       </form>
       <!-- DigID Network error! -->
-      <app-dig-id-network-error></app-dig-id-network-error>
+      <appDigIdNetworkError />
 
-      <apploaderFullScreen v-if="loaderPreApproval"></apploaderFullScreen>
+      <appLoaderFullScreen v-if="loaderFullScreen" />
       <!-- Pre-Approval -->
-      <app-pre-approval @loader="($event) => loaderPreApproval = $event"  v-else></app-pre-approval>
+      <appPreApproval 
+        v-else
+        @toggleLoaderFullScreen="($event) => loaderFullScreen = $event" 
+        @toggleLoaderForm="($event) => loaderForm = $event"
+      />
     </div>
   </div>
 </template>
 <script>
-// import Vue from "vue";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatNumber from "../../filters/format_number.js";
 import PreApproval from "./PreApproval";
@@ -362,41 +365,17 @@ import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 import { validItems } from "../../filters/valid_filter";
 
-// Vue.config.errorHandler = function(err, vm, info) {
-//   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
-// }
-
 export default {
   data() {
     return {
       periodCreditMin: null,
       periodCreditMax: null,
       loader: true,
-      // loaderForm: true,
-      loaderPreApproval: false,
+      loaderForm: false,
+      loaderFullScreen: false,
       options: {
         family: [],
-        children: [
-          {
-            label: "Да",
-            value: true
-          },
-          {
-            label: "Нет",
-            value: false
-          }
-        ],
-        // MONEY //
-        extIncOption: [
-          {
-            label: "Да",
-            value: true
-          },
-          {
-            label: "Нет",
-            value: false
-          }
-        ], //наличие дополнительного дохода
+        //наличие дополнительного дохода
         additIncSourOption: [
           {
             label: "Работа по найму",
@@ -422,10 +401,12 @@ export default {
             label: "Другое",
             value: 16
           }
-        ], //источник дополнительного дохода
+        ], 
 
+        //источник дополнительного дохода
         typeCredits: [],
 
+        //тип графика гашения
         typeStepCredits: []
       }
     };
@@ -434,6 +415,7 @@ export default {
     this.$store.commit("credits/resetPersonData");
 
     try {
+      this.loaderForm = true
       const auth = await this.$store.dispatch("credits/authBpm");
       console.log("auth", auth);
       const process = await this.$store.dispatch("credits/startProcess");
@@ -473,8 +455,10 @@ export default {
       })
 
       console.log("typeCredits", this.options.typeCredits);
-      this.$store.commit("credits/toggleLoaderForm", false);
-    } catch (error) {}
+      this.loaderForm = false
+    } catch (error) {
+      this.loaderForm = false
+    }
 
     try {
       const scannerSerial = await this.$store.dispatch("credits/getDigIdNumber");
@@ -611,7 +595,7 @@ export default {
           ]
         }
 
-        this.loaderPreApproval = true;
+        this.loaderFullScreen = true;
         const {
           children,
           familyStatus,
@@ -703,25 +687,19 @@ export default {
           this.$store.commit("credits/toggleConfirm", true);
           this.$store.commit("credits/creditConfirm", resp);
           
-          this.loaderPreApproval = false;
+          this.loaderFullScreen = false;
         } catch (e) {
-          this.loaderPreApproval = false;
+          this.loaderFullScreen = false;
         }
       }
-    },
-
-    // Не устроил кредит
-    // toggleLoader(val) {
-    //   console.log(val)
-    //   this.loaderPreApproval = val
-    // }
+    }
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
     appDigIdNetworkError: DigIdNetworkError,
     appLoader: Loader,
-    apploaderFullScreen: LoaderFullScreen
+    appLoaderFullScreen: LoaderFullScreen
   }
 };
 </script>
@@ -731,13 +709,6 @@ export default {
 
   .preapprovForm {
     width: 80%
-  }
-
-  .loaderForm {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
   }
 
   .tab-title {

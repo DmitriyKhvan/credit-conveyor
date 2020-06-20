@@ -87,22 +87,7 @@ export const profile = {
       "Адрес фактического проживания",
       "Адрес временной регистрации"
     ],
-
-    options: {
-      confirmation: [
-        {
-          label: "Да",
-          value: true
-        },
-        {
-          label: "Нет",
-          value: false
-        }
-      ],
-
-      RepaymentType: []
-    },
-
+    
     fullFormProfile: {
       Status: "",
       // ApplicationID: "",

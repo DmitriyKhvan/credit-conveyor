@@ -1,6 +1,8 @@
 <template>
   <div class="fullProfile">
-    <appLoader v-if="loaderForm" />
+    <div class="loaderForm" v-if="loaderForm">
+      <appLoader />
+    </div>
     <div v-else class="q-pa-md">
       <form @submit.prevent.stop="onSubmit">
         <!-- Private data person -->
@@ -138,7 +140,7 @@
                   square
                   outlined
                   v-model="Customer.ResidentFlag"
-                  :options="profile.options.confirmation"
+                  :options="credits.options.confirmation"
                   dense
                   label="Резидентство"
                   emit-value
@@ -210,7 +212,11 @@
                         <q-date
                           mask="DD.MM.YYYY"
                           v-model="Customer.Document.GivenDate"
-                          @input="() => $refs.qDatePasportDateStart.hide()"
+                          @input="($event) => {
+                            $refs.qDatePasportDateStart.hide()
+                            validDatePerson($event)
+                          }  
+                          "
                         />
                       </q-popup-proxy>
                     </q-icon>
@@ -249,7 +255,11 @@
                         <q-date
                           mask="DD.MM.YYYY"
                           v-model="Customer.Document.ExpirationDate"
-                          @input="() => $refs.qDatePasportDateFinish.hide()"
+                          @input="($event) => {
+                            $refs.qDatePasportDateFinish.hide()
+                            validDatePerson($event)
+                          }
+                          "
                         />
                       </q-popup-proxy>
                     </q-icon>
@@ -387,7 +397,7 @@
                       square
                       outlined
                       v-model="sameRegistration"
-                      :options="profile.options.confirmation"
+                      :options="credits.options.confirmation"
                       dense
                       label="Совпадает ли с адресом постоянной регистрации"
                       emit-value
@@ -635,7 +645,7 @@
                   square
                   outlined
                   v-model="Customer.hasChildren"
-                  :options="profile.options.confirmation"
+                  :options="credits.options.confirmation"
                   dense
                   label="Есть ли дети"
                   emit-value
@@ -816,10 +826,12 @@
                             mask="DD.MM.YYYY"
                             v-model="relative.Document.GivenDate"
                             @input="
-                              () =>
+                              ($event) => {
                                 $refs.qDateRelativePassportDateStart[
                                   index
                                 ].hide()
+                                validDateRelatives($event, index)
+                              }
                             "
                           />
                         </q-popup-proxy>
@@ -860,10 +872,12 @@
                             mask="DD.MM.YYYY"
                             v-model="relative.Document.ExpirationDate"
                             @input="
-                              () =>
+                              ($event) => {
                                 $refs.qDateRelativePassportDateFinish[
                                   index
                                 ].hide()
+                                validDateRelatives($event, index)
+                              }
                             "
                           />
                         </q-popup-proxy>
@@ -1183,7 +1197,7 @@
                   square
                   outlined
                   v-model="Customer.MonthlyIncome.hasAdditionalIncome"
-                  :options="profile.options.confirmation"
+                  :options="credits.options.confirmation"
                   dense
                   label="Наличие дополнительного дохода"
                   emit-value
@@ -1509,6 +1523,7 @@
                     type="number"
                     dense
                     label="Сумма поручительства"
+                    @input="guaranteesValid"
                     lazy-rules
                     :rules="[val => !!val || 'Введите сумму']"
                   />
@@ -1579,7 +1594,9 @@
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="guarantee.BirthDate"
-                            @input="hideDatepickerBirthdayGuarantees"
+                            @input="() =>
+                              $refs.qDateBirthdayGuarantees[index].hide()
+                            "
                           />
                         </q-popup-proxy>
                       </q-icon>
@@ -1626,7 +1643,7 @@
                     square
                     outlined
                     v-model="guarantee.Resident"
-                    :options="profile.options.confirmation"
+                    :options="credits.options.confirmation"
                     dense
                     label="Резидентство"
                     emit-value
@@ -1693,12 +1710,16 @@
                         <q-popup-proxy
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="qDatePasportDateGuarantees"
+                          ref="qDatePasportDateGuaranteesStart"
                         >
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="guarantee.Document.GivenDate"
-                            @input="hideDatepickerPasportDateGuarantees"
+                            @input="($event) => {
+                              $refs.qDatePasportDateGuaranteesStart[index].hide()
+                              validDateGuarantees($event, index)
+                            }
+                            "
                           />
                         </q-popup-proxy>
                       </q-icon>
@@ -1734,12 +1755,16 @@
                         <q-popup-proxy
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="qDatePasportDateGuarantees"
+                          ref="qDatePasportDateGuaranteesFinish"
                         >
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="guarantee.Document.ExpirationDate"
-                            @input="hideDatepickerPasportDateGuarantees"
+                            @input="($event) => {
+                              $refs.qDatePasportDateGuaranteesFinish[index].hide()
+                              validDateGuarantees($event, index)
+                            }
+                            "
                           />
                         </q-popup-proxy>
                       </q-icon>
@@ -1968,6 +1993,7 @@
                     type="number"
                     dense
                     label="Сумма поручительства"
+                    @input="guaranteesValid"
                     lazy-rules
                     :rules="[val => !!val || 'Введите сумму']"
                   />
@@ -2273,6 +2299,8 @@
                     type="number"
                     dense
                     label="Сумма страхового полиса"
+                    @input="guaranteesValid"
+                    lazy-rules
                     :rules="[val => !!val || 'Введите сумму']"
                   />
                 </div>
@@ -2376,7 +2404,7 @@
                   square
                   outlined
                   v-model="fullProfile.LoanInfo.RepaymentType"
-                  :options="profile.options.RepaymentType"
+                  :options="options.RepaymentType"
                   dense
                   label="Тип графика гашения"
                   :rules="[val => !!val || 'Выберите тип графика гашения']"
@@ -3060,6 +3088,7 @@ export default {
     }
     
     if (this.taskId) {
+      this.loaderForm = true
       this.$store.commit("credits/setTaskId", this.taskId);
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
@@ -3083,8 +3112,11 @@ export default {
             this.guaranteeCount.push("guarantee")
           }
         }
-
-      } catch (error) {}
+        this.guaranteesValid()
+        this.loaderForm = false
+      } catch (error) {
+        this.loaderForm = false
+      }
     } 
     
   },
@@ -3103,9 +3135,6 @@ export default {
       this.Customer.Document.Number = this.personalData.passport.slice(
         2
       );
-
-      // this.Customer.MaritalStatus =
-      //   +this.personalData.familyStatus + 1; // false/true перевожу в число
 
       this.Customer.MaritalStatus = this.personalData.familyStatus
 
@@ -3147,6 +3176,10 @@ export default {
       return this.$store.getters["credits/credits"].personalData
     },
 
+    credits() {
+      return this.$store.getters["credits/credits"]
+    },
+
     preApprovalData() {
       return this.$store.getters["credits/credits"].preApprovalData;
     },
@@ -3155,80 +3188,6 @@ export default {
     }
   },
   watch: {
-    "Customer.Document.GivenDate"(val) {
-      console.log('GivenDate', val)
-      if (this.Customer.Document.ExpirationDate) {
-        this.$refs.pasportDateFinish.validate();
-      } 
-    },
-
-    "Customer.Document.ExpirationDate"(val) {
-      console.log('ExpirationDate', val)
-      if (this.Customer.Document.GivenDate) {
-        this.$refs.pasportDateStart.validate();
-      }
-    },
-
-    "Customer.Relatives.items": {
-      handler: function(val) {
-        val.forEach(i => {
-          if (i.Document.ExpirationDate) {
-            this.$refs.relatives_pasportDateFinish.forEach(i => {
-              i.validate()
-            })
-          }
-          if(i.Document.GivenDate) {
-            this.$refs.relatives_pasportDateStart.forEach(i => {
-              i.validate()
-            })
-          }
-        })
-        // this.$refs.relatives_pasportDateStart.forEach(i => {
-        //   i.validate()
-        // })
-      },
-      deep: true      
-    },
-
-    "fullProfile.Guarantee.RelatedPerson.items": {
-      handler: function(val) {
-        console.log(val)
-        this.guaranteesValid() //сумма всех гарантий
-        val.forEach(i => {
-          if (i.Document.ExpirationDate) {
-            this.$refs.pasportDateGuaranteesFinish.forEach(i => {
-              i.validate()
-            })
-          }
-          if(i.Document.GivenDate) {
-            this.$refs.pasportDateGuaranteesStart.forEach(i => {
-              i.validate()
-            })
-          }
-        })
-        // this.$refs.relatives_pasportDateStart.forEach(i => {
-        //   i.validate()
-        // })
-      },
-      deep: true      
-    },
-
-    "fullProfile.Guarantee.Insurance.items": {
-      handler: function(val) {
-        console.log('Insurance',val)
-        this.guaranteesValid()
-      },
-      deep: true      
-    },
-
-    "fullProfile.Guarantee.RelatedLegalPerson.items": {
-      handler: function(val) {
-        console.log(val)
-        this.guaranteesValid()
-      },
-      deep: true      
-    },
-
     "Customer.Email"() {
       if (
         this.Customer.Email !== "" &&
@@ -3248,68 +3207,7 @@ export default {
       // else {
       //   this.addRegistration("Адрес фактического проживания");
       // }
-    },
-
-    // "fullProfile.LoanInfo.LoanProduct"(credit) {
-    //   console.log("Аннуит, диффер")
-    //   this.fullProfile.LoanInfo.RepaymentType = null;
-    //   this.profile.options.RepaymentType = [];
-
-    //   // для синхронизации с Preapprov
-    //   if (this.personalData.typeStepCredit) {
-    //     this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
-    //     this.personalData.typeStepCredit = null
-    //   }
-
-    //   this.fullProfile.LoanInfo.consumerLoan = {
-    //       nameBankProd: "",    // Наименование банка
-    //       nameService: "",     // Наименование товара/работы/услуги
-    //       agreementDate: "",   // Дата договора
-    //       nameProduction: "",  // Наименование продавца
-    //       billProd: "",        // Расчетный счет продавца
-    //       agreementNumber: "", // Номер договора
-    //       idBankProd: 0
-    //     }
-    //   this.fullProfile.LoanInfo.InitialPayment = 0
-
-    //   const idx = this.dictionaries.LoanDetails.items.findIndex(
-    //     item => item.LOAN_ID == credit
-    //   );
-    //   //console.log(idx);
-    //   if (idx !== -1) {
-    //     this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].MinTermInMonths;
-    //     this.fullProfile.LoanInfo.MaxTermInMonths = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].MaxTermInMonths;
-    //     this.fullProfile.LoanInfo.MinInterestRate = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].MinInterestRate;
-    //     this.fullProfile.LoanInfo.MaxInterestRate = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].MaxInterestRate;
-    //     this.fullProfile.LoanInfo.MinInitialPaymentPercent = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].MinimumPaymentPercent;
-    //     this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].MaxInitialPaymentPercent;
-    //     this.profile.options.RepaymentType = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].PaymentsType.items;
-
-    //     this.GracePeriodMin = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].GracePeriodMin;
-    //     this.GracePeriodMax = this.dictionaries.LoanDetails.items[
-    //       idx
-    //     ].GracePeriodMax;
-
-    //     // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
-    //     this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
-    //   }
-    // }
+    }
   },
   methods: {
     async onSubmit(submitForm = true) {
@@ -3732,10 +3630,42 @@ export default {
       }
     },
 
+    validDatePerson(date) {
+
+      if (this.Customer.Document.ExpirationDate) {
+        this.$refs.pasportDateFinish.validate()
+      }
+
+      if (this.Customer.Document.GivenDate) {
+        this.$refs.pasportDateStart.validate()
+      }
+    },
+
+    validDateRelatives(date, idx) {
+
+      if (this.Customer.Relatives.items[idx].Document.ExpirationDate) {
+        this.$refs.relatives_pasportDateFinish[idx].validate()
+      }
+
+      if (this.Customer.Relatives.items[idx].Document.GivenDate) {
+        this.$refs.relatives_pasportDateStart[idx].validate()
+      }
+    },
+
+    validDateGuarantees(date, idx) {
+      console.log(date)
+      if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.ExpirationDate) {
+        this.$refs.pasportDateGuaranteesFinish[idx].validate()
+      } 
+      if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.GivenDate) {
+        this.$refs.pasportDateGuaranteesStart[idx].validate()
+      }
+    },
+
     onChangeLoan(credit) {
       console.log("Аннуит, диффер")
       this.fullProfile.LoanInfo.RepaymentType = null;
-      this.profile.options.RepaymentType = [];
+      this.options.RepaymentType = [];
 
       // для синхронизации с Preapprov
       // if (this.personalData.typeStepCredit) {
@@ -3777,7 +3707,7 @@ export default {
         this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
           idx
         ].MaxInitialPaymentPercent;
-        this.profile.options.RepaymentType = this.dictionaries.LoanDetails.items[
+        this.options.RepaymentType = this.dictionaries.LoanDetails.items[
           idx
         ].PaymentsType.items;
 
@@ -3808,18 +3738,6 @@ export default {
     getDistricts(id) {
       const { region_id } = this.dictionaries.Region.items.find(i => i.value == id)
       return this.dictionaries.Districts.items[0][region_id]
-    },
-
-    hideDatepickerBirthdayGuarantees() {
-      for (let datepicker of this.$refs.qDateBirthdayGuarantees) {
-        datepicker.hide();
-      }
-    },
-
-    hideDatepickerPasportDateGuarantees() {
-      for (let datepicker of this.$refs.qDatePasportDateGuarantees) {
-        datepicker.hide();
-      }
     },
 
     addPhone() {

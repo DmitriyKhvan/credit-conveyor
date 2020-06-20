@@ -34,18 +34,27 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-  .creditMenu {
-    margin: 15px;
-  }
+<style lang="scss">
+  .creditConveyor {
+    .creditMenu {
+      margin: 15px;
+    }
 
-  .q-btn--rectangle {
-    background: $blue;
-    color: #fff;
-    margin-right: 15px;
+    .q-btn--rectangle {
+      background: $blue;
+      color: #fff;
+      margin-right: 15px;
+    }
+    .ellipsis {
+      font-size: 1rem
+    }
   }
-  .ellipsis {
-    font-size: 1rem
+  
+  .loaderForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
   }
 </style>
 

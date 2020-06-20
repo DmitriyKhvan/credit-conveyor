@@ -139,7 +139,7 @@ export default {
     async successCredit(val) {
       console.log(this.$store)
       this.$store.commit("credits/toggleConfirm", val);
-      this.$store.commit("credits/toggleLoaderForm", true)
+      this.$emit('toggleLoaderForm', true)
         console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
           const response = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
@@ -151,10 +151,11 @@ export default {
             this.$store.commit("profile/setDictionaries", dictionaries)
             
             this.$router.push("profile");
+            this.$emit('toggleLoaderForm', false)
           } else {
             throw 'Data is null'
           }
-
+          
         } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
           this.$store.commit("credits/setMessage", errorMessage);
@@ -164,7 +165,7 @@ export default {
     },
     
     async failureCredit() {
-      this.$emit('loader', true)
+      this.$emit('toggleLoaderFullScreen', true)
 
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
@@ -182,12 +183,10 @@ export default {
           const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
           console.log('res', res)
           if (res.requestedTask.state === "completed") {
-            this.$emit('loader', false)
-
             this.$store.commit("credits/setMessage", "Credit failure");
-            
             sessionStorage.clear()
             this.$router.push("/work/credit");
+            this.$emit('toggleLoaderFullScreen', true)
           } else {
             throw 'Task do not completed'
           }
