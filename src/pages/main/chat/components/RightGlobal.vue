@@ -295,8 +295,8 @@ export default {
       // })
 
       this.socket.on("grp/join/message", data => {
-      console.log({ joinmsg: data });
-    });
+        console.log({ joinmsg: data });
+      });
 
 
     // NEW
@@ -342,8 +342,10 @@ export default {
       if (data.emp_id === this.emp_id) {
         console.log("you re kicked from group " + data.chat_id);
         this.socket.emit("grp/leave", data);
+        this.$store.dispatch('deleteChat', data.chat_id )
       } else {
         console.log(data.emp_id, " kicked form chat " + data.chat_id);
+
       }
     });
 

@@ -289,7 +289,9 @@ export default {
       this.socket.removeListener('grp/join')
       this.socket.removeListener('grp/new')
       this.socket.removeListener('grp/create')
-      this.socket.removeListener('grp/msg')
+      this.socket.removeListener('grp/join/message')
+      this.socket.removeListener('grp/usr/join')
+      this.socket.removeListener('grp/usr/leave')
     }
 }
 </script>
