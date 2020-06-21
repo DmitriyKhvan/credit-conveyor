@@ -104,6 +104,7 @@ export default {
     },
     computed: {
       ...mapGetters({
+          user: "auth/fullName",
           emp_id: "auth/empId",
           socket: "socket/getSocket",
           chatId: 'getActiveChat',
@@ -139,18 +140,23 @@ export default {
         this.users = this.users.filter(el => el.emp_id !== id)
       },
       createGroup(){
+        // group Data
+
+
         if(this.users.length !==0 && this.title){
           let usersIds = []
           this.users.forEach(el => {
             usersIds.push(el.emp_id)
           })
-          const group = {
+
+          let grpData = {
             name: this.title,
-            description: 'описание',
+            description: "description",
             creator: this.emp_id,
             users: usersIds
-          }
-          this.socket.emit('group/create', group)
+          };
+
+          this.socket.emit("grp/create", grpData);
         }
       },
       clearForm(){
@@ -160,24 +166,37 @@ export default {
       }
     },
     created(){
-      this.socket.on('group/create', data => {
-        const chat = {
-          count: 0,
-          type: 2,
-          chat_id: data.id,
-          emp_id: data.creator,
-          to_name: data.name,
-          members: data.members,
-          messages: [],
-          creator: data.creator,
-          creator_fio: data.creator_fio
-        }
-        this.$store.dispatch('addChat', chat )
+      this.socket.on("grp/new", data => {
+        console.log({ newGroup: data });
 
-        this.users = []
-        this.searchUser = ''
-        this.result = []
-      })
+        if (data.users.includes(this.emp_id)) {
+          let myData = {
+            emp_name: this.user,
+            emp_id: this.emp_id,
+            chat_id: data.id
+          };
+          this.socket.emit("grp/join", myData);
+
+          const chat = {
+            count: 0,
+            type: 2,
+            chat_id: data.id,
+            emp_id: data.creator,
+            to_name: data.name,
+            members: data.members,
+            messages: [],
+            creator: data.creator,
+            creator_fio: data.creator_fio
+          }
+          this.$store.dispatch('addChat', chat )
+
+          this.users = []
+          this.searchUser = ''
+          this.result = []
+        }
+      });
+
+
     },
 
 }
