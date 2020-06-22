@@ -207,9 +207,8 @@ export default {
             console.log('delete chat click', chat.chat_id)
             this.socket.emit("chat/delete", chat.chat_id)
           } else {
-            this.socket.emit("group/usr/leave", {
-              chat_id: chat.chat_id,
-  	          emp_id: this.emp_id
+            this.socket.emit("grp/delete", {
+              chatId: chat.chat_id
             })
           }
         }
@@ -253,48 +252,102 @@ export default {
         this.$store.dispatch('addChat', chat )
         // this.$store.dispatch('setActiveChat', data.id)
         this.searchUser = ''
-
-
       })
+
       this.socket.on("chat/delete", data => {
         // console.log('chat/delete', data)
         this.$store.dispatch('deleteChat', data)
       })
-      this.socket.on("group/grp/leave", data => {
-        // console.log('group/grp/leave')
-        this.$store.dispatch('delUserGroup', data)
+      // this.socket.on("group/grp/leave", data => {
+      //   // console.log('group/grp/leave')
+      //   this.$store.dispatch('delUserGroup', data)
 
-      })
-      this.socket.on("group/usr/leave", data => {
-        // console.log('group/usr/leave')
-        this.$store.dispatch('deleteChat', data)
-      })
+      // })
+      // this.socket.on("group/usr/leave", data => {
+      //   // console.log('group/usr/leave')
+      //   this.$store.dispatch('deleteChat', data)
+      // })
 
-      this.socket.on('group/usr/new', data => {
-        // console.log('group/usr/new')
-        this.$store.dispatch('addUserToGroup', data )
-      })
-      this.socket.on('group/usr/joined', data => {
-        // console.log('group/usr/joined', data)
-        this.$store.dispatch('addUserToGroup', data )
-      })
+      // this.socket.on('group/usr/new', data => {
+      //   // console.log('group/usr/new')
+      //   this.$store.dispatch('addUserToGroup', data )
+      // })
+      // this.socket.on('group/usr/joined', data => {
+      //   // console.log('group/usr/joined', data)
+      //   this.$store.dispatch('addUserToGroup', data )
+      // })
       this.socket.on('group/usr/drop', data => {
         // console.log('group/usr/drop')
         this.$store.dispatch('deleteChat', data )
       })
-      this.socket.on('group/usr/left', data => {
-        // console.log('group/usr/left', data)
+      // this.socket.on('group/usr/left', data => {
+      //   // console.log('group/usr/left', data)
 
-        this.$store.dispatch('delUserGroup', data )
-        const users = this.chats.find(ch => ch.chat_id === data.chat_id)
-        if(users.members.length === 0) {
-          this.socket.emit("chat/delete", data.chat_id)
-        }
-      })
-      this.socket.on('group/usr/remove', data => {
-        console.log('group/usr/remove')
-        this.$store.dispatch('delUserGroup', data )
-      })
+      //   this.$store.dispatch('delUserGroup', data )
+      //   const users = this.chats.find(ch => ch.chat_id === data.chat_id)
+      //   if(users.members.length === 0) {
+      //     this.socket.emit("chat/delete", data.chat_id)
+      //   }
+      // })
+      // this.socket.on('group/usr/remove', data => {
+      //   console.log('group/usr/remove')
+      //   this.$store.dispatch('delUserGroup', data )
+      // })
+
+      this.socket.on("grp/join/message", data => {
+        console.log({ joinmsg: data });
+      });
+
+
+    // NEW
+    this.socket.on("grp/usr/join", data => {
+      console.log({ joinmsg: data });
+      this.$store.dispatch('addUserToGroup', data )
+
+      if (data.self_uid == this.emp_id) {
+        console.log(
+          "you are adding " + data.new_uname + "to chat: " + data.chat_id
+        );
+      } else if (data.new_uid == this.emp_id) {
+        console.log(
+          data.self_uname + " is adding you to chat: " + data.chat_id
+        );
+
+        let myData = {
+          emp_name: data.new_uname,
+          emp_id: this.emp_id,
+          chat_id: data.chat_id
+        };
+
+        this.socket.emit("grp/join", myData);
+      } else {
+        console.log(
+          data.self_uname +
+            " is adding " +
+            data.new_uname +
+            " to chat: " +
+            data.chat_id
+        );
+      }
+    });
+
+    this.socket.on("grp/usr/leave", data => {
+      console.log({ leavemsg: data });
+      this.$store.dispatch('delUserGroup', data )
+      const users = this.chats.find(ch => ch.chat_id === data.chat_id)
+      if(users.members.length === 0) {
+        this.socket.emit("chat/delete", data.chat_id)
+      }
+
+      if (data.emp_id === this.emp_id) {
+        console.log("you re kicked from group " + data.chat_id);
+        this.socket.emit("grp/leave", data);
+        this.$store.dispatch('deleteChat', data.chat_id )
+      } else {
+        console.log(data.emp_id, " kicked form chat " + data.chat_id);
+
+      }
+    });
 
     },
     beforeDestroy(){

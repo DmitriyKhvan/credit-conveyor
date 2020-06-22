@@ -121,8 +121,20 @@ export default {
           this.form.from_uid = this.emp_id
           this.form.chat_id = this.chatId
           if(this.form.message){
-            console.log('.EMIT - msg/send', this.form)
-            this.socket.emit("msg/send", this.form)
+            if(this.allChats.find(ch => ch.chat_id === this.chatId).type === 1){
+              console.log('.EMIT - msg/send', this.form)
+              this.socket.emit("msg/send", this.form)
+            } else {
+              let message = {
+                chat_id: this.chatId,
+                message: this.form.message,
+                from_uid: this.emp_id
+              };
+              console.log(message);
+              console.log('.EMIT - grp/msg', this.form)
+
+              this.socket.emit("grp/msg", message);
+            }
           }
           this.$refs.inputMessage.focus()
           this.form.message = ''
@@ -200,28 +212,41 @@ export default {
         }
       })
       this.socket.emit("chat/all", this.emp_id);
+
+
       this.socket.on("chat/all", data => {
         const chats =[]
-        if(data) {
-          data.forEach(el=>{
-            let ch = {}
-            if(el.type === 1){
-              ch = {
-                count: el.count,
-                type: el.type,
-                chat_id: el.chat_id,
+        if(data){
+          let ch = {}
+          data.forEach(el => {
+            if (el.type === 2) {
+              console.log(data)
+              let myData = {
+                emp_name: this.user,
                 emp_id: this.emp_id,
-                to_uid: el.details !== null ? el.details[0].emp_id : [],
-                to_name: el.details !== null ? el.details[0].name: [],
-                messages: el.messages !== null ? el.messages : []
-              }
-            } else {
+                chat_id: el.chat_id
+              };
+              this.socket.emit("grp/join", myData);
+
               ch = {
                 count: el.count,
                 type: 2,
                 chat_id: el.chat_id,
                 emp_id: el.details !== null ? el.details[0].creator : [],
                 to_name: el.details !== null ? el.details[0].name: [],
+                members: el.details !== null ? el.details[0].members : [],
+                messages: el.messages !== null ? el.messages : [],
+                creator_fio: el.details !== null ? el.details[0].creator_fio : '',
+                creator: el.details !== null ? el.details[0].creator : '',
+              }
+            } else {
+              ch = {
+                count: el.count,
+                type: 1,
+                chat_id: el.chat_id,
+                emp_id: el.details !== null ? el.details[0].creator : [],
+                to_name: el.details !== null ? el.details[0].name: [],
+                to_uid: el.details !== null ? el.details[0].emp_id: [],
                 members: el.details !== null ? el.details[0].members : [],
                 messages: el.messages !== null ? el.messages : []
               }
@@ -231,6 +256,7 @@ export default {
           this.$store.dispatch('setChat', chats)
         }
       });
+
 
       // this.socket.on("msg/send", data => {
       //   console.log('.ON - msg/send', data)
@@ -248,6 +274,8 @@ export default {
       //   }
       //   // this.socket.emit("chat/all", this.emp_id);
       // })
+
+
     },
     beforeDestroy(){
       this.socket.removeListener('msg/send')
@@ -258,6 +286,12 @@ export default {
       this.socket.removeListener('group/usr/remove')
       this.socket.removeListener('group/usr/drop')
       this.socket.removeListener('group/usr/left')
+      this.socket.removeListener('grp/join')
+      this.socket.removeListener('grp/new')
+      this.socket.removeListener('grp/create')
+      this.socket.removeListener('grp/join/message')
+      this.socket.removeListener('grp/usr/join')
+      this.socket.removeListener('grp/usr/leave')
     }
 }
 </script>

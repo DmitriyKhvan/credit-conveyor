@@ -62,9 +62,34 @@ const SocketService = {
         store.dispatch("addCount", data.chat_id);
       }
     });
-    socket.on("ping", function (data) {
+
+    socket.on("grp/msg", (data) => {
       console.log(data);
-      socket.emit("pong", { beat: 1 });
+      store.dispatch("addMessage", data);
+      const activeChat = store.getters.getActiveChat
+        ? store.getters.getActiveChat
+        : 0;
+
+      if (activeChat === data.chat_id && data.messages[0].from_uid !== empId) {
+        console.log("Reset Count");
+        const chat = {
+          chat_id: data.chat_id,
+          emp_id: empId,
+        };
+        axios
+          .post("/chat/resetcount", chat)
+          .then((response) => {
+            console.log("reset log");
+            store.dispatch("delChatCount", data.chat_id);
+          })
+          .catch((error) => {
+            console.log("error");
+          });
+      }
+
+      if (activeChat !== data.chat_id) {
+        store.dispatch("addCount", data.chat_id);
+      }
     });
 
     this.runOnline(socket, empId);

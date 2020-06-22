@@ -78,6 +78,7 @@ const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
 //Chat
 const ChatIndexPage = () => import('pages/main/chat/Index');
+const ChatTwoPage = () => import('pages/main/chat/Two');
 const Notifications = () => import('pages/main/chat/Test');
 const ChatPage = () => import("pages/main/chat/Chat");
 
@@ -324,6 +325,11 @@ const routes = [{
       path: "mainchat",
       name: "Main Chat",
       component: ChatPage
+    },
+    {
+      path: "chat2",
+      name: "Two Chat",
+      component: ChatTwoPage
     },
 
     ]
