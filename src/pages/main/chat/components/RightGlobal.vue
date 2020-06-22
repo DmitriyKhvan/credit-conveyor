@@ -304,7 +304,7 @@ export default {
       console.log({ joinmsg: data });
       this.$store.dispatch('addUserToGroup', data )
 
-      if (data.self_uid == this.emp_id) {
+      if (data.self_uid === this.emp_id) {
         console.log(
           "you are adding " + data.new_uname + "to chat: " + data.chat_id
         );
@@ -345,7 +345,6 @@ export default {
         this.$store.dispatch('deleteChat', data.chat_id )
       } else {
         console.log(data.emp_id, " kicked form chat " + data.chat_id);
-
       }
     });
 
