@@ -302,13 +302,28 @@ export default {
     // NEW
     this.socket.on("grp/usr/join", data => {
       console.log({ joinmsg: data });
-      this.$store.dispatch('addUserToGroup', data )
+      if(this.chats.find(ch => ch.chat_id === data.chat_id)){
+        this.$store.dispatch('addUserToGroup', data )
+      } else {
+        const gr = {
+          count: 0,
+          type: 2,
+          chat_id: data.chat_id,
+          emp_id: data.creator,
+          to_name: data.name,
+          members: data.members,
+          messages: data.messages ? data.messages : [],
+          creator: data.creator,
+          creator_fio: data.creator_fio
+        }
+        this.$store.dispatch('addChat', gr )
+      }
 
       if (data.self_uid === this.emp_id) {
         console.log(
           "you are adding " + data.new_uname + "to chat: " + data.chat_id
         );
-      } else if (data.new_uid == this.emp_id) {
+      } else if (data.new_uid === this.emp_id) {
         console.log(
           data.self_uname + " is adding you to chat: " + data.chat_id
         );
