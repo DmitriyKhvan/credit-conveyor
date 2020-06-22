@@ -3099,6 +3099,7 @@ export default {
       this.loaderForm = false
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
+        this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
         console.log('resggggggggggggggggggggg', res)
         const { data } = res.data.input.find(i => i.label == 'application')
         const uploadedFiles = data.AttachedDocuments.items
@@ -3158,7 +3159,7 @@ export default {
       this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
       this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
       this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
-      this.onChangeLoan(this.fullProfile.LoanInfo.LoanProduct)
+      this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
     }
   },
   computed: {
@@ -3674,7 +3675,7 @@ export default {
       if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.GivenDate) {
         this.$refs.pasportDateGuaranteesStart[idx].validate()
       }
-    },
+    }, 
 
     onChangeLoan(credit) {
       console.log("Аннуит, диффер")
@@ -3682,10 +3683,10 @@ export default {
       this.options.RepaymentType = [];
 
       // для синхронизации с Preapprov
-      if (this.personalData.typeStepCredit) {
-        this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
-        this.personalData.typeStepCredit = null
-      }
+      // if (this.personalData.typeStepCredit) {
+      //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
+      //   this.personalData.typeStepCredit = null
+      // }
 
       this.fullProfile.LoanInfo.consumerLoan = {
           nameBankProd: "",    // Наименование банка
@@ -3698,6 +3699,11 @@ export default {
         }
       this.fullProfile.LoanInfo.InitialPayment = 0
 
+      this.setLoan(credit)
+    },
+
+    setLoan(credit) {
+      console.log('credit', credit)
       const idx = this.dictionaries.LoanDetails.items.findIndex(
         item => item.LOAN_ID == credit
       );
