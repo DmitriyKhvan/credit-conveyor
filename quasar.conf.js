@@ -15,7 +15,7 @@ module.exports = function (ctx) {
       "calendar",
       "vuelidate",
       "vuehtml",
-      "extra-plugins"
+      "extra-plugins",
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -48,9 +48,7 @@ module.exports = function (ctx) {
       // * true   - Import everything from Quasar
       //            (not treeshaking Quasar; biggest bundle size; convenient)
       all: "auto",
-      components: [
-        'QScrollArea'
-      ],
+      components: ["QScrollArea"],
       directives: [],
       // Quasar plugins
       plugins: ["Notify", "Cookies", "Dialog", "Loading"],
@@ -77,13 +75,13 @@ module.exports = function (ctx) {
       analyze: false,
       env: ctx.dev
         ? {
-          VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/"),
-          SOCKET_URL: JSON.stringify("http://10.8.8.70:4000/")
-        }
+            VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/"),
+            SOCKET_URL: JSON.stringify("http://10.8.8.70:4000/"),
+          }
         : {
-          VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/"),
-          SOCKET_URL: JSON.stringify("http://10.8.8.70:4000/")
-        },
+            VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/"),
+            SOCKET_URL: JSON.stringify("http://10.8.8.70:4000/"),
+          },
       // Options below are automatically set depending on the env, set them if you want to override
       // preloadChunks: false,
       // extractCSS: false,
@@ -110,7 +108,12 @@ module.exports = function (ctx) {
     devServer: {
       https: false,
       port: 8088,
+      host: "10.8.8.70",
       open: true, // opens browser window automatically
+      disableHostCheck: true,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
     },
 
     // animations: 'all', // --- includes all animations

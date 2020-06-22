@@ -32,6 +32,11 @@ const SocketService = {
     this.runActiveUsers(socket);
     this.runLogout(socket);
 
+    socket.on("ping", function (data) {
+      console.log(data);
+      socket.emit("pong", { beat: 1 });
+    });
+
     socket.emit("chat/all", empId);
 
     socket.on("msg/send", (data) => {
