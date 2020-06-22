@@ -269,11 +269,13 @@
 
               <div class="col-4">
                 <q-input
+                  ref="passportIssuedBy"
                   square
                   outlined
                   v-model="Customer.Document.GivenPlace"
                   dense
                   label="Кем выдан паспорт"
+                  :rules="[val => !!val || 'Введите кем выдан паспорт']"
                 />
               </div>
             </div>
@@ -889,11 +891,13 @@
                 <div class="col-4">
                   <div class="col-4">
                     <q-input
+                      ref="relatives_passportIssuedBy"
                       square
                       outlined
                       v-model="relative.Document.GivenPlace"
                       dense
                       label="Кем выдан паспорт"
+                      :rules="[val => !!val || 'Введите кем выдан паспорт']"
                     />
                   </div>
                 </div>
@@ -1774,11 +1778,13 @@
 
                 <div class="col-4">
                   <q-input
+                    ref="passportIssuedByGuarantees"
                     square
                     outlined
                     v-model="guarantee.Document.GivenPlace"
                     dense
                     label="Кем выдан паспорт"
+                    :rules="[val => !!val || 'Введите кем выдан паспорт']"
                   />
                 </div>
               </div>
@@ -3090,6 +3096,7 @@ export default {
     if (this.taskId) {
       this.loaderForm = true
       this.$store.commit("credits/setTaskId", this.taskId);
+      this.loaderForm = false
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
         console.log('resggggggggggggggggggggg', res)
@@ -3113,7 +3120,7 @@ export default {
           }
         }
         this.guaranteesValid()
-        this.loaderForm = false
+        
       } catch (error) {
         this.loaderForm = false
       }
@@ -3151,6 +3158,7 @@ export default {
       this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
       this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
       this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
+      this.onChangeLoan(this.fullProfile.LoanInfo.LoanProduct)
     }
   },
   computed: {
@@ -3227,6 +3235,7 @@ export default {
       this.$refs.pasportNumber.validate();
       this.$refs.pasportDateStart.validate();
       this.$refs.pasportDateFinish.validate();
+      this.$refs.passportIssuedBy.validate();
 
       this.$refs.education.validate();
 
@@ -3252,6 +3261,7 @@ export default {
       );
       validFilter(this.$refs, "relativesPasportDateStartValid", "relatives_pasportDateStart");
       validFilter(this.$refs, "relativesPasportDateFinishValid", "relatives_pasportDateFinish");
+      validFilter(this.$refs, "relativesPassportIssuedByValid", "relatives_passportIssuedBy");
 
       this.$refs.kindOfActivity.validate();
 
@@ -3336,6 +3346,7 @@ export default {
         );
         validFilter(this.$refs, "pasportDateGuaranteesStartValid", "pasportDateGuaranteesStart");
         validFilter(this.$refs, "pasportDateGuaranteesFinishValid", "pasportDateGuaranteesFinish");
+        validFilter(this.$refs, "passportIssuedByGuaranteesValid", "passportIssuedByGuarantees");
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(this.$refs, "houseNumberGuaranteesValid", "houseNumberGuarantees");
@@ -3353,6 +3364,7 @@ export default {
         validItems(this.$refs, "pasportNumberGuaranteesValid");
         validItems(this.$refs, "pasportDateGuaranteesStartValid");
         validItems(this.$refs, "pasportDateGuaranteesFinishValid");
+        validItems(this.$refs, "passportIssuedByGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
         validItems(this.$refs, "houseNumberGuaranteesValid");
@@ -3459,6 +3471,7 @@ export default {
         this.$refs.pasportNumber.hasError ||
         this.$refs.pasportDateStart.hasError ||
         this.$refs.pasportDateFinish.hasError ||
+        this.$refs.passportIssuedBy.hasError ||
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
         this.$refs.regionValid.hasError ||
@@ -3474,6 +3487,7 @@ export default {
         this.$refs.relativesPasportNumberValid.hasError ||
         this.$refs.relativesPasportDateStartValid.hasError ||
         this.$refs.relativesPasportDateFinishValid.hasError ||
+        this.$refs.relativesPassportIssuedByValid.hasError ||
         //kind of activity
         this.$refs.kindOfActivity.hasError ||
         this.$refs.nameOfEmployer.hasError ||
@@ -3668,10 +3682,10 @@ export default {
       this.options.RepaymentType = [];
 
       // для синхронизации с Preapprov
-      // if (this.personalData.typeStepCredit) {
-      //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
-      //   this.personalData.typeStepCredit = null
-      // }
+      if (this.personalData.typeStepCredit) {
+        this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
+        this.personalData.typeStepCredit = null
+      }
 
       this.fullProfile.LoanInfo.consumerLoan = {
           nameBankProd: "",    // Наименование банка
@@ -3687,7 +3701,7 @@ export default {
       const idx = this.dictionaries.LoanDetails.items.findIndex(
         item => item.LOAN_ID == credit
       );
-      //console.log(idx);
+      console.log('idx', idx);
       if (idx !== -1) {
         this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
           idx
@@ -3724,7 +3738,7 @@ export default {
     },
 
     setDistricts(event, idx, item) {
-        //console.log('event', event, idx, item)
+        console.log('event', event, idx, item)
         const districts = this.getDistricts(event)
         this.$store.commit("profile/setDistricts", {idx, item, districts})
     },

@@ -294,6 +294,7 @@ export const credits = {
         }
         
         const blob = new Blob([response], { type: "application/pdf" })
+        // const blob = new Blob([response], { type: "application/octet-stream" })
         return window.URL.createObjectURL(blob)
     
       } catch(error) {

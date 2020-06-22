@@ -74,13 +74,13 @@
               <div class="col-4 data">
                 <template
                   v-if="
-                    profile.options.confirmation.find(
+                    credits.options.confirmation.find(
                       i => i.value == Customer.ResidentFlag
                     )
                   "
                 >
                   {{
-                    profile.options.confirmation.find(
+                    credits.options.confirmation.find(
                       i => i.value == Customer.ResidentFlag
                     ).label
                   }}
@@ -462,13 +462,13 @@
               <div class="col-6 data">
                 <template
                   v-if="
-                    profile.options.confirmation.find(
+                    credits.options.confirmation.find(
                       i => i.value == Customer.MonthlyIncome.hasAdditionalIncome
                     )
                   "
                 >
                   {{
-                    profile.options.confirmation.find(
+                    credits.options.confirmation.find(
                       i => i.value == Customer.MonthlyIncome.hasAdditionalIncome
                     ).label
                   }}
@@ -682,7 +682,7 @@
                   <div class="col-6 field">Резиденство</div>
                   <div class="col-6 data">
                     {{
-                      profile.options.confirmation.find(
+                      credits.options.confirmation.find(
                         i => i.value == guarantee.Resident
                       ).label
                     }}
@@ -1112,7 +1112,7 @@
                       label="Просмотреть"
                       @click="
                         loader = true
-                        printFile(document.id)
+                        showFile(document.id)
                         loader = false
                       "
                     />
@@ -1380,6 +1380,9 @@ export default {
     },
     dictionaries() {
       return this.$store.getters["profile/profile"].dictionaries;
+    },
+    credits() {
+      return this.$store.getters["credits/credits"];
     }
     // userRole() {
     //   return this.$store.getters["credits/userRole"]
@@ -1499,7 +1502,7 @@ export default {
       event.nextSibling.classList.toggle("close");
     },
 
-    async printFile(id) {
+    async showFile(id) {
       try {
         const url = await this.$store.dispatch("credits/getFile", id);
         this.$refs.modalView.style.display = "block";
@@ -1509,7 +1512,7 @@ export default {
         );
         this.$refs.pdfviewer.setAttribute("src", url);
         // printJS(url);
-        // window.URL.revokeObjectURL(url);
+        window.URL.revokeObjectURL(url);
         
       } catch (error) {
         //this.loader = false;

@@ -1,376 +1,385 @@
 <template>
-  <div class="q-pa-md">
-    <!-- <h4>Очередь задач</h4> -->
-    <q-markup-table>
-      <thead>
-        <tr>
-          <!-- <th class="text-left"></th> -->
-          <th class="text-left applicationNumber" colspan="2">
-            <q-input
-              square
-              outlined
-              v-model="applicationNumber"
-              dense
-              label="Введите номер заявки"
-            />
-          </th>
-          <th class="text-left client">
-            <q-input
-              square
-              outlined
-              v-model="client"
-              dense
-              label="Введите наименование клиента"
-            />
-          </th>
+  <div class="creditList">
+    <div class="q-pa-md">
+      <!-- <h4>Очередь задач</h4> -->
+      <q-markup-table>
+        <thead>
+          <tr>
+            <!-- <th class="text-left"></th> -->
+            <th class="text-left applicationNumber" colspan="2">
+              <q-input
+                square
+                outlined
+                v-model="applicationNumber"
+                dense
+                label="Введите номер заявки"
+              />
+            </th>
+            <th class="text-left client">
+              <q-input
+                square
+                outlined
+                v-model="client"
+                dense
+                label="Введите наименование клиента"
+              />
+            </th>
 
-          <th class="text-left manager">
-            <q-input
-              square
-              outlined
-              v-model="manager"
-              dense
-              label="Введите наименование менеджера"
-            />
-          </th>
+            <th class="text-left manager">
+              <q-input
+                square
+                outlined
+                v-model="manager"
+                dense
+                label="Введите наименование менеджера"
+              />
+            </th>
 
-          <th class="text-left MFO">
-            <q-input
-              square
-              outlined
-              v-model="MFO"
-              dense
-              label="Введите наименование МФО"
-            />
-          </th>
+            <th class="text-left MFO">
+              <q-input
+                square
+                outlined
+                v-model="MFO"
+                dense
+                label="Введите наименование МФО"
+              />
+            </th>
 
-          <th class="text-left filialName">
-            <q-input
-              square
-              outlined
-              v-model="filialName"
-              dense
-              label="Введите наименование филиала"
-            />
-          </th>
+            <th class="text-left filialName">
+              <q-input
+                square
+                outlined
+                v-model="filialName"
+                dense
+                label="Введите наименование филиала"
+              />
+            </th>
 
-          <th class="text-left taskName">
-            <q-select
-              square
-              outlined
-              v-model="taskName"
-              :options="options.taskName"
-              dense
-              label="Задача"
-            />
-          </th>
+            <th class="text-left taskName">
+              <q-select
+                square
+                outlined
+                v-model="taskName"
+                :options="options.taskName"
+                dense
+                label="Задача"
+              />
+            </th>
 
-          <th class="text-left taskStatus">
-            <q-select
-              square
-              outlined
-              v-model="taskStatus"
-              :options="options.taskStatus"
-              dense
-              label="Статус"
-            />
-          </th>
-          <th class="text-left date">
-            <q-input
-              outlined
-              square
-              dense
-              label="Выберите дату"
-              v-model="date"
-              mask="##.##.####"
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    transition-show="scale"
-                    transition-hide="scale"
-                    ref="qDate"
-                  >
-                    <q-date
-                      mask="DD.MM.YYYY"
-                      v-model="date"
-                      @input="() => $refs.qDate.hide()"
-                    />
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </th>
-          <th class="text-left"></th>
-        </tr>
+            <th class="text-left taskStatus">
+              <q-select
+                square
+                outlined
+                v-model="taskStatus"
+                :options="options.taskStatus"
+                dense
+                label="Статус"
+              />
+            </th>
+            <th class="text-left date">
+              <q-input
+                outlined
+                square
+                dense
+                label="Выберите дату"
+                v-model="date"
+                mask="##.##.####"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      transition-show="scale"
+                      transition-hide="scale"
+                      ref="qDate"
+                    >
+                      <q-date
+                        mask="DD.MM.YYYY"
+                        v-model="date"
+                        @input="() => $refs.qDate.hide()"
+                      />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </th>
+            <th class="text-left"></th>
+          </tr>
 
-        <tr class="titleApplication">
-          <th class="text-center number"><span>№</span></th>
-          <th class="text-left applicationNumber">
-            <button class="filter" idx="applicationNumber">
-              Заявка
-            </button>
-          </th>
-          <th class="text-left client">
-            <button class="filter" idx="client">
-              Клиент
-            </button>
-          </th>
+          <tr class="titleApplication">
+            <th class="text-center number"><span>№</span></th>
+            <th class="text-left applicationNumber">
+              <button class="filter" idx="applicationNumber">
+                Заявка
+              </button>
+            </th>
+            <th class="text-left client">
+              <button class="filter" idx="client">
+                Клиент
+              </button>
+            </th>
 
-          <th class="text-left manager">
-            <button class="filter" idx="manager">
-              Менеджер
-            </button>
-          </th>
+            <th class="text-left manager">
+              <button class="filter" idx="manager">
+                Менеджер
+              </button>
+            </th>
 
-          <th class="text-left MFO">
-            <button class="filter" idx="filial">
-              MFO
-            </button>
-          </th>
+            <th class="text-left MFO">
+              <button class="filter" idx="filial">
+                MFO
+              </button>
+            </th>
 
-          <th class="text-left filialName">
-            <button class="filter" idx="filialName">
-              Филиал
-            </button>
-          </th>
+            <th class="text-left filialName">
+              <button class="filter" idx="filialName">
+                Филиал
+              </button>
+            </th>
 
-          <th class="text-left taskName">
-            <button class="filter" idx="taskName">
-              Задача
-            </button>
-          </th>
+            <th class="text-left taskName">
+              <button class="filter" idx="taskName">
+                Задача
+              </button>
+            </th>
 
-          <th class="text-left taskStatus">
-            <button class="filter" idx="taskStatus">
-              Статус
-            </button>
-          </th>
-          <th class="text-left date">
-            <button class="filter" idx="date">
-              Дата
-            </button>
-          </th>
-          <th class="text-left"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(credit, index) of credits" :key="credit.id">
-        <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
-          <td class="text-center number applicationRow">
-            <template v-if="userRole === 'CS'" >
-              {{ index + 1 }}
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName,
-                  protocolNumber: credit.additionalInfo
-                    ? credit.additionalInfo.protocolNumber
-                    : null
-                }
-              }"
-              >{{ index + 1 }}</router-link
-            >
-          </td>
-
-          <td class="text-left applicationNumber applicationRow">
-            <template v-if="userRole === 'CS'" >
-              {{ credit.applicationNumber }}
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-              >{{ credit.applicationNumber }}</router-link
-            >
-          </td>
-
-          <td class="text-left client applicationRow">
-            <template v-if="userRole === 'CS'" >
-              {{ credit.client }}
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-              >{{ credit.client }}</router-link
-            >
-          </td>
-
-          <td class="text-left manager applicationRow">
-            <template v-if="userRole === 'CS'" >
-              Наименование менеджера
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-              >Наименование менеджера</router-link
-            >
-          </td>
-
-          <td class="text-left MFO applicationRow">
-            <template v-if="userRole === 'CS'" >
-              {{ credit.filial }}
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-              >{{ credit.filial }}</router-link
-            >
-          </td>
-
-          <td class="text-left filialName applicationRow">
-            <template v-if="userRole === 'CS'" >
-              {{ credit.filialName }}
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-              >{{ credit.filialName }}</router-link
-            >
-          </td>
-
-          <td class="text-left taskName applicationRow">
-            <template v-if="userRole === 'CS'" >
-              {{ credit.taskName }}
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-              >{{ credit.taskName }}</router-link
-            >
-          </td>
-
-          <td class="text-left taskStatus applicationRow">
-            <template v-if="userRole === 'CS'" >
-              {{ credit.taskStatus }}
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-              >{{ credit.taskStatus }}</router-link
-            >
-          </td>
-
-          <td class="text-left date applicationRow">
-            <template v-if="userRole === 'CS'" >
-              {{ credit.date }}
-            </template>
-            <router-link
-              v-else
-              :to="{
-                name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
-                params: { id: credit.id },
-                query: {
-                  taskId: credit.taskId,
-                  date: credit.date,
-                  applicationNumber: credit.applicationNumber,
-                  filialName: credit.filialName
-                }
-              }"
-              >{{ credit.date }}</router-link
-            >
-          </td>
-
-          <td class="text-left print">
-            <div class="text-blue q-gutter-md">
-              <q-btn disable icon="print" @click="printFile()" />
-              <!-- <q-btn icon="print" @click="printJS(link)" /> -->
-              <q-btn disable icon="cloud_download" @click="downloadFile()" />
-
+            <th class="text-left taskStatus">
+              <button class="filter" idx="taskStatus">
+                Статус
+              </button>
+            </th>
+            <th class="text-left date">
+              <button class="filter" idx="date">
+                Дата
+              </button>
+            </th>
+            <th class="text-left"></th>
+          </tr>
+        </thead>
+        <tbody v-if="loaderList">
+          <tr>
+            <td colspan="10"><appLoader /></td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr v-for="(credit, index) of credits" :key="credit.id">
+            <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
+            <td class="text-center number applicationRow">
               <template v-if="userRole === 'CS'">
-                <q-btn
-                  disable
-                  class="full-width"
-                  label="Подписать"
-                  color="green"
-                  @click="creditSign"
-                />
+                {{ index + 1 }}
               </template>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </q-markup-table>
-    <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName,
+                    protocolNumber: credit.additionalInfo
+                      ? credit.additionalInfo.protocolNumber
+                      : null
+                  }
+                }"
+                >{{ index + 1 }}</router-link
+              >
+            </td>
+
+            <td class="text-left applicationNumber applicationRow">
+              <template v-if="userRole === 'CS'">
+                {{ credit.applicationNumber }}
+              </template>
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName
+                  }
+                }"
+                >{{ credit.applicationNumber }}</router-link
+              >
+            </td>
+
+            <td class="text-left client applicationRow">
+              <template v-if="userRole === 'CS'">
+                {{ credit.client }}
+              </template>
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName
+                  }
+                }"
+                >{{ credit.client }}</router-link
+              >
+            </td>
+
+            <td class="text-left manager applicationRow">
+              <template v-if="userRole === 'CS'">
+                Наименование менеджера
+              </template>
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName
+                  }
+                }"
+                >Наименование менеджера</router-link
+              >
+            </td>
+
+            <td class="text-left MFO applicationRow">
+              <template v-if="userRole === 'CS'">
+                {{ credit.filial }}
+              </template>
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName
+                  }
+                }"
+                >{{ credit.filial }}</router-link
+              >
+            </td>
+
+            <td class="text-left filialName applicationRow">
+              <template v-if="userRole === 'CS'">
+                {{ credit.filialName }}
+              </template>
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName
+                  }
+                }"
+                >{{ credit.filialName }}</router-link
+              >
+            </td>
+
+            <td class="text-left taskName applicationRow">
+              <template v-if="userRole === 'CS'">
+                {{ credit.taskName }}
+              </template>
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName
+                  }
+                }"
+                >{{ credit.taskName }}</router-link
+              >
+            </td>
+
+            <td class="text-left taskStatus applicationRow">
+              <template v-if="userRole === 'CS'">
+                {{ credit.taskStatus }}
+              </template>
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName
+                  }
+                }"
+                >{{ credit.taskStatus }}</router-link
+              >
+            </td>
+
+            <td class="text-left date applicationRow">
+              <template v-if="userRole === 'CS'">
+                {{ credit.date }}
+              </template>
+              <router-link
+                v-else
+                :to="{
+                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  params: { id: credit.id },
+                  query: {
+                    taskId: credit.taskId,
+                    date: credit.date,
+                    applicationNumber: credit.applicationNumber,
+                    filialName: credit.filialName
+                  }
+                }"
+                >{{ credit.date }}</router-link
+              >
+            </td>
+
+            <td class="text-left print">
+              <div class="text-blue q-gutter-md">
+                <q-btn disable icon="print" @click="printFile()" />
+                <!-- <q-btn icon="print" @click="printJS(link)" /> -->
+                <q-btn disable icon="cloud_download" @click="downloadFile()" />
+
+                <template v-if="userRole === 'CS'">
+                  <q-btn
+                    disable
+                    class="full-width"
+                    label="Подписать"
+                    color="green"
+                    @click="creditSign"
+                  />
+                </template>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </q-markup-table>
+      <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
+    </div>
   </div>
 </template>
 
 <script>
 import printJS from "print-js";
+import Loader from "@/components/Loader";
 
 export default {
   data() {
     return {
       // userRole: this.$store.getters.userRole,
+      loaderList: false,
       fileData: {
         type: "protocol",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
@@ -568,97 +577,110 @@ export default {
         link.href = url;
         link.download = fileName;
         link.click();
-        window.URL.revokeObjectURL(link.href);
+        window.URL.revokeObjectURL(url);
       } catch (error) {}
     }
+  },
+  components: {
+    appLoader: Loader
   }
 };
 </script>
 
-<style lang="scss" scoped>
-tr:nth-child(2n) {
-  background: #e8edff;
-}
+<style lang="scss">
+.creditList {
 
-th,
-td {
-  padding: 2px;
-}
-
-td {
-  /* word-break: break-all; */
-  white-space: pre-wrap;
-}
-
-.number {
-  width: 3%;
-  span {
-    font-size: 16px;
-    color: #093475;
-  }
-}
-
-.applicationNumber {
-  width: 9%;
-}
-
-.client,
-.manager,
-.MFO,
-.filialName,
-.taskName,
-.taskStatus,
-.date {
-  width: 11%;
-}
-
-.print {
-  width: 6%;
-}
-
-.filter {
-  width: 100%;
-  height: 40px;
-  border: none;
-  background: inherit;
-  cursor: pointer;
-  text-align: left;
-  color: #093475;
-  font-size: 16px;
-
-  &:after {
-    content: "";
-    float: right;
-    border: 1px solid $blue;
-    border-width: 0 3px 3px 0;
-    padding: 4px;
-    margin-top: 4px;
-    transform: rotate(45deg);
-  }
-}
-
-.active {
-  &:after {
-    content: "";
-    float: right;
-    border: 1px solid $blue;
-    border-width: 0 3px 3px 0;
-    padding: 4px;
-    margin-top: 4px;
-    transform: rotate(-135deg);
-  }
-}
-
-.applicationRow {
-  cursor: pointer;
-
-  a {
+  .loaderList {
     display: flex;
-    text-decoration: none;
-    color: inherit;
-    width: 100%;
-    height: 100%;
+    justify-content: center;
     align-items: center;
+    width: 100%;
+  }
+
+  tr:nth-child(2n) {
+    background: #e8edff;
+  }
+
+  th,
+  td {
+    padding: 2px;
+  }
+
+  td {
+    /* word-break: break-all; */
+    white-space: pre-wrap;
+  }
+
+  .number {
+    width: 3%;
+    span {
+      font-size: 16px;
+      color: #093475;
+    }
+  }
+
+  .applicationNumber {
+    width: 9%;
+  }
+
+  .client,
+  .manager,
+  .MFO,
+  .filialName,
+  .taskName,
+  .taskStatus,
+  .date {
+    width: 11%;
+  }
+
+  .print {
+    width: 6%;
+  }
+
+  .filter {
+    width: 100%;
+    height: 40px;
+    border: none;
+    background: inherit;
+    cursor: pointer;
+    text-align: left;
+    color: #093475;
+    font-size: 16px;
+
+    &:after {
+      content: "";
+      float: right;
+      border: 1px solid $blue;
+      border-width: 0 3px 3px 0;
+      padding: 4px;
+      margin-top: 4px;
+      transform: rotate(45deg);
+    }
+  }
+
+  .active {
+    &:after {
+      content: "";
+      float: right;
+      border: 1px solid $blue;
+      border-width: 0 3px 3px 0;
+      padding: 4px;
+      margin-top: 4px;
+      transform: rotate(-135deg);
+    }
+  }
+
+  .applicationRow {
+    cursor: pointer;
+
+    a {
+      display: flex;
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+    }
   }
 }
 </style>
