@@ -34,10 +34,10 @@ const SocketService = {
     this.runOnlineUsers(socket);
     this.runActiveUsers(socket);
     this.runLogout(socket);
-
-    socket.emit("chat/all", empId);
+    this.runPingPong(socket);
 
     this.runOnline(socket, empId);
+    socket.emit("chat/all", empId);
   },
   stopConnection() {
     let socket = store.getters["socket/getSocket"];
@@ -214,6 +214,12 @@ const SocketService = {
 
     // console.log({ online: data });
     socket.emit("online", data);
+  },
+  runPingPong(socket) {
+    socket.on("ping", function (data) {
+      console.log(data);
+      socket.emit("pong", { beat: 1 });
+    });
   },
   runLogout(socket) {
     socket.on("logout", (_) => {
