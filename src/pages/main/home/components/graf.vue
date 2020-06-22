@@ -93,7 +93,6 @@ export default {
     },
     maxNum() {
       let arr = [];
-      console.log(this.graf.length);
       for (let i = 0; i < this.graf.length; i++) {
         for (let e = 0; e < this.graf[i].length; e++) {
           arr.push(this.graf[i][e]);

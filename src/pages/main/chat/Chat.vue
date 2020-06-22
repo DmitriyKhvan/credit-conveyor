@@ -211,51 +211,52 @@ export default {
             this.heightChat = height(eee) - 240 + 'px'
         }
       })
-      this.socket.emit("chat/all", this.emp_id);
+
+      // this.socket.emit("chat/all", this.emp_id);
 
 
-      this.socket.on("chat/all", data => {
-        const chats =[]
-        if(data){
-          let ch = {}
-          data.forEach(el => {
-            if (el.type === 2) {
-              console.log(data)
-              let myData = {
-                emp_name: this.user,
-                emp_id: this.emp_id,
-                chat_id: el.chat_id
-              };
-              this.socket.emit("grp/join", myData);
+      // this.socket.on("chat/all", data => {
+      //   const chats =[]
+      //   if(data){
+      //     let ch = {}
+      //     data.forEach(el => {
+      //       if (el.type === 2) {
+      //         console.log(data)
+      //         let myData = {
+      //           emp_name: this.user,
+      //           emp_id: this.emp_id,
+      //           chat_id: el.chat_id
+      //         };
+      //         this.socket.emit("grp/join", myData);
 
-              ch = {
-                count: el.count,
-                type: 2,
-                chat_id: el.chat_id,
-                emp_id: el.details !== null ? el.details[0].creator : [],
-                to_name: el.details !== null ? el.details[0].name: [],
-                members: el.details !== null ? el.details[0].members : [],
-                messages: el.messages !== null ? el.messages : [],
-                creator_fio: el.details !== null ? el.details[0].creator_fio : '',
-                creator: el.details !== null ? el.details[0].creator : '',
-              }
-            } else {
-              ch = {
-                count: el.count,
-                type: 1,
-                chat_id: el.chat_id,
-                emp_id: el.details !== null ? el.details[0].creator : [],
-                to_name: el.details !== null ? el.details[0].name: [],
-                to_uid: el.details !== null ? el.details[0].emp_id: [],
-                members: el.details !== null ? el.details[0].members : [],
-                messages: el.messages !== null ? el.messages : []
-              }
-            }
-            chats.push(ch)
-          })
-          this.$store.dispatch('setChat', chats)
-        }
-      });
+      //         ch = {
+      //           count: el.count,
+      //           type: 2,
+      //           chat_id: el.chat_id,
+      //           emp_id: el.details !== null ? el.details[0].creator : [],
+      //           to_name: el.details !== null ? el.details[0].name: [],
+      //           members: el.details !== null ? el.details[0].members : [],
+      //           messages: el.messages !== null ? el.messages : [],
+      //           creator_fio: el.details !== null ? el.details[0].creator_fio : '',
+      //           creator: el.details !== null ? el.details[0].creator : '',
+      //         }
+      //       } else {
+      //         ch = {
+      //           count: el.count,
+      //           type: 1,
+      //           chat_id: el.chat_id,
+      //           emp_id: el.details !== null ? el.details[0].creator : [],
+      //           to_name: el.details !== null ? el.details[0].name: [],
+      //           to_uid: el.details !== null ? el.details[0].emp_id: [],
+      //           members: el.details !== null ? el.details[0].members : [],
+      //           messages: el.messages !== null ? el.messages : []
+      //         }
+      //       }
+      //       chats.push(ch)
+      //     })
+      //     this.$store.dispatch('setChat', chats)
+      //   }
+      // });
 
 
       // this.socket.on("msg/send", data => {
@@ -279,7 +280,7 @@ export default {
     },
     beforeDestroy(){
       this.socket.removeListener('msg/send')
-      this.socket.removeListener('chat/all')
+      // this.socket.removeListener('chat/all')
       this.socket.removeListener('group/usr/new')
       this.socket.removeListener('group/usr/joined')
       this.socket.removeListener('group/usr/add')

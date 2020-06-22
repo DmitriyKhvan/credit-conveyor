@@ -25,6 +25,7 @@ const SocketService = {
   runConnection() {
     let socket = store.getters["socket/getSocket"];
     let empId = store.getters["auth/empId"]
+    let user = store.getters["auth/fullName"]
     //this.runNotifications(socket, empId);
     this.runChat(socket, empId)
     //this.runGroup(socket, empId)
@@ -34,6 +35,49 @@ const SocketService = {
     this.runLogout(socket);
 
     socket.emit("chat/all", empId)
+
+    socket.on("chat/all", data => {
+      const chats =[]
+      if(data){
+        let ch = {}
+        data.forEach(el => {
+          if (el.type === 2) {
+            console.log(data)
+            let myData = {
+              emp_name: user,
+              emp_id: empId,
+              chat_id: el.chat_id
+            };
+            socket.emit("grp/join", myData);
+
+            ch = {
+              count: el.count,
+              type: 2,
+              chat_id: el.chat_id,
+              emp_id: el.details !== null ? el.details[0].creator : [],
+              to_name: el.details !== null ? el.details[0].name: [],
+              members: el.details !== null ? el.details[0].members : [],
+              messages: el.messages !== null ? el.messages : [],
+              creator_fio: el.details !== null ? el.details[0].creator_fio : '',
+              creator: el.details !== null ? el.details[0].creator : '',
+            }
+          } else {
+            ch = {
+              count: el.count,
+              type: 1,
+              chat_id: el.chat_id,
+              emp_id: el.details !== null ? el.details[0].creator : [],
+              to_name: el.details !== null ? el.details[0].name: [],
+              to_uid: el.details !== null ? el.details[0].emp_id: [],
+              members: el.details !== null ? el.details[0].members : [],
+              messages: el.messages !== null ? el.messages : []
+            }
+          }
+          chats.push(ch)
+        })
+        store.dispatch('setChat', chats)
+      }
+    });
 
     socket.on("msg/send", data => {
       console.log('.ON - msg/send', data)
@@ -89,20 +133,26 @@ const SocketService = {
         store.dispatch('addCount', data.chat_id)
       }
     });
-
-
     this.runOnline(socket, empId);
-
-
-    //store.dispatch("socket/setOnline", true);
-    //console.log("user is online");
-
   },
   stopConnection() {
     let socket = store.getters["socket/getSocket"];
     let empId = store.getters["auth/empId"];
+    let user = store.getters["auth/fullName"]
 
-    socket.emit("offline", empId);
+    const chats = store.getters.getChats
+
+    chats.forEach(ch => {
+      if(ch.type === 2){
+        const chat = {
+          chat_id: ch.chat_id,
+          emp_name: user
+        }
+        socket.emit('grp/leave', chat)
+      }
+    })
+    setTimeout(() => socket.emit("offline", empId));
+
     console.log("user is offline");
   },
   isOnline() {
