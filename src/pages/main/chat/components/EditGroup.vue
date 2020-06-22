@@ -143,9 +143,9 @@ export default {
         }
       },
       addUser(user){
+
         if(!this.users.find(el => el.emp_id === user.emp_id) && user.emp_id !== this.emp_id) {
           let usr = this.usersChat.lenght !==0 ? this.usersChat.slice(0) : []
-          console.log(this.group)
           usr.push({name: user.name, emp_id: user.emp_id})
           const arr = {
             chat_id: this.group.chat_id,
@@ -157,7 +157,7 @@ export default {
             creator_fio: this.group.creator_fio, // fio sozdatel
             members: usr // spisok uchastniki
           }
-          console.log(arr)
+          console.log('grp/usr/add', arr)
           this.socket.emit('grp/usr/add', arr)
         }
         this.searchUser = ''
@@ -168,7 +168,6 @@ export default {
           chat_id: this.group.chat_id,
           emp_id: id
         }
-        console.log(arr)
         this.socket.emit('grp/usr/remove', arr)
       },
       clearForm(){
@@ -182,6 +181,12 @@ export default {
       this.users = group.members === null ? [] : group.members
       this.title = group.to_name
 
+    },
+    updated(){
+      const group = this.chats.find(el => el.chat_id === this.id)
+      this.group = group
+      this.users = group.members === null ? [] : group.members
+      this.title = group.to_name
     },
     beforeDestroy(){
 
