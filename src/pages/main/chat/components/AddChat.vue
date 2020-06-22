@@ -168,7 +168,7 @@ export default {
     created(){
       this.socket.on("grp/new", data => {
         console.log({ newGroup: data });
-
+        console.log('my ID', this.emp_id)
         if (data.users.includes(this.emp_id)) {
           let myData = {
             emp_name: this.user,
