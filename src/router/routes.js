@@ -8,6 +8,7 @@ const Page404 = () => import("pages/extras/Error404");
 const AdminPage = () => import("pages/main/admin/admin");
 const Users = () => import("pages/main/admin/users/Users");
 const CreditUsers = () => import("pages/main/admin/creditUsers/CreditUsers");
+const CommitteeGroups = () => import("pages/main/admin/committeeGroups/CommitteeGroups");
 const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
 const Moderators = () => import("pages/main/admin/moderators/Moderators");
@@ -188,6 +189,11 @@ const routes = [{
       path: "creditUsers",
       name: "Credit Users List",
       component: CreditUsers
+    },
+    {
+      path: "committeeGroups",
+      name: "Committee Group List",
+      component: CommitteeGroups
     },
     {
       path: "roles",

@@ -11,13 +11,13 @@ export const credits = {
       message: null
     },
     roles: {
-      Admin: "CRM",
+      //Admin: "CRM",
       CreditManager: "CRM",
       BackOfficee: "BO",
       CreditCommitteeMember: "CCM",
       CreditSecretary: "CS"
     },
-    loaderForm: true, // при загрузки формы preapproval
+    
     confirm: false, // для модального окна расчета кредита
     messageBar: false,
     bpmService: new BpmService(),
@@ -47,7 +47,7 @@ export const credits = {
       childCost: 0,
 
       // FAMILY //
-      familyStatus: "",
+      familyStatus: null,
       children: false,
       childrenCount: 0,
       // MONEY //
@@ -80,7 +80,20 @@ export const credits = {
       maxPayment: 0, // Сколько может платить в месяц
       maxSum: 0 // Сколько максимум кредита можем выдать
     },
-    creditTasks: []
+    creditTasks: [],
+
+    options: {
+      confirmation: [
+        {
+          label: "Да",
+          value: true
+        },
+        {
+          label: "Нет",
+          value: false
+        }
+      ]
+    }
    
   },
   actions: {
@@ -100,10 +113,10 @@ export const credits = {
 
         const userRole = role.value[0].authority
 
-        commit("setUserRole", userRole)
-
         // запись роли в header запроса
         await dispatch("setHeaderRole", state.roles[userRole]);
+
+        commit("setUserRole", state.roles[userRole])
 
         // запись роли в sessionStore
         sessionStorage.setItem("userRole", state.roles[userRole])
@@ -121,7 +134,7 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     },
@@ -158,7 +171,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
+        this.$router.push("/work/credit");
       }
     },
 
@@ -184,7 +198,9 @@ export const credits = {
 
         console.log("calculCredit taskId ", response.nextTask.id);
         if (response.nextTask.id) {
+          //sessionStorage.clear()
           commit("setTaskId", response.nextTask.id);
+          sessionStorage.setItem("taskId", response.nextTask.id)
         } else {
           throw 'Next task id is undefined'
         }
@@ -193,7 +209,9 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        
+        sessionStorage.clear()
+        this.$router.push("/work/credit");
       }
     },
 
@@ -219,7 +237,8 @@ export const credits = {
         console.log('errorMessage', error)
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        
+        sessionStorage.clear()
       }
     },
 
@@ -233,7 +252,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     },
@@ -248,7 +268,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     },
@@ -264,10 +285,16 @@ export const credits = {
 
     async getFile({state, commit, dispatch}, fileData) {
       try {
-        // const file = await dispatch('creatFile', fileData)
-        // const response = await state.bpmService.getFile(file.infos[0].id)
-        const response = await state.bpmService.getFile(346)
+        let response;
+        if (typeof fileData == 'object') {
+          const file = await dispatch('creatFile', fileData)
+          response = await state.bpmService.getFile(file.infos[0].id)
+        } else {
+          response = await state.bpmService.getFile(fileData)
+        }
+        
         const blob = new Blob([response], { type: "application/pdf" })
+        // const blob = new Blob([response], { type: "application/octet-stream" })
         return window.URL.createObjectURL(blob)
     
       } catch(error) {
@@ -340,7 +367,7 @@ export const credits = {
         childCost: 0,
 
         // FAMILY //
-        familyStatus: "",
+        familyStatus: null,
         children: false,
         childrenCount: 0,
         // MONEY //
@@ -351,6 +378,10 @@ export const credits = {
         externalIncomeSize: 0, //размер дополнительного дохода
         additionalIncomeSource: "" //источник дополнительного дохода
       };
+    },
+
+    resetMessageBar(state) {
+      state.messageBar = false
     },
 
     toggleScannerSerialNumber(state, payload) {
@@ -365,10 +396,6 @@ export const credits = {
 
     toggleMessageBar(state, payload) {
       state.messageBar = payload;
-    },
-
-    toggleLoaderForm(state, flag) {
-      state.loaderForm = flag;
     },
 
     setTaskId(state, payload) {

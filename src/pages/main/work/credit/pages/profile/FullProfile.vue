@@ -33,7 +33,7 @@
               <div class="col-3">Резидентсво</div>
               <div class="col-9">
                 {{
-                  profile.options.confirmation.find(
+                  credits.options.confirmation.find(
                     i => i.value == Customer.ResidentFlag
                   ).label
                 }}
@@ -305,14 +305,14 @@
               <div class="col-9">
                 <template
                   v-if="
-                    profile.options.confirmation.find(
+                    credits.options.confirmation.find(
                       i =>
                         i.value == Customer.MonthlyIncome.hasAdditionalIncome
                     )
                   "
                 >
                   {{
-                    profile.options.confirmation.find(
+                    credits.options.confirmation.find(
                       i =>
                         i.value == Customer.MonthlyIncome.hasAdditionalIncome
                     ).label
@@ -447,7 +447,7 @@
                       <!-- <template v-if="">
                     </template> -->
                       {{
-                        profile.options.confirmation.find(
+                        credits.options.confirmation.find(
                           i => i.value == guarantee.Resident
                         ).label
                       }}
@@ -594,11 +594,18 @@
               <div class="col-9">{{ fullProfile.LoanInfo.Currency }}</div>
               <div class="col-3">Тип пошагового кредита</div>
               <div class="col-9">
+
+                <template
+                 v-if="dictionaries.PaymentsType.items.find(
+                    i => i.value == fullProfile.LoanInfo.RepaymentType
+                  )" 
+                >
                 {{
-                  profile.options.RepaymentType.find(
+                  dictionaries.PaymentsType.items.find(
                     i => i.value == fullProfile.LoanInfo.RepaymentType
                   ).label
                 }}
+                </template>
               </div>
                <div class="col-3">Процентная ставка по кредиту (максимальная)</div>
               <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
@@ -832,6 +839,9 @@ export default {
     },
     dictionaries() {
       return this.$store.getters["profile/profile"].dictionaries;
+    },
+    credits() {
+      return this.$store.getters["credits/credits"];
     }
   },
   methods: {

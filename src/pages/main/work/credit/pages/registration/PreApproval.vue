@@ -3,7 +3,10 @@
     <q-dialog v-model="confirm" persistent>
       <q-card class="preApprovalBlock">
         <q-card-section class="column items-start">
-          <div class="text-h6">Заявка на кредит</div>
+          <div class="preApprovalBlock__title">
+            <div class="text-h6">Заявка на кредит</div>
+            <q-btn class="print" icon="print" @click="printFile()" disable/>
+          </div>
           <div class="creditBackground">
             <h4 class="personName">
               {{
@@ -103,6 +106,8 @@
 <script>
 import formatNumber from "../../filters/format_number.js";
 import CommonUtils from "@/shared/utils/CommonUtils";
+// import LoaderFullScreen from "@/components/LoaderFullScreen";
+import printJS from "print-js";
 
 export default {
   data() {
@@ -134,7 +139,7 @@ export default {
     async successCredit(val) {
       console.log(this.$store)
       this.$store.commit("credits/toggleConfirm", val);
-      this.$store.commit("credits/toggleLoaderForm", true)
+      this.$emit('toggleLoaderForm', true)
         console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
           const response = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
@@ -146,19 +151,22 @@ export default {
             this.$store.commit("profile/setDictionaries", dictionaries)
             
             this.$router.push("profile");
+            this.$emit('toggleLoaderForm', false)
           } else {
             throw 'Data is null'
           }
-
+          
         } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
           this.$store.commit("credits/setMessage", errorMessage);
-          sessionStorage.removeItem("csrf_token");
+          sessionStorage.clear();
           this.$router.push("/work/credit")
         }
     },
     
     async failureCredit() {
+      this.$emit('toggleLoaderFullScreen', true)
+
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
@@ -170,17 +178,37 @@ export default {
         this.credits.confirmCreditData.output[0].data = false
         this.credits.confirmCreditData.output[1].data = this.selection
     
+        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
         try {
           const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
+          console.log('res', res)
           if (res.requestedTask.state === "completed") {
-            sessionStorage.removeItem("csrf_token");
+            this.$store.commit("credits/setMessage", "Credit failure");
+            sessionStorage.clear()
             this.$router.push("/work/credit");
+            this.$emit('toggleLoaderFullScreen', true)
           } else {
             throw 'Task do not completed'
           }
-        } catch (error) {}
+        } catch (error) {
+          const errorMessage = CommonUtils.filterServerError(error);
+          this.$store.commit("credits/setMessage", errorMessage);
+          sessionStorage.clear();
+          this.$router.push("/work/credit")
+        }
       }
-    }
+    },
+
+    async printFile() {
+      try {
+        const url = await this.$store.dispatch(
+          "credits/getFile",
+          this.fileData
+        );
+        printJS(url);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {}
+    },
   },
 
   filters: {
@@ -192,6 +220,20 @@ export default {
 .preApprovalBlock {
   width: 510px;
   min-height: 290px;
+
+  &__title {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .print {
+    width: 10%;
+
+    .q-btn__wrapper::before {
+      box-shadow: none;
+    }
+  }
 
   .items-start {
     padding: 0;

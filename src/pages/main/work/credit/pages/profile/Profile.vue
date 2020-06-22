@@ -1,6 +1,8 @@
 <template>
   <div class="fullProfile">
-    <appLoader v-if="loaderForm" />
+    <div class="loaderForm" v-if="loaderForm">
+      <appLoader />
+    </div>
     <div v-else class="q-pa-md">
       <form @submit.prevent.stop="onSubmit">
         <!-- Private data person -->
@@ -108,11 +110,10 @@
                   ref="pinpp"
                   square
                   outlined
-                  v-model="Customer.PINPP"
+                  v-model.lazy="Customer.PINPP"
                   dense
                   label="ПИНФЛ"
                   mask="##############"
-                  lazy-rules
                   :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
                 />
               </div>
@@ -125,7 +126,6 @@
                   :options="dictionaries.Gender.items"
                   dense
                   label="Пол"
-                  lazy-rules
                   :rules="[val => !!val || 'Выберите пол']"
                   emit-value
                   map-options
@@ -140,7 +140,7 @@
                   square
                   outlined
                   v-model="Customer.ResidentFlag"
-                  :options="profile.options.confirmation"
+                  :options="credits.options.confirmation"
                   dense
                   label="Резидентство"
                   emit-value
@@ -156,6 +156,7 @@
                   outlined
                   v-model="Customer.Document.Series"
                   dense
+                  lazy-rules
                   label="Серия паспорта"
                   mask="AA"
                   :rules="[
@@ -211,7 +212,11 @@
                         <q-date
                           mask="DD.MM.YYYY"
                           v-model="Customer.Document.GivenDate"
-                          @input="() => $refs.qDatePasportDateStart.hide()"
+                          @input="($event) => {
+                            $refs.qDatePasportDateStart.hide()
+                            validDatePerson($event)
+                          }  
+                          "
                         />
                       </q-popup-proxy>
                     </q-icon>
@@ -228,7 +233,6 @@
                   label="Дата окончания действия паспорта"
                   v-model="Customer.Document.ExpirationDate"
                   mask="##.##.####"
-                  lazy-rules
                   :rules="[
                     val =>
                       (val && val.length === 10) ||
@@ -236,7 +240,9 @@
                       Customer.Document.GivenDate 
                       ? (val => reverseDate(val) > reverseDate(Customer.Document.GivenDate) ||
                       'Неверная дата')
-                      : null
+                      : null,
+                      val => reverseDate(val) > reverseDate(currentDate) || 
+                      'Неверная дата'
                   ]"
                 >
                   <template v-slot:append>
@@ -249,7 +255,11 @@
                         <q-date
                           mask="DD.MM.YYYY"
                           v-model="Customer.Document.ExpirationDate"
-                          @input="() => $refs.qDatePasportDateFinish.hide()"
+                          @input="($event) => {
+                            $refs.qDatePasportDateFinish.hide()
+                            validDatePerson($event)
+                          }
+                          "
                         />
                       </q-popup-proxy>
                     </q-icon>
@@ -257,6 +267,20 @@
                 </q-input>
               </div>
 
+              <div class="col-4">
+                <q-input
+                  ref="passportIssuedBy"
+                  square
+                  outlined
+                  v-model="Customer.Document.GivenPlace"
+                  dense
+                  label="Кем выдан паспорт"
+                  :rules="[val => !!val || 'Введите кем выдан паспорт']"
+                />
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
                   ref="education"
@@ -366,8 +390,8 @@
               </legend>
 
               <div class="tab-content" ref="tabContent">
-                <!-- <div
-                  v-if="address.AddressType === 2"
+                <div
+                  v-if="address.AddressType === 'Адрес фактического проживания'"
                   class="row q-col-gutter-md"
                 >
                   <div class="col-4">
@@ -375,7 +399,7 @@
                       square
                       outlined
                       v-model="sameRegistration"
-                      :options="fullProfile.options.confirmation"
+                      :options="credits.options.confirmation"
                       dense
                       label="Совпадает ли с адресом постоянной регистрации"
                       emit-value
@@ -383,7 +407,7 @@
                       class="q-pb-sm"
                     />
                   </div>
-                </div> -->
+                </div>
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -403,6 +427,7 @@
                       square
                       outlined
                       v-model="address.Region"
+                      @input="setDistricts($event, index, 'AddressList')"
                       :options="dictionaries.Region.items"
                       dense
                       label="Регион/область"
@@ -430,13 +455,37 @@
                       square
                       outlined
                       v-model="address.District"
-                      :options="dictionaries.Districts.items"
+                      :options="address.Districts.items"
                       dense
                       label="Район"
                       emit-value
                       map-options
                       class="q-pb-sm"
                     />
+
+                    <!-- <q-select
+                      square
+                      outlined
+                      filled
+                      v-model="address.District"
+                      use-input
+                      input-debounce="0"
+                      label="Район"
+                      :options="dictionaries.Districts.items"
+                      @filter="filterFn"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                      behavior="menu"
+                    >
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            Нет результата
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select> -->
                   </div>
                 </div>
 
@@ -515,7 +564,7 @@
               </div>
 
               <q-btn
-                v-if="address.AddressType !== 'Адрес постоянной регистрации'"
+                v-if="address.AddressType == 'Адрес временной регистрации'"
                 color="red"
                 label="Удалить"
                 @click="
@@ -598,7 +647,7 @@
                   square
                   outlined
                   v-model="Customer.hasChildren"
-                  :options="profile.options.confirmation"
+                  :options="credits.options.confirmation"
                   dense
                   label="Есть ли дети"
                   emit-value
@@ -652,6 +701,7 @@
                     outlined
                     v-model="relative.LastName"
                     dense
+                    lazy-rules
                     label="Фамилия"
                     :rules="[val => !!val || 'Введите фамилию']"
                   />
@@ -690,7 +740,6 @@
                     label="Дата рождения"
                     v-model="relative.BirthDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения'
@@ -758,7 +807,6 @@
                     label="Дата выдачи паспорта"
                     v-model="relative.Document.GivenDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -780,10 +828,12 @@
                             mask="DD.MM.YYYY"
                             v-model="relative.Document.GivenDate"
                             @input="
-                              () =>
+                              ($event) => {
                                 $refs.qDateRelativePassportDateStart[
                                   index
                                 ].hide()
+                                validDateRelatives($event, index)
+                              }
                             "
                           />
                         </q-popup-proxy>
@@ -801,7 +851,6 @@
                     label="Дата окончания действия паспорта"
                     v-model="relative.Document.ExpirationDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -809,7 +858,9 @@
                         relative.Document.GivenDate
                         ? (val => reverseDate(val) > reverseDate(relative.Document.GivenDate) ||
                         'Неверная дата')
-                        : null
+                        : null,
+                        val => reverseDate(val) > reverseDate(currentDate) ||
+                        'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -823,16 +874,32 @@
                             mask="DD.MM.YYYY"
                             v-model="relative.Document.ExpirationDate"
                             @input="
-                              () =>
+                              ($event) => {
                                 $refs.qDateRelativePassportDateFinish[
                                   index
                                 ].hide()
+                                validDateRelatives($event, index)
+                              }
                             "
                           />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
                   </q-input>
+                </div>
+
+                <div class="col-4">
+                  <div class="col-4">
+                    <q-input
+                      ref="relatives_passportIssuedBy"
+                      square
+                      outlined
+                      v-model="relative.Document.GivenPlace"
+                      dense
+                      label="Кем выдан паспорт"
+                      :rules="[val => !!val || 'Введите кем выдан паспорт']"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1134,7 +1201,7 @@
                   square
                   outlined
                   v-model="Customer.MonthlyIncome.hasAdditionalIncome"
-                  :options="profile.options.confirmation"
+                  :options="credits.options.confirmation"
                   dense
                   label="Наличие дополнительного дохода"
                   emit-value
@@ -1218,6 +1285,7 @@
                     outlined
                     v-model="property.Region"
                     :options="dictionaries.Region.items"
+                    
                     dense
                     label="Регион / область"
                     emit-value
@@ -1410,6 +1478,15 @@
             Гарантии и поручительство
           </h4>
           <div class="tab-content" ref="tabContent">
+            <q-field
+              ref="guaranteesValid"
+              :value="!!guaranteeCount.length"
+              :rules="[
+                val => !!val || 'Добавьте гарантию или поручительство',
+                val => (totalGuaranteesSum - fullProfile.LoanInfo.Sum >= fullProfile.LoanInfo.Sum * 0.25) ||
+                      'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%'
+              ]"
+            >
             <h5
               v-if="!fullProfile.Guarantee.RelatedPerson.items.length"
               class="tab-content_title"
@@ -1450,6 +1527,7 @@
                     type="number"
                     dense
                     label="Сумма поручительства"
+                    @input="guaranteesValid"
                     lazy-rules
                     :rules="[val => !!val || 'Введите сумму']"
                   />
@@ -1505,7 +1583,6 @@
                     label="Дата рождения"
                     v-model="guarantee.BirthDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения'
@@ -1521,7 +1598,9 @@
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="guarantee.BirthDate"
-                            @input="hideDatepickerBirthdayGuarantees"
+                            @input="() =>
+                              $refs.qDateBirthdayGuarantees[index].hide()
+                            "
                           />
                         </q-popup-proxy>
                       </q-icon>
@@ -1568,7 +1647,7 @@
                     square
                     outlined
                     v-model="guarantee.Resident"
-                    :options="profile.options.confirmation"
+                    :options="credits.options.confirmation"
                     dense
                     label="Резидентство"
                     emit-value
@@ -1620,7 +1699,6 @@
                     label="Дата выдачи паспорта"
                     v-model="guarantee.Document.GivenDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -1636,12 +1714,16 @@
                         <q-popup-proxy
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="qDatePasportDateGuarantees"
+                          ref="qDatePasportDateGuaranteesStart"
                         >
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="guarantee.Document.GivenDate"
-                            @input="hideDatepickerPasportDateGuarantees"
+                            @input="($event) => {
+                              $refs.qDatePasportDateGuaranteesStart[index].hide()
+                              validDateGuarantees($event, index)
+                            }
+                            "
                           />
                         </q-popup-proxy>
                       </q-icon>
@@ -1660,7 +1742,6 @@
                     label="Дата окончания действия паспорта"
                     v-model="guarantee.Document.ExpirationDate"
                     mask="##.##.####"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
@@ -1668,7 +1749,9 @@
                         guarantee.Document.GivenDate
                         ? (val => reverseDate(val) > reverseDate(guarantee.Document.GivenDate) ||
                         'Неверная дата')
-                        : null
+                        : null,
+                        val => reverseDate(val) > reverseDate(currentDate) ||
+                        'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -1676,17 +1759,33 @@
                         <q-popup-proxy
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="qDatePasportDateGuarantees"
+                          ref="qDatePasportDateGuaranteesFinish"
                         >
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="guarantee.Document.ExpirationDate"
-                            @input="hideDatepickerPasportDateGuarantees"
+                            @input="($event) => {
+                              $refs.qDatePasportDateGuaranteesFinish[index].hide()
+                              validDateGuarantees($event, index)
+                            }
+                            "
                           />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
                   </q-input>
+                </div>
+
+                <div class="col-4">
+                  <q-input
+                    ref="passportIssuedByGuarantees"
+                    square
+                    outlined
+                    v-model="guarantee.Document.GivenPlace"
+                    dense
+                    label="Кем выдан паспорт"
+                    :rules="[val => !!val || 'Введите кем выдан паспорт']"
+                  />
                 </div>
               </div>
 
@@ -1709,6 +1808,7 @@
                     outlined
                     v-model="guarantee.Address.Region"
                     :options="dictionaries.Region.items"
+                    @input="setDistrictsGuarantee($event, index, 'RelatedPerson')"
                     dense
                     label="Регион/область"
                     :rules="[val => !!val || 'Выберите регион/область']"
@@ -1734,7 +1834,7 @@
                       square
                       outlined
                       v-model="guarantee.Address.District"
-                      :options="dictionaries.Districts.items"
+                      :options="guarantee.Address.Districts.items"
                       dense
                       label="Район"
                       emit-value
@@ -1870,7 +1970,7 @@
             <q-btn
               color="primary"
               label="Добавить физ. лицо"
-              @click="addRelatedPerson"
+              @click="addRelatedPerson('RelatedPerson')"
               class="addItem"
             ></q-btn>
 
@@ -1899,6 +1999,7 @@
                     type="number"
                     dense
                     label="Сумма поручительства"
+                    @input="guaranteesValid"
                     lazy-rules
                     :rules="[val => !!val || 'Введите сумму']"
                   />
@@ -1973,6 +2074,7 @@
                     outlined
                     v-model="guarantee.Address.Region"
                     :options="dictionaries.Region.items"
+                    @input="setDistrictsGuarantee($event, index, 'RelatedLegalPerson')"
                     dense
                     label="Регион/область"
                     :rules="[val => !!val || 'Выберите регион/область']"
@@ -2006,7 +2108,7 @@
                       square
                       outlined
                       v-model="guarantee.Address.District"
-                      :options="dictionaries.Districts.items"
+                      :options="guarantee.Address.Districts.items"
                       dense
                       label="Район"
                       emit-value
@@ -2146,7 +2248,7 @@
             <q-btn
               color="primary"
               label="Добавить юр. лицо"
-              @click="addRelatedLegalPerson"
+              @click="addRelatedLegalPerson('RelatedLegalPerson')"
               class="addItem"
             ></q-btn>
 
@@ -2203,6 +2305,8 @@
                     type="number"
                     dense
                     label="Сумма страхового полиса"
+                    @input="guaranteesValid"
+                    lazy-rules
                     :rules="[val => !!val || 'Введите сумму']"
                   />
                 </div>
@@ -2226,9 +2330,10 @@
             <q-btn
               color="primary"
               label="Добавить страхование"
-              @click="addInsurance"
+              @click="addInsurance('Insurance')"
               class="addItem"
             ></q-btn>
+            </q-field>
           </div>
         </div>
 
@@ -2250,6 +2355,7 @@
                   outlined
                   v-model="fullProfile.LoanInfo.LoanProduct"
                   :options="dictionaries.LoanProduct.items"
+                  @input="onChangeLoan($event)"
                   dense
                   label="Кредитный продукт"
                   :rules="[val => !!val || 'Выберите кредитный продукт']"
@@ -2304,7 +2410,7 @@
                   square
                   outlined
                   v-model="fullProfile.LoanInfo.RepaymentType"
-                  :options="profile.options.RepaymentType"
+                  :options="options.RepaymentType"
                   dense
                   label="Тип графика гашения"
                   :rules="[val => !!val || 'Выберите тип графика гашения']"
@@ -2462,7 +2568,7 @@
                   :rules="[
                     val => !!val || 'Введите удобный день погашения',
                     val =>
-                      val > 0 && val < 32 || `Введите удобный день погашения (1-31)`
+                      val > 0 && val < 29 || `Введите удобный день погашения (1-28)`
                   ]"
                 />
               </div>
@@ -2489,7 +2595,9 @@
             </div> -->
 
             <div class="row q-col-gutter-md">
-              <div class="col-4">
+              <div 
+                v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
+                class="col-4">
                 <q-input
                   ref="initialFee"
                   square
@@ -2623,8 +2731,12 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.billProd"
                     dense
                     label="Расчетный счет продавца/производителя товара/работы/услуги"
+                    mask="#########################"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите расчетный счет продавца/производителя товара/работы/услуги']"
+                    :rules="[
+                      val => !!val || 'Введите расчетный счет продавца/производителя товара/работы/услуги',
+                      val =>  val.length < 26 || 'Введите не более 25 цифр'
+                    ]"
                   />
                 </div>
                 <div class="col-4">
@@ -2650,7 +2762,9 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.agreementDate"
                     mask="##.##.####"
                     :rules="[
-                      val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги'
+                      val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
+                      val => reverseDate(val) > reverseDate(currentDate) || 
+                      'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -2701,7 +2815,7 @@
                 <div ref="dragover"></div>
                 <q-field
                   ref="uploadFile"
-                  :value="!!filesAll.length"
+                  :value="!!filesAll.find(file => file.id != null)"
                   :rules="[val => !!val || 'Загрузите файлы']"
                 >
                   <div class="uploadFile">
@@ -2920,6 +3034,8 @@
       <!-- credit result -->
       <appFullProfile v-if="profile.confirmCredit" />
     </div>
+
+    <apploaderFullScreen v-if="loader"></apploaderFullScreen>
   </div>
 </template>
 
@@ -2929,6 +3045,7 @@ import UserService from "@/services/user.service";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import SentFullProfile from "./SentFullProfile";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 // import UploadFiles from "./UploadFiles"
 import { validItems, validFilter } from "../../filters/valid_filter"
 
@@ -2936,10 +3053,12 @@ export default {
   name: "profile",
   data() {
     return {
+      currentDate: CommonUtils.dateFilter(new Date()),
       loaderForm: false,
       loaderFile: false,
+      loader: false, // прелодер
       isValid: true, //валидация Email
-      //sameRegistration: "",
+      sameRegistration: null,
       confirm: false,
       // confirmCredit: false,
       itemName: "",
@@ -2956,6 +3075,8 @@ export default {
         yearsOfIssueVehicle: []
       },
 
+      guaranteeCount: [],
+      totalGuaranteesSum: 0, // сумма всех гарантий и поручительств
       files: [], // для сервера, чтоб не дублировать отправку файла
       filesAll: [], // для фильтрации какие файлы загружены на сервер
 
@@ -2964,7 +3085,7 @@ export default {
   async created() {
     this.$store.commit("profile/resetDataFullFormProfile")
 
-    if (!this.$store.getters["credits/userRole"]) {
+    if (sessionStorage.getItem("csrf_token")) {
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
       this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
@@ -2973,11 +3094,36 @@ export default {
     }
     
     if (this.taskId) {
+      this.loaderForm = true
       this.$store.commit("credits/setTaskId", this.taskId);
+      this.loaderForm = false
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
-        console.log('res', res)
-      } catch (error) {}
+        console.log('resggggggggggggggggggggg', res)
+        const { data } = res.data.input.find(i => i.label == 'application')
+        const uploadedFiles = data.AttachedDocuments.items
+        const guarantees = data.Guarantee
+
+        for (let file of uploadedFiles) {
+          this.filesAll.push({
+            name: "",
+            DocumentName: file.DocumentName,
+            id: file.id,
+            upload: true
+          });
+        }
+
+        for (let guarantee in guarantees) {
+          //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
+          for (let i of guarantees[guarantee].items) {
+            this.guaranteeCount.push("guarantee")
+          }
+        }
+        this.guaranteesValid()
+        
+      } catch (error) {
+        this.loaderForm = false
+      }
     } 
     
   },
@@ -2997,9 +3143,6 @@ export default {
         2
       );
 
-      // this.Customer.MaritalStatus =
-      //   +this.personalData.familyStatus + 1; // false/true перевожу в число
-
       this.Customer.MaritalStatus = this.personalData.familyStatus
 
       this.Customer.hasChildren = this.personalData.children;
@@ -3011,6 +3154,11 @@ export default {
       this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
       this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
       this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
+
+      this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
+      this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
+      this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
+      this.onChangeLoan(this.fullProfile.LoanInfo.LoanProduct)
     }
   },
   computed: {
@@ -3036,6 +3184,10 @@ export default {
       return this.$store.getters["credits/credits"].personalData
     },
 
+    credits() {
+      return this.$store.getters["credits/credits"]
+    },
+
     preApprovalData() {
       return this.$store.getters["credits/credits"].preApprovalData;
     },
@@ -3044,61 +3196,6 @@ export default {
     }
   },
   watch: {
-    "Customer.Document.GivenDate"(val) {
-      if (this.Customer.Document.ExpirationDate) {
-        this.$refs.pasportDateFinish.validate();
-      } 
-    },
-
-    "Customer.Document.ExpirationDate"(val) {
-      if (this.Customer.Document.GivenDate) {
-        this.$refs.pasportDateStart.validate();
-      }
-    },
-
-    "Customer.Relatives.items": {
-      handler: function(val) {
-        val.forEach(i => {
-          if (i.Document.ExpirationDate) {
-            this.$refs.relatives_pasportDateFinish.forEach(i => {
-              i.validate()
-            })
-          }
-          if(i.Document.GivenDate) {
-            this.$refs.relatives_pasportDateStart.forEach(i => {
-              i.validate()
-            })
-          }
-        })
-        // this.$refs.relatives_pasportDateStart.forEach(i => {
-        //   i.validate()
-        // })
-      },
-      deep: true      
-    },
-
-    "fullProfile.Guarantee.RelatedPerson.items": {
-      handler: function(val) {
-        console.log(val)
-        val.forEach(i => {
-          if (i.Document.ExpirationDate) {
-            this.$refs.pasportDateGuaranteesFinish.forEach(i => {
-              i.validate()
-            })
-          }
-          if(i.Document.GivenDate) {
-            this.$refs.pasportDateGuaranteesStart.forEach(i => {
-              i.validate()
-            })
-          }
-        })
-        // this.$refs.relatives_pasportDateStart.forEach(i => {
-        //   i.validate()
-        // })
-      },
-      deep: true      
-    },
-
     "Customer.Email"() {
       if (
         this.Customer.Email !== "" &&
@@ -3110,55 +3207,14 @@ export default {
       }
     },
 
-    // sameRegistration(flag) {
-    //   if (flag) {
-    //     this.removeRegistration({ item: "2" });
-    //   } else {
-    //     this.addRegistration("2");
-    //   }
-    // },
-
-    "fullProfile.LoanInfo.LoanProduct"(credit) {
-      this.fullProfile.LoanInfo.RepaymentType = null;
-      this.profile.options.RepaymentType = [];
-
-      const idx = this.dictionaries.LoanDetails.items.findIndex(
-        item => item.LOAN_ID == credit
-      );
-      //console.log(idx);
-      if (idx !== -1) {
-        this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
-          idx
-        ].MinTermInMonths;
-        this.fullProfile.LoanInfo.MaxTermInMonths = this.dictionaries.LoanDetails.items[
-          idx
-        ].MaxTermInMonths;
-        this.fullProfile.LoanInfo.MinInterestRate = this.dictionaries.LoanDetails.items[
-          idx
-        ].MinInterestRate;
-        this.fullProfile.LoanInfo.MaxInterestRate = this.dictionaries.LoanDetails.items[
-          idx
-        ].MaxInterestRate;
-        this.fullProfile.LoanInfo.MinInitialPaymentPercent = this.dictionaries.LoanDetails.items[
-          idx
-        ].MinimumPaymentPercent;
-        this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
-          idx
-        ].MaxInitialPaymentPercent;
-        this.profile.options.RepaymentType = this.dictionaries.LoanDetails.items[
-          idx
-        ].PaymentsType.items;
-
-        this.GracePeriodMin = this.dictionaries.LoanDetails.items[
-          idx
-        ].GracePeriodMin;
-        this.GracePeriodMax = this.dictionaries.LoanDetails.items[
-          idx
-        ].GracePeriodMax;
-
-        // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
-        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
-      }
+    sameRegistration(flag) {
+      if (flag) {
+        this.removeRegistration({ item: "Адрес фактического проживания" });
+        this.sameRegistration = null
+      } 
+      // else {
+      //   this.addRegistration("Адрес фактического проживания");
+      // }
     }
   },
   methods: {
@@ -3179,6 +3235,7 @@ export default {
       this.$refs.pasportNumber.validate();
       this.$refs.pasportDateStart.validate();
       this.$refs.pasportDateFinish.validate();
+      this.$refs.passportIssuedBy.validate();
 
       this.$refs.education.validate();
 
@@ -3204,6 +3261,7 @@ export default {
       );
       validFilter(this.$refs, "relativesPasportDateStartValid", "relatives_pasportDateStart");
       validFilter(this.$refs, "relativesPasportDateFinishValid", "relatives_pasportDateFinish");
+      validFilter(this.$refs, "relativesPassportIssuedByValid", "relatives_passportIssuedBy");
 
       this.$refs.kindOfActivity.validate();
 
@@ -3288,6 +3346,7 @@ export default {
         );
         validFilter(this.$refs, "pasportDateGuaranteesStartValid", "pasportDateGuaranteesStart");
         validFilter(this.$refs, "pasportDateGuaranteesFinishValid", "pasportDateGuaranteesFinish");
+        validFilter(this.$refs, "passportIssuedByGuaranteesValid", "passportIssuedByGuarantees");
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(this.$refs, "houseNumberGuaranteesValid", "houseNumberGuarantees");
@@ -3305,6 +3364,7 @@ export default {
         validItems(this.$refs, "pasportNumberGuaranteesValid");
         validItems(this.$refs, "pasportDateGuaranteesStartValid");
         validItems(this.$refs, "pasportDateGuaranteesFinishValid");
+        validItems(this.$refs, "passportIssuedByGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
         validItems(this.$refs, "houseNumberGuaranteesValid");
@@ -3347,19 +3407,10 @@ export default {
       this.$refs.productCredit.validate();
       this.$refs.priceCredit.validate();
 
-      if (this.$refs.productCredit.validate()) {
-        this.$refs.typeRepayment.validate();
-        // console.log('typeRepayment', this.fullProfile.LoanInfo.RepaymentType)
-        // console.log('typeRepayment', this.$refs.typeRepayment.validate())
-      } else {
-        validItems(this.$refs, "typeRepayment");
-      }
-
       // this.$refs.periodRepayment.validate();
       this.$refs.comfortablePeriodRepayment.validate();
       this.$refs.comfortableDayRepayment.validate();
       // this.$refs.typeCredit.validate();
-      this.$refs.initialFee.validate();
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
@@ -3380,14 +3431,33 @@ export default {
         validItems(this.$refs, "agreementDate");
       }
 
+      //если не овердрафт
+      if (!!this.fullProfile.LoanInfo.LoanProduct && this.fullProfile.LoanInfo.LoanProduct !== 3) {
+        this.$refs.typeRepayment.validate();
+        this.$refs.initialFee.validate();
+      } else {
+        validItems(this.$refs, "typeRepayment");
+        validItems(this.$refs, "initialFee");
+      }
+
       if (!this.fullProfile.AttachedDocuments.items.length) {
         
         this.$refs.uploadFile.validate();
       } else {
         validItems(this.$refs, "uploadFile");
       }
+
+      if (!this.fullProfile.Guarantee.Insurance.items.length ||
+          !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
+          !this.fullProfile.Guarantee.RelatedPerson.items.length 
+        ) {
+          this.guaranteesValid()
+      } else {
+        validItems(this.$refs, "guaranteesValid");
+        
+      }
       
-      // console.log('files', this.$refs.files);
+      console.log('files', this.$refs.files);
 
       if (
         this.$refs.surname.hasError ||
@@ -3401,6 +3471,7 @@ export default {
         this.$refs.pasportNumber.hasError ||
         this.$refs.pasportDateStart.hasError ||
         this.$refs.pasportDateFinish.hasError ||
+        this.$refs.passportIssuedBy.hasError ||
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
         this.$refs.regionValid.hasError ||
@@ -3416,6 +3487,7 @@ export default {
         this.$refs.relativesPasportNumberValid.hasError ||
         this.$refs.relativesPasportDateStartValid.hasError ||
         this.$refs.relativesPasportDateFinishValid.hasError ||
+        this.$refs.relativesPassportIssuedByValid.hasError ||
         //kind of activity
         this.$refs.kindOfActivity.hasError ||
         this.$refs.nameOfEmployer.hasError ||
@@ -3478,14 +3550,16 @@ export default {
         this.$refs.agreementDate.hasError ||
 
         this.$refs.sourceFinancs.hasError ||
-        this.$refs.uploadFile.hasError
+        this.$refs.uploadFile.hasError ||
+        this.$refs.guaranteesValid.hasError
       ) {
         this.formHasError = true;
         this.bar = true;
       } else {
         
         if (submitForm) {
-          this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
+        this.loader = true;
+        this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
         console.log("fullProfile", this.$store.state.profile.fullFormProfile);
         const {
           Status,
@@ -3556,23 +3630,128 @@ export default {
           } else {
             throw 'Next task id is undefined'
           }
-        } catch (error) {}
+          this.loader = false;
+        } catch (error) {
+          this.loader = false;
+          const errorMessage = CommonUtils.filterServerError(error);
+          this.$store.commit("credits/setMessage", errorMessage);
+          sessionStorage.clear()
+          this.$router.push("/work/credit");
+        }
         } else {
           this.profile.confirmCredit = true;
         }
       }
     },
 
-    hideDatepickerBirthdayGuarantees() {
-      for (let datepicker of this.$refs.qDateBirthdayGuarantees) {
-        datepicker.hide();
+    validDatePerson(date) {
+
+      if (this.Customer.Document.ExpirationDate) {
+        this.$refs.pasportDateFinish.validate()
+      }
+
+      if (this.Customer.Document.GivenDate) {
+        this.$refs.pasportDateStart.validate()
       }
     },
 
-    hideDatepickerPasportDateGuarantees() {
-      for (let datepicker of this.$refs.qDatePasportDateGuarantees) {
-        datepicker.hide();
+    validDateRelatives(date, idx) {
+
+      if (this.Customer.Relatives.items[idx].Document.ExpirationDate) {
+        this.$refs.relatives_pasportDateFinish[idx].validate()
       }
+
+      if (this.Customer.Relatives.items[idx].Document.GivenDate) {
+        this.$refs.relatives_pasportDateStart[idx].validate()
+      }
+    },
+
+    validDateGuarantees(date, idx) {
+      console.log(date)
+      if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.ExpirationDate) {
+        this.$refs.pasportDateGuaranteesFinish[idx].validate()
+      } 
+      if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.GivenDate) {
+        this.$refs.pasportDateGuaranteesStart[idx].validate()
+      }
+    },
+
+    onChangeLoan(credit) {
+      console.log("Аннуит, диффер")
+      this.fullProfile.LoanInfo.RepaymentType = null;
+      this.options.RepaymentType = [];
+
+      // для синхронизации с Preapprov
+      if (this.personalData.typeStepCredit) {
+        this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
+        this.personalData.typeStepCredit = null
+      }
+
+      this.fullProfile.LoanInfo.consumerLoan = {
+          nameBankProd: "",    // Наименование банка
+          nameService: "",     // Наименование товара/работы/услуги
+          agreementDate: "",   // Дата договора
+          nameProduction: "",  // Наименование продавца
+          billProd: "",        // Расчетный счет продавца
+          agreementNumber: "", // Номер договора
+          idBankProd: 0
+        }
+      this.fullProfile.LoanInfo.InitialPayment = 0
+
+      const idx = this.dictionaries.LoanDetails.items.findIndex(
+        item => item.LOAN_ID == credit
+      );
+      console.log('idx', idx);
+      if (idx !== -1) {
+        this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
+          idx
+        ].MinTermInMonths;
+        this.fullProfile.LoanInfo.MaxTermInMonths = this.dictionaries.LoanDetails.items[
+          idx
+        ].MaxTermInMonths;
+        this.fullProfile.LoanInfo.MinInterestRate = this.dictionaries.LoanDetails.items[
+          idx
+        ].MinInterestRate;
+        this.fullProfile.LoanInfo.MaxInterestRate = this.dictionaries.LoanDetails.items[
+          idx
+        ].MaxInterestRate;
+        this.fullProfile.LoanInfo.MinInitialPaymentPercent = this.dictionaries.LoanDetails.items[
+          idx
+        ].MinimumPaymentPercent;
+        this.fullProfile.LoanInfo.MaxInitialPaymentPercent = this.dictionaries.LoanDetails.items[
+          idx
+        ].MaxInitialPaymentPercent;
+        this.options.RepaymentType = this.dictionaries.LoanDetails.items[
+          idx
+        ].PaymentsType.items;
+
+        this.GracePeriodMin = this.dictionaries.LoanDetails.items[
+          idx
+        ].GracePeriodMin;
+        this.GracePeriodMax = this.dictionaries.LoanDetails.items[
+          idx
+        ].GracePeriodMax;
+
+        // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
+        this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
+      }
+    },
+
+    setDistricts(event, idx, item) {
+        console.log('event', event, idx, item)
+        const districts = this.getDistricts(event)
+        this.$store.commit("profile/setDistricts", {idx, item, districts})
+    },
+
+    setDistrictsGuarantee(event, idx, guarantee) {
+        //console.log('event', event, idx, guarantee)
+        const districts = this.getDistricts(event)
+        this.$store.commit("profile/setDistrictsGuarantee", {idx, guarantee, districts})
+    },
+
+    getDistricts(id) {
+      const { region_id } = this.dictionaries.Region.items.find(i => i.value == id)
+      return this.dictionaries.Districts.items[0][region_id]
     },
 
     addPhone() {
@@ -3588,22 +3767,25 @@ export default {
     },
 
     addVehicle() {
-      for (let i = 2000; i <= new Date().getFullYear(); i++) {
+      for (let i = 1980; i <= new Date().getFullYear(); i++) {
         this.options.yearsOfIssueVehicle.push(i);
       }
 
       this.$store.commit("profile/addVehicle");
     },
 
-    addInsurance() {
+    addInsurance(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addInsurance");
     },
 
-    addRelatedLegalPerson() {
+    addRelatedLegalPerson(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addRelatedLegalPerson");
     },
 
-    addRelatedPerson() {
+    addRelatedPerson(guarantee) {
+      this.guaranteeCount.push(guarantee)
       this.$store.commit("profile/addRelatedPerson");
     },
 
@@ -3612,6 +3794,7 @@ export default {
     },
 
     removeGuarantee(payload) {
+      this.guaranteeCount.pop()
       this.$store.commit("profile/removeGuarantee", payload);
     },
 
@@ -3694,7 +3877,7 @@ export default {
     },
 
     uploadFile(uploadedFiles) {
-      for (var i = 0; i < uploadedFiles.length; i++) {
+      for (let i = 0; i < uploadedFiles.length; i++) {
         this.files.push(uploadedFiles[i]);
         this.filesAll.push({
           name: uploadedFiles[i].name,
@@ -3789,12 +3972,41 @@ export default {
     },
     reverseDate(val) {
       return val.slice(-4) + val.slice(2, 6) + val.slice(0, 2)
+    },
+
+    guaranteesValid() {
+      this.totalGuaranteesSum = 0
+
+      for (let guarantee in this.fullProfile.Guarantee) {
+        for (let i of this.fullProfile.Guarantee[guarantee].items) {
+          this.totalGuaranteesSum = this.totalGuaranteesSum + i.Sum
+        }
+      }
+
+      console.log('totalGuaranteesSum',this.totalGuaranteesSum)
+      this.$refs.guaranteesValid.validate();
+    },
+
+    filterFn (val, update) {
+      console.log('filterFn', val)
+      // if (val === '') {
+      //   update(() => {
+      //     this.options = stringOptions
+      //   })
+      //   return
+      // }
+
+      // update(() => {
+      //   const needle = val.toLowerCase()
+      //   this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      // })
     }
   },
   components: {
     appLoader: Loader,
     appFullProfile: FullProfile,
     appSentFullProfile: SentFullProfile,
+    apploaderFullScreen: LoaderFullScreen
     // appUploadFiles: UploadFiles
   }
 };
@@ -3852,8 +4064,29 @@ export default {
     .tab-content_title {
       font-size: 16px;
       margin: 0 0 10px;
+      color: #212121;
+    }
+
+    .q-field--auto-height .q-field__control-container {
+      display: block;
     }
   }
+
+  .guarantees {
+      .q-field__control {
+        color: #212121;
+      }
+
+      .q-field--auto-height .q-field__control, .q-field--auto-height, .q-field__native {
+        min-height: 40px;
+      }
+
+      .q-field--standard .q-field__control:after {
+        border-width: 0;
+        height: 0;
+      }
+  }
+
 
   .fieldset_block,
   .legend_title {

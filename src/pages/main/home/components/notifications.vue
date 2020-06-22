@@ -1,5 +1,38 @@
 <template>
-  <div class="row">
+  <div class="wrap column">
+    <div class="col">
+      <s-carusel-card
+        v-show="tab.val === 'tabOne'"
+        v-if="slideToday"
+        :users="todays"
+        :slide="slideToday"
+        datetime="today"
+      />
+      <s-carusel-card
+        v-show="tab.val === 'tabTwo'"
+        v-if="slideTomorrow"
+        :users="tomorrow"
+        :slide="slideTomorrow"
+        datetime="tomorrow"
+      />
+      <s-carusel-card
+        v-show="tab.val === 'tabThree'"
+        v-if="slideAfterTomorrow"
+        :users="afterTomorrow"
+        :slide="slideAfterTomorrow"
+        datetime="afterTomorrow"
+      />
+    </div>
+    <div class="row justify-center nav">
+      <div :class="tab.id === 0 ? 'round active' : 'round'"></div>
+      <div :class="tab.id === 1 ? 'round active' : 'round'"></div>
+      <div :class="tab.id === 2 ? 'round active' : 'round'"></div>
+
+      <div class="navLeft" @click="tabSelect('prew')"><q-icon name="keyboard_arrow_left" size="sm" /></div>
+      <div class="navRight" @click="tabSelect('next')"><q-icon name="keyboard_arrow_right" size="sm" /></div>
+    </div>
+  </div>
+  <!-- <div class="row">
     <div class="col">
       <q-card square flat bordered>
         <q-card-section class="white">
@@ -53,7 +86,7 @@
         </div>
       </q-card>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -61,11 +94,17 @@ import caruselCard from "./caruselCard";
 export default {
   data() {
     return {
-      tab: "tabOne",
+      tab: {id: 0, val: "tabOne"},
       slideToday: "",
       slideTomorrow: "",
       slideAfterTomorrow: "",
-      message: "Банк поздравляет Вас с днем рожения!"
+      message: "Банк поздравляет Вас с днем рожения!",
+      navigation: [
+        {id: 0, val: 'tabOne'},
+        {id: 1, val: 'tabTwo'},
+        {id: 2, val: 'tabThree'},
+
+      ]
     };
   },
   async created() {
@@ -91,14 +130,58 @@ export default {
       return this.$store.getters.getAfterTomorrow;
     }
   },
-  methods: {},
+  methods: {
+    tabSelect(nav){
+      let ids = this.tab.id
+
+      if(nav === 'next') {
+        if(ids < 2) {
+          ++ids
+          this.tab = this.navigation.find(el => el.id === ids)
+        } else {
+          this.tab = this.navigation.find(el => el.id === 0)
+        }
+
+      } else {
+          if(ids > 0) {
+            --ids
+            this.tab = this.navigation.find(el => el.id === ids)
+          } else {
+            this.tab = this.navigation.find(el => el.id === 2)
+          }
+      }
+    }
+  },
   components: {
     SCaruselCard: caruselCard
   }
 };
 </script>
 
-<style lang="sass" scoped>
-    .redColor
-        color: red    
+<style scoped>
+  .wrap {
+    height: 295px;
+  }
+  .round {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background: #E3E8EB;
+    margin: 3px;
+  }
+  .nav {
+    position: relative;
+    margin-top: 18px;
+  }
+  .nav .active {
+    background: #FD5080;
+  }
+  .navLeft, .navRight {
+    position: absolute;
+    color:#ccc;
+    top: -5px;
+    cursor: pointer;
+  }
+  .navLeft {left: 0}
+  .navRight {right: 0}
 </style>

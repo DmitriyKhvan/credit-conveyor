@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">{{ $t("tables.users.add_edit") }}</div>
+          <div class="text-h6">Создать/изменить группу кредитного комитета</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -11,9 +11,9 @@
       <q-separator inset />
       <q-card-section>
         <div>
-          <div class="row">
+          <!-- <div class="row">
             <div class="col-md-12 searchBlock q-pa-sm">
-              <!-- <h6 class="title" v-if="details.fio">{{details.fio}}</h6> -->
+              <h6 class="title" v-if="details.fio">{{details.fio}}</h6>
               <q-input
                   
                   v-model="searchUser" 
@@ -21,7 +21,7 @@
                   outlined
                   placeholder="Поиск пользователя"  
                   :rules="[
-                    val => $v.details.emp_name.required || 'Добавьте пользователя'
+                    val => $v.details.fio.required || 'Добавьте пользователя'
                   ]"
                   lazy-rules      
               >
@@ -44,16 +44,19 @@
               </div>
             </div>
             
-          </div>
+          </div> -->
           <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
               <q-input
                 outlined
                 clearable
                 color="purple-12"
-                v-model="details.role_name"
-                :label="$t('tables.users.roles')"
-                disable
+                v-model="details.name"
+                label="Имя группы"
+                @input="$v.details.name.$touch()"
+                :rules="[
+                  val => $v.details.name.required || 'Введите имя группы'
+                ]"
               />
             </div>
 
@@ -190,53 +193,9 @@
               />
             </div>
           </div>
-
-          <template v-if="details.role_name == 'CreditCommitteeMember'">
           <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
-              <q-checkbox
-                v-model="details.is_chairman"
-                color="secondary"
-                label="is_chairman"
-              />
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
-              <q-checkbox
-                v-model="details.is_risk_manager"
-                color="secondary"
-                label="is_risk_manager"
-              />
-            </div>
           </div>
-          </template>
-
-          <template v-if="details.role_name == 'CreditCommitteeMember' || details.role_name == 'CreditSecretary'">
-          <div class="row">
-            
-              <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
-
-              <q-select
-                outlined
-                v-model="details.groups"
-                multiple
-                :options="committeeGroups"
-                use-chips
-                stack-label
-                option-value="id"
-                option-label="name"
-                emit-value
-                map-options
-                label="Группа кредитного комитета"
-                @input="$v.details.groups.$touch()"
-                lazy-rules
-                options-selected-class="text-deep-orange"
-              />
-            </div>
-            
-          </div>
-          </template>
         </div>
-
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
@@ -301,28 +260,20 @@ export default {
 
       details: {
         id: null,
-        emp_id: null,
-        emp_name: "",
+        name: "",
         mfos: [],
         amount_min: "",
         amount_max: "",
-        role_type: null,
-        role_name: null,
         special: null,
-        status: null,
-        is_chairman: false,
-        is_risk_manager: false,
-        groups: []
+        status: null
       }
     };
   },
   validations: {
     details: {
       id: {},
-      emp_id: {},
-      emp_name: {
-        required,
-        minLength: minLength(3)
+      name: {
+        required
       },
       mfos: {
         required
@@ -335,22 +286,12 @@ export default {
         required,
         minLength: minLength(3)
       },
-      roles: {},
       special: {
         required
       },
       status: {
         required
       },
-      // is_chairman: {
-      //   required
-      // },
-      // is_risk_manager: {
-      //   required
-      // },
-      groups: {
-        required
-      }
     }
   },
   props: {
@@ -363,7 +304,6 @@ export default {
   },
   mixins: [dialogMix],
   created() {
-    this.searchUser = this.details.emp_name
     try {
       this.$store.dispatch("creditsAdmin/getFilials")
     } catch(error) {}
@@ -372,67 +312,42 @@ export default {
     filials() {
       // console.log(JSON.stringify(this.$store.getters["creditsAdmin/getFilials"], null, 2))
       return this.$store.getters["creditsAdmin/getFilials"]
-    },
-
-    committeeGroups() {
-      return this.$store.getters["creditsAdmin/getCommitteeGroups"]
     }
   },
-  watch: {
-    "details.mfos"(val) {
-      console.log('mfos', val)
-      // console.log('mfos', this.mfos)
-        try {
-          this.$store.dispatch("creditsAdmin/getCommitteeGroups", val[0])
-        } catch(error) {}
-      
-    },
-
-    // "details.role_name"(val) {
-    //   console.log('role_name', val)
-    //   if (val == 'CreditCommitteeMember') {
-    //     try {
-    //       this.$store.dispatch("creditsAdmin/getCommitteeGroups")
-    //     } catch(error) {}
-    //   }
-    // }
-  },
   methods: {
-    selUsers () {
-      if(this.searchUser.length !== 0){           
-          axios
-              .get("/credit/commitee/search?name="+this.searchUser)
-              .then(response => {                    
-                  this.resultUser = response.data
-              })
-              .catch(error => {
-                  console.log('error') 
-              });
-      }
-    },
-    userCliked(user) {
-      console.log('user',user)
-      this.details.emp_id = user.emp_id
-      this.details.emp_name = user.fio
-      this.details.role_name = user.role_name
-      this.details.role_type = user.role_type
-      if (user.mfo) {
-        this.details.mfos = []
-        this.details.mfos.push(user.mfo)
-      } else {
-        this.details.mfos = user.mfos
-      }
+    // selUsers () {
+    //   if(this.searchUser.length !== 0){           
+    //       axios
+    //           .get("/credit/commitee/search?name="+this.searchUser)
+    //           .then(response => {                    
+    //               this.resultUser = response.data
+    //           })
+    //           .catch(error => {
+    //               console.log('error') 
+    //           });
+    //   }
+    // },
+    // userCliked(user) {
+    //   this.details.emp_id = user.emp_id
+    //   this.details.fio = user.fio
+    //   this.details.role_name = user.role_name
+    //   this.details.role_type = user.role_type
+    //   if (user.mfo) {
+    //     this.details.mfos.push(user.mfo)
+    //   } else {
+    //     this.details.mfos = user.mfos
+    //   }
       
-      this.resultUser = []
-      this.searchUser = user.fio
+    //   this.resultUser = []
+    //   this.searchUser = user.fio
    
-    },
-    clearUser () {
-      this.resultUser = []
-      this.searchUser = null
-      this.details.emp_id = null
-      this.details.emp_name = null
-    },
+    // },
+    // clearUser () {
+    //   this.resultUser = []
+    //   this.searchUser = null
+    //   this.details.emp_id = null
+    //   this.details.fio = null
+    // },
 
     // filterFn (val, update, abort) {
     //   update(() => {

@@ -13,36 +13,35 @@ export default {
     SHeader: () => import("./Header"),
     SLeftbar: () => import("./Leftbar"),
     SContent: () => import("./Content"),
-    SFooter: () => import("./Footor")
+    SFooter: () => import("./Footor"),
   },
 
   data() {
     return {};
   },
+  beforeCreate: function () {},
   async created() {
-    console.log('main')
-    await this.$store.dispatch("themes/getThemes")
-  }
+    console.log("main");
+    await this.$store.dispatch("themes/getThemes");
+  },
 };
 </script>
 
 <style>
-  @font-face {
-    font-family: 'OpenSans';
-    src: url(../assets/fonts/OpenSans-Regular.ttf);
-  }
+@font-face {
+  font-family: "OpenSans";
+  src: url(../assets/fonts/OpenSans-Regular.ttf);
+}
 
-  body {
-    font-family: 'OpenSans';
-    font-size: 14px;
-  }
+body {
+  font-family: "OpenSans";
+  font-size: 14px;
+}
 
-  p {
-    margin: 0;
-  }
-
-  .contentBg {
-    background: #F5F6FA;
-  }
-
+p {
+  margin: 0;
+}
+.contentBg {
+  background: #f5f6fa;
+}
 </style>

@@ -87,22 +87,7 @@ export const profile = {
       "Адрес фактического проживания",
       "Адрес временной регистрации"
     ],
-
-    options: {
-      confirmation: [
-        {
-          label: "Да",
-          value: true
-        },
-        {
-          label: "Нет",
-          value: false
-        }
-      ],
-
-      RepaymentType: []
-    },
-
+    
     fullFormProfile: {
       Status: "",
       // ApplicationID: "",
@@ -148,7 +133,7 @@ export const profile = {
           Country: "Uzbekistan",
           DocLink: "",
           DocumentName: 0,
-          //GivenPlace: ""
+          GivenPlace: ""
         },
 
         Education: null,
@@ -174,7 +159,23 @@ export const profile = {
               House: "",
               City: "",
               Apartment: "",
-              AddressType: "Адрес постоянной регистрации"
+              AddressType: "Адрес постоянной регистрации",
+              Districts: []
+            },
+            {
+              Building: "",
+              OwnershipType: null,
+              HouseType: "",
+              PostalCode: "",
+              Region: null,
+              District: null,
+              Street: "",
+              Block: "",
+              House: "",
+              City: "",
+              Apartment: "",
+              AddressType: "Адрес фактического проживания",
+              Districts: []
             }
           ]
         },
@@ -201,7 +202,8 @@ export const profile = {
                 GUID: "",
                 Country: "",
                 DocLink: "",
-                DocumentName: 0
+                DocumentName: 0,
+                GivenPlace: ""
               }
             }
           ]
@@ -342,7 +344,7 @@ export const profile = {
         const response = await state.bpmService.getFullForm(
           rootGetters["credits/taskId"]
         );
-        //console.log('response', response)
+        console.log('response', response)
 
         if (response.data.input && response.data.input.length) {
           const fullForm = response.data.input.find(
@@ -362,7 +364,8 @@ export const profile = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
-        sessionStorage.removeItem("csrf_token");
+        // sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     }
@@ -429,7 +432,8 @@ export const profile = {
           City: "",
           Apartment: "",
           OfficeNum: "",
-          AddressType: ""
+          AddressType: "",
+          Districts: []
         },
         PhoneList: {
           items: [
@@ -459,7 +463,8 @@ export const profile = {
           House: "",
           City: "",
           Apartment: "",
-          AddressType: ""
+          AddressType: "",
+          Districts: []
         },
         FirstName: "",
         //NameENG: "",
@@ -474,7 +479,8 @@ export const profile = {
           GUID: "",
           Country: "",
           DocLink: "",
-          DocumentName: 0
+          DocumentName: 0,
+          GivenPlace: ""
         },
         ClientRelation: 0,
         PhoneList: {
@@ -484,11 +490,21 @@ export const profile = {
             }
           ]
         },
-        Resident: false,
+        Resident: null,
         LastName: "",
         PINPP: "",
         BirthDate: ""
       });
+    },
+
+    setDistricts(state, payload) {
+      state.fullFormProfile.Customer[payload.item].items[payload.idx].District = null
+      state.fullFormProfile.Customer[payload.item].items[payload.idx].Districts = payload.districts
+    },
+
+    setDistrictsGuarantee(state, payload) {
+      state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Address.District = null
+      state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Address.Districts = payload.districts
     },
 
     removeItem(state, payload) {
@@ -527,7 +543,8 @@ export const profile = {
           GUID: "",
           Country: "",
           DocLink: "",
-          DocumentName: 0
+          DocumentName: 0,
+          GivenPlace: ""
         }
       });
     },
@@ -545,15 +562,23 @@ export const profile = {
         House: "",
         City: "",
         Apartment: "",
-        AddressType
+        AddressType,
+        Districts: []
       });
     },
 
     // добавление комментария
     addComment(state, payload) {
-      //console.log('comment', payload)
-
-      state.fullFormProfile[payload.commentBlock].items.push(payload.comment);
+      console.log('comment', payload)
+      if (payload.commentBlock == 'CreditCommiteeDecisions') {
+        const idx = state.fullFormProfile[payload.commentBlock].items.findIndex(i => i.Login == payload.comment.Login)
+        state.fullFormProfile[payload.commentBlock].items[idx] = {
+          ...state.fullFormProfile[payload.commentBlock].items[idx],
+          ...payload.comment
+        }
+      } else {
+        state.fullFormProfile[payload.commentBlock].items.push(payload.comment);
+      }
     },
 
     removeRegistration(state, payload) {
@@ -571,34 +596,11 @@ export const profile = {
       ].items.splice(payload.index, 1);
     },
 
-    // setDictionaries(state, dictionaries) {
-    //   for (let item in dictionaries) {
-    //     for (let value of dictionaries[item].items) {
-
-    //       if (!value.value) {
-
-    //          for (let i in value) {
-    //           // debugger
-    //            if (typeof value[i] === 'object' && value[i] != null) {
-    //             //  this.setDictionaries(state, value[i])
-    //             for (let k of value[i].items) {
-    //               k.value = Number(k.value)
-    //             }
-    //            }
-    //          }
-    //       }else {
-    //         value.value = Number(value.value)
-    //       }
-    //       //value.value = Number(value.value)
-    //     }
-    //   }
-    //   sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries))
-    //   state.dictionaries = dictionaries;
-    // },
-
     setDictionaries(state, dictionaries) {
+      
       function objectTransform(dictionaries) {
         for (let item in dictionaries) {
+          if(item == "Branches") continue
           if (
             typeof dictionaries[item] === "object" &&
             dictionaries[item] != null
@@ -668,7 +670,8 @@ export const profile = {
             GUID: "",
             Country: "Uzbekistan",
             DocLink: "",
-            DocumentName: 0
+            DocumentName: 0,
+            GivenPlace: ""
           },
 
           Education: null,
@@ -694,7 +697,23 @@ export const profile = {
                 House: "",
                 City: "",
                 Apartment: "",
-                AddressType: "Адрес постоянной регистрации"
+                AddressType: "Адрес постоянной регистрации",
+                Districts: []
+              },
+              {
+                Building: "",
+                OwnershipType: null,
+                HouseType: "",
+                PostalCode: "",
+                Region: null,
+                District: null,
+                Street: "",
+                Block: "",
+                House: "",
+                City: "",
+                Apartment: "",
+                AddressType: "Адрес фактического проживания",
+                Districts: []
               }
             ]
           },
@@ -721,7 +740,8 @@ export const profile = {
                   GUID: "",
                   Country: "",
                   DocLink: "",
-                  DocumentName: 0
+                  DocumentName: 0,
+                  GivenPlace: ""
                 }
               }
             ]
