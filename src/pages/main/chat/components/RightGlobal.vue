@@ -207,9 +207,7 @@ export default {
             console.log('delete chat click', chat.chat_id)
             this.socket.emit("chat/delete", chat.chat_id)
           } else {
-            this.socket.emit("grp/delete", {
-              chatId: chat.chat_id
-            })
+            this.socket.emit("grp/delete", chat.chat_id)
           }
         }
     },
