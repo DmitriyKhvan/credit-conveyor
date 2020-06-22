@@ -1,6 +1,6 @@
 <template>
   <div class="registration">
-    <div class="loaderForm" v-if="credits.loaderForm">
+    <div class="loaderForm" v-if="loaderForm">
       <appLoader />
     </div>
 
@@ -199,9 +199,10 @@
           <div class="col-5">
             <!-- Family status -->
             <div class="family-status tab">
-              <h4 class="tab-title" ref="familyStatus">Семейное положение</h4>
+              <h4 class="tab-title">Семейное положение</h4>
               <div class="tab-content q-col-gutter-md" ref="tabContent">
                 <q-select
+                  ref="familyStatus"
                   square
                   outlined
                   v-model="personalData.familyStatus"
@@ -210,12 +211,13 @@
                   label="Семейное положения"
                   emit-value
                   map-options
+                  :rules="[val => !!val || 'Выберите семейное положение']"
                 />
                 <q-select
                   square
                   outlined
                   v-model="personalData.children"
-                  :options="options.children"
+                  :options="credits.options.confirmation"
                   dense
                   label="Есть ли дети"
                   emit-value
@@ -298,7 +300,7 @@
                     square
                     outlined
                     v-model="personalData.externalIncome"
-                    :options="options.extIncOption"
+                    :options="credits.options.confirmation"
                     dense
                     label="Наличие дополнительного дохода"
                     emit-value
@@ -341,16 +343,19 @@
         </div>
       </form>
       <!-- DigID Network error! -->
-      <app-dig-id-network-error></app-dig-id-network-error>
+      <appDigIdNetworkError />
 
-      <apploaderFullScreen v-if="loaderPreApproval"></apploaderFullScreen>
+      <appLoaderFullScreen v-if="loaderFullScreen" />
       <!-- Pre-Approval -->
-      <app-pre-approval v-else></app-pre-approval>
+      <appPreApproval 
+        v-else
+        @toggleLoaderFullScreen="($event) => loaderFullScreen = $event" 
+        @toggleLoaderForm="($event) => loaderForm = $event"
+      />
     </div>
   </div>
 </template>
 <script>
-// import Vue from "vue";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatNumber from "../../filters/format_number.js";
 import PreApproval from "./PreApproval";
@@ -360,70 +365,48 @@ import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 import { validItems } from "../../filters/valid_filter";
 
-// Vue.config.errorHandler = function(err, vm, info) {
-//   console.log(`Error: ${err.toString()}\nInfo: ${info}`);
-// }
-
 export default {
   data() {
     return {
       periodCreditMin: null,
       periodCreditMax: null,
       loader: true,
-      // loaderForm: true,
-      loaderPreApproval: false,
+      loaderForm: false,
+      loaderFullScreen: false,
       options: {
         family: [],
-        children: [
-          {
-            label: "Да",
-            value: true
-          },
-          {
-            label: "Нет",
-            value: false
-          }
-        ],
-        // MONEY //
-        extIncOption: [
-          {
-            label: "Да",
-            value: true
-          },
-          {
-            label: "Нет",
-            value: false
-          }
-        ], //наличие дополнительного дохода
+        //наличие дополнительного дохода
         additIncSourOption: [
           {
             label: "Работа по найму",
-            value: "11"
+            value: 11
           },
           {
             label: "Аренда движимого имущества",
-            value: "12"
+            value: 12
           },
           {
             label: "Аренда недвижимого имущества",
-            value: "13"
+            value: 13
           },
           {
             label: "Предпринимательская деятельность",
-            value: "14"
+            value: 14
           },
           {
             label: "Дивиденды",
-            value: "15"
+            value: 15
           },
           {
             label: "Другое",
-            value: "16"
+            value: 16
           }
-        ], //источник дополнительного дохода
+        ], 
 
+        //источник дополнительного дохода
         typeCredits: [],
 
+        //тип графика гашения
         typeStepCredits: []
       }
     };
@@ -432,6 +415,7 @@ export default {
     this.$store.commit("credits/resetPersonData");
 
     try {
+      this.loaderForm = true
       const auth = await this.$store.dispatch("credits/authBpm");
       console.log("auth", auth);
       const process = await this.$store.dispatch("credits/startProcess");
@@ -443,12 +427,21 @@ export default {
         (process.userTaskCreditDetailed.input.find(i => i.label == "childCost")).data;
 
       this.options.family = 
-        (process.userTaskCreditDetailed.input.find(i => i.label == "maritalStatus")).data.items;
+        (process.userTaskCreditDetailed.input
+        .find(i => i.label == "maritalStatus")).data.items
+        .map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
 
-      const loan_product_list = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
+      console.log('family', this.options.family)
+
+      const loan_product_listt = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
       const loan_product_dict = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_dict")
 
-      loan_product_list.data.items.forEach(i => {
+      loan_product_listt.data.items.forEach(i => {
          const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
         const credits = {
           label: i.label,
@@ -462,8 +455,10 @@ export default {
       })
 
       console.log("typeCredits", this.options.typeCredits);
-      this.$store.commit("credits/toggleLoaderForm", false);
-    } catch (error) {}
+      this.loaderForm = false
+    } catch (error) {
+      this.loaderForm = false
+    }
 
     try {
       const scannerSerial = await this.$store.dispatch("credits/getDigIdNumber");
@@ -539,7 +534,7 @@ export default {
         this.personalData.additionalIncomeSource = "";
       }
     },
-    // Для форматирования числе
+    // Для форматирования чисeл
     // "personalData.income"(number) {
     //   console.log(formatNumber(number)) 
     //   this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
@@ -563,6 +558,7 @@ export default {
         validItems(this.$refs, "typeStepCredit");
       }
 
+      this.$refs.familyStatus.validate();
       this.$refs.income.validate();
       this.$refs.expense.validate();
       this.$refs.otherExpenses.validate();
@@ -577,6 +573,7 @@ export default {
         this.$refs.pasport.hasError ||
         this.$refs.typeCredit.hasError ||
         this.$refs.typeStepCredit.hasError ||
+        this.$refs.familyStatus.hasError ||
         this.$refs.income.hasError ||
         this.$refs.expense.hasError ||
         this.$refs.otherExpenses.hasError
@@ -598,7 +595,7 @@ export default {
           ]
         }
 
-        this.loaderPreApproval = true;
+        this.loaderFullScreen = true;
         const {
           children,
           familyStatus,
@@ -690,9 +687,9 @@ export default {
           this.$store.commit("credits/toggleConfirm", true);
           this.$store.commit("credits/creditConfirm", resp);
           
-          this.loaderPreApproval = false;
+          this.loaderFullScreen = false;
         } catch (e) {
-          this.loaderPreApproval = false;
+          this.loaderFullScreen = false;
         }
       }
     }
@@ -702,7 +699,7 @@ export default {
     appAutoCompleteData: AutoCompleteData,
     appDigIdNetworkError: DigIdNetworkError,
     appLoader: Loader,
-    apploaderFullScreen: LoaderFullScreen
+    appLoaderFullScreen: LoaderFullScreen
   }
 };
 </script>
@@ -712,13 +709,6 @@ export default {
 
   .preapprovForm {
     width: 80%
-  }
-
-  .loaderForm {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
   }
 
   .tab-title {

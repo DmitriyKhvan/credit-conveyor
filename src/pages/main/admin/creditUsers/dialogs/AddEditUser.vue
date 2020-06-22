@@ -21,7 +21,7 @@
                   outlined
                   placeholder="Поиск пользователя"  
                   :rules="[
-                    val => $v.details.fio.required || 'Добавьте пользователя'
+                    val => $v.details.emp_name.required || 'Добавьте пользователя'
                   ]"
                   lazy-rules      
               >
@@ -190,46 +190,53 @@
               />
             </div>
           </div>
+
+          <template v-if="details.role_name == 'CreditCommitteeMember'">
           <div class="row">
-            <template v-if="details.role_name == 'CreditCommitteeMember'">
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-checkbox
+                v-model="details.is_chairman"
+                color="secondary"
+                label="is_chairman"
+              />
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <q-checkbox
+                v-model="details.is_risk_manager"
+                color="secondary"
+                label="is_risk_manager"
+              />
+            </div>
+          </div>
+          </template>
+
+          <template v-if="details.role_name == 'CreditCommitteeMember' || details.role_name == 'CreditSecretary'">
+          <div class="row">
+            
               <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+
               <q-select
                 outlined
                 v-model="details.groups"
                 multiple
-                :options="groups"
+                :options="committeeGroups"
                 use-chips
                 stack-label
-                option-value="value"
-                option-label="label"
+                option-value="id"
+                option-label="name"
                 emit-value
                 map-options
                 label="Группа кредитного комитета"
-                @input="$v.details.mfos.$touch()"
-                :rules="[
-                  val => $v.details.mfos.required || 'Введите MFO'
-                ]"
+                @input="$v.details.groups.$touch()"
                 lazy-rules
                 options-selected-class="text-deep-orange"
-              >
-                <template v-slot:option="scope">
-                  <q-item
-                    v-bind="scope.itemProps"
-                    v-on="scope.itemEvents"
-                  >
-                    <q-item-section>
-                      <div :class="scope.opt.class">
-                         <q-item-label v-html="scope.opt.label" />
-                      </div>
-                      <!-- <q-item-label caption>{{ scope.opt.description }}</q-item-label> -->
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+              />
             </div>
-            </template>
+            
           </div>
+          </template>
         </div>
+
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
@@ -268,12 +275,12 @@ export default {
       isPwd: true,
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
-        { key: "Active", value: 1 },
-        { key: "Passive", value: 0 }
+        { key: "Active", value: true },
+        { key: "Passive", value: false }
       ],
        specialList: [
-        { key: "Да", value: 1 },
-        { key: "Нет", value: 0 }
+        { key: "Да", value: true },
+        { key: "Нет", value: false }
       ],
       isValidated: true,
       rolesList: this.$store.getters["dicts/getRolesDict"],
@@ -295,7 +302,7 @@ export default {
       details: {
         id: null,
         emp_id: null,
-        fio: "",
+        emp_name: "",
         mfos: [],
         amount_min: "",
         amount_max: "",
@@ -303,8 +310,8 @@ export default {
         role_name: null,
         special: null,
         status: null,
-        is_chairman: true,
-        is_risk_manager: true,
+        is_chairman: false,
+        is_risk_manager: false,
         groups: []
       }
     };
@@ -313,7 +320,7 @@ export default {
     details: {
       id: {},
       emp_id: {},
-      fio: {
+      emp_name: {
         required,
         minLength: minLength(3)
       },
@@ -335,12 +342,12 @@ export default {
       status: {
         required
       },
-      is_chairman: {
-        required
-      },
-      is_risk_manager: {
-        required
-      },
+      // is_chairman: {
+      //   required
+      // },
+      // is_risk_manager: {
+      //   required
+      // },
       groups: {
         required
       }
@@ -356,6 +363,7 @@ export default {
   },
   mixins: [dialogMix],
   created() {
+    this.searchUser = this.details.emp_name
     try {
       this.$store.dispatch("creditsAdmin/getFilials")
     } catch(error) {}
@@ -364,7 +372,30 @@ export default {
     filials() {
       // console.log(JSON.stringify(this.$store.getters["creditsAdmin/getFilials"], null, 2))
       return this.$store.getters["creditsAdmin/getFilials"]
+    },
+
+    committeeGroups() {
+      return this.$store.getters["creditsAdmin/getCommitteeGroups"]
     }
+  },
+  watch: {
+    "details.mfos"(val) {
+      console.log('mfos', val)
+      // console.log('mfos', this.mfos)
+        try {
+          this.$store.dispatch("creditsAdmin/getCommitteeGroups", val[0])
+        } catch(error) {}
+      
+    },
+
+    // "details.role_name"(val) {
+    //   console.log('role_name', val)
+    //   if (val == 'CreditCommitteeMember') {
+    //     try {
+    //       this.$store.dispatch("creditsAdmin/getCommitteeGroups")
+    //     } catch(error) {}
+    //   }
+    // }
   },
   methods: {
     selUsers () {
@@ -382,10 +413,11 @@ export default {
     userCliked(user) {
       console.log('user',user)
       this.details.emp_id = user.emp_id
-      this.details.fio = user.fio
+      this.details.emp_name = user.fio
       this.details.role_name = user.role_name
       this.details.role_type = user.role_type
       if (user.mfo) {
+        this.details.mfos = []
         this.details.mfos.push(user.mfo)
       } else {
         this.details.mfos = user.mfos
@@ -399,7 +431,7 @@ export default {
       this.resultUser = []
       this.searchUser = null
       this.details.emp_id = null
-      this.details.fio = null
+      this.details.emp_name = null
     },
 
     // filterFn (val, update, abort) {

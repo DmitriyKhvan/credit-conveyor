@@ -234,12 +234,12 @@ export default {
       isPwd: true,
       isLoading: this.$store.getters["common/getLoading"],
       stateList: [
-        { key: "Active", value: 1 },
-        { key: "Passive", value: 0 }
+        { key: "Active", value: true },
+        { key: "Passive", value: false }
       ],
        specialList: [
-        { key: "Да", value: 1 },
-        { key: "Нет", value: 0 }
+        { key: "Да", value: true },
+        { key: "Нет", value: false }
       ],
       isValidated: true,
       rolesList: this.$store.getters["dicts/getRolesDict"],

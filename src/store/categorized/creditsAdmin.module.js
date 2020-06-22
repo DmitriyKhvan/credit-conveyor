@@ -3,7 +3,8 @@ import ApiService from "@/services/api.service";
 export const creditsAdmin = {
   namespaced: true,
   state: {
-    filials: []
+    filials: [],
+    committeeGroups: []
   },
   actions: {
     async getFilials({ commit }) {
@@ -12,6 +13,18 @@ export const creditsAdmin = {
         console.log("filials", data[0].children);
         if (data[0].children.length) {
           commit("setFilials", data[0].children);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getCommitteeGroups({ commit }, mfo) {
+      try {
+        let { data } = await ApiService.get(`/credit/groups/search?mfo=${mfo}`);
+        console.log("group", data);
+        if (data) {
+          commit("setCommitteeGroups", data);
         }
       } catch (error) {
         console.log(error);
@@ -38,10 +51,15 @@ export const creditsAdmin = {
           class: i.lvl === 1 ? "parent" : "child"
         };
       });
+    },
+
+    setCommitteeGroups(state, committeeGroups) {
+      state.committeeGroups = committeeGroups
     }
 
   },
   getters: {
-    getFilials: state => state.filials
+    getFilials: state => state.filials,
+    getCommitteeGroups: state => state.committeeGroups
   }
 };
