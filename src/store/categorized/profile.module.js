@@ -339,11 +339,18 @@ export const profile = {
       }
     },
 
-    async getFullForm({ state, commit, getters, rootGetters }) {
+    async getFullForm({ state, commit, getters, rootGetters }, taskId) {
+      let response
       try {
-        const response = await state.bpmService.getFullForm(
-          rootGetters["credits/taskId"]
-        );
+        if (taskId) {
+          response = await state.bpmService.getFullForm(taskId);
+          return response;
+        } else {
+          response = await state.bpmService.getFullForm(
+            rootGetters["credits/taskId"]
+          );
+        }
+        
         console.log('response', response)
 
         if (response.data.input && response.data.input.length) {

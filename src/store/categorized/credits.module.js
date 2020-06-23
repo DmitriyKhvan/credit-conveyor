@@ -6,6 +6,7 @@ export const credits = {
   state: {
     taskId: "",
     userRole: "",
+    fileId: null, 
     messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки
       message: null
@@ -276,7 +277,11 @@ export const credits = {
 
     async creatFile({state}, fileData) {
       try {
-        return await state.bpmService.creatFile(fileData)
+        // debugger
+        const response = await state.bpmService.creatFile(fileData)
+        console.log('cccccc', response)
+        // debugger
+        return response
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
@@ -285,22 +290,46 @@ export const credits = {
 
     async getFile({state, commit, dispatch}, fileData) {
       try {
-        let response;
+        // debugger
+        let response = null;
+        let file = null;
         if (typeof fileData == 'object') {
-          const file = await dispatch('creatFile', fileData)
-          response = await state.bpmService.getFile(file.infos[0].id)
+          // debugger
+          file = await dispatch('creatFile', fileData)
+
+          console.log('createFile', file)
+          // debugger
+
+          if (file.infos[0].id) {
+            // debugger
+            response = await state.bpmService.getFile(file.infos[0].id)
+            commit("setFileId", file.infos[0].id)
+          }
+
         } else {
+          // debugger
           response = await state.bpmService.getFile(fileData)
+          console.log('responsessssss', response)
+          // debugger
         }
         
         const blob = new Blob([response], { type: "application/pdf" })
         // const blob = new Blob([response], { type: "application/octet-stream" })
-        return window.URL.createObjectURL(blob)
+        console.log('infos')
+        // debugger
+        return {
+          url: window.URL.createObjectURL(blob),
+          //fileName: file.infos[0].filename
+        }
     
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
       }
+    }, 
+
+    async getDataFile({state, commit}) {
+      return await state.bpmService.getDataFile()
     }
   },
   mutations: {
@@ -413,6 +442,10 @@ export const credits = {
 
     clearCreditTasks(state) {
       state.creditTasks = [];
+    },
+
+    setFileId(state, fileId) {
+      state.fileId = fileId
     }
    
   },
@@ -423,6 +456,7 @@ export const credits = {
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
     creditTasks: state => state.creditTasks,
-    userRole: state => state.userRole
+    userRole: state => state.userRole,
+    fileId: state => state.fileId
   }
 };

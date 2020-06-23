@@ -348,9 +348,18 @@
 
             <td class="text-left print">
               <div class="text-blue q-gutter-md">
-                <q-btn disable icon="print" @click="printFile()" />
+                <q-btn 
+                  icon="print" 
+                  @click="printFile(credit.taskId)" 
+                  :loading="loadings1"
+                >
+                <!-- {{loadings}} -->
+                  <template v-slot:loading>
+                    <q-spinner-facebook />
+                  </template>
+                </q-btn>
                 <!-- <q-btn icon="print" @click="printJS(link)" /> -->
-                <q-btn disable icon="cloud_download" @click="downloadFile()" />
+                <q-btn icon="cloud_download" @click="downloadFile()" />
 
                 <template v-if="userRole === 'CS'">
                   <q-btn
@@ -380,6 +389,8 @@ export default {
     return {
       // userRole: this.$store.getters.userRole,
       loaderList: false,
+      // loadings: [], // кнопки распечатать
+      loadings1: false,
       fileData: {
         type: "protocol",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
@@ -415,7 +426,7 @@ export default {
           protocol_secretary_fio: ""
         }
       },
-      link: null,
+      // link: null,
       applicationNumber: "",
       client: "",
       manager: "",
@@ -492,6 +503,16 @@ export default {
       });
     },
 
+    // loadings() {
+    //   const loadings = []
+    //   for (let i = 0; i < this.$store.getters["credits/creditTasks"].length; i++) {
+    //     debugger
+    //     loadings[i] = false
+    //   }
+    //   console.log('loading', this.loadings)
+    //   return loadings
+    // },
+
     userRole() {
       return this.$store.getters["credits/userRole"];
     }
@@ -555,30 +576,65 @@ export default {
       } catch (error) {}
     },
 
-    async printFile() {
-      try {
-        const url = await this.$store.dispatch(
-          "credits/getFile",
-          this.fileData
-        );
-        printJS(url);
-        window.URL.revokeObjectURL(url);
-      } catch (error) {}
+    // async getDataFile() {
+    //   try {
+    //     this.fileData = await this.$store.dispatch("credits/geDataFile")
+    //   } catch(error) {}
+    // },
+
+    async printFile(taskId) {
+      
+      const file = await this.getUrlFile(taskId)
+
+      console.log('file', file)
+      // debugger
+    
+      printJS(file.url);
+      //window.URL.revokeObjectURL(file);
+      
     },
 
-    async downloadFile(fileName = "file") {
-      try {
-        const url = await this.$store.dispatch(
-          "credits/getFile",
-          // this.fileData
-          556
-        );
+    async downloadFile(taskId) {
+        const file = await this.getUrlFile(taskId)
+        console.log('filelll', file)
         let link = document.createElement("a");
-        link.href = url;
-        link.download = fileName;
+        link.href = file.url;
+        link.download = file.fileName;
         link.click();
-        window.URL.revokeObjectURL(url);
-      } catch (error) {}
+        window.URL.revokeObjectURL(file);
+    },
+
+    async getUrlFile(taskId) {
+      this.loadings1 = true
+      let file = null
+      try {
+        if (this.$store.getters["credits/fileId"]) {
+          // debugger
+          file = await this.$store.dispatch(
+            "credits/getFile",
+            this.$store.getters["credits/fileId"]
+          );
+        } else {
+          // debugger
+          const fileData = await this.$store.dispatch("profile/getFullForm", taskId)
+
+          //this.fileData.data = (fileData.data.input.find(i => i.label == 'extractProtocol')).data
+
+          console.log(JSON.stringify(this.fileData, null, 2))
+
+          console.log('fileData', this.fileData)
+          // debugger
+      
+          file = await this.$store.dispatch(
+            "credits/getFile",
+            this.fileData
+          );
+        }
+        this.loadings1 = false
+        return file
+      } catch(error) {
+        this.loadings1 = false
+      }
     }
   },
   components: {
