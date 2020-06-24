@@ -110,10 +110,11 @@
                   ref="pinpp"
                   square
                   outlined
-                  v-model.lazy="Customer.PINPP"
+                  v-model="Customer.PINPP"
                   dense
                   label="ПИНФЛ"
                   mask="##############"
+                  lazy-rules
                   :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
                 />
               </div>
@@ -135,6 +136,68 @@
             </div>
 
             <div class="row q-col-gutter-md">
+              <!-- <div class="col-4">
+                <q-select
+                  square
+                  outlined
+                  v-model="Customer.ResidentFlag"
+                  :options="credits.options.confirmation"
+                  dense
+                  label="Вид документа"
+                  emit-value
+                  map-options
+                  class="q-pb-sm"
+                />
+              </div>
+
+              <div class="col-4">
+                <q-input
+                  square
+                  outlined
+                  v-model="Customer.Document.Series"
+                  dense
+                  lazy-rules
+                  label="Наименование документа"
+                  :rules="[
+                    val => !!val || 'Введите наименование документа'
+                  ]"
+                />
+              </div> -->
+
+              <div class="col-4">
+                <q-input
+                  ref="pasportSeries"
+                  square
+                  outlined
+                  v-model="Customer.Document.Series"
+                  dense
+                  label="Серия документа"
+                  mask="AA"
+                  :rules="[
+                    val => (val && val.length === 2) || 'Введите серию документа'
+                  ]"
+                />
+              </div>
+
+              
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-4">
+                <q-input
+                  ref="pasportNumber"
+                  square
+                  outlined
+                  v-model="Customer.Document.Number"
+                  dense
+                  label="Номер документа"
+                  mask="#######"
+                  :rules="[
+                    val => (val && val.length === 7) || 'Введите номер документа'
+                  ]"
+                />
+              </div>
+
               <div class="col-4">
                 <q-select
                   square
@@ -148,39 +211,8 @@
                   class="q-pb-sm"
                 />
               </div>
-
-              <div class="col-4">
-                <q-input
-                  ref="pasportSeries"
-                  square
-                  outlined
-                  v-model="Customer.Document.Series"
-                  dense
-                  lazy-rules
-                  label="Серия паспорта"
-                  mask="AA"
-                  :rules="[
-                    val => (val && val.length === 2) || 'Введите Серию паспорта'
-                  ]"
-                />
-              </div>
-
-              <div class="col-4">
-                <q-input
-                  ref="pasportNumber"
-                  square
-                  outlined
-                  v-model="Customer.Document.Number"
-                  dense
-                  label="Номер паспорта"
-                  mask="#######"
-                  lazy-rules
-                  :rules="[
-                    val => (val && val.length === 7) || 'Введите Номер паспорта'
-                  ]"
-                />
-              </div>
             </div>
+
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
