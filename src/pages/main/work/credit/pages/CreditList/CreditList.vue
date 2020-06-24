@@ -228,7 +228,7 @@
 
             <td class="text-left manager applicationRow">
               <template v-if="userRole === 'CS'">
-                Наименование менеджера
+                {{ credit.kmfio }}
               </template>
               <router-link
                 v-else
@@ -242,7 +242,7 @@
                     filialName: credit.filialName
                   }
                 }"
-                >Наименование менеджера</router-link
+                >{{ credit.kmfio }}</router-link
               >
             </td>
 
@@ -348,9 +348,28 @@
 
             <td class="text-left print">
               <div class="text-blue q-gutter-md">
-                <q-btn disable icon="print" @click="printFile()" />
-                <!-- <q-btn icon="print" @click="printJS(link)" /> -->
-                <q-btn disable icon="cloud_download" @click="downloadFile()" />
+                <!-- <q-btn 
+                  icon="print" 
+                  @click="printFile(credit.taskId)" 
+                  :loading="loadings1"
+                >
+                 {{loadings}}
+                  <template v-slot:loading>
+                    <q-spinner-facebook />
+                  </template>
+                </q-btn> -->
+
+                <q-btn 
+                  :disable="disable"
+                  icon="print" 
+                  @click="printFile(credit.taskId)" 
+                />
+                
+                <q-btn 
+                  :disable="disable"
+                  icon="cloud_download" 
+                  @click="downloadFile(credit.taskId)" 
+                />
 
                 <template v-if="userRole === 'CS'">
                   <q-btn
@@ -358,7 +377,7 @@
                     class="full-width"
                     label="Подписать"
                     color="green"
-                    @click="creditSign"
+                    @click="creditSign(credit.taskId)"
                   />
                 </template>
               </div>
@@ -380,6 +399,9 @@ export default {
     return {
       // userRole: this.$store.getters.userRole,
       loaderList: false,
+      // loadings: [], // кнопки распечатать
+      loadings1: false,
+      disable: false,
       fileData: {
         type: "protocol",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
@@ -415,7 +437,7 @@ export default {
           protocol_secretary_fio: ""
         }
       },
-      link: null,
+      // link: null,
       applicationNumber: "",
       client: "",
       manager: "",
@@ -492,6 +514,16 @@ export default {
       });
     },
 
+    // loadings() {
+    //   const loadings = []
+    //   for (let i = 0; i < this.$store.getters["credits/creditTasks"].length; i++) {
+    //     debugger
+    //     loadings[i] = false
+    //   }
+    //   console.log('loading', this.loadings)
+    //   return loadings
+    // },
+
     userRole() {
       return this.$store.getters["credits/userRole"];
     }
@@ -538,7 +570,8 @@ export default {
       });
     },
 
-    async creditSign() {
+    async creditSign(taskId) {
+      this.$store.commit("credits/setTaskId", taskId);
       const confirmCreditData = {
         output: [
           {
@@ -555,30 +588,107 @@ export default {
       } catch (error) {}
     },
 
-    async printFile() {
-      try {
-        const url = await this.$store.dispatch(
-          "credits/getFile",
-          this.fileData
-        );
-        printJS(url);
-        window.URL.revokeObjectURL(url);
-      } catch (error) {}
+    // async getDataFile() {
+    //   try {
+    //     this.fileData = await this.$store.dispatch("credits/geDataFile")
+    //   } catch(error) {}
+    // },
+
+    async printFile(taskId) {
+      
+      const file = await this.getUrlFile(taskId)
+
+      console.log('file', file)
+      // debugger
+    
+      printJS(file.url);
+      //window.URL.revokeObjectURL(file);
+      
     },
 
-    async downloadFile(fileName = "file") {
-      try {
-        const url = await this.$store.dispatch(
-          "credits/getFile",
-          // this.fileData
-          556
-        );
+    async downloadFile(taskId) {
+        const file = await this.getUrlFile(taskId)
+        console.log('filelll', file)
         let link = document.createElement("a");
-        link.href = url;
-        link.download = fileName;
+        link.href = file.url;
+        link.download = file.fileName;
         link.click();
-        window.URL.revokeObjectURL(url);
-      } catch (error) {}
+        window.URL.revokeObjectURL(file);
+    },
+
+    // async getUrlFile(taskId) {
+    //   // this.loadings1 = true
+    //   this.disable = true
+    //   let file = null
+    //   try {
+    //     if (this.$store.getters["credits/fileId"]) {
+    //       // debugger
+    //       file = await this.$store.dispatch(
+    //         "credits/getFile",
+    //         this.$store.getters["credits/fileId"]
+    //       );
+    //     } else {
+    //       // debugger
+    //       const { data } = await this.$store.dispatch("profile/getFullForm", taskId)
+
+    //       // this.fileData.data = (data.input.find(i => i.label == 'extractProtocol')).data
+    //       this.fileData.data = this.dataTransform((data.input.find(i => i.label == 'extractProtocol')).data)
+    //       // const fileData = (data.input.find(i => i.label == 'extractProtocol')).data
+
+    //       console.log(JSON.stringify(this.fileData, null, 2))
+
+    //       file = await this.$store.dispatch(
+    //         "credits/getFile",
+    //         this.fileData
+    //       );
+    //     }
+    //     // this.loadings1 = false
+    //     this.disable = false
+    //     return file
+    //   } catch(error) {
+    //     // this.loadings1 = false
+    //     this.disable = false
+    //   }
+    // },
+
+    async getUrlFile(taskId) {
+      // this.loadings1 = true
+      this.disable = true
+      let file = null
+      try {
+          // debugger
+          const { data } = await this.$store.dispatch("profile/getFullForm", taskId)
+
+          // this.fileData.data = (data.input.find(i => i.label == 'extractProtocol')).data
+          this.fileData.data = this.dataTransform((data.input.find(i => i.label == 'extractProtocol')).data)
+          // const fileData = (data.input.find(i => i.label == 'extractProtocol')).data
+
+          console.log(JSON.stringify(this.fileData, null, 2))
+
+          file = await this.$store.dispatch(
+            "credits/getFile",
+            this.fileData
+          );
+        // this.loadings1 = false
+        this.disable = false
+        return file
+      } catch(error) {
+        // this.loadings1 = false
+        this.disable = false
+      }
+    },
+
+    dataTransform(data) {
+      // debugger
+      for (let i in data) {
+        if (data[i] != null) {
+          if (data[i].items) {
+            data[i] = data[i].items
+            this.dataTransform(data[i])
+          }
+        }
+      }
+      return data
     }
   },
   components: {

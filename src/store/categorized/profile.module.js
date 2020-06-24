@@ -339,11 +339,18 @@ export const profile = {
       }
     },
 
-    async getFullForm({ state, commit, getters, rootGetters }) {
+    async getFullForm({ state, commit, getters, rootGetters }, taskId) {
+      let response
       try {
-        const response = await state.bpmService.getFullForm(
-          rootGetters["credits/taskId"]
-        );
+        if (taskId) {
+          response = await state.bpmService.getFullForm(taskId);
+          return response;
+        } else {
+          response = await state.bpmService.getFullForm(
+            rootGetters["credits/taskId"]
+          );
+        }
+        
         console.log('response', response)
 
         if (response.data.input && response.data.input.length) {
@@ -531,7 +538,7 @@ export const profile = {
       state.fullFormProfile.Customer.Relatives.items.push({
         FirstName: "",
         // FullName: "",
-        FamilyConnectionType: 0,
+        FamilyConnectionType: null,
         LastName: "",
         MiddleName: "",
         BirthDate: "",
@@ -600,18 +607,20 @@ export const profile = {
       
       function objectTransform(dictionaries) {
         for (let item in dictionaries) {
-          if(item == "Branches") continue
+          // if(item == "Branches") continue
           if (
             typeof dictionaries[item] === "object" &&
             dictionaries[item] != null
           ) {
-            for (let value of dictionaries[item].items) {
-              if (!value.value) {
-                objectTransform(value);
-              } else {
-                value.value = Number(value.value);
+            if (dictionaries[item].items) {
+              for (let value of dictionaries[item].items) {
+                if (!value.value) {
+                  objectTransform(value);
+                } else {
+                  value.value = Number(value.value);
+                }
+                //value.value = Number(value.value)
               }
-              //value.value = Number(value.value)
             }
           }
         }

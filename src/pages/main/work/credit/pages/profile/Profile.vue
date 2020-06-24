@@ -2350,6 +2350,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
+                  disable
                   ref="productCredit"
                   square
                   outlined
@@ -2406,6 +2407,7 @@
                 class="col-4"
               >
                 <q-select
+                  disable
                   ref="typeRepayment"
                   square
                   outlined
@@ -2610,22 +2612,7 @@
                   :rules="[val => !!val || 'Введите первоначальный взнос']"
                 />
               </div>
-              <div class="col-4">
-                <q-input
-                  ref="procentInitialFeeMin"
-                  square
-                  outlined
-                  v-model.number="fullProfile.LoanInfo.MinInitialPaymentPercent"
-                  type="number"
-                  dense
-                  disable
-                  label="Процент первоначального взноса (минимальный)"
-                  lazy-rules
-                  :rules="[
-                    val => !!val || 'Введите минимальный первоначальный взнос'
-                  ]"
-                />
-              </div>
+
               <div class="col-4">
                 <q-input
                   ref="procentInitialFeeMax"
@@ -2642,6 +2629,24 @@
                   ]"
                 />
               </div>
+
+              <div class="col-4">
+                <q-input
+                  ref="procentInitialFeeMin"
+                  square
+                  outlined
+                  v-model.number="fullProfile.LoanInfo.MinInitialPaymentPercent"
+                  type="number"
+                  dense
+                  disable
+                  label="Процент первоначального взноса (минимальный)"
+                  lazy-rules
+                  :rules="[
+                    val => !!val || 'Введите минимальный первоначальный взнос'
+                  ]"
+                />
+              </div>
+              
             </div>
 
             <div class="row q-col-gutter-md">
@@ -2763,7 +2768,7 @@
                     mask="##.##.####"
                     :rules="[
                       val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
-                      val => reverseDate(val) > reverseDate(currentDate) || 
+                      val => reverseDate(val) < reverseDate(currentDate) || 
                       'Неверная дата'
                     ]"
                   >
@@ -3099,6 +3104,7 @@ export default {
       this.loaderForm = false
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
+        this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
         console.log('resggggggggggggggggggggg', res)
         const { data } = res.data.input.find(i => i.label == 'application')
         const uploadedFiles = data.AttachedDocuments.items
@@ -3158,7 +3164,7 @@ export default {
       this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
       this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
       this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
-      this.onChangeLoan(this.fullProfile.LoanInfo.LoanProduct)
+      this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
     }
   },
   computed: {
@@ -3674,7 +3680,7 @@ export default {
       if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.GivenDate) {
         this.$refs.pasportDateGuaranteesStart[idx].validate()
       }
-    },
+    }, 
 
     onChangeLoan(credit) {
       console.log("Аннуит, диффер")
@@ -3682,10 +3688,10 @@ export default {
       this.options.RepaymentType = [];
 
       // для синхронизации с Preapprov
-      if (this.personalData.typeStepCredit) {
-        this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
-        this.personalData.typeStepCredit = null
-      }
+      // if (this.personalData.typeStepCredit) {
+      //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
+      //   this.personalData.typeStepCredit = null
+      // }
 
       this.fullProfile.LoanInfo.consumerLoan = {
           nameBankProd: "",    // Наименование банка
@@ -3698,6 +3704,11 @@ export default {
         }
       this.fullProfile.LoanInfo.InitialPayment = 0
 
+      this.setLoan(credit)
+    },
+
+    setLoan(credit) {
+      console.log('credit', credit)
       const idx = this.dictionaries.LoanDetails.items.findIndex(
         item => item.LOAN_ID == credit
       );
@@ -4074,7 +4085,7 @@ export default {
 
   .guarantees {
       .q-field__control {
-        color: #212121;
+        color: rgba(0, 0, 0, 0.87);
       }
 
       .q-field--auto-height .q-field__control, .q-field--auto-height, .q-field__native {
