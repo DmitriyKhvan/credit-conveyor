@@ -395,6 +395,7 @@ import printJS from "print-js";
 import Loader from "@/components/Loader";
 
 export default {
+  props: ['loaderList'],
   data() {
     return {
       // userRole: this.$store.getters.userRole,

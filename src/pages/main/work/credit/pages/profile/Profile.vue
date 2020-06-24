@@ -3133,7 +3133,7 @@ export default {
     if (this.taskId) {
       this.loaderForm = true
       this.$store.commit("credits/setTaskId", this.taskId);
-      this.loaderForm = false
+      
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
         this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
@@ -3157,9 +3157,10 @@ export default {
             this.guaranteeCount.push("guarantee")
           }
         }
-        this.guaranteesValid()
-        
+        //this.guaranteesValid()
+        this.loaderForm = false
       } catch (error) {
+        console.log('ERROR', error)
         this.loaderForm = false
       }
     } 
