@@ -157,4 +157,15 @@ export default class BpmService {
 
     return responce.data;
   };
+
+  // getDataFile = async () => {
+  //   const responce = await axios({
+  //     method: "get",
+  //     url: 
+  //     data
+  //   });
+
+  //   return responce.data
+  // };
+
 }

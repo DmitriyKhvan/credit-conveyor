@@ -1504,15 +1504,15 @@ export default {
 
     async showFile(id) {
       try {
-        const url = await this.$store.dispatch("credits/getFile", id);
+        const file = await this.$store.dispatch("credits/getFile", id);
         this.$refs.modalView.style.display = "block";
         this.$refs.pdfviewer.setAttribute(
           "height",
           document.body.clientHeight - 150
         );
-        this.$refs.pdfviewer.setAttribute("src", url);
+        this.$refs.pdfviewer.setAttribute("src", file.url);
         // printJS(url);
-        window.URL.revokeObjectURL(url);
+        window.URL.revokeObjectURL(file);
         
       } catch (error) {
         //this.loader = false;
