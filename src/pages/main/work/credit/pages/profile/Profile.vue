@@ -2350,6 +2350,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
+                  disable
                   ref="productCredit"
                   square
                   outlined
@@ -2406,6 +2407,7 @@
                 class="col-4"
               >
                 <q-select
+                  disable
                   ref="typeRepayment"
                   square
                   outlined
@@ -2610,22 +2612,7 @@
                   :rules="[val => !!val || 'Введите первоначальный взнос']"
                 />
               </div>
-              <div class="col-4">
-                <q-input
-                  ref="procentInitialFeeMin"
-                  square
-                  outlined
-                  v-model.number="fullProfile.LoanInfo.MinInitialPaymentPercent"
-                  type="number"
-                  dense
-                  disable
-                  label="Процент первоначального взноса (минимальный)"
-                  lazy-rules
-                  :rules="[
-                    val => !!val || 'Введите минимальный первоначальный взнос'
-                  ]"
-                />
-              </div>
+
               <div class="col-4">
                 <q-input
                   ref="procentInitialFeeMax"
@@ -2642,6 +2629,24 @@
                   ]"
                 />
               </div>
+
+              <div class="col-4">
+                <q-input
+                  ref="procentInitialFeeMin"
+                  square
+                  outlined
+                  v-model.number="fullProfile.LoanInfo.MinInitialPaymentPercent"
+                  type="number"
+                  dense
+                  disable
+                  label="Процент первоначального взноса (минимальный)"
+                  lazy-rules
+                  :rules="[
+                    val => !!val || 'Введите минимальный первоначальный взнос'
+                  ]"
+                />
+              </div>
+              
             </div>
 
             <div class="row q-col-gutter-md">
@@ -2763,7 +2768,7 @@
                     mask="##.##.####"
                     :rules="[
                       val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
-                      val => reverseDate(val) > reverseDate(currentDate) || 
+                      val => reverseDate(val) < reverseDate(currentDate) || 
                       'Неверная дата'
                     ]"
                   >
@@ -4080,7 +4085,7 @@ export default {
 
   .guarantees {
       .q-field__control {
-        color: #212121;
+        color: rgba(0, 0, 0, 0.87);
       }
 
       .q-field--auto-height .q-field__control, .q-field--auto-height, .q-field__native {

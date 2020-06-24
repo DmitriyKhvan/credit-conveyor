@@ -277,10 +277,8 @@ export const credits = {
 
     async creatFile({state}, fileData) {
       try {
-        // debugger
         const response = await state.bpmService.creatFile(fileData)
         console.log('cccccc', response)
-        // debugger
         return response
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -290,36 +288,29 @@ export const credits = {
 
     async getFile({state, commit, dispatch}, fileData) {
       try {
-        // debugger
         let response = null;
         let file = null;
         if (typeof fileData == 'object') {
-          // debugger
           file = await dispatch('creatFile', fileData)
 
           console.log('createFile', file)
-          // debugger
 
           if (file.infos[0].id) {
-            // debugger
             response = await state.bpmService.getFile(file.infos[0].id)
             commit("setFileId", file.infos[0].id)
           }
 
         } else {
-          // debugger
           response = await state.bpmService.getFile(fileData)
           console.log('responsessssss', response)
-          // debugger
         }
         
         const blob = new Blob([response], { type: "application/pdf" })
         // const blob = new Blob([response], { type: "application/octet-stream" })
         console.log('infos')
-        // debugger
         return {
           url: window.URL.createObjectURL(blob),
-          //fileName: file.infos[0].filename
+          // fileName: file.infos[0].filename
         }
     
       } catch(error) {

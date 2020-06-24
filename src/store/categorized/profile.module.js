@@ -538,7 +538,7 @@ export const profile = {
       state.fullFormProfile.Customer.Relatives.items.push({
         FirstName: "",
         // FullName: "",
-        FamilyConnectionType: 0,
+        FamilyConnectionType: null,
         LastName: "",
         MiddleName: "",
         BirthDate: "",
@@ -607,18 +607,20 @@ export const profile = {
       
       function objectTransform(dictionaries) {
         for (let item in dictionaries) {
-          if(item == "Branches") continue
+          // if(item == "Branches") continue
           if (
             typeof dictionaries[item] === "object" &&
             dictionaries[item] != null
           ) {
-            for (let value of dictionaries[item].items) {
-              if (!value.value) {
-                objectTransform(value);
-              } else {
-                value.value = Number(value.value);
+            if (dictionaries[item].items) {
+              for (let value of dictionaries[item].items) {
+                if (!value.value) {
+                  objectTransform(value);
+                } else {
+                  value.value = Number(value.value);
+                }
+                //value.value = Number(value.value)
               }
-              //value.value = Number(value.value)
             }
           }
         }

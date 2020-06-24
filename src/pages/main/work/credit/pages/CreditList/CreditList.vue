@@ -228,7 +228,7 @@
 
             <td class="text-left manager applicationRow">
               <template v-if="userRole === 'CS'">
-                Наименование менеджера
+                {{ credit.kmfio }}
               </template>
               <router-link
                 v-else
@@ -242,7 +242,7 @@
                     filialName: credit.filialName
                   }
                 }"
-                >Наименование менеджера</router-link
+                >{{ credit.kmfio }}</router-link
               >
             </td>
 
@@ -348,18 +348,28 @@
 
             <td class="text-left print">
               <div class="text-blue q-gutter-md">
-                <q-btn 
+                <!-- <q-btn 
                   icon="print" 
                   @click="printFile(credit.taskId)" 
                   :loading="loadings1"
                 >
-                <!-- {{loadings}} -->
+                 {{loadings}}
                   <template v-slot:loading>
                     <q-spinner-facebook />
                   </template>
-                </q-btn>
-                <!-- <q-btn icon="print" @click="printJS(link)" /> -->
-                <q-btn icon="cloud_download" @click="downloadFile()" />
+                </q-btn> -->
+
+                <q-btn 
+                  :disable="disable"
+                  icon="print" 
+                  @click="printFile(credit.taskId)" 
+                />
+                
+                <q-btn 
+                  :disable="disable"
+                  icon="cloud_download" 
+                  @click="downloadFile(credit.taskId)" 
+                />
 
                 <template v-if="userRole === 'CS'">
                   <q-btn
@@ -367,7 +377,7 @@
                     class="full-width"
                     label="Подписать"
                     color="green"
-                    @click="creditSign"
+                    @click="creditSign(credit.taskId)"
                   />
                 </template>
               </div>
@@ -391,6 +401,7 @@ export default {
       loaderList: false,
       // loadings: [], // кнопки распечатать
       loadings1: false,
+      disable: false,
       fileData: {
         type: "protocol",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
@@ -559,7 +570,8 @@ export default {
       });
     },
 
-    async creditSign() {
+    async creditSign(taskId) {
+      this.$store.commit("credits/setTaskId", taskId);
       const confirmCreditData = {
         output: [
           {
@@ -604,37 +616,79 @@ export default {
         window.URL.revokeObjectURL(file);
     },
 
+    // async getUrlFile(taskId) {
+    //   // this.loadings1 = true
+    //   this.disable = true
+    //   let file = null
+    //   try {
+    //     if (this.$store.getters["credits/fileId"]) {
+    //       // debugger
+    //       file = await this.$store.dispatch(
+    //         "credits/getFile",
+    //         this.$store.getters["credits/fileId"]
+    //       );
+    //     } else {
+    //       // debugger
+    //       const { data } = await this.$store.dispatch("profile/getFullForm", taskId)
+
+    //       // this.fileData.data = (data.input.find(i => i.label == 'extractProtocol')).data
+    //       this.fileData.data = this.dataTransform((data.input.find(i => i.label == 'extractProtocol')).data)
+    //       // const fileData = (data.input.find(i => i.label == 'extractProtocol')).data
+
+    //       console.log(JSON.stringify(this.fileData, null, 2))
+
+    //       file = await this.$store.dispatch(
+    //         "credits/getFile",
+    //         this.fileData
+    //       );
+    //     }
+    //     // this.loadings1 = false
+    //     this.disable = false
+    //     return file
+    //   } catch(error) {
+    //     // this.loadings1 = false
+    //     this.disable = false
+    //   }
+    // },
+
     async getUrlFile(taskId) {
-      this.loadings1 = true
+      // this.loadings1 = true
+      this.disable = true
       let file = null
       try {
-        if (this.$store.getters["credits/fileId"]) {
           // debugger
-          file = await this.$store.dispatch(
-            "credits/getFile",
-            this.$store.getters["credits/fileId"]
-          );
-        } else {
-          // debugger
-          const fileData = await this.$store.dispatch("profile/getFullForm", taskId)
+          const { data } = await this.$store.dispatch("profile/getFullForm", taskId)
 
-          //this.fileData.data = (fileData.data.input.find(i => i.label == 'extractProtocol')).data
+          // this.fileData.data = (data.input.find(i => i.label == 'extractProtocol')).data
+          this.fileData.data = this.dataTransform((data.input.find(i => i.label == 'extractProtocol')).data)
+          // const fileData = (data.input.find(i => i.label == 'extractProtocol')).data
 
           console.log(JSON.stringify(this.fileData, null, 2))
 
-          console.log('fileData', this.fileData)
-          // debugger
-      
           file = await this.$store.dispatch(
             "credits/getFile",
             this.fileData
           );
-        }
-        this.loadings1 = false
+        // this.loadings1 = false
+        this.disable = false
         return file
       } catch(error) {
-        this.loadings1 = false
+        // this.loadings1 = false
+        this.disable = false
       }
+    },
+
+    dataTransform(data) {
+      // debugger
+      for (let i in data) {
+        if (data[i] != null) {
+          if (data[i].items) {
+            data[i] = data[i].items
+            this.dataTransform(data[i])
+          }
+        }
+      }
+      return data
     }
   },
   components: {

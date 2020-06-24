@@ -444,13 +444,16 @@
                     <div class="col-9">{{ guarantee.PINPP }}</div>
                     <div class="col-3">Резиденство</div>
                     <div class="col-9">
-                      <!-- <template v-if="">
-                    </template> -->
-                      {{
-                        credits.options.confirmation.find(
+                      <template v-if="credits.options.confirmation.find(
                           i => i.value == guarantee.Resident
-                        ).label
-                      }}
+                        )">
+                        {{
+                          credits.options.confirmation.find(
+                            i => i.value == guarantee.Resident
+                          ).label
+                        }}
+                    </template>
+                      
                     </div>
 
                     <div class="col-12 dataBlock">Паспортные данные:</div>
