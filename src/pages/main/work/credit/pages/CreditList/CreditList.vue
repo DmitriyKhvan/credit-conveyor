@@ -102,7 +102,7 @@
                 </template>
               </q-input>
             </th>
-            <th class="text-left"></th>
+            <th v-if="userRole === 'CS'" class="text-left"></th>
           </tr>
 
           <tr class="titleApplication">
@@ -152,7 +152,7 @@
                 Дата
               </button>
             </th>
-            <th class="text-left"></th>
+            <th v-if="userRole === 'CS'" class="text-left"></th>
           </tr>
         </thead>
         <tbody v-if="loaderList">
@@ -346,32 +346,33 @@
               >
             </td>
 
-            <td class="text-left print">
+            <td v-if="userRole === 'CS'" class="text-left print">
               <div class="text-blue q-gutter-md">
-                <!-- <q-btn 
-                  icon="print" 
-                  @click="printFile(credit.taskId)" 
-                  :loading="loadings1"
-                >
-                 {{loadings}}
-                  <template v-slot:loading>
-                    <q-spinner-facebook />
-                  </template>
-                </q-btn> -->
-
-                <q-btn 
-                  :disable="disable"
-                  icon="print" 
-                  @click="printFile(credit.taskId)" 
-                />
                 
-                <q-btn 
-                  :disable="disable"
-                  icon="cloud_download" 
-                  @click="downloadFile(credit.taskId)" 
-                />
+                <!-- <template v-if="userRole === 'CS'"> -->
+                  <!-- <q-btn 
+                    icon="print" 
+                    @click="printFile(credit.taskId)" 
+                    :loading="loadings1"
+                  >
+                  {{loadings}}
+                    <template v-slot:loading>
+                      <q-spinner-facebook />
+                    </template>
+                  </q-btn> -->
 
-                <template v-if="userRole === 'CS'">
+                  <q-btn 
+                    :disable="disable"
+                    icon="print" 
+                    @click="printFile(credit.taskId)" 
+                  />
+                  
+                  <q-btn 
+                    :disable="disable"
+                    icon="cloud_download" 
+                    @click="downloadFile(credit.taskId)" 
+                  />
+
                   <q-btn
                     disable
                     class="full-width"
@@ -379,7 +380,7 @@
                     color="green"
                     @click="creditSign(credit.taskId)"
                   />
-                </template>
+                <!-- </template> -->
               </div>
             </td>
           </tr>
@@ -387,6 +388,7 @@
       </q-markup-table>
       <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
     </div>
+
   </div>
 </template>
 
@@ -399,7 +401,6 @@ export default {
   data() {
     return {
       // userRole: this.$store.getters.userRole,
-      loaderList: false,
       // loadings: [], // кнопки распечатать
       loadings1: false,
       disable: false,
@@ -447,7 +448,7 @@ export default {
       taskName: "",
       taskStatus: "",
       date: "",
-      sort: "",
+      //sort: "",
       options: {
         taskName: [
           "Ввод данных по заявке",
@@ -461,7 +462,7 @@ export default {
           "Голосование КК",
           "Формирование выписки"
         ],
-        sort: ["По убыванию", "По возрастанию"]
+        //sort: ["По убыванию", "По возрастанию"]
       }
     };
   },
@@ -596,14 +597,26 @@ export default {
     // },
 
     async printFile(taskId) {
-      
-      const file = await this.getUrlFile(taskId)
+      //console.log('credits', this.credits)
+      let task = this.credits.find(i => i.taskId == taskId)
+      let file = null
 
+      if (task.idFile) {
+        file = await this.$store.dispatch(
+          "credits/getFile",
+          task.idFile
+        );
+      } else {
+        file = await this.getUrlFile(taskId)
+        task.idFile = file.id
+      }
+      
       console.log('file', file)
       // debugger
-    
+
+      //console.log('credits', this.credits)
       printJS(file.url);
-      //window.URL.revokeObjectURL(file);
+      window.URL.revokeObjectURL(file);
       
     },
 
@@ -700,14 +713,6 @@ export default {
 
 <style lang="scss">
 .creditList {
-
-  .loaderList {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-
   tr:nth-child(2n) {
     background: #e8edff;
   }

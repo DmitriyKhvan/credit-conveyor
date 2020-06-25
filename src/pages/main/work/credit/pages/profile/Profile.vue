@@ -65,7 +65,8 @@
                   v-model="Customer.BirthDate"
                   mask="##.##.####"
                   :rules="[
-                    val => (val && val.length === 10) || 'Введите дату рождения'
+                    val => (val && val.length === 10) || 'Введите дату рождения',
+                    val => adulthoodValid(val) || 'Несовершенолетний'
                   ]"
                 >
                   <template v-slot:append>
@@ -192,6 +193,7 @@
                   dense
                   label="Номер документа"
                   mask="#######"
+                  lazy-rules
                   :rules="[
                     val => (val && val.length === 7) || 'Введите номер документа'
                   ]"
@@ -229,9 +231,12 @@
                       'Введите дату выдачи паспорта',
 
                       Customer.Document.ExpirationDate
-                      ? (val => reverseDate(val) < reverseDate(Customer.Document.ExpirationDate) ||
+                      ? (val => msecond(val) < msecond(Customer.Document.ExpirationDate) ||
                       'Неверная дата')
-                      : null
+                      : null,
+
+                      val => msecond(val) < msecond(currentDate) || 
+                      'Неверная дата'
                   ]"
                 >
                   <template v-slot:append>
@@ -270,10 +275,10 @@
                       (val && val.length === 10) ||
                       'Введите дату окончания действия паспорта',
                       Customer.Document.GivenDate 
-                      ? (val => reverseDate(val) > reverseDate(Customer.Document.GivenDate) ||
+                      ? (val => msecond(val) > msecond(Customer.Document.GivenDate) ||
                       'Неверная дата')
                       : null,
-                      val => reverseDate(val) > reverseDate(currentDate) || 
+                      val => msecond(val) > msecond(currentDate) || 
                       'Неверная дата'
                   ]"
                 >
@@ -843,10 +848,14 @@
                       val =>
                         (val && val.length === 10) ||
                         'Введите дату выдачи паспорта',
+
                         relative.Document.ExpirationDate
-                        ? (val => reverseDate(val) < reverseDate(relative.Document.ExpirationDate) ||
+                        ? (val => msecond(val) < msecond(relative.Document.ExpirationDate) ||
                         'Неверная дата')
-                        : null
+                        : null,
+
+                         val => msecond(val) < msecond(currentDate) || 
+                        'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -888,10 +897,10 @@
                         (val && val.length === 10) ||
                         'Введите дату окончания паспорта',
                         relative.Document.GivenDate
-                        ? (val => reverseDate(val) > reverseDate(relative.Document.GivenDate) ||
+                        ? (val => msecond(val) > msecond(relative.Document.GivenDate) ||
                         'Неверная дата')
                         : null,
-                        val => reverseDate(val) > reverseDate(currentDate) ||
+                        val => msecond(val) > msecond(currentDate) ||
                         'Неверная дата'
                     ]"
                   >
@@ -1735,10 +1744,14 @@
                       val =>
                         (val && val.length === 10) ||
                         'Введите дату выдачи паспорта',
+
                         guarantee.Document.ExpirationDate
-                        ? (val => reverseDate(val) < reverseDate(guarantee.Document.ExpirationDate) ||
+                        ? (val => msecond(val) < msecond(guarantee.Document.ExpirationDate) ||
                         'Неверная дата')
-                        : null
+                        : null,
+
+                         val => msecond(val) < msecond(currentDate) || 
+                        'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -1779,10 +1792,10 @@
                         (val && val.length === 10) ||
                         'Введите дату  окончания действия паспорта',
                         guarantee.Document.GivenDate
-                        ? (val => reverseDate(val) > reverseDate(guarantee.Document.GivenDate) ||
+                        ? (val => msecond(val) > msecond(guarantee.Document.GivenDate) ||
                         'Неверная дата')
                         : null,
-                        val => reverseDate(val) > reverseDate(currentDate) ||
+                        val => msecond(val) > msecond(currentDate) ||
                         'Неверная дата'
                     ]"
                   >
@@ -2046,7 +2059,7 @@
                     outlined
                     v-model="guarantee.Name"
                     dense
-                    label="Имя"
+                    label="Название"
                     lazy-rules
                     :rules="[val => !!val || 'Введите имя']"
                   />
@@ -2800,7 +2813,7 @@
                     mask="##.##.####"
                     :rules="[
                       val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
-                      val => reverseDate(val) < reverseDate(currentDate) || 
+                      val => msecond(val) < msecond(currentDate) || 
                       'Неверная дата'
                     ]"
                   >
@@ -3008,23 +3021,57 @@
           </div>
         </div>
 
-        <!-- Print version button-->
-        <q-btn
-          @click="onSubmit(false)"
-          color="primary"
-          label="Версия для печати"
-          class="q-ml-sm"
-        />
+        <!-- file list -->
+        <template v-if="fileList.length">
+          <!-- Comment -->
+          <div class="fileList tab">
+            <h4
+              class="tab-title"
+              ref="fileList"
+              @click="toggleForm('fileList')"
+            >
+              Список документов
+            </h4>
+            <div class="tab-content" ref="tabContent">
+              <ul class="fileBlock">
+                <li
+                  class="fileLi" 
+                  v-for="(fileData, index) of fileList" 
+                  :key="index"
+                >
+                  <p>Название документа {{ index }}</p> 
+                  <q-btn 
+                      :disable="disable"
+                      icon="print" 
+                      @click="printFile(fileData)" 
+                  >
+                    <q-tooltip>Распечатать</q-tooltip>
+                  </q-btn>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </template>
 
-        <!-- Sent data full form to BPM -->
-        <!-- <appSentFullProfile /> -->
+        <div class="submitBlock">
+          <!-- Print version button-->
+          <q-btn
+            @click="onSubmit(false)"
+            color="primary"
+            label="Версия для печати"
+            class="q-ml-sm"
+          />
 
-        <q-btn
-          type="submit"
-          color="primary"
-          label="Оформить кредит"
-          class="q-ml-sm"
-        />
+          <!-- Sent data full form to BPM -->
+          <!-- <appSentFullProfile /> -->
+
+          <q-btn
+            type="submit"
+            color="primary"
+            label="Оформить кредит"
+            class="q-ml-sm"
+          />
+        </div>
       </form>
 
       <!-- confirm -->
@@ -3077,6 +3124,7 @@
 </template>
 
 <script>
+import printJS from "print-js";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import UserService from "@/services/user.service";
 import Loader from "@/components/Loader";
@@ -3093,6 +3141,7 @@ export default {
       currentDate: CommonUtils.dateFilter(new Date()),
       loaderForm: false,
       loaderFile: false,
+      disable: false,
       loader: false, // прелодер
       isValid: true, //валидация Email
       sameRegistration: null,
@@ -3116,6 +3165,77 @@ export default {
       totalGuaranteesSum: 0, // сумма всех гарантий и поручительств
       files: [], // для сервера, чтоб не дублировать отправку файла
       filesAll: [], // для фильтрации какие файлы загружены на сервер
+
+      fileData: {
+        type: "protocol",
+        lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
+        data: {}
+      },
+
+      fileList: [
+        {
+          protocol_initiative_unit: "",
+          protocol_client_inn: "",
+          protocol_lending_currency: "",
+          protocol_loan_amount: "",
+          protocol_repayment_type: "",
+          protocol_customer_name: "",
+          protocol_term: "",
+          protocol_grace_period: "",
+          protocol_finance_source: "",
+          protocol_loan_product: "",
+          protocol_loan_type: "",
+          protocol_percent_rate: "",
+          protocol_credit_rating: "",
+          protocol_request_number: "",
+          protocol_loan_specialist_position: "",
+          protocol_loan_specialist_fio: "",
+          protocol_number: "",
+          protocol_filial: "",
+          protocol_committee_decision_number: "",
+          protocol_committee_decision_date: "",
+          protocol_guarantor_name: "",
+          protocol_guarantor_value: "",
+          protocol_insurance_name: "",
+          protocol_insurance_value: "",
+          protocol_additional_name: "",
+          protocol_additional_value: "",
+          protocol_special_name: "",
+          protocol_special_value: "",
+          protocol_secretary_fio: ""
+        },
+        {
+          protocol_initiative_unit: "",
+          protocol_client_inn: "",
+          protocol_lending_currency: "",
+          protocol_loan_amount: "",
+          protocol_repayment_type: "",
+          protocol_customer_name: "",
+          protocol_term: "",
+          protocol_grace_period: "",
+          protocol_finance_source: "",
+          protocol_loan_product: "",
+          protocol_loan_type: "",
+          protocol_percent_rate: "",
+          protocol_credit_rating: "",
+          protocol_request_number: "",
+          protocol_loan_specialist_position: "",
+          protocol_loan_specialist_fio: "",
+          protocol_number: "",
+          protocol_filial: "",
+          protocol_committee_decision_number: "",
+          protocol_committee_decision_date: "",
+          protocol_guarantor_name: "",
+          protocol_guarantor_value: "",
+          protocol_insurance_name: "",
+          protocol_insurance_value: "",
+          protocol_additional_name: "",
+          protocol_additional_value: "",
+          protocol_special_name: "",
+          protocol_special_value: "",
+          protocol_secretary_fio: ""
+        }
+      ]
 
     };
   },
@@ -4014,8 +4134,12 @@ export default {
       this.creditManagerComment = ""
       console.log('comments', this.fullProfile.ApplicationComment)
     },
-    reverseDate(val) {
-      return val.slice(-4) + val.slice(2, 6) + val.slice(0, 2)
+    msecond(val) {
+      return new Date(val.slice(-4) + val.slice(2, 6) + val.slice(0, 2))
+    },
+
+    adulthoodValid(date) {
+      return (this.msecond(this.currentDate) - this.msecond(date) - 432000000)/1000/60/60/24/365 > 18 // с учетом высокосных годов (4)
     },
 
     guaranteesValid() {
@@ -4029,6 +4153,27 @@ export default {
 
       console.log('totalGuaranteesSum',this.totalGuaranteesSum)
       this.$refs.guaranteesValid.validate();
+    },
+
+    async printFile(fileData) {
+      this.disable = true
+      this.fileData.data = fileData
+      try {
+        console.log(JSON.stringify(this.fileData, null, 2))
+
+        const file = await this.$store.dispatch(
+          "credits/getFile",
+          this.fileData
+        );
+
+        console.log('file', file)
+
+        printJS(file.url);
+
+        this.disable = false
+      } catch(error) {
+        this.disable = false
+      }
     },
 
     filterFn (val, update) {
@@ -4293,6 +4438,20 @@ export default {
     color: red;
     cursor: pointer;
     float: right;
+  }
+
+  .fileBlock {
+    padding-left: 15px;
+    .fileLi {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+  }
+  
+  .submitBlock {
+    margin-top: 20px;
   }
 }
 </style>

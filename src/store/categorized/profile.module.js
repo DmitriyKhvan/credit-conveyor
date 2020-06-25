@@ -379,6 +379,12 @@ export const profile = {
   },
   mutations: {
     setFullForm(state, payload) {
+      
+      // Для корректной валидации
+      payload.Customer.Document.Number = String(payload.Customer.Document.Number)
+      payload.Customer.Relatives.items.map(i => i.Document.Number = String(i.Document.Number))
+      payload.Guarantee.RelatedPerson.items.map(i => i.Document.Number = String(i.Document.Number))
+      
       state.fullFormProfile = payload;
     },
 

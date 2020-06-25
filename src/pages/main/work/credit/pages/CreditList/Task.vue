@@ -1131,7 +1131,7 @@
             </div>
           </div>
 
-          <h4 class="titleForm">Коментарии</h4>
+          <h4 class="titleForm">Комментарии</h4>
           <div class="formBlock">
             <template v-if="fullProfile.ApplicationComment.items">
               <div
@@ -1505,6 +1505,7 @@ export default {
     async showFile(id) {
       try {
         const file = await this.$store.dispatch("credits/getFile", id);
+        //console.log('file', file)
         this.$refs.modalView.style.display = "block";
         this.$refs.pdfviewer.setAttribute(
           "height",

@@ -6,7 +6,7 @@ export const credits = {
   state: {
     taskId: "",
     userRole: "",
-    fileId: null, 
+    // fileId: null, 
     messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки
       message: null
@@ -297,7 +297,7 @@ export const credits = {
 
           if (file.infos[0].id) {
             response = await state.bpmService.getFile(file.infos[0].id)
-            commit("setFileId", file.infos[0].id)
+            // commit("setFileId", file.infos[0].id)
           }
 
         } else {
@@ -310,6 +310,7 @@ export const credits = {
         console.log('infos')
         return {
           url: window.URL.createObjectURL(blob),
+          id: file ? file.infos[0].id : fileData
           // fileName: file.infos[0].filename
         }
     
@@ -435,9 +436,9 @@ export const credits = {
       state.creditTasks = [];
     },
 
-    setFileId(state, fileId) {
-      state.fileId = fileId
-    }
+    // setFileId(state, fileId) {
+    //   state.fileId = fileId
+    // }
    
   },
   getters: {
@@ -448,6 +449,6 @@ export const credits = {
     taskId: state => state.taskId,
     creditTasks: state => state.creditTasks,
     userRole: state => state.userRole,
-    fileId: state => state.fileId
+    //fileId: state => state.fileId
   }
 };
