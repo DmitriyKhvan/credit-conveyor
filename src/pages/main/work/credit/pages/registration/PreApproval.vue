@@ -149,6 +149,8 @@ export default {
           if (dictionaries) {
             console.log('dic', JSON.stringify(dictionaries, null, 2))
             this.$store.commit("profile/setDictionaries", dictionaries)
+
+            sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
             
             this.$router.push("profile");
             this.$emit('toggleLoaderForm', false)

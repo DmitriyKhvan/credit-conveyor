@@ -1277,6 +1277,39 @@
                 </div>
               </template>
             </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-4">
+                <q-input
+                  square
+                  outlined
+                  type="number"
+                  dense
+                  disable
+                  label="Среднемесячная заработная плата (сум)"
+                />
+              </div>
+              <div class="col-4">
+                <q-input
+                  square
+                  outlined
+                  type="number"
+                  dense
+                  disable
+                  label="Профит"
+                />
+              </div>
+              <div class="col-4">
+                <q-input
+                  square
+                  outlined
+                  type="number"
+                  dense
+                  disable
+                  label="Класс кредитоспособности"
+                />
+              </div>
+            </div>  
           </div>
         </div>
 
@@ -2727,6 +2760,17 @@
                 />
               </div>
 
+              <div class="col-4">
+                <q-input
+                  square
+                  outlined
+                  type="number"
+                  dense
+                  disable
+                  label="Расчет макс.возм.суммы кредита (скоринг)"
+                />
+              </div>
+
             </div>
 
             <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
@@ -2967,6 +3011,24 @@
                     >
                       <q-tooltip>Удалить файл</q-tooltip>
                     </q-btn>
+
+                    <q-btn
+                      v-else
+                      flat
+                      round
+                      color="black"
+                      icon="clear"
+                      @click.prevent="
+                        confirmDeleteItem(
+                          file.DocumentName,
+                          removeUploadFile, 
+                          item = null,
+                          index
+                        )
+                      "
+                    >
+                      <q-tooltip>Удалить загруженный файл</q-tooltip>
+                    </q-btn>
                   </div>
                 </div>
               </div>
@@ -3089,7 +3151,7 @@
               label="Удалить"
               color="primary"
               v-close-popup
-              @click="itemFunc(paylod)"
+              @click="itemFunc(payload)"
             />
             <q-btn flat label="Нет" color="primary" v-close-popup />
           </q-card-actions>
@@ -3149,7 +3211,7 @@ export default {
       // confirmCredit: false,
       itemName: "",
       itemFunc: null,
-      paylod: {},
+      payload: {},
       bar: false,
       GracePeriodMin: null,
       GracePeriodMax: null,
@@ -3966,7 +4028,7 @@ export default {
       this.confirm = true;
       this.itemName = name;
       this.itemFunc = func;
-      this.paylod = {
+      this.payload = {
         item,
         index,
         index2
@@ -4040,6 +4102,30 @@ export default {
       this.uploadFile(uploadedFiles)
     },
 
+    // uploadFile(uploadedFiles) {
+    //   let result = []
+    //   let idx = -1
+    //   for (let file of uploadedFiles) {
+    //     if (this.files.length) {
+    //       let idx = this.files.findIndex(i => i.lastModified == file.lastModified)
+    //     }
+    //     if (idx == -1) {
+    //       this.files.push(file);
+    //     }
+
+    //     this.filesAll.push({
+    //       name: file.name,
+    //       DocumentName: "",
+    //       id: null,
+    //       upload: false
+    //     });
+    //   }
+
+    //   // console.log("result", result);
+    //   console.log("files", this.files);
+    //   console.log("filesAll", this.filesAll);
+    // },
+
     uploadFile(uploadedFiles) {
       for (let i = 0; i < uploadedFiles.length; i++) {
         this.files.push(uploadedFiles[i]);
@@ -4112,9 +4198,18 @@ export default {
       this.filesAll = uploadFiles;
     },
 
-    removeFile(key) {
-      this.files.splice(key - (this.filesAll.length - this.files), 1);
-      this.filesAll.splice(key, 1);
+    removeFile(idx) {
+      this.files.splice(idx - (this.filesAll.length - this.files.length), 1); // index для не загруженных файлов
+      this.filesAll.splice(idx, 1);
+    },
+
+    removeUploadFile(payload) {
+      console.log('idFile', this.filesAll[payload.index].id)
+      //const response = this.$store.dispatch("profile/removeFiles", this.fileAll[idx].id)
+
+      // if (response) {
+      //   this.filesAll.splice(idx, 1);
+      // }
     },
 
     addFiles() {

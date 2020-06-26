@@ -339,6 +339,18 @@ export const profile = {
       }
     },
 
+    async removeFiles({ state, commit }, id) {
+      try {
+        const response = await state.bpmService.removeFiles(id);
+        console.log("responseFile", response);
+
+        return response;
+      } catch(error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", errorMessage, { root: true });
+      }
+    },
+
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
       let response
       try {
@@ -633,11 +645,14 @@ export const profile = {
 
         return dictionaries;
       }
-      sessionStorage.setItem(
-        "dictionaries",
-        JSON.stringify(objectTransform(dictionaries))
-      );
-      state.dictionaries = objectTransform(dictionaries);
+
+      //const dicTransform = objectTransform(dictionaries)
+
+      // sessionStorage.setItem(
+      //   "dictionaries",
+      //   JSON.stringify(dicTransform)
+      // );
+      state.dictionaries = objectTransform(dictionaries)
     },
 
     resetDataFullFormProfile(state) {
