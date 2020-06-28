@@ -137,37 +137,44 @@
             </div>
 
             <div class="row q-col-gutter-md">
-              <!-- <div class="col-4">
+              <div class="col-4">
                 <q-select
+                  ref="documentType"
                   square
                   outlined
-                  v-model="Customer.ResidentFlag"
-                  :options="credits.options.confirmation"
+                  v-model="Customer.documentType"
+                  :options="dictionaries.DocumentType.items"
                   dense
                   label="Вид документа"
                   emit-value
                   map-options
                   class="q-pb-sm"
+                  :rules="[
+                    val => !!val || 'Выберите вид документа'
+                  ]"
                 />
               </div>
 
-              <div class="col-4">
+              <div 
+                v-if="Customer.documentType == 7"
+                class="col-4"
+              >
                 <q-input
+                  ref="DocumentName"
                   square
                   outlined
-                  v-model="Customer.Document.Series"
+                  v-model="Customer.Document.DocumentName"
                   dense
-                  lazy-rules
                   label="Наименование документа"
                   :rules="[
                     val => !!val || 'Введите наименование документа'
                   ]"
                 />
-              </div> -->
+              </div>
 
               <div class="col-4">
                 <q-input
-                  ref="pasportSeries"
+                  ref="DocumentSeries"
                   square
                   outlined
                   v-model="Customer.Document.Series"
@@ -186,7 +193,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
-                  ref="pasportNumber"
+                  ref="DocumentNumber"
                   square
                   outlined
                   v-model="Customer.Document.Number"
@@ -218,17 +225,17 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
-                  ref="pasportDateStart"
+                  ref="DocumentGivenDate"
                   outlined
                   square
                   dense
-                  label="Дата выдачи паспорта"
+                  label="Дата выдачи документа"
                   v-model="Customer.Document.GivenDate"
                   mask="##.##.####"
                   :rules="[
                     val =>
                       (val && val.length === 10) ||
-                      'Введите дату выдачи паспорта',
+                      'Введите дату выдачи документа',
 
                       Customer.Document.ExpirationDate
                       ? (val => msecond(val) < msecond(Customer.Document.ExpirationDate) ||
@@ -263,17 +270,17 @@
 
               <div class="col-4">
                 <q-input
-                  ref="pasportDateFinish"
+                  ref="DocumentExpirationDate"
                   outlined
                   square
                   dense
-                  label="Дата окончания действия паспорта"
+                  label="Дата окончания действия документа"
                   v-model="Customer.Document.ExpirationDate"
                   mask="##.##.####"
                   :rules="[
                     val =>
                       (val && val.length === 10) ||
-                      'Введите дату окончания действия паспорта',
+                      'Введите дату окончания действия документа',
                       Customer.Document.GivenDate 
                       ? (val => msecond(val) > msecond(Customer.Document.GivenDate) ||
                       'Неверная дата')
@@ -306,13 +313,13 @@
 
               <div class="col-4">
                 <q-input
-                  ref="passportIssuedBy"
+                  ref="IssuedBy"
                   square
                   outlined
                   v-model="Customer.Document.GivenPlace"
                   dense
                   label="Кем выдан паспорт"
-                  :rules="[val => !!val || 'Введите кем выдан паспорт']"
+                  :rules="[val => !!val || 'Введите кем выдан документ']"
                 />
               </div>
             </div>
@@ -3452,11 +3459,19 @@ export default {
       this.$refs.pinpp.validate();
       this.$refs.sex.validate();
 
-      this.$refs.pasportSeries.validate();
-      this.$refs.pasportNumber.validate();
-      this.$refs.pasportDateStart.validate();
-      this.$refs.pasportDateFinish.validate();
-      this.$refs.passportIssuedBy.validate();
+      this.$refs.documentType.validate();
+
+      if (this.Customer.documentType == 7) {
+        this.DocumentName.validate()
+      } else {
+        validItems(this.$refs, "DocumentName");
+      }
+
+      this.$refs.DocumentSeries.validate();
+      this.$refs.DocumentNumber.validate();
+      this.$refs.DocumentGivenDate.validate();
+      this.$refs.DocumentExpirationDate.validate();
+      this.$refs.IssuedBy.validate();
 
       this.$refs.education.validate();
 
@@ -3688,11 +3703,14 @@ export default {
         this.$refs.inn.hasError ||
         this.$refs.pinpp.hasError ||
         this.$refs.sex.hasError ||
-        this.$refs.pasportSeries.hasError ||
-        this.$refs.pasportNumber.hasError ||
-        this.$refs.pasportDateStart.hasError ||
-        this.$refs.pasportDateFinish.hasError ||
-        this.$refs.passportIssuedBy.hasError ||
+
+        this.$refs.documentType.hasError ||
+        this.$refs.DocumentName.hasError ||
+        this.$refs.DocumentSeries.hasError ||
+        this.$refs.DocumentNumber.hasError ||
+        this.$refs.DocumentGivenDate.hasError ||
+        this.$refs.DocumentExpirationDate.hasError ||
+        this.$refs.IssuedBy.hasError ||
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
         this.$refs.regionValid.hasError ||
@@ -3868,11 +3886,11 @@ export default {
     validDatePerson(date) {
 
       if (this.Customer.Document.ExpirationDate) {
-        this.$refs.pasportDateFinish.validate()
+        this.$refs.DocumentExpirationDate.validate()
       }
 
       if (this.Customer.Document.GivenDate) {
-        this.$refs.pasportDateStart.validate()
+        this.$refs.DocumentGivenDate.validate()
       }
     },
 

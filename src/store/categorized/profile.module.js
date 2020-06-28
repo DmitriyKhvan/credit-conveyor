@@ -125,6 +125,7 @@ export const profile = {
         Gender: null,
 
         Document: {
+          documentType: null,
           Series: "",
           Number: null,
           ExpirationDate: "",
@@ -195,6 +196,7 @@ export const profile = {
               MiddleName: "",
               BirthDate: "",
               Document: {
+                documentType: null,
                 Series: "",
                 Number: null,
                 ExpirationDate: "",
@@ -497,6 +499,7 @@ export const profile = {
         Sum: 0,
         MiddleName: "",
         Document: {
+          documentType: null,
           Series: "",
           Number: null,
           ExpirationDate: "",
@@ -561,6 +564,7 @@ export const profile = {
         MiddleName: "",
         BirthDate: "",
         Document: {
+          documentType: null,
           Series: "",
           Number: null,
           ExpirationDate: "",
@@ -693,6 +697,7 @@ export const profile = {
           Gender: null,
 
           Document: {
+            documentType: null,
             Series: "",
             Number: null,
             ExpirationDate: "",
@@ -763,6 +768,7 @@ export const profile = {
                 MiddleName: "",
                 BirthDate: "",
                 Document: {
+                  documentType: null,
                   Series: "",
                   Number: null,
                   ExpirationDate: "",
