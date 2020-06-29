@@ -66,7 +66,7 @@
                   mask="##.##.####"
                   :rules="[
                     val => (val && val.length === 10) || 'Введите дату рождения',
-                    val => adulthoodValid(val) || 'Несовершенолетний'
+                    val => adulthoodValid(val) || 'Несовершеннолетний'
                   ]"
                 >
                   <template v-slot:append>
@@ -142,7 +142,7 @@
                   ref="documentType"
                   square
                   outlined
-                  v-model="Customer.documentType"
+                  v-model="Customer.Document.documentType"
                   :options="dictionaries.DocumentType.items"
                   dense
                   label="Вид документа"
@@ -156,7 +156,7 @@
               </div>
 
               <div 
-                v-if="Customer.documentType == 7"
+                v-if="Customer.Document.documentType == 7"
                 class="col-4"
               >
                 <q-input
@@ -313,7 +313,7 @@
 
               <div class="col-4">
                 <q-input
-                  ref="IssuedBy"
+                  ref="DocumentGivenPlace"
                   square
                   outlined
                   v-model="Customer.Document.GivenPlace"
@@ -786,7 +786,8 @@
                     mask="##.##.####"
                     :rules="[
                       val =>
-                        (val && val.length === 10) || 'Введите дату рождения'
+                        (val && val.length === 10) || 'Введите дату рождения',
+                        val => adulthoodValid(val) || 'Несовершеннолетний'
                     ]"
                   >
                     <template v-slot:append>
@@ -808,34 +809,73 @@
                     </template>
                   </q-input>
                 </div>
+
+                <div class="col-4">
+                  <q-select
+                    ref="relativesDocumentDocumentType"
+                    square
+                    outlined
+                    v-model="relative.Document.documentType"
+                    :options="dictionaries.DocumentType.items"
+                    dense
+                    label="Вид документа"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
+                    :rules="[
+                      val => !!val || 'Выберите вид документа'
+                    ]"
+                  />
+                </div>
+
+                <div 
+                  v-if="relative.Document.documentType == 7"
+                  class="col-4"
+                >
+                  <q-input
+                    ref="relativesDocumentDocumentName"
+                    square
+                    outlined
+                    v-model="relative.Document.DocumentName"
+                    dense
+                    label="Наименование документа"
+                    :rules="[
+                      val => !!val || 'Введите наименование документа'
+                    ]"
+                  />
+                </div>
+                
+              </div>
+
+              <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    ref="relatives_pasportSeries"
+                    ref="relativesDocumentSeries"
                     square
                     outlined
                     v-model="relative.Document.Series"
                     dense
-                    label="Серия паспорта"
+                    label="Серия документа"
                     mask="AA"
                     :rules="[
                       val =>
-                        (val && val.length === 2) || 'Введите Серию паспорта'
+                        (val && val.length === 2) || 'Введите серию документа'
                     ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
-                    ref="relatives_pasportNumber"
+                    ref="relativesDocumentNumber"
                     square
                     outlined
                     v-model="relative.Document.Number"
                     dense
-                    label="Номер паспорта"
+                    label="Номер документа"
                     mask="#######"
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length === 7) || 'Введите Номер паспорта'
+                        (val && val.length === 7) || 'Введите номер документа'
                     ]"
                   />
                 </div>
@@ -844,17 +884,17 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    ref="relatives_pasportDateStart"
+                    ref="relativesDocumentGivenDate"
                     outlined
                     square
                     dense
-                    label="Дата выдачи паспорта"
+                    label="Дата выдачи документа"
                     v-model="relative.Document.GivenDate"
                     mask="##.##.####"
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
-                        'Введите дату выдачи паспорта',
+                        'Введите дату выдачи документа',
 
                         relative.Document.ExpirationDate
                         ? (val => msecond(val) < msecond(relative.Document.ExpirationDate) ||
@@ -870,14 +910,14 @@
                         <q-popup-proxy
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="qDateRelativePassportDateStart"
+                          ref="qDateRelativeDocumentGivenDate"
                         >
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="relative.Document.GivenDate"
                             @input="
                               ($event) => {
-                                $refs.qDateRelativePassportDateStart[
+                                $refs.qDateRelativeDocumentGivenDate[
                                   index
                                 ].hide()
                                 validDateRelatives($event, index)
@@ -892,17 +932,17 @@
 
                 <div class="col-4">
                   <q-input
-                    ref="relatives_pasportDateFinish"
+                    ref="relativesDocumentExpirationDate"
                     outlined
                     square
                     dense
-                    label="Дата окончания действия паспорта"
+                    label="Дата окончания действия документа"
                     v-model="relative.Document.ExpirationDate"
                     mask="##.##.####"
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
-                        'Введите дату окончания паспорта',
+                        'Введите дату окончания документа',
                         relative.Document.GivenDate
                         ? (val => msecond(val) > msecond(relative.Document.GivenDate) ||
                         'Неверная дата')
@@ -916,14 +956,14 @@
                         <q-popup-proxy
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="qDateRelativePassportDateFinish"
+                          ref="qDateRelativeDocumentExpirationDate"
                         >
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="relative.Document.ExpirationDate"
                             @input="
                               ($event) => {
-                                $refs.qDateRelativePassportDateFinish[
+                                $refs.qDateRelativeDocumentExpirationDate[
                                   index
                                 ].hide()
                                 validDateRelatives($event, index)
@@ -939,13 +979,13 @@
                 <div class="col-4">
                   <div class="col-4">
                     <q-input
-                      ref="relatives_passportIssuedBy"
+                      ref="relativesDocumentGivenPlace"
                       square
                       outlined
                       v-model="relative.Document.GivenPlace"
                       dense
-                      label="Кем выдан паспорт"
-                      :rules="[val => !!val || 'Введите кем выдан паспорт']"
+                      label="Кем выдан документ"
+                      :rules="[val => !!val || 'Введите кем выдан документ']"
                     />
                   </div>
                 </div>
@@ -1666,7 +1706,8 @@
                     mask="##.##.####"
                     :rules="[
                       val =>
-                        (val && val.length === 10) || 'Введите дату рождения'
+                        (val && val.length === 10) || 'Введите дату рождения',
+                        val => adulthoodValid(val) || 'Несовершеннолетний'
                     ]"
                   >
                     <template v-slot:append>
@@ -1740,50 +1781,87 @@
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
+                  <q-select
+                    ref="guaranteesDocumentDocumentType"
+                    square
+                    outlined
+                    v-model="guarantee.Document.documentType"
+                    :options="dictionaries.DocumentType.items"
+                    dense
+                    label="Вид документа"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
+                    :rules="[
+                      val => !!val || 'Выберите вид документа'
+                    ]"
+                  />
+                </div>
+
+                <div 
+                  v-if="guarantee.Document.documentType == 7"
+                  class="col-4"
+                >
                   <q-input
-                    ref="pasportSeriesGuarantees"
+                    ref="guaranteesDocumentDocumentName"
+                    square
+                    outlined
+                    v-model="guarantee.Document.DocumentName"
+                    dense
+                    label="Наименование документа"
+                    :rules="[
+                      val => !!val || 'Введите наименование документа'
+                    ]"
+                  />
+                </div>
+              </div>
+
+              <div class="row q-col-gutter-md">
+                <div class="col-4">
+                  <q-input
+                    ref="guaranteesDocumentSeries"
                     square
                     outlined
                     v-model="guarantee.Document.Series"
                     dense
-                    label="Серия паспорта"
+                    label="Серия документа"
                     mask="AA"
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length === 2) || 'Введите Серию паспорта'
+                        (val && val.length === 2) || 'Введите Серию документа'
                     ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
-                    ref="pasportNumberGuarantees"
+                    ref="guaranteesDocumentNumber"
                     square
                     outlined
                     v-model="guarantee.Document.Number"
                     dense
-                    label="Номер паспорта"
+                    label="Номер документа"
                     mask="#######"
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length === 7) || 'Введите Номер паспорта'
+                        (val && val.length === 7) || 'Введите Номер документа'
                     ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
-                    ref="pasportDateGuaranteesStart"
+                    ref="guaranteesDocumentGivenDate"
                     outlined
                     square
                     dense
-                    label="Дата выдачи паспорта"
+                    label="Дата выдачи документа"
                     v-model="guarantee.Document.GivenDate"
                     mask="##.##.####"
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
-                        'Введите дату выдачи паспорта',
+                        'Введите дату выдачи документа',
 
                         guarantee.Document.ExpirationDate
                         ? (val => msecond(val) < msecond(guarantee.Document.ExpirationDate) ||
@@ -1799,13 +1877,13 @@
                         <q-popup-proxy
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="qDatePasportDateGuaranteesStart"
+                          ref="qDateGuaranteeDocumentGivenDate"
                         >
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="guarantee.Document.GivenDate"
                             @input="($event) => {
-                              $refs.qDatePasportDateGuaranteesStart[index].hide()
+                              $refs.qDateGuaranteeDocumentGivenDate[index].hide()
                               validDateGuarantees($event, index)
                             }
                             "
@@ -1820,17 +1898,17 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    ref="pasportDateGuaranteesFinish"
+                    ref="guaranteesDocumentExpirationDate"
                     outlined
                     square
                     dense
-                    label="Дата окончания действия паспорта"
+                    label="Дата окончания действия документа"
                     v-model="guarantee.Document.ExpirationDate"
                     mask="##.##.####"
                     :rules="[
                       val =>
                         (val && val.length === 10) ||
-                        'Введите дату  окончания действия паспорта',
+                        'Введите дату  окончания действия документа',
                         guarantee.Document.GivenDate
                         ? (val => msecond(val) > msecond(guarantee.Document.GivenDate) ||
                         'Неверная дата')
@@ -1844,13 +1922,13 @@
                         <q-popup-proxy
                           transition-show="scale"
                           transition-hide="scale"
-                          ref="qDatePasportDateGuaranteesFinish"
+                          ref="qDateGuaranteeDocumentExpirationDate"
                         >
                           <q-date
                             mask="DD.MM.YYYY"
                             v-model="guarantee.Document.ExpirationDate"
                             @input="($event) => {
-                              $refs.qDatePasportDateGuaranteesFinish[index].hide()
+                              $refs.qDateGuaranteeDocumentExpirationDate[index].hide()
                               validDateGuarantees($event, index)
                             }
                             "
@@ -1863,13 +1941,13 @@
 
                 <div class="col-4">
                   <q-input
-                    ref="passportIssuedByGuarantees"
+                    ref="guaranteesDocumentGivenPlace"
                     square
                     outlined
                     v-model="guarantee.Document.GivenPlace"
                     dense
-                    label="Кем выдан паспорт"
-                    :rules="[val => !!val || 'Введите кем выдан паспорт']"
+                    label="Кем выдан документ"
+                    :rules="[val => !!val || 'Введите кем выдан документ']"
                   />
                 </div>
               </div>
@@ -3314,6 +3392,7 @@ export default {
     if (sessionStorage.getItem("csrf_token")) {
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+      this.$store.commit("profile/setFullForm", JSON.parse(sessionStorage.getItem("fullForm")))
       this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
       this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
       // console.log('dic', this.dictionaries)
@@ -3356,38 +3435,38 @@ export default {
     
   },
   mounted() {
-    if (!this.taskId) {
-      this.Customer.FirstName = this.personalData.name;
-      this.Customer.LastName = this.personalData.surname;
-      this.Customer.MiddleName = this.personalData.mname;
-      this.Customer.INN = this.personalData.inn;
-      this.Customer.PhoneList.items[0].Number = this.personalData.phone;
-      this.Customer.PINPP = this.personalData.pinpp;
-      this.Customer.Document.Series = this.personalData.passport.slice(
-        0,
-        2
-      );
-      this.Customer.Document.Number = this.personalData.passport.slice(
-        2
-      );
+    // if (!this.taskId) {
+    //   this.Customer.FirstName = this.personalData.name;
+    //   this.Customer.LastName = this.personalData.surname;
+    //   this.Customer.MiddleName = this.personalData.mname;
+    //   this.Customer.INN = this.personalData.inn;
+    //   this.Customer.PhoneList.items[0].Number = this.personalData.phone;
+    //   this.Customer.PINPP = this.personalData.pinpp;
+    //   this.Customer.Document.Series = this.personalData.passport.slice(
+    //     0,
+    //     2
+    //   );
+    //   this.Customer.Document.Number = this.personalData.passport.slice(
+    //     2
+    //   );
 
-      this.Customer.MaritalStatus = this.personalData.familyStatus
+    //   this.Customer.MaritalStatus = this.personalData.familyStatus
 
-      this.Customer.hasChildren = this.personalData.children;
-      this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
+    //   this.Customer.hasChildren = this.personalData.children;
+    //   this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
 
-      this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
-      this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
-      this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
-      this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
-      this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
-      this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
+    //   this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
+    //   this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
+    //   this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
+    //   this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
+    //   this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
+    //   this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
 
-      this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
-      this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
-      this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
-      this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    }
+    //   this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
+    //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
+    //   this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
+    //   this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+    // }
   },
   computed: {
     fullProfile() {
@@ -3462,7 +3541,7 @@ export default {
       this.$refs.documentType.validate();
 
       if (this.Customer.documentType == 7) {
-        this.DocumentName.validate()
+        this.$refs.DocumentName.validate()
       } else {
         validItems(this.$refs, "DocumentName");
       }
@@ -3471,7 +3550,7 @@ export default {
       this.$refs.DocumentNumber.validate();
       this.$refs.DocumentGivenDate.validate();
       this.$refs.DocumentExpirationDate.validate();
-      this.$refs.IssuedBy.validate();
+      this.$refs.DocumentGivenPlace.validate();
 
       this.$refs.education.validate();
 
@@ -3482,22 +3561,34 @@ export default {
       validFilter(this.$refs, "streetValid", "street");
       validFilter(this.$refs, "houseNumberValid", "houseNumber");
 
+      // Relatives
       validFilter(this.$refs, "relativesValid", "relatives");
       validFilter(this.$refs, "relativesSurnameValid", "relatives_surname");
       validFilter(this.$refs, "relativesNameValid", "relatives_name");
       validFilter(this.$refs, "relativesMnameValid", "relatives_mname");
       validFilter(this.$refs, "relativesBirthdayValid", "relatives_birthday");
+
+      // validFilter(this.$refs, "relativesDocumentDocumentTypeValid", "relativesDocumentDocumentType")
+
+      // this.Customer.Relatives.items.forEach(i => {
+      //   if (i.Document.documentType == 7) {
+      //     validFilter(this.$refs, "relativesDocumentDocumentNameValid" ,"relativesDocumentDocumentName");
+      //   } else {
+      //     validItems(this.$refs, "relativesDocumentDocumentNameValid");
+      //   }
+      // })
+
       validFilter(this.$refs, 
-        "relativesPasportSeriesValid",
-        "relatives_pasportSeries"
+        "relativesDocumentSeriesValid",
+        "relativesDocumentSeries"
       );
       validFilter(this.$refs, 
-        "relativesPasportNumberValid",
-        "relatives_pasportNumber"
+        "relativesDocumentNumberValid",
+        "relativesDocumentNumber"
       );
-      validFilter(this.$refs, "relativesPasportDateStartValid", "relatives_pasportDateStart");
-      validFilter(this.$refs, "relativesPasportDateFinishValid", "relatives_pasportDateFinish");
-      validFilter(this.$refs, "relativesPassportIssuedByValid", "relatives_passportIssuedBy");
+      validFilter(this.$refs, "relativesDocumentGivenDateValid", "relativesDocumentGivenDate");
+      validFilter(this.$refs, "relativesDocumentExpirationDateValid", "relativesDocumentExpirationDate");
+      validFilter(this.$refs, "relativesDocumentGivenPlaceValid", "relativesDocumentGivenPlace");
 
       this.$refs.kindOfActivity.validate();
 
@@ -3563,6 +3654,7 @@ export default {
         validItems(this.$refs, "priceVehiclesValid");
       }
 
+      // Guarantees
       if (this.fullProfile.Guarantee.RelatedPerson.items.length) {
         validFilter(this.$refs, "customersAttitudeValid", "customersAttitude");
         validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
@@ -3572,17 +3664,28 @@ export default {
         validFilter(this.$refs, "birthdayGuaranteesValid", "birthdayGuarantees");
         validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
         validFilter(this.$refs, "pinppGuaranteesValid", "pinppGuarantees");
+
+        // validFilter(this.$refs, "guaranteesDocumentDocumentTypeValid", "guaranteesDocumentDocumentType");
+
+        // this.fullProfile.Guarantee.RelatedPerson.items.forEach(i => {
+        //   if (i.Document.documentType == 7) {
+        //     validFilter(this.$refs, "guaranteesDocumentDocumentNameValid" ,"guaranteesDocumentDocumentName");
+        //   } else {
+        //     validItems(this.$refs, "guaranteesDocumentDocumentNameValid");
+        //   }
+        // })
+
         validFilter(this.$refs, 
-          "pasportSeriesGuaranteesValid",
-          "pasportSeriesGuarantees"
+          "guaranteesDocumentSeriesValid",
+          "guaranteesDocumentSeries"
         );
         validFilter(this.$refs, 
-          "pasportNumberGuaranteesValid",
-          "pasportNumberGuarantees"
+          "guaranteesDocumentNumberValid",
+          "guaranteesDocumentNumber"
         );
-        validFilter(this.$refs, "pasportDateGuaranteesStartValid", "pasportDateGuaranteesStart");
-        validFilter(this.$refs, "pasportDateGuaranteesFinishValid", "pasportDateGuaranteesFinish");
-        validFilter(this.$refs, "passportIssuedByGuaranteesValid", "passportIssuedByGuarantees");
+        validFilter(this.$refs, "guaranteesDocumentGivenDateValid", "guaranteesDocumentGivenDate");
+        validFilter(this.$refs, "guaranteesDocumentExpirationDateValid", "guaranteesDocumentExpirationDate");
+        validFilter(this.$refs, "guaranteesDocumentGivenPlaceValid", "guaranteesDocumentGivenPlace");
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(this.$refs, "houseNumberGuaranteesValid", "houseNumberGuarantees");
@@ -3596,11 +3699,12 @@ export default {
         validItems(this.$refs, "birthdayGuaranteesValid");
         validItems(this.$refs, "innGuaranteesValid");
         validItems(this.$refs, "pinppGuaranteesValid");
-        validItems(this.$refs, "pasportSeriesGuaranteesValid");
-        validItems(this.$refs, "pasportNumberGuaranteesValid");
-        validItems(this.$refs, "pasportDateGuaranteesStartValid");
-        validItems(this.$refs, "pasportDateGuaranteesFinishValid");
-        validItems(this.$refs, "passportIssuedByGuaranteesValid");
+        // validItems(this.$refs, "guaranteesDocumentDocumentTypeValid");
+        validItems(this.$refs, "guaranteesDocumentSeriesValid");
+        validItems(this.$refs, "guaranteesDocumentNumberValid");
+        validItems(this.$refs, "guaranteesDocumentGivenDateValid");
+        validItems(this.$refs, "guaranteesDocumentExpirationDateValid");
+        validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
         validItems(this.$refs, "houseNumberGuaranteesValid");
@@ -3640,7 +3744,7 @@ export default {
         validItems(this.$refs, "innGuaranteesValid");
       }
 
-      this.$refs.productCredit.validate();
+      // this.$refs.productCreditthis.$refs.productCredit.validate();
       this.$refs.priceCredit.validate();
 
       // this.$refs.periodRepayment.validate();
@@ -3710,7 +3814,7 @@ export default {
         this.$refs.DocumentNumber.hasError ||
         this.$refs.DocumentGivenDate.hasError ||
         this.$refs.DocumentExpirationDate.hasError ||
-        this.$refs.IssuedBy.hasError ||
+        this.$refs.DocumentGivenPlace.hasError ||
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
         this.$refs.regionValid.hasError ||
@@ -3722,11 +3826,15 @@ export default {
         this.$refs.relativesNameValid.hasError ||
         this.$refs.relativesMnameValid.hasError ||
         this.$refs.relativesBirthdayValid.hasError ||
-        this.$refs.relativesPasportSeriesValid.hasError ||
-        this.$refs.relativesPasportNumberValid.hasError ||
-        this.$refs.relativesPasportDateStartValid.hasError ||
-        this.$refs.relativesPasportDateFinishValid.hasError ||
-        this.$refs.relativesPassportIssuedByValid.hasError ||
+
+        // this.$refs.relativesDocumentDocumentTypeValid.hasError ||
+        // this.$refs.relativesDocumentDocumentNameValid.hasError ||
+
+        this.$refs.relativesDocumentSeriesValid.hasError ||
+        this.$refs.relativesDocumentNumberValid.hasError ||
+        this.$refs.relativesDocumentGivenDateValid.hasError ||
+        this.$refs.relativesDocumentExpirationDateValid.hasError ||
+        this.$refs.relativesDocumentGivenPlaceValid.hasError ||
         //kind of activity
         this.$refs.kindOfActivity.hasError ||
         this.$refs.nameOfEmployer.hasError ||
@@ -3761,18 +3869,22 @@ export default {
         this.$refs.innGuaranteesValid.hasError ||
         this.$refs.kindOfActivityGuaranteesValid.hasError ||
         this.$refs.pinppGuaranteesValid.hasError ||
-        this.$refs.pasportSeriesGuaranteesValid.hasError ||
-        this.$refs.pasportNumberGuaranteesValid.hasError ||
-        this.$refs.pasportDateGuaranteesStartValid.hasError ||
-        this.$refs.pasportDateGuaranteesFinishValid.hasError ||
+
+        // this.$refs.guaranteesDocumentDocumentTypeValid.hasError ||
+        // this.$refs.guaranteesDocumentDocumentNameValid.hasError ||
+        this.$refs.guaranteesDocumentSeriesValid.hasError ||
+        this.$refs.guaranteesDocumentNumberValid.hasError ||
+        this.$refs.guaranteesDocumentGivenDateValid.hasError ||
+        this.$refs.guaranteesDocumentExpirationDateValid.hasError ||
+        this.$refs.guaranteesDocumentGivenPlaceValid.hasError ||
         this.$refs.regionGuaranteesValid.hasError ||
         this.$refs.streetGuaranteesValid.hasError ||
         this.$refs.houseNumberGuaranteesValid.hasError ||
         this.$refs.phonesGuaranteesValid.hasError ||
         //info credit
-        this.$refs.productCredit.hasError ||
+        // this.$refs.productCredit.hasError ||
         this.$refs.priceCredit.hasError ||
-        this.$refs.typeRepayment.hasError ||
+        // this.$refs.typeRepayment.hasError ||
         // this.$refs.periodRepayment.hasError ||
         this.$refs.comfortablePeriodRepayment.hasError ||
         this.$refs.comfortableDayRepayment.hasError ||
@@ -3897,21 +4009,21 @@ export default {
     validDateRelatives(date, idx) {
 
       if (this.Customer.Relatives.items[idx].Document.ExpirationDate) {
-        this.$refs.relatives_pasportDateFinish[idx].validate()
+        this.$refs.relativesDocumentExpirationDate[idx].validate()
       }
 
       if (this.Customer.Relatives.items[idx].Document.GivenDate) {
-        this.$refs.relatives_pasportDateStart[idx].validate()
+        this.$refs.relativesDocumentGivenDate[idx].validate()
       }
     },
 
     validDateGuarantees(date, idx) {
       console.log(date)
       if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.ExpirationDate) {
-        this.$refs.pasportDateGuaranteesFinish[idx].validate()
+        this.$refs.guaranteesDocumentExpirationDate[idx].validate()
       } 
       if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.GivenDate) {
-        this.$refs.pasportDateGuaranteesStart[idx].validate()
+        this.$refs.guaranteesDocumentGivenDate[idx].validate()
       }
     }, 
 

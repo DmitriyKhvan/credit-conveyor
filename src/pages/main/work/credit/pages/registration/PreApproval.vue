@@ -5,7 +5,7 @@
         <q-card-section class="column items-start">
           <div class="preApprovalBlock__title">
             <div class="text-h6">Заявка на кредит</div>
-            <q-btn class="print" icon="print" @click="printFile()" disable/>
+            <q-btn class="print" icon="print" @click="printFile()" disable />
           </div>
           <div class="creditBackground">
             <h4 class="personName">
@@ -36,16 +36,18 @@
               <div class="text-h6">Причина отказа:</div>
 
               <form @submit.prevent="failureCredit">
-                  <q-field
-                    ref="toggle"
-                    :value="!!selection.length"
-                    :rules="[val => !!val || 'выберите причину']"
-                  >
-
+                <q-field
+                  ref="toggle"
+                  :value="!!selection.length"
+                  :rules="[val => !!val || 'выберите причину']"
+                >
                   <div class="row">
-                    <div 
+                    <div
                       class="col-6"
-                      v-for="(reson, index) of this.credits.reasonsList.slice(0, Math.round(this.credits.reasonsList.length / 2))"
+                      v-for="(reson, index) of this.credits.reasonsList.slice(
+                        0,
+                        Math.round(this.credits.reasonsList.length / 2)
+                      )"
                       :key="reson.value"
                     >
                       <q-checkbox
@@ -55,9 +57,11 @@
                       />
                     </div>
 
-                    <div 
+                    <div
                       class="col-6"
-                      v-for="(reson, index) of this.credits.reasonsList.slice(Math.round(this.credits.reasonsList.length / 2))"
+                      v-for="(reson, index) of this.credits.reasonsList.slice(
+                        Math.round(this.credits.reasonsList.length / 2)
+                      )"
                       :key="reson.value"
                     >
                       <q-checkbox
@@ -66,8 +70,8 @@
                         :label="reson.name"
                       />
                     </div>
-                    </div>
-                  </q-field>
+                  </div>
+                </q-field>
 
                 <q-card-actions class="row justify-center">
                   <q-btn label="Продолжить" color="green" type="submit" />
@@ -137,37 +141,47 @@ export default {
   },
   methods: {
     async successCredit(val) {
-      console.log(this.$store)
+      console.log(this.$store);
       this.$store.commit("credits/toggleConfirm", val);
-      this.$emit('toggleLoaderForm', true)
-        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
-        try {
-          const response = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
-          const dictionaries = (response.nextTask.input.find(i => i.label === "inputDictionaries")).data
+      this.$emit("toggleLoaderForm", true);
+      console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
+      try {
+        const response = await this.$store.dispatch(
+          "credits/confirmationCredit",
+          this.credits.confirmCreditData
+        );
 
-          console.log('response', response)
-          if (dictionaries) {
-            console.log('dic', JSON.stringify(dictionaries, null, 2))
-            this.$store.commit("profile/setDictionaries", dictionaries)
+        console.log("response", response);
+        if (response.data.input && response.data.input.length) {
+          console.log("dic", JSON.stringify(dictionaries, null, 2));
+          const fullForm = response.data.input.find(
+            i => i.label === "application"
+          ).data;
+          const dictionaries = response.nextTask.input.find(
+            i => i.label === "inputDictionaries"
+          ).data;
 
-            sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
-            
-            this.$router.push("profile");
-            this.$emit('toggleLoaderForm', false)
-          } else {
-            throw 'Data is null'
-          }
-          
-        } catch (error) {
-          const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("credits/setMessage", errorMessage);
-          sessionStorage.clear();
-          this.$router.push("/work/credit")
+          this.$store.commit("profile/setFullForm", fullForm);
+          this.$store.commit("profile/setDictionaries", dictionaries);
+
+          sessionStorage.setItem("fullForm", JSON.stringify(fullForm));
+          sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
+
+          this.$router.push("profile");
+          this.$emit("toggleLoaderForm", false);
+        } else {
+          throw "Data is null";
         }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        this.$store.commit("credits/setMessage", errorMessage);
+        sessionStorage.clear();
+        this.$router.push("/work/credit");
+      }
     },
-    
+
     async failureCredit() {
-      this.$emit('toggleLoaderFullScreen', true)
+      this.$emit("toggleLoaderFullScreen", true);
 
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
@@ -177,26 +191,29 @@ export default {
         this.$store.commit("credits/toggleDisableInput", false);
         this.$store.commit("credits/toggleConfirm", false);
 
-        this.credits.confirmCreditData.output[0].data = false
-        this.credits.confirmCreditData.output[1].data = this.selection
-    
-        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
+        this.credits.confirmCreditData.output[0].data = false;
+        this.credits.confirmCreditData.output[1].data = this.selection;
+
+        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
         try {
-          const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
-          console.log('res', res)
+          const res = await this.$store.dispatch(
+            "credits/confirmationCredit",
+            this.credits.confirmCreditData
+          );
+          console.log("res", res);
           if (res.requestedTask.state === "completed") {
             this.$store.commit("credits/setMessage", "Credit failure");
-            sessionStorage.clear()
+            sessionStorage.clear();
             this.$router.push("/work/credit");
-            this.$emit('toggleLoaderFullScreen', true)
+            this.$emit("toggleLoaderFullScreen", true);
           } else {
-            throw 'Task do not completed'
+            throw "Task do not completed";
           }
         } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
           this.$store.commit("credits/setMessage", errorMessage);
           sessionStorage.clear();
-          this.$router.push("/work/credit")
+          this.$router.push("/work/credit");
         }
       }
     },
@@ -210,7 +227,7 @@ export default {
         printJS(url);
         window.URL.revokeObjectURL(url);
       } catch (error) {}
-    },
+    }
   },
 
   filters: {

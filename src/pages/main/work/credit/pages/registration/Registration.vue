@@ -630,7 +630,7 @@ export default {
                   statusId: Number(familyStatus),
                   childrenCount: Number(childrenCount)
                 },
-                payment_id: Number(typeStepCredit),
+                //payment_id: Number(typeStepCredit),
                 loan_product_id: Number(typeCredit),
                 finance: {
                   incomingOther: externalIncomeSize, //доп. доход
@@ -647,7 +647,7 @@ export default {
                     series: passport.slice(0, 2)
                   },
                   mainPhone: phone.replace(/[\s+()]/g, ""),
-                  tin: Number(inn),
+                  tin: inn,
                   pinpp
                 }
               }
@@ -655,6 +655,7 @@ export default {
             {
               name: "creditProduct",
               data: {
+                repaymentType: Number(typeStepCredit),
                 spouseCost: Number(spouseCost),
                 childCost: Number(childCost),
                 creditTerm: Number(periodCredit),

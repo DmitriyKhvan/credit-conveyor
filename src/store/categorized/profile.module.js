@@ -133,7 +133,7 @@ export const profile = {
           GUID: "",
           Country: "Uzbekistan",
           DocLink: "",
-          DocumentName: 0,
+          DocumentName: "",
           GivenPlace: ""
         },
 
@@ -204,7 +204,7 @@ export const profile = {
                 GUID: "",
                 Country: "",
                 DocLink: "",
-                DocumentName: 0,
+                DocumentName: "",
                 GivenPlace: ""
               }
             }
@@ -507,10 +507,10 @@ export const profile = {
           GUID: "",
           Country: "",
           DocLink: "",
-          DocumentName: 0,
+          DocumentName: "",
           GivenPlace: ""
         },
-        ClientRelation: 0,
+        ClientRelation: null,
         PhoneList: {
           items: [
             {
@@ -572,7 +572,7 @@ export const profile = {
           GUID: "",
           Country: "",
           DocLink: "",
-          DocumentName: 0,
+          DocumentName: "",
           GivenPlace: ""
         }
       });
@@ -705,7 +705,7 @@ export const profile = {
             GUID: "",
             Country: "Uzbekistan",
             DocLink: "",
-            DocumentName: 0,
+            DocumentName: "",
             GivenPlace: ""
           },
 
@@ -776,7 +776,7 @@ export const profile = {
                   GUID: "",
                   Country: "",
                   DocLink: "",
-                  DocumentName: 0,
+                  DocumentName: "",
                   GivenPlace: ""
                 }
               }
