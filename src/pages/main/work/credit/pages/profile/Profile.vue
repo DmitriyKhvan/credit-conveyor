@@ -3285,6 +3285,8 @@ export default {
   name: "profile",
   data() {
     return {
+      countRelativeDocumentName: -1,
+      countGuaranteeDocumentName: -1,
       currentDate: CommonUtils.dateFilter(new Date()),
       loaderForm: false,
       loaderFile: false,
@@ -3392,9 +3394,9 @@ export default {
     if (sessionStorage.getItem("csrf_token")) {
       await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
       await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
-      this.$store.commit("profile/setFullForm", JSON.parse(sessionStorage.getItem("fullForm")))
+      // this.$store.commit("profile/setFullForm", JSON.parse(sessionStorage.getItem("fullForm")))
       this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
-      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
+      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId")); //?
       // console.log('dic', this.dictionaries)
     }
     
@@ -3435,38 +3437,38 @@ export default {
     
   },
   mounted() {
-    // if (!this.taskId) {
-    //   this.Customer.FirstName = this.personalData.name;
-    //   this.Customer.LastName = this.personalData.surname;
-    //   this.Customer.MiddleName = this.personalData.mname;
-    //   this.Customer.INN = this.personalData.inn;
-    //   this.Customer.PhoneList.items[0].Number = this.personalData.phone;
-    //   this.Customer.PINPP = this.personalData.pinpp;
-    //   this.Customer.Document.Series = this.personalData.passport.slice(
-    //     0,
-    //     2
-    //   );
-    //   this.Customer.Document.Number = this.personalData.passport.slice(
-    //     2
-    //   );
+    if (!this.taskId) {
+      this.Customer.FirstName = this.personalData.name;
+      this.Customer.LastName = this.personalData.surname;
+      this.Customer.MiddleName = this.personalData.mname;
+      this.Customer.INN = this.personalData.inn;
+      this.Customer.PhoneList.items[0].Number = this.personalData.phone;
+      this.Customer.PINPP = this.personalData.pinpp;
+      this.Customer.Document.Series = this.personalData.passport.slice(
+        0,
+        2
+      );
+      this.Customer.Document.Number = this.personalData.passport.slice(
+        2
+      );
 
-    //   this.Customer.MaritalStatus = this.personalData.familyStatus
+      this.Customer.MaritalStatus = this.personalData.familyStatus
 
-    //   this.Customer.hasChildren = this.personalData.children;
-    //   this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
+      this.Customer.hasChildren = this.personalData.children;
+      this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
 
-    //   this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
-    //   this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
-    //   this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
-    //   this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
-    //   this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
-    //   this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
+      this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
+      this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
+      this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
+      this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
+      this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
+      this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
 
-    //   this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
-    //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
-    //   this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
-    //   this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    // }
+      this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
+      this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
+      this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
+      this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+    }
   },
   computed: {
     fullProfile() {
@@ -3526,6 +3528,8 @@ export default {
   },
   methods: {
     async onSubmit(submitForm = true) {
+      this.countRelativeDocumentName = -1
+      this.countGuaranteeDocumentName = -1
 
       console.log("fullProfile", this.$store.state.profile);
       console.log("submit", submitForm);
@@ -3568,7 +3572,7 @@ export default {
       validFilter(this.$refs, "relativesMnameValid", "relatives_mname");
       validFilter(this.$refs, "relativesBirthdayValid", "relatives_birthday");
 
-      // validFilter(this.$refs, "relativesDocumentDocumentTypeValid", "relativesDocumentDocumentType")
+      validFilter(this.$refs, "relativesDocumentDocumentTypeValid", "relativesDocumentDocumentType")
 
       // this.Customer.Relatives.items.forEach(i => {
       //   if (i.Document.documentType == 7) {
@@ -3577,6 +3581,16 @@ export default {
       //     validItems(this.$refs, "relativesDocumentDocumentNameValid");
       //   }
       // })
+
+      // validItems(this.$refs, "relativesDocumentDocumentNameValid");
+
+      this.Customer.Relatives.items.forEach(i => {
+        if (i.Document.documentType == 7) {
+          this.countRelativeDocumentName++
+          // console.log('relativesDocumentDocumentName', this.$refs.relativesDocumentDocumentName)
+          validFilter(this.$refs, "relativesDocumentDocumentNameValid", "relativesDocumentDocumentName", true, this.countRelativeDocumentName)
+        }
+      })
 
       validFilter(this.$refs, 
         "relativesDocumentSeriesValid",
@@ -3665,15 +3679,14 @@ export default {
         validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
         validFilter(this.$refs, "pinppGuaranteesValid", "pinppGuarantees");
 
-        // validFilter(this.$refs, "guaranteesDocumentDocumentTypeValid", "guaranteesDocumentDocumentType");
+        validFilter(this.$refs, "guaranteesDocumentDocumentTypeValid", "guaranteesDocumentDocumentType");
 
-        // this.fullProfile.Guarantee.RelatedPerson.items.forEach(i => {
-        //   if (i.Document.documentType == 7) {
-        //     validFilter(this.$refs, "guaranteesDocumentDocumentNameValid" ,"guaranteesDocumentDocumentName");
-        //   } else {
-        //     validItems(this.$refs, "guaranteesDocumentDocumentNameValid");
-        //   }
-        // })
+        this.fullProfile.Guarantee.RelatedPerson.items.forEach(i => {
+          if (i.Document.documentType == 7) {
+            this.countGuaranteeDocumentName++
+            validFilter(this.$refs, "guaranteesDocumentDocumentNameValid" ,"guaranteesDocumentDocumentName", true, this.countGuaranteeDocumentName);
+          } 
+        })
 
         validFilter(this.$refs, 
           "guaranteesDocumentSeriesValid",
@@ -3699,7 +3712,8 @@ export default {
         validItems(this.$refs, "birthdayGuaranteesValid");
         validItems(this.$refs, "innGuaranteesValid");
         validItems(this.$refs, "pinppGuaranteesValid");
-        // validItems(this.$refs, "guaranteesDocumentDocumentTypeValid");
+        validItems(this.$refs, "guaranteesDocumentDocumentTypeValid");
+        validItems(this.$refs, "guaranteesDocumentDocumentNameValid");
         validItems(this.$refs, "guaranteesDocumentSeriesValid");
         validItems(this.$refs, "guaranteesDocumentNumberValid");
         validItems(this.$refs, "guaranteesDocumentGivenDateValid");
@@ -3827,8 +3841,8 @@ export default {
         this.$refs.relativesMnameValid.hasError ||
         this.$refs.relativesBirthdayValid.hasError ||
 
-        // this.$refs.relativesDocumentDocumentTypeValid.hasError ||
-        // this.$refs.relativesDocumentDocumentNameValid.hasError ||
+        this.$refs.relativesDocumentDocumentTypeValid.hasError ||
+        this.$refs.relativesDocumentDocumentNameValid.hasError ||
 
         this.$refs.relativesDocumentSeriesValid.hasError ||
         this.$refs.relativesDocumentNumberValid.hasError ||
@@ -3870,8 +3884,8 @@ export default {
         this.$refs.kindOfActivityGuaranteesValid.hasError ||
         this.$refs.pinppGuaranteesValid.hasError ||
 
-        // this.$refs.guaranteesDocumentDocumentTypeValid.hasError ||
-        // this.$refs.guaranteesDocumentDocumentNameValid.hasError ||
+        this.$refs.guaranteesDocumentDocumentTypeValid.hasError ||
+        this.$refs.guaranteesDocumentDocumentNameValid.hasError ||
         this.$refs.guaranteesDocumentSeriesValid.hasError ||
         this.$refs.guaranteesDocumentNumberValid.hasError ||
         this.$refs.guaranteesDocumentGivenDateValid.hasError ||

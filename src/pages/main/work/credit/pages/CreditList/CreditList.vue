@@ -374,7 +374,6 @@
                   />
 
                   <q-btn
-                    disable
                     class="full-width"
                     label="Подписать"
                     color="green"
@@ -389,12 +388,27 @@
       <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
     </div>
 
+    <div class="q-pa-lg flex flex-center pagination">
+      <q-pagination
+        v-model="current"
+        color="purple"
+        :max="10"
+        :max-pages="6"
+        :boundary-numbers="true"
+        @click="pagination()"
+      >
+      </q-pagination>
+    </div>
+
+    <appLoaderFullScreen v-if="loaderFullScreen" />
+
   </div>
 </template>
 
 <script>
 import printJS from "print-js";
 import Loader from "@/components/Loader";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 export default {
   props: ['loaderList'],
@@ -402,8 +416,10 @@ export default {
     return {
       // userRole: this.$store.getters.userRole,
       // loadings: [], // кнопки распечатать
+      current: 1,
       loadings1: false,
       disable: false,
+      loaderFullScreen: false,
       fileData: {
         type: "protocol",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
@@ -573,6 +589,7 @@ export default {
     },
 
     async creditSign(taskId) {
+      this.loaderFullScreen = true;
       this.$store.commit("credits/setTaskId", taskId);
       const confirmCreditData = {
         output: [
@@ -583,11 +600,25 @@ export default {
         ]
       };
       try {
-        await this.$store.dispatch(
+        const res = await this.$store.dispatch(
           "credits/confirmationCredit",
           confirmCreditData
         );
-      } catch (error) {}
+
+        console.log('response', JSON.stringify(res, null, 2))
+
+        if(res) {
+          this.loaderFullScreen = false;
+          this.$store.commit("credits/setMessage", "Кредит подписан");
+        }
+
+      } catch (error) {
+        this.loaderFullScreen = false;
+        const errorMessage = CommonUtils.filterServerError(error);
+        this.$store.commit("credits/setMessage", errorMessage);
+        sessionStorage.clear()
+        this.$router.push("/work/credit");
+      }
     },
 
     // async getDataFile() {
@@ -608,7 +639,7 @@ export default {
         );
       } else {
         file = await this.getUrlFile(taskId)
-        task.idFile = file.id
+        task.idFile = file.id  // кеширование id file
       }
       
       console.log('file', file)
@@ -703,10 +734,15 @@ export default {
         }
       }
       return data
+    },
+
+    pagination() {
+      console.log('current', this.current)
     }
   },
   components: {
-    appLoader: Loader
+    appLoader: Loader,
+    appLoaderFullScreen: LoaderFullScreen
   }
 };
 </script>
@@ -797,6 +833,10 @@ export default {
       height: 100%;
       align-items: center;
     }
+  }
+
+  .pagination .q-btn--rectangle {
+    background: transparent;
   }
 }
 </style>

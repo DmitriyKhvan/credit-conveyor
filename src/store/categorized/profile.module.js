@@ -125,7 +125,7 @@ export const profile = {
         Gender: null,
 
         Document: {
-          documentType: null,
+          documentType: 2,
           Series: "",
           Number: null,
           ExpirationDate: "",
@@ -697,7 +697,7 @@ export const profile = {
           Gender: null,
 
           Document: {
-            documentType: null,
+            documentType: 2,
             Series: "",
             Number: null,
             ExpirationDate: "",

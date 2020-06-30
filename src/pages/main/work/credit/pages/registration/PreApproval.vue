@@ -152,21 +152,25 @@ export default {
         );
 
         console.log("response", response);
-        if (response.data.input && response.data.input.length) {
-          console.log("dic", JSON.stringify(dictionaries, null, 2));
-          const fullForm = response.data.input.find(
+        if (response.nextTask.input && response.nextTask.input.length) {
+          
+          const fullForm = response.nextTask.input.find(
             i => i.label === "application"
           ).data;
           const dictionaries = response.nextTask.input.find(
             i => i.label === "inputDictionaries"
           ).data;
 
-          this.$store.commit("profile/setFullForm", fullForm);
+          console.log("dic", JSON.stringify(dictionaries, null, 2));
+          // console.log("fullForm", JSON.stringify(fullForm, null, 2));
+          // debugger
+
+          // this.$store.commit("profile/setFullForm", fullForm);
           this.$store.commit("profile/setDictionaries", dictionaries);
 
-          sessionStorage.setItem("fullForm", JSON.stringify(fullForm));
+          //sessionStorage.setItem("fullForm", JSON.stringify(fullForm));
           sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
-
+          
           this.$router.push("profile");
           this.$emit("toggleLoaderForm", false);
         } else {
