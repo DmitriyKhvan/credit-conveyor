@@ -6,6 +6,7 @@ export const profile = {
   state: {
     bpmService: new BpmService(),
     confirmCredit: false,
+    // preapprovData: {}, 
     dictionaries: {
       Graduation: {
         items: []
@@ -368,14 +369,21 @@ export const profile = {
         console.log('response', response)
 
         if (response.data.input && response.data.input.length) {
-          const fullForm = response.data.input.find(
+          const data = response.data.input.find(
             i => i.label === "application"
           ).data;
           const dictionaries = response.data.input.find(
             i => i.label === "inputDictionaries"
           ).data;
+            
+          if (response.data.name == "Full Application Filling") { // кредит не оформлен
+            
+            commit("setPreapprovData", data);
+            debugger
+          } else {
+            commit("setFullForm", data);
+          }
 
-          commit("setFullForm", fullForm);
           commit("setDictionaries", dictionaries);
         } else {
           throw "Data is null";
@@ -400,6 +408,36 @@ export const profile = {
       payload.Guarantee.RelatedPerson.items.map(i => i.Document.Number = String(i.Document.Number))
       
       state.fullFormProfile = payload;
+    },
+
+    setPreapprovData(state, payload) {
+       // Для корректной валидации
+      payload.Customer.Document.Number = String(payload.Customer.Document.Number)
+
+      state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
+      state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
+      state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
+      state.fullFormProfile.Customer.INN = payload.Customer.INN;
+      state.fullFormProfile.Customer.PhoneList.items[0].Number = payload.Customer.phone;
+      state.fullFormProfile.Customer.PINPP = payload.Customer.PINPP;
+      state.fullFormProfile.Customer.Document.Series = payload.Customer.Document.Series
+      state.fullFormProfile.Customer.Document.Number = payload.Customer.Document.Number
+
+      state.fullFormProfile.Customer.MaritalStatus = payload.Customer.MaritalStatus
+
+      state.fullFormProfile.Customer.hasChildren = payload.Customer.hasChildren;
+      state.fullFormProfile.Customer.UnderAgeChildrenNum = payload.Customer.ChildrenNum;
+
+      state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome = payload.Customer.MonthlyIncome.confirmMonthlyIncome;
+      state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses = payload.Customer.MonthlyExpenses.recurringExpenses;
+      state.fullFormProfile.Customer.MonthlyExpenses.obligations = payload.Customer.MonthlyExpenses.obligations;
+      state.fullFormProfile.Customer.MonthlyIncome.hasAdditionalIncome = payload.Customer.MonthlyIncome.hasAdditionalIncome;
+      state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum = payload.Customer.MonthlyIncome.additionalIncome.sum;
+      state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.incomeType = payload.Customer.MonthlyIncome.additionalIncome.incomeType;
+
+      state.fullFormProfile.LoanInfo.LoanProduct = payload.LoanInfo.LoanProduct;
+      state.fullFormProfile.LoanInfo.RepaymentType = payload.LoanInfo.RepaymentType;
+      state.fullFormProfile.LoanInfo.TermInMonth = payload.LoanInfo.TermInMonth;
     },
 
     addPhone(state) {
@@ -616,6 +654,19 @@ export const profile = {
       );
       if (idx !== -1) {
         state.fullFormProfile.Customer.AddressList.items.splice(idx, 1);
+      }
+    },
+
+    addFlagRegistration(state, payload) {
+      const idx = state.fullFormProfile.Customer.AddressList.items.findIndex(
+        item => item.AddressType === payload.item
+      );
+      if (idx !== -1) {
+        state.fullFormProfile.Customer.AddressList.items[idx] = {
+          ...state.fullFormProfile.Customer.AddressList.items[0]
+        }
+        state.fullFormProfile.Customer.AddressList.items[idx].AddressType = "Адрес фактического проживания"
+        state.fullFormProfile.Customer.AddressList.items[idx].flag = payload.value
       }
     },
 

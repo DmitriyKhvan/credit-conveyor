@@ -154,7 +154,7 @@ export default {
         console.log("response", response);
         if (response.nextTask.input && response.nextTask.input.length) {
           
-          const fullForm = response.nextTask.input.find(
+          const data = response.nextTask.input.find(
             i => i.label === "application"
           ).data;
           const dictionaries = response.nextTask.input.find(
@@ -162,13 +162,11 @@ export default {
           ).data;
 
           console.log("dic", JSON.stringify(dictionaries, null, 2));
-          // console.log("fullForm", JSON.stringify(fullForm, null, 2));
-          // debugger
 
-          // this.$store.commit("profile/setFullForm", fullForm);
+          this.$store.commit("profile/setPreapprovData", data);
           this.$store.commit("profile/setDictionaries", dictionaries);
 
-          //sessionStorage.setItem("fullForm", JSON.stringify(fullForm));
+          sessionStorage.setItem("preapprovData", JSON.stringify(data));
           sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
           
           this.$router.push("profile");

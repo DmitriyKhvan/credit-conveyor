@@ -328,7 +328,7 @@
 
             <td class="text-left date applicationRow">
               <template v-if="userRole === 'CS'">
-                {{ credit.date }}
+                {{ credit.date | formatDate('datetime') }}
               </template>
               <router-link
                 v-else
@@ -342,7 +342,7 @@
                     filialName: credit.filialName
                   }
                 }"
-                >{{ credit.date }}</router-link
+                >{{ credit.date | formatDate('datetime')}}</router-link
               >
             </td>
 
@@ -407,6 +407,7 @@
 
 <script>
 import printJS from "print-js";
+import formatDate from "../../filters/formatDate"
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 
@@ -525,7 +526,7 @@ export default {
         }
 
         if (this.date.length > 0) {
-          conditions.push(task.date.indexOf(this.date) > -1);
+          conditions.push(formatDate(task.date, 'datetime').indexOf(this.date) > -1);
         }
 
         return conditions.every(condition => condition);
@@ -549,6 +550,7 @@ export default {
   methods: {
     toggleFilter(event) {
       const idx = event.getAttribute("idx");
+      console.log('idx', idx)
       for (let item of document.querySelectorAll(".active")) {
         if (item !== event) {
           item.classList.remove("active");
@@ -609,7 +611,7 @@ export default {
 
         if(res) {
           this.loaderFullScreen = false;
-          this.$store.commit("credits/setMessage", "Кредит подписан");
+          this.$store.commit("credits/setMessage", "Credit signed");
         }
 
       } catch (error) {
@@ -743,6 +745,9 @@ export default {
   components: {
     appLoader: Loader,
     appLoaderFullScreen: LoaderFullScreen
+  },
+  filters: {
+    formatDate
   }
 };
 </script>

@@ -428,7 +428,7 @@ export const credits = {
     },
 
     setCreditTasks(state, payload) {
-      payload.map(i => i.date = CommonUtils.dateFilter(i.date, "datetime"))
+      // payload.map(i => i.date = CommonUtils.dateFilter(i.date, "datetime"))
       state.creditTasks = payload;
     },
 

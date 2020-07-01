@@ -456,6 +456,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
+                      :disable="address.flag"
                       square
                       outlined
                       v-model="address.PostalCode"
@@ -467,7 +468,8 @@
 
                   <div class="col-4">
                     <q-select
-                      ref="region"
+                      :disable="address.flag"
+                      :ref="address.flag ? '' : 'region'"
                       square
                       outlined
                       v-model="address.Region"
@@ -484,6 +486,7 @@
 
                   <div class="col-4">
                     <q-input
+                      :disable="address.flag"
                       square
                       outlined
                       v-model="address.City"
@@ -496,6 +499,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
+                      :disable="address.flag"
                       square
                       outlined
                       v-model="address.District"
@@ -536,7 +540,8 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
-                      ref="street"
+                      :disable="address.flag"
+                      :ref="address.flag ? '' : 'street'"
                       square
                       outlined
                       v-model="address.Street"
@@ -550,7 +555,8 @@
                   </div>
                   <div class="col-4">
                     <q-input
-                      ref="houseNumber"
+                      :disable="address.flag"
+                      :ref="address.flag ? '' : 'houseNumber'"
                       square
                       outlined
                       v-model="address.House"
@@ -562,6 +568,7 @@
                   </div>
                   <div class="col-4">
                     <q-input
+                      :disable="address.flag"
                       square
                       outlined
                       v-model="address.Block"
@@ -574,6 +581,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
+                      :disable="address.flag"
                       square
                       outlined
                       v-model="address.Building"
@@ -583,6 +591,7 @@
                   </div>
                   <div class="col-4">
                     <q-input
+                      :disable="address.flag"
                       square
                       outlined
                       v-model="address.Apartment"
@@ -592,6 +601,7 @@
                   </div>
                   <div class="col-4">
                     <q-select
+                      :disable="address.flag"
                       square
                       outlined
                       v-model="address.OwnershipType"
@@ -3271,6 +3281,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import printJS from "print-js";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import UserService from "@/services/user.service";
@@ -3391,23 +3402,32 @@ export default {
   async created() {
     this.$store.commit("profile/resetDataFullFormProfile")
 
-    if (sessionStorage.getItem("csrf_token")) {
-      await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
-      await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
-      // this.$store.commit("profile/setFullForm", JSON.parse(sessionStorage.getItem("fullForm")))
-      this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
-      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId")); //?
-      // console.log('dic', this.dictionaries)
-    }
+    // if (sessionStorage.getItem("csrf_token")) {
+    //   await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
+    //   await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+    //   // this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData"))) //синхронизация с preapprov
+    //   this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
+    //   this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId")); //?
+    //   // console.log('dic', this.dictionaries)
+    // }
     
     if (this.taskId) {
+      
       this.loaderForm = true
       this.$store.commit("credits/setTaskId", this.taskId);
+
+      // если перезагрузили страницу
+      if (!axios.defaults.headers.common["BPMCSRFToken"]) {
+        await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
+        await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+      }
       
       try {
         const res = await this.$store.dispatch("profile/getFullForm");
+
         this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
         console.log('resggggggggggggggggggggg', res)
+
         const { data } = res.data.input.find(i => i.label == 'application')
         const uploadedFiles = data.AttachedDocuments.items
         const guarantees = data.Guarantee
@@ -3428,47 +3448,54 @@ export default {
           }
         }
         //this.guaranteesValid()
+        
         this.loaderForm = false
       } catch (error) {
         console.log('ERROR', error)
         this.loaderForm = false
       }
-    } 
+    } else if (axios.defaults.headers.common["BPMCSRFToken"]) { // если перезагрузили страницу
+      await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
+      await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+      this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData"))) //синхронизация с preapprov
+      this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
+      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));  
+    }
     
   },
   mounted() {
-    if (!this.taskId) {
-      this.Customer.FirstName = this.personalData.name;
-      this.Customer.LastName = this.personalData.surname;
-      this.Customer.MiddleName = this.personalData.mname;
-      this.Customer.INN = this.personalData.inn;
-      this.Customer.PhoneList.items[0].Number = this.personalData.phone;
-      this.Customer.PINPP = this.personalData.pinpp;
-      this.Customer.Document.Series = this.personalData.passport.slice(
-        0,
-        2
-      );
-      this.Customer.Document.Number = this.personalData.passport.slice(
-        2
-      );
+    // if (!this.taskId) {
+    //   this.Customer.FirstName = this.personalData.name;
+    //   this.Customer.LastName = this.personalData.surname;
+    //   this.Customer.MiddleName = this.personalData.mname;
+    //   this.Customer.INN = this.personalData.inn;
+    //   this.Customer.PhoneList.items[0].Number = this.personalData.phone;
+    //   this.Customer.PINPP = this.personalData.pinpp;
+    //   this.Customer.Document.Series = this.personalData.passport.slice(
+    //     0,
+    //     2
+    //   );
+    //   this.Customer.Document.Number = this.personalData.passport.slice(
+    //     2
+    //   );
 
-      this.Customer.MaritalStatus = this.personalData.familyStatus
+    //   this.Customer.MaritalStatus = this.personalData.familyStatus
 
-      this.Customer.hasChildren = this.personalData.children;
-      this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
+    //   this.Customer.hasChildren = this.personalData.children;
+    //   this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
 
-      this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
-      this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
-      this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
-      this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
-      this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
-      this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
+    //   this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
+    //   this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
+    //   this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
+    //   this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
+    //   this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
+    //   this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
 
-      this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
-      this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
-      this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
-      this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    }
+    //   this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
+    //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
+    //   this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
+    //   this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+    // }
   },
   computed: {
     fullProfile() {
@@ -3518,12 +3545,14 @@ export default {
 
     sameRegistration(flag) {
       if (flag) {
-        this.removeRegistration({ item: "Адрес фактического проживания" });
-        this.sameRegistration = null
+        this.addFlagRegistration({ item: "Адрес фактического проживания", value: flag })
+        //this.removeRegistration({ item: "Адрес фактического проживания" });
+        //this.sameRegistration = null
       } 
-      // else {
-      //   this.addRegistration("Адрес фактического проживания");
-      // }
+      else {
+        //this.addRegistration("Адрес фактического проживания");
+        this.addFlagRegistration({ item: "Адрес фактического проживания", value: flag })
+      }
     }
   },
   methods: {
@@ -4189,6 +4218,10 @@ export default {
 
     removeRegistration(payload) {
       this.$store.commit("profile/removeRegistration", payload);
+    },
+
+    addFlagRegistration(payload) {
+      this.$store.commit("profile/addFlagRegistration", payload);
     },
 
     addRelative() {
