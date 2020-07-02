@@ -1,9 +1,7 @@
 <template>
   <div>
     <div class="row q-mb-md">
-      <div class="col q-py-sm q-px-md text-h6 rightTitle">
-        Чаты
-      </div>
+      <div class="col q-py-sm q-px-md text-h6 rightTitle">Чаты</div>
     </div>
     <div class="row q-mb-md">
       <div class="col">
@@ -21,7 +19,7 @@
         </q-input>
       </div>
     </div>
-    <div class="chatsList scroll q-pt-md" :style="{ height: heightRight }">
+    <div class="chatsList scroll q-pt-md" :style="{height: heightRight}">
       <template v-if="result.length > 0">
         <div
           v-for="user in result"
@@ -41,12 +39,8 @@
               </b>
             </div>
             <div class="text-caption">
-              <q-badge v-if="onlineView(user.emp_id)" class="online">
-                online
-              </q-badge>
-              <q-badge v-else class="offline">
-                offline
-              </q-badge>
+              <q-badge v-if="onlineView(user.emp_id)" class="online">online</q-badge>
+              <q-badge v-else class="offline">offline</q-badge>
             </div>
           </div>
         </div>
@@ -56,20 +50,10 @@
         <div
           v-for="chat in chats"
           :key="chat.chat_id"
-          :class="
-            chatId === chat.chat_id
-              ? 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock active'
-              : 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock'
-          "
+          :class="chatId === chat.chat_id ? 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock active' : 'row q-py-sm q-px-md q-mb-md justify-between roundedBlock'"
         >
-          <div v-if="chat.count !== 0 && chat.count" class="notice">
-            {{ chat.count }}
-          </div>
-          <div
-            v-if="chat.type === 1"
-            class="avatarBlock"
-            @click="selectChat(chat.chat_id)"
-          >
+          <div v-if="chat.count !== 0 && chat.count" class="notice">{{chat.count}}</div>
+          <div v-if="chat.type === 1" class="avatarBlock" @click="selectChat(chat.chat_id)">
             <q-avatar>
               <img :src="getUserProfilePhotoUrl(chat.to_uid)" />
             </q-avatar>
@@ -83,46 +67,25 @@
             </div>
             <div class="text-caption">
               <template v-if="chat.type === 1">
-                <q-badge v-if="onlineView(chat.to_uid)" class="online">
-                  online
-                </q-badge>
-                <q-badge v-else class="offline">
-                  offline
-                </q-badge>
+                <q-badge v-if="onlineView(chat.to_uid)" class="online">online</q-badge>
+                <q-badge v-else class="offline">offline</q-badge>
               </template>
-              <div v-if="chat.type === 2">
-                {{ chat.members !== null ? chat.members.length + 1 : 0 }}
-                участников
-              </div>
+              <div
+                v-if="chat.type === 2"
+              >{{chat.members !== null ? chat.members.length + 1 : 0}} участников</div>
             </div>
           </div>
-          <div
-            v-if="chat.type === 2"
-            class="actionsBlock text-right actions self-center"
-          >
+          <div v-if="chat.type === 2" class="actionsBlock text-right actions self-center">
             <edit-group :id="chat.chat_id"></edit-group>
           </div>
           <template v-if="chat.type === 2">
-            <div
-              v-if="chat.emp_id === emp_id"
-              class="actionsBlock text-right actions self-center"
-            >
-              <q-btn
-                icon="delete_outline"
-                color="grey-8"
-                flat
-                @click="deleteChat(chat)"
-              />
+            <div v-if="chat.emp_id === emp_id" class="actionsBlock text-right actions self-center">
+              <q-btn icon="delete_outline" color="grey-8" flat @click="deleteChat(chat)" />
             </div>
           </template>
           <template v-else>
             <div class="actionsBlock text-right actions self-center">
-              <q-btn
-                icon="delete_outline"
-                color="grey-8"
-                flat
-                @click="deleteChat(chat)"
-              />
+              <q-btn icon="delete_outline" color="grey-8" flat @click="deleteChat(chat)" />
             </div>
           </template>
         </div>
@@ -144,13 +107,13 @@ const { height } = dom;
 export default {
   components: {
     AddChat,
-    EditGroup,
+    EditGroup
   },
   data() {
     return {
       heightRight: "",
       searchUser: "",
-      result: [],
+      result: []
     };
   },
   mounted() {
@@ -181,16 +144,16 @@ export default {
       this.$store.dispatch("setActiveChat", id);
       const chat = {
         chat_id: id,
-        emp_id: this.emp_id,
+        emp_id: this.emp_id
       };
 
-      if (this.chats.find((ch) => ch.chat_id === id).count !== 0) {
+      if (this.chats.find(ch => ch.chat_id === id).count !== 0) {
         console.log("Reset count");
         this.$store.dispatch("delChatCount", id);
         axios
           .post("/chat/resetcount", chat)
-          .then((response) => {})
-          .catch((error) => {
+          .then(response => {})
+          .catch(error => {
             console.log("error");
           });
       }
@@ -199,15 +162,12 @@ export default {
       if (this.emp_id !== toUid && this.emp_id !== toUid)
         this.$store.dispatch("setToUid", toUid);
       this.result = [];
-      if (
-        this.chats.find((ch) => ch.to_uid === toUid) ||
-        this.emp_id === toUid
-      ) {
+      if (this.chats.find(ch => ch.to_uid === toUid) || this.emp_id === toUid) {
         return;
       }
       this.socket.emit("private/create", {
         from_uid: this.emp_id, // kto sozdaet chat
-        to_uid: toUid, // s kem
+        to_uid: toUid // s kem
       });
     },
     getUserProfilePhotoUrl(emp_id) {
@@ -220,10 +180,10 @@ export default {
       if (this.searchUser !== "") {
         axios
           .get("/emps/reg/search?name=" + this.searchUser)
-          .then((response) => {
+          .then(response => {
             this.result = response.data;
           })
-          .catch((error) => {
+          .catch(error => {
             console.log("error");
           });
       }
@@ -237,18 +197,18 @@ export default {
       } else {
         this.socket.emit("grp/delete", chat.chat_id);
       }
-    },
+    }
   },
   computed: {
     ...mapGetters({
       emp_id: "auth/empId",
       socket: "socket/getSocket",
       chatId: "getActiveChat",
-      chats: "getChats",
-    }),
+      chats: "getChats"
+    })
   },
   created() {
-    this.socket.on("private/create", (data) => {
+    this.socket.on("private/create", data => {
       let chat = {};
       let name = "";
       if (data.to_uid !== this.emp_id) {
@@ -260,7 +220,7 @@ export default {
           from_uid: data.from_uid,
           to_uid: data.to_uid,
           to_name: name[0] + " " + name[1][0] + ". " + name[2][0] + ". ",
-          messages: [],
+          messages: []
         };
       } else {
         name = data.from_name.split(" ");
@@ -271,17 +231,14 @@ export default {
           from_uid: data.to_uid,
           to_uid: data.from_uid,
           to_name: name[0] + " " + name[1] + ". " + name[2] + ". ",
-          messages: [],
+          messages: []
         };
       }
-
       this.$store.dispatch("addChat", chat);
-      // this.$store.dispatch('setActiveChat', data.id)
       this.searchUser = "";
     });
 
-    this.socket.on("chat/delete", (data) => {
-      // console.log('chat/delete', data)
+    this.socket.on("chat/delete", data => {
       this.$store.dispatch("deleteChat", data);
     });
     // this.socket.on("group/grp/leave", data => {
@@ -302,7 +259,7 @@ export default {
     //   // console.log('group/usr/joined', data)
     //   this.$store.dispatch('addUserToGroup', data )
     // })
-    this.socket.on("group/usr/drop", (data) => {
+    this.socket.on("group/usr/drop", data => {
       // console.log('group/usr/drop')
       this.$store.dispatch("deleteChat", data);
     });
@@ -320,17 +277,14 @@ export default {
     //   this.$store.dispatch('delUserGroup', data )
     // })
 
-    this.socket.on("grp/join/message", (data) => {
+    this.socket.on("grp/join/message", data => {
       console.log({ joinmsg: data });
-    });
-    this.socket.on("grp/leave/message", (data) => {
-      console.log({ leavemsg: data });
     });
 
     // NEW
-    this.socket.on("grp/usr/join", (data) => {
+    this.socket.on("grp/usr/join", data => {
       console.log({ joinmsg: data });
-      if (this.chats.find((ch) => ch.chat_id === data.chat_id)) {
+      if (this.chats.find(ch => ch.chat_id === data.chat_id)) {
         this.$store.dispatch("addUserToGroup", data);
       } else {
         const gr = {
@@ -342,7 +296,7 @@ export default {
           members: data.members,
           messages: data.messages ? data.messages : [],
           creator: data.creator,
-          creator_fio: data.creator_fio,
+          creator_fio: data.creator_fio
         };
         this.$store.dispatch("addChat", gr);
       }
@@ -359,7 +313,7 @@ export default {
         let myData = {
           emp_name: data.new_uname,
           emp_id: this.emp_id,
-          chat_id: data.chat_id,
+          chat_id: data.chat_id
         };
 
         this.socket.emit("grp/join", myData);
@@ -374,10 +328,10 @@ export default {
       }
     });
 
-    this.socket.on("grp/usr/leave", (data) => {
+    this.socket.on("grp/usr/leave", data => {
       console.log({ leavemsg: data });
       this.$store.dispatch("delUserGroup", data);
-      const users = this.chats.find((ch) => ch.chat_id === data.chat_id);
+      const users = this.chats.find(ch => ch.chat_id === data.chat_id);
       if (users.members.length === 0) {
         this.socket.emit("chat/delete", data.chat_id);
       }
@@ -403,7 +357,7 @@ export default {
     this.socket.removeListener("group/usr/remove");
     this.socket.removeListener("group/usr/drop");
     this.socket.removeListener("group/usr/left");
-  },
+  }
 };
 </script>
 
