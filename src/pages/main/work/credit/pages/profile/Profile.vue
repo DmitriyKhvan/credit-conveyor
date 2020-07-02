@@ -2093,7 +2093,6 @@
                       dense
                       label="Тел. номер"
                       mask="+############"
-                      lazy-rules
                       :rules="[
                         val =>
                           (val && val.length === 13) || 'Введите номер телефона'
@@ -3545,13 +3544,13 @@ export default {
 
     sameRegistration(flag) {
       if (flag) {
-        this.addFlagRegistration({ item: "Адрес фактического проживания", value: flag })
-        //this.removeRegistration({ item: "Адрес фактического проживания" });
-        //this.sameRegistration = null
+        //this.addFlagRegistration({ item: "Адрес фактического проживания", value: flag })
+        this.removeRegistration({ item: "Адрес фактического проживания" });
+        this.sameRegistration = null
       } 
       else {
         //this.addRegistration("Адрес фактического проживания");
-        this.addFlagRegistration({ item: "Адрес фактического проживания", value: flag })
+        //this.addFlagRegistration({ item: "Адрес фактического проживания", value: flag })
       }
     }
   },

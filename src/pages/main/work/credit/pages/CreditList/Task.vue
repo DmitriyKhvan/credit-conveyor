@@ -88,6 +88,25 @@
               </div>
             </div>
 
+
+            <div class="row rowForm">
+              <div class="col-3 field">Вид документа</div>
+              <div class="col-9 data">
+                {{
+                  dictionaries.DocumentType.items.find(
+                    i => i.value == Customer.Document.documentType
+                  ).label
+                }}
+              </div>
+            </div>
+
+            <div class="row rowForm" v-if="Customer.Document.documentType == 7"> 
+              <div class="col-3 field">Наименование документа</div>
+              <div class="col-9 data">
+                {{ Customer.Document.DocumentName }}
+              </div>
+            </div>
+
             <div class="row rowForm">
               <div class="col-2 field">Серия паспорта</div>
               <div class="col-2 data">{{ Customer.Document.Series }}</div>
@@ -103,6 +122,11 @@
               <div class="col-3 data">
                 {{ Customer.Document.ExpirationDate }}
               </div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-3 field">Кем выдан документ</div>
+              <div class="col-9 data">{{ Customer.Document.GivenPlace }}</div>
             </div>
 
             <div class="row rowForm">
