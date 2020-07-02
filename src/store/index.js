@@ -29,6 +29,8 @@ import { themes } from './categorized/themes.module';
 import birthdays from './birthdays'
 import chats from './chat'
 import my_personal from './my_personal'
+import apparat from './apparat'
+import tasks from './tasks'
 
 
 Vue.use(Vuex);
@@ -48,7 +50,9 @@ const store = new Vuex.Store({
     themes,
     birthdays,
     chats,
-    my_personal
+    my_personal,
+    apparat,
+    tasks
   },
 
   // enable strict mode (adds overhead!)

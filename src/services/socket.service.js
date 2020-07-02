@@ -34,7 +34,7 @@ const SocketService = {
     this.runActiveUsers(socket);
     this.runLogout(socket);
 
-    socket.emit("chat/all", empId)
+
 
     socket.on("chat/all", data => {
       const chats =[]
@@ -78,6 +78,8 @@ const SocketService = {
         store.dispatch('setChat', chats)
       }
     });
+
+    socket.emit("chat/all", empId)
 
     socket.on("msg/send", data => {
       console.log('.ON - msg/send', data)

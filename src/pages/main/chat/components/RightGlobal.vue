@@ -246,14 +246,11 @@ export default {
             messages: []
           }
         }
-
         this.$store.dispatch('addChat', chat )
-        // this.$store.dispatch('setActiveChat', data.id)
         this.searchUser = ''
       })
 
       this.socket.on("chat/delete", data => {
-        // console.log('chat/delete', data)
         this.$store.dispatch('deleteChat', data)
       })
       // this.socket.on("group/grp/leave", data => {

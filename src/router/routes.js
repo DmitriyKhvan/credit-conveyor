@@ -36,6 +36,8 @@ const ChanRegistration = () =>
 const Tasks = () => import("pages/main/work/task/index.vue");
 const TasksList = () =>
   import("pages/main/work/task/modules/pages/tasklist/List");
+const apparatPage = () =>
+  import("pages/main/work/apparat");
 
 // Credit
 const Credit = () => import("pages/main/work/credit/Credit");
@@ -135,6 +137,11 @@ const routes = [{
         name: "Task List",
         component: TasksList
       }]
+    },
+    {
+      path: "apparat",
+      name: "Apparat",
+      component: apparatPage,
     },
     {
       path: "credit",
