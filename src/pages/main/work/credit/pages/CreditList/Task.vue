@@ -115,10 +115,9 @@
             </div>
 
             <div class="row rowForm">
-              <div class="col-2"></div>
               <div class="col-2 field">Дата выдачи</div>
               <div class="col-3 data">{{ Customer.Document.GivenDate }}</div>
-              <div class="col-2 field">Дата окончания</div>
+              <div class="col-4 field">Дата окончания</div>
               <div class="col-3 data">
                 {{ Customer.Document.ExpirationDate }}
               </div>

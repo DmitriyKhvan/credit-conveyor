@@ -388,12 +388,22 @@
       <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
     </div>
 
-    <div class="q-pa-lg flex flex-center pagination">
+    <div class="q-pa-lg flex justify-end items-center pagination">
+      <span class="pagination__title">Строк на странице: </span>
+      <q-select 
+        class="pagination__count"
+        borderless
+        v-model="countRow" 
+        :options="countRowList" 
+        emit-value
+        map-options
+      />
+
       <q-pagination
         v-model="current"
-        color="purple"
-        :max="10"
-        :max-pages="6"
+        color="primary"
+        :max="max"
+        :max-pages="maxPage"
         :boundary-numbers="true"
         @click="pagination()"
       >
@@ -418,6 +428,28 @@ export default {
       // userRole: this.$store.getters.userRole,
       // loadings: [], // кнопки распечатать
       current: 1,
+      countRow: 10,
+      creditList: 100,
+      max: 10,
+      maxPage: 6,
+      countRowList: [
+        {
+          label: 10,
+          value: 10,
+        },
+        {
+          label: 20,
+          value: 20,
+        },
+        {
+          label: 30,
+          value: 30,
+        },
+        {
+          label: "Все",
+          value: "All",
+        }
+      ],
       loadings1: false,
       disable: false,
       loaderFullScreen: false,
@@ -425,35 +457,35 @@ export default {
         type: "protocol",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
         data: {
-          protocol_initiative_unit: "",
-          protocol_client_inn: "",
-          protocol_lending_currency: "",
-          protocol_loan_amount: "",
-          protocol_repayment_type: "",
-          protocol_customer_name: "",
-          protocol_term: "",
-          protocol_grace_period: "",
-          protocol_finance_source: "",
-          protocol_loan_product: "",
-          protocol_loan_type: "",
-          protocol_percent_rate: "",
-          protocol_credit_rating: "",
-          protocol_request_number: "",
-          protocol_loan_specialist_position: "",
-          protocol_loan_specialist_fio: "",
-          protocol_number: "",
-          protocol_filial: "",
-          protocol_committee_decision_number: "",
-          protocol_committee_decision_date: "",
-          protocol_guarantor_name: "",
-          protocol_guarantor_value: "",
-          protocol_insurance_name: "",
-          protocol_insurance_value: "",
-          protocol_additional_name: "",
-          protocol_additional_value: "",
-          protocol_special_name: "",
-          protocol_special_value: "",
-          protocol_secretary_fio: ""
+          // protocol_initiative_unit: "",
+          // protocol_client_inn: "",
+          // protocol_lending_currency: "",
+          // protocol_loan_amount: "",
+          // protocol_repayment_type: "",
+          // protocol_customer_name: "",
+          // protocol_term: "",
+          // protocol_grace_period: "",
+          // protocol_finance_source: "",
+          // protocol_loan_product: "",
+          // protocol_loan_type: "",
+          // protocol_percent_rate: "",
+          // protocol_credit_rating: "",
+          // protocol_request_number: "",
+          // protocol_loan_specialist_position: "",
+          // protocol_loan_specialist_fio: "",
+          // protocol_number: "",
+          // protocol_filial: "",
+          // protocol_committee_decision_number: "",
+          // protocol_committee_decision_date: "",
+          // protocol_guarantor_name: "",
+          // protocol_guarantor_value: "",
+          // protocol_insurance_name: "",
+          // protocol_insurance_value: "",
+          // protocol_additional_name: "",
+          // protocol_additional_value: "",
+          // protocol_special_name: "",
+          // protocol_special_value: "",
+          // protocol_secretary_fio: ""
         }
       },
       // link: null,
@@ -547,6 +579,9 @@ export default {
       return this.$store.getters["credits/userRole"];
     }
   },
+  watch: {
+    
+  },
   methods: {
     toggleFilter(event) {
       const idx = event.getAttribute("idx");
@@ -602,6 +637,7 @@ export default {
         ]
       };
       try {
+        debugger
         const res = await this.$store.dispatch(
           "credits/confirmationCredit",
           confirmCreditData
@@ -609,11 +645,12 @@ export default {
 
         console.log('response', JSON.stringify(res, null, 2))
 
-        if(res) {
+        if(res.nextTask.name) {
           this.loaderFullScreen = false;
           this.$store.commit("credits/setMessage", "Credit signed");
+        } else {
+          throw "Data is null";
         }
-
       } catch (error) {
         this.loaderFullScreen = false;
         const errorMessage = CommonUtils.filterServerError(error);
@@ -840,8 +877,18 @@ export default {
     }
   }
 
-  .pagination .q-btn--rectangle {
-    background: transparent;
+  .pagination {
+    .q-btn--rectangle {
+      background: transparent;
+    }
+
+    &__title {
+      margin: -3px 5px 0 0;
+    }
+
+    &__count {
+      margin: 0 20px 0 0;
+    }
   }
 }
 </style>

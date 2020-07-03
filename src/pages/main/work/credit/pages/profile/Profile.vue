@@ -370,7 +370,6 @@
                     dense
                     label="Тел. номер"
                     mask="+############"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 13) || 'Введите номер телефона'
@@ -3178,7 +3177,7 @@
         </div>
 
         <!-- file list -->
-        <template v-if="fileList.length">
+        <template v-if="profile.fileList.length">
           <!-- Comment -->
           <div class="fileList tab">
             <h4
@@ -3192,14 +3191,14 @@
               <ul class="fileBlock">
                 <li
                   class="fileLi" 
-                  v-for="(fileData, index) of fileList" 
+                  v-for="(fileData, index) of profile.fileList" 
                   :key="index"
                 >
-                  <p>Название документа {{ index }}</p> 
+                  <p>{{ fileData.label }}</p> 
                   <q-btn 
                       :disable="disable"
                       icon="print" 
-                      @click="printFile(fileData)" 
+                      @click="printFile(fileData.data, index)" 
                   >
                     <q-tooltip>Распечатать</q-tooltip>
                   </q-btn>
@@ -3326,7 +3325,7 @@ export default {
       filesAll: [], // для фильтрации какие файлы загружены на сервер
 
       fileData: {
-        type: "protocol",
+        type: "overdraft",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
         data: {}
       },
@@ -3411,7 +3410,7 @@ export default {
     // }
     
     if (this.taskId) {
-      
+      debugger
       this.loaderForm = true
       this.$store.commit("credits/setTaskId", this.taskId);
 
@@ -3453,12 +3452,18 @@ export default {
         console.log('ERROR', error)
         this.loaderForm = false
       }
-    } else if (axios.defaults.headers.common["BPMCSRFToken"]) { // если перезагрузили страницу
-      await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
-      await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
-      this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData"))) //синхронизация с preapprov
-      this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
-      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));  
+    } else if (!axios.defaults.headers.common["BPMCSRFToken"]) { // если перезагрузили страницу
+        debugger
+        await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
+        await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+        this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData"))) //синхронизация с preapprov
+        this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
+        this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));  
+        this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+    } else {
+        debugger
+        this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
+        this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
     }
     
   },
@@ -4426,16 +4431,26 @@ export default {
       this.$refs.guaranteesValid.validate();
     },
 
-    async printFile(fileData) {
+    async printFile(fileData, idx) {
       this.disable = true
+      let file = null
       this.fileData.data = fileData
       try {
         console.log(JSON.stringify(this.fileData, null, 2))
 
-        const file = await this.$store.dispatch(
-          "credits/getFile",
-          this.fileData
-        );
+        if (this.profile.fileList[idx].idFile) {
+            file = await this.$store.dispatch(
+            "credits/getFile",
+            this.profile.fileList[idx].idFile
+          );
+        } else {
+            file = await this.$store.dispatch(
+            "credits/getFile",
+            this.fileData
+          );
+
+          this.profile.fileList[idx].idFile = file.id
+        }
 
         console.log('file', file)
 

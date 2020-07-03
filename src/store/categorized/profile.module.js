@@ -6,6 +6,7 @@ export const profile = {
   state: {
     bpmService: new BpmService(),
     confirmCredit: false,
+    fileList: [],
     // preapprovData: {}, 
     dictionaries: {
       Graduation: {
@@ -377,10 +378,18 @@ export const profile = {
           ).data;
             
           if (response.data.name == "Full Application Filling") { // кредит не оформлен
-            
             commit("setPreapprovData", data);
+          } 
+          else if (response.data.name == "Работа с документами") {
             debugger
-          } else {
+            const fileList = response.data.input.find(
+              i => i.label === "overdraftPrint"
+            )
+            console.log('fileList', fileList)
+            commit("setFileList", fileList)
+            commit("setFullForm", data);
+          } 
+          else {
             commit("setFullForm", data);
           }
 
@@ -411,6 +420,7 @@ export const profile = {
     },
 
     setPreapprovData(state, payload) {
+      debugger
        // Для корректной валидации
       payload.Customer.Document.Number = String(payload.Customer.Document.Number)
 
@@ -418,7 +428,7 @@ export const profile = {
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
       state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
       state.fullFormProfile.Customer.INN = payload.Customer.INN;
-      state.fullFormProfile.Customer.PhoneList.items[0].Number = payload.Customer.phone;
+      state.fullFormProfile.Customer.PhoneList.items[0].Number = payload.Customer.PhoneList.items[0].Number;
       state.fullFormProfile.Customer.PINPP = payload.Customer.PINPP;
       state.fullFormProfile.Customer.Document.Series = payload.Customer.Document.Series
       state.fullFormProfile.Customer.Document.Number = payload.Customer.Document.Number
@@ -438,6 +448,11 @@ export const profile = {
       state.fullFormProfile.LoanInfo.LoanProduct = payload.LoanInfo.LoanProduct;
       state.fullFormProfile.LoanInfo.RepaymentType = payload.LoanInfo.RepaymentType;
       state.fullFormProfile.LoanInfo.TermInMonth = payload.LoanInfo.TermInMonth;
+    },
+
+    setFileList(state, fileList) {
+      state.fileList = []
+      state.fileList.push(fileList)
     },
 
     addPhone(state) {

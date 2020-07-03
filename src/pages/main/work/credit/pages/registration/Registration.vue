@@ -377,30 +377,30 @@ export default {
         family: [],
         //наличие дополнительного дохода
         additIncSourOption: [
-          {
-            label: "Работа по найму",
-            value: 11
-          },
-          {
-            label: "Аренда движимого имущества",
-            value: 12
-          },
-          {
-            label: "Аренда недвижимого имущества",
-            value: 13
-          },
-          {
-            label: "Предпринимательская деятельность",
-            value: 14
-          },
-          {
-            label: "Дивиденды",
-            value: 15
-          },
-          {
-            label: "Другое",
-            value: 16
-          }
+          // {
+          //   label: "Работа по найму",
+          //   value: 11
+          // },
+          // {
+          //   label: "Аренда движимого имущества",
+          //   value: 12
+          // },
+          // {
+          //   label: "Аренда недвижимого имущества",
+          //   value: 13
+          // },
+          // {
+          //   label: "Предпринимательская деятельность",
+          //   value: 14
+          // },
+          // {
+          //   label: "Дивиденды",
+          //   value: 15
+          // },
+          // {
+          //   label: "Другое",
+          //   value: 16
+          // }
         ], 
 
         //источник дополнительного дохода
@@ -436,13 +436,23 @@ export default {
           }
         })
 
+      this.options.additIncSourOption = 
+        (process.userTaskCreditDetailed.input
+        .find(i => i.label == "incomeSource")).data.items
+        .map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
+
       console.log('family', this.options.family)
 
       const loan_product_listt = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
       const loan_product_dict = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_dict")
 
       loan_product_listt.data.items.forEach(i => {
-         const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
+        const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
         const credits = {
           label: i.label,
           value: Number(i.value),
@@ -606,6 +616,7 @@ export default {
           otherExpenses,
           expense,
           externalIncomeSize,
+          additionalIncomeSource,
           name,
           surname,
           mname,
@@ -636,7 +647,8 @@ export default {
                   incomingOther: externalIncomeSize, //доп. доход
                   expensesOther: otherExpenses, //др. переод. расходы
                   expensesPeriodic: expense, //переод. расходы
-                  incomingConfirm: income //ежем. доход
+                  incomingConfirm: income, //ежем. доход
+                  incomeType: additionalIncomeSource //тип доп. дохода
                 },
                 customer: {
                   firstName: name,
