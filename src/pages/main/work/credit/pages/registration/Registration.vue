@@ -272,6 +272,7 @@
                       'Поля должно быт заполнено'
                   ]"
                 /> -->
+                 
                 <q-input
                   ref="expense"
                   square
@@ -323,6 +324,17 @@
                     :options="options.additIncSourOption"
                     dense
                     label="Источник дополнительного дохода"
+                    emit-value
+                    map-options
+                  />
+
+                  <q-select
+                    square
+                    outlined
+                    v-model="personalData.loan_purpose"
+                    :options="options.loanPurpose"
+                    dense
+                    label="Цель кредитования"
                     emit-value
                     map-options
                   />
@@ -407,7 +419,10 @@ export default {
         typeCredits: [],
 
         //тип графика гашения
-        typeStepCredits: []
+        typeStepCredits: [],
+
+        // цель кредитования
+        loanPurpose: []
       }
     };
   },
@@ -439,6 +454,16 @@ export default {
       this.options.additIncSourOption = 
         (process.userTaskCreditDetailed.input
         .find(i => i.label == "incomeSource")).data.items
+        .map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
+
+      this.options.loanPurpose = 
+        (process.userTaskCreditDetailed.input
+        .find(i => i.label == "loanPupose")).data.items
         .map(i => {
           return {
             label: i.label,
@@ -613,6 +638,7 @@ export default {
           typeStepCredit,
           typeCredit,
           income,
+          loan_purpose,
           otherExpenses,
           expense,
           externalIncomeSize,
@@ -644,6 +670,7 @@ export default {
                 //payment_id: Number(typeStepCredit),
                 loan_product_id: Number(typeCredit),
                 finance: {
+                  loan_purpose, // цель кредитования
                   incomingOther: externalIncomeSize, //доп. доход
                   expensesOther: otherExpenses, //др. переод. расходы
                   expensesPeriodic: expense, //переод. расходы

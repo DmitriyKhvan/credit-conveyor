@@ -53,6 +53,7 @@ export const credits = {
       childrenCount: 0,
       // MONEY //
       income: 0, //подтвержденный ежемесячный доход
+      loan_purpose: null,
       expense: 0, //периодические расходы
       otherExpenses: 0, //плата за облуживание других обязательств
       externalIncome: false, //наличие дополнительного дохода
@@ -393,6 +394,7 @@ export const credits = {
         childrenCount: 0,
         // MONEY //
         income: 0, //подтвержденный ежемесячный доход
+        loan_purpose: null, // цель кредитования
         expense: 0, //периодические расходы
         otherExpenses: 0, //плата за облуживание других обязательств
         externalIncome: "", //наличие дополнительного дохода
