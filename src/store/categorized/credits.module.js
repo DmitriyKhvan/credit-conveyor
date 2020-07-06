@@ -75,6 +75,7 @@ export const credits = {
     },
 
     reasonsList: [], // причины отказа от кредита
+    infoList: {}, // информационный лист данные
 
     preApprovalData: {
       income: 0, // Сколько дохода учитываем
@@ -83,6 +84,7 @@ export const credits = {
       maxSum: 0 // Сколько максимум кредита можем выдать
     },
     creditTasks: [],
+    loadings: [],
 
     options: {
       confirmation: [
@@ -333,10 +335,10 @@ export const credits = {
     },
 
     creditConfirm(state, payload) {
-      state.preApprovalData.income = payload.income;
-      state.preApprovalData.expense = payload.expense;
-      state.preApprovalData.maxPayment = payload.maxPayment;
-      state.preApprovalData.maxSum = payload.maxSum;
+      state.preApprovalData.income = payload.incoming;
+      state.preApprovalData.expense = payload.expenses;
+      state.preApprovalData.maxPayment = payload.payment;
+      state.preApprovalData.maxSum = payload.sum;
     },
 
     toggleSubmitting(state, payload) {
@@ -431,6 +433,9 @@ export const credits = {
 
     setCreditTasks(state, payload) {
       // payload.map(i => i.date = CommonUtils.dateFilter(i.date, "datetime"))
+      for (let i = 0; i < payload.length; i++) {
+        state.loadings[i] = false
+      }
       state.creditTasks = payload;
     },
 
@@ -451,6 +456,7 @@ export const credits = {
     taskId: state => state.taskId,
     creditTasks: state => state.creditTasks,
     userRole: state => state.userRole,
+    loadings: state => state.loadings
     //fileId: state => state.fileId
   }
 };

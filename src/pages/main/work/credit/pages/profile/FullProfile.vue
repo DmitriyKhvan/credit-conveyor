@@ -666,7 +666,7 @@
               <div class="col-3">Валюта</div>
               <div class="col-9">{{ fullProfile.LoanInfo.Currency }}</div>
 
-              <div v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3">
+              <template v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3">
               <div class="col-3">Тип графика гашения</div>
               <div class="col-9">
 
@@ -682,7 +682,7 @@
                 }}
                 </template>
               </div>
-              </div>
+              </template>
 
 
                <div class="col-3">Процентная ставка по кредиту (максимальная)</div>

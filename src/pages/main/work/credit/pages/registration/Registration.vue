@@ -329,6 +329,7 @@
                   />
 
                   <q-select
+                    ref="loan_purpose"
                     square
                     outlined
                     v-model="personalData.loan_purpose"
@@ -337,6 +338,7 @@
                     label="Цель кредитования"
                     emit-value
                     map-options
+                    :rules="[val => !!val || 'Выберите цель кредитования']"
                   />
                 </div>
               </div>
@@ -597,6 +599,7 @@ export default {
       this.$refs.income.validate();
       this.$refs.expense.validate();
       this.$refs.otherExpenses.validate();
+      this.$refs.loan_purpose.validate();
 
       if (
         this.$refs.surname.hasError ||
@@ -611,7 +614,8 @@ export default {
         this.$refs.familyStatus.hasError ||
         this.$refs.income.hasError ||
         this.$refs.expense.hasError ||
-        this.$refs.otherExpenses.hasError
+        this.$refs.otherExpenses.hasError ||
+        this.$refs.loan_purpose.hasError
       ) {
         this.formHasError = true;
       } else {
@@ -685,7 +689,7 @@ export default {
                     number: Number(passport.slice(2)),
                     series: passport.slice(0, 2)
                   },
-                  mainPhone: phone.replace(/[\s+()]/g, ""),
+                  mainPhone: phone.replace(/[\s()]/g, ""),
                   tin: inn,
                   pinpp
                 }
@@ -709,23 +713,18 @@ export default {
         try {
          
           const resCredit = await this.$store.dispatch(
-            "credits/calculationCredit",
+            "credits/confirmationCredit",
             data
           );
 
           console.log("resCredit", resCredit);
 
-          this.credits.reasonsList = resCredit.nextTask.input.reasonsList;
-
-          const resp = {
-            income: resCredit.nextTask.input.incoming, // Сколько дохода учитываем
-            expense: resCredit.nextTask.input.expenses, // Сколько расходов
-            maxPayment: resCredit.nextTask.input.payment, // Сколько может платить в месяц
-            maxSum: resCredit.nextTask.input.sum // Сколько максимум кредита можем выдать
-          };
-
+          const preApproval = resCredit.nextTask.input.find(i => i.label == 'preApproval').data
+          this.credits.infoList = resCredit.nextTask.input.find(i => i.label == 'InfoList').data
+          this.credits.reasonsList = resCredit.nextTask.input.find(i => i.label == 'reasons_list').data.items;
+         
           this.$store.commit("credits/toggleConfirm", true);
-          this.$store.commit("credits/creditConfirm", resp);
+          this.$store.commit("credits/creditConfirm", preApproval);
           
           this.loaderFullScreen = false;
         } catch (e) {

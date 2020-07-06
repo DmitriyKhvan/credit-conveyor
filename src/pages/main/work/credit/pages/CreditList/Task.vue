@@ -92,11 +92,19 @@
             <div class="row rowForm">
               <div class="col-3 field">Вид документа</div>
               <div class="col-9 data">
-                {{
-                  dictionaries.DocumentType.items.find(
-                    i => i.value == Customer.Document.documentType
-                  ).label
-                }}
+                <template
+                  v-if="
+                    dictionaries.DocumentType.items.find(
+                      i => i.value == Customer.Document.documentType
+                    )
+                  "
+                > 
+                  {{
+                    dictionaries.DocumentType.items.find(
+                      i => i.value == Customer.Document.documentType
+                    ).label
+                  }}
+                </template>
               </div>
             </div>
 
@@ -108,9 +116,9 @@
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">Серия паспорта</div>
+              <div class="col-2 field">Серия</div>
               <div class="col-2 data">{{ Customer.Document.Series }}</div>
-              <div class="col-5 field">Номер паспорта</div>
+              <div class="col-5 field">Номер</div>
               <div class="col-3 data">{{ Customer.Document.Number }}</div>
             </div>
 
@@ -201,9 +209,19 @@
                 </div>
               </div>
               <div class="row rowForm">
-                <div class="col-4 field">Город / район</div>
+                <div class="col-4 field">Город</div>
                 <div class="col-8 data" colspan="6">{{ address.City }}</div>
               </div>
+
+              <div class="row rowForm">
+                <div class="col-4 field">Район</div>
+                <div class="col-8 data" colspan="6">
+                  {{
+                    getDistrict(address.Region, address.District)
+                  }}
+                </div>
+              </div>
+
               <div class="row rowForm">
                 <div class="col-4 field">Улица / микрорайон</div>
                 <div class="col-8 data" colspan="6">{{ address.Street }}</div>
@@ -273,8 +291,8 @@
               </h5>
 
               <div class="row rowForm">
-                <div class="col-2 field">Отношение к клиенту</div>
-                <div class="col-10 data">
+                <div class="col-3 field">Отношение к клиенту</div>
+                <div class="col-9 data">
                   <template
                     v-if="
                       dictionaries.FamilyRelation.items.find(
@@ -292,40 +310,64 @@
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Фамилия</div>
-                <div class="col-10 data">{{ relative.LastName }}</div>
+                <div class="col-3 field">Фамилия</div>
+                <div class="col-9 data">{{ relative.LastName }}</div>
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Имя</div>
-                <div class="col-10 data">{{ relative.FirstName }}</div>
+                <div class="col-3 field">Имя</div>
+                <div class="col-9 data">{{ relative.FirstName }}</div>
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Отчество</div>
-                <div class="col-10 data">{{ relative.MiddleName }}</div>
+                <div class="col-3 field">Отчество</div>
+                <div class="col-9 data">{{ relative.MiddleName }}</div>
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Дата рождения</div>
-                <div class="col-10 data">{{ relative.BirthDate }}</div>
+                <div class="col-3 field">Дата рождения</div>
+                <div class="col-9 data">{{ relative.BirthDate }}</div>
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Серия паспорта</div>
-                <div class="col-1 data">{{ relative.Document.Series }}</div>
-                <div class="col-2 field">Номер паспорта</div>
-                <div class="col-2 data">{{ relative.Document.Number }}</div>
+                <div class="col-3 field">Вид документа</div>
+                <div class="col-9 data">
+                  {{
+                    dictionaries.DocumentType.items.find(
+                      i => i.value == relative.Document.documentType
+                    ).label
+                  }}
+                </div>
+              </div>
+
+              <template  v-if="relative.Document.documentType == 7"> 
+                <div class="row rowForm">
+                  <div class="col-3 field">Наименование документа</div>
+                  <div class="col-9 data">
+                    {{ relative.Document.DocumentName }}
+                  </div>
+                </div>
+              </template>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Серия паспорта</div>
+                <div class="col-2 data">{{ relative.Document.Series }}</div>
+                <div class="col-3 field">Номер паспорта</div>
+                <div class="col-4 data">{{ relative.Document.Number }}</div>
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field"></div>
-                <div class="col-2 field">Дата выдачи</div>
-                <div class="col-2 data">{{ relative.Document.GivenDate }}</div>
-                <div class="col-2 field">Дата окончания</div>
-                <div class="col-2 data">
+                <div class="col-3 field">Дата выдачи</div>
+                <div class="col-3 data">{{ relative.Document.GivenDate }}</div>
+                <div class="col-3 field">Дата окончания</div>
+                <div class="col-3 data">
                   {{ relative.Document.ExpirationDate }}
                 </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Кем выдан документ</div>
+                <div class="col-9 data">{{ relative.Document.GivenPlace }}</div>
               </div>
 
               <!-- <div class="row rowForm">
@@ -551,8 +593,8 @@
               </h5>
 
               <div class="row rowForm">
-                <div class="col-3 field">Вид недвижимости</div>
-                <div class="col-9 data">
+                <div class="col-4 field">Вид недвижимости</div>
+                <div class="col-8 data">
                   <template
                     v-if="
                       dictionaries.PropertyType.items.find(
@@ -570,8 +612,8 @@
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Регион / область</div>
-                <div class="col-10 data">
+                <div class="col-4 field">Регион / область</div>
+                <div class="col-8 data">
                   <template
                     v-if="
                       dictionaries.Region.items.find(
@@ -589,8 +631,8 @@
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Рыночная стоимость</div>
-                <div class="col-10 data">{{ property.MarketValue }}</div>
+                <div class="col-4 field">Рыночная стоимость</div>
+                <div class="col-8 data">{{ property.MarketValue }}</div>
               </div>
             </div>
 
@@ -606,8 +648,8 @@
               </h5>
 
               <div class="row rowForm">
-                <div class="col-3 field">Вид транспортного средства</div>
-                <div class="col-9 data">
+                <div class="col-4 field">Вид транспортного средства</div>
+                <div class="col-8 data">
                   <template
                     v-if="
                       dictionaries.VehicleType.items.find(
@@ -625,20 +667,20 @@
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Марка транспортного средства</div>
-                <div class="col-10 data">
+                <div class="col-4 field">Марка транспортного средства</div>
+                <div class="col-8 data">
                   {{ vehicle.transportBrand }}
                 </div>
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Год выпуска</div>
-                <div class="col-10 data">{{ vehicle.yearOfRelease }}</div>
+                <div class="col-4 field">Год выпуска</div>
+                <div class="col-8 data">{{ vehicle.yearOfRelease }}</div>
               </div>
 
               <div class="row rowForm">
-                <div class="col-2 field">Рыночная стоимость</div>
-                <div class="col-10 data">{{ vehicle.marketValue }}</div>
+                <div class="col-4 field">Рыночная стоимость</div>
+                <div class="col-8 data">{{ vehicle.marketValue }}</div>
               </div>
             </div>
           </div>
@@ -704,11 +746,19 @@
                 <div class="row rowForm">
                   <div class="col-6 field">Резиденство</div>
                   <div class="col-6 data">
-                    {{
-                      credits.options.confirmation.find(
-                        i => i.value == guarantee.Resident
-                      ).label
-                    }}
+                    <template 
+                      v-if="
+                        credits.options.confirmation.find(
+                          i => i.value == guarantee.Resident
+                        )
+                      "
+                    >
+                      {{
+                        credits.options.confirmation.find(
+                          i => i.value == guarantee.Resident
+                        ).label
+                      }}
+                    </template>
                   </div>
                 </div>
                 <div class="row rowForm">
@@ -760,10 +810,16 @@
                   <div class="col-6 field">Город</div>
                   <div class="col-6 data">{{ guarantee.Address.City }}</div>
                 </div>
+
                 <div class="row rowForm">
                   <div class="col-6 field">Район</div>
-                  <div class="col-6 data">{{ guarantee.Address.District }}</div>
+                  <div class="col-6 data">
+                    {{
+                      getDistrict(guarantee.Address.Region, guarantee.Address.District)
+                    }}
+                  </div>
                 </div>
+
                 <div class="row rowForm">
                   <div class="col-6 field">Улица / мкр.</div>
                   <div class="col-6 data">{{ guarantee.Address.Street }}</div>
@@ -789,7 +845,7 @@
 
                 <div
                   class="row rowForm"
-                  v-for="(phone, phoneIndex) of guarantee.PhoneList"
+                  v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
                   :key="phone.Number"
                 >
                   <div class="col-6 field">Телефон {{ phoneIndex + 1 }}</div>
@@ -928,24 +984,26 @@
               <div class="col-6 data">{{ fullProfile.LoanInfo.Currency }}</div>
             </div>
 
-            <div class="row rowForm">
-              <div class="col-6 field">Тип пошагового кредита</div>
-              <div class="col-6 data">
-                <template
-                  v-if="
-                    dictionaries.PaymentsType.items.find(
-                      i => i.value == fullProfile.LoanInfo.RepaymentType
-                    )
-                  "
-                >
-                  {{
-                    dictionaries.PaymentsType.items.find(
-                      i => i.value == fullProfile.LoanInfo.RepaymentType
-                    ).label
-                  }}
-                </template>
+            <template v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3">
+              <div class="row rowForm">
+                <div class="col-6 field">Тип пошагового кредита</div>
+                <div class="col-6 data">
+                  <template
+                    v-if="
+                      dictionaries.PaymentsType.items.find(
+                        i => i.value == fullProfile.LoanInfo.RepaymentType
+                      )
+                    "
+                  >
+                    {{
+                      dictionaries.PaymentsType.items.find(
+                        i => i.value == fullProfile.LoanInfo.RepaymentType
+                      ).label
+                    }}
+                  </template>
+                </div>
               </div>
-            </div>
+            </template>
 
             <div class="row rowForm">
               <div class="col-6 field">
@@ -967,7 +1025,7 @@
 
             <div class="row rowForm">
               <div class="col-6 field">
-                Льготный период по погашению кредита
+                Льготный период по погашению кредита (число месяцев)
               </div>
               <div class="col-6 data">
                 {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }}
@@ -1062,57 +1120,60 @@
               </div>
             </div>
 
-            <div class="row rowForm">
-              <div class="col-6 field">
-                Наименование продавца/производителя товара/работы/услуги
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Наименование продавца/производителя товара/работы/услуги
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.consumerLoan.nameProduction }}
+                </div>
               </div>
-              <div class="col-6 data">
-                {{ fullProfile.LoanInfo.consumerLoan.nameProduction }}
-              </div>
-            </div>
 
-            <div class="row rowForm">
-              <div class="col-6 field">Наименование товара/работы/услуги</div>
-              <div class="col-6 data">
-                {{ fullProfile.LoanInfo.consumerLoan.nameService }}
+              <div class="row rowForm">
+                <div class="col-6 field">Наименование товара/работы/услуги</div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.consumerLoan.nameService }}
+                </div>
               </div>
-            </div>
 
-            <div class="row rowForm">
-              <div class="col-6 field">
-                Наименование банка продавца/производителя товара/работы/услуги
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Наименование банка продавца/производителя товара/работы/услуги
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.consumerLoan.nameBankProd }}
+                </div>
               </div>
-              <div class="col-6 data">
-                {{ fullProfile.LoanInfo.consumerLoan.nameBankProd }}
-              </div>
-            </div>
 
-            <div class="row rowForm">
-              <div class="col-6 field">
-                Расчетный счет продавца/производителя товара/работы/услуги
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Расчетный счет продавца/производителя товара/работы/услуги
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.consumerLoan.billProd }}
+                </div>
               </div>
-              <div class="col-6 data">
-                {{ fullProfile.LoanInfo.consumerLoan.billProd }}
-              </div>
-            </div>
 
-            <div class="row rowForm">
-              <div class="col-6 field">
-                Номер договора с продавцом/поставщиком товара/работы/услуги
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Номер договора с продавцом/поставщиком товара/работы/услуги
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.consumerLoan.agreementNumber }}
+                </div>
               </div>
-              <div class="col-6 data">
-                {{ fullProfile.LoanInfo.consumerLoan.agreementNumber }}
-              </div>
-            </div>
 
-            <div class="row rowForm">
-              <div class="col-6 field">
-                Дата договора с продавцом/поставщиком товара/работы/услуги
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Дата договора с продавцом/поставщиком товара/работы/услуги
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.consumerLoan.agreementDate }}
+                </div>
               </div>
-              <div class="col-6 data">
-                {{ fullProfile.LoanInfo.consumerLoan.agreementDate }}
-              </div>
-            </div>
+            </template>
+
           </div>
 
           <h4 class="titleForm">Документы</h4>
@@ -1545,6 +1606,20 @@ export default {
 
     closeModal() {
       this.$refs.modalView.style.display = "none";
+    },
+
+    getDistrict(region, district) {
+      // console.log(region, district)
+      // return {region, district}
+      if (district) {
+        const regionId = this.dictionaries.Region.items.find(
+          i => i.value == region
+        ).region_id
+
+        return this.dictionaries.Districts.items[0][regionId].items.find(
+          i => i.value == district
+        ).label
+      }
     }
   },
   components: {
@@ -1614,6 +1689,8 @@ export default {
 }
 
 .data {
+  display: flex;
+  align-items: center;
   color: #0054a6;
   padding: 5px 20px;
   border: 1px solid #acacac;

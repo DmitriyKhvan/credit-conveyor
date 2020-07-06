@@ -5,7 +5,17 @@
         <q-card-section class="column items-start">
           <div class="preApprovalBlock__title">
             <div class="text-h6">Заявка на кредит</div>
-            <q-btn class="print" icon="print" @click="printFile()" disable />
+            <q-btn 
+              flat 
+              class="print" 
+              icon="print" 
+              @click="printFile(credits.infoList)" 
+              :loading="loading"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook />
+              </template>
+            </q-btn>
           </div>
           <div class="creditBackground">
             <h4 class="personName">
@@ -53,7 +63,7 @@
                       <q-checkbox
                         v-model="selection"
                         :val="reson.value"
-                        :label="reson.name"
+                        :label="reson.label"
                       />
                     </div>
 
@@ -67,7 +77,7 @@
                       <q-checkbox
                         v-model="selection"
                         :val="reson.value"
-                        :label="reson.name"
+                        :label="reson.label"
                       />
                     </div>
                   </div>
@@ -108,17 +118,24 @@
   </div>
 </template>
 <script>
+import printJS from "print-js";
 import formatNumber from "../../filters/format_number.js";
 import CommonUtils from "@/shared/utils/CommonUtils";
 // import LoaderFullScreen from "@/components/LoaderFullScreen";
-import printJS from "print-js";
 
 export default {
   data() {
     return {
       failureCreditReason: false,
       selection: [],
-      model: false
+      model: false,
+      loading: false,
+
+      fileData: {
+        type: "info_list",
+        lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
+        data: {}
+      },
     };
   },
 
@@ -220,15 +237,36 @@ export default {
       }
     },
 
-    async printFile() {
+    async printFile(fileData) {
+      this.loading = true
+      let file = null
+      this.fileData.data = fileData
       try {
-        const url = await this.$store.dispatch(
-          "credits/getFile",
-          this.fileData
-        );
-        printJS(url);
-        window.URL.revokeObjectURL(url);
-      } catch (error) {}
+        console.log(JSON.stringify(this.fileData, null, 2))
+
+        if (this.fileData.idFile) {
+            file = await this.$store.dispatch(
+            "credits/getFile",
+            this.fileData.idFile
+          );
+        } else {
+            file = await this.$store.dispatch(
+            "credits/getFile",
+            this.fileData
+          );
+
+          this.fileData.idFile = file.id
+        }
+
+        console.log('file', file)
+
+        printJS(file.url);
+        window.URL.revokeObjectURL(file.url);
+
+        this.loading = false
+      } catch(error) {
+        this.loading = false
+      }
     }
   },
 

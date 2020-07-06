@@ -350,22 +350,22 @@
               <div class="text-blue q-gutter-md">
                 
                 <!-- <template v-if="userRole === 'CS'"> -->
-                  <!-- <q-btn 
+                  <q-btn 
                     icon="print" 
-                    @click="printFile(credit.taskId)" 
-                    :loading="loadings1"
+                    @click="printFile(credit.taskId, index)" 
+                    :loading="loadings[index]"
                   >
-                  {{loadings}}
+                  <!-- {{ credits[index] }} -->
                     <template v-slot:loading>
                       <q-spinner-facebook />
                     </template>
-                  </q-btn> -->
+                  </q-btn>
 
-                  <q-btn 
+                  <!-- <q-btn 
                     :disable="disable"
                     icon="print" 
                     @click="printFile(credit.taskId)" 
-                  />
+                  /> -->
                   
                   <q-btn 
                     :disable="disable"
@@ -412,6 +412,7 @@
 
     <appLoaderFullScreen v-if="loaderFullScreen" />
 
+    <!-- {{loadings}} -->
   </div>
 </template>
 
@@ -426,7 +427,7 @@ export default {
   data() {
     return {
       // userRole: this.$store.getters.userRole,
-      // loadings: [], // кнопки распечатать
+      // loadings: this.$store.getters["credits/loadings"], // кнопки распечатать
       current: 1,
       countRow: 10,
       creditList: 100,
@@ -568,12 +569,15 @@ export default {
     // loadings() {
     //   const loadings = []
     //   for (let i = 0; i < this.$store.getters["credits/creditTasks"].length; i++) {
-    //     debugger
     //     loadings[i] = false
     //   }
     //   console.log('loading', this.loadings)
     //   return loadings
     // },
+
+    loadings() {
+      return this.$store.getters["credits/loadings"] 
+    },
 
     userRole() {
       return this.$store.getters["credits/userRole"];
@@ -666,9 +670,11 @@ export default {
     //   } catch(error) {}
     // },
 
-    async printFile(taskId) {
-      //console.log('credits', this.credits)
+    async printFile(taskId, idx) {
+      this.loadings[idx] = true
+
       let task = this.credits.find(i => i.taskId == taskId)
+      
       let file = null
 
       if (task.idFile) {
@@ -677,17 +683,20 @@ export default {
           task.idFile
         );
       } else {
+        
         file = await this.getUrlFile(taskId)
+        
         task.idFile = file.id  // кеширование id file
+        
       }
-      
       console.log('file', file)
-      // debugger
 
       //console.log('credits', this.credits)
       printJS(file.url);
       window.URL.revokeObjectURL(file);
-      
+      this.loadings[idx] = false
+      task.kmfio = task.kmfio + " " // для перерендеринга списка, чтоб убрать loader
+      task.kmfio = task.kmfio.trim()
     },
 
     async downloadFile(taskId) {

@@ -3467,40 +3467,7 @@ export default {
     }
     
   },
-  mounted() {
-    // if (!this.taskId) {
-    //   this.Customer.FirstName = this.personalData.name;
-    //   this.Customer.LastName = this.personalData.surname;
-    //   this.Customer.MiddleName = this.personalData.mname;
-    //   this.Customer.INN = this.personalData.inn;
-    //   this.Customer.PhoneList.items[0].Number = this.personalData.phone;
-    //   this.Customer.PINPP = this.personalData.pinpp;
-    //   this.Customer.Document.Series = this.personalData.passport.slice(
-    //     0,
-    //     2
-    //   );
-    //   this.Customer.Document.Number = this.personalData.passport.slice(
-    //     2
-    //   );
-
-    //   this.Customer.MaritalStatus = this.personalData.familyStatus
-
-    //   this.Customer.hasChildren = this.personalData.children;
-    //   this.Customer.UnderAgeChildrenNum = this.personalData.childrenCount;
-
-    //   this.Customer.MonthlyIncome.confirmMonthlyIncome = this.personalData.income;
-    //   this.Customer.MonthlyExpenses.recurringExpenses = this.personalData.expense;
-    //   this.Customer.MonthlyExpenses.obligations = this.personalData.otherExpenses;
-    //   this.Customer.MonthlyIncome.hasAdditionalIncome = this.personalData.externalIncome;
-    //   this.Customer.MonthlyIncome.additionalIncome.sum = this.personalData.externalIncomeSize;
-    //   this.Customer.MonthlyIncome.additionalIncome.incomeType = this.personalData.additionalIncomeSource;
-
-    //   this.fullProfile.LoanInfo.LoanProduct = this.personalData.typeCredit;
-    //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit;
-    //   this.fullProfile.LoanInfo.TermInMonth = this.personalData.periodCredit;
-    //   this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    // }
-  },
+  mounted() {},
   computed: {
     fullProfile() {
       console.log(this.$store.getters["profile/profile"].fullFormProfile)
@@ -4419,6 +4386,7 @@ export default {
     },
 
     guaranteesValid() {
+      console.log(this.$refs.guaranteesValid)
       this.totalGuaranteesSum = 0
 
       for (let guarantee in this.fullProfile.Guarantee) {
@@ -4455,6 +4423,7 @@ export default {
         console.log('file', file)
 
         printJS(file.url);
+        window.URL.revokeObjectURL(file.url);
 
         this.disable = false
       } catch(error) {

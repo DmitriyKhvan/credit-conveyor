@@ -383,10 +383,13 @@ export const profile = {
           else if (response.data.name == "Работа с документами") {
             debugger
             const fileList = response.data.input.find(
-              i => i.label === "overdraftPrint"
+              i => i.label === "overdraftPrint" || i.label === "consumer_credit" || i.label === "microloan"
             )
             console.log('fileList', fileList)
-            commit("setFileList", fileList)
+            if (fileList) {
+              commit("setFileList", fileList)
+            }
+            
             commit("setFullForm", data);
           } 
           else {
