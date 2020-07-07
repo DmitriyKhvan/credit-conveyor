@@ -1,30 +1,18 @@
 <template>
-  <AppCreditList :loaderList="loaderList" />
+  <AppCreditList 
+    :loaderList="loaderList" 
+    :key="componentKey" 
+    @renderComponent="($event) => componentKey += $event"
+  />
 </template>
 
 <script>
-import CreditList from "./CreditList"
+import creditListMixin from '../../mixins/creditList'
 
 export default {
-  data() {
-    return {
-      loaderList: false
-    }
-  },
+  mixins: [creditListMixin],
   async created() {
-    this.loaderList = true
-    this.$store.commit('credits/clearCreditTasks')
-    try {
-      const auth = await this.$store.dispatch("credits/authBpm")
-      console.log("auth", auth);
-
-      await this.$store.dispatch("credits/getRoleTasks")
-
-      this.loaderList = false
-    } catch(error) {}
-  },
-  components: {
-    AppCreditList: CreditList
+    this.getCreditsList("getRoleTasks")
   }
 }
 </script>

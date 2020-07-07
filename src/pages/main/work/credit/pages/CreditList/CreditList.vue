@@ -351,6 +351,7 @@
                 
                 <!-- <template v-if="userRole === 'CS'"> -->
                   <q-btn 
+                    :disable="disable"
                     icon="print" 
                     @click="printFile(credit.taskId, index)" 
                     :loading="loadings[index]"
@@ -359,6 +360,7 @@
                     <template v-slot:loading>
                       <q-spinner-facebook />
                     </template>
+                    <q-tooltip>Распечатать</q-tooltip>
                   </q-btn>
 
                   <!-- <q-btn 
@@ -630,6 +632,7 @@ export default {
     },
 
     async creditSign(taskId) {
+      this.$emit("renderComponent", 1) // для ререндеринга списка заявок
       this.loaderFullScreen = true;
       this.$store.commit("credits/setTaskId", taskId);
       const confirmCreditData = {
@@ -671,7 +674,8 @@ export default {
     // },
 
     async printFile(taskId, idx) {
-      this.loadings[idx] = true
+      this.disable = true
+      this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
 
       let task = this.credits.find(i => i.taskId == taskId)
       
@@ -694,9 +698,8 @@ export default {
       //console.log('credits', this.credits)
       printJS(file.url);
       window.URL.revokeObjectURL(file);
-      this.loadings[idx] = false
-      task.kmfio = task.kmfio + " " // для перерендеринга списка, чтоб убрать loader
-      task.kmfio = task.kmfio.trim()
+      this.loadings.splice(idx, 1, false)
+      this.disable = false
     },
 
     async downloadFile(taskId) {

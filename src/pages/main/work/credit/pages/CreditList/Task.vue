@@ -34,28 +34,28 @@
 
           <div class="formBlock">
             <div class="row rowForm">
-              <div class="col-2 field">Фамилия</div>
-              <div class="col-10 data">{{ Customer.LastName }}</div>
+              <div class="col-3 field">Фамилия</div>
+              <div class="col-9 data">{{ Customer.LastName }}</div>
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">Имя</div>
-              <div class="col-10 data">{{ Customer.FirstName }}</div>
+              <div class="col-3 field">Имя</div>
+              <div class="col-9 data">{{ Customer.FirstName }}</div>
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">Отчество</div>
-              <div class="col-10 data">{{ Customer.MiddleName }}</div>
+              <div class="col-3 field">Отчество</div>
+              <div class="col-9 data">{{ Customer.MiddleName }}</div>
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">Дата рождения</div>
-              <div class="col-10 data">{{ Customer.BirthDate }}</div>
+              <div class="col-3 field">Дата рождения</div>
+              <div class="col-9 data">{{ Customer.BirthDate }}</div>
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">Пол</div>
-              <div class="col-4 data">
+              <div class="col-3 field">Пол</div>
+              <div class="col-3 data">
                 <template
                   v-if="
                     dictionaries.Gender.items.find(
@@ -70,8 +70,8 @@
                   }}
                 </template>
               </div>
-              <div class="col-2 field">Резидентство</div>
-              <div class="col-4 data">
+              <div class="col-3 field">Резидентство</div>
+              <div class="col-3 data">
                 <template
                   v-if="
                     credits.options.confirmation.find(
@@ -116,16 +116,16 @@
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">Серия</div>
+              <div class="col-3 field">Серия</div>
               <div class="col-2 data">{{ Customer.Document.Series }}</div>
-              <div class="col-5 field">Номер</div>
-              <div class="col-3 data">{{ Customer.Document.Number }}</div>
+              <div class="col-3 field">Номер</div>
+              <div class="col-4 data">{{ Customer.Document.Number }}</div>
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">Дата выдачи</div>
+              <div class="col-3 field">Дата выдачи</div>
               <div class="col-3 data">{{ Customer.Document.GivenDate }}</div>
-              <div class="col-4 field">Дата окончания</div>
+              <div class="col-3 field">Дата окончания</div>
               <div class="col-3 data">
                 {{ Customer.Document.ExpirationDate }}
               </div>
@@ -137,17 +137,17 @@
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">ИНН</div>
-              <div class="col-10 data">{{ Customer.INN }}</div>
+              <div class="col-3 field">ИНН</div>
+              <div class="col-9 data">{{ Customer.INN }}</div>
             </div>
 
             <div class="row rowForm">
-              <div class="col-2 field">ПНФЛ</div>
-              <div class="col-10 data">{{ Customer.PINPP }}</div>
+              <div class="col-3 field">ПНФЛ</div>
+              <div class="col-9 data">{{ Customer.PINPP }}</div>
             </div>
             <div class="row rowForm">
-              <div class="col-4 field">Степень Образования</div>
-              <div class="col-8 data">
+              <div class="col-3 field">Степень Образования</div>
+              <div class="col-9 data">
                 <template
                   v-if="
                     dictionaries.Graduation.items.find(
@@ -229,16 +229,16 @@
 
               <div class="row rowForm">
                 <div class="col-4 field">Номер дома</div>
-                <div class="col-1 data">{{ address.House }}</div>
-                <div class="col-2 field">Корпус</div>
-                <div class="col-1 data">{{ address.Block }}</div>
-                <div class="col-3 field">Номер квартиры</div>
-                <div class="col-1 data">{{ address.Apartment }}</div>
+                <div class="col-2 data">{{ address.House }}</div>
+                <div class="col-3 field">Корпус</div>
+                <div class="col-3 data">{{ address.Block }}</div>
               </div>
 
               <div class="row rowForm">
-                <div class="col-4 field">Вид владения</div>
-                <div class="col-8 data">
+                <div class="col-4 field">Номер квартиры</div>
+                <div class="col-2 data">{{ address.Apartment }}</div>
+                <div class="col-3 field">Вид владения</div>
+                <div class="col-3 data">
                   <template
                     v-if="
                       dictionaries.PropertyType.items.find(
@@ -1192,6 +1192,7 @@
                   </div>
                   <div class="col-4 field">
                     <q-btn
+                      class="showFile"
                       color="primary"
                       label="Просмотреть"
                       @click="
@@ -1387,7 +1388,7 @@ export default {
 
       commentBO: {
         Comment: "",
-        Type: "",
+        Type: this.$store.getters["credits/userRole"],
         CommentPerson: this.$store.getters["auth/username"]
         //id: 0,
         //CommentDate: ""
@@ -1517,6 +1518,16 @@ export default {
             commentBlock: "CreditCommiteeDecisions",
             comment: this.commentCC
           });
+
+          this.$store.commit("profile/addComment", {
+            commentBlock: "ApplicationComment",
+            comment: {
+                Comment: this.commentCC.Comment,
+                CommentPerson: this.$store.getters["auth/username"],
+                Type: this.$store.getters["credits/userRole"]
+              }
+          });
+          
         }
 
         this.sentData("Credit failure");
@@ -1551,7 +1562,11 @@ export default {
             {
               name: "CreditCommiteeDecisions",
               data: this.fullProfile.CreditCommiteeDecisions.items
-            }
+            },
+            // {
+            //   name: "ApplicationComment",
+            //   data: this.fullProfile.ApplicationComment.items
+            // }
           ]
         };
       }
@@ -1651,6 +1666,7 @@ export default {
   font-size: 16px;
   color: #0054a6;
   background: #ededed;
+  overflow: hidden;
 
   &:after {
     content: "";
@@ -1717,6 +1733,10 @@ export default {
   margin-top: 20px;
   padding: 2px 0;
   border-radius: 0;
+}
+
+.showFile {
+  margin: 0
 }
 
 .titleFailureCredit {

@@ -15,6 +15,7 @@
               <template v-slot:loading>
                 <q-spinner-facebook />
               </template>
+              <q-tooltip>Распечатать</q-tooltip>
             </q-btn>
           </div>
           <div class="creditBackground">

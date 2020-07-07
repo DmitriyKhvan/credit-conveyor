@@ -3198,7 +3198,7 @@
                   <q-btn 
                       :disable="disable"
                       icon="print" 
-                      @click="printFile(fileData.data, index)" 
+                      @click="printFile(fileData, index)" 
                   >
                     <q-tooltip>Распечатать</q-tooltip>
                   </q-btn>
@@ -3325,75 +3325,10 @@ export default {
       filesAll: [], // для фильтрации какие файлы загружены на сервер
 
       fileData: {
-        type: "overdraft",
+        type: "",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
         data: {}
-      },
-
-      fileList: [
-        {
-          protocol_initiative_unit: "",
-          protocol_client_inn: "",
-          protocol_lending_currency: "",
-          protocol_loan_amount: "",
-          protocol_repayment_type: "",
-          protocol_customer_name: "",
-          protocol_term: "",
-          protocol_grace_period: "",
-          protocol_finance_source: "",
-          protocol_loan_product: "",
-          protocol_loan_type: "",
-          protocol_percent_rate: "",
-          protocol_credit_rating: "",
-          protocol_request_number: "",
-          protocol_loan_specialist_position: "",
-          protocol_loan_specialist_fio: "",
-          protocol_number: "",
-          protocol_filial: "",
-          protocol_committee_decision_number: "",
-          protocol_committee_decision_date: "",
-          protocol_guarantor_name: "",
-          protocol_guarantor_value: "",
-          protocol_insurance_name: "",
-          protocol_insurance_value: "",
-          protocol_additional_name: "",
-          protocol_additional_value: "",
-          protocol_special_name: "",
-          protocol_special_value: "",
-          protocol_secretary_fio: ""
-        },
-        {
-          protocol_initiative_unit: "",
-          protocol_client_inn: "",
-          protocol_lending_currency: "",
-          protocol_loan_amount: "",
-          protocol_repayment_type: "",
-          protocol_customer_name: "",
-          protocol_term: "",
-          protocol_grace_period: "",
-          protocol_finance_source: "",
-          protocol_loan_product: "",
-          protocol_loan_type: "",
-          protocol_percent_rate: "",
-          protocol_credit_rating: "",
-          protocol_request_number: "",
-          protocol_loan_specialist_position: "",
-          protocol_loan_specialist_fio: "",
-          protocol_number: "",
-          protocol_filial: "",
-          protocol_committee_decision_number: "",
-          protocol_committee_decision_date: "",
-          protocol_guarantor_name: "",
-          protocol_guarantor_value: "",
-          protocol_insurance_name: "",
-          protocol_insurance_value: "",
-          protocol_additional_name: "",
-          protocol_additional_value: "",
-          protocol_special_name: "",
-          protocol_special_value: "",
-          protocol_secretary_fio: ""
-        }
-      ]
+      }
 
     };
   },
@@ -3427,22 +3362,25 @@ export default {
         console.log('resggggggggggggggggggggg', res)
 
         const { data } = res.data.input.find(i => i.label == 'application')
-        const uploadedFiles = data.AttachedDocuments.items
-        const guarantees = data.Guarantee
+        
+        if (data.BODecision != null) {
+          const uploadedFiles = data.AttachedDocuments.items
+          const guarantees = data.Guarantee
 
-        for (let file of uploadedFiles) {
-          this.filesAll.push({
-            name: "",
-            DocumentName: file.DocumentName,
-            id: file.id,
-            upload: true
-          });
-        }
+          for (let file of uploadedFiles) {
+            this.filesAll.push({
+              name: "",
+              DocumentName: file.DocumentName,
+              id: file.id,
+              upload: true
+            });
+          }
 
-        for (let guarantee in guarantees) {
-          //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
-          for (let i of guarantees[guarantee].items) {
-            this.guaranteeCount.push("guarantee")
+          for (let guarantee in guarantees) {
+            //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
+            for (let i of guarantees[guarantee].items) {
+              this.guaranteeCount.push("guarantee")
+            }
           }
         }
         //this.guaranteesValid()
@@ -4402,7 +4340,8 @@ export default {
     async printFile(fileData, idx) {
       this.disable = true
       let file = null
-      this.fileData.data = fileData
+      this.fileData.type = fileData.label
+      this.fileData.data = fileData.data
       try {
         console.log(JSON.stringify(this.fileData, null, 2))
 

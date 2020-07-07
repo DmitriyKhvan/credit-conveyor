@@ -356,6 +356,7 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
+      state.fileList = [] // очистка файлов на печать
       let response
       try {
         if (taskId) {
@@ -377,7 +378,11 @@ export const profile = {
             i => i.label === "inputDictionaries"
           ).data;
             
-          if (response.data.name == "Full Application Filling") { // кредит не оформлен
+          // if (response.data.name == "Full Application Filling") { // кредит не оформлен
+          //   commit("setPreapprovData", data);
+          // } 
+          if (data.BODecision == null) { // кредит не оформлен
+            debugger
             commit("setPreapprovData", data);
           } 
           else if (response.data.name == "Работа с документами") {
