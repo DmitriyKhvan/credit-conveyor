@@ -369,11 +369,23 @@
                     @click="printFile(credit.taskId)" 
                   /> -->
                   
-                  <q-btn 
+                  <!-- <q-btn 
                     :disable="disable"
                     icon="cloud_download" 
                     @click="downloadFile(credit.taskId)" 
-                  />
+                    :loading="loadings[index]"
+                  >
+                    <template v-slot:loading>
+                      <q-spinner-facebook />
+                    </template>
+                    <q-tooltip>Скачать</q-tooltip>
+                  </q-btn> -->
+
+                  <!-- <q-btn 
+                    :disable="disable"
+                    icon="cloud_download" 
+                    @click="downloadFile(credit.taskId)" 
+                  /> -->
 
                   <q-btn
                     class="full-width"
@@ -420,6 +432,7 @@
 
 <script>
 import printJS from "print-js";
+import CommonUtils from "@/shared/utils/CommonUtils";
 import formatDate from "../../filters/formatDate"
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
@@ -644,7 +657,6 @@ export default {
         ]
       };
       try {
-        debugger
         const res = await this.$store.dispatch(
           "credits/confirmationCredit",
           confirmCreditData
@@ -674,8 +686,8 @@ export default {
     // },
 
     async printFile(taskId, idx) {
-      this.disable = true
-      this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
+      // this.disable = true
+      // this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
 
       let task = this.credits.find(i => i.taskId == taskId)
       
@@ -688,7 +700,7 @@ export default {
         );
       } else {
         
-        file = await this.getUrlFile(taskId)
+        file = await this.getUrlFile(taskId, idx)
         
         task.idFile = file.id  // кеширование id file
         
@@ -698,12 +710,12 @@ export default {
       //console.log('credits', this.credits)
       printJS(file.url);
       window.URL.revokeObjectURL(file);
-      this.loadings.splice(idx, 1, false)
-      this.disable = false
+      // this.loadings.splice(idx, 1, false)
+      // this.disable = false
     },
 
     async downloadFile(taskId) {
-        const file = await this.getUrlFile(taskId)
+        const file = await this.getUrlFile(taskId, idx)
         console.log('filelll', file)
         let link = document.createElement("a");
         link.href = file.url;
@@ -747,9 +759,10 @@ export default {
     //   }
     // },
 
-    async getUrlFile(taskId) {
+    async getUrlFile(taskId, idx) {
       // this.loadings1 = true
       this.disable = true
+      this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
       let file = null
       try {
           // debugger
@@ -767,10 +780,12 @@ export default {
           );
         // this.loadings1 = false
         this.disable = false
+        this.loadings.splice(idx, 1, false)
         return file
       } catch(error) {
         // this.loadings1 = false
         this.disable = false
+        this.loadings.splice(idx, 1, false)
       }
     },
 

@@ -546,7 +546,6 @@
                       v-model="address.Street"
                       dense
                       label="Улица / Мкр."
-                      lazy-rules
                       :rules="[
                         val => !!val || 'Введите наименование улицы / мкр.'
                       ]"
@@ -561,7 +560,6 @@
                       v-model="address.House"
                       dense
                       label="Номер дома"
-                      lazy-rules
                       :rules="[val => !!val || 'Введите номер дома']"
                     />
                   </div>
@@ -754,7 +752,6 @@
                     outlined
                     v-model="relative.LastName"
                     dense
-                    lazy-rules
                     label="Фамилия"
                     :rules="[val => !!val || 'Введите фамилию']"
                   />
@@ -881,7 +878,6 @@
                     dense
                     label="Номер документа"
                     mask="#######"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 7) || 'Введите номер документа'
@@ -1658,7 +1654,6 @@
                     dense
                     label="Сумма поручительства"
                     @input="guaranteesValid"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите сумму']"
                   />
                 </div>
@@ -1673,7 +1668,6 @@
                     v-model="guarantee.LastName"
                     dense
                     label="Фамилия"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите фамилию']"
                   />
                 </div>
@@ -1685,7 +1679,6 @@
                     v-model="guarantee.FirstName"
                     dense
                     label="Имя"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите имя']"
                   />
                 </div>
@@ -1697,7 +1690,6 @@
                     v-model="guarantee.MiddleName"
                     dense
                     label="Отчество"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите отчество']"
                   />
                 </div>
@@ -1750,7 +1742,6 @@
                     dense
                     label="ИНН"
                     mask="#########"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 9) ||
@@ -1767,7 +1758,6 @@
                     dense
                     label="ПИНФЛ"
                     mask="##############"
-                    lazy-rules
                     :rules="[
                       val => (val && val.length === 14) || 'Введите ПНФЛ'
                     ]"
@@ -1835,7 +1825,6 @@
                     dense
                     label="Серия документа"
                     mask="AA"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 2) || 'Введите Серию документа'
@@ -1851,7 +1840,6 @@
                     dense
                     label="Номер документа"
                     mask="#######"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 7) || 'Введите Номер документа'
@@ -2477,7 +2465,6 @@
                     dense
                     label="Сумма страхового полиса"
                     @input="guaranteesValid"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите сумму']"
                   />
                 </div>
@@ -2679,7 +2666,6 @@
                   dense
                   label="Удобный срок погашения в мес"
                   mask="##"
-                  lazy-rules
                   :rules="[
                     val => !!val || 'Введите удобный срок погашения в мес',
                     val => val > 0 || 'Неверный срок погашения'
@@ -2697,7 +2683,6 @@
                   disable
                   label="Минимальное количество месяцев на кредит"
                   mask="##"
-                  lazy-rules
                   :rules="[
                     val =>
                       !!val ||
@@ -2716,7 +2701,6 @@
                   disable
                   label="Максимальное количество месяцев на кредит"
                   mask="##"
-                  lazy-rules
                   :rules="[
                     val =>
                       !!val ||
@@ -2737,7 +2721,6 @@
                   dense
                   label="Удобный день погашения"
                   mask="##"
-                  lazy-rules
                   :rules="[
                     val => !!val || 'Введите удобный день погашения',
                     val =>
@@ -2779,7 +2762,6 @@
                   type="number"
                   dense
                   label="Первоначальный взнос"
-                  lazy-rules
                   :rules="[val => !!val || 'Введите первоначальный взнос']"
                 />
               </div>
@@ -2794,7 +2776,6 @@
                   dense
                   disable
                   label="Процент первоначального взноса (максимальный)"
-                  lazy-rules
                   :rules="[
                     val => !!val || 'Введите максимальный первоначальный взнос'
                   ]"
@@ -2811,7 +2792,6 @@
                   dense
                   disable
                   label="Процент первоначального взноса (минимальный)"
-                  lazy-rules
                   :rules="[
                     val => !!val || 'Введите минимальный первоначальный взнос'
                   ]"
@@ -2876,7 +2856,6 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.nameProduction"
                     dense
                     label="Наименование продавца/производителя товара/работы/услуги"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите наименование продавца/производителя товара/работы/услуги']"
                   />
                 </div>
@@ -2888,7 +2867,6 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.nameService"
                     dense
                     label="Наименование товара/работы/услуги"
-                    lazy-rules
                     :rules="[
                       val => !!val || 'Введите наименование товара/работы/услуги'
                     ]"
@@ -2903,7 +2881,6 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.nameBankProd"
                     dense
                     label="Наименование банка продавца/производителя товара/работы/услуги"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите наименование банка продавца/производителя товара/работы/услуги']"
                   />
                 </div>
@@ -2919,7 +2896,6 @@
                     dense
                     label="Расчетный счет продавца/производителя товара/работы/услуги"
                     mask="#########################"
-                    lazy-rules
                     :rules="[
                       val => !!val || 'Введите расчетный счет продавца/производителя товара/работы/услуги',
                       val =>  val.length < 26 || 'Введите не более 25 цифр'
@@ -2934,7 +2910,6 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.agreementNumber"
                     dense
                     label="Номер договора с продавцом/поставщиком  товара/работы/услуги"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите номер договора с продавцом/поставщиком  товара/работы/услуги']"
                   />
                 </div>
@@ -3345,7 +3320,6 @@ export default {
     // }
     
     if (this.taskId) {
-      debugger
       this.loaderForm = true
       this.$store.commit("credits/setTaskId", this.taskId);
 
@@ -3391,7 +3365,6 @@ export default {
         this.loaderForm = false
       }
     } else if (!axios.defaults.headers.common["BPMCSRFToken"]) { // если перезагрузили страницу
-        debugger
         await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
         await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
         this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData"))) //синхронизация с preapprov
@@ -3399,7 +3372,6 @@ export default {
         this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));  
         this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
     } else {
-        debugger
         this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
         this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
     }

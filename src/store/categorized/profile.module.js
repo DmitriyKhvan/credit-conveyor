@@ -382,11 +382,9 @@ export const profile = {
           //   commit("setPreapprovData", data);
           // } 
           if (data.BODecision == null) { // кредит не оформлен
-            debugger
             commit("setPreapprovData", data);
           } 
           else if (response.data.name == "Работа с документами") {
-            debugger
             const fileList = response.data.input.find(
               i => i.label === "overdraftPrint" || i.label === "consumer_credit" || i.label === "microloan"
             )
@@ -428,7 +426,6 @@ export const profile = {
     },
 
     setPreapprovData(state, payload) {
-      debugger
        // Для корректной валидации
       payload.Customer.Document.Number = String(payload.Customer.Document.Number)
 

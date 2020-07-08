@@ -374,7 +374,21 @@
                 дохода)
               </div>
               <div class="col-9">
-                {{ Customer.MonthlyIncome.additionalIncome.incomeType }}
+                <template
+                  v-if="
+                    dictionaries.additionalIncomeSource.items.find(
+                      i =>
+                        i.value == Customer.MonthlyIncome.additionalIncome.incomeType
+                    )
+                  "
+                >
+                  {{
+                    dictionaries.additionalIncomeSource.items.find(
+                      i =>
+                        i.value == Customer.MonthlyIncome.additionalIncome.incomeType
+                    ).label
+                  }}
+                </template>
               </div>
 
               <div class="col-12 profileTitle">10 Сведения об имуществе</div>
