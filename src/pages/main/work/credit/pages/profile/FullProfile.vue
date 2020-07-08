@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="confirmCredit" persistent>
-    <q-card>
+    <q-card class="fullProfileBlock">
       <q-card-section class="row item-center justify-center">
         <div id="form">
           <div class="fullProfilePrint">
@@ -39,21 +39,35 @@
                 }}
               </div>
 
-              <div class="col-12 profileTitle">2. Паспортные данные</div>
+              <div class="col-12 profileTitle">2. Данные о документе</div>
               <div class="col-3">Вид документа</div>
-              <div class="col-9"></div>
-              <div class="col-3">Наименование документа</div>
-              <div class="col-9"></div>
+              <div class="col-9">
+                {{
+                  dictionaries.DocumentType.items.find(
+                    i => i.value == Customer.Document.documentType
+                  ).label
+                }}
+              </div>
+
+              <template  v-if="Customer.Document.documentType == 7"> 
+                <div class="col-3">Наименование документа</div>
+                <div class="col-9">
+                  {{ Customer.Document.DocumentName }}
+                </div>
+              </template>
+
               <div class="col-3">Серия</div>
               <div class="col-9">{{ Customer.Document.Series }}</div>
               <div class="col-3">Номер</div>
               <div class="col-9">{{ Customer.Document.Number }}</div>
               <div class="col-3">Дата выдачи</div>
               <div class="col-9">{{ Customer.Document.GivenDate }}</div>
-              <div class="col-3">Кем выдан документ</div>
-              <div class="col-9"></div>
+              
               <div class="col-3">Дата окончания действия документа</div>
               <div class="col-9">{{ Customer.Document.ExpirationDate }}</div>
+
+              <div class="col-3">Кем выдан документ</div>
+              <div class="col-9">{{ Customer.Document.GivenPlace }}</div>
 
               <div class="col-12 profileTitle">3. Контактная информация</div>
 
@@ -103,8 +117,17 @@
                       ).label
                     }}
                   </div>
-                  <div class="col-3">Город / район</div>
+                  
+                  <div class="col-3">Город</div>
                   <div class="col-9">{{ address.City }}</div>
+
+                  <div class="col-3">Район</div>
+                  <div class="col-9">
+                    {{
+                      getDistrict(address.Region, address.District)
+                    }}
+                  </div>
+
                   <div class="col-3">Улица / мкр.</div>
                   <div class="col-9">{{ address.Street }}</div>
                   <div class="col-3">Номер дома</div>
@@ -183,7 +206,21 @@
                   <!-- <div class="col-3">ИНН</div>
                 <div class="col-9">{{relative.inn}}</div> -->
                   <div class="col-3">Вид документа</div>
-                  <div class="col-9"></div>
+                  <div class="col-9">
+                     {{
+                        dictionaries.DocumentType.items.find(
+                          i => i.value == relative.Document.documentType
+                        ).label
+                      }}
+                  </div>
+
+                  <template  v-if="relative.Document.documentType == 7"> 
+                    <div class="col-3">Наименование документа</div>
+                    <div class="col-9">
+                      {{ relative.Document.DocumentName }}
+                    </div>
+                  </template>
+
                   <div class="col-3">Серия</div>
                   <div class="col-9">{{ relative.Document.Series }}</div>
                   <div class="col-3">Номер</div>
@@ -194,6 +231,9 @@
                   <div class="col-9">
                     {{ relative.Document.ExpirationDate }}
                   </div>
+
+                  <div class="col-3">Кем выдан документ</div>
+                  <div class="col-9">{{ relative.Document.GivenPlace }}</div>
                 </div>
               </div>
 
@@ -224,7 +264,13 @@
                 <div class="col-3">Должность</div>
                 <div class="col-9">{{ Customer.JobInfo.position }}</div>
                 <div class="col-3">Количество работников в организации</div>
-                <div class="col-9">{{ Customer.JobInfo.employeesNum }}</div>
+                <div class="col-9">
+                  {{ 
+                    dictionaries.employeesNum.items.find(
+                      i => i.value == Customer.JobInfo.employeesNum
+                    ).label
+                  }}
+                </div>
                 <div class="col-3">
                   Стаж на последнем месте работы в месяцах
                 </div>
@@ -328,7 +374,21 @@
                 дохода)
               </div>
               <div class="col-9">
-                {{ Customer.MonthlyIncome.additionalIncome.incomeType }}
+                <template
+                  v-if="
+                    dictionaries.additionalIncomeSource.items.find(
+                      i =>
+                        i.value == Customer.MonthlyIncome.additionalIncome.incomeType
+                    )
+                  "
+                >
+                  {{
+                    dictionaries.additionalIncomeSource.items.find(
+                      i =>
+                        i.value == Customer.MonthlyIncome.additionalIncome.incomeType
+                    ).label
+                  }}
+                </template>
               </div>
 
               <div class="col-12 profileTitle">10 Сведения об имуществе</div>
@@ -414,14 +474,14 @@
                     <div class="col-12 profileSubTitle">
                       Физ. лицо {{ index + 1 }}
                     </div>
-                    <div class="col-3">Отношение к клиенту</div>
+                    <!-- <div class="col-3">Отношение к клиенту</div>
                     <div class="col-9">
                       {{
                         dictionaries.ClientRelationType.items.find(
                           i => i.value == guarantee.ClientRelation
                         ).label
                       }}
-                    </div>
+                    </div> -->
                     <div class="col-3">Фамилия</div>
                     <div class="col-9">{{ guarantee.LastName }}</div>
                     <div class="col-3">Имя</div>
@@ -456,7 +516,24 @@
                       
                     </div>
 
-                    <div class="col-12 dataBlock">Паспортные данные:</div>
+                    <div class="col-12 dataBlock">Данные о документе:</div>
+
+                    <div class="col-3">Вид документа</div>
+                    <div class="col-9">
+                      {{
+                          dictionaries.DocumentType.items.find(
+                            i => i.value == guarantee.Document.documentType
+                          ).label
+                        }}
+                    </div>
+
+                    <template  v-if="guarantee.Document.documentType == 7"> 
+                      <div class="col-3">Наименование документа</div>
+                      <div class="col-9">
+                        {{ guarantee.Document.DocumentName }}
+                      </div>
+                    </template>
+
                     <div class="col-3">Серия</div>
                     <div class="col-9">{{ guarantee.Document.Series }}</div>
                     <div class="col-3">Номер</div>
@@ -467,11 +544,13 @@
                     <div class="col-9">
                       {{ guarantee.Document.ExpirationDate }}
                     </div>
+                    <div class="col-3">Кем выдан документ</div>
+                    <div class="col-9">{{ guarantee.Document.GivenPlace }}</div>
 
                     <div class="col-12 dataBlock">Адрес:</div>
                     <div class="col-3">Индекс</div>
                     <div class="col-9">{{ guarantee.Address.PostalCode }}</div>
-                    <div class="col-3">Регион/ область</div>
+                    <div class="col-3">Регион/область</div>
                     <div class="col-9">
                       {{
                         dictionaries.Region.items.find(
@@ -481,8 +560,11 @@
                     </div>
                     <div class="col-3">Город</div>
                     <div class="col-9">{{ guarantee.Address.City }}</div>
+                    
                     <div class="col-3">Район</div>
-                    <div class="col-9">{{ guarantee.Address.District }}</div>
+                    <div class="col-9">
+                      {{ getDistrict(guarantee.Address.Region, guarantee.Address.District) }}
+                    </div>
                     <div class="col-3">Улица / мкр.</div>
                     <div class="col-9">{{ guarantee.Address.Street }}</div>
                     <div class="col-3">Номер дома</div>
@@ -534,7 +616,9 @@
                     <div class="col-3">Город</div>
                     <div class="col-9">{{ guarantee.Address.City }}</div>
                     <div class="col-3">Район</div>
-                    <div class="col-9">{{ guarantee.Address.District }}</div>
+                    <div class="col-9">
+                      {{ getDistrict(guarantee.Address.Region, guarantee.Address.District) }}
+                    </div>
                     <div class="col-3">Улица / мкр.</div>
                     <div class="col-9">{{ guarantee.Address.Street }}</div>
                     <div class="col-3">Номер дома</div>
@@ -581,8 +665,8 @@
               <div class="col-12 profileTitle">
                 12. Сведения о запрашиваемом кредите
               </div>
-              <div class="col-3">Вид кредита</div>
-              <div class="col-9"></div>
+              <!-- <div class="col-3">Вид кредита</div>
+              <div class="col-9"></div> -->
               <div class="col-3">Кредитный продукт</div>
               <div class="col-9">
                 {{
@@ -595,7 +679,9 @@
               <div class="col-9">{{ fullProfile.LoanInfo.Sum }}</div>
               <div class="col-3">Валюта</div>
               <div class="col-9">{{ fullProfile.LoanInfo.Currency }}</div>
-              <div class="col-3">Тип пошагового кредита</div>
+
+              <template v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3">
+              <div class="col-3">Тип графика гашения</div>
               <div class="col-9">
 
                 <template
@@ -610,72 +696,79 @@
                 }}
                 </template>
               </div>
+              </template>
+
+
                <div class="col-3">Процентная ставка по кредиту (максимальная)</div>
               <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
 
               <div class="col-3">Процентная ставка по кредиту (минимальная)</div>
               <div class="col-9">{{ fullProfile.LoanInfo.MinInitialPaymentPercent }}</div>
 
-              <div class="col-3">Льготный период по погашению кредита (число месяцев)</div>
-              <div class="col-9">
-                {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }}
-              </div>
-             
-              <div class="col-3">Удобная срок погашения (число месяцев)</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}</div>
+              <template v-if="!!fullProfile.LoanInfo.LoanProduct">
+                <div class="col-3">Льготный период по погашению кредита (число месяцев)</div>
+                <div class="col-9">
+                  {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }}
+                </div>
+                </template>
+              
+                <div class="col-3">Удобная срок погашения (число месяцев)</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}</div>
 
-              <div class="col-3">Максимальное количество месяцев на кредит</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.MaxTermInMonths }}</div>
+                <div class="col-3">Максимальное количество месяцев на кредит</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.MaxTermInMonths }}</div>
 
-              <div class="col-3">Минимальное количество месяцев на кредит</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.MinTermInMonths }}</div>
+                <div class="col-3">Минимальное количество месяцев на кредит</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.MinTermInMonths }}</div>
 
-              <div class="col-3">Первоначальный взнос</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.InitialPayment }}</div>
+                <div class="col-3">Первоначальный взнос</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.InitialPayment }}</div>
 
-              <div class="col-3">Процент первоначального взноса (максимальный)</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
+                <div class="col-3">Процент первоначального взноса (максимальный)</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
 
-              <div class="col-3">Процент первоначального взноса (минимальный)</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.MinInitialPaymentPercent }}</div>
+                <div class="col-3">Процент первоначального взноса (минимальный)</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.MinInitialPaymentPercent }}</div>
 
-              <div class="col-3">Цель кредитования</div>
-              <div class="col-9">
-                {{
-                  dictionaries.LoanPurpose.items.find(
-                    i => i.value == fullProfile.LoanInfo.LoanPurpose
-                  ).label
-                }}
-              </div>
+                <div class="col-3">Цель кредитования</div>
+                <div class="col-9">
+                  {{
+                    dictionaries.LoanPurpose.items.find(
+                      i => i.value == fullProfile.LoanInfo.LoanPurpose
+                    ).label
+                  }}
+                </div>
 
-              <div class="col-3">Источник финансирования</div>
-              <div class="col-9">
-                {{
-                  dictionaries.FinancialSources.items.find(
-                    i => i.value == fullProfile.LoanInfo.FundingSource
-                  ).label
-                }}
-              </div>
+                <div class="col-3">Источник финансирования</div>
+                <div class="col-9">
+                  {{
+                    dictionaries.FinancialSources.items.find(
+                      i => i.value == fullProfile.LoanInfo.FundingSource
+                    ).label
+                  }}
+                </div>
 
-              <div class="col-3">Наименование продавца/производителя товара/работы/услуги</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameProduction }}</div>
+                <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+                  <div class="col-3">Наименование продавца/производителя товара/работы/услуги</div>
+                  <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameProduction }}</div>
 
-              <div class="col-3">Наименование товара/работы/услуги</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameService }}</div>
+                  <div class="col-3">Наименование товара/работы/услуги</div>
+                  <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameService }}</div>
 
-              <div class="col-3">
-                Наименование банка продавца/производителя товара/работы/услуги
-              </div>
-              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameBankProd }}</div>
+                  <div class="col-3">
+                    Наименование банка продавца/производителя товара/работы/услуги
+                  </div>
+                  <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.nameBankProd }}</div>
 
-              <div class="col-3">Расчетный счет продавца/производителя товара/работы/услуги</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.billProd }}</div>
+                  <div class="col-3">Расчетный счет продавца/производителя товара/работы/услуги</div>
+                  <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.billProd }}</div>
 
-              <div class="col-3">Номер договора с продавцом/поставщиком  товара/работы/услуги</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.agreementNumber }}</div>
+                  <div class="col-3">Номер договора с продавцом/поставщиком  товара/работы/услуги</div>
+                  <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.agreementNumber }}</div>
 
-              <div class="col-3">Дата договора с продавцом/поставщиком товара/работы/услуги</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.agreementDate }}</div>
+                  <div class="col-3">Дата договора с продавцом/поставщиком товара/работы/услуги</div>
+                  <div class="col-9">{{ fullProfile.LoanInfo.consumerLoan.agreementDate }}</div>
+                </template>
              
               <div class="col-3">В рамках специальной программы</div>
               <div class="col-9"></div>
@@ -870,7 +963,7 @@ export default {
       WinPrint.print();
       //WinPrint.close();
       //prtContent.innerHTML = strOldOne;
-    }
+    },
 
     // getLabelDic() {
     //   const item = dictionaries.Gender.items.find(i => i.value === Customer.Gender)
@@ -878,15 +971,32 @@ export default {
     //     return item.label
     //   }
     // }
+    getDistrict(region, district) {
+      // console.log(region, district)
+      // return {region, district}
+      if (district) {
+        const regionId = this.dictionaries.Region.items.find(
+          i => i.value == region
+        ).region_id
+
+        return this.dictionaries.Districts.items[0][regionId].items.find(
+          i => i.value == district
+        ).label
+      }
+    }
   }
 };
 </script>
 
 <style lang="scss">
+.fullProfileBlock {
+  max-width: 70%!important;
+}
+
 .fullProfilePrint {
-  .q-dialog__inner--minimized > div {
-    max-width: 50%;
-  }
+  // .q-dialog__inner--minimized > div {
+  //   max-width: 50%;
+  // }
 
   // .fullFormTitle {
   //   margin: 20px 0;
@@ -905,6 +1015,11 @@ export default {
 
   .row > .col-3 {
     border-right: none;
+  }
+
+  .row > .col-9 {
+    display: flex;
+    align-items: center;
   }
 
   .row > div:not(.profileTitle) {

@@ -138,6 +138,16 @@ export default class BpmService {
     return responce.data;
   };
 
+  removeFiles = async (data) => {
+    const responce = await axios({
+      method: "delete",
+      url: `${this._baseUrl}/file/`,
+      data
+    });
+
+    return responce.data
+  };
+
   creatFile = async (data) => {
     const responce = await axios({
       method: "post",
@@ -157,15 +167,5 @@ export default class BpmService {
 
     return responce.data;
   };
-
-  // getDataFile = async () => {
-  //   const responce = await axios({
-  //     method: "get",
-  //     url: 
-  //     data
-  //   });
-
-  //   return responce.data
-  // };
 
 }

@@ -5,7 +5,18 @@
         <q-card-section class="column items-start">
           <div class="preApprovalBlock__title">
             <div class="text-h6">Заявка на кредит</div>
-            <q-btn class="print" icon="print" @click="printFile()" disable/>
+            <q-btn 
+              flat 
+              class="print" 
+              icon="print" 
+              @click="printFile(credits.infoList)" 
+              :loading="loading"
+            >
+              <template v-slot:loading>
+                <q-spinner-facebook />
+              </template>
+              <q-tooltip>Распечатать</q-tooltip>
+            </q-btn>
           </div>
           <div class="creditBackground">
             <h4 class="personName">
@@ -36,38 +47,42 @@
               <div class="text-h6">Причина отказа:</div>
 
               <form @submit.prevent="failureCredit">
-                  <q-field
-                    ref="toggle"
-                    :value="!!selection.length"
-                    :rules="[val => !!val || 'выберите причину']"
-                  >
-
+                <q-field
+                  ref="toggle"
+                  :value="!!selection.length"
+                  :rules="[val => !!val || 'выберите причину']"
+                >
                   <div class="row">
-                    <div 
+                    <div
                       class="col-6"
-                      v-for="(reson, index) of this.credits.reasonsList.slice(0, Math.round(this.credits.reasonsList.length / 2))"
+                      v-for="(reson, index) of this.credits.reasonsList.slice(
+                        0,
+                        Math.round(this.credits.reasonsList.length / 2)
+                      )"
                       :key="reson.value"
                     >
                       <q-checkbox
                         v-model="selection"
                         :val="reson.value"
-                        :label="reson.name"
+                        :label="reson.label"
                       />
                     </div>
 
-                    <div 
+                    <div
                       class="col-6"
-                      v-for="(reson, index) of this.credits.reasonsList.slice(Math.round(this.credits.reasonsList.length / 2))"
+                      v-for="(reson, index) of this.credits.reasonsList.slice(
+                        Math.round(this.credits.reasonsList.length / 2)
+                      )"
                       :key="reson.value"
                     >
                       <q-checkbox
                         v-model="selection"
                         :val="reson.value"
-                        :label="reson.name"
+                        :label="reson.label"
                       />
                     </div>
-                    </div>
-                  </q-field>
+                  </div>
+                </q-field>
 
                 <q-card-actions class="row justify-center">
                   <q-btn label="Продолжить" color="green" type="submit" />
@@ -104,17 +119,24 @@
   </div>
 </template>
 <script>
+import printJS from "print-js";
 import formatNumber from "../../filters/format_number.js";
 import CommonUtils from "@/shared/utils/CommonUtils";
 // import LoaderFullScreen from "@/components/LoaderFullScreen";
-import printJS from "print-js";
 
 export default {
   data() {
     return {
       failureCreditReason: false,
       selection: [],
-      model: false
+      model: false,
+      loading: false,
+
+      fileData: {
+        type: "info_list",
+        lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
+        data: {}
+      },
     };
   },
 
@@ -137,35 +159,49 @@ export default {
   },
   methods: {
     async successCredit(val) {
-      console.log(this.$store)
+      console.log(this.$store);
       this.$store.commit("credits/toggleConfirm", val);
-      this.$emit('toggleLoaderForm', true)
-        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
-        try {
-          const response = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
-          const dictionaries = (response.nextTask.input.find(i => i.label === "inputDictionaries")).data
+      this.$emit("toggleLoaderForm", true);
+      console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
+      try {
+        const response = await this.$store.dispatch(
+          "credits/confirmationCredit",
+          this.credits.confirmCreditData
+        );
 
-          console.log('response', response)
-          if (dictionaries) {
-            console.log('dic', JSON.stringify(dictionaries, null, 2))
-            this.$store.commit("profile/setDictionaries", dictionaries)
-            
-            this.$router.push("profile");
-            this.$emit('toggleLoaderForm', false)
-          } else {
-            throw 'Data is null'
-          }
+        console.log("response", response);
+        if (response.nextTask.input && response.nextTask.input.length) {
           
-        } catch (error) {
-          const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("credits/setMessage", errorMessage);
-          sessionStorage.clear();
-          this.$router.push("/work/credit")
+          const data = response.nextTask.input.find(
+            i => i.label === "application"
+          ).data;
+          const dictionaries = response.nextTask.input.find(
+            i => i.label === "inputDictionaries"
+          ).data;
+
+          console.log("dic", JSON.stringify(dictionaries, null, 2));
+
+          this.$store.commit("profile/setPreapprovData", data);
+          this.$store.commit("profile/setDictionaries", dictionaries);
+
+          sessionStorage.setItem("preapprovData", JSON.stringify(data));
+          sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
+          
+          this.$router.push("profile");
+          this.$emit("toggleLoaderForm", false);
+        } else {
+          throw "Data is null";
         }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        this.$store.commit("credits/setMessage", errorMessage);
+        sessionStorage.clear();
+        this.$router.push("/work/credit");
+      }
     },
-    
+
     async failureCredit() {
-      this.$emit('toggleLoaderFullScreen', true)
+      this.$emit("toggleLoaderFullScreen", true);
 
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
@@ -175,40 +211,64 @@ export default {
         this.$store.commit("credits/toggleDisableInput", false);
         this.$store.commit("credits/toggleConfirm", false);
 
-        this.credits.confirmCreditData.output[0].data = false
-        this.credits.confirmCreditData.output[1].data = this.selection
-    
-        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2))
+        this.credits.confirmCreditData.output[0].data = false;
+        this.credits.confirmCreditData.output[1].data = this.selection;
+
+        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
         try {
-          const res = await this.$store.dispatch('credits/confirmationCredit', this.credits.confirmCreditData)
-          console.log('res', res)
+          const res = await this.$store.dispatch(
+            "credits/confirmationCredit",
+            this.credits.confirmCreditData
+          );
+          console.log("res", res);
           if (res.requestedTask.state === "completed") {
             this.$store.commit("credits/setMessage", "Credit failure");
-            sessionStorage.clear()
+            sessionStorage.clear();
             this.$router.push("/work/credit");
-            this.$emit('toggleLoaderFullScreen', true)
+            this.$emit("toggleLoaderFullScreen", true);
           } else {
-            throw 'Task do not completed'
+            throw "Task do not completed";
           }
         } catch (error) {
           const errorMessage = CommonUtils.filterServerError(error);
           this.$store.commit("credits/setMessage", errorMessage);
           sessionStorage.clear();
-          this.$router.push("/work/credit")
+          this.$router.push("/work/credit");
         }
       }
     },
 
-    async printFile() {
+    async printFile(fileData) {
+      this.loading = true
+      let file = null
+      this.fileData.data = fileData
       try {
-        const url = await this.$store.dispatch(
-          "credits/getFile",
-          this.fileData
-        );
-        printJS(url);
-        window.URL.revokeObjectURL(url);
-      } catch (error) {}
-    },
+        console.log(JSON.stringify(this.fileData, null, 2))
+
+        if (this.fileData.idFile) {
+            file = await this.$store.dispatch(
+            "credits/getFile",
+            this.fileData.idFile
+          );
+        } else {
+            file = await this.$store.dispatch(
+            "credits/getFile",
+            this.fileData
+          );
+
+          this.fileData.idFile = file.id
+        }
+
+        console.log('file', file)
+
+        printJS(file.url);
+        window.URL.revokeObjectURL(file.url);
+
+        this.loading = false
+      } catch(error) {
+        this.loading = false
+      }
+    }
   },
 
   filters: {
