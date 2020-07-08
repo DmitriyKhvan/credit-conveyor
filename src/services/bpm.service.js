@@ -4,9 +4,9 @@ export default class BpmService {
   // _baseUrlLocal = "http://10.8.7.71:8070/bpm"
   _personalUrl = "http://10.8.8.70:4000";
   _digIdUrl = "http://localhost:50000/api/Identification";
-  // _baseUrl = "http://10.8.8.90:8070" //dev
+  _baseUrl = "http://10.8.8.90:8070" //dev
   // _baseUrl = "http://10.1.4.10:8070" //local
-  _baseUrl = "http://10.8.8.86:8070"; //prod
+  // _baseUrl = "http://10.8.8.86:8070"; //prod
 
   getBPMToken = async () => {
     const responce = await axios({
@@ -138,11 +138,10 @@ export default class BpmService {
     return responce.data;
   };
 
-  removeFiles = async (data) => {
+  removeFiles = async (id) => {
     const responce = await axios({
       method: "delete",
-      url: `${this._baseUrl}/file/`,
-      data
+      url: `${this._baseUrl}/file/edocument/${id}`
     });
 
     return responce.data

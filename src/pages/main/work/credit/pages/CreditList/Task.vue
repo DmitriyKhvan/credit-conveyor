@@ -332,11 +332,17 @@
               <div class="row rowForm">
                 <div class="col-3 field">Вид документа</div>
                 <div class="col-9 data">
-                  {{
+                  <template v-if="
                     dictionaries.DocumentType.items.find(
                       i => i.value == relative.Document.documentType
-                    ).label
-                  }}
+                    )
+                  ">
+                    {{
+                      dictionaries.DocumentType.items.find(
+                        i => i.value == relative.Document.documentType
+                      ).label
+                    }}
+                  </template>
                 </div>
               </div>
 
@@ -1502,6 +1508,7 @@ export default {
       // if (this.$refs.reson.hasError || this.$refs.comment.hasError) {
       //   this.formHasError = true;
       // } else {
+      this.$refs.comment.validate();
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {

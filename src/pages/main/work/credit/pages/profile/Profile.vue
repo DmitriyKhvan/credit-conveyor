@@ -4265,13 +4265,21 @@ export default {
       this.filesAll.splice(idx, 1);
     },
 
-    removeUploadFile(payload) {
-      console.log('idFile', this.filesAll[payload.index].id)
-      //const response = this.$store.dispatch("profile/removeFiles", this.fileAll[idx].id)
+    async removeUploadFile(payload) {
+      try {
+        console.log('idFile', this.filesAll[payload.index].id)
+        const idFile = this.filesAll[payload.index].id
+        const response = await this.$store.dispatch("profile/removeFiles", idFile)
 
-      // if (response) {
-      //   this.filesAll.splice(idx, 1);
-      // }
+        console.log('delFile', response)
+        if (response == "OK") {
+          this.filesAll.splice([payload.index], 1);
+          const idx = this.fullProfile.AttachedDocuments.items.findIndex(i => i.id == idFile)
+          if (idx != -1) {
+            this.fullProfile.AttachedDocuments.items.splice(idx, 1)
+          }
+        }
+      } catch(error){}
     },
 
     addFiles() {
