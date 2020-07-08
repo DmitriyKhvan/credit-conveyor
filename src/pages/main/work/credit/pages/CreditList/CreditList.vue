@@ -645,7 +645,7 @@ export default {
     },
 
     async creditSign(taskId) {
-      this.$emit("renderComponent", 1) // для ререндеринга списка заявок
+      // this.$emit("renderComponent", 1) // для ререндеринга списка заявок
       this.loaderFullScreen = true;
       this.$store.commit("credits/setTaskId", taskId);
       const confirmCreditData = {

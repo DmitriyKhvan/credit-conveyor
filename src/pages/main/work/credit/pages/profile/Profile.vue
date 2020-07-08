@@ -2925,7 +2925,7 @@
                     mask="##.##.####"
                     :rules="[
                       val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
-                      val => msecond(val) < msecond(currentDate) || 
+                      val => msecond(val) <= msecond(currentDate) || 
                       'Неверная дата'
                     ]"
                   >
@@ -3499,6 +3499,8 @@ export default {
           this.countRelativeDocumentName++
           // console.log('relativesDocumentDocumentName', this.$refs.relativesDocumentDocumentName)
           validFilter(this.$refs, "relativesDocumentDocumentNameValid", "relativesDocumentDocumentName", true, this.countRelativeDocumentName)
+        } else {
+          validItems(this.$refs, "relativesDocumentDocumentNameValid");
         }
       })
 
@@ -3595,7 +3597,9 @@ export default {
           if (i.Document.documentType == 7) {
             this.countGuaranteeDocumentName++
             validFilter(this.$refs, "guaranteesDocumentDocumentNameValid" ,"guaranteesDocumentDocumentName", true, this.countGuaranteeDocumentName);
-          } 
+          } else {
+            validItems(this.$refs, "guaranteesDocumentDocumentNameValid");
+          }
         })
 
         validFilter(this.$refs, 

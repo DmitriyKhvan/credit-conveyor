@@ -426,6 +426,7 @@ export const profile = {
     },
 
     setPreapprovData(state, payload) {
+      state.fileList = []
        // Для корректной валидации
       payload.Customer.Document.Number = String(payload.Customer.Document.Number)
 
