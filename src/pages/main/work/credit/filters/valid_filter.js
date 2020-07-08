@@ -15,13 +15,32 @@ function validItems(refs, itemsValid, itemValid = true) {
   }
 }
 
-function validFilter(refs, itemsValid, items, itemValid = true) {
-  for (let item of refs[items]) {
-    if (!item.validate()) {
-      //console.log(item.computedErrorMessage)
-      itemValid = false;
+// function validFilter(refs, itemsValid, items, itemValid = true) {
+//   for (let item of refs[items]) {
+//     if (!item.validate()) {
+//       //console.log(item.computedErrorMessage)
+//       itemValid = false;
+//     }
+//   }
+  
+//   validItems(refs, itemsValid, itemValid);
+// }
+
+function validFilter(refs, itemsValid, items, itemValid = true, idx = -1) {
+  // console.log(idx, items)
+
+  if (idx == -1) {
+    for (let item of refs[items]) {
+      if (!item.validate()) {
+        //console.log(item.computedErrorMessage)
+        itemValid = false;
+      }
     }
+  } else if (!refs[items][idx].validate()) {
+    itemValid = false
   }
+  
+  
   validItems(refs, itemsValid, itemValid);
 }
 

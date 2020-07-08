@@ -272,6 +272,7 @@
                       'Поля должно быт заполнено'
                   ]"
                 /> -->
+                 
                 <q-input
                   ref="expense"
                   square
@@ -326,6 +327,19 @@
                     emit-value
                     map-options
                   />
+
+                  <q-select
+                    ref="loan_purpose"
+                    square
+                    outlined
+                    v-model="personalData.loan_purpose"
+                    :options="options.loanPurpose"
+                    dense
+                    label="Цель кредитования"
+                    emit-value
+                    map-options
+                    :rules="[val => !!val || 'Выберите цель кредитования']"
+                  />
                 </div>
               </div>
             </div>
@@ -377,37 +391,40 @@ export default {
         family: [],
         //наличие дополнительного дохода
         additIncSourOption: [
-          {
-            label: "Работа по найму",
-            value: 11
-          },
-          {
-            label: "Аренда движимого имущества",
-            value: 12
-          },
-          {
-            label: "Аренда недвижимого имущества",
-            value: 13
-          },
-          {
-            label: "Предпринимательская деятельность",
-            value: 14
-          },
-          {
-            label: "Дивиденды",
-            value: 15
-          },
-          {
-            label: "Другое",
-            value: 16
-          }
+          // {
+          //   label: "Работа по найму",
+          //   value: 11
+          // },
+          // {
+          //   label: "Аренда движимого имущества",
+          //   value: 12
+          // },
+          // {
+          //   label: "Аренда недвижимого имущества",
+          //   value: 13
+          // },
+          // {
+          //   label: "Предпринимательская деятельность",
+          //   value: 14
+          // },
+          // {
+          //   label: "Дивиденды",
+          //   value: 15
+          // },
+          // {
+          //   label: "Другое",
+          //   value: 16
+          // }
         ], 
 
         //источник дополнительного дохода
         typeCredits: [],
 
         //тип графика гашения
-        typeStepCredits: []
+        typeStepCredits: [],
+
+        // цель кредитования
+        loanPurpose: []
       }
     };
   },
@@ -436,13 +453,33 @@ export default {
           }
         })
 
+      this.options.additIncSourOption = 
+        (process.userTaskCreditDetailed.input
+        .find(i => i.label == "incomeSource")).data.items
+        .map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
+
+      this.options.loanPurpose = 
+        (process.userTaskCreditDetailed.input
+        .find(i => i.label == "loanPupose")).data.items
+        .map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
+
       console.log('family', this.options.family)
 
       const loan_product_listt = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
       const loan_product_dict = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_dict")
 
       loan_product_listt.data.items.forEach(i => {
-         const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
+        const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
         const credits = {
           label: i.label,
           value: Number(i.value),
@@ -562,6 +599,7 @@ export default {
       this.$refs.income.validate();
       this.$refs.expense.validate();
       this.$refs.otherExpenses.validate();
+      this.$refs.loan_purpose.validate();
 
       if (
         this.$refs.surname.hasError ||
@@ -576,7 +614,8 @@ export default {
         this.$refs.familyStatus.hasError ||
         this.$refs.income.hasError ||
         this.$refs.expense.hasError ||
-        this.$refs.otherExpenses.hasError
+        this.$refs.otherExpenses.hasError ||
+        this.$refs.loan_purpose.hasError
       ) {
         this.formHasError = true;
       } else {
@@ -603,9 +642,11 @@ export default {
           typeStepCredit,
           typeCredit,
           income,
+          loan_purpose,
           otherExpenses,
           expense,
           externalIncomeSize,
+          additionalIncomeSource,
           name,
           surname,
           mname,
@@ -630,13 +671,15 @@ export default {
                   statusId: Number(familyStatus),
                   childrenCount: Number(childrenCount)
                 },
-                payment_id: Number(typeStepCredit),
+                //payment_id: Number(typeStepCredit),
                 loan_product_id: Number(typeCredit),
                 finance: {
+                  loan_purpose, // цель кредитования
                   incomingOther: externalIncomeSize, //доп. доход
                   expensesOther: otherExpenses, //др. переод. расходы
                   expensesPeriodic: expense, //переод. расходы
-                  incomingConfirm: income //ежем. доход
+                  incomingConfirm: income, //ежем. доход
+                  incomeType: additionalIncomeSource //тип доп. дохода
                 },
                 customer: {
                   firstName: name,
@@ -646,8 +689,8 @@ export default {
                     number: Number(passport.slice(2)),
                     series: passport.slice(0, 2)
                   },
-                  mainPhone: phone.replace(/[\s+()]/g, ""),
-                  tin: Number(inn),
+                  mainPhone: phone.replace(/[\s()]/g, ""),
+                  tin: inn,
                   pinpp
                 }
               }
@@ -655,6 +698,7 @@ export default {
             {
               name: "creditProduct",
               data: {
+                repaymentType: Number(typeStepCredit),
                 spouseCost: Number(spouseCost),
                 childCost: Number(childCost),
                 creditTerm: Number(periodCredit),
@@ -669,23 +713,18 @@ export default {
         try {
          
           const resCredit = await this.$store.dispatch(
-            "credits/calculationCredit",
+            "credits/confirmationCredit",
             data
           );
 
           console.log("resCredit", resCredit);
 
-          this.credits.reasonsList = resCredit.nextTask.input.reasonsList;
-
-          const resp = {
-            income: resCredit.nextTask.input.incoming, // Сколько дохода учитываем
-            expense: resCredit.nextTask.input.expenses, // Сколько расходов
-            maxPayment: resCredit.nextTask.input.payment, // Сколько может платить в месяц
-            maxSum: resCredit.nextTask.input.sum // Сколько максимум кредита можем выдать
-          };
-
+          const preApproval = resCredit.nextTask.input.find(i => i.label == 'preApproval').data
+          this.credits.infoList = resCredit.nextTask.input.find(i => i.label == 'InfoList').data
+          this.credits.reasonsList = resCredit.nextTask.input.find(i => i.label == 'reasons_list').data.items;
+         
           this.$store.commit("credits/toggleConfirm", true);
-          this.$store.commit("credits/creditConfirm", resp);
+          this.$store.commit("credits/creditConfirm", preApproval);
           
           this.loaderFullScreen = false;
         } catch (e) {

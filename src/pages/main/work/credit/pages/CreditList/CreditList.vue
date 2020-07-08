@@ -102,7 +102,7 @@
                 </template>
               </q-input>
             </th>
-            <th class="text-left"></th>
+            <th v-if="userRole === 'CS'" class="text-left"></th>
           </tr>
 
           <tr class="titleApplication">
@@ -152,7 +152,7 @@
                 Дата
               </button>
             </th>
-            <th class="text-left"></th>
+            <th v-if="userRole === 'CS'" class="text-left"></th>
           </tr>
         </thead>
         <tbody v-if="loaderList">
@@ -328,7 +328,7 @@
 
             <td class="text-left date applicationRow">
               <template v-if="userRole === 'CS'">
-                {{ credit.date }}
+                {{ credit.date | formatDate('datetime') }}
               </template>
               <router-link
                 v-else
@@ -342,44 +342,58 @@
                     filialName: credit.filialName
                   }
                 }"
-                >{{ credit.date }}</router-link
+                >{{ credit.date | formatDate('datetime')}}</router-link
               >
             </td>
 
-            <td class="text-left print">
+            <td v-if="userRole === 'CS'" class="text-left print">
               <div class="text-blue q-gutter-md">
-                <!-- <q-btn 
-                  icon="print" 
-                  @click="printFile(credit.taskId)" 
-                  :loading="loadings1"
-                >
-                 {{loadings}}
-                  <template v-slot:loading>
-                    <q-spinner-facebook />
-                  </template>
-                </q-btn> -->
-
-                <q-btn 
-                  :disable="disable"
-                  icon="print" 
-                  @click="printFile(credit.taskId)" 
-                />
                 
-                <q-btn 
-                  :disable="disable"
-                  icon="cloud_download" 
-                  @click="downloadFile(credit.taskId)" 
-                />
+                <!-- <template v-if="userRole === 'CS'"> -->
+                  <q-btn 
+                    :disable="disable"
+                    icon="print" 
+                    @click="printFile(credit.taskId, index)" 
+                    :loading="loadings[index]"
+                  >
+                  <!-- {{ credits[index] }} -->
+                    <template v-slot:loading>
+                      <q-spinner-facebook />
+                    </template>
+                    <q-tooltip>Распечатать</q-tooltip>
+                  </q-btn>
 
-                <template v-if="userRole === 'CS'">
+                  <!-- <q-btn 
+                    :disable="disable"
+                    icon="print" 
+                    @click="printFile(credit.taskId)" 
+                  /> -->
+                  
+                  <!-- <q-btn 
+                    :disable="disable"
+                    icon="cloud_download" 
+                    @click="downloadFile(credit.taskId)" 
+                    :loading="loadings[index]"
+                  >
+                    <template v-slot:loading>
+                      <q-spinner-facebook />
+                    </template>
+                    <q-tooltip>Скачать</q-tooltip>
+                  </q-btn> -->
+
+                  <!-- <q-btn 
+                    :disable="disable"
+                    icon="cloud_download" 
+                    @click="downloadFile(credit.taskId)" 
+                  /> -->
+
                   <q-btn
-                    disable
                     class="full-width"
                     label="Подписать"
                     color="green"
                     @click="creditSign(credit.taskId)"
                   />
-                </template>
+                <!-- </template> -->
               </div>
             </td>
           </tr>
@@ -387,54 +401,107 @@
       </q-markup-table>
       <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
     </div>
+
+    <div class="q-pa-lg flex justify-end items-center pagination">
+      <span class="pagination__title">Строк на странице: </span>
+      <q-select 
+        class="pagination__count"
+        borderless
+        v-model="countRow" 
+        :options="countRowList" 
+        emit-value
+        map-options
+      />
+
+      <q-pagination
+        v-model="current"
+        color="primary"
+        :max="max"
+        :max-pages="maxPage"
+        :boundary-numbers="true"
+        @click="pagination()"
+      >
+      </q-pagination>
+    </div>
+
+    <appLoaderFullScreen v-if="loaderFullScreen" />
+
+    <!-- {{loadings}} -->
   </div>
 </template>
 
 <script>
 import printJS from "print-js";
+import CommonUtils from "@/shared/utils/CommonUtils";
+import formatDate from "../../filters/formatDate"
 import Loader from "@/components/Loader";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 export default {
+  props: ['loaderList'],
   data() {
     return {
       // userRole: this.$store.getters.userRole,
-      loaderList: false,
-      // loadings: [], // кнопки распечатать
+      // loadings: this.$store.getters["credits/loadings"], // кнопки распечатать
+      current: 1,
+      countRow: 10,
+      creditList: 100,
+      max: 10,
+      maxPage: 6,
+      countRowList: [
+        {
+          label: 10,
+          value: 10,
+        },
+        {
+          label: 20,
+          value: 20,
+        },
+        {
+          label: 30,
+          value: 30,
+        },
+        {
+          label: "Все",
+          value: "All",
+        }
+      ],
       loadings1: false,
       disable: false,
+      loaderFullScreen: false,
       fileData: {
         type: "protocol",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
         data: {
-          protocol_initiative_unit: "",
-          protocol_client_inn: "",
-          protocol_lending_currency: "",
-          protocol_loan_amount: "",
-          protocol_repayment_type: "",
-          protocol_customer_name: "",
-          protocol_term: "",
-          protocol_grace_period: "",
-          protocol_finance_source: "",
-          protocol_loan_product: "",
-          protocol_loan_type: "",
-          protocol_percent_rate: "",
-          protocol_credit_rating: "",
-          protocol_request_number: "",
-          protocol_loan_specialist_position: "",
-          protocol_loan_specialist_fio: "",
-          protocol_number: "",
-          protocol_filial: "",
-          protocol_committee_decision_number: "",
-          protocol_committee_decision_date: "",
-          protocol_guarantor_name: "",
-          protocol_guarantor_value: "",
-          protocol_insurance_name: "",
-          protocol_insurance_value: "",
-          protocol_additional_name: "",
-          protocol_additional_value: "",
-          protocol_special_name: "",
-          protocol_special_value: "",
-          protocol_secretary_fio: ""
+          // protocol_initiative_unit: "",
+          // protocol_client_inn: "",
+          // protocol_lending_currency: "",
+          // protocol_loan_amount: "",
+          // protocol_repayment_type: "",
+          // protocol_customer_name: "",
+          // protocol_term: "",
+          // protocol_grace_period: "",
+          // protocol_finance_source: "",
+          // protocol_loan_product: "",
+          // protocol_loan_type: "",
+          // protocol_percent_rate: "",
+          // protocol_credit_rating: "",
+          // protocol_request_number: "",
+          // protocol_loan_specialist_position: "",
+          // protocol_loan_specialist_fio: "",
+          // protocol_number: "",
+          // protocol_filial: "",
+          // protocol_committee_decision_number: "",
+          // protocol_committee_decision_date: "",
+          // protocol_guarantor_name: "",
+          // protocol_guarantor_value: "",
+          // protocol_insurance_name: "",
+          // protocol_insurance_value: "",
+          // protocol_additional_name: "",
+          // protocol_additional_value: "",
+          // protocol_special_name: "",
+          // protocol_special_value: "",
+          // protocol_secretary_fio: ""
         }
       },
       // link: null,
@@ -446,7 +513,7 @@ export default {
       taskName: "",
       taskStatus: "",
       date: "",
-      sort: "",
+      //sort: "",
       options: {
         taskName: [
           "Ввод данных по заявке",
@@ -460,7 +527,7 @@ export default {
           "Голосование КК",
           "Формирование выписки"
         ],
-        sort: ["По убыванию", "По возрастанию"]
+        //sort: ["По убыванию", "По возрастанию"]
       }
     };
   },
@@ -507,7 +574,7 @@ export default {
         }
 
         if (this.date.length > 0) {
-          conditions.push(task.date.indexOf(this.date) > -1);
+          conditions.push(formatDate(task.date, 'datetime').indexOf(this.date) > -1);
         }
 
         return conditions.every(condition => condition);
@@ -517,20 +584,27 @@ export default {
     // loadings() {
     //   const loadings = []
     //   for (let i = 0; i < this.$store.getters["credits/creditTasks"].length; i++) {
-    //     debugger
     //     loadings[i] = false
     //   }
     //   console.log('loading', this.loadings)
     //   return loadings
     // },
 
+    loadings() {
+      return this.$store.getters["credits/loadings"] 
+    },
+
     userRole() {
       return this.$store.getters["credits/userRole"];
     }
   },
+  watch: {
+    
+  },
   methods: {
     toggleFilter(event) {
       const idx = event.getAttribute("idx");
+      console.log('idx', idx)
       for (let item of document.querySelectorAll(".active")) {
         if (item !== event) {
           item.classList.remove("active");
@@ -571,6 +645,8 @@ export default {
     },
 
     async creditSign(taskId) {
+      this.$emit("renderComponent", 1) // для ререндеринга списка заявок
+      this.loaderFullScreen = true;
       this.$store.commit("credits/setTaskId", taskId);
       const confirmCreditData = {
         output: [
@@ -581,11 +657,26 @@ export default {
         ]
       };
       try {
-        await this.$store.dispatch(
+        const res = await this.$store.dispatch(
           "credits/confirmationCredit",
           confirmCreditData
         );
-      } catch (error) {}
+
+        console.log('response', JSON.stringify(res, null, 2))
+
+        if(res.nextTask.name) {
+          this.loaderFullScreen = false;
+          this.$store.commit("credits/setMessage", "Credit signed");
+        } else {
+          throw "Data is null";
+        }
+      } catch (error) {
+        this.loaderFullScreen = false;
+        const errorMessage = CommonUtils.filterServerError(error);
+        this.$store.commit("credits/setMessage", errorMessage);
+        sessionStorage.clear()
+        this.$router.push("/work/credit");
+      }
     },
 
     // async getDataFile() {
@@ -594,20 +685,37 @@ export default {
     //   } catch(error) {}
     // },
 
-    async printFile(taskId) {
-      
-      const file = await this.getUrlFile(taskId)
+    async printFile(taskId, idx) {
+      // this.disable = true
+      // this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
 
-      console.log('file', file)
-      // debugger
-    
-      printJS(file.url);
-      //window.URL.revokeObjectURL(file);
+      let task = this.credits.find(i => i.taskId == taskId)
       
+      let file = null
+
+      if (task.idFile) {
+        file = await this.$store.dispatch(
+          "credits/getFile",
+          task.idFile
+        );
+      } else {
+        
+        file = await this.getUrlFile(taskId, idx)
+        
+        task.idFile = file.id  // кеширование id file
+        
+      }
+      console.log('file', file)
+
+      //console.log('credits', this.credits)
+      printJS(file.url);
+      window.URL.revokeObjectURL(file);
+      // this.loadings.splice(idx, 1, false)
+      // this.disable = false
     },
 
     async downloadFile(taskId) {
-        const file = await this.getUrlFile(taskId)
+        const file = await this.getUrlFile(taskId, idx)
         console.log('filelll', file)
         let link = document.createElement("a");
         link.href = file.url;
@@ -651,9 +759,10 @@ export default {
     //   }
     // },
 
-    async getUrlFile(taskId) {
+    async getUrlFile(taskId, idx) {
       // this.loadings1 = true
       this.disable = true
+      this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
       let file = null
       try {
           // debugger
@@ -671,10 +780,12 @@ export default {
           );
         // this.loadings1 = false
         this.disable = false
+        this.loadings.splice(idx, 1, false)
         return file
       } catch(error) {
         // this.loadings1 = false
         this.disable = false
+        this.loadings.splice(idx, 1, false)
       }
     },
 
@@ -689,24 +800,24 @@ export default {
         }
       }
       return data
+    },
+
+    pagination() {
+      console.log('current', this.current)
     }
   },
   components: {
-    appLoader: Loader
+    appLoader: Loader,
+    appLoaderFullScreen: LoaderFullScreen
+  },
+  filters: {
+    formatDate
   }
 };
 </script>
 
 <style lang="scss">
 .creditList {
-
-  .loaderList {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-
   tr:nth-child(2n) {
     background: #e8edff;
   }
@@ -790,6 +901,20 @@ export default {
       width: 100%;
       height: 100%;
       align-items: center;
+    }
+  }
+
+  .pagination {
+    .q-btn--rectangle {
+      background: transparent;
+    }
+
+    &__title {
+      margin: -3px 5px 0 0;
+    }
+
+    &__count {
+      margin: 0 20px 0 0;
     }
   }
 }
