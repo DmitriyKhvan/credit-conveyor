@@ -226,6 +226,9 @@ export const credits = {
           taskId: getters.taskId,
           data
         });
+        throw 'Next task id is undefined'
+
+        // Проверить срабатывает ли catch
 
         //console.log('confirmCredit', response)
         // Продумать логику когда завершился процесс(taskId = null), а когда вышла ошибка!!!
