@@ -170,44 +170,35 @@ export default {
         );
 
         console.log("response", response);
-        if (response.nextTask.input && response.nextTask.input.length) {
-          
-          const data = response.nextTask.input.find(
-            i => i.label === "application"
-          ).data;
-          const dictionaries = response.nextTask.input.find(
-            i => i.label === "inputDictionaries"
-          ).data;
 
-          console.log("dic", JSON.stringify(dictionaries, null, 2));
+        const data = response.nextTask.input.find(
+          i => i.label === "application"
+        ).data;
+        const dictionaries = response.nextTask.input.find(
+          i => i.label === "inputDictionaries"
+        ).data;
 
-          this.$store.commit("profile/setPreapprovData", data);
-          this.$store.commit("profile/setDictionaries", dictionaries);
+        console.log("dic", JSON.stringify(dictionaries, null, 2));
 
-          sessionStorage.setItem("preapprovData", JSON.stringify(data));
-          sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
-          
-          this.$router.push("profile");
-          this.$emit("toggleLoaderForm", false);
-        } else {
-          throw "Data is null";
-        }
-      } catch (error) {
-        const errorMessage = CommonUtils.filterServerError(error);
-        this.$store.commit("credits/setMessage", errorMessage);
-        sessionStorage.clear();
-        this.$router.push("/work/credit");
-      }
+        this.$store.commit("profile/setPreapprovData", data);
+        this.$store.commit("profile/setDictionaries", dictionaries);
+
+        sessionStorage.setItem("preapprovData", JSON.stringify(data));
+        sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
+        
+        this.$router.push("profile");
+        this.$emit("toggleLoaderForm", false);
+        
+      } catch (error) {}
     },
 
     async failureCredit() {
-      this.$emit("toggleLoaderFullScreen", true);
-
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
         //this.$store.commit("toggleConfirm", true);
       } else {
+        this.$emit("toggleLoaderFullScreen", true);
         this.$store.commit("credits/toggleDisableInput", false);
         this.$store.commit("credits/toggleConfirm", false);
 
@@ -221,20 +212,20 @@ export default {
             this.credits.confirmCreditData
           );
           console.log("res", res);
-          if (res.requestedTask.state === "completed") {
-            this.$store.commit("credits/setMessage", "Credit failure");
-            sessionStorage.clear();
-            this.$router.push("/work/credit");
-            this.$emit("toggleLoaderFullScreen", true);
-          } else {
-            throw "Task do not completed";
-          }
-        } catch (error) {
-          const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("credits/setMessage", errorMessage);
+          
+          // if (res.requestedTask.state === "completed") {
+          //   this.$store.commit("credits/setMessage", "Credit failure");
+          //   sessionStorage.clear();
+          //   this.$router.push("/work/credit");
+          //   //this.$emit("toggleLoaderFullScreen", true);
+          // } else {
+          //   throw "Task do not completed";
+          // }
+
+          this.$store.commit("credits/setMessage", "Credit failure");
           sessionStorage.clear();
           this.$router.push("/work/credit");
-        }
+        } catch (error) {}
       }
     },
 

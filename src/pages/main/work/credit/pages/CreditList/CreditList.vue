@@ -645,7 +645,7 @@ export default {
     },
 
     async creditSign(taskId) {
-      // this.$emit("renderComponent", 1) // для ререндеринга списка заявок
+
       this.loaderFullScreen = true;
       this.$store.commit("credits/setTaskId", taskId);
       const confirmCreditData = {
@@ -664,26 +664,14 @@ export default {
 
         console.log('response', JSON.stringify(res, null, 2))
 
-        if(res.nextTask.name) {
-          this.loaderFullScreen = false;
-          this.$store.commit("credits/setMessage", "Credit signed");
-        } else {
-          throw "Data is null";
-        }
+        this.$store.commit("credits/setMessage", "Credit signed");
+        this.$store.commit("credits/removeTask", taskId)
+
+        this.loaderFullScreen = false;
       } catch (error) {
         this.loaderFullScreen = false;
-        const errorMessage = CommonUtils.filterServerError(error);
-        this.$store.commit("credits/setMessage", errorMessage);
-        sessionStorage.clear()
-        this.$router.push("/work/credit");
       }
     },
-
-    // async getDataFile() {
-    //   try {
-    //     this.fileData = await this.$store.dispatch("credits/geDataFile")
-    //   } catch(error) {}
-    // },
 
     async printFile(taskId, idx) {
       // this.disable = true
@@ -723,41 +711,6 @@ export default {
         link.click();
         window.URL.revokeObjectURL(file);
     },
-
-    // async getUrlFile(taskId) {
-    //   // this.loadings1 = true
-    //   this.disable = true
-    //   let file = null
-    //   try {
-    //     if (this.$store.getters["credits/fileId"]) {
-    //       // debugger
-    //       file = await this.$store.dispatch(
-    //         "credits/getFile",
-    //         this.$store.getters["credits/fileId"]
-    //       );
-    //     } else {
-    //       // debugger
-    //       const { data } = await this.$store.dispatch("profile/getFullForm", taskId)
-
-    //       // this.fileData.data = (data.input.find(i => i.label == 'extractProtocol')).data
-    //       this.fileData.data = this.dataTransform((data.input.find(i => i.label == 'extractProtocol')).data)
-    //       // const fileData = (data.input.find(i => i.label == 'extractProtocol')).data
-
-    //       console.log(JSON.stringify(this.fileData, null, 2))
-
-    //       file = await this.$store.dispatch(
-    //         "credits/getFile",
-    //         this.fileData
-    //       );
-    //     }
-    //     // this.loadings1 = false
-    //     this.disable = false
-    //     return file
-    //   } catch(error) {
-    //     // this.loadings1 = false
-    //     this.disable = false
-    //   }
-    // },
 
     async getUrlFile(taskId, idx) {
       // this.loadings1 = true

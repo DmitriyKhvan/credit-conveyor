@@ -720,7 +720,7 @@ export default {
           console.log("resCredit", resCredit);
 
           const preApproval = resCredit.nextTask.input.find(i => i.label == 'preApproval').data
-          this.credits.infoList = resCredit.nextTask.input.find(i => i.label == 'InfoList').data
+          this.credits.infoList = resCredit.nextTask.input.find(i => i.label == 'InfoList').data // печатные формы
           this.credits.reasonsList = resCredit.nextTask.input.find(i => i.label == 'reasons_list').data.items;
          
           this.$store.commit("credits/toggleConfirm", true);

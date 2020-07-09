@@ -3902,20 +3902,18 @@ export default {
           console.log("response", JSON.stringify(res, null, 2));
           //console.log('nextTaskId', res.nextTask.id)
 
-          if (res.nextTask.id) {
-            sessionStorage.removeItem("csrf_token");
-            this.$store.commit('credits/setMessage', 'Credit complete')
-            this.$router.push("/work/credit")
-          } else {
-            throw 'Next task id is undefined'
-          }
+          // почему-то не сработал catch в credits/confirmationCredit!!!
+          debugger
+
+          //sessionStorage.removeItem("csrf_token");
+          this.$store.commit('credits/setMessage', 'Credit complete')
+          this.$store.commit("credits/removeTask", this.taskId)
+          // this.$router.push("/work/credit")
+          this.$router.go(-1);
+
           this.loader = false;
         } catch (error) {
           this.loader = false;
-          const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("credits/setMessage", errorMessage);
-          sessionStorage.clear()
-          this.$router.push("/work/credit");
         }
         } else {
           this.profile.confirmCredit = true;

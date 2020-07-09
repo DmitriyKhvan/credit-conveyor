@@ -228,21 +228,24 @@ export const credits = {
         });
 
         //console.log('confirmCredit', response)
-        if (response.nextTask.id || response.requestedTask.state === "completed") {
-         
-          commit("setTaskId", response.nextTask.id);
-          sessionStorage.setItem("taskId", response.nextTask.id)
-        } else {
-          throw 'Next task id is undefined'
-        }
+        // Продумать логику когда завершился процесс(taskId = null), а когда вышла ошибка!!!
+        // if (response.nextTask.id) {
+        //   commit("setTaskId", response.nextTask.id);
+        //   sessionStorage.setItem("taskId", response.nextTask.id)
+        // } else {
+        //   throw 'Next task id is undefined'
+        // }
+
+        commit("setTaskId", response.nextTask.id);
+        sessionStorage.setItem("taskId", response.nextTask.id)
         
         return response;
       } catch (error) {
         console.log('errorMessage', error)
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        
         sessionStorage.clear()
+        this.$router.push("/work/credit");
       }
     },
 
@@ -321,10 +324,6 @@ export const credits = {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
       }
-    }, 
-
-    async getDataFile({state, commit}) {
-      return await state.bpmService.getDataFile()
     }
   },
   mutations: {
@@ -443,9 +442,10 @@ export const credits = {
       state.creditTasks = [];
     },
 
-    // setFileId(state, fileId) {
-    //   state.fileId = fileId
-    // }
+    removeTask(state, taskId) {
+      const idx = state.creditTasks.findIndex(i => i.taskId == taskId)
+      state.creditTasks.splice(idx, 1)
+    }
    
   },
   getters: {

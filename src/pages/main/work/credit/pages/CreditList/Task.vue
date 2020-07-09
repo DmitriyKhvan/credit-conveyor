@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <apploaderFullScreen v-if="loader"></apploaderFullScreen>
+    <appLoaderFullScreen v-if="loaderFullScreen" />
 
     <div v-else>
       <!-- Header credit -->
@@ -1202,9 +1202,9 @@
                       color="primary"
                       label="Просмотреть"
                       @click="
-                        loader = true
+                        loaderFullScreen = true
                         showFile(document.id)
-                        loader = false
+                        loaderFullScreen = false
                       "
                     />
                   </div>
@@ -1387,7 +1387,7 @@ import { validItems, validFilter } from "../../filters/valid_filter";
 export default {
   data() {
     return {
-      loader: false,
+      loaderFullScreen: true,
       confirm: false,
       BODecision: true,
       userRole: this.$store.getters["credits/userRole"],
@@ -1438,6 +1438,7 @@ export default {
     this.$store.commit("credits/setTaskId", this.$route.query.taskId);
     try {
       const res = await this.$store.dispatch("profile/getFullForm");
+      this.loaderFullScreen = false
       console.log("res", res);
     } catch (error) {}
   },
@@ -1544,7 +1545,7 @@ export default {
     },
 
     async sentData(message) {
-      this.loader = true;
+      this.loaderFullScreen = true;
       let data = {};
       if (this.userRole == "BO") {
         data = {
@@ -1586,20 +1587,15 @@ export default {
         );
         console.log("response", JSON.stringify(res, null, 2));
 
-        if (res.nextTask.id) {
-          sessionStorage.removeItem("csrf_token");
-          this.$store.commit("credits/setMessage", message);
-          this.$router.push("/work/credit");
-        } else {
-          throw "Next task id is undefined";
-        }
-        this.loader = false;
+        // sessionStorage.removeItem("csrf_token");
+        this.$store.commit("credits/setMessage", message);
+        this.$store.commit("credits/removeTask", this.$route.query.taskId)
+        // this.$router.push("/work/credit");
+        this.$router.go(-1);
+
+        this.loaderFullScreen = false;
       } catch (error) {
-        this.loader = false;
-        const errorMessage = CommonUtils.filterServerError(error);
-        this.$store.commit("credits/setMessage", errorMessage);
-        sessionStorage.clear()
-        this.$router.push("/work/credit");
+        this.loaderFullScreen = false;
       }
     },
 
@@ -1621,9 +1617,7 @@ export default {
         // printJS(url);
         window.URL.revokeObjectURL(file);
         
-      } catch (error) {
-        //this.loader = false;
-      }
+      } catch (error) {}
     },
 
     closeModal() {
@@ -1645,7 +1639,7 @@ export default {
     }
   },
   components: {
-    apploaderFullScreen: LoaderFullScreen
+    appLoaderFullScreen: LoaderFullScreen
   }
 };
 </script>
