@@ -183,7 +183,7 @@
 
               <div class="row">
                 <div class="col custom_btn">
-                  <q-btn color="blue-9" size="md" label="Сохранить" class="full-width" />
+                  <q-btn color="blue-14" size="md" label="Сохранить" class="full-width" />
                 </div>
               </div>
 
@@ -201,7 +201,9 @@ export default {
   data(){
     return {
       dialog: false,
-      date: '2019/02/01'
+      date: '2019/02/01',
+      options: [],
+      model: ''
     }
   }
 }

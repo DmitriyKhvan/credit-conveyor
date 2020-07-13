@@ -1,4 +1,32 @@
 <template>
+  <!-- <div class="row">
+    <div class="col-3">
+      <h3>Draggable 1</h3>
+      <draggable v-bind="dragOptions" class="list-group" :list="list1" group="people" @change="log">
+        <div
+          class="list-group-item"
+          v-for="(element, index) in list1"
+          :key="element.name"
+        >
+          {{ element.name }} {{ index }}
+        </div>
+      </draggable>
+    </div>
+
+    <div class="col-3">
+      <h3>Draggable 2</h3>
+      <draggable v-bind="dragOptions" class="list-group" :list="list2" group="people" @change="log">
+        <div
+          class="list-group-item"
+          v-for="(element, index) in list2"
+          :key="element.name"
+        >
+          {{ element.name }} {{ index }}
+        </div>
+      </draggable>
+    </div>
+  </div> -->
+
   <div class="row q-py-md q-col-gutter-md management">
 
     <div class="col-md-3 col-sm-6">
@@ -45,19 +73,16 @@
   </div>
 </template>
 <script>
-import draggable from 'vuedraggable'
+
 import Task from './ManagmentTask'
 
 export default {
-  name: "two-lists",
-  display: "Two Lists",
-  order: 1,
   components: {
-    draggable,
     ATask: Task
   },
   data(){
     return {
+
       list1: [
         { name: "Задача 1", id: 1 },
         { name: "Задача 2", id: 2 },
@@ -76,24 +101,36 @@ export default {
     }
   },
   methods: {
-    // add: function() {
-    //   this.list.push({ name: "Juan" });
-    // },
-    // replace: function() {
-    //   this.list = [{ name: "Edgard" }];
-    // },
-    // clone: function(el) {
-    //   return {
-    //     name: el.name + " cloned"
-    //   };
-    // },
+    add: function() {
+      this.list.push({ name: "Juan" });
+    },
+    replace: function() {
+      this.list = [{ name: "Edgard" }];
+    },
+    clone: function(el) {
+      return {
+        name: el.name + " cloned"
+      };
+    },
     log: function(evt) {
       window.console.log(evt);
+    }
+  },
+  computed: {
+    dragOptions() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost"
+      };
     }
   }
 }
 </script>
 <style scoped>
+
+
   .management img {vertical-align: bottom;}
   .list-group-item {
     cursor: move;
