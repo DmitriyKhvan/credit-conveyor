@@ -31,6 +31,7 @@ import chats from './chat'
 import my_personal from './my_personal'
 import apparat from './apparat'
 import tasks from './tasks'
+import assistant from './assistant'
 
 
 Vue.use(Vuex);
@@ -52,7 +53,8 @@ const store = new Vuex.Store({
     chats,
     my_personal,
     apparat,
-    tasks
+    tasks,
+    assistant
   },
 
   // enable strict mode (adds overhead!)

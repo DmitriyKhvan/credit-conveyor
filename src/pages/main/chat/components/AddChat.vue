@@ -48,7 +48,6 @@
                                         </q-badge>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div v-else class="content scroll q-pb-md">
@@ -140,9 +139,6 @@ export default {
         this.users = this.users.filter(el => el.emp_id !== id)
       },
       createGroup(){
-        // group Data
-
-
         if(this.users.length !==0 && this.title){
           let usersIds = []
           this.users.forEach(el => {
@@ -155,7 +151,6 @@ export default {
             creator: this.emp_id,
             users: usersIds
           };
-
           this.socket.emit("grp/create", grpData);
         }
       },
@@ -167,8 +162,6 @@ export default {
     },
     created(){
       this.socket.on("grp/new", data => {
-        console.log({ newGroup: data });
-        console.log('my ID', this.emp_id)
         if (data.users.includes(this.emp_id)) {
           let myData = {
             emp_name: this.user,
@@ -195,10 +188,7 @@ export default {
           this.result = []
         }
       });
-
-
     },
-
 }
 </script>
 

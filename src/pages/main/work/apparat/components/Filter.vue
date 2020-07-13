@@ -30,7 +30,7 @@
       <div class="col-3">
         <q-select filled v-model="model" :options="options" label="Любой тип" bg-color="white" />
       </div>
-      <div class="col-3 text-right buttonFilter"><q-btn color="blue-9" size="lg" label="Применить фильтр" /></div>
+      <div class="col-3 text-right buttonFilter"><q-btn color="blue-14" size="lg" label="Применить фильтр" /></div>
     </div>
 
   </div>

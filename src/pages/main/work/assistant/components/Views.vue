@@ -2,33 +2,32 @@
   <div class="row q-pb-md">
     <div class="col">
       <div class="row q-col-gutter-x-md">
-        <div class="col-4">
-          <q-select filled v-model="model" :options="options" label="Выбрать статус" />
-        </div>
         <div class="col buttonFilter">
-          <q-btn color="blue-14" size="lg" label="Применить для всех" />
+          <a-popup></a-popup>
         </div>
       </div>
     </div>
     <div class="col text-right navMenu">
       <div>Показано строк:</div>
-      <div><q-select filled v-model="model2" :options="options2" label="3" bg-color="white" dense style="width:70px" /></div>
+      <div><q-select filled v-model="model" :options="options" label="3" bg-color="white" dense style="width:70px" /></div>
       <div>1-3 из 10</div>
       <div class="arrows">
-        <div><q-icon name="keyboard_arrow_left" /></div>
-        <div class="active"><q-icon name="keyboard_arrow_right" /></div>
+        <div><q-icon name="keyboard_arrow_left" size="sm" /></div>
+        <div class="active"><q-icon name="keyboard_arrow_right"  size="sm" /></div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import MultiPopup from './MultiPopup'
 export default {
+  components: {
+    APopup: MultiPopup
+  },
   data(){
     return {
       model: '',
-      options: [],
-      model2: '',
-      options2: []
+      options: []
     }
   }
 }

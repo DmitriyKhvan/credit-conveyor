@@ -1,5 +1,5 @@
 <template>
-  <draggable class="list-group" :list="list" group="tasks" @change="log">
+  <draggable v-bind="dragOptions" class="list-group" :list="list" group="tasks" @change="log">
     <div
       class="col bg-white q-py-sm q-px-md q-mb-sm title"
       v-for="element in list"
@@ -44,27 +44,56 @@ import draggable from 'vuedraggable'
 export default {
   props: ['list'],
   components: {
-    draggable
+    draggable,
   },
   methods: {
-    // add: function() {
-    //   this.list.push({ name: "Juan" });
-    // },
-    // replace: function() {
-    //   this.list = [{ name: "Edgard" }];
-    // },
-    // clone: function(el) {
-    //   return {
-    //     name: el.name + " cloned"
-    //   };
-    // },
     log: function(evt) {
       window.console.log(evt);
+    }
+  },
+  computed: {
+    dragOptions() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost",
+        dragClass: 'sDrag',
+      };
     }
   }
 }
 </script>
 <style scoped>
+.flip-list-move {
+  transition: transform 0.5s;
+}
+
+.ghost {
+  opacity: 0.1 !important;
+  background: #000 !important;
+}
+.ghost img {display: none;}
+.title {
+  /* transition: transform 0.18s ease-in-out;
+  transform: rotateZ(0deg) */
+}
+.sDrag {
+  opacity: 10 !important;
+  background: #fff !important;
+  transition: transform 0.18s ease !important;
+  transform: rotateZ(5deg) !important;
+
+}
+/* .card-ghost {
+        transition: transform 0.18s ease;
+        transform: rotateZ(5deg)
+    }
+
+    .card-ghost-drop {
+        transition: transform 0.18s ease-in-out;
+        transform: rotateZ(0deg)
+    } */
   .dflex {
     display: flex;
     align-items: center;
@@ -73,4 +102,7 @@ export default {
     min-height: 100px;
     cursor: move;
   }
+
+
+
 </style>
