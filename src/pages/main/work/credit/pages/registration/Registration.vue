@@ -48,6 +48,8 @@
                     outlined
                     v-model="personalData.mname"
                     dense
+                    :hint="loadMessage"
+                    :disable="disableInput"
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
@@ -61,6 +63,7 @@
                     v-model="personalData.inn"
                     dense
                     :hint="loadMessage"
+                    :disable="disableInput"
                     label="ИНН"
                     mask="#########"
                     
@@ -201,7 +204,7 @@
                 <appLoader v-if="loader" />
 
                 <!-- Button auto complete person data -->
-                <app-auto-complete-data v-else />
+                <app-auto-complete-data v-else-if="scannerSerialNumber" />
               </div>
             </div>
           </div>
@@ -384,6 +387,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatNumber from "../../filters/format_number.js";
 import PreApproval from "./PreApproval";
@@ -467,30 +471,21 @@ export default {
     }
 
     try {
-      const scannerSerial = await this.$store.dispatch("credits/getDigIdNumber");
-      this.$store.commit("credits/sentScannerSerialNumber", scannerSerial);
+      await this.$store.dispatch("credits/getDigIdNumber");
       this.loader = false;
-    } catch (err) {
-      console.log("DigId", err);
+    } catch (error) {
+      console.log("DigId", error);
       this.loader = false;
     }
   },
   computed: {
-    loadMessage() {
-      return this.$store.getters["credits/credits"].loadMessage
-    },
-    disableInput() {
-      return this.$store.getters["credits/credits"].disableInput
-    },
-    // disableBtn() {
-    //   return this.$store.state.credits.disableBtn;
-    // },
-    personalData() {
-      return this.$store.getters["credits/credits"].personalData
-    },
-    credits() {
-      return this.$store.getters["credits/credits"];
-    }
+    ...mapState({
+        loadMessage: state => state.credits.loadMessage,
+        disableInput: state => state.credits.disableInput,
+        scannerSerialNumber: state => state.credits.scannerSerialNumber,
+        personalData: state => state.credits.personalData,
+        credits: state => state.credits
+      })
   },
   watch: {
     "personalData.typeCredit"(credit) {
@@ -698,16 +693,16 @@ export default {
         console.log(JSON.stringify(data, null, 2));
 
         try {
-          const res = await this.$store.dispatch(
+          const response = await this.$store.dispatch(
             "credits/confirmationCredit",
             data
           );
 
-          console.log("res", res);
-          if (res) {
-            const preApproval = res.nextTask.input.find(i => i.label == 'preApproval').data
-            this.credits.infoList = res.nextTask.input.find(i => i.label == 'InfoList').data // печатные формы
-            this.credits.reasonsList = res.nextTask.input.find(i => i.label == 'reasons_list').data.items;
+          console.log("response", response);
+          if (response) {
+            const preApproval = response.nextTask.input.find(i => i.label == 'preApproval').data
+            this.credits.infoList = response.nextTask.input.find(i => i.label == 'InfoList').data // печатные формы
+            this.credits.reasonsList = response.nextTask.input.find(i => i.label == 'reasons_list').data.items;
           
             this.confirm = true
             this.$store.commit("credits/creditConfirm", preApproval);
@@ -793,6 +788,10 @@ export default {
   .q-field--with-bottom,
   .q-pb-sm {
     padding-bottom: 16px;
+  }
+
+  .q-col-gutter-y-md > *, .q-col-gutter-md > * {
+    padding-bottom: 0!important;
   }
 
   .q-field__native,
