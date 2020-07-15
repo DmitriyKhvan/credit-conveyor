@@ -359,8 +359,7 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
-      state.fileList = [] // очистка файлов на печать
-      state.disableField = false
+      
       let response
       try {
         if (taskId) {
@@ -739,6 +738,8 @@ export const profile = {
     },
 
     resetDataFullFormProfile(state) {
+      state.fileList = [] // очистка файлов на печать
+      state.disableField = false
       state.fullFormProfile = {
         Status: "",
         // ApplicationID: "",
