@@ -7,81 +7,82 @@ export const profile = {
     bpmService: new BpmService(),
     confirmCredit: false,
     fileList: [],
-    // preapprovData: {}, 
-    dictionaries: {
-      Graduation: {
-        items: []
-      },
-      additionalIncomeSource: {
-        items: []
-      },
-      VehicleType: {
-        items: []
-      },
-      employeesNum: {
-        items: []
-      },
-      BusinessType: {
-        items: []
-      },
-      DocumentType: {
-        items: []
-      },
-      Reasons: {
-        items: []
-      },
-      ClientRelationType: {
-        items: []
-      },
-      Gender: {
-        items: []
-      },
-      PropertyType: {
-        items: []
-      },
-      LoanProduct: {
-        items: []
-      },
-      DecisionType: {
-        items: []
-      },
-      MainWorkType: {
-        items: []
-      },
-      LoanDetails: {
-        items: []
-      },
-      LoanPurpose: {
-        items: []
-      },
-      PaymentsType: {
-        items: []
-      },
-      PositionType: {
-        items: []
-      },
-      MaritalStatus: {
-        items: []
-      },
-      GuaranteeType: {
-        items: []
-      },
-      FinancialSources: {
-        items: []
-      },
-      Region: {
-        items: []
-      },
-      Districts: {
-        items: []
-      },
-      jobPeriods: {
-        items: []
-      },
-      FamilyRelation: {
-        items: []
-      }
-    },
+    disableField: false,
+    dictionaries: {},
+    // dictionaries: {
+    //   Graduation: {
+    //     items: []
+    //   },
+    //   additionalIncomeSource: {
+    //     items: []
+    //   },
+    //   VehicleType: {
+    //     items: []
+    //   },
+    //   employeesNum: {
+    //     items: []
+    //   },
+    //   BusinessType: {
+    //     items: []
+    //   },
+    //   DocumentType: {
+    //     items: []
+    //   },
+    //   Reasons: {
+    //     items: []
+    //   },
+    //   ClientRelationType: {
+    //     items: []
+    //   },
+    //   Gender: {
+    //     items: []
+    //   },
+    //   PropertyType: {
+    //     items: []
+    //   },
+    //   LoanProduct: {
+    //     items: []
+    //   },
+    //   DecisionType: {
+    //     items: []
+    //   },
+    //   MainWorkType: {
+    //     items: []
+    //   },
+    //   LoanDetails: {
+    //     items: []
+    //   },
+    //   LoanPurpose: {
+    //     items: []
+    //   },
+    //   PaymentsType: {
+    //     items: []
+    //   },
+    //   PositionType: {
+    //     items: []
+    //   },
+    //   MaritalStatus: {
+    //     items: []
+    //   },
+    //   GuaranteeType: {
+    //     items: []
+    //   },
+    //   FinancialSources: {
+    //     items: []
+    //   },
+    //   Region: {
+    //     items: []
+    //   },
+    //   Districts: {
+    //     items: []
+    //   },
+    //   jobPeriods: {
+    //     items: []
+    //   },
+    //   FamilyRelation: {
+    //     items: []
+    //   }
+    // },
     //filesAll: [], // для фильтрации какие файлы загружены на сервер
 
     AddressType: [
@@ -340,6 +341,7 @@ export const profile = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
+        throw error
       }
     },
 
@@ -352,11 +354,13 @@ export const profile = {
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
+        throw error
       }
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
       state.fileList = [] // очистка файлов на печать
+      state.disableField = false
       let response
       try {
         if (taskId) {
@@ -385,13 +389,16 @@ export const profile = {
             commit("setPreapprovData", data);
           } 
           else if (response.data.name == "Работа с документами") {
+            console.log('res', response)
             const fileList = response.data.input.find(
-              i => i.label === "overdraftPrint" || i.label === "consumer_credit" || i.label === "microloan"
+              i => i.label === "overdraft" || i.label === "consumer_credit" || i.label === "microloan"
             )
             console.log('fileList', fileList)
             if (fileList) {
               commit("setFileList", fileList)
             }
+
+            state.disableField = true
             
             commit("setFullForm", data);
           } 
@@ -408,9 +415,9 @@ export const profile = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
-        // sessionStorage.removeItem("csrf_token");
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     }
   },
