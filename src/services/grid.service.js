@@ -8,6 +8,7 @@ import {
 
 const GridService = {
   addEditRecord(dialogComponent, selected, props, parent) {
+    console.log('selected', selected)
     return new Promise((resolve, reject) => {
       Dialog.create({
           component: dialogComponent,

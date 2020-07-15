@@ -36,7 +36,8 @@ export default {
       return this.$store.getters["credits/messageBar"]
     },
     message() {
-      return message[this.$store.getters["credits/message"]] || "Что-то пошло не так";
+      return message[this.$store.getters["credits/message"]] || this.$store.getters["credits/message"];
+      //return this.$store.getters["credits/message"]
     }
   }
 };

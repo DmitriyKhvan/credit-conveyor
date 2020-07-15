@@ -6,19 +6,19 @@ export const credits = {
   state: {
     taskId: "",
     userRole: "",
+    // fileId: null, 
     messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки
       message: null
     },
     roles: {
-      Admin: "CRM",
+      //Admin: "CRM",
       CreditManager: "CRM",
       BackOfficee: "BO",
       CreditCommitteeMember: "CCM",
       CreditSecretary: "CS"
     },
-    loaderForm: true, // при загрузки формы preapproval
-    confirm: false, // для модального окна расчета кредита
+    
     messageBar: false,
     bpmService: new BpmService(),
     icon: false,
@@ -47,11 +47,12 @@ export const credits = {
       childCost: 0,
 
       // FAMILY //
-      familyStatus: "",
+      familyStatus: null,
       children: false,
       childrenCount: 0,
       // MONEY //
       income: 0, //подтвержденный ежемесячный доход
+      loan_purpose: null,
       expense: 0, //периодические расходы
       otherExpenses: 0, //плата за облуживание других обязательств
       externalIncome: false, //наличие дополнительного дохода
@@ -73,6 +74,7 @@ export const credits = {
     },
 
     reasonsList: [], // причины отказа от кредита
+    infoList: {}, // информационный лист данные
 
     preApprovalData: {
       income: 0, // Сколько дохода учитываем
@@ -80,17 +82,28 @@ export const credits = {
       maxPayment: 0, // Сколько может платить в месяц
       maxSum: 0 // Сколько максимум кредита можем выдать
     },
-    creditTasks: []
+    creditTasks: [],
+    loadings: [],
+
+    options: {
+      confirmation: [
+        {
+          label: "Да",
+          value: true
+        },
+        {
+          label: "Нет",
+          value: false
+        }
+      ]
+    }
    
   },
   actions: {
     async authBpm({ state, dispatch, commit, getters, rootGetters }) {
       
       try {
-        //console.log('username', getters["auth/username"])
-        // получение empId пользователя
-        //const empId = decode(await storegeService.getToken()).emp_id;
-       
+
         const empId = rootGetters["auth/empId"];
         console.log('empId', empId)
 
@@ -102,7 +115,6 @@ export const credits = {
 
         // запись роли в header запроса
         await dispatch("setHeaderRole", state.roles[userRole]);
-
         commit("setUserRole", state.roles[userRole])
 
         // запись роли в sessionStore
@@ -121,16 +133,13 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
       }
     },
 
     async getUserRole({ state, commit }, payload) {
-      
-      const response = await state.bpmService.getUserRole(payload);
-
-      return response
+      return await state.bpmService.getUserRole(payload);
     },
 
     async getBPMToken({ state, dispatch }) {
@@ -158,7 +167,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
+        this.$router.push("/work/credit");
       }
     },
 
@@ -184,7 +194,9 @@ export const credits = {
 
         console.log("calculCredit taskId ", response.nextTask.id);
         if (response.nextTask.id) {
+          //sessionStorage.clear()
           commit("setTaskId", response.nextTask.id);
+          sessionStorage.setItem("taskId", response.nextTask.id)
         } else {
           throw 'Next task id is undefined'
         }
@@ -193,7 +205,9 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        
+        sessionStorage.clear()
+        this.$router.push("/work/credit");
       }
     },
 
@@ -205,21 +219,27 @@ export const credits = {
           data
         });
 
+        // Проверить срабатывает ли catch
+
         //console.log('confirmCredit', response)
-        if (response.nextTask.id || response.requestedTask.state === "completed") {
-         
-          commit("setTaskId", response.nextTask.id);
-          sessionStorage.setItem("taskId", response.nextTask.id)
-        } else {
-          throw 'Next task id is undefined'
-        }
+        // Продумать логику когда завершился процесс(taskId = null), а когда вышла ошибка!!!
+        // if (response.nextTask.id) {
+        //   commit("setTaskId", response.nextTask.id);
+        //   sessionStorage.setItem("taskId", response.nextTask.id)
+        // } else {
+        //   throw 'Next task id is undefined'
+        // }
+
+        commit("setTaskId", response.nextTask.id);
+        sessionStorage.setItem("taskId", response.nextTask.id)
         
         return response;
       } catch (error) {
-        console.log('errorMessage', error)
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
+        this.$router.push("/work/credit");
+        throw error
       }
     },
 
@@ -233,8 +253,9 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
@@ -248,51 +269,65 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.removeItem("csrf_token");
+        sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
     async creatFile({state}, fileData) {
       try {
-        return await state.bpmService.creatFile(fileData)
+        const response = await state.bpmService.creatFile(fileData)
+        console.log('cccccc', response)
+        return response
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
+        throw error
       }
     },
 
     async getFile({state, commit, dispatch}, fileData) {
       try {
-        let response;
+        let response = null;
+        let file = null;
         if (typeof fileData == 'object') {
-          const file = await dispatch('creatFile', fileData)
-          response = await state.bpmService.getFile(file.infos[0].id)
+          file = await dispatch('creatFile', fileData)
+
+          console.log('createFile', file)
+
+          if (file.infos[0].id) {
+            response = await state.bpmService.getFile(file.infos[0].id)
+            // commit("setFileId", file.infos[0].id)
+          }
+
         } else {
           response = await state.bpmService.getFile(fileData)
+          console.log('responsessssss', response)
         }
         
         const blob = new Blob([response], { type: "application/pdf" })
-        return window.URL.createObjectURL(blob)
+        // const blob = new Blob([response], { type: "application/octet-stream" })
+        console.log('infos')
+        return {
+          url: window.URL.createObjectURL(blob),
+          id: file ? file.infos[0].id : fileData
+          // fileName: file.infos[0].filename
+        }
     
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
+        throw error
       }
     }
   },
   mutations: {
-    toggleConfirm(state, payload) {
-      //console.log(state, payload);
-      //state.confirm = payload.preApprovalForm;
-      state.confirm = payload;
-    },
-
     creditConfirm(state, payload) {
-      state.preApprovalData.income = payload.income;
-      state.preApprovalData.expense = payload.expense;
-      state.preApprovalData.maxPayment = payload.maxPayment;
-      state.preApprovalData.maxSum = payload.maxSum;
+      state.preApprovalData.income = payload.incoming;
+      state.preApprovalData.expense = payload.expenses;
+      state.preApprovalData.maxPayment = payload.payment;
+      state.preApprovalData.maxSum = payload.sum;
     },
 
     toggleSubmitting(state, payload) {
@@ -345,17 +380,22 @@ export const credits = {
         childCost: 0,
 
         // FAMILY //
-        familyStatus: "",
+        familyStatus: null,
         children: false,
         childrenCount: 0,
         // MONEY //
         income: 0, //подтвержденный ежемесячный доход
+        loan_purpose: null, // цель кредитования
         expense: 0, //периодические расходы
         otherExpenses: 0, //плата за облуживание других обязательств
         externalIncome: "", //наличие дополнительного дохода
         externalIncomeSize: 0, //размер дополнительного дохода
         additionalIncomeSource: "" //источник дополнительного дохода
       };
+    },
+
+    resetMessageBar(state) {
+      state.messageBar = false
     },
 
     toggleScannerSerialNumber(state, payload) {
@@ -372,10 +412,6 @@ export const credits = {
       state.messageBar = payload;
     },
 
-    toggleLoaderForm(state, flag) {
-      state.loaderForm = flag;
-    },
-
     setTaskId(state, payload) {
       state.taskId = payload;
     },
@@ -385,12 +421,27 @@ export const credits = {
     },
 
     setCreditTasks(state, payload) {
-      payload.map(i => i.date = CommonUtils.dateFilter(i.date, "datetime"))
-      state.creditTasks = payload;
+      // payload.map(i => i.date = CommonUtils.dateFilter(i.date, "datetime"))
+      for (let i = 0; i < payload.length; i++) {
+        state.loadings[i] = false
+      }
+      state.creditTasks = payload.sort((a, b) => {
+          if (b.date < a.date) {
+            return -1
+          }
+          if (b.date > a.date) {
+            return 1
+          }
+        })
     },
 
     clearCreditTasks(state) {
       state.creditTasks = [];
+    },
+
+    removeTask(state, taskId) {
+      const idx = state.creditTasks.findIndex(i => i.taskId == taskId)
+      state.creditTasks.splice(idx, 1)
     }
    
   },
@@ -401,6 +452,16 @@ export const credits = {
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
     creditTasks: state => state.creditTasks,
-    userRole: state => state.userRole
+    // creditTasks: state => state.creditTasks.sort((a, b) => {
+    //   if (b.date < a.date) {
+    //     return -1
+    //   }
+    //   if (b.date > a.date) {
+    //     return 1
+    //   }
+    // }),
+    userRole: state => state.userRole,
+    loadings: state => state.loadings
+    //fileId: state => state.fileId
   }
 };

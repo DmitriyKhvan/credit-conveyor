@@ -12,6 +12,9 @@ import ErrorMessage from './ErrorMessage'
 
 export default {
   name: "credit",
+  created() {
+    this.$store.commit("credits/resetMessageBar")
+  },
   computed: {
     error() {
       console.log('computed', this.$store.getters["credits/message"])
@@ -20,6 +23,7 @@ export default {
   },
   watch: {
     error(serverError) {   
+      console.log('serverError', serverError)
       this.$store.commit("credits/toggleMessageBar", true)
       console.log('watch', this.$store.getters["credits/messageBar"])
     }
@@ -30,18 +34,27 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-  .creditMenu {
-    margin: 15px;
-  }
+<style lang="scss">
+  .creditConveyor {
+    .creditMenu {
+      margin: 15px;
+    }
 
-  .q-btn--rectangle {
-    background: $blue;
-    color: #fff;
-    margin-right: 15px;
+    .q-btn--rectangle {
+      background: $blue;
+      color: #fff;
+      margin-right: 15px;
+    }
+    .ellipsis {
+      font-size: 1rem
+    }
   }
-  .ellipsis {
-    font-size: 1rem
+  
+  .loaderForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
   }
 </style>
 

@@ -1,27 +1,16 @@
 <template>
-  <AppCreditList />
+  <AppCreditList 
+    :loaderList="loaderList" 
+  />
 </template>
 
 <script>
-import CreditList from "./CreditList"
+import creditListMixin from '../../mixins/creditList'
 
 export default {
-  data() {
-    return {
-      
-    }
-  },
+  mixins: [creditListMixin],
   async created() {
-    this.$store.commit('credits/clearCreditTasks')
-    try {
-      const auth = await this.$store.dispatch("credits/authBpm")
-      console.log("auth", auth);
-
-      await this.$store.dispatch("credits/getRoleTasks")
-    } catch(error) {}
-  },
-  components: {
-    AppCreditList: CreditList
+    this.getCreditsList("getRoleTasks")
   }
 }
 </script>
