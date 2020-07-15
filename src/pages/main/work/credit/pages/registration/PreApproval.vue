@@ -99,7 +99,7 @@
                 color="green"
                 v-close-popup
                 :disable="disableBtn"
-                @click="successCredit(false)"
+                @click="successCredit"
               />
               <q-btn
                 label="Отменить"
@@ -125,6 +125,9 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 // import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 export default {
+  props: {
+    confirm: Boolean
+  },
   data() {
     return {
       failureCreditReason: false,
@@ -144,9 +147,6 @@ export default {
     disableBtn() {
       return this.$store.getters["credits/credits"].disableBtn;
     },
-    confirm() {
-      return this.$store.getters["credits/credits"].confirm;
-    },
     preApprovalData() {
       return this.$store.getters["credits/credits"].preApprovalData;
     },
@@ -158,9 +158,9 @@ export default {
     }
   },
   methods: {
-    async successCredit(val) {
+    async successCredit() {
       console.log(this.$store);
-      this.$store.commit("credits/toggleConfirm", val);
+      //this.confirm = false
       this.$emit("toggleLoaderForm", true);
       console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
       try {
@@ -170,8 +170,8 @@ export default {
         );
 
         console.log("response", response);
-        if (response.nextTask.input && response.nextTask.input.length) {
-          
+
+        if (response) {
           const data = response.nextTask.input.find(
             i => i.label === "application"
           ).data;
@@ -189,51 +189,49 @@ export default {
           
           this.$router.push("profile");
           this.$emit("toggleLoaderForm", false);
-        } else {
-          throw "Data is null";
         }
       } catch (error) {
-        const errorMessage = CommonUtils.filterServerError(error);
-        this.$store.commit("credits/setMessage", errorMessage);
-        sessionStorage.clear();
-        this.$router.push("/work/credit");
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$emit("toggleLoaderForm", false);
       }
     },
 
     async failureCredit() {
-      this.$emit("toggleLoaderFullScreen", true);
-
       this.$refs.toggle.validate();
       if (this.$refs.toggle.hasError) {
         this.formHasError = true;
-        //this.$store.commit("toggleConfirm", true);
       } else {
+        this.$emit("toggleLoaderFullScreen", true);
         this.$store.commit("credits/toggleDisableInput", false);
-        this.$store.commit("credits/toggleConfirm", false);
-
         this.credits.confirmCreditData.output[0].data = false;
         this.credits.confirmCreditData.output[1].data = this.selection;
 
         console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
         try {
-          const res = await this.$store.dispatch(
+          const response = await this.$store.dispatch(
             "credits/confirmationCredit",
             this.credits.confirmCreditData
           );
-          console.log("res", res);
-          if (res.requestedTask.state === "completed") {
+          console.log("res", response);
+          
+          // if (res.requestedTask.state === "completed") {
+          //   this.$store.commit("credits/setMessage", "Credit failure");
+          //   sessionStorage.clear();
+          //   this.$router.push("/work/credit");
+          //   //this.$emit("toggleLoaderFullScreen", true);
+          // } else {
+          //   throw "Task do not completed";
+          // }
+
+          if (response) {
             this.$store.commit("credits/setMessage", "Credit failure");
             sessionStorage.clear();
             this.$router.push("/work/credit");
-            this.$emit("toggleLoaderFullScreen", true);
-          } else {
-            throw "Task do not completed";
           }
+          
         } catch (error) {
-          const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("credits/setMessage", errorMessage);
-          sessionStorage.clear();
-          this.$router.push("/work/credit");
+          this.$emit("toggleLoaderFullScreen", false);
+          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         }
       }
     },
@@ -255,17 +253,22 @@ export default {
             "credits/getFile",
             this.fileData
           );
-
-          this.fileData.idFile = file.id
+          
+          if (file) {
+            this.fileData.idFile = file.id // для кеширования id
+          }
         }
 
         console.log('file', file)
 
-        printJS(file.url);
-        window.URL.revokeObjectURL(file.url);
+        if (file) {
+          printJS(file.url);
+          window.URL.revokeObjectURL(file.url);
+        }
 
         this.loading = false
       } catch(error) {
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.loading = false
       }
     }

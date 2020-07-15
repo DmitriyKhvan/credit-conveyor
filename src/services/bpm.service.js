@@ -138,11 +138,10 @@ export default class BpmService {
     return responce.data;
   };
 
-  removeFiles = async (data) => {
+  removeFiles = async (id) => {
     const responce = await axios({
       method: "delete",
-      url: `${this._baseUrl}/file/`,
-      data
+      url: `${this._baseUrl}/file/edocument/${id}`
     });
 
     return responce.data

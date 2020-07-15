@@ -961,7 +961,7 @@ export default {
       WinPrint.document.close();
       WinPrint.focus();
       WinPrint.print();
-      //WinPrint.close();
+      WinPrint.close();
       //prtContent.innerHTML = strOldOne;
     },
 

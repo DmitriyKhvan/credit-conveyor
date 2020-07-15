@@ -4,7 +4,6 @@ import CreditList from "../pages/CreditList/CreditList"
 export default {
   data() {
     return {
-      componentKey: null,
       loaderList: false
     }
   },

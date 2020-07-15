@@ -619,11 +619,11 @@ export default {
     },
 
     sortValue(idx, order = true) {
+      console.log('sort', idx)
       this.$store.getters["credits/creditTasks"].sort((a, b) => {
         const itemA = a[idx];
         const itemB = b[idx];
         if (order) {
-          //console.log('sort')
           if (itemA < itemB) {
             //console.log('sorting')
             return -1;
@@ -645,7 +645,7 @@ export default {
     },
 
     async creditSign(taskId) {
-      // this.$emit("renderComponent", 1) // для ререндеринга списка заявок
+
       this.loaderFullScreen = true;
       this.$store.commit("credits/setTaskId", taskId);
       const confirmCreditData = {
@@ -657,33 +657,24 @@ export default {
         ]
       };
       try {
-        const res = await this.$store.dispatch(
+        const response = await this.$store.dispatch(
           "credits/confirmationCredit",
           confirmCreditData
         );
 
-        console.log('response', JSON.stringify(res, null, 2))
+        console.log('response', JSON.stringify(response, null, 2))
 
-        if(res.nextTask.name) {
-          this.loaderFullScreen = false;
+        if (response) {
           this.$store.commit("credits/setMessage", "Credit signed");
-        } else {
-          throw "Data is null";
+          this.$store.commit("credits/removeTask", taskId)
         }
-      } catch (error) {
+
         this.loaderFullScreen = false;
-        const errorMessage = CommonUtils.filterServerError(error);
-        this.$store.commit("credits/setMessage", errorMessage);
-        sessionStorage.clear()
-        this.$router.push("/work/credit");
+      } catch (error) {
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.loaderFullScreen = false;
       }
     },
-
-    // async getDataFile() {
-    //   try {
-    //     this.fileData = await this.$store.dispatch("credits/geDataFile")
-    //   } catch(error) {}
-    // },
 
     async printFile(taskId, idx) {
       // this.disable = true
@@ -724,66 +715,29 @@ export default {
         window.URL.revokeObjectURL(file);
     },
 
-    // async getUrlFile(taskId) {
-    //   // this.loadings1 = true
-    //   this.disable = true
-    //   let file = null
-    //   try {
-    //     if (this.$store.getters["credits/fileId"]) {
-    //       // debugger
-    //       file = await this.$store.dispatch(
-    //         "credits/getFile",
-    //         this.$store.getters["credits/fileId"]
-    //       );
-    //     } else {
-    //       // debugger
-    //       const { data } = await this.$store.dispatch("profile/getFullForm", taskId)
-
-    //       // this.fileData.data = (data.input.find(i => i.label == 'extractProtocol')).data
-    //       this.fileData.data = this.dataTransform((data.input.find(i => i.label == 'extractProtocol')).data)
-    //       // const fileData = (data.input.find(i => i.label == 'extractProtocol')).data
-
-    //       console.log(JSON.stringify(this.fileData, null, 2))
-
-    //       file = await this.$store.dispatch(
-    //         "credits/getFile",
-    //         this.fileData
-    //       );
-    //     }
-    //     // this.loadings1 = false
-    //     this.disable = false
-    //     return file
-    //   } catch(error) {
-    //     // this.loadings1 = false
-    //     this.disable = false
-    //   }
-    // },
-
     async getUrlFile(taskId, idx) {
-      // this.loadings1 = true
       this.disable = true
       this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
       let file = null
       try {
-          // debugger
-          const { data } = await this.$store.dispatch("profile/getFullForm", taskId)
+          const response = await this.$store.dispatch("profile/getFullForm", taskId)
+          
+          if (response) {
+            this.fileData.data = this.dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
+          
+            console.log(JSON.stringify(this.fileData, null, 2))
 
-          // this.fileData.data = (data.input.find(i => i.label == 'extractProtocol')).data
-          this.fileData.data = this.dataTransform((data.input.find(i => i.label == 'extractProtocol')).data)
-          // const fileData = (data.input.find(i => i.label == 'extractProtocol')).data
+            file = await this.$store.dispatch(
+              "credits/getFile",
+              this.fileData
+            );
+          }
 
-          console.log(JSON.stringify(this.fileData, null, 2))
-
-          file = await this.$store.dispatch(
-            "credits/getFile",
-            this.fileData
-          );
-        // this.loadings1 = false
         this.disable = false
         this.loadings.splice(idx, 1, false)
         return file
       } catch(error) {
-        // this.loadings1 = false
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.disable = false
         this.loadings.splice(idx, 1, false)
       }

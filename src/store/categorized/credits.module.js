@@ -19,7 +19,6 @@ export const credits = {
       CreditSecretary: "CS"
     },
     
-    confirm: false, // для модального окна расчета кредита
     messageBar: false,
     bpmService: new BpmService(),
     icon: false,
@@ -104,10 +103,7 @@ export const credits = {
     async authBpm({ state, dispatch, commit, getters, rootGetters }) {
       
       try {
-        //console.log('username', getters["auth/username"])
-        // получение empId пользователя
-        //const empId = decode(await storegeService.getToken()).emp_id;
-       
+
         const empId = rootGetters["auth/empId"];
         console.log('empId', empId)
 
@@ -119,7 +115,6 @@ export const credits = {
 
         // запись роли в header запроса
         await dispatch("setHeaderRole", state.roles[userRole]);
-
         commit("setUserRole", state.roles[userRole])
 
         // запись роли в sessionStore
@@ -144,10 +139,7 @@ export const credits = {
     },
 
     async getUserRole({ state, commit }, payload) {
-      
-      const response = await state.bpmService.getUserRole(payload);
-
-      return response
+      return await state.bpmService.getUserRole(payload);
     },
 
     async getBPMToken({ state, dispatch }) {
@@ -227,22 +219,27 @@ export const credits = {
           data
         });
 
+        // Проверить срабатывает ли catch
+
         //console.log('confirmCredit', response)
-        if (response.nextTask.id || response.requestedTask.state === "completed") {
-         
-          commit("setTaskId", response.nextTask.id);
-          sessionStorage.setItem("taskId", response.nextTask.id)
-        } else {
-          throw 'Next task id is undefined'
-        }
+        // Продумать логику когда завершился процесс(taskId = null), а когда вышла ошибка!!!
+        // if (response.nextTask.id) {
+        //   commit("setTaskId", response.nextTask.id);
+        //   sessionStorage.setItem("taskId", response.nextTask.id)
+        // } else {
+        //   throw 'Next task id is undefined'
+        // }
+
+        commit("setTaskId", response.nextTask.id);
+        sessionStorage.setItem("taskId", response.nextTask.id)
         
         return response;
       } catch (error) {
-        console.log('errorMessage', error)
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        
         sessionStorage.clear()
+        this.$router.push("/work/credit");
+        throw error
       }
     },
 
@@ -256,9 +253,9 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
@@ -272,9 +269,9 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
@@ -286,6 +283,7 @@ export const credits = {
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
+        throw error
       }
     },
 
@@ -320,20 +318,11 @@ export const credits = {
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
+        throw error
       }
-    }, 
-
-    async getDataFile({state, commit}) {
-      return await state.bpmService.getDataFile()
     }
   },
   mutations: {
-    toggleConfirm(state, payload) {
-      //console.log(state, payload);
-      //state.confirm = payload.preApprovalForm;
-      state.confirm = payload;
-    },
-
     creditConfirm(state, payload) {
       state.preApprovalData.income = payload.incoming;
       state.preApprovalData.expense = payload.expenses;
@@ -436,16 +425,24 @@ export const credits = {
       for (let i = 0; i < payload.length; i++) {
         state.loadings[i] = false
       }
-      state.creditTasks = payload;
+      state.creditTasks = payload.sort((a, b) => {
+          if (b.date < a.date) {
+            return -1
+          }
+          if (b.date > a.date) {
+            return 1
+          }
+        })
     },
 
     clearCreditTasks(state) {
       state.creditTasks = [];
     },
 
-    // setFileId(state, fileId) {
-    //   state.fileId = fileId
-    // }
+    removeTask(state, taskId) {
+      const idx = state.creditTasks.findIndex(i => i.taskId == taskId)
+      state.creditTasks.splice(idx, 1)
+    }
    
   },
   getters: {
@@ -455,6 +452,14 @@ export const credits = {
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
     creditTasks: state => state.creditTasks,
+    // creditTasks: state => state.creditTasks.sort((a, b) => {
+    //   if (b.date < a.date) {
+    //     return -1
+    //   }
+    //   if (b.date > a.date) {
+    //     return 1
+    //   }
+    // }),
     userRole: state => state.userRole,
     loadings: state => state.loadings
     //fileId: state => state.fileId
