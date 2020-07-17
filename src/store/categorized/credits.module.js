@@ -21,13 +21,10 @@ export const credits = {
     
     messageBar: false,
     bpmService: new BpmService(),
-    icon: false,
-    loader: false,
-    iconMessage: "",
+    
     scannerSerialNumber: null,
-    disableBtn: false,
     disableInput: false,
-    submitting: false,
+    
     loadMessage: "",
     personalData: {
       surname: "",
@@ -48,7 +45,7 @@ export const credits = {
 
       // FAMILY //
       familyStatus: null,
-      children: false,
+      children: null,
       childrenCount: 0,
       // MONEY //
       income: 0, //подтвержденный ежемесячный доход
@@ -135,6 +132,7 @@ export const credits = {
         commit("setMessage", errorMessage);
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
@@ -169,15 +167,45 @@ export const credits = {
         commit("setMessage", errorMessage);
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
-    async getDigIdNumber({ state }) {
-      return await state.bpmService.getDigIdNumber();
+    async getDigIdNumber({ state, commit }) {
+      try {
+        const response = await state.bpmService.getDigIdNumber();
+        console.log(response.Answere.AnswereComment)
+        if (response.Answere.AnswereComment == "OK") {
+          commit("sentScannerSerialNumber", response.ServiceInfo.ScannerSerial);
+        } else {
+          throw "Сканер не определен"
+        }
+      } catch (error) {
+        // const errorMessage = CommonUtils.filterServerError(error);
+        // commit("setMessage", errorMessage);
+        throw error
+      }
     },
 
-    async getUserDataFromService({ state }) {
-      return await state.bpmService.getUserDataFromService();
+    async getUserDataFromService({ state, commit}) {
+      try {
+        state.disableInput = true
+        state.loadMessage = "Данные загружаются"
+        const response = await state.bpmService.getUserDataFromService();
+        if (response.answere.AnswereComment == "OK") {
+          commit("sentPersonData", response)
+          commit("sentScannerSerialNumber", null); //close button auto compleate
+          state.loadMessage = ""
+        } else {
+          throw "Возникла проблема. Не удалось считать данные. Введите данные вручную"
+        }
+      } catch (error) {
+        state.disableInput = false
+        state.loadMessage = ""
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+        throw error
+      }
     },
 
     // async getUserDataFromReader({ state }) {
@@ -330,36 +358,19 @@ export const credits = {
       state.preApprovalData.maxSum = payload.sum;
     },
 
-    toggleSubmitting(state, payload) {
-      state.submitting = payload;
-    },
-    toggleDisableBtn(state, payload) {
-      state.disableBtn = payload;
-    },
-    toggleDisableInput(state, payload) {
-      state.disableInput = payload;
-    },
-    errorLoadData(state, payload) {
-      // console.log(payload);
-      state.icon = payload.flag;
-      state.loader = payload.loader;
-      state.iconMessage = payload.message;
-    },
     sentScannerSerialNumber(state, payload) {
       state.scannerSerialNumber = payload;
     },
-    loadMessageChange(state, payload) {
-      state.loadMessage = payload;
-    },
     sentPersonData(state, payload) {
       console.log("Данные пользователя", payload);
-      state.personalData.name = payload.personData.Name;
-      state.personalData.surname = payload.personData.Surname;
-      state.personalData.pinpp = payload.personData.Pinpp;
-      state.personalData.passport = payload.personData.DocumentNumber;
-      state.personalData.inn = payload.Inn;
-      state.personalData.mname = payload.Patronym;
-      state.personalData.personPhoto = payload.personPhoto;
+      state.personalData.name = payload.Person.NameL;
+      state.personalData.surname = payload.Person.SurnameL;
+      state.personalData.mname = payload.Person.PatronymL;
+      state.personalData.passport = payload.Person.DocumentSerialNumber;
+      state.personalData.pinpp = payload.Person.Pinpp;
+      state.personalData.inn = payload.Person.Inn ? payload.Person.Inn : payload.Additional.Inn;
+      state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
+      state.DigID = true
     },
     resetPersonData(state) {
       state.personalData = {
@@ -381,7 +392,7 @@ export const credits = {
 
         // FAMILY //
         familyStatus: null,
-        children: false,
+        children: null,
         childrenCount: 0,
         // MONEY //
         income: 0, //подтвержденный ежемесячный доход
@@ -396,10 +407,6 @@ export const credits = {
 
     resetMessageBar(state) {
       state.messageBar = false
-    },
-
-    toggleScannerSerialNumber(state, payload) {
-      state.scannerSerialNumber = payload;
     },
 
     setMessage(state, message) {
@@ -452,14 +459,6 @@ export const credits = {
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
     creditTasks: state => state.creditTasks,
-    // creditTasks: state => state.creditTasks.sort((a, b) => {
-    //   if (b.date < a.date) {
-    //     return -1
-    //   }
-    //   if (b.date > a.date) {
-    //     return 1
-    //   }
-    // }),
     userRole: state => state.userRole,
     loadings: state => state.loadings
     //fileId: state => state.fileId

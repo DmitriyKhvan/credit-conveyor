@@ -50,7 +50,7 @@ export default class BpmService {
     const responce = await axios({
       method: "get",
       url: `${this._digIdUrl}/DataFromService`,
-      timeout: 60000,
+      timeout: 30000,
     });
 
     return responce.data;

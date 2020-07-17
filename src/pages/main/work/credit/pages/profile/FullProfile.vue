@@ -942,14 +942,22 @@ export default {
   },
   methods: {
     callPrint(strid) {
+      //const left = document.documentElement.clientWidth/2 - 400
       const head = document.querySelector("head");
       
       const prtContent = document.getElementById(strid);
       const WinPrint = window.open(
         "",
         "",
-        "left=0,top=0,width=800,height=640,toolbar=0,scrollbars=1,status=0"
+        `left=${document.documentElement.clientWidth/2 - 400},
+        top=0,
+        width=800,
+        height=640,
+        toolbar=0,
+        scrollbars=1,
+        status=0`
       );
+
       //WinPrint.document.write("<html><head><title>Полная анкета</title>");
       WinPrint.document.write("<html>");
       WinPrint.document.write(head.innerHTML);
@@ -961,7 +969,10 @@ export default {
       WinPrint.document.close();
       WinPrint.focus();
       WinPrint.print();
-      WinPrint.close();
+      setTimeout(function(){
+          WinPrint.close();
+      }, 500);
+      // WinPrint.close();
       //prtContent.innerHTML = strOldOne;
     },
 

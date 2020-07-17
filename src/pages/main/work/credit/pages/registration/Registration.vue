@@ -25,7 +25,7 @@
                     label="Фамилия"
                     :rules="[
                       val => (val && val.length > 1) || 'Введите фамилию',
-                      val => val.match(/^[A-Za-z]+$/) || 'Введите на латинице'
+                      val => fioValid(val)
                     ]"
                   />
                   <q-input
@@ -39,7 +39,7 @@
                     label="Имя"
                     :rules="[
                       val => (val && val.length > 3) || 'Введите имя',
-                      val => val.match(/^[A-Za-z]+$/) || 'Введите на латинице'
+                      val => fioValid(val)
                     ]"
                   />
                   <q-input
@@ -48,10 +48,12 @@
                     outlined
                     v-model="personalData.mname"
                     dense
+                    :hint="loadMessage"
+                    :disable="disableInput"
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => val.match(/^[A-Za-z]+$/) || 'Введите на латинице'
+                      val => fioValid(val)
                     ]"
                   />
                   <q-input
@@ -83,7 +85,7 @@
                     :rules="[
                       val =>
                         (val && val.length === 13) || 'Введите номер телефона',
-                      val => !val.match(/(?=(.))\1{7,}/) || 
+                      val => !val.match(/(?=([^1-9]))\1{7,}/) || 
                         'Неверные данные'
                     ]"
                   />
@@ -178,6 +180,20 @@
 
               <div v-if="!!personalData.typeCredit" class="col-12">
                 <h6 class="periodCredit">Выберите срок кредита</h6>
+                  <q-input
+                    ref="periodCredit"
+                    square
+                    outlined
+                    v-model.number="personalData.periodCredit"
+                    type="number"
+                    dense
+                    label="Срок кредита"
+                    :rules="[
+                      val => !!val || 'Выберите срок кредита',
+                      val => (val <= periodCreditMax && val >= periodCreditMin) || 
+                        `Срок кредита между ${periodCreditMin} - ${periodCreditMax} мес.`
+                    ]"
+                  />
                 <q-badge color="secondary">
                   Срок: {{ personalData.periodCredit }} ({{
                     periodCreditMin
@@ -192,7 +208,6 @@
                   label
                   label-always
                   color="light-green"
-                  :rules="[val => !!val || 'Выберите срок кредита']"
                 />
               </div>
 
@@ -201,7 +216,7 @@
                 <appLoader v-if="loader" />
 
                 <!-- Button auto complete person data -->
-                <app-auto-complete-data v-else />
+                <app-auto-complete-data v-else-if="scannerSerialNumber" />
               </div>
             </div>
           </div>
@@ -265,7 +280,10 @@
                   type="number"
                   dense
                   label="Подтвержденный ежемесячный доход"
-                  :rules="[val => !!val || 'Поля должно быт заполнено']"
+                  :rules="[
+                    val => !!val || 'Поля должно быт заполнено',
+                    val => val > 0 || 'Некорректные данные'
+                  ]"
                 />
 
                 <!-- Для форматирования числе -->
@@ -292,7 +310,10 @@
                   type="number"
                   dense
                   label="Периодические расходы "
-                  :rules="[val => !!val || 'Поля должно быт заполнено']"
+                  :rules="[
+                    val => !!val || 'Поля должно быт заполнено',
+                    val => val > 0 || 'Некорректные данные'
+                  ]"
                 />
                 <q-input
                   ref="otherExpenses"
@@ -302,7 +323,10 @@
                   type="number"
                   dense
                   label="Плата за облуживание других обязательств"
-                  :rules="[val => !!val || 'Поля должно быт заполнено']"
+                  :rules="[
+                    val => !!val || 'Поля должно быт заполнено',
+                    val => val > 0 || 'Некорректные данные'
+                  ]"
                 />
                 
                 <div class="q-col-gutter-md">
@@ -325,7 +349,10 @@
                     type="number"
                     dense
                     label="Размер дополнительного дохода"
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
+                    :rules="[
+                      val => !!val || 'Поля должно быт заполнено',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                   <q-select
                     ref="additionalIncomeSource"
@@ -369,8 +396,6 @@
           </div>
         </div>
       </form>
-      <!-- DigID Network error! -->
-      <appDigIdNetworkError />
 
       <appLoaderFullScreen v-if="loaderFullScreen" />
       <!-- Pre-Approval -->
@@ -384,11 +409,11 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatNumber from "../../filters/format_number.js";
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
-import DigIdNetworkError from "./DigIdNetworkError";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 import { validItems } from "../../filters/valid_filter";
@@ -467,30 +492,21 @@ export default {
     }
 
     try {
-      const scannerSerial = await this.$store.dispatch("credits/getDigIdNumber");
-      this.$store.commit("credits/sentScannerSerialNumber", scannerSerial);
+      await this.$store.dispatch("credits/getDigIdNumber");
       this.loader = false;
-    } catch (err) {
-      console.log("DigId", err);
+    } catch (error) {
+      console.log("DigId", error);
       this.loader = false;
     }
   },
   computed: {
-    loadMessage() {
-      return this.$store.getters["credits/credits"].loadMessage
-    },
-    disableInput() {
-      return this.$store.getters["credits/credits"].disableInput
-    },
-    // disableBtn() {
-    //   return this.$store.state.credits.disableBtn;
-    // },
-    personalData() {
-      return this.$store.getters["credits/credits"].personalData
-    },
-    credits() {
-      return this.$store.getters["credits/credits"];
-    }
+    ...mapState({
+        loadMessage: state => state.credits.loadMessage,
+        disableInput: state => state.credits.disableInput,
+        scannerSerialNumber: state => state.credits.scannerSerialNumber,
+        personalData: state => state.credits.personalData,
+        credits: state => state.credits
+      })
   },
   watch: {
     "personalData.typeCredit"(credit) {
@@ -528,6 +544,7 @@ export default {
         );
       }
     },
+
     "personalData.children"(status) {
       if (!status) {
         this.personalData.childrenCount = 0;
@@ -559,12 +576,14 @@ export default {
       this.$refs.typeCredit.validate();
 
       if (!!this.personalData.typeCredit && this.personalData.typeCredit != 3) {
-        this.$refs.typeStepCredit.validate();
+        this.$refs.typeStepCredit.validate()
+        this.$refs.periodCredit.validate()
       } else {
-        validItems(this.$refs, "typeStepCredit");
+        validItems(this.$refs, "typeStepCredit")
+        validItems(this.$refs, "periodCredit")
       }
 
-      this.$refs.familyStatus.validate();
+      this.$refs.familyStatus.validate()
 
       if (this.personalData.children) {
         this.$refs.childrenCount.validate()
@@ -595,6 +614,7 @@ export default {
         this.$refs.pasport.hasError ||
         this.$refs.typeCredit.hasError ||
         this.$refs.typeStepCredit.hasError ||
+        this.$refs.periodCredit.hasError ||
         this.$refs.familyStatus.hasError ||
         this.$refs.childrenCount.hasError ||
         this.$refs.income.hasError ||
@@ -606,8 +626,6 @@ export default {
       ) {
         this.formHasError = true;
       } else {
-        this.$store.commit("credits/loadMessageChange", "");
-
         this.credits.confirmCreditData = {
           output: [
             {
@@ -698,16 +716,16 @@ export default {
         console.log(JSON.stringify(data, null, 2));
 
         try {
-          const res = await this.$store.dispatch(
+          const response = await this.$store.dispatch(
             "credits/confirmationCredit",
             data
           );
 
-          console.log("res", res);
-          if (res) {
-            const preApproval = res.nextTask.input.find(i => i.label == 'preApproval').data
-            this.credits.infoList = res.nextTask.input.find(i => i.label == 'InfoList').data // печатные формы
-            this.credits.reasonsList = res.nextTask.input.find(i => i.label == 'reasons_list').data.items;
+          console.log("response", response);
+          if (response) {
+            const preApproval = response.nextTask.input.find(i => i.label == 'preApproval').data
+            this.credits.infoList = response.nextTask.input.find(i => i.label == 'InfoList').data // печатные формы
+            this.credits.reasonsList = response.nextTask.input.find(i => i.label == 'reasons_list').data.items;
           
             this.confirm = true
             this.$store.commit("credits/creditConfirm", preApproval);
@@ -730,12 +748,15 @@ export default {
             value: Number(i.value)
           }
         })
-    }
+    },
+
+    fioValid(val) {
+      return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
+    },
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
-    appDigIdNetworkError: DigIdNetworkError,
     appLoader: Loader,
     appLoaderFullScreen: LoaderFullScreen
   }
@@ -793,6 +814,10 @@ export default {
   .q-field--with-bottom,
   .q-pb-sm {
     padding-bottom: 16px;
+  }
+
+  .q-col-gutter-y-md > *, .q-col-gutter-md > * {
+    padding-bottom: 0!important;
   }
 
   .q-field__native,
