@@ -3523,7 +3523,7 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      this.onSubmit(false)
+      this.onSubmit("start")
     }, 500)
     
   },
@@ -4000,8 +4000,9 @@ export default {
         this.formHasError = true;
         this.bar = true;
       } else {
-        
-        if (submitForm) {
+         if (submitForm === "start") {
+           this.profile.confirmCredit = false;
+         } else if (submitForm) {
         this.loader = true;
         this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
         console.log("fullProfile", this.$store.state.profile.fullFormProfile);
