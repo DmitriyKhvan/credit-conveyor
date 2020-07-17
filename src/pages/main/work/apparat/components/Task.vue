@@ -16,7 +16,7 @@
             <img src="@/assets/icons/Send.svg" />
           </div>
           <div class="q-px-sm">Статус:</div>
-          <div><strong class="blue">{{getStatus}}</strong></div>
+          <div><strong class="blue">{{getNameStatus(doc.doc_status)}}</strong></div>
         </div>
         <div class="desp">
           <div class="pad-3">

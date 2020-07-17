@@ -34,7 +34,7 @@
           @input = selectPages()
         />
       </div>
-      <div>1-{{faDocks.length}} из {{faDocs}}</div>
+      <div>1-{{faDocks.length ? faDocks.length : 0}} из {{faDocs}}</div>
       <div class="arrows">
         <div :class="faPage > 1 ? 'active': ''" @click="pagePrev"><q-icon name="keyboard_arrow_left" /></div>
         <div :class="faPage < faAllPages ? 'active': ''" @click="pageNext"><q-icon name="keyboard_arrow_right" /></div>
