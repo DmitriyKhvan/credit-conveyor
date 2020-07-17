@@ -25,7 +25,7 @@
                     label="Фамилия"
                     :rules="[
                       val => (val && val.length > 1) || 'Введите фамилию',
-                      val => val.match(/^[A-Za-z]+$/) || 'Введите на латинице'
+                      val => fioValid(val)
                     ]"
                   />
                   <q-input
@@ -39,7 +39,7 @@
                     label="Имя"
                     :rules="[
                       val => (val && val.length > 3) || 'Введите имя',
-                      val => val.match(/^[A-Za-z]+$/) || 'Введите на латинице'
+                      val => fioValid(val)
                     ]"
                   />
                   <q-input
@@ -53,7 +53,7 @@
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => val.match(/^[A-Za-z]+$/) || 'Введите на латинице'
+                      val => fioValid(val)
                     ]"
                   />
                   <q-input
@@ -63,7 +63,6 @@
                     v-model="personalData.inn"
                     dense
                     :hint="loadMessage"
-                    :disable="disableInput"
                     label="ИНН"
                     mask="#########"
                     
@@ -86,7 +85,7 @@
                     :rules="[
                       val =>
                         (val && val.length === 13) || 'Введите номер телефона',
-                      val => !val.match(/(?=(.))\1{7,}/) || 
+                      val => !val.match(/(?=([^1-9]))\1{7,}/) || 
                         'Неверные данные'
                     ]"
                   />
@@ -181,6 +180,20 @@
 
               <div v-if="!!personalData.typeCredit" class="col-12">
                 <h6 class="periodCredit">Выберите срок кредита</h6>
+                  <q-input
+                    ref="periodCredit"
+                    square
+                    outlined
+                    v-model.number="personalData.periodCredit"
+                    type="number"
+                    dense
+                    label="Срок кредита"
+                    :rules="[
+                      val => !!val || 'Выберите срок кредита',
+                      val => (val <= periodCreditMax && val >= periodCreditMin) || 
+                        `Срок кредита между ${periodCreditMin} - ${periodCreditMax} мес.`
+                    ]"
+                  />
                 <q-badge color="secondary">
                   Срок: {{ personalData.periodCredit }} ({{
                     periodCreditMin
@@ -195,7 +208,6 @@
                   label
                   label-always
                   color="light-green"
-                  :rules="[val => !!val || 'Выберите срок кредита']"
                 />
               </div>
 
@@ -268,7 +280,10 @@
                   type="number"
                   dense
                   label="Подтвержденный ежемесячный доход"
-                  :rules="[val => !!val || 'Поля должно быт заполнено']"
+                  :rules="[
+                    val => !!val || 'Поля должно быт заполнено',
+                    val => val > 0 || 'Некорректные данные'
+                  ]"
                 />
 
                 <!-- Для форматирования числе -->
@@ -295,7 +310,10 @@
                   type="number"
                   dense
                   label="Периодические расходы "
-                  :rules="[val => !!val || 'Поля должно быт заполнено']"
+                  :rules="[
+                    val => !!val || 'Поля должно быт заполнено',
+                    val => val > 0 || 'Некорректные данные'
+                  ]"
                 />
                 <q-input
                   ref="otherExpenses"
@@ -305,7 +323,10 @@
                   type="number"
                   dense
                   label="Плата за облуживание других обязательств"
-                  :rules="[val => !!val || 'Поля должно быт заполнено']"
+                  :rules="[
+                    val => !!val || 'Поля должно быт заполнено',
+                    val => val > 0 || 'Некорректные данные'
+                  ]"
                 />
                 
                 <div class="q-col-gutter-md">
@@ -328,7 +349,10 @@
                     type="number"
                     dense
                     label="Размер дополнительного дохода"
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
+                    :rules="[
+                      val => !!val || 'Поля должно быт заполнено',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                   <q-select
                     ref="additionalIncomeSource"
@@ -372,8 +396,6 @@
           </div>
         </div>
       </form>
-      <!-- DigID Network error! -->
-      <appDigIdNetworkError />
 
       <appLoaderFullScreen v-if="loaderFullScreen" />
       <!-- Pre-Approval -->
@@ -392,7 +414,6 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 import formatNumber from "../../filters/format_number.js";
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
-import DigIdNetworkError from "./DigIdNetworkError";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 import { validItems } from "../../filters/valid_filter";
@@ -523,6 +544,7 @@ export default {
         );
       }
     },
+
     "personalData.children"(status) {
       if (!status) {
         this.personalData.childrenCount = 0;
@@ -554,12 +576,14 @@ export default {
       this.$refs.typeCredit.validate();
 
       if (!!this.personalData.typeCredit && this.personalData.typeCredit != 3) {
-        this.$refs.typeStepCredit.validate();
+        this.$refs.typeStepCredit.validate()
+        this.$refs.periodCredit.validate()
       } else {
-        validItems(this.$refs, "typeStepCredit");
+        validItems(this.$refs, "typeStepCredit")
+        validItems(this.$refs, "periodCredit")
       }
 
-      this.$refs.familyStatus.validate();
+      this.$refs.familyStatus.validate()
 
       if (this.personalData.children) {
         this.$refs.childrenCount.validate()
@@ -590,6 +614,7 @@ export default {
         this.$refs.pasport.hasError ||
         this.$refs.typeCredit.hasError ||
         this.$refs.typeStepCredit.hasError ||
+        this.$refs.periodCredit.hasError ||
         this.$refs.familyStatus.hasError ||
         this.$refs.childrenCount.hasError ||
         this.$refs.income.hasError ||
@@ -601,8 +626,6 @@ export default {
       ) {
         this.formHasError = true;
       } else {
-        this.$store.commit("credits/loadMessageChange", "");
-
         this.credits.confirmCreditData = {
           output: [
             {
@@ -725,12 +748,15 @@ export default {
             value: Number(i.value)
           }
         })
-    }
+    },
+
+    fioValid(val) {
+      return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
+    },
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
-    appDigIdNetworkError: DigIdNetworkError,
     appLoader: Loader,
     appLoaderFullScreen: LoaderFullScreen
   }

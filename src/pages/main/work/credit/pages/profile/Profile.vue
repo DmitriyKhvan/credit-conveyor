@@ -1226,12 +1226,14 @@
                       v-model="Customer.JobInfo.lastJobExperienceMonths"
                       :options="dictionaries.jobPeriods.items"
                       dense
-                      label="Стаж на поледнем месте работы"
+                      label="Стаж на последнем месте работы"
                       emit-value
                       map-options
                       :reactive-rules="false"
                       :rules="[
-                        val => !!val || 'Выберите стаж работы'
+                        val => !!val || 'Выберите стаж работы',
+                        val => (Customer.JobInfo.totalJobExperienceMonths >= Customer.JobInfo.lastJobExperienceMonths) ||
+                          'Некорректные данные'
                       ]"
                       class="q-pb-sm"
                     />
@@ -1250,7 +1252,9 @@
                       map-options
                       :reactive-rules="false"
                       :rules="[
-                        val => !!val || 'Выберите общий трудовой стаж'
+                        val => !!val || 'Выберите общий трудовой стаж',
+                        val => (Customer.JobInfo.totalJobExperienceMonths >= Customer.JobInfo.lastJobExperienceMonths) ||
+                          'Некорректные данные'
                       ]"
                       class="q-pb-sm"
                     />
@@ -1511,8 +1515,10 @@
                     type="number"
                     dense
                     label="Рыночная стоимость"
-                    lazy-rules
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
+                    :rules="[
+                      val => !!val || 'Поля должно быт заполнено',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                 </div>
               </div>
@@ -1618,8 +1624,10 @@
                     type="number"
                     dense
                     label="Рыночная стоимость"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите рыночную стоимость']"
+                    :rules="[
+                      val => !!val || 'Введите рыночную стоимость',
+                      val => val > 0 || 'Некорректные данные'  
+                    ]"
                   />
                 </div>
               </div>
@@ -1712,7 +1720,10 @@
                     dense
                     label="Сумма поручительства"
                     @input="guaranteesValid"
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[
+                      val => !!val || 'Введите сумму',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                 </div>
               </div>
@@ -2260,7 +2271,10 @@
                     label="Сумма поручительства"
                     @input="guaranteesValid"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[
+                      val => !!val || 'Введите сумму',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                 </div>
               </div>
@@ -2557,8 +2571,7 @@
                     dense
                     label="Наименование страховой компании"
                     :rules="[
-                      val => !!val || 'Введите наименование страховой компании',
-                      val => fioValid(val)
+                      val => !!val || 'Введите наименование страховой компании'
                     ]"
                   />
                 </div>
@@ -2590,7 +2603,10 @@
                     dense
                     label="Сумма страхового полиса"
                     @input="guaranteesValid"
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[
+                      val => !!val || 'Введите сумму',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                 </div>
               </div>
@@ -2662,11 +2678,12 @@
                   label="Запрашиваемая сумма кредита"
                   :rules="[
                     val => !!val || 'Введите сумму кредита',
-
+                    val => val > 0 || 'Некорректные данные',
                     preApprovalData.maxSum 
                     ?  (val =>
-                      val <= preApprovalData.maxSum ||
-                      `Введите сумму небольше ${preApprovalData.maxSum}`)
+                      (val > 0 &&
+                      val <= preApprovalData.maxSum) ||
+                      `Введите сумму от 0 до ${preApprovalData.maxSum}`)
                     : null
                   ]"
                 />
@@ -2716,14 +2733,14 @@
                   v-model="fullProfile.LoanInfo.MaxInterestRate"
                   dense
                   disable
-                  label="Процентная ставка по кредиту (максимальная)"
+                  label="Процентная ставка"
                   :rules="[
                     val => !!val || 'Введите максимальную процентную ставку'
                   ]"
                 />
               </div>
 
-              <div class="col-4">
+              <!-- <div class="col-4">
                 <q-input
                   ref="interestRateMin"
                   square
@@ -2736,7 +2753,7 @@
                     val => !!val || 'Введите минимальную процентную ставку'
                   ]"
                 />
-              </div>
+              </div> -->
 
               <!-- <q-select
                   ref="periodRepayment"
@@ -2777,7 +2794,6 @@
                     label
                     label-always
                     color="light-green"
-                    :rules="[val => !!val || 'Выберите срок кредита']"
                     class="sliderCredit"
                   />
                 </div>
@@ -2798,19 +2814,19 @@
                   mask="##"
                   :rules="[
                     val => !!val || 'Введите удобный срок погашения в мес',
-                    val => val > 0 || 'Неверный срок погашения'
+                    val => val > 0 || 'Некорректные данные'
                   ]"
                 />
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   ref="periodRepaymentMin"
                   square
                   outlined
                   v-model.number="fullProfile.LoanInfo.MinTermInMonths"
                   type="number"
                   dense
-                  disable
                   label="Минимальное количество месяцев на кредит"
                   mask="##"
                   :rules="[
@@ -2822,13 +2838,13 @@
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   ref="periodRepaymentMax"
                   square
                   outlined
                   v-model.number="fullProfile.LoanInfo.MaxTermInMonths"
                   type="number"
                   dense
-                  disable
                   label="Максимальное количество месяцев на кредит"
                   mask="##"
                   :rules="[
@@ -2874,7 +2890,10 @@
                   type="number"
                   dense
                   label="Первоначальный взнос"
-                  :rules="[val => !!val || 'Введите первоначальный взнос']"
+                  :rules="[
+                    val => !!val || 'Введите первоначальный взнос',
+                    val => val > 0 || 'Некорректные данные'
+                  ]"
                 />
               </div>
 
@@ -2949,7 +2968,6 @@
 
               <div class="col-4">
                 <q-input
-                  :disable="disableField"
                   square
                   outlined
                   type="number"
@@ -3503,7 +3521,12 @@ export default {
     }
     
   },
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      this.onSubmit(false)
+    }, 500)
+    
+  },
   computed: {
     ...mapState({
       disableField: state => state.profile.disableField
@@ -3545,6 +3568,24 @@ export default {
         this.isValid = false;
       } else {
         this.isValid = true;
+      }
+    },
+
+    "Customer.JobInfo.lastJobExperienceMonths"() {
+      if (this.Customer.JobInfo.totalJobExperienceMonths) {
+        this.$refs.workExperience.validate()
+      }
+       if (this.Customer.JobInfo.lastJobExperienceMonths) {
+        this.$refs.totalWorkExperience.validate()
+      }
+    },
+    
+    "Customer.JobInfo.totalJobExperienceMonths"() {
+      if (this.Customer.JobInfo.totalJobExperienceMonths) {
+        this.$refs.workExperience.validate()
+      }
+       if (this.Customer.JobInfo.lastJobExperienceMonths) {
+        this.$refs.totalWorkExperience.validate()
       }
     },
 
@@ -3987,9 +4028,9 @@ export default {
         console.log('Customer', Customer)
         //ClientManagerLogin = "man"
         Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`
-        Customer.Document.Number = Number(Customer.Document.Number)
-        Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
-        Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
+          Customer.Document.Number = Number(Customer.Document.Number)
+          Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
+          Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
         //LoanInfo.RepaymentType = Number(LoanInfo.RepaymentType)
 
         // удалил из объекта - Date!!!
@@ -4054,6 +4095,17 @@ export default {
         this.$refs.DocumentGivenDate.validate()
       }
     },
+
+    // validWorkExperience() {
+
+    //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
+    //     this.$refs.workExperience.validate()
+    //   }
+
+    //   if (this.Customer.JobInfo.lastJobExperienceMonths) {
+    //     this.$refs.totalWorkExperience.validate()
+    //   }
+    // },
 
     validDateRelatives(date, idx) {
 
@@ -4441,15 +4493,15 @@ export default {
     },
 
     givenPlaceValid(val) {
-      return val.match(/[^А-Яа-я0-9]+$/) || 'Введите на латинице' // все кроме кирилицы
+      return val.match(/[^А-Яа-яa-z0-9]+$/) || 'Введите на латинице заглавными буквами' // все кроме кирилицы
     },
 
     fioValid(val) {
-      return val.match(/^[A-Za-z]+$/) || 'Введите на латинице' // только латинские буквы
+      return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
     },
 
     phoneValid(val) {
-      return !val.match(/(?=(.))\1{7,}/) || 'Неверные данные'
+      return !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные'
     },
 
     async printFile(fileData, idx) {
