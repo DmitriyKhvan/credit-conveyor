@@ -333,7 +333,7 @@
                   outlined
                   v-model="Customer.Document.GivenPlace"
                   dense
-                  label="Кем выдан паспорт"
+                  label="Кем выдан документ"
                   :rules="[
                     val => !!val || 'Введите кем выдан документ',
                     val => givenPlaceValid(val)
@@ -928,7 +928,8 @@
                     mask="#######"
                     :rules="[
                       val =>
-                        (val && val.length === 7) || 'Введите номер документа'
+                        (val && val.length === 7) || 'Введите номер документа',
+                      val => docNumberValid(val)
                     ]"
                   />
                 </div>
@@ -1224,6 +1225,7 @@
                       square
                       outlined
                       v-model="Customer.JobInfo.lastJobExperienceMonths"
+                      @input="validWorkExperience"
                       :options="dictionaries.jobPeriods.items"
                       dense
                       label="Стаж на последнем месте работы"
@@ -1245,6 +1247,7 @@
                       square
                       outlined
                       v-model="Customer.JobInfo.totalJobExperienceMonths"
+                      @input="validWorkExperience"
                       :options="dictionaries.jobPeriods.items"
                       dense
                       label="Общий трудовой стаж"
@@ -1931,7 +1934,8 @@
                     mask="#######"
                     :rules="[
                       val =>
-                        (val && val.length === 7) || 'Введите Номер документа'
+                        (val && val.length === 7) || 'Введите Номер документа',
+                      val => docNumberValid(val)
                     ]"
                   />
                 </div>
@@ -3571,23 +3575,23 @@ export default {
       }
     },
 
-    "Customer.JobInfo.lastJobExperienceMonths"() {
-      if (this.Customer.JobInfo.totalJobExperienceMonths) {
-        this.$refs.workExperience.validate()
-      }
-       if (this.Customer.JobInfo.lastJobExperienceMonths) {
-        this.$refs.totalWorkExperience.validate()
-      }
-    },
+    // "Customer.JobInfo.lastJobExperienceMonths"() {
+    //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
+    //     this.$refs.workExperience.validate()
+    //   }
+    //    if (this.Customer.JobInfo.lastJobExperienceMonths) {
+    //     this.$refs.totalWorkExperience.validate()
+    //   }
+    // },
     
-    "Customer.JobInfo.totalJobExperienceMonths"() {
-      if (this.Customer.JobInfo.totalJobExperienceMonths) {
-        this.$refs.workExperience.validate()
-      }
-       if (this.Customer.JobInfo.lastJobExperienceMonths) {
-        this.$refs.totalWorkExperience.validate()
-      }
-    },
+    // "Customer.JobInfo.totalJobExperienceMonths"() {
+    //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
+    //     this.$refs.workExperience.validate()
+    //   }
+    //    if (this.Customer.JobInfo.lastJobExperienceMonths) {
+    //     this.$refs.totalWorkExperience.validate()
+    //   }
+    // },
 
     sameRegistration(flag) {
       if (flag) {
@@ -4097,16 +4101,15 @@ export default {
       }
     },
 
-    // validWorkExperience() {
+    validWorkExperience() {
+      if (this.Customer.JobInfo.totalJobExperienceMonths) {
+        this.$refs.workExperience.validate()
+      }
 
-    //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
-    //     this.$refs.workExperience.validate()
-    //   }
-
-    //   if (this.Customer.JobInfo.lastJobExperienceMonths) {
-    //     this.$refs.totalWorkExperience.validate()
-    //   }
-    // },
+      if (this.Customer.JobInfo.lastJobExperienceMonths) {
+        this.$refs.totalWorkExperience.validate()
+      }
+    },
 
     validDateRelatives(date, idx) {
 
@@ -4503,6 +4506,10 @@ export default {
 
     phoneValid(val) {
       return !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные'
+    },
+
+    docNumberValid(val) {
+      return !val.match(/(?=(.))\1{7,}/) || 'Неверные данные'
     },
 
     async printFile(fileData, idx) {

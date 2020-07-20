@@ -45,7 +45,7 @@ export const credits = {
 
       // FAMILY //
       familyStatus: null,
-      children: null,
+      children: false,
       childrenCount: 0,
       // MONEY //
       income: 0, //подтвержденный ежемесячный доход
@@ -80,7 +80,28 @@ export const credits = {
       maxSum: 0 // Сколько максимум кредита можем выдать
     },
     creditTasks: [],
+    pages: 0,
+    // allPages: 0,
     loadings: [],
+    
+    countRowList: [
+      {
+        label: 10,
+        value: 10,
+      },
+      {
+        label: 20,
+        value: 20,
+      },
+      {
+        label: 30,
+        value: 30,
+      },
+      {
+        label: "Все",
+        value: 0
+      }
+    ],
 
     options: {
       confirmation: [
@@ -271,12 +292,12 @@ export const credits = {
       }
     },
 
-    async getRoleTasks({ state, commit }) {
+    async getRoleTasks({ state, commit }, {page, count}) {
       try {
-        const response = await state.bpmService.getRoleTasks();
+        const response = await state.bpmService.getRoleTasks({page, count});
         console.log("creditList", response);
         if (response.infoList.length) {
-          commit("setCreditTasks", response.infoList);
+          commit("setCreditTasks", {response, count});
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -287,12 +308,12 @@ export const credits = {
       }
     },
 
-    async getUserTasks({ state, commit }) {
+    async getUserTasks({ state, commit }, {page, count}) {
       try {
-        const response = await state.bpmService.getUserTasks();
+        const response = await state.bpmService.getUserTasks({page, count});
         console.log('res', response)
         if (response.infoList.length) {
-          commit("setCreditTasks", response.infoList);
+          commit("setCreditTasks",  {response, count});
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -351,6 +372,10 @@ export const credits = {
     }
   },
   mutations: {
+    setPersonalData(state, payload) {
+      state.personalData = payload
+    },
+
     creditConfirm(state, payload) {
       state.preApprovalData.income = payload.incoming;
       state.preApprovalData.expense = payload.expenses;
@@ -392,7 +417,7 @@ export const credits = {
 
         // FAMILY //
         familyStatus: null,
-        children: null,
+        children: false,
         childrenCount: 0,
         // MONEY //
         income: 0, //подтвержденный ежемесячный доход
@@ -428,11 +453,14 @@ export const credits = {
     },
 
     setCreditTasks(state, payload) {
-      // payload.map(i => i.date = CommonUtils.dateFilter(i.date, "datetime"))
-      for (let i = 0; i < payload.length; i++) {
+      state.countRowList.find(i => i.label === 'Все').value = payload.response.all
+
+      state.pages = Math.ceil(payload.response.all / payload.count)
+
+      for (let i = 0; i < payload.count; i++) {
         state.loadings[i] = false
       }
-      state.creditTasks = payload.sort((a, b) => {
+      state.creditTasks = payload.response.infoList.sort((a, b) => {
           if (b.date < a.date) {
             return -1
           }

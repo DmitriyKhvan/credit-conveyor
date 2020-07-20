@@ -119,6 +119,7 @@
   </div>
 </template>
 <script>
+import {mapState} from "vuex"
 import printJS from "print-js";
 import formatNumber from "../../filters/format_number.js";
 import CommonUtils from "@/shared/utils/CommonUtils";
@@ -144,6 +145,9 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      taskIdPreapp: state => state.credits.taskId,
+    }),
     disableBtn() {
       return this.$store.getters["credits/credits"].disableBtn;
     },
@@ -178,6 +182,8 @@ export default {
           const dictionaries = response.nextTask.input.find(
             i => i.label === "inputDictionaries"
           ).data;
+
+          localStorage.removeItem(this.taskIdPreapp)
 
           console.log("dic", JSON.stringify(dictionaries, null, 2));
 
@@ -225,6 +231,7 @@ export default {
 
           if (response) {
             this.$store.commit("credits/setMessage", "Credit failure");
+            localStorage.removeItem(this.taskIdPreapp)
             sessionStorage.clear();
             this.$router.push("/work/credit");
           }
