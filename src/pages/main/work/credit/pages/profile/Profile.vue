@@ -122,7 +122,9 @@
                   label="ПИНФЛ"
                   mask="##############"
                   lazy-rules
-                  :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
+                  :rules="[
+                    val => (val && val.length === 14) || 'Введите ПНФЛ'
+                  ]"
                 />
               </div>
               <div class="col-4">
@@ -1137,10 +1139,10 @@
                       dense
                       label="ИНН работодателя"
                       mask="#########"
-                      lazy-rules
                       :rules="[
                         val =>
-                          (val && val.length === 9) || 'Введите ИНН работодателя'
+                          (val && val.length == 9) || 'Введите ИНН работодателя',
+                        val => innValid(val)
                       ]"
                     />
                   </div>
@@ -1831,7 +1833,8 @@
                     :rules="[
                       val =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
+                      val => innValid(val)
                     ]"
                   />
                 </div>
@@ -1846,7 +1849,8 @@
                     label="ПИНФЛ"
                     mask="##############"
                     :rules="[
-                      val => (val && val.length === 14) || 'Введите ПНФЛ'
+                      val => (val && val.length === 14) || 'Введите ПНФЛ',
+                      val => pinppValid(val)
                     ]"
                   />
                 </div>
@@ -2315,7 +2319,8 @@
                     :rules="[
                       val =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
+                      val => innValid(val)
                     ]"
                   />
                 </div>
@@ -2592,7 +2597,8 @@
                     :rules="[
                       val =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
+                      val => innValid(val)
                     ]"
                   />
                 </div>
@@ -4510,6 +4516,14 @@ export default {
 
     docNumberValid(val) {
       return !val.match(/(?=(.))\1{7,}/) || 'Неверные данные'
+    },
+
+    innValid(val) {
+      return !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
+    },
+
+    pinppValid(val) {
+      return !val.match(/(?=(.))\1{14,}/) || 'Неверные данные'
     },
 
     async printFile(fileData, idx) {

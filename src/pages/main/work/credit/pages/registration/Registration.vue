@@ -154,6 +154,7 @@
                     outlined
                     v-model="personalData.typeCredit"
                     :options="options.typeCredits"
+                    @input="onChangeLoan($event)"
                     dense
                     label="Кредитный продукт"
                     emit-value
@@ -466,6 +467,8 @@ export default {
           this.$store.commit("credits/setPersonalData", JSON.parse(localStorage.getItem(this.taskId)))
         }
 
+        this.setLoan(this.personalData.typeCredit)
+
         this.loaderForm = false
       } else {
         const auth = await this.$store.dispatch("credits/authBpm");
@@ -510,41 +513,41 @@ export default {
     }
   },
   watch: {
-    "personalData.typeCredit"(credit) {
-      this.personalData.typeStepCredit = null;
-      this.options.typeStepCredits = [];
-      this.periodCreditMin = null;
-      this.periodCreditMax = null;
-      this.personalData.periodCredit = 0;
-      this.personalData.loanRate = 0;
+    // "personalData.typeCredit"(credit) {
+    //   this.personalData.typeStepCredit = null;
+    //   this.options.typeStepCredits = [];
+    //   this.periodCreditMin = null;
+    //   this.periodCreditMax = null;
+    //   this.personalData.periodCredit = 0;
+    //   this.personalData.loanRate = 0;
 
-      const idxCredit = this.options.typeCredits.findIndex(
-        item => item.value == credit
-      );
+    //   const idxCredit = this.options.typeCredits.findIndex(
+    //     item => item.value == credit
+    //   );
 
-      if (idxCredit !== -1) {
+    //   if (idxCredit !== -1) {
 
-        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
-          return {
-            label: i.label,
-            value: Number(i.value)
-          }
-        })
+    //     this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+    //       return {
+    //         label: i.label,
+    //         value: Number(i.value)
+    //       }
+    //     })
 
-        this.periodCreditMin = Number(
-          this.options.typeCredits[idxCredit].period[0].value
-        );
-        this.periodCreditMax = Number(
-          this.options.typeCredits[idxCredit].period[1].value
-        );
-        this.personalData.periodCredit = Number(
-          this.options.typeCredits[idxCredit].period[0].value
-        );
-        this.personalData.loanRate = Number(
-          this.options.typeCredits[idxCredit].loanRate
-        );
-      }
-    },
+    //     this.periodCreditMin = Number(
+    //       this.options.typeCredits[idxCredit].period[0].value
+    //     );
+    //     this.periodCreditMax = Number(
+    //       this.options.typeCredits[idxCredit].period[1].value
+    //     );
+    //     this.personalData.periodCredit = Number(
+    //       this.options.typeCredits[idxCredit].period[0].value
+    //     );
+    //     this.personalData.loanRate = Number(
+    //       this.options.typeCredits[idxCredit].loanRate
+    //     );
+    //   }
+    // },
 
     "personalData.children"(status) {
       if (!status) {
@@ -737,6 +740,50 @@ export default {
           this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
           this.loaderFullScreen = false;
         }
+      }
+    },
+
+    onChangeLoan(credit) {
+      console.log('credit', credit)
+      this.personalData.typeStepCredit = null;
+      this.options.typeStepCredits = [];
+      this.periodCreditMin = null;
+      this.periodCreditMax = null;
+      this.personalData.periodCredit = 0;
+      this.personalData.loanRate = 0;
+
+      this.setLoan(credit)
+    },
+
+    setLoan(credit) {
+      const idxCredit = this.options.typeCredits.findIndex(
+        item => item.value == credit
+      );
+      console.log('idxCredit', idxCredit)
+
+      if (idxCredit !== -1) {
+
+        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
+
+        this.periodCreditMin = Number(
+          this.options.typeCredits[idxCredit].period[0].value
+        );
+        this.periodCreditMax = Number(
+          this.options.typeCredits[idxCredit].period[1].value
+        );
+
+        if (!this.personalData.periodCredit) {
+          this.personalData.periodCredit = this.periodCreditMin
+        }
+        
+        this.personalData.loanRate = Number(
+          this.options.typeCredits[idxCredit].loanRate
+        );
       }
     },
 

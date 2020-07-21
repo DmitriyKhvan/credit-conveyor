@@ -183,7 +183,7 @@ export default {
             i => i.label === "inputDictionaries"
           ).data;
 
-          localStorage.removeItem(this.taskIdPreapp)
+          
 
           console.log("dic", JSON.stringify(dictionaries, null, 2));
 
@@ -194,6 +194,7 @@ export default {
           sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
           
           this.$router.push("profile");
+          localStorage.removeItem(this.taskIdPreapp)
           this.$emit("toggleLoaderForm", false);
         }
       } catch (error) {
@@ -231,9 +232,9 @@ export default {
 
           if (response) {
             this.$store.commit("credits/setMessage", "Credit failure");
-            localStorage.removeItem(this.taskIdPreapp)
             sessionStorage.clear();
             this.$router.push("/work/credit");
+            localStorage.removeItem(this.taskIdPreapp)
           }
           
         } catch (error) {

@@ -1603,10 +1603,10 @@ export default {
               name: "CreditCommiteeDecisions",
               data: this.fullProfile.CreditCommiteeDecisions.items
             },
-            // {
-            //   name: "ApplicationComment",
-            //   data: this.fullProfile.ApplicationComment.items
-            // }
+            {
+              name: "application_comments",
+              data: this.fullProfile.ApplicationComment.items
+            }
           ]
         };
       }
