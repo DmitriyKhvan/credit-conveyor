@@ -16,7 +16,7 @@ const SocketService = {
   },
   runUsersCounter() {
     let socket = store.getters["socket/getSocket"];
-    socket.on("count", (data) => {
+    socket.on("count", data => {
       //console.log("countinRUN: ", data);
       store.dispatch("socket/setUserCount", data);
     });
@@ -46,11 +46,11 @@ const SocketService = {
 
     const chats = store.getters.getChats;
 
-    chats.forEach((ch) => {
+    chats.forEach(ch => {
       if (ch.type === 2) {
         const chat = {
           chat_id: ch.chat_id,
-          emp_name: user,
+          emp_name: user
         };
         socket.emit("grp/leave", chat);
       }
@@ -69,9 +69,9 @@ const SocketService = {
     }
   },
   runNotifications(socket) {
-    socket.on("notifications", (data) => {
+    socket.on("notifications", data => {
       if (data) {
-        data.forEach((msg) => {
+        data.forEach(msg => {
           //console.log(msg)
           store.dispatch("dicts/addNotification", msg);
           if (msg.status == 0) {
@@ -82,17 +82,17 @@ const SocketService = {
     });
   },
   runChatAll(socket, empId, user) {
-    socket.on("chat/all", (data) => {
+    socket.on("chat/all", data => {
       const chats = [];
       if (data) {
         let ch = {};
-        data.forEach((el) => {
+        data.forEach(el => {
           if (el.type === 2) {
             console.log(data);
             let myData = {
               emp_name: user,
               emp_id: empId,
-              chat_id: el.chat_id,
+              chat_id: el.chat_id
             };
             socket.emit("grp/join", myData);
 
@@ -105,7 +105,7 @@ const SocketService = {
               members: el.details !== null ? el.details[0].members : [],
               messages: el.messages !== null ? el.messages : [],
               creator_fio: el.details !== null ? el.details[0].creator_fio : "",
-              creator: el.details !== null ? el.details[0].creator : "",
+              creator: el.details !== null ? el.details[0].creator : ""
             };
           } else {
             ch = {
@@ -116,7 +116,7 @@ const SocketService = {
               to_name: el.details !== null ? el.details[0].name : [],
               to_uid: el.details !== null ? el.details[0].emp_id : [],
               members: el.details !== null ? el.details[0].members : [],
-              messages: el.messages !== null ? el.messages : [],
+              messages: el.messages !== null ? el.messages : []
             };
           }
           chats.push(ch);
@@ -126,7 +126,7 @@ const SocketService = {
     });
   },
   runChatMessageOn(socket, empId) {
-    socket.on("msg/send", (data) => {
+    socket.on("msg/send", data => {
       console.log(".ON - msg/send", data);
       store.dispatch("addMessage", data);
       const activeChat = store.getters.getActiveChat
@@ -137,15 +137,15 @@ const SocketService = {
         console.log("Reset Count");
         const chat = {
           chat_id: data.chat_id,
-          emp_id: empId,
+          emp_id: empId
         };
         axios
           .post("/chat/resetcount", chat)
-          .then((response) => {
+          .then(response => {
             console.log("reset log");
             store.dispatch("delChatCount", data.chat_id);
           })
-          .catch((error) => {
+          .catch(error => {
             console.log("error");
           });
       }
@@ -156,7 +156,7 @@ const SocketService = {
     });
   },
   runGroupMessageOn(socket, empId) {
-    socket.on("grp/msg", (data) => {
+    socket.on("grp/msg", data => {
       console.log(data);
       store.dispatch("addMessage", data);
       const activeChat = store.getters.getActiveChat
@@ -167,15 +167,15 @@ const SocketService = {
         console.log("Reset Count");
         const chat = {
           chat_id: data.chat_id,
-          emp_id: empId,
+          emp_id: empId
         };
         axios
           .post("/chat/resetcount", chat)
-          .then((response) => {
+          .then(response => {
             console.log("reset log");
             store.dispatch("delChatCount", data.chat_id);
           })
-          .catch((error) => {
+          .catch(error => {
             console.log("error");
           });
       }
@@ -193,12 +193,12 @@ const SocketService = {
     // });
   },
   runOnlineUsers(socket) {
-    socket.on("users/online", (userList) => {
+    socket.on("users/online", userList => {
       store.dispatch("auth/setOnlineUsers", userList);
     });
   },
   runActiveUsers(socket) {
-    socket.on("users/active", (userList) => {
+    socket.on("users/active", userList => {
       store.dispatch("auth/setActiveUsers", userList);
     });
   },
@@ -209,20 +209,20 @@ const SocketService = {
       emp_id: empId,
       emp_name: uname,
       socket_id: socket.id,
-      login_time: CommonUtils.formattedDate(new Date()),
+      login_time: CommonUtils.formattedDate(new Date())
     };
 
     // console.log({ online: data });
     socket.emit("online", data);
   },
   runPingPong(socket) {
-    socket.on("ping", function (data) {
-      console.log(data);
+    socket.on("ping", function(data) {
+      //console.log(data);
       socket.emit("pong", { beat: 1 });
     });
   },
   runLogout(socket) {
-    socket.on("logout", (_) => {
+    socket.on("logout", _ => {
       AuthService.logout();
     });
   },
@@ -230,7 +230,7 @@ const SocketService = {
   removeVisitor(socketId) {
     let socket = store.getters["socket/getSocket"];
     socket.emit("users/remove", socketId);
-  },
+  }
 };
 
 export default SocketService;
