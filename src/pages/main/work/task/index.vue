@@ -1,5 +1,31 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-lg">
+    <a-header></a-header>
+    <template v-if="!viewTasks">
+      <template v-if="list">
+        <div class="row"
+          v-for="task in tasks"
+          :key="task.id"
+        >
+          <div class="col" >
+            <div>
+              <a-task :task="task"></a-task>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="row q-col-gutter-lg q-pt-sm">
+          <div class="col-lg-3 col-md-4 col-sm-6" v-for="n in 10" :key="n"><a-task></a-task></div>
+        </div>
+      </template>
+    </template>
+    <template v-else>
+      <a-management></a-management>
+    </template>
+
+  </div>
+  <!-- <div class="q-pa-md">
     <q-toolbar class="shadow-2 rounded-borders">
       <q-tabs v-model="tab" inline-label stretch>
         <q-tab
@@ -122,37 +148,44 @@
       </div>
     </div>
 
-    <!-- Иерархия -->
+
     <q-dialog v-model="usersPopup">
       <q-hierarchy></q-hierarchy>
     </q-dialog>
 
-    <!-- Задача -->
+
     <q-dialog v-model="taskPopup" full-width full-height>
       <q-task></q-task>
     </q-dialog>
-  </div>
+  </div> -->
 
-  <!-- <div class="q-pa-md">
-    <router-view />
-  </div>-->
+
 </template>
 
 <script>
+import Header from './components/Header'
+import Task from './components/Task'
+import Management from './components/Management'
+import { mapState, mapGetters } from 'vuex';
+
+
 import UserService from "@/services/user.service";
 import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
 import formatSize from "./filters/formatSize";
 import Decoder from "@/shared/utils/CommonUtils";
 
+
 export default {
   data() {
     return {
-      taskPopup: false,
-      usersPopup: false,
-      tab: 1,
-      selection: [],
-      model: null
+      // viewTasks: true,
+      // list: true,
+      // taskPopup: false,
+      // usersPopup: false,
+      // tab: 1,
+      // selection: [],
+      // model: null
       // shape: [],
       // optionsFilter: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
     };
@@ -163,72 +196,87 @@ export default {
     } catch (error) {}
   },
   computed: {
-    userTasks() {
-      return this.$store.getters["task/getUserTasks"];
-    },
-    menu() {
-      return this.$store.getters["task/getStatuses"];
-    }
+    ...mapState({
+          viewTasks: state => state.tasks.tViewTasks,
+          list: state => state.tasks.tList,
+          tasks: state => state.tasks.tTasks,
+        }),
+
+    // ...mapGetters({
+    //       tViews: 'tViews'
+    //     }),
+
+    // userTasks() {
+    //   return this.$store.getters["task/getUserTasks"];
+    // },
+    // menu() {
+    //   return this.$store.getters["task/getStatuses"];
+    // }
   },
   watch: {
-    async tab(value) {
-      try {
-        await this.$store.dispatch("task/userTasks", value);
-      } catch (error) {}
-    }
+    // async tab(value) {
+    //   try {
+    //     await this.$store.dispatch("task/userTasks", value);
+    //   } catch (error) {}
+    // }
   },
   methods: {
-    usersHierarchy(data, task) {
-      this.$store.commit("task/setCurrentTask", task);
-      const children = [];
-      const emp_id = this.$store.getters["auth/empId"];
-      const avatar = UserService.getUserProfilePhotoUrl(emp_id);
-      if (data.children) {
-        for (let child of data.children) {
-          children.push({
-            label: `${Decoder.decoder(child.last_name)} ${Decoder.decoder(
-              child.first_name
-            )} ${Decoder.decoder(child.middle_name)}`,
-            icon: "check_circle"
-          });
-        }
-      }
 
-      const props = [
-        {
-          label: data.label,
-          avatar,
-          children
-        }
-      ];
-      //console.log(props);
+    // usersHierarchy(data, task) {
+    //   this.$store.commit("task/setCurrentTask", task);
+    //   const children = [];
+    //   const emp_id = this.$store.getters["auth/empId"];
+    //   const avatar = UserService.getUserProfilePhotoUrl(emp_id);
+    //   if (data.children) {
+    //     for (let child of data.children) {
+    //       children.push({
+    //         label: `${Decoder.decoder(child.last_name)} ${Decoder.decoder(
+    //           child.first_name
+    //         )} ${Decoder.decoder(child.middle_name)}`,
+    //         icon: "check_circle"
+    //       });
+    //     }
+    //   }
 
-      this.$store.commit("task/setUserHierarchy", props);
+    //   const props = [
+    //     {
+    //       label: data.label,
+    //       avatar,
+    //       children
+    //     }
+    //   ];
+    //   //console.log(props);
 
-      this.usersPopup = true;
-    },
-    usersTask(task) {
-      // const task = this.userTasks.find(i => i.task_id = task_id)
-      this.$store.commit("task/setCurrentTask", task);
-      this.taskPopup = true;
-    },
+    //   this.$store.commit("task/setUserHierarchy", props);
 
-    downloadFile(item) {
-      console.log(item);
-      axios({
-        method: "get",
-        url: "/files/" + item.id,
-        responseType: "arraybuffer"
-      }).then(function(response) {
-        let blob = new Blob([response.data], { type: "application/pdf" });
-        let link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = item.name.slice(0, -4);
-        link.click();
-      });
-    }
+    //   this.usersPopup = true;
+    // },
+    // usersTask(task) {
+    //   // const task = this.userTasks.find(i => i.task_id = task_id)
+    //   this.$store.commit("task/setCurrentTask", task);
+    //   this.taskPopup = true;
+    // },
+
+    // downloadFile(item) {
+    //   console.log(item);
+    //   axios({
+    //     method: "get",
+    //     url: "/files/" + item.id,
+    //     responseType: "arraybuffer"
+    //   }).then(function(response) {
+    //     let blob = new Blob([response.data], { type: "application/pdf" });
+    //     let link = document.createElement("a");
+    //     link.href = window.URL.createObjectURL(blob);
+    //     link.download = item.name.slice(0, -4);
+    //     link.click();
+    //   });
+    // }
   },
   components: {
+    AHeader: Header,
+    ATask: Task,
+    AManagement: Management,
+
     QHierarchy,
     QTask
   },
@@ -239,95 +287,96 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sub_menu {
-  padding: 10px 0;
-  margin: 10px 0;
-  display: flex;
-  align-items: center;
-}
-.sub_menu div {
-  padding-left: 10px;
-  margin-right: 10px;
-  color: #8b8b8b;
-  cursor: pointer;
-  font-size: 12px;
-}
-.sub_menu div + div {
-  border-left: 1px #c2c2c2 solid;
-}
-.docBlock {
-  border-top: 1px #c2c2c2 solid;
-  padding: 30px 15px;
-  color: #8b8b8b;
-}
-.docBlock:hover {
-  background: #f2f2f2;
-}
-.docBlock div {
-  padding-right: 5px;
-}
-.docBlock span {
-  color: black;
-  float: left;
-  display: block;
-  padding-right: 5px;
-}
-.check {
-  padding: 0 10px;
-  width: 65px;
-  margin-right: 10px;
-}
-.check_div {
-  background: #f2f2f2;
-  padding: 5px;
-  border-radius: 10px;
-}
-.despBlock {
-  display: flex;
-  font-size: 14px;
-}
 
-.poster {
-  position: relative;
-  cursor: pointer;
-}
+// .sub_menu {
+//   padding: 10px 0;
+//   margin: 10px 0;
+//   display: flex;
+//   align-items: center;
+// }
+// .sub_menu div {
+//   padding-left: 10px;
+//   margin-right: 10px;
+//   color: #8b8b8b;
+//   cursor: pointer;
+//   font-size: 12px;
+// }
+// .sub_menu div + div {
+//   border-left: 1px #c2c2c2 solid;
+// }
+// .docBlock {
+//   border-top: 1px #c2c2c2 solid;
+//   padding: 30px 15px;
+//   color: #8b8b8b;
+// }
+// .docBlock:hover {
+//   background: #f2f2f2;
+// }
+// .docBlock div {
+//   padding-right: 5px;
+// }
+// .docBlock span {
+//   color: black;
+//   float: left;
+//   display: block;
+//   padding-right: 5px;
+// }
+// .check {
+//   padding: 0 10px;
+//   width: 65px;
+//   margin-right: 10px;
+// }
+// .check_div {
+//   background: #f2f2f2;
+//   padding: 5px;
+//   border-radius: 10px;
+// }
+// .despBlock {
+//   display: flex;
+//   font-size: 14px;
+// }
 
-.poster:hover + .desc {
-  // opacity: 1;
-  display: block;
-}
+// .poster {
+//   position: relative;
+//   cursor: pointer;
+// }
 
-.desc {
-  position: absolute;
-  // top: 100%;
-  // left: 0;
-  // text-overflow: clip;
-  // white-space: nowrap;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background: #fff;
-  font-size: 14px;
-  color: #000;
-  padding: 5px 10px;
-  display: none;
-  // opacity: 0;
-  // transition: opacity, 0.3s ease;
-  z-index: 10;
-}
+// .poster:hover + .desc {
+//   // opacity: 1;
+//   display: block;
+// }
 
-.despBlock + .despBlock {
-  border-left: 1px #c2c2c2 solid;
-  padding: 0 15px;
-  margin-right: 15px;
-}
-.text {
-  font-size: 16px;
-  padding-bottom: 15px;
-}
-.actions {
-  width: 200px;
-}
-.filterBlock {
-  width: 150px;
-}
+// .desc {
+//   position: absolute;
+//   // top: 100%;
+//   // left: 0;
+//   // text-overflow: clip;
+//   // white-space: nowrap;
+//   border: 1px solid #ccc;
+//   border-radius: 5px;
+//   background: #fff;
+//   font-size: 14px;
+//   color: #000;
+//   padding: 5px 10px;
+//   display: none;
+//   // opacity: 0;
+//   // transition: opacity, 0.3s ease;
+//   z-index: 10;
+// }
+
+// .despBlock + .despBlock {
+//   border-left: 1px #c2c2c2 solid;
+//   padding: 0 15px;
+//   margin-right: 15px;
+// }
+// .text {
+//   font-size: 16px;
+//   padding-bottom: 15px;
+// }
+// .actions {
+//   width: 200px;
+// }
+// .filterBlock {
+//   width: 150px;
+// }
 </style>

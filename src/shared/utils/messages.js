@@ -5,5 +5,6 @@ export default {
     'Next task id is undefined': 'Следующий таск неопределен',
     'Credit complete': 'Кредит оформлен',
     'Credit success': 'Кредит одобрен',
-    'Credit failure': 'Кредит отклонен'
+    'Credit failure': 'Кредит отклонен',
+    'Credit signed' : 'Кредит подписан'
 }

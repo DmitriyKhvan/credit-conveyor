@@ -30,15 +30,16 @@ const ThemesUser = () => import("pages/main/profile/settings/ThemesUser.vue");
 const MyData = () => import("pages/main/profile/mydata/MyData.vue");
 const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue");
 // chancellary
+const RegistrationChancellary = () =>
+  import("pages/main/work/kanselariya/Registration.vue");
 const Chancellary = () =>
   import("pages/main/work/kanselariya/Chancellary.vue");
-const ChanRegistration = () =>
-  import(
-    "pages/main/work/kanselariya/registration/Registration"
-  );
+
 const Tasks = () => import("pages/main/work/task/index.vue");
 const TasksList = () =>
   import("pages/main/work/task/modules/pages/tasklist/List");
+const apparatPage = () =>
+  import("pages/main/work/apparat");
 
 // Credit
 const Credit = () => import("pages/main/work/credit/Credit");
@@ -123,11 +124,11 @@ const routes = [{
       path: "chancellary",
       name: "Kanselariya",
       component: Chancellary,
-      children: [{
-        path: "registration",
-        name: "Kanselariya Registration",
-        component: ChanRegistration
-      }]
+    },
+    {
+      path: "registration-document",
+      name: "Registration Document",
+      component: RegistrationChancellary,
     },
     {
       path: "task",
@@ -138,6 +139,11 @@ const routes = [{
         name: "Task List",
         component: TasksList
       }]
+    },
+    {
+      path: "apparat",
+      name: "Apparat",
+      component: apparatPage,
     },
     {
       path: "credit",

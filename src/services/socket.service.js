@@ -26,62 +26,13 @@ const SocketService = {
     let empId = store.getters["auth/empId"];
     let user = store.getters["auth/fullName"];
     //this.runNotifications(socket, empId);
-    this.runChatAll(socket, empId, user);
-    this.runChatMessageOn(socket, empId);
-    this.runGroupMessageOn(socket, empId);
+    this.runChat(socket, empId);
     //this.runGroup(socket, empId)
     this.runChatList(socket, empId);
     this.runOnlineUsers(socket);
     this.runActiveUsers(socket);
     this.runLogout(socket);
-    this.runPingPong(socket);
 
-    this.runOnline(socket, empId);
-    socket.emit("chat/all", empId);
-  },
-  stopConnection() {
-    let socket = store.getters["socket/getSocket"];
-    let empId = store.getters["auth/empId"];
-    let user = store.getters["auth/fullName"];
-
-    const chats = store.getters.getChats;
-
-    chats.forEach(ch => {
-      if (ch.type === 2) {
-        const chat = {
-          chat_id: ch.chat_id,
-          emp_name: user
-        };
-        socket.emit("grp/leave", chat);
-      }
-    });
-    setTimeout(() => socket.emit("offline", empId));
-
-    console.log("user is offline");
-  },
-  isOnline() {
-    if (store.getters["socket/isOnline"]) {
-      return true;
-    } else {
-      let empId = store.getters["auth/empId"];
-      this.runConnection(empId);
-      return true;
-    }
-  },
-  runNotifications(socket) {
-    socket.on("notifications", data => {
-      if (data) {
-        data.forEach(msg => {
-          //console.log(msg)
-          store.dispatch("dicts/addNotification", msg);
-          if (msg.status == 0) {
-            NotifyService.showNotification(msg.title);
-          }
-        });
-      }
-    });
-  },
-  runChatAll(socket, empId, user) {
     socket.on("chat/all", data => {
       const chats = [];
       if (data) {
@@ -124,8 +75,9 @@ const SocketService = {
         store.dispatch("setChat", chats);
       }
     });
-  },
-  runChatMessageOn(socket, empId) {
+
+    socket.emit("chat/all", empId);
+
     socket.on("msg/send", data => {
       console.log(".ON - msg/send", data);
       store.dispatch("addMessage", data);
@@ -184,6 +136,56 @@ const SocketService = {
         store.dispatch("addCount", data.chat_id);
       }
     });
+    this.runOnline(socket, empId);
+  },
+  stopConnection() {
+    let socket = store.getters["socket/getSocket"];
+    let empId = store.getters["auth/empId"];
+    let user = store.getters["auth/fullName"];
+
+    const chats = store.getters.getChats;
+
+    chats.forEach(ch => {
+      if (ch.type === 2) {
+        const chat = {
+          chat_id: ch.chat_id,
+          emp_name: user
+        };
+        socket.emit("grp/leave", chat);
+      }
+    });
+    setTimeout(() => socket.emit("offline", empId));
+
+    console.log("user is offline");
+  },
+  isOnline() {
+    if (store.getters["socket/isOnline"]) {
+      return true;
+    } else {
+      let empId = store.getters["auth/empId"];
+      this.runConnection(empId);
+      return true;
+    }
+  },
+  runNotifications(socket) {
+    socket.on("notifications", data => {
+      if (data) {
+        data.forEach(msg => {
+          //console.log(msg)
+          store.dispatch("dicts/addNotification", msg);
+          if (msg.status == 0) {
+            NotifyService.showNotification(msg.title);
+          }
+        });
+      }
+    });
+  },
+  runChat(socket, empId) {
+    // socket.on("chat", data => {
+    //   console.log('chats',data)
+    //   store.dispatch('addMessage', data)
+    //   // logic...
+    // });
   },
   runChatList(socket, empId) {
     // socket.on("chat/all", data => {
@@ -214,12 +216,6 @@ const SocketService = {
 
     // console.log({ online: data });
     socket.emit("online", data);
-  },
-  runPingPong(socket) {
-    socket.on("ping", function(data) {
-      //console.log(data);
-      socket.emit("pong", { beat: 1 });
-    });
   },
   runLogout(socket) {
     socket.on("logout", _ => {
