@@ -106,7 +106,8 @@ const SocketService = {
         store.dispatch("addCount", data.chat_id);
       }
     });
-
+  },
+  runGroupMessageOn(socket, empId) {
     socket.on("grp/msg", data => {
       console.log(data);
       store.dispatch("addMessage", data);

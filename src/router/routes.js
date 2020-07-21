@@ -13,7 +13,10 @@ const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
 const Moderators = () => import("pages/main/admin/moderators/Moderators");
 const Dictionaries = () => import("pages/main/admin/dictionaries/Dictionaries");
-const SelfDevPage = () => import("pages/main/admin/self_dev/Index");
+
+const SelfDevCrud = () => import("pages/main/admin/self_dev/crud");
+const SelfDevMonitoring = () => import("pages/main/admin/self_dev/monitoring/Monitoring")
+const SelfDevIndex = () => import("pages/main/admin/self_dev/SelfDev.vue");
 
 // Work
 const WorkPage = () => import("pages/main/work/Work");
@@ -67,11 +70,11 @@ const DevicesHistory = () => import("pages/main/it/history/History");
 const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
 
 // Education
-const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
-const QuestionPage = () =>
-  import("pages/main/admin/self_dev/questions/Questions");
-const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
-const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
+// const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
+// const QuestionPage = () =>
+//   import("pages/main/admin/self_dev/questions/Questions");
+// const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
+// const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 
 const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
@@ -173,12 +176,12 @@ const routes = [{
         component: CreditProfile,
         beforeEnter: ifAuthenticated
       },
-      // {
-      //   path: "profile/:id",
-      //   name: "ProfileRework",
-      //   component: CreditProfileRework,
-      //   beforeEnter: ifAuthenticated
-      // }
+        // {
+        //   path: "profile/:id",
+        //   name: "ProfileRework",
+        //   component: CreditProfileRework,
+        //   beforeEnter: ifAuthenticated
+        // }
       ]
     }
     ]
@@ -225,27 +228,19 @@ const routes = [{
     {
       path: "selfdev",
       name: "Self Developer",
-      component: SelfDevPage,
-      children: [{
-        path: "topicPage",
-        name: "addEditTopic",
-        component: TopicPage
-      },
-      {
-        path: "questionPage",
-        name: "Add Edit Question",
-        component: QuestionPage
-      },
-      {
-        path: "testPage",
-        name: "Add Edit Test",
-        component: TestPage
-      },
-      {
-        path: "monitoringPage",
-        name: "Add Edit Monitoring",
-        component: MonitoringPage
-      }
+      redirect: "selfdev/crud",
+      component: SelfDevIndex,
+      children: [
+        {
+          path: "crud",
+          name: "Self Developer CRUD",
+          component: SelfDevCrud
+        },
+        {
+          path: "monitoring",
+          name: "Monitoring",
+          component: SelfDevMonitoring
+        }
       ]
     }
     ]
@@ -264,32 +259,32 @@ const routes = [{
     path: "profile",
     name: "Profile Page",
     component: Profile,
+    children: [{
+      path: "mydata",
+      name: "My Data",
+      component: MyData
+    },
+    {
+      path: "myfinance",
+      name: "My Finance",
+      component: MyFinance
+    },
+    {
+      path: "settings",
+      name: "Settings",
+      component: Settings,
       children: [{
-        path: "mydata",
-        name: "My Data",
-        component: MyData
+        path: "themesAdmin",
+        name: "ThemesAdmin",
+        component: ThemesAdmin
       },
       {
-        path: "myfinance",
-        name: "My Finance",
-        component: MyFinance
-      },
-      {
-        path: "settings",
-        name: "Settings",
-        component: Settings,
-          children: [{
-            path: "themesAdmin",
-            name: "ThemesAdmin",
-            component: ThemesAdmin
-          },
-          {
-            path: "themesUser",
-            name: "ThemesUser",
-            component: ThemesUser
-          }
-        ]
-      },
+        path: "themesUser",
+        name: "ThemesUser",
+        component: ThemesUser
+      }
+      ]
+    },
     ]
   },
   {
