@@ -7,7 +7,11 @@
         <div class="col">
           <a-views></a-views>
 
-          <a-task></a-task>
+          <a-task
+            v-for="d in docks"
+            :key="d.doc_id"
+            :doc="d"
+          ></a-task>
         </div>
       </div>
 
@@ -15,6 +19,7 @@
   </div>
 </template>
 <script>
+import { mapState, mapGetters } from 'vuex';
 import Task from './components/Task'
 import Views from './components/Views'
 import Filter from './components/Filter'
@@ -32,6 +37,15 @@ export default {
       model: '',
       options: []
     }
+  },
+  computed: {
+    ...mapState({
+        docks: state => state.apparat.aDocks,
+      }),
+  },
+  created(){
+    this.$store.dispatch('aAllFilters')
+    this.$store.dispatch('aAllDocs')
   }
 }
 </script>

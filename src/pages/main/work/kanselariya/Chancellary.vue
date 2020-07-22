@@ -24,14 +24,10 @@
     </div>
   </div>
 </div>
-
-  <!-- <div>
-    <h3>{{$t('tables.work.chancellery._self')}}</h3>
-    <router-view />
-  </div> -->
 </template>
 
 <script>
+
 import Filter from './components/Filter'
 import Table from './components/Table'
 export default {
