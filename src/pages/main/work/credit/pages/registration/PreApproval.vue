@@ -119,6 +119,7 @@
   </div>
 </template>
 <script>
+import {mapState} from "vuex"
 import printJS from "print-js";
 import formatNumber from "../../filters/format_number.js";
 import CommonUtils from "@/shared/utils/CommonUtils";
@@ -144,6 +145,9 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      taskIdPreapp: state => state.credits.taskId,
+    }),
     disableBtn() {
       return this.$store.getters["credits/credits"].disableBtn;
     },
@@ -157,6 +161,7 @@ export default {
       return this.$store.getters["credits/credits"];
     }
   },
+
   methods: {
     async successCredit() {
       console.log(this.$store);
@@ -179,6 +184,8 @@ export default {
             i => i.label === "inputDictionaries"
           ).data;
 
+          
+
           console.log("dic", JSON.stringify(dictionaries, null, 2));
 
           this.$store.commit("profile/setPreapprovData", data);
@@ -188,11 +195,18 @@ export default {
           sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
           
           this.$router.push("profile");
+          setTimeout(() => {
+            localStorage.removeItem(this.taskIdPreapp)
+          }, 1000)
+          
           this.$emit("toggleLoaderForm", false);
         }
       } catch (error) {
         this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.$emit("toggleLoaderForm", false);
+        setTimeout(() => {
+          localStorage.removeItem(this.taskIdPreapp)
+        }, 1000)
       }
     },
 
@@ -227,11 +241,17 @@ export default {
             this.$store.commit("credits/setMessage", "Credit failure");
             sessionStorage.clear();
             this.$router.push("/work/credit");
+            setTimeout(() => {
+              localStorage.removeItem(this.taskIdPreapp)
+            }, 1000)
           }
           
         } catch (error) {
           this.$emit("toggleLoaderFullScreen", false);
           this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+          setTimeout(() => {
+            localStorage.removeItem(this.taskIdPreapp)
+          }, 1000)
         }
       }
     },

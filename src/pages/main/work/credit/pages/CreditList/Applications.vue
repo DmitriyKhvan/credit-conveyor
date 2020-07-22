@@ -1,6 +1,7 @@
 <template>
   <AppCreditList 
     :loaderList="loaderList" 
+    getTasks="getRoleTasks"
   />
 </template>
 

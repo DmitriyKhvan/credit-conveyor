@@ -155,7 +155,7 @@
             <th v-if="userRole === 'CS'" class="text-left"></th>
           </tr>
         </thead>
-        <tbody v-if="loaderList">
+        <tbody v-if="loaderList || loading">
           <tr>
             <td colspan="10"><appLoader /></td>
           </tr>
@@ -193,7 +193,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -213,7 +217,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -233,7 +241,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -253,7 +265,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -273,7 +289,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -293,7 +313,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -313,7 +337,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -333,7 +361,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -416,10 +448,10 @@
       <q-pagination
         v-model="current"
         color="primary"
-        :max="max"
+        :max="pages"
         :max-pages="maxPage"
         :boundary-numbers="true"
-        @click="pagination()"
+        @click="pagination"
       >
       </q-pagination>
     </div>
@@ -431,6 +463,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import printJS from "print-js";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatDate from "../../filters/formatDate"
@@ -438,71 +471,23 @@ import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 export default {
-  props: ['loaderList'],
+  props: ['loaderList', 'getTasks'],
   data() {
     return {
       // userRole: this.$store.getters.userRole,
       // loadings: this.$store.getters["credits/loadings"], // кнопки распечатать
       current: 1,
       countRow: 10,
-      creditList: 100,
-      max: 10,
+      //max: 10,
       maxPage: 6,
-      countRowList: [
-        {
-          label: 10,
-          value: 10,
-        },
-        {
-          label: 20,
-          value: 20,
-        },
-        {
-          label: 30,
-          value: 30,
-        },
-        {
-          label: "Все",
-          value: "All",
-        }
-      ],
-      loadings1: false,
+      loading: false,
+      
       disable: false,
       loaderFullScreen: false,
       fileData: {
         type: "protocol",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
-        data: {
-          // protocol_initiative_unit: "",
-          // protocol_client_inn: "",
-          // protocol_lending_currency: "",
-          // protocol_loan_amount: "",
-          // protocol_repayment_type: "",
-          // protocol_customer_name: "",
-          // protocol_term: "",
-          // protocol_grace_period: "",
-          // protocol_finance_source: "",
-          // protocol_loan_product: "",
-          // protocol_loan_type: "",
-          // protocol_percent_rate: "",
-          // protocol_credit_rating: "",
-          // protocol_request_number: "",
-          // protocol_loan_specialist_position: "",
-          // protocol_loan_specialist_fio: "",
-          // protocol_number: "",
-          // protocol_filial: "",
-          // protocol_committee_decision_number: "",
-          // protocol_committee_decision_date: "",
-          // protocol_guarantor_name: "",
-          // protocol_guarantor_value: "",
-          // protocol_insurance_name: "",
-          // protocol_insurance_value: "",
-          // protocol_additional_name: "",
-          // protocol_additional_value: "",
-          // protocol_special_name: "",
-          // protocol_special_value: "",
-          // protocol_secretary_fio: ""
-        }
+        data: {}
       },
       // link: null,
       applicationNumber: "",
@@ -532,13 +517,26 @@ export default {
     };
   },
   mounted() {
+    // console.log('pages', this.pages)
     // console.log('lang', this.$store.getters["common/getLangNum"])
     const filters = document.querySelectorAll(".filter");
     for (let filter of filters) {
       filter.addEventListener("click", () => this.toggleFilter(filter));
     }
   },
+  watch: {
+    countRow(val) {
+      console.log(val)
+      this.current = 1
+      this.pagination()
+    }
+  },
   computed: {
+    ...mapState({
+          pages: state => state.credits.pages,
+          countRowList: state => state.credits.countRowList
+        }),
+
     // Фильтры
     credits() {
       return this.$store.getters["credits/creditTasks"].filter(task => {
@@ -597,9 +595,6 @@ export default {
     userRole() {
       return this.$store.getters["credits/userRole"];
     }
-  },
-  watch: {
-    
   },
   methods: {
     toggleFilter(event) {
@@ -756,8 +751,13 @@ export default {
       return data
     },
 
-    pagination() {
-      console.log('current', this.current)
+    async pagination() {
+      try {
+        this.loading = true
+        await this.$store.dispatch(`credits/${this.getTasks}`, {page: this.current, count: this.countRow})
+        this.loading = false
+      } catch (error) {}
+      
     }
   },
   components: {

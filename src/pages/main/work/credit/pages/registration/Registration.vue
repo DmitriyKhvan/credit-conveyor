@@ -154,6 +154,7 @@
                     outlined
                     v-model="personalData.typeCredit"
                     :options="options.typeCredits"
+                    @input="onChangeLoan($event)"
                     dense
                     label="Кредитный продукт"
                     emit-value
@@ -409,6 +410,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 import { mapState } from 'vuex';
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatNumber from "../../filters/format_number.js";
@@ -448,43 +450,38 @@ export default {
 
     try {
       this.loaderForm = true
-      const auth = await this.$store.dispatch("credits/authBpm");
-      console.log("auth", auth);
-      const process = await this.$store.dispatch("credits/startProcess");
-      console.log("process", process);
+      if (this.taskId) {
+        this.$store.commit("credits/setTaskId", this.taskId);
 
-      if (process) {
-        this.personalData.spouseCost =
-          (process.userTaskCreditDetailed.input.find(i => i.label == "spouseCost")).data;
-        this.personalData.childCost =
-          (process.userTaskCreditDetailed.input.find(i => i.label == "childCost")).data;
+        if (!axios.defaults.headers.common["BPMCSRFToken"]) { // если перезагрузили страницу
+          await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
+          await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+        }
 
-        this.options.family = this.transformData(process, "maritalStatus")
+        const response = await this.$store.dispatch("profile/getFullForm", this.taskId);
+        if (response) {
+          this.getPreapprovData(response.data.input)
+        } 
 
-        this.options.additIncSourOption = this.transformData(process, "incomeSource")
+        if (localStorage.getItem(this.taskId)) {
+          this.$store.commit("credits/setPersonalData", JSON.parse(localStorage.getItem(this.taskId)))
+          localStorage.removeItem(this.taskIdPreapp)
+        }
 
-        this.options.loanPurpose = this.transformData(process, "loanPupose") 
+        this.setLoan(this.personalData.typeCredit)
 
-        console.log('family', this.options.family)
-
-        const loan_product_listt = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_list")
-        const loan_product_dict = process.userTaskCreditDetailed.input.find(i => i.label == "loan_product_dict")
-
-        loan_product_listt.data.items.forEach(i => {
-          const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
-          const credits = {
-            label: i.label,
-            value: Number(i.value),
-            period: Loan_dict.terms_list.items,
-            loanRate: Loan_dict.loan_rate_base,
-            paymentTypes: Loan_dict.payment_type.items
-          };
-
-          this.options.typeCredits.push(credits);
-        })
-
-        console.log("typeCredits", this.options.typeCredits);
         this.loaderForm = false
+      } else {
+        const auth = await this.$store.dispatch("credits/authBpm");
+        console.log("auth", auth);
+        const process = await this.$store.dispatch("credits/startProcess");
+        console.log("process", process);
+
+        if (process) {
+          this.getPreapprovData(process.userTaskCreditDetailed.input)
+          this.loaderForm = false
+        }
+
       }
     } catch (error) {
       this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
@@ -499,51 +496,59 @@ export default {
       this.loader = false;
     }
   },
+  beforeDestroy(){
+    localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
+  },
   computed: {
     ...mapState({
         loadMessage: state => state.credits.loadMessage,
         disableInput: state => state.credits.disableInput,
         scannerSerialNumber: state => state.credits.scannerSerialNumber,
         personalData: state => state.credits.personalData,
+        taskIdPreapp: state => state.credits.taskId,
         credits: state => state.credits
-      })
+      }),
+      
+    taskId() {
+      return this.$route.query.taskId
+    }
   },
   watch: {
-    "personalData.typeCredit"(credit) {
-      this.personalData.typeStepCredit = null;
-      this.options.typeStepCredits = [];
-      this.periodCreditMin = null;
-      this.periodCreditMax = null;
-      this.personalData.periodCredit = 0;
-      this.personalData.loanRate = 0;
+    // "personalData.typeCredit"(credit) {
+    //   this.personalData.typeStepCredit = null;
+    //   this.options.typeStepCredits = [];
+    //   this.periodCreditMin = null;
+    //   this.periodCreditMax = null;
+    //   this.personalData.periodCredit = 0;
+    //   this.personalData.loanRate = 0;
 
-      const idxCredit = this.options.typeCredits.findIndex(
-        item => item.value == credit
-      );
+    //   const idxCredit = this.options.typeCredits.findIndex(
+    //     item => item.value == credit
+    //   );
 
-      if (idxCredit !== -1) {
+    //   if (idxCredit !== -1) {
 
-        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
-          return {
-            label: i.label,
-            value: Number(i.value)
-          }
-        })
+    //     this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+    //       return {
+    //         label: i.label,
+    //         value: Number(i.value)
+    //       }
+    //     })
 
-        this.periodCreditMin = Number(
-          this.options.typeCredits[idxCredit].period[0].value
-        );
-        this.periodCreditMax = Number(
-          this.options.typeCredits[idxCredit].period[1].value
-        );
-        this.personalData.periodCredit = Number(
-          this.options.typeCredits[idxCredit].period[0].value
-        );
-        this.personalData.loanRate = Number(
-          this.options.typeCredits[idxCredit].loanRate
-        );
-      }
-    },
+    //     this.periodCreditMin = Number(
+    //       this.options.typeCredits[idxCredit].period[0].value
+    //     );
+    //     this.periodCreditMax = Number(
+    //       this.options.typeCredits[idxCredit].period[1].value
+    //     );
+    //     this.personalData.periodCredit = Number(
+    //       this.options.typeCredits[idxCredit].period[0].value
+    //     );
+    //     this.personalData.loanRate = Number(
+    //       this.options.typeCredits[idxCredit].loanRate
+    //     );
+    //   }
+    // },
 
     "personalData.children"(status) {
       if (!status) {
@@ -735,12 +740,92 @@ export default {
         } catch (error) {
           this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
           this.loaderFullScreen = false;
+          setTimeout(() => {
+            localStorage.removeItem(this.taskIdPreapp)
+          }, 1000)
         }
       }
     },
 
-    transformData(process, labelData) {
-      return (process.userTaskCreditDetailed.input
+    onChangeLoan(credit) {
+      console.log('credit', credit)
+      this.personalData.typeStepCredit = null;
+      this.options.typeStepCredits = [];
+      this.periodCreditMin = null;
+      this.periodCreditMax = null;
+      this.personalData.periodCredit = 0;
+      this.personalData.loanRate = 0;
+
+      this.setLoan(credit)
+    },
+
+    setLoan(credit) {
+      const idxCredit = this.options.typeCredits.findIndex(
+        item => item.value == credit
+      );
+      console.log('idxCredit', idxCredit)
+
+      if (idxCredit !== -1) {
+
+        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
+
+        this.periodCreditMin = Number(
+          this.options.typeCredits[idxCredit].period[0].value
+        );
+        this.periodCreditMax = Number(
+          this.options.typeCredits[idxCredit].period[1].value
+        );
+
+        if (!this.personalData.periodCredit) {
+          this.personalData.periodCredit = this.periodCreditMin
+        }
+        
+        this.personalData.loanRate = Number(
+          this.options.typeCredits[idxCredit].loanRate
+        );
+      }
+    },
+
+    getPreapprovData(preAppData) {
+      this.personalData.spouseCost =
+        (preAppData.find(i => i.label == "spouseCost")).data;
+      this.personalData.childCost =
+        (preAppData.find(i => i.label == "childCost")).data;
+
+      this.options.family = this.transformData(preAppData, "maritalStatus")
+
+      this.options.additIncSourOption = this.transformData(preAppData, "incomeSource")
+
+      this.options.loanPurpose = this.transformData(preAppData, "loanPupose") 
+
+      console.log('family', this.options.family)
+
+      const loan_product_listt = preAppData.find(i => i.label == "loan_product_list")
+      const loan_product_dict = preAppData.find(i => i.label == "loan_product_dict")
+
+      loan_product_listt.data.items.forEach(i => {
+        const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
+        const credits = {
+          label: i.label,
+          value: Number(i.value),
+          period: Loan_dict.terms_list.items,
+          loanRate: Loan_dict.loan_rate_base,
+          paymentTypes: Loan_dict.payment_type.items
+        };
+
+        this.options.typeCredits.push(credits);
+      })
+
+      console.log("typeCredits", this.options.typeCredits);
+    },
+
+    transformData(preAppData, labelData) {
+      return (preAppData
         .find(i => i.label == labelData)).data.items
         .map(i => {
           return {
