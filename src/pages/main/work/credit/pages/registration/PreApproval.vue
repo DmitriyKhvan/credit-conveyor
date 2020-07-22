@@ -161,6 +161,7 @@ export default {
       return this.$store.getters["credits/credits"];
     }
   },
+
   methods: {
     async successCredit() {
       console.log(this.$store);
@@ -194,12 +195,18 @@ export default {
           sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
           
           this.$router.push("profile");
-          localStorage.removeItem(this.taskIdPreapp)
+          setTimeout(() => {
+            localStorage.removeItem(this.taskIdPreapp)
+          }, 1000)
+          
           this.$emit("toggleLoaderForm", false);
         }
       } catch (error) {
         this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.$emit("toggleLoaderForm", false);
+        setTimeout(() => {
+          localStorage.removeItem(this.taskIdPreapp)
+        }, 1000)
       }
     },
 
@@ -234,12 +241,17 @@ export default {
             this.$store.commit("credits/setMessage", "Credit failure");
             sessionStorage.clear();
             this.$router.push("/work/credit");
-            localStorage.removeItem(this.taskIdPreapp)
+            setTimeout(() => {
+              localStorage.removeItem(this.taskIdPreapp)
+            }, 1000)
           }
           
         } catch (error) {
           this.$emit("toggleLoaderFullScreen", false);
           this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+          setTimeout(() => {
+            localStorage.removeItem(this.taskIdPreapp)
+          }, 1000)
         }
       }
     },

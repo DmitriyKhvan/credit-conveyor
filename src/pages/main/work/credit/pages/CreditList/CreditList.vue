@@ -217,7 +217,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -237,7 +241,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -257,7 +265,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -277,7 +289,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -297,7 +313,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -317,7 +337,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -337,7 +361,11 @@
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : userRole === 'CRM'
+                      ? 'Profile'
+                      : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,

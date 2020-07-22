@@ -465,6 +465,7 @@ export default {
 
         if (localStorage.getItem(this.taskId)) {
           this.$store.commit("credits/setPersonalData", JSON.parse(localStorage.getItem(this.taskId)))
+          localStorage.removeItem(this.taskIdPreapp)
         }
 
         this.setLoan(this.personalData.typeCredit)
@@ -739,6 +740,9 @@ export default {
         } catch (error) {
           this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
           this.loaderFullScreen = false;
+          setTimeout(() => {
+            localStorage.removeItem(this.taskIdPreapp)
+          }, 1000)
         }
       }
     },
