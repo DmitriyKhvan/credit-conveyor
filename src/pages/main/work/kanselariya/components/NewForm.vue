@@ -1,115 +1,409 @@
 <template>
-  <div class="q-pa-lg">
-    <div class="row q-col-gutter-md">
-      <div class="col title q-pb-lg">
-        <strong>Регистрация канцелярии</strong>
+  <div class="row q-ma-sm">
+      <div class="col-7 shadow-1 bg-white q-mr-lg rounded-borders">
+        <q-form @submit="sendNewDoc" @reset="resetForm" ref="myform">
+        <div class="q-pa-lg">
+          <div class="row q-col-gutter-md">
+            <div class="col title q-pb-lg">
+              <strong>Регистрация канцелярии</strong>
+            </div>
+          </div>
+          <div class="row q-col-gutter-xl">
+            <div class="col">
+              <q-select
+                outlined
+                v-model="form.journal"
+                :options="select.journals"
+                label="Журнал"
+                lazy-rules
+                :rules="[
+                  val => (val && val.length !== null) || 'Выберите журнал'
+                ]"
+              />
+            </div>
+            <div class="col">
+              <q-select
+                outlined
+                v-model="form.region"
+                :options="select.regions"
+                label="Выбрать регион"
+              >
+                <template v-slot:append>
+                  <q-icon color="grey-4" name="place" />
+                </template>
+              </q-select>
+            </div>
+          </div>
+          <div class="row q-pb-xs">
+            <div class="col q-pr-lg q-mr-lg">
+              <q-select
+                outlined
+                v-model="form.organs"
+                :options="select.organs"
+                label="Выберите организацию"
+                lazy-rules
+                :rules="[
+                  val => (val && val.length !== null) || 'Выберите организацию'
+                ]"
+              />
+            </div>
+            <div class="col">
+              <q-input
+                outlined
+                v-model="form.whoIsText"
+                label="Написать откуда"
+              />
+            </div>
+          </div>
+          <div class="row q-pb-lg">
+            <div class="col q-pr-lg q-mr-lg">
+              <q-input outlined v-model="form.in_number" label="Вх. номер" />
+            </div>
+            <div class="col">
+              <q-input outlined v-model="form.in_date" label="Вх. дата">
+                <template v-slot:append>
+                  <div class="cursor-pointer">
+                    <img src="@/assets/icons/InDate.svg">
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="form.in_date" @input="() => $refs.qDateProxy.hide()" />
+                    </q-popup-proxy>
+                  </div>
+                </template>
+              </q-input>
+            </div>
+          </div>
+          <div class="row q-col-gutter-xl q-pb-lg">
+            <div class="col">
+              <div class="row selectBorder items-center">
+                <div class="q-pl-sm"><q-checkbox color="blue-14" v-model="valNumber" /></div>
+                <div class="col">
+                  <q-input borderless v-model="form.out_number" label="Исх. номер" :disable="valNumber === false" />
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="row items-center selectBorder">
+                <div class="q-pl-sm"><q-checkbox color="blue-14" v-model="valDate" /></div>
+                <div class="col q-pr-md">
+                  <q-input borderless v-model="form.out_date" label="Исх. дата" :disable="valDate === false">
+                    <template v-slot:append>
+                      <div class="cursor-pointer">
+                        <img src="@/assets/icons/OutDate.svg" />
+                        <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                          <q-date v-model="form.out_date" @input="() => $refs.qDateProxy.hide()" />
+                        </q-popup-proxy>
+                      </div>
+                    </template>
+                  </q-input>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row q-pb-xs">
+            <div class="col q-pr-lg q-mr-lg">
+              <q-select outlined v-model="form.format" :options="select.formats" label="Формат" />
+            </div>
+            <div class="col">
+              <q-input
+                outlined
+                v-model="form.listCount"
+                label="Кол. лист"
+                lazy-rules
+                :rules="[
+                  val => (val && val.length !== null) || 'Кол. дистов обязательное поле'
+                ]"
+              />
+            </div>
+          </div>
+          <div class="row q-col-gutter-xl q-pb-lg">
+            <div class="col">
+              <q-file
+                filled
+                dark
+                v-model="file"
+                label="Загрузить файл"
+                @input="uploadFile"
+                ref="inputUpload"
+                bg-color="blue-14"
+                label-color="white"
+                :filter="files => files.filter(file => file.type === 'application/pdf')"
+                :rules="[
+                  val => (val && val.length !== null) || 'Загрузите файл'
+                ]"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="cloud_upload" color="white" />
+                </template>
+              </q-file>
+
+            </div>
+            <div class="col">
+              <q-btn push flat color="grey" label="Посмотреть файл" size="lg" @click="newFile" />
+            </div>
+          </div>
+          <div class="row q-pb-xs">
+            <div class="col">
+              <q-input
+                v-model="form.description"
+                outlined
+                type="textarea"
+                label="Содержание"
+                lazy-rules
+                :rules="[
+                  val => (val && val.length !== null) || 'Содержание обязательное поле'
+                ]"
+              />
+            </div>
+          </div>
+          <div class="row q-col-gutter-xl q-pb-lg">
+            <div class="col">
+              <q-input outlined v-model="form.signedby" label="Кто подписал" />
+            </div>
+          </div>
+          <div class="row q-col-gutter-xl q-pb-lg">
+            <div class="col">
+              <q-btn type="reset" push class="full-width" outline   style="color: #787E8C;" label="Очистить все" size="lg"/>
+            </div>
+            <div class="col">
+              <q-btn type="submit" push class="full-width" color="blue-14" label="Зарегистрировать" size="lg"/>
+            </div>
+          </div>
+        </div>
+        </q-form>
       </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-select outlined v-model="model" :options="options" label="Журнал" />
-      </div>
-      <div class="col">
-        <q-select outlined v-model="model" :options="options" label="Выбрать регион">
-          <template v-slot:append>
-            <q-icon color="grey-4" name="place" />
-          </template>
-        </q-select>
-      </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-select outlined v-model="model" :options="options" label="Выберите организацию" />
-      </div>
-      <div class="col">
-        <q-input outlined v-model="text" label="Написать откуда" />
-      </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-input outlined v-model="text" label="Вх. номер" />
-      </div>
-      <div class="col">
-        <q-input outlined v-model="text" label="Вх. Дата">
-          <template v-slot:append>
-            <img src="@/assets/icons/InDate.svg">
-          </template>
-        </q-input>
-      </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-input outlined v-model="text" label="Исх. номер">
-          <template v-slot:prepend>
-            <q-checkbox color="blue-14" v-model="val" />
-          </template>
-        </q-input>
-      </div>
-      <div class="col">
-        <q-input outlined v-model="text" label="Исх. дата">
-          <template v-slot:prepend>
-            <q-checkbox color="blue-14" v-model="val" />
-          </template>
-          <template v-slot:append>
-            <img src="@/assets/icons/OutDate.svg">
-          </template>
-        </q-input>
-      </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-input outlined v-model="text" label="Формат" />
-      </div>
-      <div class="col">
-        <q-input outlined v-model="text" label="Кол. лист" />
-      </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-btn push icon="cloud_upload" class="full-width" color="blue-14" label="Загрузить файл" size="lg"/>
-      </div>
-      <div class="col">
-        <q-btn push flat color="grey" label="Посмотреть файл" size="lg" />
-      </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-input
-          v-model="text"
-          outlined
-          type="textarea"
-          label="Содержание"
-        />
-      </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-input outlined v-model="text" label="Кто подписал" />
-      </div>
-    </div>
-    <div class="row q-col-gutter-xl q-pb-lg">
-      <div class="col">
-        <q-btn push class="full-width" outline  style="color: #787E8C;" label="Очистить все" size="lg"/>
-      </div>
-      <div class="col">
-        <q-btn push class="full-width" color="blue-14" label="Зарегистрировать" size="lg"/>
+      <div class="col shadow-1 bg-white rounded-borders">
+        <a-preview :form="form" :file="file ? file.name : ''"></a-preview>
       </div>
     </div>
 
-  </div>
 </template>
 <script>
+import axios from "axios"
+import { QSpinnerFacebook } from "quasar";
+import ApiService from "@/services/api.service";
+import Preview from './Preview'
 export default {
-  data(){
+  components: {
+    APreview: Preview
+  },
+  data() {
     return {
-      val: true,
-      text: '',
+      valDate: false,
+      valNumber: false,
+      model: '',
       options: [],
-      model: ''
+      text: '',
+
+      file: null,
+      form: {
+        journal: null,
+        region: null,
+        in_number: null,
+        number: null,
+        in_date: null,
+        date: null,
+        organs: null,
+        whoIsText: null,
+        out_number: null,
+        out_date: null,
+        format: null,
+        listCount: null,
+        description: null,
+        signedby: null
+      },
+
+      select: {
+        formats: [],
+        journals: [],
+        regions: [],
+        organs: []
+      }
+    };
+  },
+  methods: {
+    triggerUpload(){
+      this.$refs.inputUpload.click()
+    },
+    uploadFile(val) {
+      console.log(val);
+      this.file = val;
+      // this.form.in_number = val.name.slice(0, -4);
+      console.log(this.form.in_number);
+    },
+
+    sendNewDoc() {
+      this.$q.loading.show({
+        spinner: QSpinnerFacebook
+      });
+
+      let formData = new FormData();
+      formData.append("doc", this.file);
+      formData.append("file_id", null);
+      formData.append("id", null);
+      formData.append("journal", this.form.journal.value.id);
+      formData.append("region", this.form.region.value.id);
+      formData.append("organ", this.form.organs.value.id);
+      formData.append("paper_count", this.form.listCount);
+      formData.append("format", this.form.format.value.id);
+      formData.append("type", "1");
+      formData.append("out_number", this.form.out_number);
+      formData.append("out_date", this.form.out_date);
+      formData.append("in_number", this.form.in_number);
+      formData.append("in_date", this.form.in_date);
+      formData.append("fio", this.form.whoIsText);
+      formData.append("description", this.form.description);
+      formData.append("signed_by", this.form.signedby);
+      formData.append("deadline", null);
+      formData.append("deadline_status", "1");
+      formData.append("status", "1");
+
+      console.log(formData);
+
+      axios.post("/files/doc", formData)
+        .then(response => {
+          console.log(response);
+          if (response.data.status === 1) {
+            this.$q.notify({
+              color: "green-8",
+              textColor: "white",
+              icon: "cloud_done",
+              position: "top",
+              message: "Ваш документ успешно сохранен"
+            });
+            this.$refs.myform.reset();
+          } else {
+            this.$q.notify({
+              color: "red-4",
+              textColor: "white",
+              icon: "cloud_done",
+              message: response.data.message
+            });
+          }
+          this.$q.loading.hide();
+        })
+        .catch(error => {
+          console.log(error)
+          this.$q.notify({
+            color: "red-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: error
+          });
+          this.$q.loading.hide();
+        });
+    },
+
+    resetForm() {
+      (this.file = []),
+        (this.form.journal = null),
+        (this.form.region = null),
+        (this.form.in_number = null),
+        (this.form.in_date = null),
+        (this.form.organs = null),
+        (this.form.whoIsText = null),
+        (this.form.out_number = null),
+        (this.form.out_date = null),
+        (this.form.format = null),
+        (this.form.listCount = null),
+        (this.form.description = null),
+        (this.form.signedby = null);
+    },
+
+    notifyRules(val) {
+      this.$q.notify({
+        color: "red-4",
+        textColor: "white",
+        icon: "cloud_done",
+        message: val
+      });
+    },
+    newFile() {
+      if(this.file){
+        let blob = new Blob([this.file], { type: "application/pdf" });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = this.file.name;
+        link.click();
+      }
     }
+  },
+  watch: {
+    file: function() {
+      //this.form.in_number = this.file.name.slice(0, -4);
+      var now = new Date();
+      var month = now.getMonth() + 1;
+      var day = now.getDate();
+      if (month < 10) month = "0" + month;
+      if (day < 10) day = "0" + day;
+      this.form.in_date = now.getFullYear() + "-" + month + "-" + day;
+    }
+  },
+  beforeCreate: function() {
+    ApiService.get("dicts/formats")
+      .then(res => {
+        res.data.forEach(el => {
+          const arr = {
+            label: el.name,
+            value: el
+          }
+          this.select.formats.push(arr)
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    ApiService.get("dicts/journals")
+      .then(res => {
+        res.data.forEach(el => {
+          const arr = {
+            label: el.name,
+            value: el
+          }
+          this.select.journals.push(arr)
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    ApiService.get("dicts/regions")
+      .then(res => {
+        res.data.forEach(el => {
+          const arr = {
+            label: el.name,
+            value: el
+          }
+          this.select.regions.push(arr)
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    ApiService.get("dicts/organs")
+      .then(res => {
+        res.data.forEach(el => {
+          const arr = {
+            label: el.name,
+            value: el
+          }
+          this.select.organs.push(arr)
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 }
 </script>
 <style scoped>
   .title {font-size: 15px;}
+  .selectBorder {
+    border: 1px #c2c2c2 solid;
+    border-radius: 5px;
+  }
+</style>
+<style>
+  .q-field__control {border-radius: 5px !important;}
 </style>
