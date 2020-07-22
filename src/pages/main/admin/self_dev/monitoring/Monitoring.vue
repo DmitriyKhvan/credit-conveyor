@@ -68,6 +68,7 @@ export default {
       columns: [],
       data: [],
       selectedTest: null,
+      parentCode: null,
       depCode: null,
       empId: null
     };
@@ -75,7 +76,7 @@ export default {
   computed: {
     isBackDisabled() {
       console.log(this.step);
-      return this.step > 1 ? false : true;
+      return this.step > 1 && !this.loading ? false : true;
     }
   },
   methods: {
@@ -93,6 +94,7 @@ export default {
         });
       } else if (this.step == 1) {
         this.selectedTest = row.id;
+        console.log({ row: row.id });
 
         this.loadParentDeps(this.selectedTest, done => {
           if (done) {
@@ -102,7 +104,18 @@ export default {
           this.loading = false;
         });
       } else if (this.step == 2) {
+        this.parentCode = row.CODE;
+        console.log({ parentCode: row.CODE });
+
+        this.loadDeps(this.selectedTest, this.parentCode, done => {
+          if (done) {
+            this.step++;
+          }
+          this.loading = false;
+        });
+      } else if (this.step == 3) {
         this.depCode = row.CODE;
+        console.log({ depCode: row.CODE });
 
         this.loadDepEmps(this.selectedTest, this.depCode, done => {
           if (done) {
@@ -110,8 +123,12 @@ export default {
           }
           this.loading = false;
         });
-      } else if (this.step == 3) {
-        this.empId = row.EMP_ID;
+      } else if (this.step == 4) {
+        console.log({ row });
+        this.empId = row.emp_id;
+
+        console.log({ empId: this.emp_id, selectedTest: this.selectedTest });
+
         this.loadEmpData(this.selectedTest, this.empId, done => {
           if (done) {
             this.step++;
@@ -167,13 +184,20 @@ export default {
           this.loading = false;
         });
       } else if (this.step == 4) {
-        this.loadDepEmps(this.selectedTest, this.depCode, done => {
+        this.loadDeps(this.selectedTest, this.parentCode, done => {
           if (done) {
             this.step--;
           }
           this.loading = false;
         });
       } else if (this.step == 5) {
+        this.loadDepEmps(this.selectedTest, this.depCode, done => {
+          if (done) {
+            this.step--;
+          }
+          this.loading = false;
+        });
+      } else if (this.step == 6) {
         this.loadEmpData(this.selectedTest, this.empId, done => {
           if (done) {
             this.step--;
@@ -212,6 +236,35 @@ export default {
 
       this.$axios
         .get(`test/monitoring/pdeps?testId=${testId}`)
+        .then(
+          resp => {
+            this.prepareTableProperties(resp.data);
+            callback(true);
+          },
+          error => {
+            console.log(error);
+            callback(false);
+          }
+        )
+        .catch(error => {
+          console.log(error);
+          callback(false);
+        });
+    },
+    loadDeps(testId, parentCode, callback) {
+      this.loading = true;
+      this.columns = [];
+      this.data = [];
+
+      console.log({
+        test_id: testId,
+        parent_code: parentCode
+      });
+      this.$axios
+        .post("test/monitoring/deps", {
+          test_id: testId,
+          parent_code: parentCode
+        })
         .then(
           resp => {
             this.prepareTableProperties(resp.data);
@@ -268,6 +321,7 @@ export default {
         })
         .then(
           resp => {
+            console.log(resp.data);
             this.prepareTableProperties(resp.data);
             callback(true);
           },
