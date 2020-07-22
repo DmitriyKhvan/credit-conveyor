@@ -77,19 +77,19 @@ export default class BpmService {
     return responce.data;
   };
 
-  getRoleTasks = async () => {
+  getRoleTasks = async ({page, count}) => {
     const responce = await axios({
       method: "get",
-      url: `${this._baseUrl}/bpm/credit/roletasks`,
+      url: `${this._baseUrl}/bpm/credit/roletasks?page=${page}&count=${count}`,
     });
 
     return responce.data;
   };
 
-  getUserTasks = async () => {
+  getUserTasks = async ({page, count}) => {
     const responce = await axios({
       method: "get",
-      url: `${this._baseUrl}/bpm/credit/usertasks`,
+      url: `${this._baseUrl}/bpm/credit/usertasks?page=${page}&count=${count}`,
     });
 
     return responce.data;
