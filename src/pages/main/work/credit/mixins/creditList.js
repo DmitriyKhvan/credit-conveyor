@@ -4,7 +4,6 @@ import CreditList from "../pages/CreditList/CreditList"
 export default {
   data() {
     return {
-      componentKey: null,
       loaderList: false
     }
   },
@@ -16,7 +15,7 @@ export default {
           const auth = await this.$store.dispatch("credits/authBpm")
           console.log("auth", auth);
     
-          await this.$store.dispatch(`credits/${tasks}`)
+          await this.$store.dispatch(`credits/${tasks}`, {page: 1, count: 10})
     
           this.loaderList = false
         } catch(error) {}

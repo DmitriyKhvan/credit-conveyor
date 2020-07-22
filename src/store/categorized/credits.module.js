@@ -19,16 +19,12 @@ export const credits = {
       CreditSecretary: "CS"
     },
     
-    confirm: false, // для модального окна расчета кредита
     messageBar: false,
     bpmService: new BpmService(),
-    icon: false,
-    loader: false,
-    iconMessage: "",
+    
     scannerSerialNumber: null,
-    disableBtn: false,
     disableInput: false,
-    submitting: false,
+    
     loadMessage: "",
     personalData: {
       surname: "",
@@ -84,7 +80,28 @@ export const credits = {
       maxSum: 0 // Сколько максимум кредита можем выдать
     },
     creditTasks: [],
+    pages: 0,
+    // allPages: 0,
     loadings: [],
+    
+    countRowList: [
+      {
+        label: 10,
+        value: 10,
+      },
+      {
+        label: 20,
+        value: 20,
+      },
+      {
+        label: 30,
+        value: 30,
+      },
+      {
+        label: "Все",
+        value: 0
+      }
+    ],
 
     options: {
       confirmation: [
@@ -104,10 +121,7 @@ export const credits = {
     async authBpm({ state, dispatch, commit, getters, rootGetters }) {
       
       try {
-        //console.log('username', getters["auth/username"])
-        // получение empId пользователя
-        //const empId = decode(await storegeService.getToken()).emp_id;
-       
+
         const empId = rootGetters["auth/empId"];
         console.log('empId', empId)
 
@@ -119,7 +133,6 @@ export const credits = {
 
         // запись роли в header запроса
         await dispatch("setHeaderRole", state.roles[userRole]);
-
         commit("setUserRole", state.roles[userRole])
 
         // запись роли в sessionStore
@@ -140,14 +153,12 @@ export const credits = {
         commit("setMessage", errorMessage);
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
     async getUserRole({ state, commit }, payload) {
-      
-      const response = await state.bpmService.getUserRole(payload);
-
-      return response
+      return await state.bpmService.getUserRole(payload);
     },
 
     async getBPMToken({ state, dispatch }) {
@@ -177,15 +188,45 @@ export const credits = {
         commit("setMessage", errorMessage);
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
-    async getDigIdNumber({ state }) {
-      return await state.bpmService.getDigIdNumber();
+    async getDigIdNumber({ state, commit }) {
+      try {
+        const response = await state.bpmService.getDigIdNumber();
+        console.log(response.Answere.AnswereComment)
+        if (response.Answere.AnswereComment == "OK") {
+          commit("sentScannerSerialNumber", response.ServiceInfo.ScannerSerial);
+        } else {
+          throw "Сканер не определен"
+        }
+      } catch (error) {
+        // const errorMessage = CommonUtils.filterServerError(error);
+        // commit("setMessage", errorMessage);
+        throw error
+      }
     },
 
-    async getUserDataFromService({ state }) {
-      return await state.bpmService.getUserDataFromService();
+    async getUserDataFromService({ state, commit}) {
+      try {
+        state.disableInput = true
+        state.loadMessage = "Данные загружаются"
+        const response = await state.bpmService.getUserDataFromService();
+        if (response.answere.AnswereComment == "OK") {
+          commit("sentPersonData", response)
+          commit("sentScannerSerialNumber", null); //close button auto compleate
+          state.loadMessage = ""
+        } else {
+          throw "Возникла проблема. Не удалось считать данные. Введите данные вручную"
+        }
+      } catch (error) {
+        state.disableInput = false
+        state.loadMessage = ""
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+        throw error
+      }
     },
 
     // async getUserDataFromReader({ state }) {
@@ -227,54 +268,59 @@ export const credits = {
           data
         });
 
+        // Проверить срабатывает ли catch
+
         //console.log('confirmCredit', response)
-        if (response.nextTask.id || response.requestedTask.state === "completed") {
-         
-          commit("setTaskId", response.nextTask.id);
-          sessionStorage.setItem("taskId", response.nextTask.id)
-        } else {
-          throw 'Next task id is undefined'
-        }
+        // Продумать логику когда завершился процесс(taskId = null), а когда вышла ошибка!!!
+        // if (response.nextTask.id) {
+        //   commit("setTaskId", response.nextTask.id);
+        //   sessionStorage.setItem("taskId", response.nextTask.id)
+        // } else {
+        //   throw 'Next task id is undefined'
+        // }
+
+        commit("setTaskId", response.nextTask.id);
+        sessionStorage.setItem("taskId", response.nextTask.id)
         
         return response;
       } catch (error) {
-        console.log('errorMessage', error)
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        
         sessionStorage.clear()
+        this.$router.push("/work/credit");
+        throw error
       }
     },
 
-    async getRoleTasks({ state, commit }) {
+    async getRoleTasks({ state, commit }, {page, count}) {
       try {
-        const response = await state.bpmService.getRoleTasks();
+        const response = await state.bpmService.getRoleTasks({page, count});
         console.log("creditList", response);
         if (response.infoList.length) {
-          commit("setCreditTasks", response.infoList);
+          commit("setCreditTasks", {response, count});
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
-    async getUserTasks({ state, commit }) {
+    async getUserTasks({ state, commit }, {page, count}) {
       try {
-        const response = await state.bpmService.getUserTasks();
+        const response = await state.bpmService.getUserTasks({page, count});
         console.log('res', response)
         if (response.infoList.length) {
-          commit("setCreditTasks", response.infoList);
+          commit("setCreditTasks",  {response, count});
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        
         sessionStorage.clear()
         this.$router.push("/work/credit");
+        throw error
       }
     },
 
@@ -286,6 +332,7 @@ export const credits = {
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
+        throw error
       }
     },
 
@@ -320,18 +367,13 @@ export const credits = {
       } catch(error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
+        throw error
       }
-    }, 
-
-    async getDataFile({state, commit}) {
-      return await state.bpmService.getDataFile()
     }
   },
   mutations: {
-    toggleConfirm(state, payload) {
-      //console.log(state, payload);
-      //state.confirm = payload.preApprovalForm;
-      state.confirm = payload;
+    setPersonalData(state, payload) {
+      state.personalData = payload
     },
 
     creditConfirm(state, payload) {
@@ -341,36 +383,19 @@ export const credits = {
       state.preApprovalData.maxSum = payload.sum;
     },
 
-    toggleSubmitting(state, payload) {
-      state.submitting = payload;
-    },
-    toggleDisableBtn(state, payload) {
-      state.disableBtn = payload;
-    },
-    toggleDisableInput(state, payload) {
-      state.disableInput = payload;
-    },
-    errorLoadData(state, payload) {
-      // console.log(payload);
-      state.icon = payload.flag;
-      state.loader = payload.loader;
-      state.iconMessage = payload.message;
-    },
     sentScannerSerialNumber(state, payload) {
       state.scannerSerialNumber = payload;
     },
-    loadMessageChange(state, payload) {
-      state.loadMessage = payload;
-    },
     sentPersonData(state, payload) {
       console.log("Данные пользователя", payload);
-      state.personalData.name = payload.personData.Name;
-      state.personalData.surname = payload.personData.Surname;
-      state.personalData.pinpp = payload.personData.Pinpp;
-      state.personalData.passport = payload.personData.DocumentNumber;
-      state.personalData.inn = payload.Inn;
-      state.personalData.mname = payload.Patronym;
-      state.personalData.personPhoto = payload.personPhoto;
+      state.personalData.name = payload.Person.NameL;
+      state.personalData.surname = payload.Person.SurnameL;
+      state.personalData.mname = payload.Person.PatronymL;
+      state.personalData.passport = payload.Person.DocumentSerialNumber;
+      state.personalData.pinpp = payload.Person.Pinpp;
+      state.personalData.inn = payload.Person.Inn ? payload.Person.Inn : payload.Additional.Inn;
+      state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
+      state.DigID = true
     },
     resetPersonData(state) {
       state.personalData = {
@@ -409,10 +434,6 @@ export const credits = {
       state.messageBar = false
     },
 
-    toggleScannerSerialNumber(state, payload) {
-      state.scannerSerialNumber = payload;
-    },
-
     setMessage(state, message) {
       console.log('setMsg', message)
       state.messageBlock.message = message;
@@ -432,20 +453,31 @@ export const credits = {
     },
 
     setCreditTasks(state, payload) {
-      // payload.map(i => i.date = CommonUtils.dateFilter(i.date, "datetime"))
-      for (let i = 0; i < payload.length; i++) {
+      state.countRowList.find(i => i.label === 'Все').value = payload.response.all
+
+      state.pages = Math.ceil(payload.response.all / payload.count)
+
+      for (let i = 0; i < payload.count; i++) {
         state.loadings[i] = false
       }
-      state.creditTasks = payload;
+      state.creditTasks = payload.response.infoList.sort((a, b) => {
+          if (b.date < a.date) {
+            return -1
+          }
+          if (b.date > a.date) {
+            return 1
+          }
+        })
     },
 
     clearCreditTasks(state) {
       state.creditTasks = [];
     },
 
-    // setFileId(state, fileId) {
-    //   state.fileId = fileId
-    // }
+    removeTask(state, taskId) {
+      const idx = state.creditTasks.findIndex(i => i.taskId == taskId)
+      state.creditTasks.splice(idx, 1)
+    }
    
   },
   getters: {

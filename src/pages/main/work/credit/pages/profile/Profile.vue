@@ -18,6 +18,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  disable
                   ref="surname"
                   square
                   outlined
@@ -30,6 +31,7 @@
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   ref="name"
                   square
                   outlined
@@ -42,6 +44,7 @@
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   ref="mname"
                   square
                   outlined
@@ -57,6 +60,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  :disable="disableField"
                   ref="birthday"
                   outlined
                   square
@@ -91,6 +95,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  disable
                   ref="inn"
                   square
                   outlined
@@ -108,6 +113,7 @@
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   ref="pinpp"
                   square
                   outlined
@@ -116,11 +122,14 @@
                   label="ПИНФЛ"
                   mask="##############"
                   lazy-rules
-                  :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
+                  :rules="[
+                    val => (val && val.length === 14) || 'Введите ПНФЛ'
+                  ]"
                 />
               </div>
               <div class="col-4">
                 <q-select
+                  :disable="disableField"
                   ref="sex"
                   square
                   outlined
@@ -139,6 +148,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
+                  disable
                   ref="documentType"
                   square
                   outlined
@@ -160,6 +170,7 @@
                 class="col-4"
               >
                 <q-input
+                  :disable="disableField"
                   ref="DocumentName"
                   square
                   outlined
@@ -174,6 +185,7 @@
 
               <div class="col-4">
                 <q-input
+                  disable
                   ref="DocumentSeries"
                   square
                   outlined
@@ -193,6 +205,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  disable
                   ref="DocumentNumber"
                   square
                   outlined
@@ -209,6 +222,7 @@
 
               <div class="col-4">
                 <q-select
+                  :disable="disableField"
                   square
                   outlined
                   v-model="Customer.ResidentFlag"
@@ -225,6 +239,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  :disable="disableField"
                   ref="DocumentGivenDate"
                   outlined
                   square
@@ -270,6 +285,7 @@
 
               <div class="col-4">
                 <q-input
+                  :disable="disableField"
                   ref="DocumentExpirationDate"
                   outlined
                   square
@@ -313,13 +329,17 @@
 
               <div class="col-4">
                 <q-input
+                  :disable="disableField"
                   ref="DocumentGivenPlace"
                   square
                   outlined
                   v-model="Customer.Document.GivenPlace"
                   dense
-                  label="Кем выдан паспорт"
-                  :rules="[val => !!val || 'Введите кем выдан документ']"
+                  label="Кем выдан документ"
+                  :rules="[
+                    val => !!val || 'Введите кем выдан документ',
+                    val => givenPlaceValid(val)
+                  ]"
                 />
               </div>
             </div>
@@ -327,6 +347,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
+                  :disable="disableField"
                   ref="education"
                   square
                   outlined
@@ -363,6 +384,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="(index === 0 ? true : false) || disableField"
                     ref="phones"
                     square
                     outlined
@@ -372,13 +394,15 @@
                     mask="+############"
                     :rules="[
                       val =>
-                        (val && val.length === 13) || 'Введите номер телефона'
+                        (val && val.length === 13) || 'Введите номер телефона',
+                      val => phoneValid(val)
                     ]"
                   />
                 </div>
               </div>
 
               <q-btn
+                :disable="disableField"
                 v-if="index > 0"
                 color="red"
                 label="Удалить"
@@ -395,6 +419,7 @@
             </fieldset>
 
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Добавить номер телефона"
               @click="addPhone"
@@ -404,6 +429,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  :disable="disableField"
                   square
                   outlined
                   v-model.lazy="Customer.Email"
@@ -439,6 +465,7 @@
                 >
                   <div class="col-4">
                     <q-select
+                      :disable="disableField"
                       square
                       outlined
                       v-model="sameRegistration"
@@ -453,9 +480,9 @@
                 </div>
 
                 <div class="row q-col-gutter-md">
-                  <div class="col-4">
+                  <!-- <div class="col-4">
                     <q-input
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       square
                       outlined
                       v-model="address.PostalCode"
@@ -463,11 +490,11 @@
                       label="Индекс"
                       mask="######"
                     />
-                  </div>
+                  </div> -->
 
                   <div class="col-4">
                     <q-select
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       :ref="address.flag ? '' : 'region'"
                       square
                       outlined
@@ -485,7 +512,7 @@
 
                   <div class="col-4">
                     <q-input
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       square
                       outlined
                       v-model="address.City"
@@ -498,7 +525,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       square
                       outlined
                       v-model="address.District"
@@ -539,7 +566,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       :ref="address.flag ? '' : 'street'"
                       square
                       outlined
@@ -553,7 +580,7 @@
                   </div>
                   <div class="col-4">
                     <q-input
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       :ref="address.flag ? '' : 'houseNumber'"
                       square
                       outlined
@@ -563,32 +590,32 @@
                       :rules="[val => !!val || 'Введите номер дома']"
                     />
                   </div>
-                  <div class="col-4">
+                  <!-- <div class="col-4">
                     <q-input
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       square
                       outlined
                       v-model="address.Block"
                       dense
                       label="Корпус"
                     />
-                  </div>
+                  </div> -->
                 </div>
 
                 <div class="row q-col-gutter-md">
-                  <div class="col-4">
+                  <!-- <div class="col-4">
                     <q-input
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       square
                       outlined
                       v-model="address.Building"
                       dense
                       label="Строение"
                     />
-                  </div>
+                  </div> -->
                   <div class="col-4">
                     <q-input
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       square
                       outlined
                       v-model="address.Apartment"
@@ -598,7 +625,7 @@
                   </div>
                   <div class="col-4">
                     <q-select
-                      :disable="address.flag"
+                      :disable="address.flag || disableField"
                       square
                       outlined
                       v-model="address.OwnershipType"
@@ -641,6 +668,7 @@
               </h5>
 
               <q-btn
+                :disable="disableField"
                 color="primary"
                 label="Добавить адрес фактического проживания"
                 @click="addRegistration('Адрес фактического проживания')"
@@ -660,6 +688,7 @@
               </h5>
 
               <q-btn
+                :disable="disableField"
                 color="primary"
                 label="Добавить адрес временной регистрации"
                 @click="addRegistration('Адрес временной регистрации')"
@@ -682,6 +711,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
+                  disable
                   square
                   outlined
                   v-model="Customer.MaritalStatus"
@@ -695,6 +725,7 @@
               </div>
               <div class="col-4">
                 <q-select
+                  disable
                   square
                   outlined
                   v-model="Customer.hasChildren"
@@ -708,6 +739,7 @@
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   v-if="Customer.hasChildren"
                   square
                   outlined
@@ -730,6 +762,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="relatives"
                     square
                     outlined
@@ -747,35 +780,47 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="relatives_surname"
                     square
                     outlined
                     v-model="relative.LastName"
                     dense
                     label="Фамилия"
-                    :rules="[val => !!val || 'Введите фамилию']"
+                    :rules="[
+                      val => !!val || 'Введите фамилию',
+                      val => fioValid(val)
+                    ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="relatives_name"
                     square
                     outlined
                     v-model="relative.FirstName"
                     dense
                     label="Имя"
-                    :rules="[val => !!val || 'Введите имя']"
+                    :rules="[
+                      val => !!val || 'Введите имя',
+                      val => fioValid(val)
+                    ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="relatives_mname"
                     square
                     outlined
                     v-model="relative.MiddleName"
                     dense
                     label="Отчество"
-                    :rules="[val => !!val || 'Введите отчество']"
+                    :rules="[
+                      val => !!val || 'Введите отчество',
+                      val => fioValid(val)
+                    ]"
                   />
                 </div>
               </div>
@@ -783,6 +828,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="relatives_birthday"
                     outlined
                     square
@@ -818,6 +864,7 @@
 
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="relativesDocumentDocumentType"
                     square
                     outlined
@@ -839,6 +886,7 @@
                   class="col-4"
                 >
                   <q-input
+                    :disable="disableField"
                     ref="relativesDocumentDocumentName"
                     square
                     outlined
@@ -856,6 +904,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="relativesDocumentSeries"
                     square
                     outlined
@@ -871,6 +920,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="relativesDocumentNumber"
                     square
                     outlined
@@ -880,7 +930,8 @@
                     mask="#######"
                     :rules="[
                       val =>
-                        (val && val.length === 7) || 'Введите номер документа'
+                        (val && val.length === 7) || 'Введите номер документа',
+                      val => docNumberValid(val)
                     ]"
                   />
                 </div>
@@ -889,6 +940,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="relativesDocumentGivenDate"
                     outlined
                     square
@@ -937,6 +989,7 @@
 
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="relativesDocumentExpirationDate"
                     outlined
                     square
@@ -984,19 +1037,24 @@
                 <div class="col-4">
                   <div class="col-4">
                     <q-input
+                      :disable="disableField"
                       ref="relativesDocumentGivenPlace"
                       square
                       outlined
                       v-model="relative.Document.GivenPlace"
                       dense
                       label="Кем выдан документ"
-                      :rules="[val => !!val || 'Введите кем выдан документ']"
+                      :rules="[
+                        val => !!val || 'Введите кем выдан документ',
+                        val => givenPlaceValid(val)
+                      ]"
                     />
                   </div>
                 </div>
               </div>
 
               <q-btn
+                :disable="disableField"
                 v-if="index > 0"
                 color="red"
                 label="Удалить"
@@ -1013,6 +1071,7 @@
             </fieldset>
 
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Добавить родственника"
               @click="addRelative"
@@ -1030,6 +1089,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
+                  :disable="disableField"
                   ref="kindOfActivity"
                   square
                   outlined
@@ -1056,6 +1116,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
+                      :disable="disableField"
                       ref="nameOfEmployer"
                       square
                       outlined
@@ -1070,6 +1131,7 @@
                   </div>
                   <div class="col-4">
                     <q-input
+                      :disable="disableField"
                       ref="innOfEmployer"
                       square
                       outlined
@@ -1077,15 +1139,16 @@
                       dense
                       label="ИНН работодателя"
                       mask="#########"
-                      lazy-rules
                       :rules="[
                         val =>
-                          (val && val.length === 9) || 'Введите ИНН работодателя'
+                          (val && val.length == 9) || 'Введите ИНН работодателя',
+                        val => innValid(val)
                       ]"
                     />
                   </div>
                   <div class="col-4">
                     <q-select
+                      :disable="disableField"
                       ref="typeOrganization"
                       square
                       outlined
@@ -1106,6 +1169,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
+                      :disable="disableField"
                       ref="amountWorkes"
                       square
                       outlined
@@ -1124,6 +1188,7 @@
                   </div>
                   <div class="col-4">
                     <q-input
+                      :disable="disableField"
                       ref="position"
                       square
                       outlined
@@ -1136,6 +1201,7 @@
                   </div>
                   <div class="col-4">
                     <q-select
+                      :disable="disableField"
                       ref="positionCategory"
                       square
                       outlined
@@ -1156,31 +1222,45 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
+                      :disable="disableField"
                       ref="workExperience"
                       square
                       outlined
                       v-model="Customer.JobInfo.lastJobExperienceMonths"
+                      @input="validWorkExperience"
                       :options="dictionaries.jobPeriods.items"
                       dense
-                      label="Стаж на поледнем месте работы"
+                      label="Стаж на последнем месте работы"
                       emit-value
                       map-options
-                      :rules="[val => !!val || 'Выберите стаж работы']"
+                      :reactive-rules="false"
+                      :rules="[
+                        val => !!val || 'Выберите стаж работы',
+                        val => (Customer.JobInfo.totalJobExperienceMonths >= Customer.JobInfo.lastJobExperienceMonths) ||
+                          'Некорректные данные'
+                      ]"
                       class="q-pb-sm"
                     />
                   </div>
                   <div class="col-4">
                     <q-select
+                      :disable="disableField"
                       ref="totalWorkExperience"
                       square
                       outlined
                       v-model="Customer.JobInfo.totalJobExperienceMonths"
+                      @input="validWorkExperience"
                       :options="dictionaries.jobPeriods.items"
                       dense
                       label="Общий трудовой стаж"
                       emit-value
                       map-options
-                      :rules="[val => !!val || 'Выберите общий трудовой стаж']"
+                      :reactive-rules="false"
+                      :rules="[
+                        val => !!val || 'Выберите общий трудовой стаж',
+                        val => (Customer.JobInfo.totalJobExperienceMonths >= Customer.JobInfo.lastJobExperienceMonths) ||
+                          'Некорректные данные'
+                      ]"
                       class="q-pb-sm"
                     />
                   </div>
@@ -1198,6 +1278,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
+                      :disable="disableField"
                       ref="typeOrganization2"
                       square
                       outlined
@@ -1215,6 +1296,7 @@
                   </div>
                   <div class="col-4">
                     <q-select
+                      :disable="disableField"
                       ref="activityPeriod"
                       square
                       outlined
@@ -1247,6 +1329,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  disable
                   ref="income"
                   square
                   outlined
@@ -1261,6 +1344,7 @@
 
               <div class="col-4">
                 <q-input
+                  disable
                   ref="expense"
                   square
                   outlined
@@ -1275,6 +1359,7 @@
 
               <div class="col-4">
                 <q-input
+                  disable
                   ref="otherExpenses"
                   square
                   outlined
@@ -1291,6 +1376,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
+                  disable
                   square
                   outlined
                   v-model="Customer.MonthlyIncome.hasAdditionalIncome"
@@ -1305,6 +1391,7 @@
               <template v-if="Customer.MonthlyIncome.hasAdditionalIncome">
                 <div class="col-4">
                   <q-input
+                    disable
                     square
                     outlined
                     v-model.number="Customer.MonthlyIncome.additionalIncome.sum"
@@ -1316,6 +1403,7 @@
                 </div>
                 <div class="col-4">
                   <q-select
+                    disable
                     square
                     outlined
                     v-model="Customer.MonthlyIncome.additionalIncome.incomeType"
@@ -1333,31 +1421,31 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  disable
                   square
                   outlined
                   type="number"
                   dense
-                  disable
                   label="Среднемесячная заработная плата (сум)"
                 />
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   square
                   outlined
                   type="number"
                   dense
-                  disable
                   label="Профит"
                 />
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   square
                   outlined
                   type="number"
                   dense
-                  disable
                   label="Класс кредитоспособности"
                 />
               </div>
@@ -1391,6 +1479,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="typeProperties"
                     square
                     outlined
@@ -1406,12 +1495,12 @@
                 </div>
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="regionsProperties"
                     square
                     outlined
                     v-model="property.Region"
                     :options="dictionaries.Region.items"
-                    
                     dense
                     label="Регион / область"
                     emit-value
@@ -1423,6 +1512,7 @@
 
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="pricesProperties"
                     square
                     outlined
@@ -1430,13 +1520,16 @@
                     type="number"
                     dense
                     label="Рыночная стоимость"
-                    lazy-rules
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
+                    :rules="[
+                      val => !!val || 'Поля должно быт заполнено',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                 </div>
               </div>
 
               <q-btn
+                :disable="disableField"
                 color="red"
                 label="Удалить"
                 @click="
@@ -1452,6 +1545,7 @@
             </fieldset>
 
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Добавить недвижимость"
               @click="addProperty"
@@ -1477,6 +1571,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="typeVehicles"
                     square
                     outlined
@@ -1494,6 +1589,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="vehicleBrands"
                     square
                     outlined
@@ -1506,6 +1602,7 @@
                 </div>
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="yearsOfIssue"
                     square
                     outlined
@@ -1520,43 +1617,11 @@
                   />
                 </div>
 
-                <!-- <div class="col-4">
-                <q-input
-                  ref="yearsOfIssue"
-                  outlined
-                  square
-                  dense
-                  label="Год выпуска"
-                  v-model="vehicle.year"
-                  mask="####"
-                  lazy-rules
-                  :rules="[
-                    val => (val && val.length === 4) || 'Введите год выпуска'
-                  ]"
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        transition-show="scale"
-                        transition-hide="scale"
-                        ref="qYearsOfIssue"
-                      >
-                        <q-date
-                          mask="YYYY"
-                          v-model="vehicle.year"
-                          disable-year-month="2000/1"
-                          
-                          @input="() => $refs.qYearsOfIssue[index].hide()"
-                        />
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div> -->
               </div>
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="priceVehicles"
                     square
                     outlined
@@ -1564,13 +1629,16 @@
                     type="number"
                     dense
                     label="Рыночная стоимость"
-                    lazy-rules
-                    :rules="[val => !!val || 'Введите рыночную стоимость']"
+                    :rules="[
+                      val => !!val || 'Введите рыночную стоимость',
+                      val => val > 0 || 'Некорректные данные'  
+                    ]"
                   />
                 </div>
               </div>
 
               <q-btn
+                :disable="disableField"
                 color="red"
                 label="Удалить"
                 @click="
@@ -1586,6 +1654,7 @@
             </fieldset>
 
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Добавить транспортное средство"
               @click="addVehicle"
@@ -1630,6 +1699,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="customersAttitude"
                     square
                     outlined
@@ -1646,6 +1716,7 @@
 
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="priceGuarantees"
                     square
                     outlined
@@ -1654,7 +1725,10 @@
                     dense
                     label="Сумма поручительства"
                     @input="guaranteesValid"
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[
+                      val => !!val || 'Введите сумму',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                 </div>
               </div>
@@ -1662,35 +1736,47 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="surnameGuarantees"
                     square
                     outlined
                     v-model="guarantee.LastName"
                     dense
                     label="Фамилия"
-                    :rules="[val => !!val || 'Введите фамилию']"
+                    :rules="[
+                      val => !!val || 'Введите фамилию',
+                      val => fioValid(val)
+                    ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="nameGuarantees"
                     square
                     outlined
                     v-model="guarantee.FirstName"
                     dense
                     label="Имя"
-                    :rules="[val => !!val || 'Введите имя']"
+                    :rules="[
+                      val => !!val || 'Введите имя',
+                      val => fioValid(val)
+                    ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="mnameGuarantees"
                     square
                     outlined
                     v-model="guarantee.MiddleName"
                     dense
                     label="Отчество"
-                    :rules="[val => !!val || 'Введите отчество']"
+                    :rules="[
+                      val => !!val || 'Введите отчество',
+                      val => fioValid(val)
+                    ]"
                   />
                 </div>
               </div>
@@ -1698,6 +1784,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="birthdayGuarantees"
                     outlined
                     square
@@ -1735,6 +1822,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="innGuarantees"
                     square
                     outlined
@@ -1745,12 +1833,14 @@
                     :rules="[
                       val =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
+                      val => innValid(val)
                     ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="pinppGuarantees"
                     square
                     outlined
@@ -1759,12 +1849,14 @@
                     label="ПИНФЛ"
                     mask="##############"
                     :rules="[
-                      val => (val && val.length === 14) || 'Введите ПНФЛ'
+                      val => (val && val.length === 14) || 'Введите ПНФЛ',
+                      val => pinppValid(val)
                     ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Resident"
@@ -1781,6 +1873,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="guaranteesDocumentDocumentType"
                     square
                     outlined
@@ -1802,6 +1895,7 @@
                   class="col-4"
                 >
                   <q-input
+                    :disable="disableField"
                     ref="guaranteesDocumentDocumentName"
                     square
                     outlined
@@ -1818,6 +1912,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="guaranteesDocumentSeries"
                     square
                     outlined
@@ -1833,6 +1928,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="guaranteesDocumentNumber"
                     square
                     outlined
@@ -1842,12 +1938,14 @@
                     mask="#######"
                     :rules="[
                       val =>
-                        (val && val.length === 7) || 'Введите Номер документа'
+                        (val && val.length === 7) || 'Введите Номер документа',
+                      val => docNumberValid(val)
                     ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="guaranteesDocumentGivenDate"
                     outlined
                     square
@@ -1895,6 +1993,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="guaranteesDocumentExpirationDate"
                     outlined
                     square
@@ -1938,20 +2037,25 @@
 
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="guaranteesDocumentGivenPlace"
                     square
                     outlined
                     v-model="guarantee.Document.GivenPlace"
                     dense
                     label="Кем выдан документ"
-                    :rules="[val => !!val || 'Введите кем выдан документ']"
+                    :rules="[
+                      val => !!val || 'Введите кем выдан документ',
+                      val => givenPlaceValid(val)
+                    ]"
                   />
                 </div>
               </div>
 
               <div class="row q-col-gutter-md">
-                <div class="col-4">
+                <!-- <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="indexGuarantees"
                     square
                     outlined
@@ -1960,9 +2064,10 @@
                     label="Индекс"
                     mask="######"
                   />
-                </div>
+                </div> -->
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="regionGuarantees"
                     square
                     outlined
@@ -1979,6 +2084,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.City"
@@ -1991,6 +2097,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                       square
                       outlined
                       v-model="guarantee.Address.District"
@@ -2007,6 +2114,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="streetGuarantees"
                     square
                     outlined
@@ -2020,6 +2128,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="houseNumberGuarantees"
                     square
                     outlined
@@ -2029,29 +2138,32 @@
                     :rules="[val => !!val || 'Введите номер дома']"
                   />
                 </div>
-                <div class="col-4">
+                <!-- <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.Block"
                     dense
                     label="Корпус"
                   />
-                </div>
+                </div> -->
               </div>
 
               <div class="row q-col-gutter-md">
-                <div class="col-4">
+                <!-- <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.Building"
                     dense
                     label="Строение"
                   />
-                </div>
+                </div> -->
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.Apartment"
@@ -2073,6 +2185,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
+                      :disable="disableField"
                       ref="phonesGuarantees"
                       square
                       outlined
@@ -2082,13 +2195,15 @@
                       mask="+############"
                       :rules="[
                         val =>
-                          (val && val.length === 13) || 'Введите номер телефона'
+                          (val && val.length === 13) || 'Введите номер телефона',
+                        val => phoneValid(val)
                       ]"
                     />
                   </div>
                 </div>
 
                 <q-btn
+                  :disable="disableField"
                   v-if="phoneIndex > 0"
                   color="red"
                   label="Удалить"
@@ -2106,6 +2221,7 @@
               </fieldset>
 
               <q-btn
+                :disable="disableField"
                 color="primary"
                 label="Добавить номер телефона"
                 @click="addPhoneGuarantee({ item: 'RelatedPerson', index })"
@@ -2113,6 +2229,7 @@
               ></q-btn>
 
               <q-btn
+                :disable="disableField"
                 color="red"
                 label="Удалить"
                 @click="
@@ -2127,6 +2244,7 @@
               ></q-btn>
             </fieldset>
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Добавить физ. лицо"
               @click="addRelatedPerson('RelatedPerson')"
@@ -2151,6 +2269,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="priceGuarantees"
                     square
                     outlined
@@ -2160,7 +2279,10 @@
                     label="Сумма поручительства"
                     @input="guaranteesValid"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[
+                      val => !!val || 'Введите сумму',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                 </div>
               </div>
@@ -2168,6 +2290,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="nameGuarantees"
                     square
                     outlined
@@ -2175,12 +2298,16 @@
                     dense
                     label="Название"
                     lazy-rules
-                    :rules="[val => !!val || 'Введите имя']"
+                    :rules="[
+                      val => !!val || 'Введите название',
+                      val => fioValid(val)
+                    ]"
                   />
                 </div>
 
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="innGuarantees"
                     square
                     outlined
@@ -2192,7 +2319,8 @@
                     :rules="[
                       val =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
+                      val => innValid(val)
                     ]"
                   />
                 </div>
@@ -2200,6 +2328,7 @@
                 <!-- Надо добавить в BPM -->
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="kindOfActivityGuarantees"
                     square
                     outlined
@@ -2216,8 +2345,9 @@
               </div>
 
               <div class="row q-col-gutter-md">
-                <div class="col-4">
+                <!-- <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.PostalCode"
@@ -2225,9 +2355,10 @@
                     label="Индекс"
                     mask="######"
                   />
-                </div>
+                </div> -->
                 <div class="col-4">
                   <q-select
+                    :disable="disableField"
                     ref="regionGuarantees"
                     square
                     outlined
@@ -2244,6 +2375,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.City"
@@ -2264,6 +2396,7 @@
                   />  -->
 
                   <q-select
+                    :disable="disableField"
                       square
                       outlined
                       v-model="guarantee.Address.District"
@@ -2280,6 +2413,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="streetGuarantees"
                     square
                     outlined
@@ -2294,6 +2428,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="houseNumberGuarantees"
                     square
                     outlined
@@ -2304,29 +2439,32 @@
                     :rules="[val => !!val || 'Введите номер дома']"
                   />
                 </div>
-                <div class="col-4">
+                <!-- <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.Block"
                     dense
                     label="Корпус"
                   />
-                </div>
+                </div> -->
               </div>
 
               <div class="row q-col-gutter-md">
-                <div class="col-4">
+                <!-- <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.Building"
                     dense
                     label="Строение"
                   />
-                </div>
+                </div> -->
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     square
                     outlined
                     v-model="guarantee.Address.OfficeNum"
@@ -2348,6 +2486,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
+                      :disable="disableField"
                       ref="phonesGuarantees"
                       square
                       outlined
@@ -2358,13 +2497,15 @@
                       lazy-rules
                       :rules="[
                         val =>
-                          (val && val.length === 13) || 'Введите номер телефона'
+                          (val && val.length === 13) || 'Введите номер телефона',
+                        val => phoneValid(val)
                       ]"
                     />
                   </div>
                 </div>
 
                 <q-btn
+                  :disable="disableField"
                   v-if="phoneIndex > 0"
                   color="red"
                   label="Удалить"
@@ -2382,6 +2523,7 @@
               </fieldset>
 
               <q-btn
+                :disable="disableField"
                 color="primary"
                 label="Добавить номер телефона"
                 @click="
@@ -2391,6 +2533,7 @@
               ></q-btn>
 
               <q-btn
+                :disable="disableField"
                 color="red"
                 label="Удалить"
                 @click="
@@ -2405,6 +2548,7 @@
               ></q-btn>
             </fieldset>
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Добавить юр. лицо"
               @click="addRelatedLegalPerson('RelatedLegalPerson')"
@@ -2428,6 +2572,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="nameGuarantees"
                     square
                     outlined
@@ -2441,6 +2586,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="innGuarantees"
                     square
                     outlined
@@ -2451,12 +2597,14 @@
                     :rules="[
                       val =>
                         (val && val.length === 9) ||
-                        'Количество цифр должно быть 9'
+                        'Количество цифр должно быть 9',
+                      val => innValid(val)
                     ]"
                   />
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="priceGuarantees"
                     square
                     outlined
@@ -2465,12 +2613,16 @@
                     dense
                     label="Сумма страхового полиса"
                     @input="guaranteesValid"
-                    :rules="[val => !!val || 'Введите сумму']"
+                    :rules="[
+                      val => !!val || 'Введите сумму',
+                      val => val > 0 || 'Некорректные данные'
+                    ]"
                   />
                 </div>
               </div>
 
               <q-btn
+                :disable="disableField"
                 color="red"
                 label="Удалить"
                 @click="
@@ -2486,6 +2638,7 @@
             </fieldset>
 
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Добавить страхование"
               @click="addInsurance('Insurance')"
@@ -2525,6 +2678,7 @@
               </div>
               <div class="col-4">
                 <q-input
+                  :disable="disableField"
                   ref="priceCredit"
                   square
                   outlined
@@ -2534,11 +2688,12 @@
                   label="Запрашиваемая сумма кредита"
                   :rules="[
                     val => !!val || 'Введите сумму кредита',
-
+                    val => val > 0 || 'Некорректные данные',
                     preApprovalData.maxSum 
                     ?  (val =>
-                      val <= preApprovalData.maxSum ||
-                      `Введите сумму небольше ${preApprovalData.maxSum}`)
+                      (val > 0 &&
+                      val <= preApprovalData.maxSum) ||
+                      `Введите сумму от 0 до ${preApprovalData.maxSum}`)
                     : null
                   ]"
                 />
@@ -2588,14 +2743,14 @@
                   v-model="fullProfile.LoanInfo.MaxInterestRate"
                   dense
                   disable
-                  label="Процентная ставка по кредиту (максимальная)"
+                  label="Процентная ставка"
                   :rules="[
                     val => !!val || 'Введите максимальную процентную ставку'
                   ]"
                 />
               </div>
 
-              <div class="col-4">
+              <!-- <div class="col-4">
                 <q-input
                   ref="interestRateMin"
                   square
@@ -2608,7 +2763,7 @@
                     val => !!val || 'Введите минимальную процентную ставку'
                   ]"
                 />
-              </div>
+              </div> -->
 
               <!-- <q-select
                   ref="periodRepayment"
@@ -2639,6 +2794,7 @@
                     до {{ GracePeriodMax }})
                   </q-badge>
                   <q-slider
+                    :disable="disableField"
                     v-model.number="
                       fullProfile.LoanInfo.MaxDefferalRepaymentPeriod
                     "
@@ -2648,7 +2804,6 @@
                     label
                     label-always
                     color="light-green"
-                    :rules="[val => !!val || 'Выберите срок кредита']"
                     class="sliderCredit"
                   />
                 </div>
@@ -2658,6 +2813,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  disable
                   ref="comfortablePeriodRepayment"
                   square
                   outlined
@@ -2668,19 +2824,19 @@
                   mask="##"
                   :rules="[
                     val => !!val || 'Введите удобный срок погашения в мес',
-                    val => val > 0 || 'Неверный срок погашения'
+                    val => val > 0 || 'Некорректные данные'
                   ]"
                 />
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   ref="periodRepaymentMin"
                   square
                   outlined
                   v-model.number="fullProfile.LoanInfo.MinTermInMonths"
                   type="number"
                   dense
-                  disable
                   label="Минимальное количество месяцев на кредит"
                   mask="##"
                   :rules="[
@@ -2692,13 +2848,13 @@
               </div>
               <div class="col-4">
                 <q-input
+                  disable
                   ref="periodRepaymentMax"
                   square
                   outlined
                   v-model.number="fullProfile.LoanInfo.MaxTermInMonths"
                   type="number"
                   dense
-                  disable
                   label="Максимальное количество месяцев на кредит"
                   mask="##"
                   :rules="[
@@ -2713,6 +2869,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  :disable="disableField"
                   ref="comfortableDayRepayment"
                   square
                   outlined
@@ -2730,31 +2887,12 @@
               </div>
             </div>
 
-            <!-- <div class="row q-col-gutter-md">
-              <div class="col-4">
-                <q-select
-                  ref="typeCredit"
-                  square
-                  outlined
-                  v-model="personalData.LoanInfo.type"
-                  :options="options.typeCredit"
-                  dense
-                  label="Вид кредита"
-                  :rules="[val => !!val || 'Выберите вид кредита']"
-                  emit-value
-                  map-options
-                  class="q-pb-sm"
-                />
-              </div>
-              <div class="col-4"></div>
-              <div class="col-4"></div>
-            </div> -->
-
             <div class="row q-col-gutter-md">
               <div 
                 v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
                 class="col-4">
                 <q-input
+                  :disable="disableField"
                   ref="initialFee"
                   square
                   outlined
@@ -2762,7 +2900,10 @@
                   type="number"
                   dense
                   label="Первоначальный взнос"
-                  :rules="[val => !!val || 'Введите первоначальный взнос']"
+                  :rules="[
+                    val => !!val || 'Введите первоначальный взнос',
+                    val => val > 0 || 'Некорректные данные'
+                  ]"
                 />
               </div>
 
@@ -2803,6 +2944,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
+                  :disable="disableField"
                   ref="purposeCredit"
                   square
                   outlined
@@ -2819,6 +2961,7 @@
 
               <div class="col-4">
                 <q-select
+                  :disable="disableField"
                   ref="sourceFinancs"
                   square
                   outlined
@@ -2850,6 +2993,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="nameProduction"
                     square
                     outlined
@@ -2861,6 +3005,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="productName"
                     square
                     outlined
@@ -2875,6 +3020,7 @@
               
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="nameBankProd"
                     square
                     outlined
@@ -2889,6 +3035,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="billProd"
                     square
                     outlined
@@ -2904,6 +3051,7 @@
                 </div>
                 <div class="col-4">
                   <q-input
+                    :disable="disableField"
                     ref="agreementNumber"
                     square
                     outlined
@@ -2916,6 +3064,7 @@
                 <div class="col-4">
                   
                   <q-input
+                    :disable="disableField"
                     ref="agreementDate"
                     outlined
                     square
@@ -3131,6 +3280,7 @@
             <div class="row q-col-gutter-md">
               <div class="col">
                 <q-input
+                  :disable="disableField"
                   v-model="creditManagerComment"
                   type="textarea"
                   label="Введите комментарий"
@@ -3142,6 +3292,7 @@
 
             <!-- Add comment-->
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Оставить комментарий"
               class="q-ml-sm"
@@ -3186,6 +3337,7 @@
         <div class="submitBlock">
           <!-- Print version button-->
           <q-btn
+            :disable="disableField"
             @click="onSubmit(false)"
             color="primary"
             label="Версия для печати"
@@ -3249,12 +3401,13 @@
       <appFullProfile v-if="profile.confirmCredit" />
     </div>
 
-    <apploaderFullScreen v-if="loader"></apploaderFullScreen>
+    <appLoaderFullScreen v-if="loader" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { mapState } from 'vuex';
 import printJS from "print-js";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import UserService from "@/services/user.service";
@@ -3330,38 +3483,39 @@ export default {
       }
       
       try {
-        const res = await this.$store.dispatch("profile/getFullForm");
+        const response = await this.$store.dispatch("profile/getFullForm");
 
         this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-        console.log('resggggggggggggggggggggg', res)
+        console.log('response', response)
 
-        const { data } = res.data.input.find(i => i.label == 'application')
+        if (response) {
+          const { data } = response.data.input.find(i => i.label == 'application')
         
-        if (data.BODecision != null) {
-          const uploadedFiles = data.AttachedDocuments.items
-          const guarantees = data.Guarantee
+          if (data.BODecision != null) {
+            const uploadedFiles = data.AttachedDocuments.items
+            const guarantees = data.Guarantee
 
-          for (let file of uploadedFiles) {
-            this.filesAll.push({
-              name: "",
-              DocumentName: file.DocumentName,
-              id: file.id,
-              upload: true
-            });
-          }
+            for (let file of uploadedFiles) {
+              this.filesAll.push({
+                name: "",
+                DocumentName: file.DocumentName,
+                id: file.id,
+                upload: true
+              });
+            }
 
-          for (let guarantee in guarantees) {
-            //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
-            for (let i of guarantees[guarantee].items) {
-              this.guaranteeCount.push("guarantee")
+            for (let guarantee in guarantees) {
+              //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
+              for (let i of guarantees[guarantee].items) {
+                this.guaranteeCount.push("guarantee")
+              }
             }
           }
         }
-        //this.guaranteesValid()
         
         this.loaderForm = false
       } catch (error) {
-        console.log('ERROR', error)
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.loaderForm = false
       }
     } else if (!axios.defaults.headers.common["BPMCSRFToken"]) { // если перезагрузили страницу
@@ -3377,8 +3531,16 @@ export default {
     }
     
   },
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      this.onSubmit("start")
+    }, 500)
+    
+  },
   computed: {
+    ...mapState({
+      disableField: state => state.profile.disableField
+    }),
     fullProfile() {
       console.log(this.$store.getters["profile/profile"].fullFormProfile)
       return this.$store.getters["profile/profile"].fullFormProfile
@@ -3394,11 +3556,6 @@ export default {
 
     profile() {
       return this.$store.getters["profile/profile"]
-    },
-
-    personalData() {
-      console.log('personalData', this.$store.getters["credits/credits"].personalData)
-      return this.$store.getters["credits/credits"].personalData
     },
 
     credits() {
@@ -3423,6 +3580,24 @@ export default {
         this.isValid = true;
       }
     },
+
+    // "Customer.JobInfo.lastJobExperienceMonths"() {
+    //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
+    //     this.$refs.workExperience.validate()
+    //   }
+    //    if (this.Customer.JobInfo.lastJobExperienceMonths) {
+    //     this.$refs.totalWorkExperience.validate()
+    //   }
+    // },
+    
+    // "Customer.JobInfo.totalJobExperienceMonths"() {
+    //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
+    //     this.$refs.workExperience.validate()
+    //   }
+    //    if (this.Customer.JobInfo.lastJobExperienceMonths) {
+    //     this.$refs.totalWorkExperience.validate()
+    //   }
+    // },
 
     sameRegistration(flag) {
       if (flag) {
@@ -3835,8 +4010,9 @@ export default {
         this.formHasError = true;
         this.bar = true;
       } else {
-        
-        if (submitForm) {
+         if (submitForm === "start") {
+           this.profile.confirmCredit = false;
+         } else if (submitForm) {
         this.loader = true;
         this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
         console.log("fullProfile", this.$store.state.profile.fullFormProfile);
@@ -3863,9 +4039,9 @@ export default {
         console.log('Customer', Customer)
         //ClientManagerLogin = "man"
         Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`
-        Customer.Document.Number = Number(Customer.Document.Number)
-        Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
-        Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
+          Customer.Document.Number = Number(Customer.Document.Number)
+          Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
+          Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
         //LoanInfo.RepaymentType = Number(LoanInfo.RepaymentType)
 
         // удалил из объекта - Date!!!
@@ -3898,24 +4074,21 @@ export default {
         console.log(JSON.stringify(data, null, 2));
 
         try {
-          const res = await this.$store.dispatch("credits/confirmationCredit", data);
-          console.log("response", JSON.stringify(res, null, 2));
-          //console.log('nextTaskId', res.nextTask.id)
+          const response = await this.$store.dispatch("credits/confirmationCredit", data);
+          console.log("response", JSON.stringify(response, null, 2));
+          //console.log('nextTaskId', response.nextTask.id)
 
-          if (res.nextTask.id) {
-            sessionStorage.removeItem("csrf_token");
+          if (response) {
             this.$store.commit('credits/setMessage', 'Credit complete')
+            this.$store.commit("credits/removeTask", this.taskId)
             this.$router.push("/work/credit")
-          } else {
-            throw 'Next task id is undefined'
+            //this.$router.go(-1);
           }
+          
           this.loader = false;
         } catch (error) {
+          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
           this.loader = false;
-          const errorMessage = CommonUtils.filterServerError(error);
-          this.$store.commit("credits/setMessage", errorMessage);
-          sessionStorage.clear()
-          this.$router.push("/work/credit");
         }
         } else {
           this.profile.confirmCredit = true;
@@ -3931,6 +4104,16 @@ export default {
 
       if (this.Customer.Document.GivenDate) {
         this.$refs.DocumentGivenDate.validate()
+      }
+    },
+
+    validWorkExperience() {
+      if (this.Customer.JobInfo.totalJobExperienceMonths) {
+        this.$refs.workExperience.validate()
+      }
+
+      if (this.Customer.JobInfo.lastJobExperienceMonths) {
+        this.$refs.totalWorkExperience.validate()
       }
     },
 
@@ -3959,12 +4142,6 @@ export default {
       console.log("Аннуит, диффер")
       this.fullProfile.LoanInfo.RepaymentType = null;
       this.options.RepaymentType = [];
-
-      // для синхронизации с Preapprov
-      // if (this.personalData.typeStepCredit) {
-      //   this.fullProfile.LoanInfo.RepaymentType = this.personalData.typeStepCredit
-      //   this.personalData.typeStepCredit = null
-      // }
 
       this.fullProfile.LoanInfo.consumerLoan = {
           nameBankProd: "",    // Наименование банка
@@ -4241,7 +4418,9 @@ export default {
                 .filter(i => i.id === null)
                 .map(i => i.upload = true)
           }
-        } catch (error) {}
+        } catch (error) {
+          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        }
       }
 
       // удалить все не загруженные файлы перед отправкой на сервер!!!!
@@ -4265,13 +4444,23 @@ export default {
       this.filesAll.splice(idx, 1);
     },
 
-    removeUploadFile(payload) {
-      console.log('idFile', this.filesAll[payload.index].id)
-      //const response = this.$store.dispatch("profile/removeFiles", this.fileAll[idx].id)
+    async removeUploadFile(payload) {
+      try {
+        console.log('idFile', this.filesAll[payload.index].id)
+        const idFile = this.filesAll[payload.index].id
+        const response = await this.$store.dispatch("profile/removeFiles", idFile)
 
-      // if (response) {
-      //   this.filesAll.splice(idx, 1);
-      // }
+        console.log('delFile', response)
+        if (response == "OK") {
+          this.filesAll.splice([payload.index], 1);
+          const idx = this.fullProfile.AttachedDocuments.items.findIndex(i => i.id == idFile)
+          if (idx != -1) {
+            this.fullProfile.AttachedDocuments.items.splice(idx, 1)
+          }
+        }
+      } catch(error){
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+      }
     },
 
     addFiles() {
@@ -4313,6 +4502,30 @@ export default {
       this.$refs.guaranteesValid.validate();
     },
 
+    givenPlaceValid(val) {
+      return val.match(/[^А-Яа-яa-z0-9]+$/) || 'Введите на латинице заглавными буквами' // все кроме кирилицы
+    },
+
+    fioValid(val) {
+      return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
+    },
+
+    phoneValid(val) {
+      return !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные'
+    },
+
+    docNumberValid(val) {
+      return !val.match(/(?=(.))\1{7,}/) || 'Неверные данные'
+    },
+
+    innValid(val) {
+      return !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
+    },
+
+    pinppValid(val) {
+      return !val.match(/(?=(.))\1{14,}/) || 'Неверные данные'
+    },
+
     async printFile(fileData, idx) {
       this.disable = true
       let file = null
@@ -4337,14 +4550,19 @@ export default {
 
         console.log('file', file)
 
-        printJS(file.url);
-        window.URL.revokeObjectURL(file.url);
-
+        if (file) {
+          printJS(file.url);
+          window.URL.revokeObjectURL(file.url);
+        }
+       
         this.disable = false
       } catch(error) {
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.disable = false
       }
     },
+
+
 
     filterFn (val, update) {
       console.log('filterFn', val)
@@ -4365,7 +4583,7 @@ export default {
     appLoader: Loader,
     appFullProfile: FullProfile,
     appSentFullProfile: SentFullProfile,
-    apploaderFullScreen: LoaderFullScreen
+    appLoaderFullScreen: LoaderFullScreen
     // appUploadFiles: UploadFiles
   }
 };

@@ -1,7 +1,8 @@
 <template>
   <div class="q-pa-md">
-    <apploaderFullScreen v-if="loader"></apploaderFullScreen>
-
+    <div class="loaderForm" v-if="loaderForm">
+      <appLoader />
+    </div>
     <div v-else>
       <!-- Header credit -->
       <div class="row infoBlock">
@@ -230,8 +231,8 @@
               <div class="row rowForm">
                 <div class="col-4 field">Номер дома</div>
                 <div class="col-2 data">{{ address.House }}</div>
-                <div class="col-3 field">Корпус</div>
-                <div class="col-3 data">{{ address.Block }}</div>
+                <!-- <div class="col-3 field">Корпус</div>
+                <div class="col-3 data">{{ address.Block }}</div> -->
               </div>
 
               <div class="row rowForm">
@@ -332,11 +333,17 @@
               <div class="row rowForm">
                 <div class="col-3 field">Вид документа</div>
                 <div class="col-9 data">
-                  {{
+                  <template v-if="
                     dictionaries.DocumentType.items.find(
                       i => i.value == relative.Document.documentType
-                    ).label
-                  }}
+                    )
+                  ">
+                    {{
+                      dictionaries.DocumentType.items.find(
+                        i => i.value == relative.Document.documentType
+                      ).label
+                    }}
+                  </template>
                 </div>
               </div>
 
@@ -762,8 +769,35 @@
                   </div>
                 </div>
                 <div class="row rowForm">
-                  <div class="col-12 field">Паспортные данные:</div>
+                  <div class="col-12 field">Данные документа:</div>
                 </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Вид документа</div>
+                  <div class="col-6 data">
+                    <template
+                      v-if="
+                        dictionaries.DocumentType.items.find(
+                          i => i.value == guarantee.Document.documentType
+                        )
+                      "
+                    > 
+                      {{
+                        dictionaries.DocumentType.items.find(
+                          i => i.value == guarantee.Document.documentType
+                        ).label
+                      }}
+                    </template>
+                  </div>
+                </div>
+
+                <div class="row rowForm" v-if="guarantee.Document.documentType == 7"> 
+                  <div class="col-6 field">Наименование документа</div>
+                  <div class="col-6 data">
+                    {{ guarantee.Document.DocumentName }}
+                  </div>
+                </div>
+
                 <div class="row rowForm">
                   <div class="col-6 field">Серия</div>
                   <div class="col-6 data">{{ guarantee.Document.Series }}</div>
@@ -790,12 +824,12 @@
                   <div class="col-12 field">Адрес:</div>
                 </div>
 
-                <div class="row rowForm">
+                <!-- <div class="row rowForm">
                   <div class="col-6 field">Индекс</div>
                   <div class="col-6 data">
                     {{ guarantee.Address.PostalCode }}
                   </div>
-                </div>
+                </div> -->
                 <div class="row rowForm">
                   <div class="col-6 field">Регион/ область</div>
                   <div class="col-6 data">
@@ -874,12 +908,12 @@
                   <div class="col-12 field">Адрес:</div>
                 </div>
 
-                <div class="row rowForm">
+                <!-- <div class="row rowForm">
                   <div class="col-6 field">Индекс</div>
                   <div class="col-6 data">
                     {{ guarantee.Address.PostalCode }}
                   </div>
-                </div>
+                </div> -->
                 <div class="row rowForm">
                   <div class="col-6 field">Регион/ область</div>
                   <div class="col-6 data">
@@ -1196,9 +1230,9 @@
                       color="primary"
                       label="Просмотреть"
                       @click="
-                        loader = true
+                        loaderFullScreen = true
                         showFile(document.id)
-                        loader = false
+                        loaderFullScreen = false
                       "
                     />
                   </div>
@@ -1371,10 +1405,13 @@
         </iframe>
       </div>
     </div>
+
+    <appLoaderFullScreen v-if="loader" />
   </div>
 </template>
 <script>
 import CommonUtils from "@/shared/utils/CommonUtils";
+import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 import { validItems, validFilter } from "../../filters/valid_filter";
 
@@ -1382,6 +1419,7 @@ export default {
   data() {
     return {
       loader: false,
+      loaderForm: true,
       confirm: false,
       BODecision: true,
       userRole: this.$store.getters["credits/userRole"],
@@ -1432,6 +1470,7 @@ export default {
     this.$store.commit("credits/setTaskId", this.$route.query.taskId);
     try {
       const res = await this.$store.dispatch("profile/getFullForm");
+      this.loaderForm = false
       console.log("res", res);
     } catch (error) {}
   },
@@ -1502,6 +1541,7 @@ export default {
       // if (this.$refs.reson.hasError || this.$refs.comment.hasError) {
       //   this.formHasError = true;
       // } else {
+      this.$refs.comment.validate();
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
@@ -1563,36 +1603,32 @@ export default {
               name: "CreditCommiteeDecisions",
               data: this.fullProfile.CreditCommiteeDecisions.items
             },
-            // {
-            //   name: "ApplicationComment",
-            //   data: this.fullProfile.ApplicationComment.items
-            // }
+            {
+              name: "application_comments",
+              data: this.fullProfile.ApplicationComment.items
+            }
           ]
         };
       }
 
       try {
         console.log("data", JSON.stringify(data, null, 2));
-        const res = await this.$store.dispatch(
+        const response = await this.$store.dispatch(
           "credits/confirmationCredit",
           data
         );
-        console.log("response", JSON.stringify(res, null, 2));
+        console.log("response", JSON.stringify(response, null, 2));
 
-        if (res.nextTask.id) {
-          sessionStorage.removeItem("csrf_token");
+        if (response) {
           this.$store.commit("credits/setMessage", message);
-          this.$router.push("/work/credit");
-        } else {
-          throw "Next task id is undefined";
+          this.$store.commit("credits/removeTask", this.$route.query.taskId)
+          this.$router.go(-1);
         }
+
         this.loader = false;
       } catch (error) {
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.loader = false;
-        const errorMessage = CommonUtils.filterServerError(error);
-        this.$store.commit("credits/setMessage", errorMessage);
-        sessionStorage.clear()
-        this.$router.push("/work/credit");
       }
     },
 
@@ -1610,12 +1646,14 @@ export default {
           "height",
           document.body.clientHeight - 150
         );
-        this.$refs.pdfviewer.setAttribute("src", file.url);
-        // printJS(url);
-        window.URL.revokeObjectURL(file);
-        
+
+        if (file) {
+          this.$refs.pdfviewer.setAttribute("src", file.url);
+          // printJS(url);
+          window.URL.revokeObjectURL(file);
+        }
       } catch (error) {
-        //this.loader = false;
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
       }
     },
 
@@ -1638,7 +1676,8 @@ export default {
     }
   },
   components: {
-    apploaderFullScreen: LoaderFullScreen
+    appLoader: Loader,
+    appLoaderFullScreen: LoaderFullScreen
   }
 };
 </script>

@@ -1,8 +1,7 @@
 <template>
   <AppCreditList 
     :loaderList="loaderList" 
-    :key="componentKey" 
-    @renderComponent="($event) => componentKey += $event"
+    getTasks="getUserTasks"
   />
 </template>
 

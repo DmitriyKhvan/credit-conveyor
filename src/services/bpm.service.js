@@ -50,7 +50,7 @@ export default class BpmService {
     const responce = await axios({
       method: "get",
       url: `${this._digIdUrl}/DataFromService`,
-      timeout: 60000,
+      timeout: 30000,
     });
 
     return responce.data;
@@ -77,19 +77,19 @@ export default class BpmService {
     return responce.data;
   };
 
-  getRoleTasks = async () => {
+  getRoleTasks = async ({page, count}) => {
     const responce = await axios({
       method: "get",
-      url: `${this._baseUrl}/bpm/credit/roletasks`,
+      url: `${this._baseUrl}/bpm/credit/roletasks?page=${page}&count=${count}`,
     });
 
     return responce.data;
   };
 
-  getUserTasks = async () => {
+  getUserTasks = async ({page, count}) => {
     const responce = await axios({
       method: "get",
-      url: `${this._baseUrl}/bpm/credit/usertasks`,
+      url: `${this._baseUrl}/bpm/credit/usertasks?page=${page}&count=${count}`,
     });
 
     return responce.data;
@@ -138,11 +138,10 @@ export default class BpmService {
     return responce.data;
   };
 
-  removeFiles = async (data) => {
+  removeFiles = async (id) => {
     const responce = await axios({
       method: "delete",
-      url: `${this._baseUrl}/file/`,
-      data
+      url: `${this._baseUrl}/file/edocument/${id}`
     });
 
     return responce.data
