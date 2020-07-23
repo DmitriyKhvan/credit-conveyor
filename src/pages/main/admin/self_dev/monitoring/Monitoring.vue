@@ -42,9 +42,11 @@
 </template>
 
 <script>
+import UserTestStat from "@/components/UserTestStat";
+import { date } from "quasar";
+
 export default {
   // !!! 1.check coloumn data is object if so prettify
-
   created() {
     if (this.step == 0) {
       this.loadTestList(done => {
@@ -135,8 +137,22 @@ export default {
           }
           this.loading = false;
         });
-      } else {
-        console.log("else case met");
+      } else if (this.step == 5) {
+        this.loadEmpTestData(row.id, (err, data) => {
+          if (err) {
+            console.log(err);
+          }
+          if (data) {
+            //console.log(data);
+            this.$q.dialog({
+              component: UserTestStat,
+              parent: this,
+              data: data
+            });
+          } else {
+            console.log("data doesnt exist");
+          }
+        });
       }
     },
     prepareTableProperties(data) {
@@ -333,6 +349,24 @@ export default {
         .catch(error => {
           console.log(error);
           callback(false);
+        });
+    },
+    loadEmpTestData(recordId, callback) {
+      this.$axios
+        .get(`test/monitoring/emptest?id=${recordId}`)
+        .then(
+          resp => {
+            //console.log(resp.data);
+            callback(null, resp.data);
+          },
+          error => {
+            console.log(error);
+            callback(error, null);
+          }
+        )
+        .catch(error => {
+          console.log(error);
+          callback(error, null);
         });
     }
   }
