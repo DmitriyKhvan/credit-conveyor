@@ -325,8 +325,7 @@
                   dense
                   label="Плата за облуживание других обязательств"
                   :rules="[
-                    val => !!val || 'Поля должно быт заполнено',
-                    val => val > 0 || 'Некорректные данные'
+                    val => val >= 0 || 'Некорректные данные'
                   ]"
                 />
                 
@@ -465,6 +464,7 @@ export default {
 
         if (localStorage.getItem(this.taskId)) {
           this.$store.commit("credits/setPersonalData", JSON.parse(localStorage.getItem(this.taskId)))
+          // чтоб не оставлять предыдущий taskId в случае перехода на полную форму (следующий taskId)
           localStorage.removeItem(this.taskIdPreapp)
         }
 
@@ -496,7 +496,15 @@ export default {
       this.loader = false;
     }
   },
-  beforeDestroy(){
+  mounted() {
+    // window.onunload = function() { 
+    //   localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
+    // }
+    // window.onbeforeunload = function() {
+    //   localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
+    // }
+  },
+  beforeDestroy() {
     localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
   },
   computed: {
@@ -514,42 +522,6 @@ export default {
     }
   },
   watch: {
-    // "personalData.typeCredit"(credit) {
-    //   this.personalData.typeStepCredit = null;
-    //   this.options.typeStepCredits = [];
-    //   this.periodCreditMin = null;
-    //   this.periodCreditMax = null;
-    //   this.personalData.periodCredit = 0;
-    //   this.personalData.loanRate = 0;
-
-    //   const idxCredit = this.options.typeCredits.findIndex(
-    //     item => item.value == credit
-    //   );
-
-    //   if (idxCredit !== -1) {
-
-    //     this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
-    //       return {
-    //         label: i.label,
-    //         value: Number(i.value)
-    //       }
-    //     })
-
-    //     this.periodCreditMin = Number(
-    //       this.options.typeCredits[idxCredit].period[0].value
-    //     );
-    //     this.periodCreditMax = Number(
-    //       this.options.typeCredits[idxCredit].period[1].value
-    //     );
-    //     this.personalData.periodCredit = Number(
-    //       this.options.typeCredits[idxCredit].period[0].value
-    //     );
-    //     this.personalData.loanRate = Number(
-    //       this.options.typeCredits[idxCredit].loanRate
-    //     );
-    //   }
-    // },
-
     "personalData.children"(status) {
       if (!status) {
         this.personalData.childrenCount = 0;

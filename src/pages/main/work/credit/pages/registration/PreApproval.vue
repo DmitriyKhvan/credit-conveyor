@@ -187,7 +187,8 @@ export default {
           
 
           console.log("dic", JSON.stringify(dictionaries, null, 2));
-
+          
+          this.$store.commit("profile/resetDataFullFormProfile")
           this.$store.commit("profile/setPreapprovData", data);
           this.$store.commit("profile/setDictionaries", dictionaries);
 
@@ -241,6 +242,7 @@ export default {
             this.$store.commit("credits/setMessage", "Credit failure");
             sessionStorage.clear();
             this.$router.push("/work/credit");
+            // чтоб удаление произошло после метода beforeDestroy в родительском компоненте
             setTimeout(() => {
               localStorage.removeItem(this.taskIdPreapp)
             }, 1000)

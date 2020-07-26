@@ -137,7 +137,9 @@ export const profile = {
           Country: "Uzbekistan",
           DocLink: "",
           DocumentName: "",
-          GivenPlace: ""
+          Region: null,
+          Districts: [],
+          GivenPlace: null
         },
 
         Education: null,
@@ -208,7 +210,9 @@ export const profile = {
                 Country: "",
                 DocLink: "",
                 DocumentName: "",
-                GivenPlace: ""
+                Region: null,
+                Districts: [],
+                GivenPlace: null
               }
             }
           ]
@@ -385,6 +389,7 @@ export const profile = {
           //   commit("setPreapprovData", data);
           // } 
           if (data.BODecision == null) { // кредит не оформлен
+            commit("resetDataFullFormProfile")
             commit("setPreapprovData", data);
           } 
           else if (response.data.name == "Работа с документами") {
@@ -415,7 +420,8 @@ export const profile = {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
         sessionStorage.clear()
-        this.$router.push("/work/credit");
+        //this.$router.push("/work/credit");
+        this.$router.go(-1);
         throw error
       }
     }
@@ -433,9 +439,8 @@ export const profile = {
 
     setPreapprovData(state, payload) {
       state.fileList = []
-       // Для корректной валидации
-      payload.Customer.Document.Number = String(payload.Customer.Document.Number)
-
+      
+      // Для корректной валидации
       state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
       state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
@@ -443,7 +448,7 @@ export const profile = {
       state.fullFormProfile.Customer.PhoneList.items[0].Number = payload.Customer.PhoneList.items[0].Number;
       state.fullFormProfile.Customer.PINPP = payload.Customer.PINPP;
       state.fullFormProfile.Customer.Document.Series = payload.Customer.Document.Series
-      state.fullFormProfile.Customer.Document.Number = payload.Customer.Document.Number
+      state.fullFormProfile.Customer.Document.Number = String(payload.Customer.Document.Number)
 
       state.fullFormProfile.Customer.MaritalStatus = payload.Customer.MaritalStatus
 
@@ -573,7 +578,9 @@ export const profile = {
           Country: "",
           DocLink: "",
           DocumentName: "",
-          GivenPlace: ""
+          Region: null,
+          Districts: [],
+          GivenPlace: null
         },
         ClientRelation: null,
         PhoneList: {
@@ -590,9 +597,24 @@ export const profile = {
       });
     },
 
+    setGivenPlace(state, payload) {
+      if (payload.idx || payload.idx === 0) {
+        state.fullFormProfile.Customer[payload.item].items[payload.idx].Document.GivenPlace = null
+        state.fullFormProfile.Customer[payload.item].items[payload.idx].Document.Districts = payload.districts
+      } else {
+        state.fullFormProfile.Customer[payload.item].GivenPlace = null
+        state.fullFormProfile.Customer[payload.item].Districts = payload.districts
+      }
+    },
+
     setDistricts(state, payload) {
-      state.fullFormProfile.Customer[payload.item].items[payload.idx].District = null
-      state.fullFormProfile.Customer[payload.item].items[payload.idx].Districts = payload.districts
+        state.fullFormProfile.Customer[payload.item].items[payload.idx].District = null
+        state.fullFormProfile.Customer[payload.item].items[payload.idx].Districts = payload.districts
+    },
+
+    setGivenPlaceGuarantee(state, payload) {
+      state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Document.GivenPlace = null
+      state.fullFormProfile.Guarantee[payload.guarantee].items[payload.idx].Document.Districts = payload.districts
     },
 
     setDistrictsGuarantee(state, payload) {
@@ -638,7 +660,9 @@ export const profile = {
           Country: "",
           DocLink: "",
           DocumentName: "",
-          GivenPlace: ""
+          Region: null,
+          Districts: [],
+          GivenPlace: null
         }
       });
     },
@@ -786,7 +810,9 @@ export const profile = {
             Country: "Uzbekistan",
             DocLink: "",
             DocumentName: "",
-            GivenPlace: ""
+            Region: null,
+            Districts: [],
+            GivenPlace: null
           },
 
           Education: null,
@@ -857,7 +883,9 @@ export const profile = {
                   Country: "",
                   DocLink: "",
                   DocumentName: "",
-                  GivenPlace: ""
+                  Region: null,
+                  Districts: [],
+                  GivenPlace: null
                 }
               }
             ]

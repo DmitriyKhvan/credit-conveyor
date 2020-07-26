@@ -10,7 +10,7 @@ export default {
   methods: {
     async getCreditsList(tasks) {
         this.loaderList = true
-        this.$store.commit('credits/clearCreditTasks')
+        // this.$store.commit('credits/clearCreditTasks')
         try {
           const auth = await this.$store.dispatch("credits/authBpm")
           console.log("auth", auth);

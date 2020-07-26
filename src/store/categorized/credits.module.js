@@ -286,8 +286,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.clear()
-        this.$router.push("/work/credit");
+        // sessionStorage.clear()
+        // this.$router.push("/work/credit");
         throw error
       }
     },
