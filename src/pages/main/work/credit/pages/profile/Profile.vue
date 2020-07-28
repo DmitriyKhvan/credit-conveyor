@@ -326,9 +326,28 @@
                   </template>
                 </q-input>
               </div>
+            </div>
 
+            <div class="row q-col-gutter-md">
               <div class="col-4">
-                <q-input
+                <q-select
+                  :disable="disableField"
+                  ref="DocumentRegionsGivenPlace"
+                  square
+                  outlined
+                  v-model="Customer.Document.Region"
+                  @input="setGivenPlace($event, null, 'Document')"
+                  :options="dictionaries.Region.items"
+                  dense
+                  label="Регион/область выдачи документа"
+                  :rules="[val => !!val || 'Выберите регион/область']"
+                  emit-value
+                  map-options
+                  class="q-pb-sm"
+                />
+              </div>
+              <div class="col-4">
+                <!-- <q-input
                   :disable="disableField"
                   ref="DocumentGivenPlace"
                   square
@@ -340,8 +359,25 @@
                     val => !!val || 'Введите кем выдан документ',
                     val => givenPlaceValid(val)
                   ]"
+                /> -->
+
+                
+                <q-select
+                  :disable="disableField"
+                  ref="DocumentGivenPlace"
+                  square
+                  outlined
+                  v-model="Customer.Document.GivenPlace"
+                  :options="Customer.Document.Districts.items"
+                  dense
+                  label="Кем выдан документ"
+                  :rules="[val => !!val || 'Введите кем выдан документ']"
+                  emit-value
+                  map-options
+                  class="q-pb-sm"
                 />
               </div>
+
             </div>
 
             <div class="row q-col-gutter-md">
@@ -525,6 +561,7 @@
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
+                      ref="district"
                       :disable="address.flag || disableField"
                       square
                       outlined
@@ -532,6 +569,7 @@
                       :options="address.Districts.items"
                       dense
                       label="Район"
+                      :rules="[val => !!val || 'Выберите район']"
                       emit-value
                       map-options
                       class="q-pb-sm"
@@ -1033,23 +1071,55 @@
                     </template>
                   </q-input>
                 </div>
+              </div>
 
+              <div class="row q-col-gutter-md">
                 <div class="col-4">
-                  <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      ref="relativesDocumentGivenPlace"
-                      square
-                      outlined
-                      v-model="relative.Document.GivenPlace"
-                      dense
-                      label="Кем выдан документ"
-                      :rules="[
-                        val => !!val || 'Введите кем выдан документ',
-                        val => givenPlaceValid(val)
-                      ]"
-                    />
-                  </div>
+                  <q-select
+                    :disable="disableField"
+                    ref="relativesDocumentRegionsGivenPlace"
+                    square
+                    outlined
+                    v-model="relative.Document.Region"
+                    @input="setGivenPlace($event, index, 'Relatives')"
+                    :options="dictionaries.Region.items"
+                    dense
+                    label="Регион/область выдачи документа"
+                    :rules="[val => !!val || 'Выберите регион/область']"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
+                  />
+                </div>
+               <div class="col-4">
+                  <!-- <q-input
+                    :disable="disableField"
+                    ref="relativesDocumentGivenPlace"
+                    square
+                    outlined
+                    v-model="relative.Document.GivenPlace"
+                    dense
+                    label="Кем выдан документ"
+                    :rules="[
+                      val => !!val || 'Введите кем выдан документ',
+                      val => givenPlaceValid(val)
+                    ]"
+                  /> -->
+
+                  <q-select
+                    :disable="disableField"
+                    ref="relativesDocumentGivenPlace"
+                    square
+                    outlined
+                    v-model="relative.Document.GivenPlace"
+                    :options="relative.Document.Districts.items"
+                    dense
+                    label="Кем выдан документ"
+                    :rules="[val => !!val || 'Введите кем выдан документ']"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
+                  />
                 </div>
               </div>
 
@@ -2036,7 +2106,25 @@
                 </div>
 
                 <div class="col-4">
-                  <q-input
+                  <q-select
+                    :disable="disableField"
+                    ref="guaranteesDocumentRegionsGivenPlace"
+                    square
+                    outlined
+                    v-model="guarantee.Document.Region"
+                    @input="setGivenPlaceGuarantee($event, index, 'RelatedPerson')"
+                    :options="dictionaries.Region.items"
+                    dense
+                    label="Регион/область выдачи документа"
+                    :rules="[val => !!val || 'Выберите регион/область']"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
+                  />
+                </div>
+
+                <div class="col-4">
+                  <!-- <q-input
                     :disable="disableField"
                     ref="guaranteesDocumentGivenPlace"
                     square
@@ -2048,6 +2136,21 @@
                       val => !!val || 'Введите кем выдан документ',
                       val => givenPlaceValid(val)
                     ]"
+                  /> -->
+
+                  <q-select
+                    :disable="disableField"
+                    ref="guaranteesDocumentGivenPlace"
+                    square
+                    outlined
+                    v-model="guarantee.Document.GivenPlace"
+                    :options="guarantee.Document.Districts.items"
+                    dense
+                    label="Кем выдан документ"
+                    :rules="[val => !!val || 'Введите кем выдан документ']"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
                   />
                 </div>
               </div>
@@ -2097,16 +2200,18 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
+                    ref="districtGuarantees"
                     :disable="disableField"
-                      square
-                      outlined
-                      v-model="guarantee.Address.District"
-                      :options="guarantee.Address.Districts.items"
-                      dense
-                      label="Район"
-                      emit-value
-                      map-options
-                      class="q-pb-sm"
+                    square
+                    outlined
+                    v-model="guarantee.Address.District"
+                    :options="guarantee.Address.Districts.items"
+                    dense
+                    label="Район"
+                    :rules="[val => !!val || 'Выберите район']"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
                     />
                 </div>
               </div>
@@ -3398,7 +3503,7 @@
       </q-dialog>
 
       <!-- credit result -->
-      <appFullProfile v-if="profile.confirmCredit" />
+      <appFullProfile :currentDate="currentDate" v-if="profile.confirmCredit" />
     </div>
 
     <appLoaderFullScreen v-if="loader" />
@@ -3461,16 +3566,7 @@ export default {
     };
   },
   async created() {
-    this.$store.commit("profile/resetDataFullFormProfile")
-
-    // if (sessionStorage.getItem("csrf_token")) {
-    //   await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
-    //   await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
-    //   // this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData"))) //синхронизация с preapprov
-    //   this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
-    //   this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId")); //?
-    //   // console.log('dic', this.dictionaries)
-    // }
+    // this.$store.commit("profile/resetDataFullFormProfile")
     
     if (this.taskId) {
       this.loaderForm = true
@@ -3485,7 +3581,7 @@ export default {
       try {
         const response = await this.$store.dispatch("profile/getFullForm");
 
-        this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+        //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
         console.log('response', response)
 
         if (response) {
@@ -3505,7 +3601,6 @@ export default {
             }
 
             for (let guarantee in guarantees) {
-              //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
               for (let i of guarantees[guarantee].items) {
                 this.guaranteeCount.push("guarantee")
               }
@@ -3524,12 +3619,14 @@ export default {
         this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData"))) //синхронизация с preapprov
         this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
         this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));  
-        this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    } else {
-        this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
-        this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    }
-    
+        //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+    } 
+    // else {
+    //     this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
+    //     //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+    // }
+
+    this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
   },
   mounted() {
     setTimeout(() => {
@@ -3639,6 +3736,8 @@ export default {
       this.$refs.DocumentNumber.validate();
       this.$refs.DocumentGivenDate.validate();
       this.$refs.DocumentExpirationDate.validate();
+
+      this.$refs.DocumentRegionsGivenPlace.validate();
       this.$refs.DocumentGivenPlace.validate();
 
       this.$refs.education.validate();
@@ -3647,6 +3746,8 @@ export default {
 
       // Address
       validFilter(this.$refs, "regionValid", "region");
+      validFilter(this.$refs, "districtValid", "district");
+
       validFilter(this.$refs, "streetValid", "street");
       validFilter(this.$refs, "houseNumberValid", "houseNumber");
 
@@ -3689,6 +3790,7 @@ export default {
       );
       validFilter(this.$refs, "relativesDocumentGivenDateValid", "relativesDocumentGivenDate");
       validFilter(this.$refs, "relativesDocumentExpirationDateValid", "relativesDocumentExpirationDate");
+      validFilter(this.$refs, "relativesDocumentRegionsGivenPlaceValid", "relativesDocumentRegionsGivenPlace");
       validFilter(this.$refs, "relativesDocumentGivenPlaceValid", "relativesDocumentGivenPlace");
 
       this.$refs.kindOfActivity.validate();
@@ -3787,8 +3889,10 @@ export default {
         );
         validFilter(this.$refs, "guaranteesDocumentGivenDateValid", "guaranteesDocumentGivenDate");
         validFilter(this.$refs, "guaranteesDocumentExpirationDateValid", "guaranteesDocumentExpirationDate");
+        validFilter(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid", "guaranteesDocumentRegionsGivenPlace");
         validFilter(this.$refs, "guaranteesDocumentGivenPlaceValid", "guaranteesDocumentGivenPlace");
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
+        validFilter(this.$refs, "districtGuaranteesValid", "districtGuarantees");
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(this.$refs, "houseNumberGuaranteesValid", "houseNumberGuarantees");
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
@@ -3807,7 +3911,9 @@ export default {
         validItems(this.$refs, "guaranteesDocumentNumberValid");
         validItems(this.$refs, "guaranteesDocumentGivenDateValid");
         validItems(this.$refs, "guaranteesDocumentExpirationDateValid");
+        validItems(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid");
         validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
+        validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
         validItems(this.$refs, "houseNumberGuaranteesValid");
@@ -3917,10 +4023,13 @@ export default {
         this.$refs.DocumentNumber.hasError ||
         this.$refs.DocumentGivenDate.hasError ||
         this.$refs.DocumentExpirationDate.hasError ||
+        this.$refs.DocumentRegionsGivenPlace.hasError ||
         this.$refs.DocumentGivenPlace.hasError ||
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
+
         this.$refs.regionValid.hasError ||
+        this.$refs.districtValid.hasError ||
         this.$refs.streetValid.hasError ||
         this.$refs.houseNumberValid.hasError ||
         //relatives
@@ -3937,6 +4046,7 @@ export default {
         this.$refs.relativesDocumentNumberValid.hasError ||
         this.$refs.relativesDocumentGivenDateValid.hasError ||
         this.$refs.relativesDocumentExpirationDateValid.hasError ||
+        this.$refs.relativesDocumentRegionsGivenPlaceValid.hasError ||
         this.$refs.relativesDocumentGivenPlaceValid.hasError ||
         //kind of activity
         this.$refs.kindOfActivity.hasError ||
@@ -3979,8 +4089,10 @@ export default {
         this.$refs.guaranteesDocumentNumberValid.hasError ||
         this.$refs.guaranteesDocumentGivenDateValid.hasError ||
         this.$refs.guaranteesDocumentExpirationDateValid.hasError ||
+        this.$refs.guaranteesDocumentRegionsGivenPlaceValid.hasError ||
         this.$refs.guaranteesDocumentGivenPlaceValid.hasError ||
         this.$refs.regionGuaranteesValid.hasError ||
+        this.$refs.districtGuaranteesValid.hasError ||
         this.$refs.streetGuaranteesValid.hasError ||
         this.$refs.houseNumberGuaranteesValid.hasError ||
         this.$refs.phonesGuaranteesValid.hasError ||
@@ -4197,11 +4309,23 @@ export default {
         this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
       }
     },
+    
+    setGivenPlace(event, idx, item) {
+        console.log('event', event, idx, item)
+        const districts = this.getDistricts(event)
+        this.$store.commit("profile/setGivenPlace", {idx, item, districts})
+    },
 
     setDistricts(event, idx, item) {
         console.log('event', event, idx, item)
         const districts = this.getDistricts(event)
         this.$store.commit("profile/setDistricts", {idx, item, districts})
+    },
+
+    setGivenPlaceGuarantee(event, idx, guarantee) {
+        //console.log('event', event, idx, guarantee)
+        const districts = this.getDistricts(event)
+        this.$store.commit("profile/setGivenPlaceGuarantee", {idx, guarantee, districts})
     },
 
     setDistrictsGuarantee(event, idx, guarantee) {
@@ -4638,10 +4762,16 @@ export default {
     overflow: hidden;
     transition: max-height 0.3s ease-out;
 
-    .tab-content_title {
+    .comments {
+      margin-bottom: 20px;
+    }
+
+    &_title {
       font-size: 16px;
-      margin: 0 0 10px;
+      margin: 0;
+      line-height: 1.4;
       color: #212121;
+      font-weight: bold;
     }
 
     .q-field--auto-height .q-field__control-container {

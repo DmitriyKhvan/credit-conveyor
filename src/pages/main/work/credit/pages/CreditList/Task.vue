@@ -133,8 +133,23 @@
             </div>
 
             <div class="row rowForm">
+              <div class="col-3 field">Регион / область выдачи документа</div>
+              <div class="col-9 data">
+                 {{
+                    dictionaries.Region.items.find(
+                      i => i.value == Customer.Document.Region
+                    ).label
+                  }}
+              </div>
+            </div>
+
+            <div class="row rowForm">
               <div class="col-3 field">Кем выдан документ</div>
-              <div class="col-9 data">{{ Customer.Document.GivenPlace }}</div>
+              <div class="col-9 data">
+                {{
+                  getDistrict(Customer.Document.Region, Customer.Document.GivenPlace)
+                }}
+              </div>
             </div>
 
             <div class="row rowForm">
@@ -372,10 +387,30 @@
                 </div>
               </div>
 
-              <div class="row rowForm">
+              <!-- <div class="row rowForm">
                 <div class="col-3 field">Кем выдан документ</div>
                 <div class="col-9 data">{{ relative.Document.GivenPlace }}</div>
+              </div> -->
+
+              <div class="row rowForm">
+                <div class="col-3 field">Регион / область выдачи документа</div>
+                <div class="col-9 data">
+                  {{
+                      dictionaries.Region.items.find(
+                        i => i.value == relative.Document.Region
+                      ).label
+                    }}
+                </div>
               </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Кем выдан документ</div>
+                <div class="col-9 data">
+                  {{
+                    getDistrict(relative.Document.Region, relative.Document.GivenPlace)
+                  }}
+                </div>
+              </div>  
 
               <!-- <div class="row rowForm">
             <div class="col-2 field">ИНН</div>
@@ -819,6 +854,26 @@
                     {{ guarantee.Document.ExpirationDate }}
                   </div>
                 </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Регион / область выдачи документа</div>
+                  <div class="col-6 data">
+                    {{
+                        dictionaries.Region.items.find(
+                          i => i.value == guarantee.Document.Region
+                        ).label
+                      }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Кем выдан документ</div>
+                  <div class="col-6 data">
+                    {{
+                      getDistrict(guarantee.Document.Region, guarantee.Document.GivenPlace)
+                    }}
+                  </div>
+                </div>                    
 
                 <div class="row rowForm">
                   <div class="col-12 field">Адрес:</div>
@@ -1410,6 +1465,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
@@ -1418,6 +1474,7 @@ import { validItems, validFilter } from "../../filters/valid_filter";
 export default {
   data() {
     return {
+      creditTitles: null,
       loader: false,
       loaderForm: true,
       confirm: false,
@@ -1449,9 +1506,10 @@ export default {
     };
   },
   async created() {
-    console.log("empId", this.$store.getters["auth/empId"]);
-    console.log("fullProfile", this.fullProfile);
-    if (sessionStorage.getItem("csrf_token")) {
+    this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+
+    // если перезагрузили страницу
+    if (!axios.defaults.headers.common["BPMCSRFToken"]) {
       this.userRole = sessionStorage.getItem("userRole");
       await this.$store.dispatch(
         "credits/setHeaderRole",
@@ -1461,13 +1519,8 @@ export default {
         "credits/setHeaderBPM",
         sessionStorage.getItem("csrf_token")
       );
-      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
     }
-
-    console.log("taskId", this.$route.params["id"]);
-    // console.log("taskId", this.$route.query.taskId);
-    //  this.$store.commit("setTaskId", this.$route.params["id"]);
-    this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+    
     try {
       const res = await this.$store.dispatch("profile/getFullForm");
       this.loaderForm = false
@@ -1475,9 +1528,16 @@ export default {
     } catch (error) {}
   },
   mounted() {
-    const creditTitles = document.querySelectorAll(".titleForm");
-    for (let title of creditTitles) {
-      title.addEventListener("click", () => this.toggleCreditBlock(title));
+    setTimeout(() => {
+      this.creditTitles = document.querySelectorAll(".titleForm");
+      for (let title of this.creditTitles) {
+        title.addEventListener("click", () => this.toggleCreditBlock(title));
+      }
+    }, 500)
+  },
+  destroyed() {
+    for (let title of this.creditTitles) {
+      title.removeEventListener("click", () => this.toggleCreditBlock(title));
     }
   },
   computed: {
@@ -1545,8 +1605,6 @@ export default {
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
-        // console.log("creditFailure");
-
         if (this.userRole == "BO") {
           this.BODecision = false; // кредит отклонен
           this.$store.commit("profile/addComment", {
@@ -1627,8 +1685,9 @@ export default {
 
         this.loader = false;
       } catch (error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.loader = false;
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$router.go(-1);
       }
     },
 

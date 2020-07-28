@@ -136,6 +136,19 @@ export default {
       model: false,
       loading: false,
 
+      confirmCreditData: {
+        output: [
+          {
+            name: "confirm",
+            data: true
+          },
+          {
+            name: "reasons",
+            data: []
+          }
+        ]
+      },
+
       fileData: {
         type: "info_list",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
@@ -167,11 +180,11 @@ export default {
       console.log(this.$store);
       //this.confirm = false
       this.$emit("toggleLoaderForm", true);
-      console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
+      console.log(JSON.stringify(this.confirmCreditData, null, 2));
       try {
         const response = await this.$store.dispatch(
           "credits/confirmationCredit",
-          this.credits.confirmCreditData
+          this.confirmCreditData
         );
 
         console.log("response", response);
@@ -187,7 +200,8 @@ export default {
           
 
           console.log("dic", JSON.stringify(dictionaries, null, 2));
-
+          
+          this.$store.commit("profile/resetDataFullFormProfile")
           this.$store.commit("profile/setPreapprovData", data);
           this.$store.commit("profile/setDictionaries", dictionaries);
 
@@ -199,11 +213,13 @@ export default {
             localStorage.removeItem(this.taskIdPreapp)
           }, 1000)
           
-          this.$emit("toggleLoaderForm", false);
+          //this.$emit("toggleLoaderForm", false);
         }
       } catch (error) {
+        //this.$emit("toggleLoaderForm", false);
         this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
-        this.$emit("toggleLoaderForm", false);
+        sessionStorage.clear();
+        this.$router.push("/work/credit");
         setTimeout(() => {
           localStorage.removeItem(this.taskIdPreapp)
         }, 1000)
@@ -216,15 +232,14 @@ export default {
         this.formHasError = true;
       } else {
         this.$emit("toggleLoaderFullScreen", true);
-        this.$store.commit("credits/toggleDisableInput", false);
-        this.credits.confirmCreditData.output[0].data = false;
-        this.credits.confirmCreditData.output[1].data = this.selection;
+        this.confirmCreditData.output[0].data = false;
+        this.confirmCreditData.output[1].data = this.selection;
 
-        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
+        console.log(JSON.stringify(this.confirmCreditData, null, 2));
         try {
           const response = await this.$store.dispatch(
             "credits/confirmationCredit",
-            this.credits.confirmCreditData
+            this.confirmCreditData
           );
           console.log("res", response);
           
@@ -241,6 +256,7 @@ export default {
             this.$store.commit("credits/setMessage", "Credit failure");
             sessionStorage.clear();
             this.$router.push("/work/credit");
+            // чтоб удаление произошло после метода beforeDestroy в родительском компоненте
             setTimeout(() => {
               localStorage.removeItem(this.taskIdPreapp)
             }, 1000)
