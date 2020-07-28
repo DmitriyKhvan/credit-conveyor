@@ -422,6 +422,8 @@ import { validItems } from "../../filters/valid_filter";
 export default {
   data() {
     return {
+      loan_product_dict: null,
+      loanproduct_loancode: null, // цель кредитования
       periodCreditMin: null,
       periodCreditMax: null,
       confirm: false,
@@ -655,7 +657,7 @@ export default {
                   lastName: surname,
                   middleName: mname,
                   passport: {
-                    number: Number(passport.slice(2)),
+                    number: passport.slice(2),
                     series: passport.slice(0, 2)
                   },
                   mainPhone: phone.replace(/[\s()]/g, ""),
@@ -714,19 +716,25 @@ export default {
       this.periodCreditMax = null;
       this.personalData.periodCredit = 0;
       this.personalData.loanRate = 0;
+      this.personalData.loan_purpose = null
 
       this.setLoan(credit)
     },
 
-    setLoan(credit) {
-      const idxCredit = this.options.typeCredits.findIndex(
-        item => item.value == credit
-      );
-      console.log('idxCredit', idxCredit)
+    setLoan(creditId) {
+      console.log('creditIddd', creditId)
+      if (creditId) {
+        const { Loan_dict } = this.loan_product_dict.find(i => i.id === creditId)
+        this.options.loanPurpose = this.loanproduct_loancode[creditId].items.map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
 
-      if (idxCredit !== -1) {
-
-        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+        console.log(this.loanproduct_loancode[creditId])
+        this.personalData.loanRate = Loan_dict.loan_rate_base
+        this.options.typeStepCredits = Loan_dict.payment_type.items.map(i => {
           return {
             label: i.label,
             value: Number(i.value)
@@ -734,20 +742,44 @@ export default {
         })
 
         this.periodCreditMin = Number(
-          this.options.typeCredits[idxCredit].period[0].value
-        );
-        this.periodCreditMax = Number(
-          this.options.typeCredits[idxCredit].period[1].value
+          Loan_dict.terms_list.items.find(i => i.label === 'min').value
         );
 
-        if (!this.personalData.periodCredit) {
-          this.personalData.periodCredit = this.periodCreditMin
-        }
-        
-        this.personalData.loanRate = Number(
-          this.options.typeCredits[idxCredit].loanRate
+        this.periodCreditMax = Number(
+          Loan_dict.terms_list.items.find(i => i.label === 'max').value
         );
+
+        this.personalData.periodCredit = this.periodCreditMin
       }
+      // const idxCredit = this.options.typeCredits.findIndex(
+      //   item => item.value == credit
+      // );
+      // console.log('idxCredit', idxCredit)
+
+      // if (idxCredit !== -1) {
+
+        // this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+        //   return {
+        //     label: i.label,
+        //     value: Number(i.value)
+        //   }
+        // })
+
+        // this.periodCreditMin = Number(
+        //   this.options.typeCredits[idxCredit].period[0].value
+        // );
+        // this.periodCreditMax = Number(
+        //   this.options.typeCredits[idxCredit].period[1].value
+        // );
+
+        // if (!this.personalData.periodCredit) {
+        //   this.personalData.periodCredit = this.periodCreditMin
+        // }
+        
+        // this.personalData.loanRate = Number(
+        //   this.options.typeCredits[idxCredit].loanRate
+        // );
+      // }
     },
 
     getPreapprovData(preAppData) {
@@ -760,27 +792,33 @@ export default {
 
       this.options.additIncSourOption = this.transformData(preAppData, "incomeSource")
 
-      this.options.loanPurpose = this.transformData(preAppData, "loanPupose") 
+      //this.options.loanPurpose = this.transformData(preAppData, "loanPupose") 
 
-      console.log('family', this.options.family)
+      this.options.typeCredits = this.transformData(preAppData, "loan_product_list") 
 
-      const loan_product_listt = preAppData.find(i => i.label == "loan_product_list")
-      const loan_product_dict = preAppData.find(i => i.label == "loan_product_dict")
+      this.loan_product_dict = preAppData.find(i => i.label == "loan_product_dict").data.items
 
-      loan_product_listt.data.items.forEach(i => {
-        const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
-        const credits = {
-          label: i.label,
-          value: Number(i.value),
-          period: Loan_dict.terms_list.items,
-          loanRate: Loan_dict.loan_rate_base,
-          paymentTypes: Loan_dict.payment_type.items
-        };
+      this.loanproduct_loancode = preAppData.find(i => i.label == "loanproduct_loancode").data.items[0]
 
-        this.options.typeCredits.push(credits);
-      })
+      // console.log('family', this.options.family)
 
-      console.log("typeCredits", this.options.typeCredits);
+      // const loan_product_listt = preAppData.find(i => i.label == "loan_product_list")
+      // const loan_product_dict = preAppData.find(i => i.label == "loan_product_dict")
+
+      // loan_product_listt.data.items.forEach(i => {
+      //   const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
+      //   const credits = {
+      //     label: i.label,
+      //     value: Number(i.value),
+      //     period: Loan_dict.terms_list.items,
+      //     loanRate: Loan_dict.loan_rate_base,
+      //     paymentTypes: Loan_dict.payment_type.items
+      //   };
+
+      //   this.options.typeCredits.push(credits);
+      // })
+
+      // console.log("typeCredits", this.options.typeCredits);
     },
 
     transformData(preAppData, labelData) {

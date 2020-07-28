@@ -4148,12 +4148,10 @@ export default {
           AttachedDocuments,
         } = this.fullProfile;
 
-        console.log('Customer', Customer)
-        //ClientManagerLogin = "man"
         Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`
-          Customer.Document.Number = Number(Customer.Document.Number)
-          Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
-          Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
+          // Customer.Document.Number = Number(Customer.Document.Number)
+          // Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
+          // Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
         //LoanInfo.RepaymentType = Number(LoanInfo.RepaymentType)
 
         // удалил из объекта - Date!!!

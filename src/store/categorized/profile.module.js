@@ -430,9 +430,9 @@ export const profile = {
     setFullForm(state, payload) {
       
       // Для корректной валидации
-      payload.Customer.Document.Number = String(payload.Customer.Document.Number)
-      payload.Customer.Relatives.items.map(i => i.Document.Number = String(i.Document.Number))
-      payload.Guarantee.RelatedPerson.items.map(i => i.Document.Number = String(i.Document.Number))
+      // payload.Customer.Document.Number = String(payload.Customer.Document.Number)
+      // payload.Customer.Relatives.items.map(i => i.Document.Number = String(i.Document.Number))
+      // payload.Guarantee.RelatedPerson.items.map(i => i.Document.Number = String(i.Document.Number))
       
       state.fullFormProfile = payload;
     },
@@ -448,7 +448,7 @@ export const profile = {
       state.fullFormProfile.Customer.PhoneList.items[0].Number = payload.Customer.PhoneList.items[0].Number;
       state.fullFormProfile.Customer.PINPP = payload.Customer.PINPP;
       state.fullFormProfile.Customer.Document.Series = payload.Customer.Document.Series
-      state.fullFormProfile.Customer.Document.Number = String(payload.Customer.Document.Number)
+      state.fullFormProfile.Customer.Document.Number = payload.Customer.Document.Number
 
       state.fullFormProfile.Customer.MaritalStatus = payload.Customer.MaritalStatus
 
