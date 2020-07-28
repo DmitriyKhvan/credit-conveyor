@@ -57,19 +57,6 @@ export const credits = {
       additionalIncomeSource: "" //источник дополнительного дохода
     },
 
-    confirmCreditData: {
-      output: [
-        {
-          name: "confirm",
-          data: true
-        },
-        {
-          name: "reasons",
-          data: []
-        }
-      ]
-    },
-
     reasonsList: [], // причины отказа от кредита
     infoList: {}, // информационный лист данные
 
@@ -428,6 +415,7 @@ export const credits = {
         externalIncomeSize: 0, //размер дополнительного дохода
         additionalIncomeSource: "" //источник дополнительного дохода
       };
+
     },
 
     resetMessageBar(state) {

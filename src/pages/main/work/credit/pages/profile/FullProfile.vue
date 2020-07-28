@@ -881,7 +881,7 @@
                 банковского займа;
               </li>
               <li>
-                1Банк оставляет за собой право не мотивировать причины отказа;
+                Банк оставляет за собой право не мотивировать причины отказа;
               </li>
               <li>
                 В случае принятия отрицательного решения Банк не обязан
@@ -932,7 +932,9 @@
             <div class="col-6">
               Дата
             </div>
-            <div class="col-6"></div>
+            <div class="col-6">
+              {{currentDate}}
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -957,7 +959,9 @@
 </template>
 
 <script>
+import printJS from "print-js";
 export default {
+  props: ["currentDate"],
   data() {
     return {
       confirmCredit: true
@@ -982,9 +986,7 @@ export default {
   },
   methods: {
     callPrint(strid) {
-      //const left = document.documentElement.clientWidth/2 - 400
       const head = document.querySelector("head");
-      
       const prtContent = document.getElementById(strid);
       const WinPrint = window.open(
         "",
@@ -1002,9 +1004,9 @@ export default {
       WinPrint.document.write("<html>");
       WinPrint.document.write(head.innerHTML);
       WinPrint.document.write("<body>");
-      WinPrint.document.write('<div id="print" class="contentpane">');
+      // WinPrint.document.write('<div id="print" class="contentpane">');
       WinPrint.document.write(prtContent.innerHTML);
-      WinPrint.document.write("</div>");
+      // WinPrint.document.write("</div>");
       WinPrint.document.write("</body></html>");
       WinPrint.document.close();
       WinPrint.focus();
@@ -1012,8 +1014,6 @@ export default {
       setTimeout(function(){
           WinPrint.close();
       }, 500);
-      // WinPrint.close();
-      //prtContent.innerHTML = strOldOne;
     },
 
     // getLabelDic() {
@@ -1023,8 +1023,6 @@ export default {
     //   }
     // }
     getDistrict(region, district) {
-      // console.log(region, district)
-      // return {region, district}
       if (district) {
         const regionId = this.dictionaries.Region.items.find(
           i => i.value == region

@@ -603,19 +603,6 @@ export default {
       ) {
         this.formHasError = true;
       } else {
-        this.credits.confirmCreditData = {
-          output: [
-            {
-              name: "confirm",
-              data: true
-            },
-            {
-              name: "reasons",
-              data: []
-            }
-          ]
-        }
-
         this.loaderFullScreen = true;
         const {
           children,

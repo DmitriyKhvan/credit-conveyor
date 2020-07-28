@@ -1685,8 +1685,9 @@ export default {
 
         this.loader = false;
       } catch (error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.loader = false;
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$router.go(-1);
       }
     },
 

@@ -3503,7 +3503,7 @@
       </q-dialog>
 
       <!-- credit result -->
-      <appFullProfile v-if="profile.confirmCredit" />
+      <appFullProfile :currentDate="currentDate" v-if="profile.confirmCredit" />
     </div>
 
     <appLoaderFullScreen v-if="loader" />
@@ -3601,7 +3601,6 @@ export default {
             }
 
             for (let guarantee in guarantees) {
-              //console.log('hhhhhhhhhhh', guarantees[guarantee].items)
               for (let i of guarantees[guarantee].items) {
                 this.guaranteeCount.push("guarantee")
               }
