@@ -21,7 +21,7 @@ const state = {
   activeUsers: [],
   onlineUsers: [],
   isUserLogged: false,
-  logoutTime: 600000 // 100min
+  logoutTime: 600000 // 10min
 };
 
 /**
@@ -141,6 +141,7 @@ const actions = {
   setActiveUsers({ commit }, users) {
     commit("setActiveUsers", users);
   },
+
   setOnlineUsers({ commit }, users) {
     commit("setOnlineUsers", users);
   },
@@ -201,6 +202,9 @@ const mutations = {
     state.filialCode = filialCode;
   },
   setActiveUsers(state, users) {
+    users.forEach((element, index) => {
+      element.index = index + 1;
+    })
     state.activeUsers = users;
   },
   setOnlineUsers(state, users) {

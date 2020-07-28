@@ -3,7 +3,7 @@
     <q-layout
       view="hHh lpR fFf"
       container
-      style="height: calc(100vh - 50px)"
+      style="height: calc(100vh - 70px)"
       class="shadow-2"
       id="eee"
     >

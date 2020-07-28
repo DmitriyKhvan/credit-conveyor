@@ -44,8 +44,23 @@ export default {
         deleteChat(state, id){
           state.chats = state.chats.filter(el => el.chat_id !== id)
           state.activeChat = null
+        },
+        addUserToGroup(state, payload){
+          const chat = state.chats.find(ch => ch.chat_id === payload.chat_id)
+          const user = chat.members.push({name: payload.new_uname, emp_id: payload.new_uid})
+        },
+        delUserGroup(state, payload){
+          let chat = state.chats.find(ch => ch.chat_id === payload.chat_id)
+          chat.members = chat.members.filter(user => user.emp_id !== payload.emp_id)
+        },
+        delChatCount(state, id){
+          let chat = state.chats.find(ch => ch.chat_id === id)
+          chat.count = 0
+        },
+        addCount(state, id){
+          let chat = state.chats.find(ch => ch.chat_id === id)
+          chat.count = chat.count + 1
         }
-
     },
     actions: {
         setChat({commit}, payload){
@@ -65,14 +80,26 @@ export default {
         },
         deleteChat({commit}, id){
           commit('deleteChat', id)
+        },
+        addUserToGroup({commit}, payload){
+          commit('addUserToGroup', payload)
+        },
+        delUserGroup({commit}, payload){
+          commit('delUserGroup', payload)
+        },
+        delChatCount({commit}, id){
+          commit('delChatCount', id)
+        },
+        addCount({commit}, id){
+          commit('addCount', id)
         }
     },
     getters: {
         getChats(state){
-            return state.chats
+          return state.chats
         },
         getActiveChat(state){
-            return state.activeChat
+          return state.activeChat
         },
         getToUid(state){
           return state.to_uid

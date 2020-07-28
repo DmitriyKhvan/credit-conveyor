@@ -13,7 +13,10 @@ const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
 const Moderators = () => import("pages/main/admin/moderators/Moderators");
 const Dictionaries = () => import("pages/main/admin/dictionaries/Dictionaries");
-const SelfDevPage = () => import("pages/main/admin/self_dev/Index");
+
+const SelfDevCrud = () => import("pages/main/admin/self_dev/crud");
+const SelfDevMonitoring = () => import("pages/main/admin/self_dev/monitoring/Monitoring")
+const SelfDevIndex = () => import("pages/main/admin/self_dev/SelfDev.vue");
 
 // Work
 const WorkPage = () => import("pages/main/work/Work");
@@ -27,15 +30,16 @@ const ThemesUser = () => import("pages/main/profile/settings/ThemesUser.vue");
 const MyData = () => import("pages/main/profile/mydata/MyData.vue");
 const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue");
 // chancellary
+const RegistrationChancellary = () =>
+  import("pages/main/work/kanselariya/Registration.vue");
 const Chancellary = () =>
   import("pages/main/work/kanselariya/Chancellary.vue");
-const ChanRegistration = () =>
-  import(
-    "pages/main/work/kanselariya/registration/Registration"
-  );
+
 const Tasks = () => import("pages/main/work/task/index.vue");
 const TasksList = () =>
   import("pages/main/work/task/modules/pages/tasklist/List");
+const apparatPage = () =>
+  import("pages/main/work/apparat");
 
 // Credit
 const Credit = () => import("pages/main/work/credit/Credit");
@@ -66,11 +70,11 @@ const DevicesHistory = () => import("pages/main/it/history/History");
 const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
 
 // Education
-const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
-const QuestionPage = () =>
-  import("pages/main/admin/self_dev/questions/Questions");
-const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
-const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
+// const TopicPage = () => import("pages/main/admin/self_dev/topics/Topics");
+// const QuestionPage = () =>
+//   import("pages/main/admin/self_dev/questions/Questions");
+// const TestPage = () => import("pages/main/admin/self_dev/tests/Tests");
+// const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 
 const TestList = () => import("pages/main/test/TestList.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
@@ -78,6 +82,7 @@ const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
 //Chat
 const ChatIndexPage = () => import('pages/main/chat/Index');
+const ChatTwoPage = () => import('pages/main/chat/Two');
 const Notifications = () => import('pages/main/chat/Test');
 const ChatPage = () => import("pages/main/chat/Chat");
 
@@ -119,11 +124,11 @@ const routes = [{
       path: "chancellary",
       name: "Kanselariya",
       component: Chancellary,
-      children: [{
-        path: "registration",
-        name: "Kanselariya Registration",
-        component: ChanRegistration
-      }]
+    },
+    {
+      path: "registration-document",
+      name: "Registration Document",
+      component: RegistrationChancellary,
     },
     {
       path: "task",
@@ -134,6 +139,11 @@ const routes = [{
         name: "Task List",
         component: TasksList
       }]
+    },
+    {
+      path: "apparat",
+      name: "Apparat",
+      component: apparatPage,
     },
     {
       path: "credit",
@@ -166,12 +176,12 @@ const routes = [{
         component: CreditProfile,
         beforeEnter: ifAuthenticated
       },
-      // {
-      //   path: "profile/:id",
-      //   name: "ProfileRework",
-      //   component: CreditProfileRework,
-      //   beforeEnter: ifAuthenticated
-      // }
+        // {
+        //   path: "profile/:id",
+        //   name: "ProfileRework",
+        //   component: CreditProfileRework,
+        //   beforeEnter: ifAuthenticated
+        // }
       ]
     }
     ]
@@ -218,27 +228,19 @@ const routes = [{
     {
       path: "selfdev",
       name: "Self Developer",
-      component: SelfDevPage,
-      children: [{
-        path: "topicPage",
-        name: "addEditTopic",
-        component: TopicPage
-      },
-      {
-        path: "questionPage",
-        name: "Add Edit Question",
-        component: QuestionPage
-      },
-      {
-        path: "testPage",
-        name: "Add Edit Test",
-        component: TestPage
-      },
-      {
-        path: "monitoringPage",
-        name: "Add Edit Monitoring",
-        component: MonitoringPage
-      }
+      redirect: "selfdev/crud",
+      component: SelfDevIndex,
+      children: [
+        {
+          path: "crud",
+          name: "Self Developer CRUD",
+          component: SelfDevCrud
+        },
+        {
+          path: "monitoring",
+          name: "Monitoring",
+          component: SelfDevMonitoring
+        }
       ]
     }
     ]
@@ -257,32 +259,32 @@ const routes = [{
     path: "profile",
     name: "Profile Page",
     component: Profile,
+    children: [{
+      path: "mydata",
+      name: "My Data",
+      component: MyData
+    },
+    {
+      path: "myfinance",
+      name: "My Finance",
+      component: MyFinance
+    },
+    {
+      path: "settings",
+      name: "Settings",
+      component: Settings,
       children: [{
-        path: "mydata",
-        name: "My Data",
-        component: MyData
+        path: "themesAdmin",
+        name: "ThemesAdmin",
+        component: ThemesAdmin
       },
       {
-        path: "myfinance",
-        name: "My Finance",
-        component: MyFinance
-      },
-      {
-        path: "settings",
-        name: "Settings",
-        component: Settings,
-          children: [{
-            path: "themesAdmin",
-            name: "ThemesAdmin",
-            component: ThemesAdmin
-          },
-          {
-            path: "themesUser",
-            name: "ThemesUser",
-            component: ThemesUser
-          }
-        ]
-      },
+        path: "themesUser",
+        name: "ThemesUser",
+        component: ThemesUser
+      }
+      ]
+    },
     ]
   },
   {
@@ -324,6 +326,11 @@ const routes = [{
       path: "mainchat",
       name: "Main Chat",
       component: ChatPage
+    },
+    {
+      path: "chat2",
+      name: "Two Chat",
+      component: ChatTwoPage
     },
 
     ]
