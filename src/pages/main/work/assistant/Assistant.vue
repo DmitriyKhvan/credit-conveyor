@@ -1,19 +1,18 @@
 <template>
   <div class="q-pa-lg">
     <a-header></a-header>
-
     <template v-if="list">
       <div class="row bg-white q-pa-md q-my-lg">
         <div class="col">
           <a-views></a-views>
-          <a-document v-for="n in 10" :key="n"></a-document>
+          <a-document v-for="d in docs" :key="d.doc_id" :doc="d"></a-document>
         </div>
       </div>
     </template>
     <template v-else>
       <div class="row q-my-xs q-col-gutter-lg">
-        <div class="col-3" v-for="n in 10" :key="n">
-          <a-document></a-document>
+        <div class="col-3" v-for="d in docs" :key="d.doc_id">
+          <a-document :doc="d"></a-document>
         </div>
       </div>
     </template>
@@ -127,10 +126,19 @@ export default {
     ADocument: Document,
     AViews: Views,
   },
+  data(){
+    return {
+      selectedDocs: [],
+    }
+  },
   computed: {
     ...mapState({
           list: state => state.assistant.aList,
+          docs: state => state.assistant.aAllDocs,
         }),
+  },
+  created(){
+    this.$store.dispatch('getADocs', 1)
   }
 
   // methods: {

@@ -1,10 +1,10 @@
 <template>
   <div v-if="list" class="row bg-white q-pt-sm q-pb-lg q-mt-md q-mb-sm task">
     <div>
-      <q-checkbox v-model="val" />
+      <q-checkbox v-model="val" @input="changeVal" />
     </div>
     <div class="col">
-      <div class="title q-py-sm"><b>Организация по кибербезопасности направляет вам документы по зашиты внутренних систем для ознакомления и принятие соответствующие меры</b></div>
+      <div class="title q-py-sm"><b>{{doc.description}}</b></div>
       <div class="row desp">
         <div class="col-6">
           <div class="row">
@@ -12,14 +12,14 @@
               <div class="q-pr-sm"><img src="@/assets/icons/Enter-1.svg" /></div>
               <div class="q-py-sm">
                 <b>Исходящий номер:</b><br>
-                03-1/15064
+                {{doc.out_number}}
               </div>
             </div>
             <div class="col flexBlock">
               <div class="q-pr-sm"><img src="@/assets/icons/Enter.svg" /></div>
               <div class="q-py-sm">
                 <b>Входящий номер:</b><br>
-                517_ц
+                {{doc.in_number}}
               </div>
             </div>
           </div>
@@ -28,14 +28,14 @@
               <div class="q-pr-sm"><img src="@/assets/icons/Calendar.svg" /></div>
               <div class="q-py-sm">
                 <b>Исходящая дата:</b><br>
-                02.06.2020
+                {{doc.out_date}}
               </div>
             </div>
             <div class="col flexBlock">
               <div class="q-pr-sm"><img src="@/assets/icons/Calendar.svg" /></div>
               <div class="q-py-sm">
                 <b>Входящая дата:</b><br>
-                02.06.2020
+                {{doc.in_date}}
               </div>
             </div>
           </div>
@@ -46,10 +46,10 @@
               <div>
                 <img src="@/assets/icons/List-active.svg" />
                 <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]" content-class="bg-green">
-                  7 листов бумаги
+                  {{doc.paper_count}} листов бумаги
                 </q-tooltip>
               </div>
-              <div class="flexBlock q-px-sm">7</div>
+              <div class="flexBlock q-px-sm">{{doc.paper_count}}</div>
             </div>
             <!-- <div class="flexBlock q-pr-sm q-py-sm">
               <div>
@@ -75,16 +75,16 @@
         </div>
         <div class="col-2 q-pr-md q-pa-md">
           <div class="row">
-            <div class="col text-right q-pr-md">
+            <div class="col text-right q-pr-md cursor-pointer" @click="newFile">
               <img src="@/assets/icons/Download-Cloud.svg" alt="">
             </div>
-            <div>
+            <div class="cursor-pointer">
               <img src="@/assets/icons/Print.svg" alt="">
             </div>
           </div>
           <div class="row q-pt-md">
             <div class="col text-right fontBtn">
-              <a-popup></a-popup>
+              <a-popup :doc="doc"></a-popup>
             </div>
           </div>
         </div>
@@ -95,7 +95,7 @@
   <div v-else class="bg-white task q-py-sm">
     <div class="title q-pa-md">
       <div class="row">
-        <div class="col"><b>Организация по кибербезопасности направляет вам...</b></div>
+        <div class="col"><b>{{doc.description}}</b></div>
         <div><img src="@/assets/icons/help.svg" /></div>
       </div>
     </div>
@@ -103,20 +103,20 @@
       <div class="q-pr-sm"><img src="@/assets/icons/Send.svg" /></div>
       <div>
         <b>От:</b><br>
-        С. Баратов
+        {{doc.signed_by}}
       </div>
     </div>
     <div class="flexBlock q-px-md q-mb-md">
       <div class="q-pr-sm"><img src="@/assets/icons/Calendar.svg" /></div>
       <div>
         <b>Входящая дата:</b><br>
-        28.03.2020
+        {{doc.in_date}}
       </div>
     </div>
 
     <div class="row q-pb-md">
       <div class="col text-center">
-        <a-popup></a-popup>
+        <a-popup :doc="doc"></a-popup>
       </div>
     </div>
   </div>
@@ -125,6 +125,7 @@
 import { mapState, mapGetters } from 'vuex';
 import Popup from './Popup'
 export default {
+  props:['doc'],
   components: {
     APopup: Popup
   },
@@ -132,11 +133,33 @@ export default {
     ...mapState({
           list: state => state.assistant.aList,
           menu: state => state.assistant.aMenu,
+          selectedDocs: state => state.assistant.selectedDocs,
         }),
+  },
+  methods: {
+    changeVal(){
+      this.$store.dispatch('selVal', this.doc.doc_id)
+    },
+    newFile() {
+      if(this.doc.file){
+        let blob = new Blob([this.doc.file], { type: "application/pdf" });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = this.doc.file.name;
+        link.click();
+      }
+    }
   },
   data(){
     return {
       val: false
+    }
+  },
+  created(){
+    if(this.selectedDocs.find(id => id === this.doc.doc_id)) {
+      this.val = true
+    } else {
+      this.val = false
     }
   }
 }

@@ -17,9 +17,9 @@
             </div>
             <div><b>Готов к отправке</b></div>
           </div>
-          <div class="flexBlock q-px-md" :class="menu === 4 ? 'filterActive': ''" @click="menuSelect(4)">
+          <div class="flexBlock q-px-md" :class="menu === 3 ? 'filterActive': ''" @click="menuSelect(3)">
             <div class="q-pr-sm">
-              <img v-if="menu === 4" src="@/assets/icons/Ok-active.svg" alt="">
+              <img v-if="menu === 3" src="@/assets/icons/Ok-active.svg" alt="">
               <img v-else src="@/assets/icons/Ok.svg" alt="">
             </div>
             <div><b>Отправленные</b></div>
@@ -54,20 +54,28 @@ export default {
       options2: ['Вид Список', 'Вид Карточный'],
       model: 'Вид Список',
       model2: '',
-      viewTasks: false
+      viewTasks: false,
+      selectedDocs: [],
     }
   },
   computed: {
     ...mapState({
           list: state => state.assistant.aList,
+          docs: state => state.assistant.aAllDocs,
           menu: state => state.assistant.aMenu,
         }),
   },
   methods: {
+    menuSelect(num){
+      this.$store.dispatch('getADocs', num)
+    },
     change(value){
       if(this.model === 'Вид Карточный') {this.$store.dispatch('aChangeList', false)}
       else {this.$store.dispatch('aChangeList', true)}
     }
+  },
+  created(){
+
   }
 }
 </script>
