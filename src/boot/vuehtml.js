@@ -16,3 +16,4 @@ const options = {
 
 
 Vue.use(VueHtmlToPaper, options)
+

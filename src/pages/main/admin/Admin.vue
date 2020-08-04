@@ -1,8 +1,7 @@
 <template>
-  <dir>
-    <h4>{{ $t("pages.admin_page") }}</h4>
+  <div>
     <router-view />
-  </dir>
+  </div>
 </template>
 
 <script>

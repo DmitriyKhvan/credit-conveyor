@@ -331,7 +331,9 @@ export const profile = {
           //   "DocumentName": "1"
           // }
         ]
-      }
+      },
+
+      max_loan_sum_preapprove: null // максимальная сумма кредита
     }
   },
   actions: {
@@ -430,9 +432,9 @@ export const profile = {
     setFullForm(state, payload) {
       
       // Для корректной валидации
-      payload.Customer.Document.Number = String(payload.Customer.Document.Number)
-      payload.Customer.Relatives.items.map(i => i.Document.Number = String(i.Document.Number))
-      payload.Guarantee.RelatedPerson.items.map(i => i.Document.Number = String(i.Document.Number))
+      // payload.Customer.Document.Number = String(payload.Customer.Document.Number)
+      // payload.Customer.Relatives.items.map(i => i.Document.Number = String(i.Document.Number))
+      // payload.Guarantee.RelatedPerson.items.map(i => i.Document.Number = String(i.Document.Number))
       
       state.fullFormProfile = payload;
     },
@@ -448,7 +450,7 @@ export const profile = {
       state.fullFormProfile.Customer.PhoneList.items[0].Number = payload.Customer.PhoneList.items[0].Number;
       state.fullFormProfile.Customer.PINPP = payload.Customer.PINPP;
       state.fullFormProfile.Customer.Document.Series = payload.Customer.Document.Series
-      state.fullFormProfile.Customer.Document.Number = String(payload.Customer.Document.Number)
+      state.fullFormProfile.Customer.Document.Number = payload.Customer.Document.Number
 
       state.fullFormProfile.Customer.MaritalStatus = payload.Customer.MaritalStatus
 
@@ -465,6 +467,9 @@ export const profile = {
       state.fullFormProfile.LoanInfo.LoanProduct = payload.LoanInfo.LoanProduct;
       state.fullFormProfile.LoanInfo.RepaymentType = payload.LoanInfo.RepaymentType;
       state.fullFormProfile.LoanInfo.TermInMonth = payload.LoanInfo.TermInMonth;
+      state.fullFormProfile.LoanInfo.LoanPurpose = payload.LoanInfo.LoanPurpose;
+
+      state.fullFormProfile.max_loan_sum_preapprove = payload.LoanInfo.max_loan_sum_preapprove;
     },
 
     setFileList(state, fileList) {
@@ -732,6 +737,7 @@ export const profile = {
       function objectTransform(dictionaries) {
         for (let item in dictionaries) {
           // if(item == "Branches") continue
+          if(item == "Insurance_company") continue
           if (
             typeof dictionaries[item] === "object" &&
             dictionaries[item] != null
@@ -1004,11 +1010,13 @@ export const profile = {
             //   "DocumentName": "1"
             // }
           ]
-        }
+        },
+
+        max_loan_sum_preapprove: null // максимальная сумма кредита
       };
     }
   },
-  getters: {
-    profile: state => state
-  }
+  // getters: {
+  //   profile: state => state
+  // }
 };

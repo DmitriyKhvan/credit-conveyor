@@ -28,7 +28,6 @@ export default {
   methods: {
     closeBtn() {
       this.$store.commit("credits/toggleMessageBar", false);
-      // this.$router.push("/work/credit");
     }
   },
   computed: {

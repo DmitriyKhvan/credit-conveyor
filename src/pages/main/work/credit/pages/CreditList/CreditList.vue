@@ -537,12 +537,15 @@ export default {
   computed: {
     ...mapState({
           pages: state => state.credits.pages,
-          countRowList: state => state.credits.countRowList
+          countRowList: state => state.credits.countRowList,
+          creditTasks: state => state.credits.creditTasks,
+          loadings: state => state.credits.loadings,
+          userRole: state => state.credits.userRole
         }),
 
     // Фильтры
     credits() {
-      return this.$store.getters["credits/creditTasks"].filter(task => {
+      return this.creditTasks.filter(task => {
         let conditions = [true];
         if (this.applicationNumber.length > 0) {
           if (!task.applicationNumber) {
@@ -612,23 +615,6 @@ export default {
 
         return conditions.every(condition => condition);
       });
-    },
-
-    // loadings() {
-    //   const loadings = []
-    //   for (let i = 0; i < this.$store.getters["credits/creditTasks"].length; i++) {
-    //     loadings[i] = false
-    //   }
-    //   console.log('loading', this.loadings)
-    //   return loadings
-    // },
-
-    loadings() {
-      return this.$store.getters["credits/loadings"] 
-    },
-
-    userRole() {
-      return this.$store.getters["credits/userRole"];
     }
   },
   methods: {
@@ -650,7 +636,7 @@ export default {
 
     sortValue(idx, order = true) {
       console.log('sort', idx)
-      this.$store.getters["credits/creditTasks"].sort((a, b) => {
+      this.creditTasks.sort((a, b) => {
         const itemA = a[idx];
         const itemB = b[idx];
         if (order) {

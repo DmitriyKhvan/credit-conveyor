@@ -32,9 +32,26 @@ export default {
   font-family: "OpenSans";
   src: url(../assets/fonts/OpenSans-Regular.ttf);
 }
+@font-face {
+  font-family: "OpenSans-SemiBold";
+  src: url(../assets/fonts/OpenSans-SemiBold.ttf);
+}
 
 body {
   font-family: "OpenSans";
+  font-size: 14px;
+}
+strong, b {
+  font-family: "OpenSans-SemiBold";
+  font-weight: normal;
+}
+.q-btn__content {
+    text-transform: none;
+    font-size: 16px;
+    font-family: "OpenSans-SemiBold";
+}
+.q-table th {
+  font-family: "OpenSans-SemiBold";
   font-size: 14px;
 }
 

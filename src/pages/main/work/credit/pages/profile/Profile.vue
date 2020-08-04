@@ -1520,6 +1520,14 @@
                 />
               </div>
             </div>  
+
+            <q-btn
+              :disable="disableField"
+              color="primary"
+              label="Получить данные с Халк банка"
+              @click="getInfoBank"
+              class="addItem"
+            ></q-btn>
           </div>
         </div>
 
@@ -2404,8 +2412,7 @@
                     label="Название"
                     lazy-rules
                     :rules="[
-                      val => !!val || 'Введите название',
-                      val => fioValid(val)
+                      val => !!val || 'Введите название'
                     ]"
                   />
                 </div>
@@ -2676,7 +2683,7 @@
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
-                  <q-input
+                  <!-- <q-input
                     :disable="disableField"
                     ref="nameGuarantees"
                     square
@@ -2687,6 +2694,24 @@
                     :rules="[
                       val => !!val || 'Введите наименование страховой компании'
                     ]"
+                  /> -->
+
+                  <q-select
+                    :disable="disableField"
+                    ref="nameGuarantees"
+                    square
+                    outlined
+                    v-model="guarantee.OrgName"
+                    :options="dictionaries.Insurance_company.items"
+                    @input="setINNCompany($event, index)"
+                    dense
+                    label="Наименование страховой компании"
+                    :rules="[
+                      val => !!val || 'Выберите страховую компанию'
+                    ]"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
                   />
                 </div>
                 <div class="col-4">
@@ -2714,10 +2739,10 @@
                     square
                     outlined
                     v-model.number="guarantee.Sum"
+                    @input="guaranteesValid"
                     type="number"
                     dense
                     label="Сумма страхового полиса"
-                    @input="guaranteesValid"
                     :rules="[
                       val => !!val || 'Введите сумму',
                       val => val > 0 || 'Некорректные данные'
@@ -2788,17 +2813,20 @@
                   square
                   outlined
                   v-model.number="fullProfile.LoanInfo.Sum"
+                  @input="guaranteesValid"
                   type="number"
                   dense
                   label="Запрашиваемая сумма кредита"
                   :rules="[
                     val => !!val || 'Введите сумму кредита',
                     val => val > 0 || 'Некорректные данные',
-                    preApprovalData.maxSum 
+                    val => (totalGuaranteesSum - fullProfile.LoanInfo.Sum >= fullProfile.LoanInfo.Sum * 0.25) ||
+                      'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%',
+                    fullProfile.max_loan_sum_preapprove 
                     ?  (val =>
                       (val > 0 &&
-                      val <= preApprovalData.maxSum) ||
-                      `Введите сумму от 0 до ${preApprovalData.maxSum}`)
+                      val <= fullProfile.max_loan_sum_preapprove ) ||
+                      `Максимальная сумма кредита ${fullProfile.max_loan_sum_preapprove }`)
                     : null
                   ]"
                 />
@@ -3049,7 +3077,7 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-select
-                  :disable="disableField"
+                  disable
                   ref="purposeCredit"
                   square
                   outlined
@@ -3449,9 +3477,6 @@
             class="q-ml-sm"
           />
 
-          <!-- Sent data full form to BPM -->
-          <!-- <appSentFullProfile /> -->
-
           <q-btn
             type="submit"
             color="primary"
@@ -3518,7 +3543,6 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 import UserService from "@/services/user.service";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
-import SentFullProfile from "./SentFullProfile";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 // import UploadFiles from "./UploadFiles"
 import { validItems, validFilter } from "../../filters/valid_filter"
@@ -3631,37 +3655,20 @@ export default {
   mounted() {
     setTimeout(() => {
       this.onSubmit("start")
-    }, 500)
+    }, 600)
     
   },
   computed: {
     ...mapState({
-      disableField: state => state.profile.disableField
-    }),
-    fullProfile() {
-      console.log(this.$store.getters["profile/profile"].fullFormProfile)
-      return this.$store.getters["profile/profile"].fullFormProfile
-    },
-
-    Customer() {
-      return this.$store.getters["profile/profile"].fullFormProfile.Customer
-    },
-
-    dictionaries() {
-      return this.$store.getters["profile/profile"].dictionaries
-    },
-
-    profile() {
-      return this.$store.getters["profile/profile"]
-    },
-
-    credits() {
-      return this.$store.getters["credits/credits"]
-    },
-
-    preApprovalData() {
-      return this.$store.getters["credits/credits"].preApprovalData;
-    },
+        disableField: state => state.profile.disableField,
+        fullProfile: state => state.profile.fullFormProfile,
+        Customer: state => state.profile.fullFormProfile.Customer,
+        dictionaries: state => state.profile.dictionaries,
+        profile: state => state.profile,
+        credits: state => state.credits,
+        preApprovalData: state => state.credits.preApprovalData
+      }),
+      
     taskId() {
       return this.$route.query.taskId
     }
@@ -4148,12 +4155,10 @@ export default {
           AttachedDocuments,
         } = this.fullProfile;
 
-        console.log('Customer', Customer)
-        //ClientManagerLogin = "man"
         Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`
-          Customer.Document.Number = Number(Customer.Document.Number)
-          Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
-          Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
+          // Customer.Document.Number = Number(Customer.Document.Number)
+          // Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
+          // Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
         //LoanInfo.RepaymentType = Number(LoanInfo.RepaymentType)
 
         // удалил из объекта - Date!!!
@@ -4205,6 +4210,18 @@ export default {
         } else {
           this.profile.confirmCredit = true;
         }
+      }
+    },
+
+    getInfoBank() {
+      console.log('info bank')
+    },
+
+    setINNCompany(companyName, idx) {
+      console.log(companyName, idx)
+      const company = this.dictionaries.Insurance_company.items.find(i => i.label == companyName)
+      if (company) {
+        this.fullProfile.Guarantee.Insurance.items[idx].INN = company.INN
       }
     },
 
@@ -4624,6 +4641,7 @@ export default {
 
       console.log('totalGuaranteesSum',this.totalGuaranteesSum)
       this.$refs.guaranteesValid.validate();
+      this.$refs.priceCredit.validate();
     },
 
     givenPlaceValid(val) {
@@ -4706,7 +4724,6 @@ export default {
   components: {
     appLoader: Loader,
     appFullProfile: FullProfile,
-    appSentFullProfile: SentFullProfile,
     appLoaderFullScreen: LoaderFullScreen
     // appUploadFiles: UploadFiles
   }
