@@ -331,7 +331,9 @@ export const profile = {
           //   "DocumentName": "1"
           // }
         ]
-      }
+      },
+
+      max_loan_sum_preapprove: null // максимальная сумма кредита
     }
   },
   actions: {
@@ -465,6 +467,9 @@ export const profile = {
       state.fullFormProfile.LoanInfo.LoanProduct = payload.LoanInfo.LoanProduct;
       state.fullFormProfile.LoanInfo.RepaymentType = payload.LoanInfo.RepaymentType;
       state.fullFormProfile.LoanInfo.TermInMonth = payload.LoanInfo.TermInMonth;
+      state.fullFormProfile.LoanInfo.LoanPurpose = payload.LoanInfo.LoanPurpose;
+
+      state.fullFormProfile.max_loan_sum_preapprove = payload.LoanInfo.max_loan_sum_preapprove;
     },
 
     setFileList(state, fileList) {
@@ -732,6 +737,7 @@ export const profile = {
       function objectTransform(dictionaries) {
         for (let item in dictionaries) {
           // if(item == "Branches") continue
+          if(item == "Insurance_company") continue
           if (
             typeof dictionaries[item] === "object" &&
             dictionaries[item] != null
@@ -1004,11 +1010,13 @@ export const profile = {
             //   "DocumentName": "1"
             // }
           ]
-        }
+        },
+
+        max_loan_sum_preapprove: null // максимальная сумма кредита
       };
     }
   },
-  getters: {
-    profile: state => state
-  }
+  // getters: {
+  //   profile: state => state
+  // }
 };

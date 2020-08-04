@@ -95,6 +95,7 @@
               class="row justify-center"
             >
               <q-btn
+                v-if="preApprovalData.maxSum > 0"
                 label="Отправить заявку"
                 color="green"
                 v-close-popup
@@ -160,19 +161,11 @@ export default {
   computed: {
     ...mapState({
       taskIdPreapp: state => state.credits.taskId,
-    }),
-    disableBtn() {
-      return this.$store.getters["credits/credits"].disableBtn;
-    },
-    preApprovalData() {
-      return this.$store.getters["credits/credits"].preApprovalData;
-    },
-    personalData() {
-      return this.$store.getters["credits/credits"].personalData;
-    },
-    credits() {
-      return this.$store.getters["credits/credits"];
-    }
+      disableBtn: state => state.credits.disableBtn,
+      preApprovalData: state => state.credits.preApprovalData,
+      personalData: state => state.credits.personalData,
+      credits: state => state.credits
+    })
   },
 
   methods: {

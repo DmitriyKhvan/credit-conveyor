@@ -1027,7 +1027,15 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Наименование организации</div>
-                  <div class="col-6 data">{{ guarantee.OrgName }}</div>
+                  <div class="col-6 data">
+                    <!-- {{
+                      dictionaries.Insurance_company.items.find(
+                        i => i.value == guarantee.OrgName
+                      ).label
+                    }} -->
+
+                    {{ guarantee.OrgName }}
+                  </div>
                 </div>
 
                 <div class="row rowForm">
@@ -1466,6 +1474,7 @@
 </template>
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
@@ -1541,6 +1550,14 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+        fullProfile: state => state.profile.fullFormProfile,
+        profile: state => state.profile,
+        Customer: state => state.profile.fullFormProfile.Customer,
+        dictionaries: state => state.profile.dictionaries,
+        credits: state => state.credits
+      }),
+
     date() {
       return this.$route.query.date;
     },
@@ -1552,25 +1569,7 @@ export default {
     },
     filialName() {
       return this.$route.query.filialName;
-    },
-    profile() {
-      return this.$store.getters["profile/profile"];
-    },
-    fullProfile() {
-      return this.$store.getters["profile/profile"].fullFormProfile;
-    },
-    Customer() {
-      return this.$store.getters["profile/profile"].fullFormProfile.Customer;
-    },
-    dictionaries() {
-      return this.$store.getters["profile/profile"].dictionaries;
-    },
-    credits() {
-      return this.$store.getters["credits/credits"];
     }
-    // userRole() {
-    //   return this.$store.getters["credits/userRole"]
-    // }
   },
   methods: {
     creditSuccess() {

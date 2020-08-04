@@ -448,14 +448,15 @@ export const credits = {
       for (let i = 0; i < payload.count; i++) {
         state.loadings[i] = false
       }
-      state.creditTasks = payload.response.infoList.sort((a, b) => {
-          if (b.date < a.date) {
-            return -1
-          }
-          if (b.date > a.date) {
-            return 1
-          }
-        })
+      state.creditTasks = payload.response.infoList
+      // state.creditTasks = payload.response.infoList.sort((a, b) => {
+      //     if (b.date < a.date) {
+      //       return -1
+      //     }
+      //     if (b.date > a.date) {
+      //       return 1
+      //     }
+      //   })
     },
 
     clearCreditTasks(state) {
@@ -469,14 +470,11 @@ export const credits = {
    
   },
   getters: {
-    credits: state => state,
+    // credits: state => state,
     message: state => state.messageBlock.message,
     messageId: state => state.messageBlock.id,
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
-    creditTasks: state => state.creditTasks,
-    userRole: state => state.userRole,
-    loadings: state => state.loadings
-    //fileId: state => state.fileId
+    userRole: state => state.userRole
   }
 };

@@ -693,7 +693,14 @@
                       Страхование {{ index + 1 }}
                     </div>
                     <div class="col-3">Наименование организации</div>
-                    <div class="col-9">{{ guarantee.OrgName }}</div>
+                    <div class="col-9">
+                       <!-- {{
+                        dictionaries.Insurance_company.items.find(
+                          i => i.value == guarantee.OrgName
+                        ).label
+                      }} -->
+                      {{ guarantee.OrgName }}
+                      </div>
                     <div class="col-3">ИНН страховой компании</div>
                     <div class="col-9">{{ guarantee.INN }}</div>
                     <div class="col-3">Сумма страхового полиса</div>
@@ -959,7 +966,9 @@
 </template>
 
 <script>
-import printJS from "print-js";
+import { mapState } from  "vuex"
+import printJS from "print-js"
+
 export default {
   props: ["currentDate"],
   data() {
@@ -968,21 +977,13 @@ export default {
     };
   },
   computed: {
-    fullProfile() {
-     return this.$store.getters["profile/profile"].fullFormProfile;
-    },
-    profile() {
-      return this.$store.getters["profile/profile"];
-    },
-    Customer() {
-      return this.$store.getters["profile/profile"].fullFormProfile.Customer;
-    },
-    dictionaries() {
-      return this.$store.getters["profile/profile"].dictionaries;
-    },
-    credits() {
-      return this.$store.getters["credits/credits"];
-    }
+    ...mapState({
+        fullProfile: state => state.profile.fullFormProfile,
+        profile: state => state.profile,
+        Customer: state => state.profile.fullFormProfile.Customer,
+        dictionaries: state => state.profile.dictionaries,
+        credits: state => state.credits
+      })
   },
   methods: {
     callPrint(strid) {
