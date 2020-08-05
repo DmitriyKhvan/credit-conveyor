@@ -27,6 +27,19 @@
               lazy-rules
             />
           </div>
+          <div class="row">
+            <q-input
+              outlined
+              clearable
+              filled
+              autogrow
+              color="purple-12"
+              class="col-xs-12 col-sm-12 col-md-12"
+              v-model="details.description"
+              label="Description"
+              type="text"
+            />
+          </div>
         </div>
       </q-card-section>
       <!-- buttons example -->
@@ -55,10 +68,11 @@ export default {
     return {
       isLoading: this.$store.getters["common/getLoading"],
       isValidated: true,
-      // !!! Dont change. Functions in dialogMixin depends on name "details"
+      // !!! Dont change. Functions in dialogMixin depends on variable "details"
       details: {
         id: null,
-        name: null
+        name: null,
+        description: null
       }
     };
   },
@@ -67,7 +81,8 @@ export default {
       id: {},
       name: {
         required
-      }
+      },
+      description: {}
     }
   },
   props: {

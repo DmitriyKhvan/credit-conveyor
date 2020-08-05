@@ -1,22 +1,14 @@
 import ApiService from "./api.service";
-import store from '@/store/index';
+import store from "@/store/index";
 
 const DictService = {
-
-  loadAll: async function () {
-
+  loadAll: async function() {
     return new Promise(async (resolve, reject) => {
-
       if (!store.getters["dicts/isAllSet"]) {
-
         let allroles = await this.allRoles();
         store.dispatch("dicts/setRolesDict", allroles);
         let menuItems = await DictService.menuList();
         store.dispatch("dicts/setMenuList", menuItems.items);
-        //let iconTypes = await this.iconTypes();
-        //store.dispatch("dicts/setIconTypes", iconTypes);
-        //let icons = await this.icons();
-        //store.dispatch("dicts/setIconsDict", icons);
         let parentMenus = await this.parentMenus();
         store.dispatch("dicts/setParentMenus", parentMenus);
         //let userList = await this.userList();
@@ -40,8 +32,7 @@ const DictService = {
         store.dispatch("dicts/setRegion", regions);
 
         store.dispatch("dicts/setIsAllSet", true);
-        resolve(true)
-
+        resolve(true);
       } else {
         // leave it as is
         resolve(true);
