@@ -9,16 +9,16 @@
 
               <div class="row q-pb-md">
                 <div class="col">
-                  <strong>Организация по кибербезопасности направляет вам документы по зашиты внутренних систем для ознакомления и принятие соответствующие меры</strong>
+                  <strong>{{doc.description}}</strong>
                 </div>
               </div>
               <div class="row q-py-md desp">
                 <div class="col">
                   <div class="row justify-center files">
                     <div class="col-5">
-                      <div>Документ № 6765</div>
+                      <div>Документ № {{doc.doc_id}}</div>
                     </div>
-                    <div class="col flexBlock">
+                    <div class="col flexBlock cursor-pointer" @click="newFile">
                       <div class="pad-2"><img src="@/assets/icons/Download-Cloud.svg" /></div>
                       <div class="q-px-sm">Скачать</div>
                     </div>
@@ -35,11 +35,11 @@
                   <div class="row">
                     <div class="col flexBlock">
                       <div class="self-center"><img src="@/assets/icons/Enter-1.svg" /></div>
-                      <div class="q-px-sm lineH"><b>Исходящий номер:</b><br>02-1073</div>
+                      <div class="q-px-sm lineH"><b>Исходящий номер:</b><br>{{doc.out_number}}</div>
                     </div>
                     <div class="col flexBlock">
                       <div class="self-center"><img src="@/assets/icons/Calendar.svg" /></div>
-                      <div class="q-px-sm lineH"><b>Дата создания:</b><br>28.03.2020</div>
+                      <div class="q-px-sm lineH"><b>Дата создания:</b><br>{{dateFormat(doc.created_at)}}</div>
                     </div>
                   </div>
                 </div>
@@ -53,29 +53,37 @@
                       <div class="col q-px-sm lineH">
                         <b>Документ:</b>
                         <div class="row">
-                          <div class="col">filename.pdf</div>
-                          <div class="col q-px-sm"><i>2.40 мб</i></div>
+                          <div class="col">{{doc.file.name}}</div>
+                          <div class="col q-px-sm"><i>{{fileSize(doc.file.file_size)}} мб</i></div>
                         </div>
                       </div>
                     </div>
                     <div class="col flexBlock">
                       <div class="self-center"><img src="@/assets/icons/Enter.svg" /></div>
-                      <div class="q-px-sm lineH"><b>Входящий номер:</b><br>001_к</div>
+                      <div class="q-px-sm lineH"><b>Входящий номер:</b><br>{{doc.in_number}}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="row q-py-md desp">
-                <div class="col">
+              <div class="row items-center q-py-md desp">
+                <div>
+                  <div v-if="value">
+                    Подписан
+                  </div>
+                  <div v-else>
+                    Не подписан
+                  </div>
+                </div>
+                <div>
                   <q-toggle
                     v-model="value"
                     color="amber-4"
-                    label="Не подписан"
-                    left-label
                     size="74px"
+                    @input="changeVal"
                   />
                 </div>
+                <div class="col"></div>
               </div>
 
             </div>
@@ -88,11 +96,23 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-input standout v-model="text" label="Исполнитель">
+                  <q-input standout v-model="searchUser" label="Исполнитель" @input="selUsers">
                     <template v-slot:append>
                       <q-icon name="search" />
                     </template>
                   </q-input>
+                </div>
+              </div>
+
+              <div class="row" v-if="result.length !== 0">
+                <div class="col q-pb-md q-pt-sm q-px-md q-mb-sm users">
+                  <div
+                    v-for="u in result"
+                    :key="u.EMP_ID"
+                    @click="selectedUser(u)"
+                  >
+                    <span>{{u.LAST_NAME}} {{u.FIRST_NAME[0]}}. {{u.MIDDLE_NAME[0]}}.</span>
+                  </div>
                 </div>
               </div>
 
@@ -101,12 +121,17 @@
                   Выберите главного исполнителя
                 </div>
               </div>
-              <div class="row">
+
+              <div class="row" v-if="workers.length !== 0">
                 <div class="col q-pb-md q-pt-sm q-px-md users">
-                  <div class="active"><span>Баратов С. У.</span> <q-icon name="close" size="xs" class="icon_btn" /></div>
-                  <div><span>Ахмедов Б. А.</span>  <q-icon name="close" size="xs" class="icon_btn" /></div>
-                  <div><span>Драгунов А. С.</span>  <q-icon name="close" size="xs" class="icon_btn" /></div>
-                  <div><span>Иванов И. А.</span>  <q-icon name="close" size="xs" class="icon_btn" /></div>
+                  <div
+                    v-for="u in workers"
+                    :key="u.EMP_ID"
+                    :class="activeWorker === u.EMP_ID ? 'active' : ''"
+                  >
+                    <span @click="selectActiveWorker(u.EMP_ID)">{{u.LAST_NAME}} {{u.FIRST_NAME[0]}}. {{u.MIDDLE_NAME[0]}}.</span>
+                    <q-icon name="close" size="xs" class="icon_btn" @click="removeUser(u.EMP_ID)" />
+                  </div>
                 </div>
               </div>
 
@@ -117,7 +142,7 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-select filled v-model="model" :options="options" label="Руководитель" />
+                  <q-select filled v-model="superior" :options="superiors" label="Руководитель" />
                 </div>
               </div>
 
@@ -128,7 +153,7 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-select filled v-model="model" :options="options" label="Шаблон" />
+                  <q-select filled v-model="shablon" :options="shablons" label="Шаблон" />
                 </div>
               </div>
 
@@ -137,7 +162,7 @@
 
           <div class="row q-pt-lg ">
             <div class="col text-center">
-              <q-btn color="blue-14" label="Отправить" size="lg" class="q-mr-lg" @click="dialog = false" />
+              <q-btn color="blue-14" label="Отправить" size="lg" class="q-mr-lg" @click="saveForm" />
               <q-btn color="white" text-color="black" label="Отменить" size="lg" @click="dialog = false" />
             </div>
           </div>
@@ -149,16 +174,132 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
+import { mapState, mapGetters } from 'vuex';
 export default {
+  props: ['doc'],
   data(){
     return {
+      shablon: '',
+      superior: '',
+      searchUser: '',
+      result: [],
+      workers: [],
+      activeWorker: '',
+
       dialog: false,
       date: '2019/02/01',
-      value: true,
+      value: false,
       text: '',
       options: [],
       model: ''
     }
+  },
+  computed: {
+    ...mapState({
+          shablons: state => state.assistant.aShablons,
+          superiors: state => state.assistant.aSuperiors
+        }),
+  },
+  methods: {
+    saveForm(){
+      const arr = []
+      this.workers.forEach(user => {
+        arr.push({
+          emp_id: user.EMP_ID,
+          check: user.EMP_ID === this.activeWorker ? true : false,
+          dep_code: user.DEP_CODE
+        })
+      })
+
+      const obg = {
+        doc_id: [
+          this.doc.doc_id
+        ],
+        data: arr,
+        h_emp_id: this.superior.value,
+        h_dep_code: this.superior.dep_code,
+        type: 1,
+        message: String(this.shablon.value),
+        status: this.value === true ? 2 : 1
+      }
+      axios
+        .post("/tasks/pomoshnik", obg)
+        .then(response => {
+          console.log(response.data)
+        })
+        .catch(error => {
+            console.log('error')
+        });
+    },
+    selectActiveWorker(id){
+      this.activeWorker = id
+    },
+    removeUser(id){
+      this.workers = this.workers.filter(user => user.EMP_ID !== id)
+      if(this.activeWorker === id) this.activeWorker = ''
+    },
+    selectedUser(user){
+      this.workers.push(user)
+      this.searchUser = ''
+      this.result = []
+    },
+    selUsers () {
+      if(this.searchUser === '') {this.result = []}
+      if(this.searchUser !== '') {
+        axios
+            .get("/emps/search?name="+this.searchUser)
+            .then(response => {
+              this.result = response.data
+            })
+            .catch(error => {
+                console.log('error')
+            });
+      }
+    },
+    changeVal(){
+      console.log(this.value)
+    },
+    dateFormat(dateNum){
+      let d = new Date(dateNum);
+      return d.getFullYear() + '-'+ d.getMonth() + '-'+ d.getDate()
+    },
+    fileSize(file){
+      return (file / (1024*1024)).toFixed(2)
+    },
+    newFile() {
+      if(this.doc.file){
+        let blob = new Blob([this.doc.file], { type: "application/pdf" });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = this.doc.file.name;
+        link.click();
+      }
+    }
+  },
+  created(){
+    if(this.doc.start_emps_id !== null && this.doc.doc_status === 2){
+      this.value = true
+    }
+
+    if(this.doc.task_message) {
+      this.shablon = {
+        label: this.doc.task_message.name,
+        value: this.doc.task_message.id
+      }
+    }
+
+    if(this.doc.superior) {
+      this.superior = {
+        label: this.doc.superior.name,
+        value: this.doc.superior.emp_id
+      }
+    }
+    if(this.doc.start_emps_id !== null){
+      console.log(this.doc.start_emps_id)
+      this.workers = this.doc.start_emps_id
+    }
+    // this.$store.dispatch('getAUser')
   }
 }
 </script>
@@ -233,7 +374,7 @@ export default {
   .users div span {
     padding-right: 10px;
   }
-  .users div.active {
+  .users div.active, .users div:hover {
     color: #fff;
     background: #0054FE;
   }
