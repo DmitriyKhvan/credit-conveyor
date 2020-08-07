@@ -58,7 +58,7 @@
         Исх. номер:
       </div>
       <div class="col">
-        {{form.number !== null ? form.number : ''}}
+        {{form.out_number !== null ? form.out_number : ''}}
       </div>
     </div>
     <div class="row q-pb-md">
@@ -66,7 +66,7 @@
         Исх. дата:
       </div>
       <div class="col">
-        {{form.date !== null ? form.date : ''}}
+        {{form.out_date !== null ? form.out_date : ''}}
       </div>
     </div>
     <div class="row q-pb-md">

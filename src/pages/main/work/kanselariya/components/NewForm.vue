@@ -65,7 +65,7 @@
                   <div class="cursor-pointer">
                     <img src="@/assets/icons/InDate.svg">
                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="form.in_date" @input="() => $refs.qDateProxy.hide()" />
+                      <q-date v-model="form.in_date" mask="YYYY-MM-DD" @input="() => $refs.qDateProxy.hide()" />
                     </q-popup-proxy>
                   </div>
                 </template>
@@ -75,7 +75,7 @@
           <div class="row q-col-gutter-xl q-pb-lg">
             <div class="col">
               <div class="row selectBorder items-center">
-                <div class="q-pl-sm"><q-checkbox color="blue-14" v-model="valNumber" /></div>
+                <div class="q-pl-sm"><q-checkbox @input="form.out_number = null" color="blue-14" v-model="valNumber" /></div>
                 <div class="col">
                   <q-input borderless v-model="form.out_number" label="Исх. номер" :disable="valNumber === false" />
                 </div>
@@ -83,14 +83,14 @@
             </div>
             <div class="col">
               <div class="row items-center selectBorder">
-                <div class="q-pl-sm"><q-checkbox color="blue-14" v-model="valDate" /></div>
+                <div class="q-pl-sm"><q-checkbox @input="form.out_date = null" color="blue-14" v-model="valDate" /></div>
                 <div class="col q-pr-md">
                   <q-input borderless v-model="form.out_date" label="Исх. дата" :disable="valDate === false">
                     <template v-slot:append>
                       <div class="cursor-pointer">
                         <img src="@/assets/icons/OutDate.svg" />
                         <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="form.out_date" @input="() => $refs.qDateProxy.hide()" />
+                          <q-date v-model="form.out_date" mask="YYYY-MM-DD" @input="() => $refs.qDateProxy.hide()" />
                         </q-popup-proxy>
                       </div>
                     </template>
