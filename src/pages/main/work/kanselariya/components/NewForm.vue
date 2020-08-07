@@ -65,7 +65,7 @@
                   <div class="cursor-pointer">
                     <img src="@/assets/icons/InDate.svg">
                     <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="form.in_date" @input="() => $refs.qDateProxy.hide()" />
+                      <q-date v-model="form.in_date" mask="YYYY-MM-DD" @input="() => $refs.qDateProxy.hide()" />
                     </q-popup-proxy>
                   </div>
                 </template>
@@ -90,7 +90,7 @@
                       <div class="cursor-pointer">
                         <img src="@/assets/icons/OutDate.svg" />
                         <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="form.out_date" @input="() => $refs.qDateProxy.hide()" />
+                          <q-date v-model="form.out_date" mask="YYYY-MM-DD" @input="() => $refs.qDateProxy.hide()" />
                         </q-popup-proxy>
                       </div>
                     </template>
