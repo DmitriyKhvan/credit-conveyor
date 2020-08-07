@@ -325,8 +325,7 @@
                   dense
                   label="Плата за облуживание других обязательств"
                   :rules="[
-                    val => !!val || 'Поля должно быт заполнено',
-                    val => val > 0 || 'Некорректные данные'
+                    val => val >= 0 || 'Некорректные данные'
                   ]"
                 />
                 
@@ -370,6 +369,7 @@
                   />
 
                   <q-select
+                    v-if="!!this.personalData.typeCredit"
                     ref="loan_purpose"
                     square
                     outlined
@@ -423,6 +423,8 @@ import { validItems } from "../../filters/valid_filter";
 export default {
   data() {
     return {
+      loan_product_dict: null,
+      loanproduct_loancode: null, // цель кредитования
       periodCreditMin: null,
       periodCreditMax: null,
       confirm: false,
@@ -465,6 +467,7 @@ export default {
 
         if (localStorage.getItem(this.taskId)) {
           this.$store.commit("credits/setPersonalData", JSON.parse(localStorage.getItem(this.taskId)))
+          // чтоб не оставлять предыдущий taskId в случае перехода на полную форму (следующий taskId)
           localStorage.removeItem(this.taskIdPreapp)
         }
 
@@ -496,7 +499,15 @@ export default {
       this.loader = false;
     }
   },
-  beforeDestroy(){
+  mounted() {
+    // window.onunload = function() { 
+    //   localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
+    // }
+    // window.onbeforeunload = function() {
+    //   localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
+    // }
+  },
+  beforeDestroy() {
     localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
   },
   computed: {
@@ -514,42 +525,6 @@ export default {
     }
   },
   watch: {
-    // "personalData.typeCredit"(credit) {
-    //   this.personalData.typeStepCredit = null;
-    //   this.options.typeStepCredits = [];
-    //   this.periodCreditMin = null;
-    //   this.periodCreditMax = null;
-    //   this.personalData.periodCredit = 0;
-    //   this.personalData.loanRate = 0;
-
-    //   const idxCredit = this.options.typeCredits.findIndex(
-    //     item => item.value == credit
-    //   );
-
-    //   if (idxCredit !== -1) {
-
-    //     this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
-    //       return {
-    //         label: i.label,
-    //         value: Number(i.value)
-    //       }
-    //     })
-
-    //     this.periodCreditMin = Number(
-    //       this.options.typeCredits[idxCredit].period[0].value
-    //     );
-    //     this.periodCreditMax = Number(
-    //       this.options.typeCredits[idxCredit].period[1].value
-    //     );
-    //     this.personalData.periodCredit = Number(
-    //       this.options.typeCredits[idxCredit].period[0].value
-    //     );
-    //     this.personalData.loanRate = Number(
-    //       this.options.typeCredits[idxCredit].loanRate
-    //     );
-    //   }
-    // },
-
     "personalData.children"(status) {
       if (!status) {
         this.personalData.childrenCount = 0;
@@ -565,7 +540,7 @@ export default {
     // Для форматирования чисeл
     // "personalData.income"(number) {
     //   console.log(formatNumber(number)) 
-    //   this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
+      // this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
     // }
   },
   methods: {
@@ -588,6 +563,12 @@ export default {
         validItems(this.$refs, "periodCredit")
       }
 
+      if (!!this.personalData.typeCredit) {
+        this.$refs.loan_purpose.validate();
+      } else {
+        validItems(this.$refs, "loan_purpose")
+      }
+
       this.$refs.familyStatus.validate()
 
       if (this.personalData.children) {
@@ -599,7 +580,6 @@ export default {
       this.$refs.income.validate();
       this.$refs.expense.validate();
       this.$refs.otherExpenses.validate();
-      this.$refs.loan_purpose.validate();
 
       if (this.personalData.externalIncome) {
         this.$refs.externalIncomeSize.validate()
@@ -631,19 +611,6 @@ export default {
       ) {
         this.formHasError = true;
       } else {
-        this.credits.confirmCreditData = {
-          output: [
-            {
-              name: "confirm",
-              data: true
-            },
-            {
-              name: "reasons",
-              data: []
-            }
-          ]
-        }
-
         this.loaderFullScreen = true;
         const {
           children,
@@ -696,7 +663,7 @@ export default {
                   lastName: surname,
                   middleName: mname,
                   passport: {
-                    number: Number(passport.slice(2)),
+                    number: passport.slice(2),
                     series: passport.slice(0, 2)
                   },
                   mainPhone: phone.replace(/[\s()]/g, ""),
@@ -755,19 +722,25 @@ export default {
       this.periodCreditMax = null;
       this.personalData.periodCredit = 0;
       this.personalData.loanRate = 0;
+      this.personalData.loan_purpose = null
 
       this.setLoan(credit)
     },
 
-    setLoan(credit) {
-      const idxCredit = this.options.typeCredits.findIndex(
-        item => item.value == credit
-      );
-      console.log('idxCredit', idxCredit)
+    setLoan(creditId) {
+      console.log('creditIddd', creditId)
+      if (creditId) {
+        const { Loan_dict } = this.loan_product_dict.find(i => i.id === creditId)
+        this.options.loanPurpose = this.loanproduct_loancode[creditId].items.map(i => {
+          return {
+            label: i.label,
+            value: Number(i.value)
+          }
+        })
 
-      if (idxCredit !== -1) {
-
-        this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+        console.log(this.loanproduct_loancode[creditId])
+        this.personalData.loanRate = Loan_dict.loan_rate_base
+        this.options.typeStepCredits = Loan_dict.payment_type.items.map(i => {
           return {
             label: i.label,
             value: Number(i.value)
@@ -775,20 +748,44 @@ export default {
         })
 
         this.periodCreditMin = Number(
-          this.options.typeCredits[idxCredit].period[0].value
-        );
-        this.periodCreditMax = Number(
-          this.options.typeCredits[idxCredit].period[1].value
+          Loan_dict.terms_list.items.find(i => i.label === 'min').value
         );
 
-        if (!this.personalData.periodCredit) {
-          this.personalData.periodCredit = this.periodCreditMin
-        }
-        
-        this.personalData.loanRate = Number(
-          this.options.typeCredits[idxCredit].loanRate
+        this.periodCreditMax = Number(
+          Loan_dict.terms_list.items.find(i => i.label === 'max').value
         );
+
+        this.personalData.periodCredit = this.periodCreditMin
       }
+      // const idxCredit = this.options.typeCredits.findIndex(
+      //   item => item.value == credit
+      // );
+      // console.log('idxCredit', idxCredit)
+
+      // if (idxCredit !== -1) {
+
+        // this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
+        //   return {
+        //     label: i.label,
+        //     value: Number(i.value)
+        //   }
+        // })
+
+        // this.periodCreditMin = Number(
+        //   this.options.typeCredits[idxCredit].period[0].value
+        // );
+        // this.periodCreditMax = Number(
+        //   this.options.typeCredits[idxCredit].period[1].value
+        // );
+
+        // if (!this.personalData.periodCredit) {
+        //   this.personalData.periodCredit = this.periodCreditMin
+        // }
+        
+        // this.personalData.loanRate = Number(
+        //   this.options.typeCredits[idxCredit].loanRate
+        // );
+      // }
     },
 
     getPreapprovData(preAppData) {
@@ -801,27 +798,33 @@ export default {
 
       this.options.additIncSourOption = this.transformData(preAppData, "incomeSource")
 
-      this.options.loanPurpose = this.transformData(preAppData, "loanPupose") 
+      //this.options.loanPurpose = this.transformData(preAppData, "loanPupose") 
 
-      console.log('family', this.options.family)
+      this.options.typeCredits = this.transformData(preAppData, "loan_product_list") 
 
-      const loan_product_listt = preAppData.find(i => i.label == "loan_product_list")
-      const loan_product_dict = preAppData.find(i => i.label == "loan_product_dict")
+      this.loan_product_dict = preAppData.find(i => i.label == "loan_product_dict").data.items
 
-      loan_product_listt.data.items.forEach(i => {
-        const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
-        const credits = {
-          label: i.label,
-          value: Number(i.value),
-          period: Loan_dict.terms_list.items,
-          loanRate: Loan_dict.loan_rate_base,
-          paymentTypes: Loan_dict.payment_type.items
-        };
+      this.loanproduct_loancode = preAppData.find(i => i.label == "loanproduct_loancode").data.items[0]
 
-        this.options.typeCredits.push(credits);
-      })
+      // console.log('family', this.options.family)
 
-      console.log("typeCredits", this.options.typeCredits);
+      // const loan_product_listt = preAppData.find(i => i.label == "loan_product_list")
+      // const loan_product_dict = preAppData.find(i => i.label == "loan_product_dict")
+
+      // loan_product_listt.data.items.forEach(i => {
+      //   const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
+      //   const credits = {
+      //     label: i.label,
+      //     value: Number(i.value),
+      //     period: Loan_dict.terms_list.items,
+      //     loanRate: Loan_dict.loan_rate_base,
+      //     paymentTypes: Loan_dict.payment_type.items
+      //   };
+
+      //   this.options.typeCredits.push(credits);
+      // })
+
+      // console.log("typeCredits", this.options.typeCredits);
     },
 
     transformData(preAppData, labelData) {

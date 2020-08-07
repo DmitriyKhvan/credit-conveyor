@@ -55,6 +55,22 @@
             </div>
 
             <div class="row rowForm">
+              <div class="col-3 field">Страна рождения</div>
+              <div class="col-9 data">
+                {{
+                  dictionaries.Countries.items.find(
+                    i => i.value == Customer.Country
+                  ).label
+                }}
+              </div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-3 field">Место рождения</div>
+              <div class="col-9 data">{{ Customer.BirthCity }}</div>
+            </div>
+
+            <div class="row rowForm">
               <div class="col-3 field">Пол</div>
               <div class="col-3 data">
                 <template
@@ -133,8 +149,23 @@
             </div>
 
             <div class="row rowForm">
+              <div class="col-3 field">Регион / область выдачи документа</div>
+              <div class="col-9 data">
+                 {{
+                    dictionaries.Region.items.find(
+                      i => i.value == Customer.Document.Region
+                    ).label
+                  }}
+              </div>
+            </div>
+
+            <div class="row rowForm">
               <div class="col-3 field">Кем выдан документ</div>
-              <div class="col-9 data">{{ Customer.Document.GivenPlace }}</div>
+              <div class="col-9 data">
+                {{
+                  getDistrict(Customer.Document.Region, Customer.Document.GivenPlace)
+                }}
+              </div>
             </div>
 
             <div class="row rowForm">
@@ -372,10 +403,30 @@
                 </div>
               </div>
 
-              <div class="row rowForm">
+              <!-- <div class="row rowForm">
                 <div class="col-3 field">Кем выдан документ</div>
                 <div class="col-9 data">{{ relative.Document.GivenPlace }}</div>
+              </div> -->
+
+              <div class="row rowForm">
+                <div class="col-3 field">Регион / область выдачи документа</div>
+                <div class="col-9 data">
+                  {{
+                      dictionaries.Region.items.find(
+                        i => i.value == relative.Document.Region
+                      ).label
+                    }}
+                </div>
               </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Кем выдан документ</div>
+                <div class="col-9 data">
+                  {{
+                    getDistrict(relative.Document.Region, relative.Document.GivenPlace)
+                  }}
+                </div>
+              </div>  
 
               <!-- <div class="row rowForm">
             <div class="col-2 field">ИНН</div>
@@ -821,6 +872,26 @@
                 </div>
 
                 <div class="row rowForm">
+                  <div class="col-6 field">Регион / область выдачи документа</div>
+                  <div class="col-6 data">
+                    {{
+                        dictionaries.Region.items.find(
+                          i => i.value == guarantee.Document.Region
+                        ).label
+                      }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Кем выдан документ</div>
+                  <div class="col-6 data">
+                    {{
+                      getDistrict(guarantee.Document.Region, guarantee.Document.GivenPlace)
+                    }}
+                  </div>
+                </div>                    
+
+                <div class="row rowForm">
                   <div class="col-12 field">Адрес:</div>
                 </div>
 
@@ -972,7 +1043,15 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Наименование организации</div>
-                  <div class="col-6 data">{{ guarantee.OrgName }}</div>
+                  <div class="col-6 data">
+                    <!-- {{
+                      dictionaries.Insurance_company.items.find(
+                        i => i.value == guarantee.OrgName
+                      ).label
+                    }} -->
+
+                    {{ guarantee.OrgName }}
+                  </div>
                 </div>
 
                 <div class="row rowForm">
@@ -1041,21 +1120,21 @@
 
             <div class="row rowForm">
               <div class="col-6 field">
-                Процентная ставка по кредиту (максимальная)
+                Процентная ставка по кредиту
               </div>
               <div class="col-6 data">
                 {{ fullProfile.LoanInfo.MaxInterestRate }}
               </div>
             </div>
 
-            <div class="row rowForm">
+            <!-- <div class="row rowForm">
               <div class="col-6 field">
                 Процентная ставка по кредиту (минимальная)
               </div>
               <div class="col-6 data">
                 {{ fullProfile.LoanInfo.MinInterestRate }}
               </div>
-            </div>
+            </div> -->
 
             <div class="row rowForm">
               <div class="col-6 field">
@@ -1252,7 +1331,7 @@
 
           <h4 class="titleForm">Комментарии</h4>
           <div class="formBlock">
-            <template v-if="fullProfile.ApplicationComment.items">
+            <template v-if="fullProfile.ApplicationComment">
               <div
                 v-for="comment of fullProfile.ApplicationComment.items"
                 :key="comment.id"
@@ -1410,6 +1489,8 @@
   </div>
 </template>
 <script>
+import axios from "axios";
+import { mapState } from "vuex";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
@@ -1418,6 +1499,7 @@ import { validItems, validFilter } from "../../filters/valid_filter";
 export default {
   data() {
     return {
+      creditTitles: null,
       loader: false,
       loaderForm: true,
       confirm: false,
@@ -1449,9 +1531,10 @@ export default {
     };
   },
   async created() {
-    console.log("empId", this.$store.getters["auth/empId"]);
-    console.log("fullProfile", this.fullProfile);
-    if (sessionStorage.getItem("csrf_token")) {
+    this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+
+    // если перезагрузили страницу
+    if (!axios.defaults.headers.common["BPMCSRFToken"]) {
       this.userRole = sessionStorage.getItem("userRole");
       await this.$store.dispatch(
         "credits/setHeaderRole",
@@ -1461,13 +1544,8 @@ export default {
         "credits/setHeaderBPM",
         sessionStorage.getItem("csrf_token")
       );
-      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
     }
-
-    console.log("taskId", this.$route.params["id"]);
-    // console.log("taskId", this.$route.query.taskId);
-    //  this.$store.commit("setTaskId", this.$route.params["id"]);
-    this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+    
     try {
       const res = await this.$store.dispatch("profile/getFullForm");
       this.loaderForm = false
@@ -1475,12 +1553,27 @@ export default {
     } catch (error) {}
   },
   mounted() {
-    const creditTitles = document.querySelectorAll(".titleForm");
-    for (let title of creditTitles) {
-      title.addEventListener("click", () => this.toggleCreditBlock(title));
+    setTimeout(() => {
+      this.creditTitles = document.querySelectorAll(".titleForm");
+      for (let title of this.creditTitles) {
+        title.addEventListener("click", () => this.toggleCreditBlock(title));
+      }
+    }, 500)
+  },
+  destroyed() {
+    for (let title of this.creditTitles) {
+      title.removeEventListener("click", () => this.toggleCreditBlock(title));
     }
   },
   computed: {
+    ...mapState({
+        fullProfile: state => state.profile.fullFormProfile,
+        profile: state => state.profile,
+        Customer: state => state.profile.fullFormProfile.Customer,
+        dictionaries: state => state.profile.dictionaries,
+        credits: state => state.credits
+      }),
+
     date() {
       return this.$route.query.date;
     },
@@ -1492,25 +1585,7 @@ export default {
     },
     filialName() {
       return this.$route.query.filialName;
-    },
-    profile() {
-      return this.$store.getters["profile/profile"];
-    },
-    fullProfile() {
-      return this.$store.getters["profile/profile"].fullFormProfile;
-    },
-    Customer() {
-      return this.$store.getters["profile/profile"].fullFormProfile.Customer;
-    },
-    dictionaries() {
-      return this.$store.getters["profile/profile"].dictionaries;
-    },
-    credits() {
-      return this.$store.getters["credits/credits"];
     }
-    // userRole() {
-    //   return this.$store.getters["credits/userRole"]
-    // }
   },
   methods: {
     creditSuccess() {
@@ -1545,8 +1620,6 @@ export default {
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
-        // console.log("creditFailure");
-
         if (this.userRole == "BO") {
           this.BODecision = false; // кредит отклонен
           this.$store.commit("profile/addComment", {
@@ -1627,8 +1700,9 @@ export default {
 
         this.loader = false;
       } catch (error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.loader = false;
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$router.go(-1);
       }
     },
 

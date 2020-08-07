@@ -4,7 +4,7 @@
   <router-view></router-view>
 
   <!-- Server error message -->
-  <errorMessage></errorMessage>
+  <errorMessage />
 </div>
 </template>
 <script>
@@ -17,13 +17,11 @@ export default {
   },
   computed: {
     error() {
-      console.log('computed', this.$store.getters["credits/message"])
       return this.$store.getters["credits/messageId"]
     }
   },
   watch: {
     error(serverError) {   
-      console.log('serverError', serverError)
       this.$store.commit("credits/toggleMessageBar", true)
       console.log('watch', this.$store.getters["credits/messageBar"])
     }

@@ -147,6 +147,7 @@ const routes = [{
     },
     {
       path: "credit",
+      // redirect: 'credit/applications',
       name: "Credit",
       component: Credit,
       children: [{
@@ -175,13 +176,7 @@ const routes = [{
         name: "Profile",
         component: CreditProfile,
         beforeEnter: ifAuthenticated
-      },
-        // {
-        //   path: "profile/:id",
-        //   name: "ProfileRework",
-        //   component: CreditProfileRework,
-        //   beforeEnter: ifAuthenticated
-        // }
+      }
       ]
     }
     ]

@@ -108,7 +108,7 @@ module.exports = function (ctx) {
     devServer: {
       https: false,
       port: 8088,
-      host: "10.8.8.70",
+      // host: "10.8.8.70",
       open: true, // opens browser window automatically
       disableHostCheck: true,
       headers: {

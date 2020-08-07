@@ -1,5 +1,8 @@
 <template>
-  <div class="creditList">
+  <div 
+    v-if="creditTasks.length"
+    class="creditList"
+  >
     <div class="q-pa-md">
       <!-- <h4>Очередь задач</h4> -->
       <q-markup-table>
@@ -119,7 +122,7 @@
             </th>
 
             <th class="text-left manager">
-              <button class="filter" idx="manager">
+              <button class="filter" idx="kmfio">
                 Менеджер
               </button>
             </th>
@@ -459,6 +462,8 @@
     <appLoaderFullScreen v-if="loaderFullScreen" />
 
     <!-- {{loadings}} -->
+
+    <!-- <iframe style="display: none" id="pdf-frame"></iframe> -->
   </div>
 </template>
 
@@ -523,6 +528,7 @@ export default {
     for (let filter of filters) {
       filter.addEventListener("click", () => this.toggleFilter(filter));
     }
+
   },
   watch: {
     countRow(val) {
@@ -534,66 +540,84 @@ export default {
   computed: {
     ...mapState({
           pages: state => state.credits.pages,
-          countRowList: state => state.credits.countRowList
+          countRowList: state => state.credits.countRowList,
+          creditTasks: state => state.credits.creditTasks,
+          loadings: state => state.credits.loadings,
+          userRole: state => state.credits.userRole
         }),
 
     // Фильтры
     credits() {
-      return this.$store.getters["credits/creditTasks"].filter(task => {
+      return this.creditTasks.filter(task => {
         let conditions = [true];
         if (this.applicationNumber.length > 0) {
-          conditions.push(
-            task.applicationNumber.indexOf(this.applicationNumber) > -1
-          );
+          if (!task.applicationNumber) {
+            conditions.push(false)
+          } else {
+            conditions.push(
+              task.applicationNumber.indexOf(this.applicationNumber) > -1
+            );
+          }
         }
 
         if (this.client.length > 0) {
-          conditions.push(task.client.indexOf(this.client) > -1);
+          if (!task.client) {
+            conditions.push(false)
+          } else {
+            conditions.push(task.client.indexOf(this.client) > -1);
+          }
         }
 
         if (this.manager.length > 0) {
-          conditions.push(task.manager.indexOf(this.manager) > -1);
+          if (!task.kmfio) {
+            conditions.push(false)
+          } else {
+            conditions.push(task.kmfio.indexOf(this.manager) > -1);
+          }
         }
 
         if (this.MFO.length > 0) {
-          conditions.push(task.filial.indexOf(this.MFO) > -1);
+          if (!task.filial) {
+            conditions.push(false)
+          } else {
+            conditions.push(task.filial.indexOf(this.MFO) > -1);
+          }
         }
 
         if (this.filialName.length > 0) {
-          conditions.push(task.filialName.indexOf(this.filialName) > -1);
+          if (!task.filialName) {
+            conditions.push(false)
+          } else {
+            conditions.push(task.filialName.indexOf(this.filialName) > -1);
+          }
         }
 
         if (this.taskName.length > 0) {
-          conditions.push(task.taskName.indexOf(this.taskName) > -1);
+          if (!task.taskName) {
+            conditions.push(false)
+          } else {
+            conditions.push(task.taskName.indexOf(this.taskName) > -1);
+          }
         }
 
         if (this.taskStatus.length > 0) {
-          conditions.push(task.taskStatus.indexOf(this.taskStatus) > -1);
+          if (!task.taskStatus) {
+            conditions.push(false)
+          } else {
+            conditions.push(task.taskStatus.indexOf(this.taskStatus) > -1);
+          }
         }
 
         if (this.date.length > 0) {
-          conditions.push(formatDate(task.date, 'datetime').indexOf(this.date) > -1);
+          if (!task.date) {
+            conditions.push(false)
+          } else {
+            conditions.push(formatDate(task.date, 'datetime').indexOf(this.date) > -1);
+          }
         }
 
         return conditions.every(condition => condition);
       });
-    },
-
-    // loadings() {
-    //   const loadings = []
-    //   for (let i = 0; i < this.$store.getters["credits/creditTasks"].length; i++) {
-    //     loadings[i] = false
-    //   }
-    //   console.log('loading', this.loadings)
-    //   return loadings
-    // },
-
-    loadings() {
-      return this.$store.getters["credits/loadings"] 
-    },
-
-    userRole() {
-      return this.$store.getters["credits/userRole"];
     }
   },
   methods: {
@@ -615,7 +639,7 @@ export default {
 
     sortValue(idx, order = true) {
       console.log('sort', idx)
-      this.$store.getters["credits/creditTasks"].sort((a, b) => {
+      this.creditTasks.sort((a, b) => {
         const itemA = a[idx];
         const itemB = b[idx];
         if (order) {
@@ -672,9 +696,7 @@ export default {
     },
 
     async printFile(taskId, idx) {
-      // this.disable = true
-      // this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
-
+      
       let task = this.credits.find(i => i.taskId == taskId)
       
       let file = null
@@ -695,9 +717,16 @@ export default {
 
       //console.log('credits', this.credits)
       printJS(file.url);
-      window.URL.revokeObjectURL(file);
-      // this.loadings.splice(idx, 1, false)
-      // this.disable = false
+      // document.querySelector('#pdf-frame').src = '';
+      // document.querySelector('#pdf-frame').src = file.url;
+
+      // window.setTimeout(function() {
+      //   document.querySelector('#pdf-frame').contentWindow.print();
+      //   document.querySelector('#pdf-frame').contentWindow.onafterprint = function(event) {console.log("afterPring")};
+      // }, 1000)
+
+      window.URL.revokeObjectURL(file.url);
+      
     },
 
     async downloadFile(taskId) {
@@ -776,9 +805,12 @@ export default {
     background: #e8edff;
   }
 
-  th,
-  td {
+  th {
     padding: 2px;
+  }
+
+  td {
+    padding: 0;
   }
 
   td {
@@ -855,6 +887,7 @@ export default {
       width: 100%;
       height: 100%;
       align-items: center;
+      padding: 0 5px;
     }
   }
 
