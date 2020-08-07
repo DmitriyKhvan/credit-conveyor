@@ -369,6 +369,7 @@
                   />
 
                   <q-select
+                    v-if="!!this.personalData.typeCredit"
                     ref="loan_purpose"
                     square
                     outlined
@@ -539,7 +540,7 @@ export default {
     // Для форматирования чисeл
     // "personalData.income"(number) {
     //   console.log(formatNumber(number)) 
-    //   this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
+      // this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
     // }
   },
   methods: {
@@ -562,6 +563,12 @@ export default {
         validItems(this.$refs, "periodCredit")
       }
 
+      if (!!this.personalData.typeCredit) {
+        this.$refs.loan_purpose.validate();
+      } else {
+        validItems(this.$refs, "loan_purpose")
+      }
+
       this.$refs.familyStatus.validate()
 
       if (this.personalData.children) {
@@ -573,7 +580,6 @@ export default {
       this.$refs.income.validate();
       this.$refs.expense.validate();
       this.$refs.otherExpenses.validate();
-      this.$refs.loan_purpose.validate();
 
       if (this.personalData.externalIncome) {
         this.$refs.externalIncomeSize.validate()

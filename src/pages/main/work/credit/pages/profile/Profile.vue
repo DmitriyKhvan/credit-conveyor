@@ -90,6 +90,64 @@
                   </template>
                 </q-input>
               </div>
+
+              <div class="col-4">
+                <!-- <q-select
+                  :disable="disableField"
+                  ref="Country"
+                  square
+                  outlined
+                  v-model="Customer.Country"
+                  :options="dictionaries.Countries.items"
+                  dense
+                  label="Страна рождения"
+                  :rules="[val => !!val || 'Выберите страну']"
+                  emit-value
+                  map-options
+                  class="q-pb-sm"
+                /> -->
+
+                <q-select
+                  :disable="disableField"
+                  ref="Country"
+                  square
+                  outlined
+                  v-model="Customer.Country"
+                  use-input
+                  input-debounce="0"
+                  label="Страна рождения"
+                  :options="options.Countries"
+                  dense
+                  @filter="filterFn"
+                  behavior="menu"
+                  :rules="[val => (!!val || val === 0) || 'Выберите страну']"
+                  emit-value
+                  map-options
+                  class="q-pb-sm"
+                >
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Нет такой страны
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
+
+              <div class="col-4">
+                <q-input
+                  :disable="disableField"
+                  ref="BirthCity"
+                  square
+                  outlined
+                  v-model="Customer.BirthCity"
+                  dense
+                  label="Место рождения"
+                  :rules="[val => !!val || 'Введите место рождения']"
+                />
+              </div>
+
             </div>
 
             <div class="row q-col-gutter-md">
@@ -103,7 +161,6 @@
                   dense
                   label="ИНН"
                   mask="#########"
-                  lazy-rules
                   :rules="[
                     val =>
                       (val && val.length === 9) ||
@@ -1522,12 +1579,17 @@
             </div>  
 
             <q-btn
+              :loading="bankLoading"
               :disable="disableField"
               color="primary"
               label="Получить данные с Халк банка"
               @click="getInfoBank"
               class="addItem"
-            ></q-btn>
+            >
+            <template v-slot:loading>
+              <q-spinner-facebook />
+            </template>
+            </q-btn>
           </div>
         </div>
 
@@ -3099,7 +3161,7 @@
                   square
                   outlined
                   v-model="fullProfile.LoanInfo.FundingSource"
-                  :options="dictionaries.FinancialSources.items"
+                  :options="options.FinancialSources.items"
                   dense
                   label="Источник финансирования"
                   :rules="[val => !!val || 'Выберите источник финансирования']"
@@ -3396,7 +3458,7 @@
             Комментарии по кредиту
           </h4>
           <div class="tab-content" ref="tabContent">
-            <template v-if="fullProfile.ApplicationComment.items.length">
+            <template v-if="fullProfile.ApplicationComment">
               <div 
                 class="comments"
                 v-for="comment of fullProfile.ApplicationComment.items"
@@ -3453,7 +3515,9 @@
                   v-for="(fileData, index) of profile.fileList" 
                   :key="index"
                 >
-                  <p>{{ fileData.label }}</p> 
+                  <p>{{ fileData.label }} 
+                     {{ fileData.number ? +fileData.number + 1 : null}}
+                  </p> 
                   <q-btn 
                       :disable="disable"
                       icon="print" 
@@ -3551,6 +3615,7 @@ export default {
   name: "profile",
   data() {
     return {
+      bankLoading: false,
       countRelativeDocumentName: -1,
       countGuaranteeDocumentName: -1,
       currentDate: CommonUtils.dateFilter(new Date()),
@@ -3571,9 +3636,13 @@ export default {
       creditManagerComment:"",
 
       options: {
+        Countries: this.$store.getters["profile/dictionaries"].Countries.items,
+
         RepaymentType: [],
 
-        yearsOfIssueVehicle: []
+        yearsOfIssueVehicle: [],
+
+        FinancialSources: [] // источник финансирования
       },
 
       guaranteeCount: [],
@@ -3727,6 +3796,8 @@ export default {
       this.$refs.name.validate();
       this.$refs.mname.validate();
       this.$refs.birthday.validate();
+      this.$refs.Country.validate();
+      this.$refs.BirthCity.validate();
       this.$refs.inn.validate();
       this.$refs.pinpp.validate();
       this.$refs.sex.validate();
@@ -4020,6 +4091,8 @@ export default {
         this.$refs.name.hasError ||
         this.$refs.mname.hasError ||
         this.$refs.birthday.hasError ||
+        this.$refs.Country.hasError ||
+        this.$refs.BirthCity.hasError ||
         this.$refs.inn.hasError ||
         this.$refs.pinpp.hasError ||
         this.$refs.sex.hasError ||
@@ -4213,8 +4286,16 @@ export default {
       }
     },
 
-    getInfoBank() {
-      console.log('info bank')
+    async getInfoBank() {
+      this.bankLoading = true
+      try{
+        await this.$store.dispatch("profile/getInfoBank")
+        this.bankLoading = false
+      } catch(error) {
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.loader = false;
+        this.bankLoading = false
+      }
     },
 
     setINNCompany(companyName, idx) {
@@ -4325,6 +4406,9 @@ export default {
         // this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.fullProfile.LoanInfo.GracePeriodMin;
         this.fullProfile.LoanInfo.MaxDefferalRepaymentPeriod = this.GracePeriodMin;
       }
+
+      // источник финансирования
+      this.options.FinancialSources = this.dictionaries.LOANPRODUCT_FINSOURCE.items[0][credit]
     },
     
     setGivenPlace(event, idx, item) {
@@ -4672,7 +4756,7 @@ export default {
       this.disable = true
       let file = null
       this.fileData.type = fileData.label
-      this.fileData.data = fileData.data
+      this.fileData.data = this.dataTransform(fileData.data)
       try {
         console.log(JSON.stringify(this.fileData, null, 2))
 
@@ -4704,21 +4788,34 @@ export default {
       }
     },
 
-
+    dataTransform(data) {
+      
+      for (let i in data) {
+        if (data[i] != null) {
+          if (data[i].items) {
+            data[i] = data[i].items
+            this.dataTransform(data[i])
+          }
+        }
+      }
+      return data
+    },
 
     filterFn (val, update) {
       console.log('filterFn', val)
-      // if (val === '') {
-      //   update(() => {
-      //     this.options = stringOptions
-      //   })
-      //   return
-      // }
+      if (val === '') {
+        update(() => {
+          console.log(this.dictionaries.Countries)
+          this.options.Countries = this.dictionaries.Countries.items
+        })
+        return
+      }
 
-      // update(() => {
-      //   const needle = val.toLowerCase()
-      //   this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      // })
+      update(() => {
+        const needle = val.toLowerCase()
+        console.log('needle',needle)
+        this.options.Countries = this.dictionaries.Countries.items.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      })
     }
   },
   components: {
