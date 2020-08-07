@@ -75,7 +75,7 @@
           <div class="row q-col-gutter-xl q-pb-lg">
             <div class="col">
               <div class="row selectBorder items-center">
-                <div class="q-pl-sm"><q-checkbox color="blue-14" v-model="valNumber" /></div>
+                <div class="q-pl-sm"><q-checkbox @input="form.out_number = null" color="blue-14" v-model="valNumber" /></div>
                 <div class="col">
                   <q-input borderless v-model="form.out_number" label="Исх. номер" :disable="valNumber === false" />
                 </div>
@@ -83,7 +83,7 @@
             </div>
             <div class="col">
               <div class="row items-center selectBorder">
-                <div class="q-pl-sm"><q-checkbox color="blue-14" v-model="valDate" /></div>
+                <div class="q-pl-sm"><q-checkbox @input="form.out_date = null" color="blue-14" v-model="valDate" /></div>
                 <div class="col q-pr-md">
                   <q-input borderless v-model="form.out_date" label="Исх. дата" :disable="valDate === false">
                     <template v-slot:append>
