@@ -17,6 +17,18 @@
               <div class="col-9">{{ Customer.MiddleName }}</div>
               <div class="col-3">Дата рождения</div>
               <div class="col-9">{{ Customer.BirthDate }}</div>
+
+              <div class="col-3">Страна рождения</div>
+              <div class="col-9">
+                {{
+                  dictionaries.Countries.items.find(
+                    i => i.value == Customer.Country
+                  ).label
+                }}
+              </div>
+              <div class="col-3">Место рождения</div>
+              <div class="col-9">{{ Customer.BirthCity }}</div>
+
               <div class="col-3">ИНН</div>
               <div class="col-9">{{ Customer.INN }}</div>
               <div class="col-3">ПИНФЛ</div>
@@ -746,11 +758,8 @@
               </template>
 
 
-               <div class="col-3">Процентная ставка по кредиту (максимальная)</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
-
-              <div class="col-3">Процентная ставка по кредиту (минимальная)</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.MinInitialPaymentPercent }}</div>
+              <div class="col-3">Процентная ставка</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.MaxInterestRate }}</div>
 
               <template v-if="!!fullProfile.LoanInfo.LoanProduct">
                 <div class="col-3">Льготный период по погашению кредита (число месяцев)</div>
@@ -759,14 +768,18 @@
                 </div>
                 </template>
               
-                <div class="col-3">Удобная срок погашения (число месяцев)</div>
-                <div class="col-9">{{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}</div>
+
+                <div class="col-3">Удобный срок погашения в мес</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.TermInMonth }}</div>
 
                 <div class="col-3">Максимальное количество месяцев на кредит</div>
                 <div class="col-9">{{ fullProfile.LoanInfo.MaxTermInMonths }}</div>
 
                 <div class="col-3">Минимальное количество месяцев на кредит</div>
                 <div class="col-9">{{ fullProfile.LoanInfo.MinTermInMonths }}</div>
+
+                <div class="col-3">Удобный день погашения</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}</div>
 
                 <div class="col-3">Первоначальный взнос</div>
                 <div class="col-9">{{ fullProfile.LoanInfo.InitialPayment }}</div>

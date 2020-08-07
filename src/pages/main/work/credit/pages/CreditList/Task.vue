@@ -55,6 +55,22 @@
             </div>
 
             <div class="row rowForm">
+              <div class="col-3 field">Страна рождения</div>
+              <div class="col-9 data">
+                {{
+                  dictionaries.Countries.items.find(
+                    i => i.value == Customer.Country
+                  ).label
+                }}
+              </div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-3 field">Место рождения</div>
+              <div class="col-9 data">{{ Customer.BirthCity }}</div>
+            </div>
+
+            <div class="row rowForm">
               <div class="col-3 field">Пол</div>
               <div class="col-3 data">
                 <template
@@ -1104,21 +1120,21 @@
 
             <div class="row rowForm">
               <div class="col-6 field">
-                Процентная ставка по кредиту (максимальная)
+                Процентная ставка по кредиту
               </div>
               <div class="col-6 data">
                 {{ fullProfile.LoanInfo.MaxInterestRate }}
               </div>
             </div>
 
-            <div class="row rowForm">
+            <!-- <div class="row rowForm">
               <div class="col-6 field">
                 Процентная ставка по кредиту (минимальная)
               </div>
               <div class="col-6 data">
                 {{ fullProfile.LoanInfo.MinInterestRate }}
               </div>
-            </div>
+            </div> -->
 
             <div class="row rowForm">
               <div class="col-6 field">
@@ -1315,7 +1331,7 @@
 
           <h4 class="titleForm">Комментарии</h4>
           <div class="formBlock">
-            <template v-if="fullProfile.ApplicationComment.items">
+            <template v-if="fullProfile.ApplicationComment">
               <div
                 v-for="comment of fullProfile.ApplicationComment.items"
                 :key="comment.id"

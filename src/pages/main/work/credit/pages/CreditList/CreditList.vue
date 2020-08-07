@@ -1,5 +1,8 @@
 <template>
-  <div class="creditList">
+  <div 
+    v-if="creditTasks.length"
+    class="creditList"
+  >
     <div class="q-pa-md">
       <!-- <h4>Очередь задач</h4> -->
       <q-markup-table>

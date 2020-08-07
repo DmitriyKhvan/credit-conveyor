@@ -190,10 +190,13 @@ export default {
             i => i.label === "inputDictionaries"
           ).data;
 
-          
+          const preapprove_num = response.nextTask.input.find(
+            i => i.label === "preapprove_num"
+          ).data
 
           console.log("dic", JSON.stringify(dictionaries, null, 2));
-          
+
+          this.$store.commit("profile/setPreapproveNum", preapprove_num)
           this.$store.commit("profile/resetDataFullFormProfile")
           this.$store.commit("profile/setPreapprovData", data);
           this.$store.commit("profile/setDictionaries", dictionaries);
