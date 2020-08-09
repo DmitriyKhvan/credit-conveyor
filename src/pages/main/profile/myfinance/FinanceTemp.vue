@@ -2,9 +2,14 @@
  <div class="q-pa-md fontb greyf">
    <div class="row justify-between">
      <div class="text-h4 blackf text-weight-bolder">Поступления</div>
-     <div class="raw bg-white shadow-1" style="border-radius: 5px;">
-       <q-icon name="date_range" class="text-h5 text-red-6 q-ml-md" />
-       <q-item class="text-caption q-py-md text-grey-7">май 02.2020 - июнь 02.2020</q-item>
+     <div class="raw bg-white shadow-4" style="border-radius: 5px;">
+       <!-- <q-icon name="date_range" class="text-h5 text-red-6 q-ml-md" />
+       <q-item class="text-caption q-py-md text-grey-7">май 02.2020 - июнь 02.2020</q-item> -->
+       <q-select class="q-px-md justify-center" color="black-3" dense borderless v-model="month_range" :options="options">
+         <template v-slot:prepend>
+           <q-icon name="date_range" color="red-5" />
+         </template>
+       </q-select>
      </div>
    </div>
    <!-- Card Section -->
@@ -15,9 +20,26 @@
         class="col items-center q-ml-none q-my-md q-mr-md topBlock" 
         active-class="act" clickable @click="tab = 'tab1'" >
         <q-icon 
-          size="90px" 
-          style="position:absolute;top:30%;left:auto;right:10%;bottom:0;">
-          <svg width="87" height="62" viewBox="0 0 87 62" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="28" width="12" height="34" rx="2" fill="#EEF6FD"/><rect x="15" y="31" width="12" height="31" rx="2" fill="#EEF6FD"/><rect x="30" y="20" width="12" height="42" rx="2" fill="#EEF6FD"/><rect x="45" width="12" height="62" rx="2" fill="#EEF6FD"/><rect x="60" y="8" width="12" height="54" rx="2" fill="#EEF6FD"/><rect x="75" y="5" width="12" height="57" rx="2" fill="#61A4E4"/></svg>
+          :size="heightGlobalBlock+'px'" 
+          style="position:absolute;top:auto;left:auto;right:15%;bottom:10%;">
+          <div class="global" ref="global" :style="{height: heightGlobalBlock+'px'}">
+            <div class="content" :style="{height: heightGlobalBlock+'px'}">
+              <div class="centerBlock" v-for="(block, i) in graf" :key="i+block" :style="widthBlock()">
+                <div
+                  class="block"
+                  v-for="(b, e) in block"
+                  :key="e"
+                  :style="{height: grafBlockHight(b), width: widthMinBlock(), backgroundColor: aColor(e)}"
+                >
+                  <q-tooltip
+                    anchor="top middle"
+                    self="bottom middle"
+                    :offset="[10, 10]"
+                  >сумма: {{formatNum(b)}}</q-tooltip>
+                </div>
+              </div>
+            </div>
+          </div>
         </q-icon>
         <q-item class="cal1">
           <q-item-label 
@@ -33,7 +55,7 @@
               size="20px" 
               color="green" 
               text-color="white" 
-              icon="north_east" />
+              icon="arrow_upward" />
             <q-item-label 
               class="text-green q-ml-sm">
               0.22%
@@ -61,10 +83,27 @@
         active-class="act" 
         clickable 
         @click="tab = 'tab2'" >
-        <q-icon  
-          size="90px" 
-          style="position:absolute;top:30%;left:auto;right:10%;bottom:0;">
-          <svg width="87" height="54" viewBox="0 0 87 54" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="20" width="12" height="34" rx="2" fill="#FEF4F4"/><rect x="15" y="23" width="12" height="31" rx="2" fill="#FEF4F4"/><rect x="30" y="20" width="12" height="34" rx="2" fill="#FEF4F4"/><rect x="45" y="12" width="12" height="42" rx="2" fill="#FEF4F4"/><rect x="60" y="6" width="12" height="48" rx="2" fill="#FEF4F4"/><rect x="75" width="12" height="54" rx="2" fill="#FFC5C5"/></svg>
+        <q-icon 
+          :size="heightGlobalBlock+'px'" 
+          style="position:absolute;top:auto;left:auto;right:15%;bottom:10%;">
+          <div class="global" ref="global" :style="{height: heightGlobalBlock+'px'}">
+            <div class="content" :style="{height: heightGlobalBlock+'px'}">
+              <div class="centerBlock" v-for="(block, i) in grafb" :key="i+block" :style="widthBlock()">
+                <div
+                  class="block"
+                  v-for="(b, e) in block"
+                  :key="e"
+                  :style="{height: grafBlockHight(b), width: widthMinBlock(), backgroundColor: bColor(e)}"
+                >
+                  <q-tooltip
+                    anchor="top middle"
+                    self="bottom middle"
+                    :offset="[10, 10]"
+                  >сумма: {{formatNum(b)}}</q-tooltip>
+                </div>
+              </div>
+            </div>
+          </div>
         </q-icon>
         <q-item class="cal1">
           <q-item-label 
@@ -80,7 +119,7 @@
               size="20px" 
               color="green" 
               text-color="white" 
-              icon="north_east" />
+              icon="arrow_upward" />
             <q-item-label 
             class="text-green q-ml-sm">
             5.16%
@@ -108,10 +147,27 @@
         active-class="act" 
         clickable 
         @click="tab = 'tab3'" >
-        <q-icon  
-          size="90px" 
-          style="position:absolute;top:30%;left:auto;right:10%;bottom:0;">
-          <svg width="87" height="50" viewBox="0 0 87 50" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="16" width="12" height="34" rx="2" fill="#FEF3E7"/><rect x="15" y="19" width="12" height="31" rx="2" fill="#FEF3E7"/><rect x="30" y="8" width="12" height="42" rx="2" fill="#FEF3E7"/><rect x="45" width="12" height="50" rx="2" fill="#FEF3E7"/><rect x="60" y="3" width="12" height="47" rx="2" fill="#FEF3E7"/><rect x="75" y="5" width="12" height="45" rx="2" fill="#FFA958"/></svg>
+        <q-icon 
+          :size="heightGlobalBlock+'px'" 
+          style="position:absolute;top:auto;left:auto;right:15%;bottom:10%;">
+          <div class="global" ref="global" :style="{height: heightGlobalBlock+'px'}">
+            <div class="content" :style="{height: heightGlobalBlock+'px'}">
+              <div class="centerBlock" v-for="(block, i) in grafc" :key="i+block" :style="widthBlock()">
+                <div
+                  class="block"
+                  v-for="(b, e) in block"
+                  :key="e"
+                  :style="{height: grafBlockHight(b), width: widthMinBlock(), backgroundColor: cColor(e)}"
+                >
+                  <q-tooltip
+                    anchor="top middle"
+                    self="bottom middle"
+                    :offset="[10, 10]"
+                  >сумма: {{formatNum(b)}}</q-tooltip>
+                </div>
+              </div>
+            </div>
+          </div>
         </q-icon>
         <q-item class="cal1">
           <q-item-label 
@@ -126,7 +182,7 @@
               size="20px" 
               color="red" 
               text-color="white" 
-              icon="south_west" />
+              icon="arrow_downward" />
             <q-item-label class="text-red q-ml-sm">
               0.74%
             </q-item-label>
@@ -334,22 +390,22 @@
           <q-item-label>Курс валют</q-item-label>
           <q-item class="rowline text-caption q-gutter-sm vertical-top">
             <q-item-label class="text-h6  text-wight-bold">USD</q-item-label>
-            <q-avatar size="25px" color="green" text-color="white" icon="north_east" />
+            <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" />
             <q-item-label class="text-body1 text-wight-bold ">
               10210.00
             </q-item-label>
-            <q-avatar size="25px" color="red" text-color="white" icon="south_west" />
+            <q-avatar size="25px" color="red" text-color="white" icon="arrow_downward" />
             <q-item-label class="text-body1 text-wight-bold ">
               10251.00
             </q-item-label>  
           </q-item>
           <q-item class="rowline text-caption q-gutter-sm vertical-top">
             <q-item-label class="text-h6 text-wight-bold ">EUR</q-item-label>
-            <q-avatar size="25px" color="green" text-color="white" icon="north_east" />
+            <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" />
             <q-item-label class="text-body1 text-wight-bold ">
               11000.00
             </q-item-label>
-            <q-avatar size="25px" color="red" text-color="white" icon="south_west" />
+            <q-avatar size="25px" color="red" text-color="white" icon="arrow_downward" />
             <q-item-label class="text-body1 text-wight-bold ">
               11700.00
             </q-item-label>  
@@ -390,10 +446,147 @@ export default {
         "Ежемесячная премия" : "+ 800.000",
         "Квартальная премия" : "+ 2.100.000",
         "Социальная защита (Питание)" : "+ 150.000"
+      },
+      graf: [
+        [10, 8, 13, 19, 18, 11.5]
+      ],
+      grafb: [
+        [11, 8, 14, 10, 15, 12]
+      ],
+      grafc: [
+        [9, 8, 16, 13, 12, 17]
+      ],
+      month_range : "январь 02.2020 - февраль 02.2020",
+      options: [
+        "январь 02.2020 - февраль 02.2020",
+        "февраль 03.2020 - март 02.2020",
+        "март 03.2020 - апрель 02.2020",
+        "апрель 03.2020 - май 02.2020",
+        "май 03.2020 - июнь 02.2020",
+        "июнь 03.2020 - июль 02.2020",
+        "август 03.2020 - сентябрь 02.2020",
+
+      ],
+      months: null,
+      names: null,
+      colora: ["#EEF6FD", "#EEF6FD", "#EEF6FD", "#EEF6FD", "#EEF6FD", "#61A4E4"],
+      colorb: ["#FEF4F4", "#FEF4F4", "#FEF4F4", "#FEF4F4", "#FEF4F4", "#FFC5C5"],
+      colorc: ["#FEF3E7", "#FEF3E7", "#FEF3E7", "#FEF3E7", "#FEF3E7", "#FFA958"],
+      heightGlobalBlock: 90
+    }
+  },
+  mounted() {
+    this.graf = this.tables.graf;
+    if (this.tables.months) this.months = this.tables.months;
+    if (this.tables.heightGlobalBlock)
+      this.heightGlobalBlock = this.tables.heightGlobalBlock;
+    this.names = this.tables.names;
+  },
+
+  methods: {
+    aColor(num) {
+      return this.colora[num];
+    },
+    bColor(num) {
+      return this.colorb[num];
+    },
+    cColor(num) {
+      return this.colorc[num];
+    },
+    widthBlock() {
+      const width = 100 / this.graf.length - 4 + "%";
+      return `width: ${width}`;
+    },
+    widthMinBlock() {
+      const width = 100 / this.graf.length + "%";
+      return width;
+    },
+    maxNum() {
+      let arr = [];
+      for (let i = 0; i < this.graf.length; i++) {
+        for (let e = 0; e < this.graf[i].length; e++) {
+          arr.push(this.graf[i][e]);
+        }
+      }
+      return Math.max.apply(null, arr);
+    },
+    grid() {
+      let maxNum = this.maxNum();
+
+      let numMin = ["1"];
+      for (let i = 1; i < String(maxNum).length; i++) {
+        numMin.push("0");
+      }
+
+      let resMaxNum = maxNum / Number(numMin.join(""));
+
+      if (String(resMaxNum)[2] >= 5) {
+        resMaxNum = Number(String(resMaxNum)[0]) + 1;
+      } else if (String(resMaxNum)[2] > 0) {
+        resMaxNum = Number(String(resMaxNum)[0] + "." + "5");
+      } else {
+        resMaxNum = Number(String(resMaxNum)[0]);
+      }
+
+      if (String(maxNum).length == 1) {
+        if (resMaxNum >= 5) {
+          resMaxNum = 10;
+        } else {
+          resMaxNum = 5;
+        }
+      } else {
+        if (resMaxNum >= 3 && resMaxNum < 5) {
+          resMaxNum = 5;
+        } else if (resMaxNum > 5 && resMaxNum < 10) {
+          resMaxNum = 10;
+        } else if (resMaxNum == 1) {
+          resMaxNum = resMaxNum + 0.5;
+        }
+      }
+
+      let del = resMaxNum < 10 ? (resMaxNum * 10) / 5 : resMaxNum / 5;
+      if (del > 4) del = 5;
+
+      if (numMin.length > 1) resMaxNum *= Number(numMin.join(""));
+
+      let delArr = [0];
+      for (let i = 0; i < del; i++) {
+        delArr.push(delArr[i] + resMaxNum / del);
+      }
+
+      return delArr;
+    },
+    grafBlockHight(num) {
+      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock;
+      return num / proc + "px";
+    },
+    gridTableHeight(num) {
+      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock;
+      return num / proc + "px";
+    },
+    leftWidth() {
+      const num = String(this.maxNum()).length;
+      return Number(num) * 5 + "px";
+    },
+    formatNum(str) {
+      str = String(str);
+      // str = str.replace(/(\.(.*))/g, '');
+      var arr = str.split("");
+      var str_temp = "";
+      if (str.length > 3) {
+        for (var i = arr.length - 1, j = 1; i >= 0; i--, j++) {
+          str_temp = arr[i] + str_temp;
+          if (j % 3 == 0) {
+            str_temp = "," + str_temp;
+          }
+        }
+        return str_temp;
+      } else {
+        return str;
       }
     }
   }
-}
+};
 // Avenir Next;
 </script>
 <style lang="sass" scoped>
@@ -581,4 +774,34 @@ export default {
     visibility: visible
     opacity: 1
 
+</style>
+<style scoped>
+.global {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  margin-bottom: 15px;
+  padding-right: 20px;
+}
+.content {
+  flex-grow: 10;
+  height: 300px;
+  min-width: 100px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  position: relative;
+}
+.centerBlock {
+  display: flex;
+  width: 50px;
+  align-items: flex-end;
+  position: relative;
+}
+.block {
+  height: 50px;
+  z-index: 1;
+  border-radius: 2px;
+  margin-right: 2px;
+}
 </style>
