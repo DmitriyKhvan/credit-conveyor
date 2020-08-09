@@ -430,6 +430,12 @@ export const profile = {
             i => i.label === "inputDictionaries"
           ).data;
 
+          const preapprove_num = response.data.input.find(
+            i => i.label === "preapprove_num"
+          ).data
+
+          console.log('preapprove_num', preapprove_num)
+
           // if (response.data.name == "Full Application Filling") { // кредит не оформлен
           //   commit("setPreapprovData", data);
           // }
@@ -491,6 +497,7 @@ export const profile = {
             commit("setFullForm", data);
           }
 
+          commit("setPreapproveNum", preapprove_num)
           commit("setDictionaries", dictionaries);
         } else {
           throw "Data is null";
