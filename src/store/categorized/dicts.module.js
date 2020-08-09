@@ -58,21 +58,19 @@ const getters = {
 
     return state.parentMenus.map(val => {
       return {
-        text: val.name[lang] + '\xa0\xa0\xa0\xa0\xa0\xa0\xa0' + val.url,
+        text: val.name[lang] + "\xa0\xa0\xa0\xa0\xa0\xa0\xa0" + val.url,
         value: val.menu_id,
         url: val.url
       };
     });
   },
   getTestTopicList: state => {
-    return state.testTopicList.map(
-      val => {
-        return {
-          text: val.name,
-          value: val.id
-        }
-      }
-    );
+    return state.testTopicList.map(val => {
+      return {
+        text: val.name,
+        value: val.id
+      };
+    });
   },
   getMenuList: state => {
     return state.menuList;
@@ -96,22 +94,21 @@ const getters = {
       };
     });
   },
-  getCountNotifications: (state) => {
+  getCountNotifications: state => {
     return state.countNotifications;
   },
-  getFormat: (state) => {
-    return state.formats
+  getFormat: state => {
+    return state.formats;
   },
-  getJournal: (state) => {
-    return state.journals
+  getJournal: state => {
+    return state.journals;
   },
-  getOrgan: (state) => {
-    return state.organs
+  getOrgan: state => {
+    return state.organs;
   },
-  getRegion: (state) => {
-    return state.regions
+  getRegion: state => {
+    return state.regions;
   }
-
 };
 
 const mutations = {
@@ -134,13 +131,13 @@ const mutations = {
     state.menuList = menuList;
   },
   setUserList(state, userList) {
-    state.userList = userList
+    state.userList = userList;
   },
   setReceivedNotifications(state, notifications) {
     state.receivedNotifications = notifications;
   },
   setTopicList(state, topicList) {
-    state.testTopicList = topicList
+    state.testTopicList = topicList;
   },
   addNotification(state, noty) {
     state.receivedNotifications = [noty, ...state.receivedNotifications];
@@ -149,98 +146,97 @@ const mutations = {
     }
   },
   setDictTypes(state, types) {
-    state.dictTypes = types
+    state.dictTypes = types;
   },
   setCountNotifications(state, count) {
     state.countNotifications = count;
   },
   setFormat: (state, payload) => {
-    state.formats = payload
+    state.formats = payload;
   },
   setJournal: (state, payload) => {
-    state.journals = payload
+    state.journals = payload;
   },
   setOrgan: (state, payload) => {
-    state.organs = payload
+    state.organs = payload;
   },
   setRegion: (state, payload) => {
-    state.regions = payload
+    state.regions = payload;
   }
 };
 
 const actions = {
-
-  setIsAllSet({
-    commit
-  }, isSet) {
+  setIsAllSet({ commit }, isSet) {
     commit("setIsAllSet", isSet);
   },
-  setMenuList({
-    commit
-  }, menuList) {
+  setMenuList({ commit }, menuList) {
     commit("setMenuList", menuList);
   },
-  setRolesDict({
-    commit
-  }, allDictRoles) {
+  setRolesDict({ commit }, allDictRoles) {
     commit("setRolesDict", allDictRoles);
   },
-  setIconTypes({
-    commit
-  }, iconTypes) {
+  setIconTypes({ commit }, iconTypes) {
     commit("setIconTypes", iconTypes);
   },
-  setIconsDict({
-    commit
-  }, icons) {
-    commit("setIconsDict", icons)
+  setIconsDict({ commit }, icons) {
+    commit("setIconsDict", icons);
   },
-  setCountNotifications({
-    commit
-  }, count) {
-    commit("setCountNotifications", count)
+  setCountNotifications({ commit }, count) {
+    commit("setCountNotifications", count);
   },
-  setParentMenus({
-    commit
-  }, parentMenus) {
-    commit("setParentMenus", parentMenus)
+  setParentMenus({ commit }, parentMenus) {
+    commit("setParentMenus", parentMenus);
   },
-  setUserList({
-    commit
-  }, userList) {
+  setUserList({ commit }, userList) {
     commit("setUserList", userList);
   },
-  setTestTopicList({
-    commit
-  }, topicList) {
+  setTestTopicList({ commit }, topicList) {
     commit("setTopicList", topicList);
   },
-  setReceivedNotifications({
-    commit
-  }, receivedNotifications) {
+  setReceivedNotifications({ commit }, receivedNotifications) {
     commit("setReceivedNotifications", receivedNotifications);
   },
-  addNotification({
-    commit
-  }, noty) {
+  addNotification({ commit }, noty) {
     commit("addNotification", noty);
   },
-  setDictTypes({
-    commit
-  }, types) {
+  setDictTypes({ commit }, types) {
     commit("setDictTypes", types);
   },
   setFormat: ({ commit }, formats) => {
-    commit("setFormat", formats)
+    let f = formats.map(el => {
+      return {
+        label: el.name_short,
+        value: el.id
+      };
+    });
+    commit("setFormat", f);
   },
   setJournal: ({ commit }, journals) => {
-    commit("setJournal", journals)
+    let j = journals.map(el => {
+      return {
+        label: el.name_short,
+        value: el.id
+      };
+    });
+    commit("setJournal", j);
   },
   setOrgan: ({ commit }, organs) => {
-    commit("setOrgan", organs)
+    let org = organs.map(el => {
+      return {
+        label: el.name_short,
+        value: el.id
+      };
+    });
+    commit("setOrgan", org);
   },
   setRegion: ({ commit }, regions) => {
-    commit("setRegion", regions)
+    let reg = regions.map(el => {
+      return {
+        label: el.name_short,
+        value: el.id
+      };
+    });
+    commit("setRegion", reg);
   }
 };
 //
