@@ -3724,7 +3724,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.onSubmit("start")
-    }, 600)
+    }, 1000)
     
   },
   computed: {
