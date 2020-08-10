@@ -5,6 +5,7 @@
       <div class="col-3">
         <q-select
           filled
+          clearable
           v-model="selectedSeniors"
           :options="seniors"
           label="Все руководства"
@@ -14,6 +15,7 @@
       <div class="col-3">
         <q-select
           filled
+          clearable
           v-model="selectedRegions"
           :options="regions"
           label="Все регионы"
@@ -23,6 +25,7 @@
       <div class="col-2">
         <q-select
           filled
+          clearable
           v-model="selectedOrgans"
           :options="organs"
           label="Все органы"
@@ -32,6 +35,7 @@
       <div class="col-3 offset-md-1">
         <q-input
           filled
+          clearable
           bottom-slots
           v-model="text"
           label="Поиск"
@@ -49,6 +53,7 @@
       <div class="col-4">
         <q-select
           filled
+          clearable
           v-model="selectedDepartments"
           :options="departments"
           label="Все управление"
@@ -58,6 +63,7 @@
       <div class="col-2">
         <q-select
           filled
+          clearable
           v-model="selectedStatus"
           :options="statuses"
           label="Любой статус"
@@ -65,7 +71,7 @@
         />
       </div>
       <div class="col-3">
-        <q-select filled v-model="model" :options="options" label="Любой тип" bg-color="white" />
+        <q-select filled clearable v-model="model" :options="options" label="Любой тип" bg-color="white" />
       </div>
       <div class="col-3 text-right buttonFilter">
         <q-btn
