@@ -29,8 +29,8 @@ const ThemesAdmin = () => import("pages/main/profile/settings/ThemesAdmin.vue");
 const ThemesUser = () => import("pages/main/profile/settings/ThemesUser.vue");
 
 const MyData = () => import("pages/main/profile/mydata/MyData.vue");
-const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue");
-const FinanceNew = () => import("pages/main/profile/myfinance/FinanceTemp.vue");
+//const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue"); // ! DEPRECATED OLD VERSION
+const MyFinance = () => import("pages/main/profile/myfinance/FinanceTemp.vue");
 // chancellary
 const RegistrationChancellary = () =>
   import("pages/main/work/kanselariya/Registration.vue");
@@ -276,11 +276,6 @@ const routes = [
             path: "myfinance",
             name: "My Finance",
             component: MyFinance
-          },
-          {
-            path: "finance",
-            name: "new Finance",
-            component: FinanceNew
           },
           {
             path: "settings",
