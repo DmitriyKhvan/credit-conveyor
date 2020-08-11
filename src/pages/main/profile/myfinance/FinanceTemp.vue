@@ -383,19 +383,11 @@ export default {
     return {
       active: false,
       tab: 0,
-      data1: {
-        "Оклад по штатному расписанию": "+ 2.000.000",
-        "Персональная надбавка": "+ 350.000",
-        "Надбавка за выслогулет сотрудника": "+ 200.000",
-        "Ежемесячная премия": "+ 800.000",
-        "Квартальная премия": "+ 2.100.000",
-        "Социальная защита (Питание)": "+ 150.000"
-      },
       graf: [[10, 8, 13, 19, 18, 11.5]],
       grafb: [[11, 8, 14, 10, 15, 12]],
       grafc: [[9, 8, 16, 13, 12, 17]],
-      months: null,
-      names: null,
+      //months: null,
+      //names: null,
       colora: [
         "#EEF6FD",
         "#EEF6FD",
@@ -462,7 +454,6 @@ export default {
           this.exchangeRate = res.data.filter(el => {
             return el.code == "EUR" || el.code == "USD";
           });
-          console.log(this.exchangeRate);
         },
         err => {
           console.error({ err });
@@ -473,11 +464,11 @@ export default {
       });
   },
   mounted() {
-    this.graf = this.tables.graf;
-    if (this.tables.months) this.months = this.tables.months;
-    if (this.tables.heightGlobalBlock)
-      this.heightGlobalBlock = this.tables.heightGlobalBlock;
-    this.names = this.tables.names;
+    // this.graf = this.tables.graf;
+    // if (this.tables.months) this.months = this.tables.months;
+    // if (this.tables.heightGlobalBlock)
+    //   this.heightGlobalBlock = this.tables.heightGlobalBlock;
+    // this.names = this.tables.names;
   },
   computed: {
     ...mapGetters({
