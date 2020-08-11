@@ -90,7 +90,7 @@
         Файл:
       </div>
       <div class="col">
-        {{file !== null ? file : ''}}
+        {{file.length !== null ? file.length : ''}}
       </div>
     </div>
     <div class="row q-pb-md">

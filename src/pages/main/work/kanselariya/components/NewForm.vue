@@ -55,6 +55,69 @@
               />
             </div>
           </div>
+          <div class="row q-col-gutter-xl" v-if="file.length == 0">
+            <div class="col">
+              <q-file
+                filled
+                dark
+                multiple
+                v-model="file"
+                label="Загрузить файл"
+                @input="uploadFile"
+                ref="inputUpload"
+                bg-color="blue-14"
+                label-color="white"
+                :filter="files => files.filter(file => file.type === 'application/pdf')"
+                :rules="[
+                  val => (val && val.length !== null) || 'Выберите PDF файл'
+                ]"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="cloud_upload" color="white" />
+                </template>
+              </q-file>
+
+            </div>
+            <div class="col">
+              <q-btn push flat color="grey" :disable="file.lenght == null" label="Посмотреть файл" size="lg" @click="newFile" />
+            </div>
+          </div>
+
+          <div class="row q-col-gutter-xl q-pb-md" v-else-if="file.length !== 0">
+            <div class="col title q-pb-lg">
+              <q-icon size="20px" name="attach_file" class="q-mr-md rotate-180 text-bold" color="grey-8" />
+              <strong>Прикрепленные файлы ({{ file ? file.length : "0" }})</strong>
+            </div>
+            <div class="col-4">
+              <q-file
+                dark
+                filled
+                append
+                label="Загрузить"
+                @input="addFile"
+                bg-color="blue-14"
+                label-color="white"
+                dense
+                :filter="files => files.filter(file => file.type === 'application/pdf')"
+                ></q-file>
+            </div>
+          </div>
+          <div class="row q-col-gutter-xl q-pb-lg" v-if="file.lenght !== 0">
+            <q-list class="col">
+              <q-item class="attachments q-mb-sm" dense v-ripple v-for="i in file" :key="i">
+                <q-item-section avatar>
+                  <q-icon name="description" />
+                </q-item-section>
+                <q-item-section class="text-no-wrap overflow-hidden" style="overflow:hidden;">{{ i['name'] }}</q-item-section>
+                <q-item-section side >
+                  <q-btn push flat color="grey" icon="get_app" @click="getFile(i)" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn push flat color="grey" icon="clear" @click="removeF(i['name'])" />
+                </q-item-section>
+              </q-item>              
+            </q-list>
+          </div>
           <div class="row q-pb-lg">
             <div class="col q-pr-lg q-mr-lg">
               <q-input outlined v-model="form.in_number" label="Вх. номер" />
@@ -115,32 +178,6 @@
               />
             </div>
           </div>
-          <div class="row q-col-gutter-xl q-pb-lg">
-            <div class="col">
-              <q-file
-                filled
-                dark
-                v-model="file"
-                label="Загрузить файл"
-                @input="uploadFile"
-                ref="inputUpload"
-                bg-color="blue-14"
-                label-color="white"
-                :filter="files => files.filter(file => file.type === 'application/pdf')"
-                :rules="[
-                  val => (val && val.length !== null) || 'Загрузите файл'
-                ]"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="cloud_upload" color="white" />
-                </template>
-              </q-file>
-
-            </div>
-            <div class="col">
-              <q-btn push flat color="grey" label="Посмотреть файл" size="lg" @click="newFile" />
-            </div>
-          </div>
           <div class="row q-pb-xs">
             <div class="col">
               <q-input
@@ -194,7 +231,7 @@ export default {
       options: [],
       text: '',
 
-      file: null,
+      file: [],
       form: {
         journal: null,
         region: null,
@@ -225,12 +262,21 @@ export default {
       this.$refs.inputUpload.click()
     },
     uploadFile(val) {
-      console.log(val);
       this.file = val;
       // this.form.in_number = val.name.slice(0, -4);
       console.log(this.form.in_number);
     },
-
+    removeF(val) {
+      for (var i in this.file) {
+        if(this.file[i]['name'] == val) {
+          this.file.splice(i, 1);
+        }
+      }
+      return this.file;
+    },
+    addFile(val){
+      this.file.push(val);
+    },
     sendNewDoc() {
       this.$q.loading.show({
         spinner: QSpinnerFacebook
@@ -325,6 +371,15 @@ export default {
         link.download = this.file.name;
         link.click();
       }
+    },
+    getFile(val) {
+      if(val){
+        let blob = new Blob([val], { type: "application/pdf" });
+        let link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = val.name;
+        link.click();
+      }
     }
   },
   watch: {
@@ -402,6 +457,11 @@ export default {
   .selectBorder {
     border: 1px #c2c2c2 solid;
     border-radius: 5px;
+  }
+  .attachments {
+    border-radius: 5px;
+    border: 1px solid #bdbdbd;
+    color: grey;
   }
 </style>
 <style>
