@@ -24,12 +24,18 @@ const DictService = {
 
         let formats = await this.formats();
         store.dispatch("dicts/setFormat", formats);
+
         let journals = await this.journals();
         store.dispatch("dicts/setJournal", journals);
+
         let organs = await this.organs();
         store.dispatch("dicts/setOrgan", organs);
+
         let regions = await this.regions();
         store.dispatch("dicts/setRegion", regions);
+
+        let dictList = await this.dictsList();
+        store.dispatch("dicts/setDictsList", dictList);
 
         store.dispatch("dicts/setIsAllSet", true);
         resolve(true);
@@ -52,33 +58,6 @@ const DictService = {
         });
     });
   },
-  /*
-    iconTypes() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("dicts/icontype")
-          .then(res => {
-            resolve(res.data);
-          })
-          .catch(err => {
-            console.error(err);
-            reject(err);
-          });
-      });
-    },
-  
-    icons() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("dicts/icons")
-          .then(res => {
-            resolve(res.data);
-          })
-          .catch(err => {
-            console.error(err);
-            reject(err);
-          });
-      });
-    },
-  */
   parentMenus() {
     return new Promise((resolve, reject) => {
       ApiService.get("dicts/menus")
@@ -214,6 +193,18 @@ const DictService = {
   regions() {
     return new Promise((resolve, reject) => {
       ApiService.get(`dicts/regions`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  dictsList() {
+    return new Promise((resolve, reject) => {
+      ApiService.get(`dicts`)
         .then(res => {
           resolve(res.data);
         })

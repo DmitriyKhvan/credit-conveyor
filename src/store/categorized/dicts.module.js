@@ -22,7 +22,8 @@ const state = {
   formats: null,
   journals: null,
   organs: null,
-  regions: null
+  regions: null,
+  dictsList: null
 };
 
 const getters = {
@@ -108,6 +109,9 @@ const getters = {
   },
   getRegion: state => {
     return state.regions;
+  },
+  getDictsList: state => id => {
+    return state.dictList.find(dict => dict.id == id);
   }
 };
 
@@ -162,6 +166,9 @@ const mutations = {
   },
   setRegion: (state, payload) => {
     state.regions = payload;
+  },
+  setDictsList: (state, payload) => {
+    state.dictList = payload;
   }
 };
 
@@ -237,6 +244,9 @@ const actions = {
       };
     });
     commit("setRegion", reg);
+  },
+  setDictsList: ({ commit }, dictList) => {
+    commit("setDictsList", dictList);
   }
 };
 //

@@ -45,7 +45,7 @@ export default {
     })
   },
   created() {
-    //console.log({ list: this.list });
+    //console.log({ docs: this.docs });
     this.$store.dispatch("getADocs", 1);
   }
 };

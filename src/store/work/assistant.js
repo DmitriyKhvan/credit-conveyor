@@ -4,13 +4,13 @@ export default {
     aViewTasks: false,
     isListView: true,
     aAllDocs: [],
-    aMenu: 1,
+    menuNo: 1,
     selectedDocs: [],
-    aShablons: [],
     aSuperiors: []
   },
   mutations: {
-    selVal(state, id) {
+    selDoc(state, id) {
+      // selVal
       if (state.selectedDocs.find(docId => docId === id)) {
         state.selectedDocs = state.selectedDocs.filter(docId => docId !== id);
       } else {
@@ -23,17 +23,16 @@ export default {
     getADocs(state, payload) {
       state.aAllDocs = payload;
     },
-    setAMenu(state, num) {
-      state.aMenu = num;
+    setMenuNo(state, num) {
+      state.menuNo = num;
     },
-    setShablonsSuperiors(state, payload) {
-      state.aShablons = payload.shablons;
-      state.aSuperiors = payload.superiors;
+    setSuperiors(state, payload) {
+      state.aSuperiors = payload;
     }
   },
   actions: {
-    selVal({ commit }, id) {
-      commit("selVal", id);
+    selDoc({ commit }, id) {
+      commit("selDoc", id);
     },
     async getAUser({ commit }, num) {
       try {
@@ -45,32 +44,21 @@ export default {
     },
     async getADocs({ commit }, num) {
       try {
-        const all = await axios.get(`/tasks/pomoshnik/${num}`);
-        const docs = all.data.data !== null ? all.data.data : [];
-        const shablons = [];
-        const superiors = [];
-        if (all.data.shablon) {
-          all.data.shablon.forEach(el => {
-            shablons.push({
-              label: el.name,
-              value: el.id
-            });
-          });
-          all.data.superiors.forEach(el => {
+        const allData = await axios.get(`/tasks/pomoshnik/${num}`);
+        console.log(allData.data);
+        const docs = allData.data.data !== null ? allData.data.data : [];
+        let superiors = [];
+        if (allData.data.superiors) {
+          allData.data.superiors.forEach(el => {
             superiors.push({
               label: el.name,
               value: el.emp_id,
               dep_code: el.dep_code
             });
           });
-
-          commit("setShablonsSuperiors", {
-            shablons,
-            superiors
-          });
+          commit("setSuperiors", superiors);
         }
-
-        commit("setAMenu", num);
+        commit("setMenuNo", num);
         commit("getADocs", docs);
       } catch (e) {
         throw e;
