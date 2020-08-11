@@ -1,18 +1,15 @@
 <template>
   <div class="row">
-    <div class="col-6">
+    <div class="col-6 q-pa-sm">
       <types />
     </div>
-    <div class="col-6">
+    <div class="col-6 q-pa-sm">
       <list />
     </div>
   </div>
 </template>
 
 <script>
-// import Icons from "./icons/Icons";
-// import IconsType from "./icons/IconsType";
-
 import Types from "./types/Types";
 import List from "./list/List";
 

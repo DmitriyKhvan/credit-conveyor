@@ -10,7 +10,7 @@
 
       <q-separator inset />
 
-      <q-card-section>
+      <q-card-section class="q-ma-sm">
         <div class="q-gutter-y-sm q-gutter-x-md column">
           <div class="row">
             <q-input
@@ -87,6 +87,19 @@
               lazy-rules
             />
           </div>
+          <div class="row">
+            <q-input
+              outlined
+              clearable
+              filled
+              autogrow
+              color="purple-12"
+              class="col-xs-12 col-sm-12 col-md-12"
+              v-model="details.description"
+              label="Description"
+              type="text"
+            />
+          </div>
         </div>
       </q-card-section>
       <!-- buttons example -->
@@ -121,7 +134,8 @@ export default {
         id: null,
         name: [],
         type_id: null,
-        ord: null
+        ord: null,
+        description: null
       }
     };
   },

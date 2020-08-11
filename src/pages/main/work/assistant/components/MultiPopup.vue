@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-btn color="blue-14" size="lg" label="Отправить выбранное: ( 1 )" @click="dialog = true" />
+    <q-btn color="blue-14" size="lg" :label="'Отправить выбранное: ( '+selectedDocs.length+' )'" @click="dialog = true" :disable="selectedDocs.length === 0" />
     <q-dialog v-model="dialog" persistent transition-show="scale" transition-hide="scale">
       <q-card class="cardBlock q-pa-md"  style="width: 920px; max-width: 80vw;">
         <q-card-section>
@@ -93,6 +93,7 @@
   </div>
 </template>
 <script>
+import { mapState, mapGetters } from 'vuex';
 import Document from './MultiDocument'
 export default {
   components: {
@@ -107,6 +108,12 @@ export default {
       options: [],
       model: ''
     }
+  },
+  computed: {
+     ...mapState({
+          selectedDocs: state => state.assistant.selectedDocs,
+        }),
+
   }
 }
 </script>
