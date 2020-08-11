@@ -331,23 +331,22 @@
       </q-tab-panels>
 
       <div class="right_pane">
+        <!-- kurs valyuta -->
         <q-item class="card1 cal1">
           <q-item-label>Курс валют</q-item-label>
-          <q-item class="rowline text-caption q-gutter-sm vertical-top">
-            <q-item-label class="text-h6 text-wight-bold">USD</q-item-label>
+          <q-item
+            class="rowline text-caption q-gutter-sm vertical-top"
+            v-for="(note, j) in exchangeRate"
+          >
+            <q-item-label class="text-h6 text-wight-bold">{{note.code}}</q-item-label>
             <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" />
-            <q-item-label class="text-body1 text-wight-bold">10210.00</q-item-label>
+            <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_buy_price)}}</q-item-label>
             <q-avatar size="25px" color="red" text-color="white" icon="arrow_downward" />
-            <q-item-label class="text-body1 text-wight-bold">10251.00</q-item-label>
-          </q-item>
-          <q-item class="rowline text-caption q-gutter-sm vertical-top">
-            <q-item-label class="text-h6 text-wight-bold">EUR</q-item-label>
-            <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" />
-            <q-item-label class="text-body1 text-wight-bold">11000.00</q-item-label>
-            <q-avatar size="25px" color="red" text-color="white" icon="arrow_downward" />
-            <q-item-label class="text-body1 text-wight-bold">11700.00</q-item-label>
+            <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_cell_price)}}</q-item-label>
           </q-item>
         </q-item>
+        <!-- kurs valyuta end-->
+
         <q-item class="q-pa-lg bg-white text-grey-7 cal1" style="border-radius: 5px;">
           <div class="raw h6 q-my-sm">
             <div
@@ -425,7 +424,8 @@ export default {
 
       selectedMonth: null,
       dateSelectOptions: [],
-      allMonthData: null
+      allMonthData: null,
+      exchangeRate: []
     };
   },
   created() {
@@ -452,6 +452,24 @@ export default {
       )
       .catch(error => {
         console.log({ error });
+      });
+    this.$axios
+      .get(
+        "https://cors-anywhere.herokuapp.com/https://nbu.uz/exchange-rates/json/"
+      )
+      .then(
+        res => {
+          this.exchangeRate = res.data.filter(el => {
+            return el.code == "EUR" || el.code == "USD";
+          });
+          console.log(this.exchangeRate);
+        },
+        err => {
+          console.error({ err });
+        }
+      )
+      .catch(error => {
+        console.error({ error });
       });
   },
   mounted() {
@@ -559,7 +577,6 @@ export default {
       for (let i = 0; i < del; i++) {
         delArr.push(delArr[i] + resMaxNum / del);
       }
-
       return delArr;
     },
     grafBlockHight(num) {
