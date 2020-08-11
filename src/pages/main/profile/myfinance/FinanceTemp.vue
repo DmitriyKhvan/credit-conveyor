@@ -337,6 +337,7 @@
           <q-item
             class="rowline text-caption q-gutter-sm vertical-top"
             v-for="(note, j) in exchangeRate"
+            :key="j"
           >
             <q-item-label class="text-h6 text-wight-bold">{{note.code}}</q-item-label>
             <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" />
