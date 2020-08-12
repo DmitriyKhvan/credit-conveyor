@@ -55,12 +55,11 @@
               />
             </div>
           </div>
-          <div class="row q-col-gutter-xl" v-if="file.length == 0">
+          <div class="row q-col-gutter-xl q-pb-lg" v-if="file == null">
             <div class="col">
               <q-file
                 filled
                 dark
-                multiple
                 v-model="file"
                 label="Загрузить файл"
                 @input="uploadFile"
@@ -69,7 +68,7 @@
                 label-color="white"
                 :filter="files => files.filter(file => file.type === 'application/pdf')"
                 :rules="[
-                  val => (val && val.length !== null) || 'Выберите PDF файл'
+                  val => (val && val.length !== null) || 'Загрузите файл'
                 ]"
               >
                 <template v-slot:prepend>
@@ -79,44 +78,58 @@
 
             </div>
             <div class="col">
-              <q-btn push flat color="grey" :disable="file.lenght == null" label="Посмотреть файл" size="lg" @click="newFile" />
+              <q-btn push flat color="grey" label="Посмотреть файл" size="lg" @click="newFile" />
             </div>
           </div>
-
-          <div class="row q-col-gutter-xl q-pb-md" v-else-if="file.length !== 0">
-            <div class="col title q-pb-lg">
-              <q-icon size="20px" name="attach_file" class="q-mr-md rotate-180 text-bold" color="grey-8" />
-              <strong>Прикрепленные файлы ({{ file ? file.length : "0" }})</strong>
+          <div class="q-my-sm full-width" v-else>
+            <div class="row q-my-md items-center">
+              <q-icon   size="20px"
+                        name="attach_file"
+                        class=" rotate-180 text-bold" />
+              <strong class="col text-no-wrap">Прикрепленные файлы</strong>
+              <q-file dense
+                      filled
+                      rounded
+                      class="col-3"
+                      v-model="file"
+                      label="Загрузить"
+                      @input="uploadFile"
+                      ref="inputUpload"
+                      bg-color="blue-14"
+                      label-color="white"
+                      clear-icon
+                      display-value=""
+                      :filter="files => files.filter(file => file.type === 'application/pdf')"
+                      :rules="[
+                        val => (val && val.length !== null) || 'Загрузите файл'
+                      ]">
+              </q-file>
             </div>
-            <div class="col-4">
-              <q-file
-                dark
-                filled
-                append
-                label="Загрузить"
-                @input="addFile"
-                bg-color="blue-14"
-                label-color="white"
-                dense
-                :filter="files => files.filter(file => file.type === 'application/pdf')"
-                ></q-file>
+            <div class="row q-pb-lg full-width text-grey">
+              <q-list class="col">
+                <q-item class="q-mb-sm rounded-borders"
+                        style="border: 1px solid #e7e7e7;"
+                        dense>
+                  <q-item-section avatar>
+                    <q-icon name="description" />
+                  </q-item-section>
+                  <q-item-section class="text-no-wrap overflow-hidden"
+                                  style="overflow:hidden; text-no-wrap overflow-hidden">
+                                  {{ file ? file['name'] : 'invalid file format' }}
+                  </q-item-section>
+                    <q-btn  @click="newFile"
+                            flat
+                            color="grey"
+                            icon="get_app"
+                            side/>
+                    <q-btn  @click="file = null"
+                            flat
+                            color="grey"
+                            icon="clear"
+                            side />
+                </q-item>
+              </q-list>
             </div>
-          </div>
-          <div class="row q-col-gutter-xl q-pb-lg" v-if="file.lenght !== 0">
-            <q-list class="col">
-              <q-item class="attachments q-mb-sm" dense v-ripple v-for="i in file" :key="i">
-                <q-item-section avatar>
-                  <q-icon name="description" />
-                </q-item-section>
-                <q-item-section class="text-no-wrap overflow-hidden" style="overflow:hidden;">{{ i['name'] }}</q-item-section>
-                <q-item-section side >
-                  <q-btn push flat color="grey" icon="get_app" @click="getFile(i)" />
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn push flat color="grey" icon="clear" @click="removeF(i['name'])" />
-                </q-item-section>
-              </q-item>              
-            </q-list>
           </div>
           <div class="row q-pb-lg">
             <div class="col q-pr-lg q-mr-lg">
@@ -231,7 +244,7 @@ export default {
       options: [],
       text: '',
 
-      file: [],
+      file: null,
       form: {
         journal: null,
         region: null,
@@ -262,21 +275,12 @@ export default {
       this.$refs.inputUpload.click()
     },
     uploadFile(val) {
+      console.log(val);
       this.file = val;
       // this.form.in_number = val.name.slice(0, -4);
-      console.log(this.form.in_number);
+      console.log(this.form.file);
     },
-    removeF(val) {
-      for (var i in this.file) {
-        if(this.file[i]['name'] == val) {
-          this.file.splice(i, 1);
-        }
-      }
-      return this.file;
-    },
-    addFile(val){
-      this.file.push(val);
-    },
+
     sendNewDoc() {
       this.$q.loading.show({
         spinner: QSpinnerFacebook
@@ -340,7 +344,7 @@ export default {
     },
 
     resetForm() {
-      (this.file = []),
+      (this.file = null),
         (this.form.journal = null),
         (this.form.region = null),
         (this.form.in_number = null),
@@ -369,15 +373,6 @@ export default {
         let link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
         link.download = this.file.name;
-        link.click();
-      }
-    },
-    getFile(val) {
-      if(val){
-        let blob = new Blob([val], { type: "application/pdf" });
-        let link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = val.name;
         link.click();
       }
     }
@@ -457,11 +452,6 @@ export default {
   .selectBorder {
     border: 1px #c2c2c2 solid;
     border-radius: 5px;
-  }
-  .attachments {
-    border-radius: 5px;
-    border: 1px solid #bdbdbd;
-    color: grey;
   }
 </style>
 <style>
