@@ -5,7 +5,7 @@
         <div class="flexBlock">
           <div
             class="flexBlock q-px-md"
-            :class="menu === 1 ? 'filterActive': ''"
+            :class="menu === 1 ? 'filterActive' : ''"
             @click="menuSelect(1)"
           >
             <div class="q-pr-sm">
@@ -21,7 +21,7 @@
           </div>
           <div
             class="flexBlock q-px-md"
-            :class="menu === 2 ? 'filterActive': ''"
+            :class="menu === 2 ? 'filterActive' : ''"
             @click="menuSelect(2)"
           >
             <div class="q-pr-sm">
@@ -34,7 +34,7 @@
           </div>
           <div
             class="flexBlock q-px-md"
-            :class="menu === 3 ? 'filterActive': ''"
+            :class="menu === 3 ? 'filterActive' : ''"
             @click="menuSelect(3)"
           >
             <div class="q-pr-sm">

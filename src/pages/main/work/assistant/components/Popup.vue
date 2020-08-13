@@ -10,7 +10,7 @@
       <q-card class="cardBlock q-pa-md" style="width: 820px; max-width: 80vw;">
         <q-card-section>
           <div class="row justify-between">
-            <strong>{{doc.description}}</strong>
+            <strong>{{ doc.description }}</strong>
             <q-space />
             <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
           </div>
@@ -27,7 +27,7 @@
                 <div class="col">
                   <div class="row justify-center files">
                     <div class="col-5">
-                      <div>Документ № {{doc.doc_id}}</div>
+                      <div>Документ № {{ doc.doc_id }}</div>
                     </div>
                     <div class="col flexBlock cursor-pointer" @click="newFile">
                       <div class="pad-2">
@@ -55,7 +55,7 @@
                       <div class="q-px-sm lineH">
                         <b>Исходящий номер:</b>
                         <br />
-                        {{doc.out_number}}
+                        {{ doc.out_number }}
                       </div>
                     </div>
                     <div class="col flexBlock">
@@ -65,7 +65,7 @@
                       <div class="q-px-sm lineH">
                         <b>Дата создания:</b>
                         <br />
-                        {{dateFormat(doc.created_at)}}
+                        {{ dateFormat(doc.created_at) }}
                       </div>
                     </div>
                   </div>
@@ -82,9 +82,9 @@
                       <div class="col q-px-sm lineH">
                         <b>Документ:</b>
                         <div class="row">
-                          <div class="col">{{doc.file.name}}</div>
+                          <div class="col">{{ doc.file.name }}</div>
                           <div class="col q-px-sm">
-                            <i>{{fileSize(doc.file.file_size)}} мб</i>
+                            <i>{{ fileSize(doc.file.file_size) }} мб</i>
                           </div>
                         </div>
                       </div>
@@ -96,7 +96,7 @@
                       <div class="q-px-sm lineH">
                         <b>Входящий номер:</b>
                         <br />
-                        {{doc.in_number}}
+                        {{ doc.in_number }}
                       </div>
                     </div>
                   </div>
@@ -109,7 +109,12 @@
                   <div v-else>Не подписан</div>
                 </div>
                 <div>
-                  <q-toggle v-model="signed" color="amber-4" size="74px" @input="changeVal" />
+                  <q-toggle
+                    v-model="signed"
+                    color="amber-4"
+                    size="74px"
+                    @input="changeVal"
+                  />
                 </div>
                 <div class="col"></div>
               </div>
@@ -120,7 +125,12 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-input standout v-model="searchUser" label="Исполнитель" @input="selUsers">
+                  <q-input
+                    standout
+                    v-model="searchUser"
+                    label="Исполнитель"
+                    @input="selUsers"
+                  >
                     <template v-slot:append>
                       <q-icon name="search" />
                     </template>
@@ -130,8 +140,15 @@
 
               <div class="row" v-if="result.length !== 0">
                 <div class="col q-pb-md q-pt-sm q-px-md q-mb-sm users">
-                  <div v-for="u in result" :key="u.EMP_ID" @click="selectedUser(u)">
-                    <span>{{u.LAST_NAME}} {{u.FIRST_NAME[0]}}. {{u.MIDDLE_NAME[0]}}.</span>
+                  <div
+                    v-for="u in result"
+                    :key="u.EMP_ID"
+                    @click="selectedUser(u)"
+                  >
+                    <span
+                      >{{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
+                      {{ u.MIDDLE_NAME[0] }}.</span
+                    >
                   </div>
                 </div>
               </div>
@@ -147,10 +164,16 @@
                     :key="u.EMP_ID"
                     :class="activeWorker === u.EMP_ID ? 'active' : ''"
                   >
-                    <span
-                      @click="selectActiveWorker(u.EMP_ID)"
-                    >{{u.LAST_NAME}} {{u.FIRST_NAME[0]}}. {{u.MIDDLE_NAME[0]}}.</span>
-                    <q-icon name="close" size="xs" class="icon_btn" @click="removeUser(u.EMP_ID)" />
+                    <span @click="selectActiveWorker(u.EMP_ID)"
+                      >{{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
+                      {{ u.MIDDLE_NAME[0] }}.</span
+                    >
+                    <q-icon
+                      name="close"
+                      size="xs"
+                      class="icon_btn"
+                      @click="removeUser(u.EMP_ID)"
+                    />
                   </div>
                 </div>
               </div>
@@ -160,7 +183,12 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-select filled v-model="superior" :options="superiors" label="Руководитель" />
+                  <q-select
+                    filled
+                    v-model="superior"
+                    :options="superiorsList"
+                    label="Руководитель"
+                  />
                 </div>
               </div>
 
@@ -169,7 +197,12 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-select filled v-model="shablon" :options="shablons" label="Шаблон" />
+                  <q-select
+                    filled
+                    v-model="shablon"
+                    :options="shablons"
+                    label="Шаблон"
+                  />
                 </div>
               </div>
             </div>
@@ -177,8 +210,21 @@
 
           <div class="row q-pt-lg">
             <div class="col text-center">
-              <q-btn color="blue-14" label="Отправить" size="lg" class="q-mr-lg" @click="saveForm" />
-              <q-btn color="white" text-color="black" label="Отменить" size="lg" @click="hide" />
+              <q-btn
+                color="blue-14"
+                label="Отправить"
+                size="lg"
+                class="q-mr-lg"
+                @click="saveForm"
+                :disable="$v.$invalid"
+              />
+              <q-btn
+                color="white"
+                text-color="black"
+                label="Отменить"
+                size="lg"
+                @click="hide"
+              />
             </div>
           </div>
         </q-card-section>
@@ -189,6 +235,8 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import NotifyService from "@/services/notify.service";
+import { required, minLength } from "vuelidate/lib/validators";
+
 export default {
   props: {
     doc: {
@@ -209,10 +257,30 @@ export default {
       signed: false // podpisan
     };
   },
+  validations: {
+    shablon: {
+      required
+    },
+    superior: {
+      required
+    },
+    workers: {
+      required
+    },
+    activeWorker: {
+      required
+    }
+  },
   created() {
-    if (this.doc.start_emps_id !== null && this.doc.doc_status === 2) {
+    // set signed button
+    if (this.doc.start_emps_id !== null && this.doc.doc_status === 3) {
       this.signed = true;
     }
+    if (this.doc.start_emps_id) {
+      let headEmp = this.doc.start_emps_id.find(el => el.CHECK == true);
+      this.activeWorker = headEmp.EMP_ID;
+    }
+
     // init task message in shablon
     if (this.doc.task_message) {
       let shablonObj = this.dicts(6).values.find(
@@ -224,7 +292,8 @@ export default {
     if (this.doc.superior) {
       this.superior = {
         label: this.doc.superior.name,
-        value: this.doc.superior.emp_id
+        value: this.doc.superior.emp_id,
+        dep_code: this.doc.superior.dep_code
       };
     }
     // initial values of emp ids
@@ -236,7 +305,7 @@ export default {
   },
   computed: {
     ...mapState({
-      superiors: state => state.assistant.aSuperiors
+      superiorsList: state => state.assistant.aSuperiors
     }),
     ...mapGetters({
       dicts: "dicts/getDictsList" // loads all dicts
@@ -270,25 +339,31 @@ export default {
         message: this.shablon.value,
         status: this.signed === true ? 3 : 2
       };
-      console.log({ obg });
+      //console.log({ obg });
 
       this.$axios
         .post("/tasks/pomoshnik", obg)
-        .then(response => {
-          console.log(response.data);
-          if (response.data.status == 1) {
-            NotifyService.showSuccessMessage(response.data.message);
-            this.hide();
-            this.$store.dispatch("getADocs", 1);
-          } else {
-            NotifyService.showErrorMessage(response.data.message);
-            this.hide();
+        .then(
+          response => {
+            console.log({ response: response.data });
+            this.$emit("ok", response.data); //
+            if (response.data.status == 1) {
+              NotifyService.showSuccessMessage(response.data.message);
+              this.hide();
+            } else {
+              NotifyService.showErrorMessage(response.data.message);
+              this.hide();
+            }
+          },
+          error => {
+            //console.log({ error: error.response.data });
+            NotifyService.showErrorMessage(error.response.data.message);
           }
-        })
+        )
         .catch(error => {
-          console.log("error");
-          NotifyService.showErrorMessage(error);
-          this.hide();
+          //console.log({ error: error.response.data });
+          NotifyService.showErrorMessage(error.response.data.message);
+          //this.hide();
         });
     },
     selectActiveWorker(id) {

@@ -5,7 +5,7 @@
     </div>
     <div class="col">
       <div class="title q-py-sm">
-        <b>{{doc.description}}</b>
+        <b>{{ doc.description }}</b>
       </div>
       <div class="row desp">
         <div class="col-6">
@@ -17,7 +17,7 @@
               <div class="q-py-sm">
                 <b>Исходящий номер:</b>
                 <br />
-                {{doc.out_number}}
+                {{ doc.out_number }}
               </div>
             </div>
             <div class="col flexBlock">
@@ -27,7 +27,7 @@
               <div class="q-py-sm">
                 <b>Входящий номер:</b>
                 <br />
-                {{doc.in_number}}
+                {{ doc.in_number }}
               </div>
             </div>
           </div>
@@ -39,7 +39,7 @@
               <div class="q-py-sm">
                 <b>Исходящая дата:</b>
                 <br />
-                {{doc.out_date}}
+                {{ doc.out_date }}
               </div>
             </div>
             <div class="col flexBlock">
@@ -49,7 +49,7 @@
               <div class="q-py-sm">
                 <b>Входящая дата:</b>
                 <br />
-                {{doc.in_date}}
+                {{ doc.in_date }}
               </div>
             </div>
           </div>
@@ -64,9 +64,10 @@
                   self="bottom middle"
                   :offset="[10, 10]"
                   content-class="bg-green"
-                >{{doc.paper_count}} листов бумаги</q-tooltip>
+                  >{{ doc.paper_count }} листов бумаги</q-tooltip
+                >
               </div>
-              <div class="flexBlock q-px-sm">{{doc.paper_count}}</div>
+              <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
             </div>
           </div>
         </div>
@@ -83,7 +84,12 @@
           <div class="row q-pt-md">
             <div class="col text-right fontBtn">
               <!-- <a-popup :doc="doc"></a-popup> -->
-              <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+              <q-btn
+                color="blue-14"
+                size="lg"
+                label="Просмотреть"
+                @click="showDialogDetails()"
+              />
             </div>
           </div>
           <!-- -->
@@ -96,7 +102,7 @@
     <div class="title q-pa-md">
       <div class="row">
         <div class="col">
-          <b>{{doc.description}}</b>
+          <b>{{ doc.description }}</b>
         </div>
         <div>
           <img src="@/assets/icons/help.svg" />
@@ -110,7 +116,7 @@
       <div>
         <b>От:</b>
         <br />
-        {{doc.signed_by}}
+        {{ doc.signed_by }}
       </div>
     </div>
     <div class="flexBlock q-px-md q-mb-md">
@@ -120,7 +126,7 @@
       <div>
         <b>Входящая дата:</b>
         <br />
-        {{doc.in_date}}
+        {{ doc.in_date }}
       </div>
     </div>
 
@@ -169,6 +175,10 @@ export default {
         })
         .onOk(res => {
           console.log({ res: res });
+          //obnobvit dokumenti na tekushiy tab
+          if (res.status == 1) {
+            this.$store.dispatch("getADocs", this.menuNo);
+          }
         })
         .onCancel(() => {
           console.log("Cancel");

@@ -24,8 +24,6 @@ import Header from "./components/Header";
 import Document from "./components/Document";
 import Views from "./components/Views";
 
-//import userList from "./user.json";
-
 export default {
   name: "assistant",
   components: {

@@ -45,7 +45,7 @@ export default {
     async getADocs({ commit }, num) {
       try {
         const allData = await axios.get(`/tasks/pomoshnik/${num}`);
-        console.log(allData.data);
+        //console.log(allData.data);
         const docs = allData.data.data !== null ? allData.data.data : [];
         let superiors = [];
         if (allData.data.superiors) {
