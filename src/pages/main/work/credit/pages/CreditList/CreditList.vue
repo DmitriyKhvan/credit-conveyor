@@ -472,6 +472,7 @@ import { mapState } from 'vuex'
 import printJS from "print-js";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatDate from "../../filters/formatDate"
+import dataTransform from "../../filters/dataTransform"
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 
@@ -747,7 +748,8 @@ export default {
           const response = await this.$store.dispatch("profile/getFullForm", taskId)
           
           if (response) {
-            this.fileData.data = this.dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
+            // this.fileData.data = this.dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
+            this.fileData.data = dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
           
             console.log(JSON.stringify(this.fileData, null, 2))
 
@@ -767,18 +769,18 @@ export default {
       }
     },
 
-    dataTransform(data) {
-      // debugger
-      for (let i in data) {
-        if (data[i] != null) {
-          if (data[i].items) {
-            data[i] = data[i].items
-            this.dataTransform(data[i])
-          }
-        }
-      }
-      return data
-    },
+    // dataTransform(data) {
+    //   // debugger
+    //   for (let i in data) {
+    //     if (data[i] != null) {
+    //       if (data[i].items) {
+    //         data[i] = data[i].items
+    //         this.dataTransform(data[i])
+    //       }
+    //     }
+    //   }
+    //   return data
+    // },
 
     async pagination() {
       try {
