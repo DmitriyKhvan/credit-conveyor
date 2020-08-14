@@ -1548,6 +1548,18 @@
             <div class="row q-col-gutter-md">
               <div class="col-4">
                 <q-input
+                  square
+                  outlined
+                  v-model.number="fullProfile.max_loan_sum_preapprove"
+                  type="number"
+                  dense
+                  disable
+                  label="Расчет макс.возм.суммы кредита (скоринг)"
+                  class="q-pb-sm"
+                />
+              </div>
+              <!-- <div class="col-4">
+                <q-input
                   disable
                   square
                   outlined
@@ -1575,7 +1587,7 @@
                   dense
                   label="Класс кредитоспособности"
                 />
-              </div>
+              </div> -->
             </div>  
 
             <q-btn
@@ -2270,8 +2282,8 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
-                    ref="districtGuarantees"
                     :disable="disableField"
+                    ref="districtGuarantees"
                     square
                     outlined
                     v-model="guarantee.Address.District"
@@ -2453,7 +2465,6 @@
                     dense
                     label="Сумма поручительства"
                     @input="guaranteesValid"
-                    lazy-rules
                     :rules="[
                       val => !!val || 'Введите сумму',
                       val => val > 0 || 'Некорректные данные'
@@ -2461,6 +2472,53 @@
                   />
                 </div>
               </div>
+
+              <!-- <div class="row q-col-gutter-md">
+                <div class="col-4">
+                  <q-input
+                      :disable="disableField"
+                      ref=""
+                      square
+                      outlined
+                      v-model="guarantee.Name"
+                      dense
+                      label="Фамилия"
+                      :rules="[
+                        val => !!val || 'Введите фамилию'
+                      ]"
+                    />
+                </div>
+ 
+                <div class="col-4">
+                  <q-input
+                      :disable="disableField"
+                      ref=""
+                      square
+                      outlined
+                      v-model="guarantee.Name"
+                      dense
+                      label="Имя"
+                      :rules="[
+                        val => !!val || 'Введите имя'
+                      ]"
+                    />
+                </div>
+
+                <div class="col-4">
+                  <q-input
+                      :disable="disableField"
+                      ref=""
+                      square
+                      outlined
+                      v-model="guarantee.Name"
+                      dense
+                      label="Отчество"
+                      :rules="[
+                        val => !!val || 'Введите отчество'
+                      ]"
+                    />
+                </div>
+              </div> -->
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
@@ -2472,7 +2530,6 @@
                     v-model="guarantee.Name"
                     dense
                     label="Название"
-                    lazy-rules
                     :rules="[
                       val => !!val || 'Введите название'
                     ]"
@@ -2489,7 +2546,6 @@
                     dense
                     label="ИНН"
                     mask="#########"
-                    lazy-rules
                     :rules="[
                       val =>
                         (val && val.length === 9) ||
@@ -2571,15 +2627,17 @@
 
                   <q-select
                     :disable="disableField"
-                      square
-                      outlined
-                      v-model="guarantee.Address.District"
-                      :options="guarantee.Address.Districts.items"
-                      dense
-                      label="Район"
-                      emit-value
-                      map-options
-                      class="q-pb-sm"
+                    ref="districtGuarantees"
+                    square
+                    outlined
+                    v-model="guarantee.Address.District"
+                    :options="guarantee.Address.Districts.items"
+                    dense
+                    label="Район"
+                    :rules="[val => !!val || 'Выберите район']"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
                     />
                 </div>
               </div>
@@ -2594,7 +2652,6 @@
                     v-model="guarantee.Address.Street"
                     dense
                     label="Улица / Мкр."
-                    lazy-rules
                     :rules="[
                       val => !!val || 'Введите наименование улицы / мкр.'
                     ]"
@@ -2609,7 +2666,6 @@
                     v-model="guarantee.Address.House"
                     dense
                     label="Номер дома"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите номер дома']"
                   />
                 </div>
@@ -2668,7 +2724,6 @@
                       dense
                       label="Тел. номер"
                       mask="+############"
-                      lazy-rules
                       :rules="[
                         val =>
                           (val && val.length === 13) || 'Введите номер телефона',
@@ -3083,7 +3138,7 @@
             </div>
 
             <div class="row q-col-gutter-md">
-              <div 
+              <!-- <div 
                 v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
                 class="col-4">
                 <q-input
@@ -3099,6 +3154,17 @@
                     val => !!val || 'Введите первоначальный взнос',
                     val => val > 0 || 'Некорректные данные'
                   ]"
+                />
+              </div> -->
+              <div class="col-4">
+                <q-input
+                  disable
+                  square
+                  outlined
+                  v-model.number="fullProfile.LoanInfo.InitialPayment"
+                  type="number"
+                  dense
+                  label="Первоначальный взнос"
                 />
               </div>
 
@@ -3170,18 +3236,6 @@
                   class="q-pb-sm"
                 />
               </div>
-
-              <div class="col-4">
-                <q-input
-                  square
-                  outlined
-                  type="number"
-                  dense
-                  disable
-                  label="Расчет макс.возм.суммы кредита (скоринг)"
-                />
-              </div>
-
             </div>
 
             <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
@@ -3522,7 +3576,11 @@
                       :disable="disable"
                       icon="print" 
                       @click="printFile(fileData, index)" 
+                      :loading="loadings[index]"
                   >
+                    <template v-slot:loading>
+                      <q-spinner-facebook />
+                    </template>
                     <q-tooltip>Распечатать</q-tooltip>
                   </q-btn>
                 </li>
@@ -3604,11 +3662,10 @@ import axios from "axios";
 import { mapState } from 'vuex';
 import printJS from "print-js";
 import CommonUtils from "@/shared/utils/CommonUtils";
-import UserService from "@/services/user.service";
+import dataTransform from "../../filters/dataTransform";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
-// import UploadFiles from "./UploadFiles"
 import { validItems, validFilter } from "../../filters/valid_filter"
 
 export default {
@@ -3636,7 +3693,8 @@ export default {
       creditManagerComment:"",
 
       options: {
-        Countries: this.$store.getters["profile/dictionaries"].Countries.items,
+        //Countries: this.$store.getters["profile/dictionaries"].Countries.items,
+        Countries: [],
 
         RepaymentType: [],
 
@@ -3658,6 +3716,7 @@ export default {
 
     };
   },
+
   async created() {
     // this.$store.commit("profile/resetDataFullFormProfile")
     
@@ -3720,12 +3779,12 @@ export default {
     // }
 
     this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+    this.options.Countries = this.$store.getters["profile/dictionaries"].Countries.items
   },
   mounted() {
     setTimeout(() => {
       this.onSubmit("start")
-    }, 600)
-    
+    }, 1000)
   },
   computed: {
     ...mapState({
@@ -3735,7 +3794,8 @@ export default {
         dictionaries: state => state.profile.dictionaries,
         profile: state => state.profile,
         credits: state => state.credits,
-        preApprovalData: state => state.credits.preApprovalData
+        preApprovalData: state => state.credits.preApprovalData,
+        loadings: state => state.profile.loadings,
       }),
       
     taskId() {
@@ -4007,6 +4067,7 @@ export default {
           "kindOfActivityGuarantees"
         );
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
+        validFilter(this.$refs, "districtGuaranteesValid", "districtGuarantees");
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(this.$refs, "houseNumberGuaranteesValid", "houseNumberGuarantees");
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
@@ -4016,6 +4077,7 @@ export default {
         validItems(this.$refs, "innGuaranteesValid");
         validItems(this.$refs, "kindOfActivityGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
+        validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
         validItems(this.$refs, "houseNumberGuaranteesValid");
         validItems(this.$refs, "phonesGuaranteesValid");
@@ -4061,10 +4123,10 @@ export default {
       //если не овердрафт
       if (!!this.fullProfile.LoanInfo.LoanProduct && this.fullProfile.LoanInfo.LoanProduct !== 3) {
         this.$refs.typeRepayment.validate();
-        this.$refs.initialFee.validate();
+        // this.$refs.initialFee.validate();
       } else {
         validItems(this.$refs, "typeRepayment");
-        validItems(this.$refs, "initialFee");
+        // validItems(this.$refs, "initialFee");
       }
 
       if (!this.fullProfile.AttachedDocuments.items.length) {
@@ -4184,7 +4246,7 @@ export default {
         this.$refs.comfortablePeriodRepayment.hasError ||
         this.$refs.comfortableDayRepayment.hasError ||
         // this.$refs.typeCredit.hasError ||
-        this.$refs.initialFee.hasError ||
+        // this.$refs.initialFee.hasError ||
         this.$refs.purposeCredit.hasError ||
        
         // если потребительский кредит
@@ -4705,6 +4767,7 @@ export default {
       this.creditManagerComment = ""
       console.log('comments', this.fullProfile.ApplicationComment)
     },
+    
     msecond(val) {
       return new Date(val.slice(-4) + val.slice(2, 6) + val.slice(0, 2))
     },
@@ -4754,9 +4817,10 @@ export default {
 
     async printFile(fileData, idx) {
       this.disable = true
+      this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
       let file = null
       this.fileData.type = fileData.label
-      this.fileData.data = this.dataTransform(fileData.data)
+      this.fileData.data = dataTransform(fileData.data)
       try {
         console.log(JSON.stringify(this.fileData, null, 2))
 
@@ -4782,24 +4846,26 @@ export default {
         }
        
         this.disable = false
+        this.loadings.splice(idx, 1, false)
       } catch(error) {
         this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
         this.disable = false
+        this.loadings.splice(idx, 1, false)
       }
     },
 
-    dataTransform(data) {
+    // dataTransform(data) {
       
-      for (let i in data) {
-        if (data[i] != null) {
-          if (data[i].items) {
-            data[i] = data[i].items
-            this.dataTransform(data[i])
-          }
-        }
-      }
-      return data
-    },
+    //   for (let i in data) {
+    //     if (data[i] != null) {
+    //       if (data[i].items) {
+    //         data[i] = data[i].items
+    //         this.dataTransform(data[i])
+    //       }
+    //     }
+    //   }
+    //   return data
+    // },
 
     filterFn (val, update) {
       console.log('filterFn', val)
@@ -4895,7 +4961,7 @@ export default {
 
   .guarantees {
       .q-field__control {
-        color: rgba(0, 0, 0, 0.87);
+        // color: rgba(0, 0, 0, 0.87);
       }
 
       .q-field--auto-height .q-field__control, .q-field--auto-height, .q-field__native {
@@ -4903,8 +4969,14 @@ export default {
       }
 
       .q-field--standard .q-field__control:after {
-        border-width: 0;
-        height: 0;
+        // border-width: 0;
+        // height: 0;
+      }
+
+      .q-field--standard .q-field__control:after {
+        height: auto;
+        top: 0;
+        background: none;
       }
   }
 
@@ -4918,6 +4990,7 @@ export default {
   .fieldset_block {
     position: relative;
     margin-bottom: 10px;
+    color: #000;
   }
 
   .legend_title {

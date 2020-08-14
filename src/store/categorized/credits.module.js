@@ -205,7 +205,7 @@ export const credits = {
           commit("sentScannerSerialNumber", null); //close button auto compleate
           state.loadMessage = ""
         } else {
-          throw "Возникла проблема. Не удалось считать данные. Введите данные вручную"
+          throw response.answere.AnswereComment
         }
       } catch (error) {
         state.disableInput = false
@@ -441,6 +441,7 @@ export const credits = {
     },
 
     setCreditTasks(state, payload) {
+      state.loadings = []
       state.countRowList.find(i => i.label === 'Все').value = payload.response.all
 
       state.pages = Math.ceil(payload.response.all / payload.count)
@@ -448,6 +449,7 @@ export const credits = {
       for (let i = 0; i < payload.count; i++) {
         state.loadings[i] = false
       }
+
       state.creditTasks = payload.response.infoList
       // state.creditTasks = payload.response.infoList.sort((a, b) => {
       //     if (b.date < a.date) {
