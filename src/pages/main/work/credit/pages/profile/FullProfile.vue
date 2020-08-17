@@ -1002,6 +1002,7 @@ export default {
     callPrint(strid) {
       const head = document.querySelector("head");
       const prtContent = document.getElementById(strid);
+      
       const WinPrint = window.open(
         "",
         "",
@@ -1024,8 +1025,8 @@ export default {
       WinPrint.document.write("</body></html>");
       WinPrint.document.close();
       WinPrint.focus();
-      WinPrint.print();
       setTimeout(function(){
+          WinPrint.print();
           WinPrint.close();
       }, 500);
     },

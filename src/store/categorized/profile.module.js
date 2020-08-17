@@ -8,85 +8,86 @@ export const profile = {
     preapprove_num: "",
     confirmCredit: false,
     fileList: [],
+    loadings: [], // для лоадинга печатных форм
     disableField: false,
-    // dictionaries: {},
-    dictionaries: {
-      Graduation: {
-        items: []
-      },
-      additionalIncomeSource: {
-        items: []
-      },
-      VehicleType: {
-        items: []
-      },
-      employeesNum: {
-        items: []
-      },
-      BusinessType: {
-        items: []
-      },
-      DocumentType: {
-        items: []
-      },
-      Reasons: {
-        items: []
-      },
-      ClientRelationType: {
-        items: []
-      },
-      Gender: {
-        items: []
-      },
-      PropertyType: {
-        items: []
-      },
-      LoanProduct: {
-        items: []
-      },
-      DecisionType: {
-        items: []
-      },
-      MainWorkType: {
-        items: []
-      },
-      LoanDetails: {
-        items: []
-      },
-      LoanPurpose: {
-        items: []
-      },
-      PaymentsType: {
-        items: []
-      },
-      PositionType: {
-        items: []
-      },
-      MaritalStatus: {
-        items: []
-      },
-      GuaranteeType: {
-        items: []
-      },
-      FinancialSources: {
-        items: []
-      },
-      Region: {
-        items: []
-      },
-      Districts: {
-        items: []
-      },
-      jobPeriods: {
-        items: []
-      },
-      FamilyRelation: {
-        items: []
-      },
-      Countries: {
-        items: []
-      }
-    },
+    dictionaries: {},
+    // dictionaries: {
+    //   Graduation: {
+    //     items: []
+    //   },
+    //   additionalIncomeSource: {
+    //     items: []
+    //   },
+    //   VehicleType: {
+    //     items: []
+    //   },
+    //   employeesNum: {
+    //     items: []
+    //   },
+    //   BusinessType: {
+    //     items: []
+    //   },
+    //   DocumentType: {
+    //     items: []
+    //   },
+    //   Reasons: {
+    //     items: []
+    //   },
+    //   ClientRelationType: {
+    //     items: []
+    //   },
+    //   Gender: {
+    //     items: []
+    //   },
+    //   PropertyType: {
+    //     items: []
+    //   },
+    //   LoanProduct: {
+    //     items: []
+    //   },
+    //   DecisionType: {
+    //     items: []
+    //   },
+    //   MainWorkType: {
+    //     items: []
+    //   },
+    //   LoanDetails: {
+    //     items: []
+    //   },
+    //   LoanPurpose: {
+    //     items: []
+    //   },
+    //   PaymentsType: {
+    //     items: []
+    //   },
+    //   PositionType: {
+    //     items: []
+    //   },
+    //   MaritalStatus: {
+    //     items: []
+    //   },
+    //   GuaranteeType: {
+    //     items: []
+    //   },
+    //   FinancialSources: {
+    //     items: []
+    //   },
+    //   Region: {
+    //     items: []
+    //   },
+    //   Districts: {
+    //     items: []
+    //   },
+    //   jobPeriods: {
+    //     items: []
+    //   },
+    //   FamilyRelation: {
+    //     items: []
+    //   },
+    //   Countries: {
+    //     items: []
+    //   }
+    // },
     //filesAll: [], // для фильтрации какие файлы загружены на сервер
 
     AddressType: [
@@ -430,75 +431,30 @@ export const profile = {
             i => i.label === "inputDictionaries"
           ).data;
 
-          const preapprove_num = response.data.input.find(
-            i => i.label === "preapprove_num"
-          ).data
-
-          console.log('preapprove_num', preapprove_num)
+          commit("setDictionaries", dictionaries);
 
           // if (response.data.name == "Full Application Filling") { // кредит не оформлен
           //   commit("setPreapprovData", data);
           // }
-          if (data.BODecision == null) {
-            // кредит не оформлен
+          if (data.BODecision == null) { // кредит не оформлен
+            
+            // для получения информации для халк банка
+            const preapprove_num = response.data.input.find(
+              i => i.label === "preapprove_num"
+            ).data
+            
+            commit("setPreapproveNum", preapprove_num)
             commit("resetDataFullFormProfile");
             commit("setPreapprovData", data);
+
           } else if (response.data.name == "Работа с документами") {
-            // console.log('res', response)
-            // const fileList = response.data.input.filter(
-            //   i => {
-            //     return i.label === "overdraft" ||
-            //             i.label === "consumer_credit" ||
-            //             i.label === "microloan" ||
-            //             i.label === "payment_schedule"
-            //   }
-            // )
-
-            // const overdraft_guarantor_physical = response.data.input.find(i => i.label === "overdraft_guarantor_physical")
-
-            // for (let index in overdraft_guarantor_physical.data.items) {
-            //   const doc = {
-            //     data: overdraft_guarantor_physical.data.items[index],
-            //     label: overdraft_guarantor_physical.label,
-            //     number: index
-            //   }
-            //   fileList.push(doc)
-            // }
-
-            // response.data.input.filter(
-            //   i => {
-            //     return i.label === "overdraft_guarantor_physical" ||
-            //             i.label === "overdraft_guarantor_legal"
-            //   }
-            // ).forEach(guarantee => guaranteeDoc(guarantee))
-
-            // function guaranteeDoc(guarantee) {
-            //   for (let index in guarantee.data.items) {
-            //     const doc = {
-            //       data: guarantee.items[index],
-            //       label: guarantee.label,
-            //       number: index
-            //     }
-            //     fileList.push(doc)
-            //   }
-            // }
-
-            // console.log('fileList', fileList)
-
-            // if (fileList.length) {
-            //   commit("setFileList", fileList)
-            // }
-
-            // state.disableField = true
 
             commit("setFileList", response);
             commit("setFullForm", data);
+            
           } else {
             commit("setFullForm", data);
           }
-
-          commit("setPreapproveNum", preapprove_num)
-          commit("setDictionaries", dictionaries);
         } else {
           throw "Data is null";
         }
@@ -581,11 +537,6 @@ export const profile = {
         payload.LoanInfo.max_loan_sum_preapprove;
     },
 
-    // setFileList(state, fileList) {
-    //   state.fileList = []
-    //   state.fileList = fileList
-    // },
-
     setFileList(state, response) {
       state.disableField = true;
       state.fileList = [];
@@ -614,17 +565,21 @@ export const profile = {
         .forEach(guarantee => guaranteeDoc(guarantee));
 
       function guaranteeDoc(guarantee) {
-        for (let index in guarantee.data.items) {
+        guarantee.data.items.forEach((item, index) => {
           const doc = {
-            data: guarantee.data.items[index],
+            data: item,
             label: guarantee.label,
             number: index
           };
           fileList.push(doc);
-        }
+        })
       }
 
       console.log("fileList", fileList);
+
+      fileList.forEach((item, index) => {
+        state.loadings[index] = false
+      })
 
       state.fileList = fileList;
     },

@@ -53,7 +53,7 @@
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => fioValid(val)
+                      val => mValid(val)
                     ]"
                   />
                   <q-input
@@ -554,7 +554,7 @@ export default {
       this.$refs.pasport.validate();
 
       this.$refs.typeCredit.validate();
-
+      
       if (!!this.personalData.typeCredit && this.personalData.typeCredit != 3) {
         this.$refs.typeStepCredit.validate()
         this.$refs.periodCredit.validate()
@@ -757,35 +757,6 @@ export default {
 
         this.personalData.periodCredit = this.periodCreditMin
       }
-      // const idxCredit = this.options.typeCredits.findIndex(
-      //   item => item.value == credit
-      // );
-      // console.log('idxCredit', idxCredit)
-
-      // if (idxCredit !== -1) {
-
-        // this.options.typeStepCredits = this.options.typeCredits[idxCredit].paymentTypes.map(i => {
-        //   return {
-        //     label: i.label,
-        //     value: Number(i.value)
-        //   }
-        // })
-
-        // this.periodCreditMin = Number(
-        //   this.options.typeCredits[idxCredit].period[0].value
-        // );
-        // this.periodCreditMax = Number(
-        //   this.options.typeCredits[idxCredit].period[1].value
-        // );
-
-        // if (!this.personalData.periodCredit) {
-        //   this.personalData.periodCredit = this.periodCreditMin
-        // }
-        
-        // this.personalData.loanRate = Number(
-        //   this.options.typeCredits[idxCredit].loanRate
-        // );
-      // }
     },
 
     getPreapprovData(preAppData) {
@@ -806,25 +777,6 @@ export default {
 
       this.loanproduct_loancode = preAppData.find(i => i.label == "loanproduct_loancode").data.items[0]
 
-      // console.log('family', this.options.family)
-
-      // const loan_product_listt = preAppData.find(i => i.label == "loan_product_list")
-      // const loan_product_dict = preAppData.find(i => i.label == "loan_product_dict")
-
-      // loan_product_listt.data.items.forEach(i => {
-      //   const { Loan_dict } = loan_product_dict.data.items.find(j => j.id == i.value)
-      //   const credits = {
-      //     label: i.label,
-      //     value: Number(i.value),
-      //     period: Loan_dict.terms_list.items,
-      //     loanRate: Loan_dict.loan_rate_base,
-      //     paymentTypes: Loan_dict.payment_type.items
-      //   };
-
-      //   this.options.typeCredits.push(credits);
-      // })
-
-      // console.log("typeCredits", this.options.typeCredits);
     },
 
     transformData(preAppData, labelData) {
@@ -840,6 +792,10 @@ export default {
 
     fioValid(val) {
       return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
+    },
+
+    mValid(val) {
+      return val.match(/^([A-Z]+\s)*[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
     },
   },
   components: {
