@@ -23,6 +23,7 @@ const store = new Vuex.Store({
   namespaced: true,
   modules: {
     auth,
+    assistant,
     dicts,
     socket,
     common,
@@ -36,8 +37,7 @@ const store = new Vuex.Store({
     chats,
     my_personal,
     apparat,
-    tasks,
-    assistant
+    tasks
   }
   // enable strict mode (adds overhead!)
   // for dev mode only

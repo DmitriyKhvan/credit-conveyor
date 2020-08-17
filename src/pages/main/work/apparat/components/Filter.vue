@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="row q-col-gutter-x-md">
       <div class="col-3">
         <q-select
@@ -10,6 +9,7 @@
           :options="seniors"
           label="Все руководства"
           bg-color="white"
+          @clear="clearInput"
         />
       </div>
       <div class="col-3">
@@ -20,6 +20,7 @@
           :options="regions"
           label="Все регионы"
           bg-color="white"
+          @clear="clearInput"
         />
       </div>
       <div class="col-2">
@@ -30,6 +31,7 @@
           :options="organs"
           label="Все органы"
           bg-color="white"
+          @clear="clearInput"
         />
       </div>
       <div class="col-3 offset-md-1">
@@ -40,7 +42,7 @@
           v-model="text"
           label="Поиск"
           bg-color="white"
-          @input = search()
+          @input="search()"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -58,6 +60,7 @@
           :options="departments"
           label="Все управление"
           bg-color="white"
+          @clear="clearInput"
         />
       </div>
       <div class="col-2">
@@ -68,75 +71,93 @@
           :options="statuses"
           label="Любой статус"
           bg-color="white"
+          @clear="clearInput"
         />
       </div>
       <div class="col-3">
-        <q-select filled clearable v-model="model" :options="options" label="Любой тип" bg-color="white" />
-      </div>
-      <div class="col-3 text-right buttonFilter">
-        <q-btn
-          color="blue-14"
-          size="lg"
-          label="Применить фильтр"
-          @click="filter"
+        <q-select
+          filled
+          clearable
+          v-model="model"
+          :options="options"
+          label="Любой тип"
+          bg-color="white"
+          @clear="clearInput"
         />
       </div>
+      <div class="col-3 text-right buttonFilter">
+        <q-btn color="blue-14" size="lg" label="Применить фильтр" @click="filter" />
+      </div>
     </div>
-
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters } from "vuex";
 export default {
-  data(){
+  data() {
     return {
-      selectedSeniors: '',
-      selectedRegions: '',
-      selectedOrgans: '',
-      selectedDepartments: '',
-      selectedStatus: '',
-      text: '',
-      model: '',
+      selectedSeniors: "",
+      selectedRegions: "",
+      selectedOrgans: "",
+      selectedDepartments: "",
+      selectedStatus: "",
+      text: "",
+      model: "",
       options: []
-    }
+    };
   },
   computed: {
     ...mapState({
-        seniors: state => state.apparat.aFilters.seniors,
-        regions: state => state.apparat.aFilters.regions,
-        organs: state => state.apparat.aFilters.organs,
-        departments: state => state.apparat.aFilters.departments,
-        statuses: state => state.apparat.aFilters.statuses,
-        docks: state => state.apparat.aDocks,
+      seniors: state => state.apparat.aFilters.seniors,
+      regions: state => state.apparat.aFilters.regions,
+      organs: state => state.apparat.aFilters.organs,
+      departments: state => state.apparat.aFilters.departments,
+      statuses: state => state.apparat.aFilters.statuses,
+      docks: state => state.apparat.aDocks,
 
-        fperPage: state => state.apparat.aPerPage,
-        faPage: state => state.apparat.aPage,
-      }),
+      fperPage: state => state.apparat.aPerPage,
+      faPage: state => state.apparat.aPage
+    })
   },
   methods: {
-    filter(){
+    filter() {
       const arr = {
         perPage: this.fperPage,
         page: this.faPage,
         filters: {
-          superiors: this.selectedSeniors !== ''? this.selectedSeniors.value: null,
-          region: this.selectedRegions !== ''? this.selectedRegions.value: null,
-          organ: this.selectedOrgans !== ''? this.selectedOrgans.value: null,
-          departments: this.selectedDepartments !== ''? this.selectedDepartments.value: null,
-          status: this.selectedStatus !== ''? this.selectedStatus.value: null
+          superiors:
+            this.selectedSeniors !== "" && this.selectedSeniors !== null
+              ? this.selectedSeniors.value
+              : null,
+          region:
+            this.selectedRegions !== "" && this.selectedRegions !== null
+              ? this.selectedRegions.value
+              : null,
+          organ:
+            this.selectedOrgans !== "" && this.selectedOrgans !== null
+              ? this.selectedOrgans.value
+              : null,
+          departments:
+            this.selectedDepartments !== "" && this.selectedDepartments !== null
+              ? this.selectedDepartments.value
+              : null,
+          status:
+            this.selectedStatus !== "" && this.selectedStatus !== null
+              ? this.selectedStatus.value
+              : null
         }
-      }
-      this.$store.dispatch('aPageSelect', arr)
+      };
+      this.$store.dispatch("aPageSelect", arr);
     },
-    search(){
-      if(this.text !== '') this.$store.dispatch('aSearchDocs', this.text)
+    search() {
+      if (this.text !== "") this.$store.dispatch("aSearchDocs", this.text);
+    },
+    clearInput() {
+      this.filter();
     }
   },
-  created(){
-
-  }
-}
+  created() {}
+};
 </script>
 <style scoped>
-
 </style>

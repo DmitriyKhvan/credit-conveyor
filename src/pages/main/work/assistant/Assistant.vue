@@ -44,12 +44,8 @@ export default {
   },
   created() {
     //console.log({ docs: this.docs });
-    this.$store.dispatch("getADocs", 1);
+    this.$store.dispatch("getADocs", { num: 1 });
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>
-
-
-
+<style lang="scss" scoped></style>

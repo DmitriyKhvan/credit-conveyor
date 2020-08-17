@@ -177,7 +177,7 @@ export default {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
-            this.$store.dispatch("getADocs", this.menuNo);
+            this.$store.dispatch("getADocs", { num: this.menuNo });
           }
         })
         .onCancel(() => {

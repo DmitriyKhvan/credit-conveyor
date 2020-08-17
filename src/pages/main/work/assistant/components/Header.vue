@@ -9,7 +9,11 @@
             @click="menuSelect(1)"
           >
             <div class="q-pr-sm">
-              <img v-if="menu === 1" src="@/assets/icons/New-Document-active.svg" alt />
+              <img
+                v-if="menu === 1"
+                src="@/assets/icons/New-Document-active.svg"
+                alt
+              />
               <img v-else src="@/assets/icons/New-Document.svg" alt />
             </div>
             <div>
@@ -25,7 +29,11 @@
             @click="menuSelect(2)"
           >
             <div class="q-pr-sm">
-              <img v-if="menu === 2" src="@/assets/icons/Task-Completed-active.svg" alt />
+              <img
+                v-if="menu === 2"
+                src="@/assets/icons/Task-Completed-active.svg"
+                alt
+              />
               <img v-else src="@/assets/icons/Task-Completed.svg" alt />
             </div>
             <div>
@@ -94,7 +102,7 @@ export default {
   },
   methods: {
     menuSelect(num) {
-      this.$store.dispatch("getADocs", num);
+      this.$store.dispatch("getADocs", { num: num });
     },
     change(value) {
       if (this.model === "Вид Карточный") {
