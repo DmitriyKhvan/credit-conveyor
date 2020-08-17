@@ -61,6 +61,104 @@
               />
             </div>
           </div>
+          <div class="row q-col-gutter-xl q-pb-lg" v-if="file == null">
+            <div class="col">
+              <q-file
+                filled
+                dark
+                v-model="file"
+                label="Загрузить файл"
+                @input="uploadFile"
+                ref="inputUpload"
+                bg-color="blue-14"
+                label-color="white"
+                :filter="
+                  files => files.filter(file => file.type === 'application/pdf')
+                "
+                :rules="[
+                  val => (val && val.length !== null) || 'Загрузите файл'
+                ]"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="cloud_upload" color="white" />
+                </template>
+              </q-file>
+            </div>
+            <div class="col">
+              <q-btn
+                push
+                flat
+                color="grey"
+                label="Посмотреть файл"
+                size="lg"
+                @click="newFile"
+              />
+            </div>
+          </div>
+          <div class="q-my-sm full-width" v-else>
+            <div class="row q-my-md items-center">
+              <q-icon
+                size="20px"
+                name="attach_file"
+                class=" rotate-180 text-bold"
+              />
+              <strong class="col text-no-wrap">Прикрепленные файлы</strong>
+              <q-file
+                dense
+                filled
+                rounded
+                class="col-3"
+                v-model="file"
+                label="Загрузить"
+                @input="uploadFile"
+                ref="inputUpload"
+                bg-color="blue-14"
+                label-color="white"
+                clear-icon
+                display-value=""
+                :filter="
+                  files => files.filter(file => file.type === 'application/pdf')
+                "
+                :rules="[
+                  val => (val && val.length !== null) || 'Загрузите файл'
+                ]"
+              >
+              </q-file>
+            </div>
+            <div class="row q-pb-lg full-width text-grey">
+              <q-list class="col">
+                <q-item
+                  class="q-mb-sm rounded-borders"
+                  style="border: 1px solid #e7e7e7;"
+                  dense
+                >
+                  <q-item-section avatar>
+                    <q-icon name="description" />
+                  </q-item-section>
+                  <q-item-section
+                    class="text-no-wrap overflow-hidden"
+                    style="overflow:hidden; text-no-wrap overflow-hidden"
+                  >
+                    {{ file ? file["name"] : "invalid file format" }}
+                  </q-item-section>
+                  <q-btn
+                    @click="newFile"
+                    flat
+                    color="grey"
+                    icon="get_app"
+                    side
+                  />
+                  <q-btn
+                    @click="file = null"
+                    flat
+                    color="grey"
+                    icon="clear"
+                    side
+                  />
+                </q-item>
+              </q-list>
+            </div>
+          </div>
           <div class="row q-pb-lg">
             <div class="col q-pr-lg q-mr-lg">
               <q-input outlined v-model="form.in_number" label="Вх. номер" />
@@ -157,40 +255,6 @@
                     (val && val.length !== null) ||
                     'Кол. дистов обязательное поле'
                 ]"
-              />
-            </div>
-          </div>
-          <div class="row q-col-gutter-xl q-pb-lg">
-            <div class="col">
-              <q-file
-                filled
-                dark
-                v-model="file"
-                label="Загрузить файл"
-                @input="uploadFile"
-                ref="inputUpload"
-                bg-color="blue-14"
-                label-color="white"
-                :filter="
-                  files => files.filter(file => file.type === 'application/pdf')
-                "
-                :rules="[
-                  val => (val && val.length !== null) || 'Загрузите файл'
-                ]"
-              >
-                <template v-slot:prepend>
-                  <q-icon name="cloud_upload" color="white" />
-                </template>
-              </q-file>
-            </div>
-            <div class="col">
-              <q-btn
-                push
-                flat
-                color="grey"
-                label="Посмотреть файл"
-                size="lg"
-                @click="newFile"
               />
             </div>
           </div>
@@ -307,7 +371,7 @@ export default {
       console.log(val);
       this.file = val;
       // this.form.in_number = val.name.slice(0, -4);
-      console.log(this.form.in_number);
+      console.log(this.form.file);
     },
 
     sendNewDoc() {
@@ -369,7 +433,7 @@ export default {
     },
 
     resetForm() {
-      (this.file = []),
+      (this.file = null),
         (this.form.journal = null),
         (this.form.region = null),
         (this.form.in_number = null),

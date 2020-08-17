@@ -1,4 +1,5 @@
 import axios from "axios";
+import NotifyService from "@/services/notify.service";
 export default {
   state: {
     aFilters: {
@@ -40,7 +41,11 @@ export default {
       state.aFilters = payload;
     },
     aAllDocs(state, payload) {
-      state.aDocks = payload;
+      if (payload == null) {
+        state.aDocks = [];
+      } else {
+        state.aDocks = payload;
+      }
     },
     updateDocStatus(state, payload) {
       const arr = state.aDocks.find(doc => doc.doc_id === payload.doc_id[0]);
@@ -53,7 +58,6 @@ export default {
     multiUpdateDocStatus(state, payload) {
       payload.doc_id.forEach(id => {
         const arr = state.aDocks.find(doc => doc.doc_id === id);
-        console.log(arr);
         arr.doc_status = payload.status;
       });
     },
@@ -67,7 +71,6 @@ export default {
         const all = await axios.get(
           `/tasks/aparat/search?description=${payload}`
         );
-        console.log(all);
         commit("aAllDocs", all.data);
       } catch (e) {
         throw e;
@@ -132,7 +135,13 @@ export default {
     },
     async multiUpdateDocStatus({ commit }, payload) {
       try {
-        const doc = await axios.post("/tasks/aparat", payload);
+        let res = await axios.post("/tasks/aparat", payload);
+
+        if (res.data.status == 1) {
+          NotifyService.showSuccessMessage(res.data.message);
+        } else {
+          NotifyService.showErrorMessage(res.data.message);
+        }
         commit("multiUpdateDocStatus", payload);
       } catch (e) {
         throw e;

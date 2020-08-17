@@ -64,8 +64,7 @@
                   self="bottom middle"
                   :offset="[10, 10]"
                   content-class="bg-green"
-                  >{{ doc.paper_count }} листов бумаги</q-tooltip
-                >
+                >{{ doc.paper_count }} листов бумаги</q-tooltip>
               </div>
               <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
             </div>
@@ -84,12 +83,7 @@
           <div class="row q-pt-md">
             <div class="col text-right fontBtn">
               <!-- <a-popup :doc="doc"></a-popup> -->
-              <q-btn
-                color="blue-14"
-                size="lg"
-                label="Просмотреть"
-                @click="showDialogDetails()"
-              />
+              <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
             </div>
           </div>
           <!-- -->
@@ -141,6 +135,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import Popup from "./Popup";
+import CommonUtils from "@/shared/utils/CommonUtils";
 export default {
   props: ["doc"],
   components: {
@@ -155,7 +150,7 @@ export default {
   },
   methods: {
     selectDoc() {
-      this.$store.dispatch("selDoc", this.doc.doc_id);
+      this.$store.dispatch("selDoc", this.doc);
     },
     newFile() {
       if (this.doc.file) {
@@ -177,12 +172,16 @@ export default {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
-            this.$store.dispatch("getADocs", this.menuNo);
+            this.$store.dispatch("getADocs", { num: this.menuNo });
           }
         })
         .onCancel(() => {
           console.log("Cancel");
         });
+    },
+    formatDate(date) {
+      //console.log({ date: CommonUtils.simpleDateFormat(date) });
+      return CommonUtils.simpleDateFormat(date);
     }
   },
   data() {
@@ -191,7 +190,7 @@ export default {
     };
   },
   created() {
-    if (this.selectedDocs.find(id => id === this.doc.doc_id)) {
+    if (this.selectedDocs.find(el => el.doc_id === this.doc.doc_id)) {
       this.isSelected = true;
     } else {
       this.isSelected = false;

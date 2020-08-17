@@ -6,15 +6,22 @@ export default {
     aAllDocs: [],
     menuNo: 1,
     selectedDocs: [],
-    aSuperiors: []
+    aSuperiors: [],
+    // pagination states
+    page: 1, // default
+    rowsPerPage: 5, // default
+    totalPages: 0, // default
+    totalRows: 0 // totalRows
   },
   mutations: {
-    selDoc(state, id) {
+    selDoc(state, doc) {
       // selVal
-      if (state.selectedDocs.find(docId => docId === id)) {
-        state.selectedDocs = state.selectedDocs.filter(docId => docId !== id);
+      if (state.selectedDocs.find(el => el.doc_id === doc.doc_id)) {
+        state.selectedDocs = state.selectedDocs.filter(
+          el => el.doc_id !== doc.doc_id
+        );
       } else {
-        state.selectedDocs.push(id);
+        state.selectedDocs.push(doc);
       }
     },
     setIsListView(state, val) {
@@ -28,12 +35,25 @@ export default {
     },
     setSuperiors(state, payload) {
       state.aSuperiors = payload;
+    },
+    setPage(state, page) {
+      state.page = page;
+    },
+    setRowsPerPage(state, rowsPerPage) {
+      state.rowsPerPage = rowsPerPage;
+    },
+    setTotalPages(state, total) {
+      state.totalPages = total;
+    },
+    setTotalRows(state, totalRows) {
+      state.totalPages = totalRows;
     }
   },
   actions: {
-    selDoc({ commit }, id) {
-      commit("selDoc", id);
+    selDoc({ commit }, doc) {
+      commit("selDoc", doc);
     },
+    //? redundant
     async getAUser({ commit }, num) {
       try {
         const user = await axios.get(`/emps/info/${num}`);
@@ -42,9 +62,27 @@ export default {
         throw e;
       }
     },
-    async getADocs({ commit }, num) {
+
+    async getADocs({ commit, state, rootState }, payload) {
+      let num = payload.num; // status
+      let page = payload.page; // page number
+      let rows = payload.rows; // # of rows per page
+      let lang = rootState.common.langNum;
+
+      if (num) {
+        commit("setMenuNo", num); // set tab numbers
+      }
+      if (page) {
+        commit("setPage", page);
+      }
+      if (rows) {
+        commit("setRowsPerPage", rows);
+        commit("setPage", 1); // setback to page 1
+      }
       try {
-        const allData = await axios.get(`/tasks/pomoshnik/${num}`);
+        const allData = await axios.get(
+          `/tasks/pomoshnik/${state.menuNo}?page=${state.page}&rows=${state.rowsPerPage}&lang=${lang}`
+        );
         //console.log(allData.data);
         const docs = allData.data.data !== null ? allData.data.data : [];
         let superiors = [];
@@ -58,15 +96,32 @@ export default {
           });
           commit("setSuperiors", superiors);
         }
-        commit("setMenuNo", num);
         commit("getADocs", docs);
+        commit("setTotalRows", allData.data.docs_count);
+        commit("setTotalPages", allData.data.page_count);
       } catch (e) {
         throw e;
       }
     },
     setIsListView({ commit }, payload) {
-      commit("setIsListView", payload);
+      commit("setIsListView", payload); //
     }
   },
-  getters: {}
+  getters: {
+    totalPages: state => {
+      return state.totalPages;
+    },
+    page: state => {
+      return state.page;
+    },
+    rowsPerPage: state => {
+      return state.rowsPerPage;
+    },
+    totalRows: state => {
+      return state.totalRows;
+    },
+    selectedDocs: state => {
+      return state.selectedDocs;
+    }
+  }
 };
