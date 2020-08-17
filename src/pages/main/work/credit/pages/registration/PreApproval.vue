@@ -43,6 +43,12 @@
               </tr>
             </table>
 
+            <p
+              class="failureCredit"
+              v-if="preApprovalData.maxSum < 0">
+              Недостаточно средств для предоставления кредита
+            </p>
+
             <div v-if="failureCreditReason">
               <div class="text-h6">Причина отказа:</div>
 
@@ -375,6 +381,13 @@ export default {
         background: #acacac;
       }
     }
+  }
+
+  .failureCredit {
+    text-align: center;
+    color: $red-5;
+    font-size: 18px;
+    margin-bottom: 10px;
   }
 }
 

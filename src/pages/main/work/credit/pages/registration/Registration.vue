@@ -53,7 +53,7 @@
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => fioValid(val)
+                      val => mValid(val)
                     ]"
                   />
                   <q-input
@@ -792,6 +792,10 @@ export default {
 
     fioValid(val) {
       return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
+    },
+
+    mValid(val) {
+      return val.match(/^([A-Z]+\s)*[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
     },
   },
   components: {
