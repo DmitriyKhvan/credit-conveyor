@@ -3,7 +3,13 @@
     <div class="col">
       <div class="row q-col-gutter-x-md">
         <div class="col buttonFilter">
-          <!-- <a-popup></a-popup> -->
+          <q-btn
+            color="blue-14"
+            size="lg"
+            :label="'Отправить выбранное: ( '+selectedDocs.length+' )'"
+            @click="showMultiDocPopup()"
+            :disable="selectedDocs.length === 0"
+          />
         </div>
       </div>
     </div>
@@ -34,6 +40,7 @@
 </template>
 <script>
 import { mapState, mapGetters } from "vuex";
+import MultiPopup from "./MultiPopup";
 export default {
   data() {
     return {
@@ -42,15 +49,13 @@ export default {
     };
   },
   created() {
-    console.log({ totalPages: this.totalPages, rowsPerPage: this.rowsPerPage });
     this.rowNum = this.rowsPerPage;
   },
   computed: {
     ...mapState({
-      //page: state => state.assistant.page,
-      //rowsPerPage: state => state.assistant.rowsPerPage,
-      //totalRows: state => state.assistant.totalRows
+      selectedDocs: state => state.assistant.selectedDocs
     }),
+
     ...mapGetters({
       totalPages: "totalPages",
       page: "page",
@@ -61,10 +66,6 @@ export default {
       return (this.page - 1) * this.rowsPerPage + 1;
     },
     pageEndNum() {
-      console.log({
-        totalRows: this.totalRows,
-        rowsPerPage: this.rowsPerPage
-      });
       return this.rowsPerPage * this.page > this.totalRows
         ? this.totalRows
         : this.rowsPerPage * this.page;
@@ -76,6 +77,22 @@ export default {
   methods: {
     selectPagesNum() {
       this.$store.dispatch("getADocs", { rows: this.rowNum });
+    },
+    showMultiDocPopup() {
+      console.log("multi popup");
+      this.$q
+        .dialog({
+          component: MultiPopup,
+          parent: this
+          // doc: this.doc
+        })
+        .onOk(res => {
+          console.log({ res: res });
+          //obnobvit dokumenti na tekushiy tab
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        });
     }
   }
 };

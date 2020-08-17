@@ -14,12 +14,14 @@ export default {
     totalRows: 0 // totalRows
   },
   mutations: {
-    selDoc(state, id) {
+    selDoc(state, doc) {
       // selVal
-      if (state.selectedDocs.find(docId => docId === id)) {
-        state.selectedDocs = state.selectedDocs.filter(docId => docId !== id);
+      if (state.selectedDocs.find(el => el.doc_id === doc.doc_id)) {
+        state.selectedDocs = state.selectedDocs.filter(
+          el => el.doc_id !== doc.doc_id
+        );
       } else {
-        state.selectedDocs.push(id);
+        state.selectedDocs.push(doc);
       }
     },
     setIsListView(state, val) {
@@ -48,8 +50,8 @@ export default {
     }
   },
   actions: {
-    selDoc({ commit }, id) {
-      commit("selDoc", id);
+    selDoc({ commit }, doc) {
+      commit("selDoc", doc);
     },
     //? redundant
     async getAUser({ commit }, num) {
@@ -77,7 +79,6 @@ export default {
         commit("setRowsPerPage", rows);
         commit("setPage", 1); // setback to page 1
       }
-      console.log({ page: state.page, rows: state.rowsPerPage, lang: lang });
       try {
         const allData = await axios.get(
           `/tasks/pomoshnik/${state.menuNo}?page=${state.page}&rows=${state.rowsPerPage}&lang=${lang}`
@@ -98,7 +99,6 @@ export default {
         commit("getADocs", docs);
         commit("setTotalRows", allData.data.docs_count);
         commit("setTotalPages", allData.data.page_count);
-        console.log({ total: allData.data });
       } catch (e) {
         throw e;
       }
@@ -119,6 +119,9 @@ export default {
     },
     totalRows: state => {
       return state.totalRows;
+    },
+    selectedDocs: state => {
+      return state.selectedDocs;
     }
   }
 };
