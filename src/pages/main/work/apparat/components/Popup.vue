@@ -282,15 +282,11 @@ export default {
   },
   computed: {
     ...mapState({
-      statusesList: state => state.apparat.aFilters.statuses
+      statuses: state => state.apparat.aFilters.statuses
     }),
     ...mapGetters(["getNameStatus"]),
     getStatus() {
       return this.getNameStatus(this.doc.doc_status);
-    },
-    // apparat given access only change status "sent" and "closed"
-    statuses() {
-      return this.statusesList.filter(el => el.value == 3 || el.value == 4);
     }
   },
   methods: {
