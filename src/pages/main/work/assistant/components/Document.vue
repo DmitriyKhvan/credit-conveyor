@@ -1,6 +1,6 @@
 <template>
   <div v-if="list" class="row bg-white q-pt-sm q-pb-lg q-mt-md q-mb-sm task">
-    <div>
+    <div v-if="isNewDocsSection">
       <q-checkbox v-model="isSelected" @input="selectDoc" />
     </div>
     <div class="col">
@@ -72,7 +72,7 @@
         </div>
         <div class="col-2 q-pr-md q-pa-md">
           <div class="row">
-            <div class="col text-right q-pr-md cursor-pointer" @click="newFile">
+            <div class="col text-right q-pr-md cursor-pointer" @click="download()">
               <img src="@/assets/icons/Download-Cloud.svg" alt />
             </div>
             <div class="cursor-pointer">
@@ -126,7 +126,7 @@
 
     <div class="row q-pb-md">
       <div class="col text-center">
-        <q-btn color="blue-14" size="lg" label="Просмотреть" />
+        <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
         <!-- <a-popup :doc="doc"></a-popup> -->
       </div>
     </div>
@@ -136,6 +136,8 @@
 import { mapState, mapGetters } from "vuex";
 import Popup from "./Popup";
 import CommonUtils from "@/shared/utils/CommonUtils";
+import { downloadFile, getMimeType } from "@/shared/utils/file";
+
 export default {
   props: ["doc"],
   components: {
@@ -144,22 +146,23 @@ export default {
   computed: {
     ...mapState({
       list: state => state.assistant.isListView,
-      menuNo: state => state.assistant.menuNo, // not used
       selectedDocs: state => state.assistant.selectedDocs
-    })
+    }),
+    ...mapGetters({
+      menuNo: "menuNo"
+    }),
+    isNewDocsSection() {
+      return this.menuNo == 1 ? true : false;
+    }
   },
   methods: {
     selectDoc() {
+      console.log({ selectingDoc: this.doc });
       this.$store.dispatch("selDoc", this.doc);
     },
-    newFile() {
-      if (this.doc.file) {
-        let blob = new Blob([this.doc.file], { type: "application/pdf" });
-        let link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = this.doc.file.name;
-        link.click();
-      }
+    download() {
+      let extention = getMimeType(this.doc.file.extension);
+      downloadFile(this.doc.file.id, this.doc.file.name, extention);
     },
     showDialogDetails() {
       this.$q

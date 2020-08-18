@@ -27,34 +27,38 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-input standout v-model="text" label="Исполнитель">
+                  <q-input standout v-model="searchUser" label="Исполнитель" @input="searchUsers">
                     <template v-slot:append>
                       <q-icon name="search" />
                     </template>
                   </q-input>
                 </div>
               </div>
-
+              <div class="row" v-if="result.length !== 0">
+                <div class="col q-pb-md q-pt-sm q-px-md q-mb-sm users">
+                  <div v-for="u in result" :key="u.EMP_ID" @click="selectedUser(u)">
+                    <span>
+                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
+                      {{ u.MIDDLE_NAME[0] }}.
+                    </span>
+                  </div>
+                </div>
+              </div>
               <div class="row">
                 <div class="col q-pb-xs">Выберите главного исполнителя</div>
               </div>
-              <div class="row">
+              <div class="row" v-if="workers.length !== 0">
                 <div class="col q-pb-md q-pt-sm q-px-md users">
-                  <div class="active">
-                    <span>Баратов С. У.</span>
-                    <q-icon name="close" size="xs" class="icon_btn" />
-                  </div>
-                  <div>
-                    <span>Ахмедов Б. А.</span>
-                    <q-icon name="close" size="xs" class="icon_btn" />
-                  </div>
-                  <div>
-                    <span>Драгунов А. С.</span>
-                    <q-icon name="close" size="xs" class="icon_btn" />
-                  </div>
-                  <div>
-                    <span>Иванов И. А.</span>
-                    <q-icon name="close" size="xs" class="icon_btn" />
+                  <div
+                    v-for="u in workers"
+                    :key="u.EMP_ID"
+                    :class="activeWorker === u.EMP_ID ? 'active' : ''"
+                  >
+                    <span @click="selectActiveWorker(u.EMP_ID)">
+                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
+                      {{ u.MIDDLE_NAME[0] }}.
+                    </span>
+                    <q-icon name="close" size="xs" class="icon_btn" @click="removeUser(u.EMP_ID)" />
                   </div>
                 </div>
               </div>
@@ -64,7 +68,12 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-select filled v-model="model" :options="options" label="Руководитель" />
+                  <q-select
+                    filled
+                    v-model="superior"
+                    :options="superiorsList"
+                    label="Руководитель"
+                  />
                 </div>
               </div>
 
@@ -73,19 +82,19 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-select filled v-model="model" :options="options" label="Шаблон" />
+                  <q-select filled v-model="shablon" :options="shablons" label="Шаблон" />
                 </div>
               </div>
 
               <div class="row desp">
                 <div class="col">
-                  <q-toggle
-                    v-model="value"
-                    color="amber-4"
-                    label="Не подписан"
-                    left-label
-                    size="74px"
-                  />
+                  <div>
+                    <div v-if="signed">Подписан</div>
+                    <div v-else>Не подписан</div>
+                  </div>
+                  <div>
+                    <q-toggle v-model="signed" color="amber-4" size="74px" @input="changeVal" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -93,8 +102,8 @@
 
           <div class="row q-pt-lg q-mt-sm bottomBlock">
             <div class="col text-center">
-              <q-btn color="blue-14" label="Отправить" size="lg" class="q-mr-lg" />
-              <q-btn color="white" text-color="black" label="Отменить" size="lg" />
+              <q-btn color="blue-14" label="Отправить" @click="saveForm" size="lg" class="q-mr-lg" />
+              <q-btn color="white" text-color="black" label="Отменить" @click="hide" size="lg" />
             </div>
           </div>
         </q-card-section>
@@ -105,25 +114,122 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import MultiDocument from "./MultiDocument";
+import NotifyService from "@/services/notify.service";
+
 export default {
   components: {
     MultiDocument: MultiDocument
   },
   data() {
     return {
-      date: "2019/02/01",
-      value: true,
-      text: "",
-      options: [],
-      model: ""
+      shablon: "",
+      superior: "",
+      searchUser: "",
+      result: [],
+      workers: [],
+      activeWorker: "",
+      signed: false, // podpisan
+      docIds: []
     };
+  },
+  created() {
+    console.log({ selectedDocs: this.selectedDocs });
+    this.selectedDocs.forEach(doc => {
+      this.docIds.push(doc.doc_id);
+    });
   },
   computed: {
     ...mapState({
-      selectedDocs: state => state.assistant.selectedDocs
-    })
+      superiorsList: state => state.assistant.aSuperiors
+    }),
+    ...mapGetters({
+      dicts: "dicts/getDictsList", // loads all dicts
+      selectedDocs: "selectedDocs"
+    }),
+    shablons() {
+      return this.dicts(6).values.map(el => {
+        return {
+          label: el.name[1], // TODO add lang val
+          value: el.id
+        };
+      });
+    }
   },
   methods: {
+    searchUsers() {
+      if (this.searchUser === "") {
+        this.result = [];
+      }
+      if (this.searchUser !== "") {
+        this.$axios
+          .get("/emps/search?name=" + this.searchUser)
+          .then(response => {
+            this.result = response.data;
+          })
+          .catch(error => {
+            console.log("error");
+          });
+      }
+    },
+    selectedUser(user) {
+      this.workers.push(user);
+      this.searchUser = "";
+      this.result = [];
+    },
+    selectActiveWorker(id) {
+      this.activeWorker = id;
+    },
+    removeUser(id) {
+      this.workers = this.workers.filter(user => user.EMP_ID !== id);
+      if (this.activeWorker === id) this.activeWorker = "";
+    },
+    changeVal() {
+      console.log(this.signed);
+    },
+    saveForm() {
+      const arr = [];
+      this.workers.forEach(user => {
+        arr.push({
+          emp_id: user.EMP_ID,
+          check: user.EMP_ID === this.activeWorker ? true : false,
+          dep_code: user.DEP_CODE
+        });
+      });
+
+      const obg = {
+        doc_id: this.docIds,
+        data: arr,
+        h_emp_id: this.superior.value,
+        h_dep_code: this.superior.dep_code,
+        type: 1,
+        message: this.shablon.value,
+        status: this.signed === true ? 3 : 2
+      };
+      console.log({ obg });
+      this.$axios
+        .post("/tasks/pomoshnik", obg)
+        .then(
+          response => {
+            this.$emit("ok", response.data); //
+            if (response.data.status == 1) {
+              NotifyService.showSuccessMessage(response.data.message);
+              this.hide();
+            } else {
+              NotifyService.showErrorMessage(response.data.message);
+              this.hide();
+            }
+          },
+          error => {
+            //console.log({ error: error.response.data });
+            NotifyService.showErrorMessage(error.response.data.message);
+          }
+        )
+        .catch(error => {
+          //console.log({ error: error.response.data });
+          NotifyService.showErrorMessage(error.response.data.message);
+          //this.hide();
+        });
+    },
     // !!! Don't change
     show() {
       this.$refs.dialog.show();

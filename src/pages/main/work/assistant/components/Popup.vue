@@ -29,7 +29,7 @@
                     <div class="col-5">
                       <div>Документ № {{ doc.doc_id }}</div>
                     </div>
-                    <div class="col flexBlock cursor-pointer" @click="newFile">
+                    <div class="col flexBlock cursor-pointer" @click="download">
                       <div class="pad-2">
                         <img src="@/assets/icons/Download-Cloud.svg" />
                       </div>
@@ -84,7 +84,7 @@
                         <div class="row">
                           <div class="col">{{ doc.file.name }}</div>
                           <div class="col q-px-sm">
-                            <i>{{ fileSize(doc.file.file_size) }} мб</i>
+                            <i>{{ fileSize(doc.file.file_size) }}</i>
                           </div>
                         </div>
                       </div>
@@ -109,12 +109,7 @@
                   <div v-else>Не подписан</div>
                 </div>
                 <div>
-                  <q-toggle
-                    v-model="signed"
-                    color="amber-4"
-                    size="74px"
-                    @input="changeVal"
-                  />
+                  <q-toggle v-model="signed" color="amber-4" size="74px" @input="changeVal" />
                 </div>
                 <div class="col"></div>
               </div>
@@ -125,12 +120,7 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-input
-                    standout
-                    v-model="searchUser"
-                    label="Исполнитель"
-                    @input="selUsers"
-                  >
+                  <q-input standout v-model="searchUser" label="Исполнитель" @input="selUsers">
                     <template v-slot:append>
                       <q-icon name="search" />
                     </template>
@@ -140,15 +130,11 @@
 
               <div class="row" v-if="result.length !== 0">
                 <div class="col q-pb-md q-pt-sm q-px-md q-mb-sm users">
-                  <div
-                    v-for="u in result"
-                    :key="u.EMP_ID"
-                    @click="selectedUser(u)"
-                  >
-                    <span
-                      >{{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
-                      {{ u.MIDDLE_NAME[0] }}.</span
-                    >
+                  <div v-for="u in result" :key="u.EMP_ID" @click="selectedUser(u)">
+                    <span>
+                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
+                      {{ u.MIDDLE_NAME[0] }}.
+                    </span>
                   </div>
                 </div>
               </div>
@@ -164,16 +150,11 @@
                     :key="u.EMP_ID"
                     :class="activeWorker === u.EMP_ID ? 'active' : ''"
                   >
-                    <span @click="selectActiveWorker(u.EMP_ID)"
-                      >{{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
-                      {{ u.MIDDLE_NAME[0] }}.</span
-                    >
-                    <q-icon
-                      name="close"
-                      size="xs"
-                      class="icon_btn"
-                      @click="removeUser(u.EMP_ID)"
-                    />
+                    <span @click="selectActiveWorker(u.EMP_ID)">
+                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
+                      {{ u.MIDDLE_NAME[0] }}.
+                    </span>
+                    <q-icon name="close" size="xs" class="icon_btn" @click="removeUser(u.EMP_ID)" />
                   </div>
                 </div>
               </div>
@@ -197,12 +178,7 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-select
-                    filled
-                    v-model="shablon"
-                    :options="shablons"
-                    label="Шаблон"
-                  />
+                  <q-select filled v-model="shablon" :options="shablons" label="Шаблон" />
                 </div>
               </div>
             </div>
@@ -218,13 +194,7 @@
                 @click="saveForm"
                 :disable="$v.$invalid"
               />
-              <q-btn
-                color="white"
-                text-color="black"
-                label="Отменить"
-                size="lg"
-                @click="hide"
-              />
+              <q-btn color="white" text-color="black" label="Отменить" size="lg" @click="hide" />
             </div>
           </div>
         </q-card-section>
@@ -236,6 +206,7 @@
 import { mapState, mapGetters } from "vuex";
 import NotifyService from "@/services/notify.service";
 import { required, minLength } from "vuelidate/lib/validators";
+import { formatFileSize, downloadFile, getMimeType } from "@/shared/utils/file";
 
 export default {
   props: {
@@ -298,7 +269,6 @@ export default {
     }
     // initial values of emp ids
     if (this.doc.start_emps_id !== null) {
-      console.log(this.doc.start_emps_id);
       this.workers = this.doc.start_emps_id;
     }
     // this.$store.dispatch('getAUser')
@@ -345,7 +315,6 @@ export default {
         .post("/tasks/pomoshnik", obg)
         .then(
           response => {
-            console.log({ response: response.data });
             this.$emit("ok", response.data); //
             if (response.data.status == 1) {
               NotifyService.showSuccessMessage(response.data.message);
@@ -400,18 +369,14 @@ export default {
       let d = new Date(dateNum);
       return d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
     },
-    fileSize(file) {
-      return (file / (1024 * 1024)).toFixed(2);
+    fileSize(size) {
+      return formatFileSize(size);
     },
-    newFile() {
-      if (this.doc.file) {
-        let blob = new Blob([this.doc.file], { type: "application/pdf" });
-        let link = document.createElement("a");
-        link.href = window.URL.createObjectURL(blob);
-        link.download = this.doc.file.name;
-        link.click();
-      }
+    download() {
+      let extention = getMimeType(this.doc.file.extension);
+      downloadFile(this.doc.file.id, this.doc.file.name, extention);
     },
+
     // !!! Don't change
     show() {
       this.$refs.dialog.show();

@@ -15,6 +15,7 @@ export default {
   },
   mutations: {
     selDoc(state, doc) {
+      console.log({ doc });
       // selVal
       if (state.selectedDocs.find(el => el.doc_id === doc.doc_id)) {
         state.selectedDocs = state.selectedDocs.filter(
@@ -47,6 +48,9 @@ export default {
     },
     setTotalRows(state, totalRows) {
       state.totalPages = totalRows;
+    },
+    resetSelectedDocs(state) {
+      state.selectedDocs = [];
     }
   },
   actions: {
@@ -103,6 +107,9 @@ export default {
         throw e;
       }
     },
+    resetSelectedDocs({ commit }) {
+      commit("resetSelectedDocs");
+    },
     setIsListView({ commit }, payload) {
       commit("setIsListView", payload); //
     }
@@ -122,6 +129,9 @@ export default {
     },
     selectedDocs: state => {
       return state.selectedDocs;
+    },
+    menuNo: state => {
+      return state.menuNo;
     }
   }
 };
