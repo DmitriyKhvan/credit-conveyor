@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     ...mapState({
-      statuses: state => state.apparat.aFilters.statuses,
+      statusesList: state => state.apparat.aFilters.statuses,
       checkeds: state => state.apparat.aChecked,
 
       fsuperiors: state => state.apparat.aSenior,
@@ -68,7 +68,10 @@ export default {
       faDocks: state => state.apparat.aDocks,
       faDocs: state => state.apparat.aDocs,
       faAllPages: state => state.apparat.aAllPages
-    })
+    }),
+    statuses() {
+      return this.statusesList.filter(el => el.value == 3 || el.value == 4);
+    }
   },
   created() {
     // this.selPage = this.

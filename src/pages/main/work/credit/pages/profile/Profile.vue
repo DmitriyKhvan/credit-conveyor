@@ -914,7 +914,7 @@
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => mValid(val)
+                      val => fioValid(val)
                     ]"
                   />
                 </div>
@@ -1927,7 +1927,7 @@
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => mValid(val)
+                      val => fioValid(val)
                     ]"
                   />
                 </div>
@@ -3529,6 +3529,7 @@
             <div class="row q-col-gutter-md">
               <div class="col">
                 <q-input
+                  :disable="disableField"
                   v-model="creditManagerComment"
                   type="textarea"
                   label="Введите комментарий"
@@ -3540,6 +3541,7 @@
 
             <!-- Add comment-->
             <q-btn
+              :disable="disableField"
               color="primary"
               label="Оставить комментарий"
               class="q-ml-sm"
@@ -4795,10 +4797,6 @@ export default {
 
     fioValid(val) {
       return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
-    },
-
-    mValid(val) {
-      return val.match(/^([A-Z]+\s)*[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
     },
 
     phoneValid(val) {

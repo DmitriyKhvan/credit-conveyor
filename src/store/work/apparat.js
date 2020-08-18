@@ -77,7 +77,7 @@ export default {
       }
     },
     async aPageSelect({ commit }, payload) {
-      console.log(payload);
+      //console.log(payload);
       try {
         const all = await axios.post(
           `files/docs/apparat?page=${payload.page}&rowsPerPage=${payload.perPage}`,
@@ -123,11 +123,17 @@ export default {
     },
     async updateDocStatus({ commit }, payload) {
       try {
-        const doc = await axios.post("/tasks/aparat", payload);
+        const res = await axios.post("/tasks/aparat", payload);
         if (payload.status) {
           commit("updateDocStatus", payload);
         } else {
           commit("updateDocDeadline", payload);
+        }
+
+        if (res.data.status == 1) {
+          NotifyService.showSuccessMessage(res.data.message);
+        } else {
+          NotifyService.showErrorMessage(res.data.message);
         }
       } catch (e) {
         throw e;
@@ -215,7 +221,11 @@ export default {
   getters: {
     getNameStatus: state => num => {
       const arr = state.aFilters.statuses.find(st => st.value === num);
-      return arr.label;
+      if (arr) {
+        return arr.label;
+      } else {
+        return null;
+      }
     }
   }
 };

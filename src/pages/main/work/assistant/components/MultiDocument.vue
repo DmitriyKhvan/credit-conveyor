@@ -8,7 +8,6 @@
           </div>
           <div class="col zg cursor" @click="change">
             <strong>{{formatDescription}}</strong>
-            <!-- <strong v-else>Организация по кибербезопасности направляет вам документы по зашиты...</strong> -->
           </div>
           <div class="q-pl-sm q-pt-sm cursor" @click="change">
             <q-icon v-if="block" name="keyboard_arrow_up" size="sm" />
@@ -25,9 +24,9 @@
             <div class="col-5">
               <div>Документ № {{doc.doc_id}}</div>
             </div>
-            <div class="col flexBlock">
-              <div class="pad-2">
-                <img src="@/assets/icons/Download-Cloud.svg" />
+            <div class="col flexBlock" @click="download">
+              <div class="col text-right q-pr-md cursor-pointer">
+                <img src="@/assets/icons/Download-Cloud.svg" alt />
               </div>
               <div class="q-px-sm">Скачать</div>
             </div>
@@ -80,7 +79,7 @@
                 <div class="row">
                   <div class="col">{{ doc.file.name }}</div>
                   <div class="col q-px-sm">
-                    <i>2.40 мб</i>
+                    <i>{{formatSize(doc.file.file_size)}}</i>
                   </div>
                 </div>
               </div>
@@ -91,7 +90,8 @@
               </div>
               <div class="q-px-sm lineH">
                 <b>Входящий номер:</b>
-                <br />001_к
+                <br />
+                {{doc.in_number}}
               </div>
             </div>
           </div>
@@ -102,6 +102,9 @@
 </template>
 <script>
 import CommonUtils from "@/shared/utils/CommonUtils";
+import { simpleDateFormat } from "@/shared/utils/date";
+import { formatFileSize, downloadFile, getMimeType } from "@/shared/utils/file";
+import { stringTruncate } from "@/shared/utils/common";
 
 export default {
   props: ["doc"],
@@ -112,15 +115,21 @@ export default {
     };
   },
   created() {
-    console.log(this.doc);
+    console.log({ doc: this.doc });
   },
   methods: {
     change() {
       this.block = !this.block;
     },
     formatDate(date) {
-      //console.log({ date: CommonUtils.simpleDateFormat(date) });
-      return CommonUtils.simpleDateFormat(date);
+      return simpleDateFormat(date);
+    },
+    formatSize(size) {
+      return formatFileSize(size);
+    },
+    download() {
+      let extention = getMimeType(this.doc.file.extension);
+      downloadFile(this.doc.file.id, this.doc.file.name, extention);
     }
   },
   computed: {
@@ -129,9 +138,7 @@ export default {
         if (this.block) {
           return this.doc.description;
         } else {
-          return this.doc.description.length > 30
-            ? this.doc.description.substr(0, 27) + "..."
-            : this.doc.description;
+          return stringTruncate(this.doc.description, 30);
         }
       } else {
         return "";

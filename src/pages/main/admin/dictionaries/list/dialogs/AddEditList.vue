@@ -20,12 +20,6 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[0]"
               label="Name Uz"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name Uz is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
             />
             <q-input
               outlined
@@ -34,12 +28,6 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[1]"
               label="Name Ru"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name Ru is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
             />
           </div>
           <div class="row">
@@ -50,12 +38,6 @@
               class="col-xs-12 col-sm-6 col-md-6"
               v-model="details.name[2]"
               label="Name En"
-              @input="$v.details.name.$touch()"
-              :rules="[
-                      val => $v.details.name.required || 'Name En is required',
-                      val => $v.details.name.minLength || 'Length should be at least 3 chars'
-                      ]"
-              lazy-rules
             />
             <q-select
               outlined
@@ -68,7 +50,7 @@
               emit-value
               map-options
               label="Type"
-              @input="$v.details.type_id.$touch()"
+              @input="$v.details.type_id"
               :rules="[
                       val => $v.details.type_id.required || 'Type is required'
                       ]"
@@ -142,9 +124,7 @@ export default {
   validations: {
     details: {
       id: {},
-      name: {
-        required
-      },
+
       type_id: {
         required
       },

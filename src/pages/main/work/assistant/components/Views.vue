@@ -2,7 +2,7 @@
   <div class="row q-pb-md">
     <div class="col">
       <div class="row q-col-gutter-x-md">
-        <div class="col buttonFilter">
+        <div class="col buttonFilter" v-if="isNewDocsSection">
           <q-btn
             color="blue-14"
             size="lg"
@@ -60,8 +60,12 @@ export default {
       totalPages: "totalPages",
       page: "page",
       rowsPerPage: "rowsPerPage",
-      totalRows: "totalRows"
+      totalRows: "totalRows",
+      menuNo: "menuNo"
     }),
+    isNewDocsSection() {
+      return this.menuNo == 1 ? true : false;
+    },
     pageStartNum() {
       return (this.page - 1) * this.rowsPerPage + 1;
     },
@@ -89,6 +93,10 @@ export default {
         .onOk(res => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
+          if (res.status == 1) {
+            this.$store.dispatch("getADocs", { num: this.menuNo });
+            this.$store.dispatch("resetSelectedDocs");
+          }
         })
         .onCancel(() => {
           console.log("Cancel");
