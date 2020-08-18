@@ -1,36 +1,10 @@
 <template>
   <div class="row">
     <right-block></right-block>
-    <div class="col column q-my-lg q-mr-md">
-      <div class="row justify-end" 
-      style="background-color: #EDF1FF; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.0212249); border-radius: 5px;">
-        <div  class="col column justify-center q-pa-lg Avant"
-              style="color: #254EE6;">
-          <div  class="text-center"  
-                style="font-size: 20px">
-            Мы рады вас видеть снва, {{cat(user)}} 
-          </div>
-          <div  class="text-center"
-                style="font-size: 16px">
-            <p>Вы закончили <span class="text-orange">12</span> задач в этом месяце!</p>
-            <p>Продолжайте в том же духе!</p>
-          </div>
-        </div>
-        <img src="~assets/proficon/top-cor.png" class="rounded-borders"/>
-      </div>
-      <div class="bg-white rounded-borders q-mt-lg">
-        <info       v-if="menuId == 0"></info>
-        <documents  v-if="menuId == 1"></documents>
-        <mywork     v-if="menuId == 2"></mywork>
-        <career     v-if="menuId == 3"></career>
-        <others     v-if="menuId == 4"></others>
-      </div>
-    </div>
-  </div>
 
 
 
-      <!-- <personal v-if="menuId == 0"></personal>
+      <personal v-if="menuId == 0"></personal>
       <passport v-if="menuId == 3"></passport>
       <relatives v-if="menuId == 4"></relatives>
       <work v-if="menuId == 8"></work>
@@ -40,99 +14,58 @@
       <contract v-if="menuId == 9"></contract>
       <businesstrip v-if="menuId == 11"></businesstrip>
       <medicallist v-if="menuId == 12"></medicallist>
-      <vacations v-if="menuId == 13"></vacations> -->
+      <vacations v-if="menuId == 13"></vacations>
 
+  </div>
 </template>
 <script>
-// import personal from './components/my'
-// import passport from './components/passport'
-// import relatives from './components/relatives'
-// import work from './components/work'
-// import trips from './components/trips'
-// import career from './components/career'
-// import education from './components/education'
-// import contract from './components/contract'
-// import businesstrip from './components/businesstrip'
-// import medicallist from './components/medicallist'
-// import vacations from './components/vacations'
+import personal from './components/my'
+import passport from './components/passport'
+import relatives from './components/relatives'
+import work from './components/work'
+import trips from './components/trips'
+import career from './components/career'
+import education from './components/education'
+import contract from './components/contract'
+import businesstrip from './components/businesstrip'
+import medicallist from './components/medicallist'
+import vacations from './components/vacations'
 import axios from "axios"
 import { mapGetters } from "vuex"
 import RightBlock from '../components/Left'
-
-import info from './info'
-import documents from './documents'
-import mywork from './myWork'
-import career from './career'
-import others from './others'
-
 export default {
   name: 'MyData',
   components: {
+    personal,
     RightBlock,
-    // personal,
-    // passport,
-    // relatives,
-    // work,
-    // trips,
-    // career,
-    // education,
-    // contract,
-    // businesstrip,
-    // medicallist,
-    // vacations,
-
-    info,
-    documents,
-    mywork,
+    passport,
+    relatives,
+    work,
+    trips,
     career,
-    others
+    education,
+    contract,
+    businesstrip,
+    medicallist,
+    vacations
   },
   data () {
     return {
+
     }
   },
   computed: {
     menuId () {
       return this.$store.getters.getMenuId
-    },
-    ...mapGetters({
-      user: "auth/fullName"
-    })
+    }
   },
   methods: {
-    cat(e) {
-      if (e.length > 0) {
-        let a = this.user.split(' ');
-        return a[0];
-      }
-      return a;
-    }
+
   }
 
 }
 </script>
 <style scoped>
-  @font-face {
-    font-family: 'Avant';
-    src: url('~assets/fonts/avant.ttf') format('truetype');
-  }
-  @font-face {
-    font-family: 'OpenSansBold';
-    src: url('~assets/fonts/OpenSans-Bold.ttf') format('truetype');
-  }
-  .OpenSansBold {
-    font-family: 'OpenSansBold';
-    font-weight: 500;
-  }
-  .Avant {
-    font-family: 'Avant';
-  }
-  .sscroller {
-    position: fixed;
-    top: 20px;
-    bottom: 20px;
-
-  }
   /* .table_bg {
     background: #EAF3FC;
     border-radius: 5px;

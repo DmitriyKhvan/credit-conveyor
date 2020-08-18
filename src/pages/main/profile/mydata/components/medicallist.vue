@@ -1,25 +1,32 @@
 <template>
-  <q-scroll-area class="scrollBlock">
-    <table style="width:100%">
-      <tr>
-        <th
-          v-for="(h, i) in header"
-          :key="i"
-          v-html="h"
-        ></th>
-      </tr>
-      <tr
-        v-for="(t, index) in body"
-        :key="index"
-      >
-        <td
-          v-for="(b, e) in body[index]"
-          :key="e"
-          v-html="b"
-        ></td>
-      </tr>
-    </table>
-  </q-scroll-area>
+  <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
+      <q-scroll-area class="scrollBlock">
+      <div class="row table_border">
+        <div class="table_title"><q-icon name="add_box" size="sm" class="q-pr-sm" /> Больничный лист</div>
+
+          <table style="width:100%">
+            <tr>
+              <th
+                v-for="(h, i) in header"
+                :key="i"
+                v-html="h"
+              ></th>
+            </tr>
+            <tr
+              v-for="(t, index) in body"
+              :key="index"
+            >
+              <td
+                v-for="(b, e) in body[index]"
+                :key="e"
+                v-html="b"
+              ></td>
+            </tr>
+          </table>
+
+      </div>
+      </q-scroll-area>
+  </div>
 </template>
 <script>
 import axios from "axios"

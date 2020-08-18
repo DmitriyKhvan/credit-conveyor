@@ -1,121 +1,79 @@
 <template>
-<div>
-    <q-tabs
-      v-model="tab"
-      no-caps
-      class="text-grey q-mx-lg OpenSansBold"
-      active-color="primary"
-      indicator-color="primary"
-      align="left"
-      narrow-indicator
-    >
-      <q-tab name="trips" :label="titleOne" />
-      <q-tab name="marks" label="Отметки" />
-      <q-tab name="electivity" :label="titleTwo" />
-      <q-tab name="revards" :label="titleThree" />
-    </q-tabs>
+  <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
+    <q-scroll-area class="scrollBlock">
+      <div class="row table_border">
+        <div class="table_title"><q-icon name="transfer_within_a_station" size="sm" class="q-pr-sm" /> {{titleOne}}</div>
 
-    <q-separator class="q-mb-md" />
+        <table style="width:100%">
+          <tr>
+            <th
+              v-for="(h, i) in headerOne"
+              :key="i"
+              v-html="h"
+            ></th>
+          </tr>
+          <tr
+            v-for="(t, index) in bodyOne"
+            :key="index"
+          >
+            <td
+              v-for="(b, e) in bodyOne[index]"
+              :key="e"
+              v-html="b"
+            ></td>
+          </tr>
+        </table>
+      </div>
 
-    <q-tab-panels v-model="tab">
-      <q-tab-panel name="trips">
-        <q-scroll-area class="scrollBlock q-pr-md">
-          <table style="width:100%">
-            <tr>
-              <th
-                v-for="(h, i) in headerOne"
-                :key="i"
-                v-html="h"
-              ></th>
-            </tr>
-            <tr
-              v-for="(t, index) in bodyOne"
-              :key="index"
-            >
-              <td
-                v-for="(b, e) in bodyOne[index]"
-                :key="e"
-                v-html="b"
-              ></td>
-            </tr>
-          </table>
-        </q-scroll-area>
-      </q-tab-panel>
+      <div class="row table_border">
+        <div class="table_title"><q-icon name="star" size="sm" class="q-pr-sm" /> {{titleTwo}}</div>
 
-      <q-tab-panel name="marks">
-        <q-scroll-area class="scrollBlock q-pr-md">
-          <table style="width:100%">
-            <tr>
-              <th
-                v-for="(h, i) in headerMark"
-                :key="i"
-                v-html="h"
-              ></th>
-            </tr>
-            <tr
-              v-for="(t, index) in bodyMark"
-              :key="index"
-            >
-              <td
-                v-for="(b, e) in bodyMark[index]"
-                :key="e"
-                v-html="b"
-              ></td>
-            </tr>
-          </table>
-        </q-scroll-area>
-      </q-tab-panel>
-      
-      <q-tab-panel name="electivity">
-        <q-scroll-area class="scrollBlock q-pr-md">
-          <table style="width:100%">
-            <tr>
-              <th
-                v-for="(h, i) in headerTwo"
-                :key="i"
-                v-html="h"
-              ></th>
-            </tr>
-            <tr
-              v-for="(t, index) in bodyTwo"
-              :key="index"
-            >
-              <td
-                v-for="(b, e) in bodyTwo[index]"
-                :key="e"
-                v-html="b"
-              ></td>
-            </tr>
-          </table>
-        </q-scroll-area>
-      </q-tab-panel>
-      
-      <q-tab-panel name="revards">
-        <q-scroll-area class="scrollBlock q-pr-md">
-          <table class="full-width">
-            <tr>
-              <th
-                v-for="(h, i) in headerThree"
-                :key="i"
-                v-html="h"
-              ></th>
-            </tr>
-            <tr
-              v-for="(t, index) in bodyThree"
-              :key="index"
-            >
-              <td
-                v-for="(b, e) in bodyThree[index]"
-                :key="e"
-                v-html="b"
-              ></td>
-            </tr>
-          </table>
-        </q-scroll-area>
-      </q-tab-panel>
-      
-    </q-tab-panels>
-</div>
+        <table style="width:100%">
+          <tr>
+            <th
+              v-for="(h, i) in headerTwo"
+              :key="i"
+              v-html="h"
+            ></th>
+          </tr>
+          <tr
+            v-for="(t, index) in bodyTwo"
+            :key="index"
+          >
+            <td
+              v-for="(b, e) in bodyTwo[index]"
+              :key="e"
+              v-html="b"
+            ></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="row table_border">
+        <div class="table_title"><q-icon name="contacts" size="sm" class="q-pr-sm" /> {{titleThree}}</div>
+
+        <table style="width:100%">
+          <tr>
+            <th
+              v-for="(h, i) in headerThree"
+              :key="i"
+              v-html="h"
+            ></th>
+          </tr>
+          <tr
+            v-for="(t, index) in bodyThree"
+            :key="index"
+          >
+            <td
+              v-for="(b, e) in bodyThree[index]"
+              :key="e"
+              v-html="b"
+            ></td>
+          </tr>
+        </table>
+      </div>
+    </q-scroll-area>
+    </div>
 </template>
 <script>
 import axios from "axios"
@@ -132,11 +90,7 @@ export default {
       headerThree: null,
       bodyOne: null,
       bodyTwo: null,
-      bodyThree: null,
-      tab: 'trips',
-      headerMark: null,
-      titleMark: null,
-      bodyMark: null
+      bodyThree: null
     }
   },
   computed: {
@@ -157,9 +111,7 @@ export default {
           this.headerThree = response.data[2].header
           this.bodyOne = response.data[0].data
           this.bodyTwo = response.data[1].data
-          this.bodyThree = response.data[2].data,
-          this.headerMark = ['1111', '1122'],
-          this.bodyMark = [['1', '2']]
+          this.bodyThree = response.data[2].data
         })
         .catch(error => {
             console.log('error', error)

@@ -1,23 +1,34 @@
 <template>
-  <table class="full-width">
-    <tr>
-      <th
-        v-for="(h, i) in header"
-        :key="i"
-        v-html="h"
-      ></th>
-    </tr>
-    <tr
-      v-for="(t, index) in body"
-      :key="index"
-    >
-      <td
-        v-for="(b, e) in body[index]"
-        :key="e"
-        v-html="b"
-      ></td>
-    </tr>
-  </table>
+  <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
+      <q-scroll-area class="scrollBlock">
+      <div class="row table_border">
+        <div class="table_title"><q-icon name="group" size="sm" class="q-pr-sm" /> РОДСТВИННИКИ</div>
+
+          <table style="width:100%">
+            <tr>
+              <th
+                v-for="(h, i) in header"
+                :key="i"
+                v-html="h"
+              ></th>
+            </tr>
+            <tr
+              v-for="(t, index) in body"
+              :key="index"
+            >
+              <td
+                v-for="(b, e) in body[index]"
+                :key="e"
+                v-html="b"
+              ></td>
+            </tr>
+          </table>
+
+        </div>
+
+      </q-scroll-area>
+
+  </div>
 </template>
 <script>
 import axios from "axios"
@@ -43,6 +54,7 @@ export default {
       axios
         .get("/emps/data/family?uid=" + this.emp_id)
         .then(response => {
+          console.log(response.data)
           this.header = response.data.header
           this.body = response.data.body
         })
@@ -54,32 +66,36 @@ export default {
 }
 </script>
 <style scoped>
-  @font-face {
-    font-family: 'Avant';
-    src: url('~assets/fonts/avant.ttf') format('truetype');
+  .scrollBlock {
+    height: calc(100vh - 130px);
   }
-  @font-face {
-    font-family: 'OpenSansBold';
-    src: url('~assets/fonts/OpenSans-Bold.ttf') format('truetype');
+  .table_bg {
+    background: #EAF3FC;
+    border-radius: 5px;
   }
-  .OpenSansBold {
-    font-family: 'OpenSansBold';
-    font-weight: 500;
+  .table_border {
+    border: 1px #9FB7CF solid;
+    border-radius: 5px;
+    position: relative;
+    padding: 30px 10px 10px;
+    margin-top: 25px;
   }
-  .Avant {
-    font-family: 'Avant';
+  .table_title {
+    text-transform: uppercase;
+    color: #fff;
+    background: #5B8AB7;
+    border-radius: 5px;
+    position: absolute;
+    top: -25px;
+    left: 10px;
+    padding: 10px 15px;
   }
-  table {
-    color: #122E9C;
-    border-collapse: collapse;
-    font-family: 'OpenSansBold';
-  }
-  th, td {
-  border: 1px solid #b2bdc7;
+  table, th, td {
+  border: 1px solid #9FB7CF;
+  border-collapse: collapse;
   }
   th, td {padding: 10px;}
   th {
-    background: #F8FAFF;
-    color: black;
+    background: #EAF3FC;
   }
 </style>
