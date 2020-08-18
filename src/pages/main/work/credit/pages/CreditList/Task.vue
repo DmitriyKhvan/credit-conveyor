@@ -1022,7 +1022,7 @@
 
                 <div
                   class="row rowForm"
-                  v-for="(phone, phoneIndex) of guarantee.PhoneList"
+                  v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
                   :key="phone.Number"
                 >
                   <div class="col-6 field">Телефон {{ phoneIndex + 1 }}</div>
