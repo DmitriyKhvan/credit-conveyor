@@ -54,7 +54,7 @@
         Файл:
       </div>
       <div class="col">
-        {{ file.length !== null ? file.length : "" }}
+        {{ file !== null ? file : "" }}
       </div>
     </div>
     <div class="row q-pb-md">
