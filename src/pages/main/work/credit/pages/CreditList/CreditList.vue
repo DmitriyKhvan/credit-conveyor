@@ -423,6 +423,7 @@
                   /> -->
 
                   <q-btn
+                    :disable="disable"
                     class="full-width"
                     label="Подписать"
                     color="green"
