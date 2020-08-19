@@ -1300,6 +1300,7 @@
               </div>
             </template>
 
+            <!-- кредитный комитет -->
             <template v-if="userRole === 'CCM'">
               <div class="row rowForm">
                 <div class="col-6 field">
