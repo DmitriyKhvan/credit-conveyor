@@ -123,7 +123,7 @@
             </q-card-actions>
             
             <q-card-actions
-              v-else
+              v-if="INPS"
               class="row justify-center"
             >
               <q-btn
