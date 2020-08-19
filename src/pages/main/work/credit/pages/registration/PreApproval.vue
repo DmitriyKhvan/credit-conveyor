@@ -404,6 +404,13 @@ export default {
       }
     }
   }
+
+  .failureCredit {
+    text-align: center;
+    color: $red-5;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
 }
 
 .q-btn--rectangle {
