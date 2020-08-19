@@ -315,7 +315,7 @@ export default {
           );
           
           if (file) {
-            this.fileData.idFile = file.id // для кеширования id
+            this.fileData.idFile = file.id //для кеширования id
           }
         }
 
