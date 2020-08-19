@@ -44,6 +44,12 @@
               </tr>
             </table>
 
+            <p
+              class="failureCredit"
+              v-if="preApprovalData.maxSum < 0">
+              Недостаточно средств для предоставления кредита
+            </p>
+
             <div v-if="failureCreditReason">
               <div class="text-h6">Причина отказа:</div>
 
