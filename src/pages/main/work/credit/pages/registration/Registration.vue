@@ -8,6 +8,7 @@
       <form @submit.prevent.stop="onSubmit" class="preapprovForm">
         <div class="row q-col-gutter-md">
           <div class="col-7">
+            
             <!-- Private data person -->
             <div class="privat-data tab">
               <h4 class="tab-title" ref="privatData">Персональные данные</h4>
