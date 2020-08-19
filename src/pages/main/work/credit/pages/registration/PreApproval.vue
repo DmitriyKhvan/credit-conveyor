@@ -45,6 +45,7 @@
             </table>
 
             <p
+            
               class="failureCredit"
               v-if="preApprovalData.maxSum < 0">
               Недостаточно средств для предоставления кредита
