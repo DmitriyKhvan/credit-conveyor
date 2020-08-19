@@ -2473,14 +2473,14 @@
                 </div>
               </div>
 
-              <!-- <div class="row q-col-gutter-md">
+              <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
                       :disable="disableField"
-                      ref=""
+                      ref="CEOLastName"
                       square
                       outlined
-                      v-model="guarantee.Name"
+                      v-model="guarantee.CEOLastName"
                       dense
                       label="Фамилия"
                       :rules="[
@@ -2492,10 +2492,10 @@
                 <div class="col-4">
                   <q-input
                       :disable="disableField"
-                      ref=""
+                      ref="CEOFirstName"
                       square
                       outlined
-                      v-model="guarantee.Name"
+                      v-model="guarantee.CEOFirstName"
                       dense
                       label="Имя"
                       :rules="[
@@ -2507,10 +2507,10 @@
                 <div class="col-4">
                   <q-input
                       :disable="disableField"
-                      ref=""
+                      ref="CEOMiddleName"
                       square
                       outlined
-                      v-model="guarantee.Name"
+                      v-model="guarantee.CEOMiddleName"
                       dense
                       label="Отчество"
                       :rules="[
@@ -2518,7 +2518,7 @@
                       ]"
                     />
                 </div>
-              </div> -->
+              </div>
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
@@ -3590,7 +3590,6 @@
         <div class="submitBlock">
           <!-- Print version button-->
           <q-btn
-            :disable="disableField"
             @click="onSubmit(false)"
             color="primary"
             label="Версия для печати"
@@ -3652,6 +3651,11 @@
     </div>
 
     <appLoaderFullScreen v-if="loader" />
+    <appInfoList 
+      :confirm="infoList" 
+      :INPS="true" 
+      @failureCreditINPS="($event) => infoList = $event"
+    />
   </div>
 </template>
 
@@ -3659,11 +3663,14 @@
 import axios from "axios";
 import { mapState } from 'vuex';
 import printJS from "print-js";
-import CommonUtils from "@/shared/utils/CommonUtils";
-import dataTransform from "../../filters/dataTransform";
+
+import InfoList from "../registration/PreApproval";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
+
+import CommonUtils from "@/shared/utils/CommonUtils";
+import dataTransform from "../../filters/dataTransform";
 import { validItems, validFilter } from "../../filters/valid_filter"
 
 export default {
@@ -3671,6 +3678,7 @@ export default {
   data() {
     return {
       bankLoading: false,
+      infoList: false,
       countRelativeDocumentName: -1,
       countGuaranteeDocumentName: -1,
       currentDate: CommonUtils.dateFilter(new Date()),
@@ -4058,6 +4066,9 @@ export default {
 
       if (this.fullProfile.Guarantee.RelatedLegalPerson.items.length) {
         validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
+        validFilter(this.$refs, "CEOLastNameGuaranteesValid", "CEOLastName");
+        validFilter(this.$refs, "CEOFirstNameGuaranteesValid", "CEOFirstName");
+        validFilter(this.$refs, "CEOMiddleNameGuaranteesValid", "CEOMiddleName");
         validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
         validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
         validFilter(this.$refs, 
@@ -4071,6 +4082,9 @@ export default {
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
       } else {
         validItems(this.$refs, "priceGuaranteesValid");
+        validItems(this.$refs, "CEOLastNameGuaranteesValid");
+        validItems(this.$refs, "CEOFirstNameGuaranteesValid");
+        validItems(this.$refs, "CEOMiddleNameGuaranteesValid");
         validItems(this.$refs, "nameGuaranteesValid");
         validItems(this.$refs, "innGuaranteesValid");
         validItems(this.$refs, "kindOfActivityGuaranteesValid");
@@ -4349,7 +4363,11 @@ export default {
     async getInfoBank() {
       this.bankLoading = true
       try{
-        await this.$store.dispatch("profile/getInfoBank")
+        const response = await this.$store.dispatch("profile/getInfoBank")
+        if (response <= 0) {
+          this.infoList = true
+        }
+
         this.bankLoading = false
       } catch(error) {
         this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
@@ -4889,7 +4907,8 @@ export default {
   components: {
     appLoader: Loader,
     appFullProfile: FullProfile,
-    appLoaderFullScreen: LoaderFullScreen
+    appLoaderFullScreen: LoaderFullScreen,
+    appInfoList: InfoList
     // appUploadFiles: UploadFiles
   }
 };

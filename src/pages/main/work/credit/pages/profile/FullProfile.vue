@@ -652,6 +652,13 @@
                     <div class="col-12 profileSubTitle">
                       Юр. лицо {{ index + 1 }}
                     </div>
+                    <div class="col-3">Фамилия</div>
+                    <div class="col-9">{{ guarantee.CEOLastName }}</div>
+                    <div class="col-3">Имя</div>
+                    <div class="col-9">{{ guarantee.CEOFirstName }}</div>
+                    <div class="col-3">Отчество</div>
+                    <div class="col-9">{{ guarantee.CEOMiddleName }}</div>
+
                     <div class="col-3">Наименование организации</div>
                     <div class="col-9">{{ guarantee.Name }}</div>
                     <div class="col-12 dataBlock">Адрес:</div>
