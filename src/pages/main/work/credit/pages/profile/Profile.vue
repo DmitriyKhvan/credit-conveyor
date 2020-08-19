@@ -3529,7 +3529,6 @@
             <div class="row q-col-gutter-md">
               <div class="col">
                 <q-input
-                  :disable="disableField"
                   v-model="creditManagerComment"
                   type="textarea"
                   label="Введите комментарий"
@@ -3541,7 +3540,6 @@
 
             <!-- Add comment-->
             <q-btn
-              :disable="disableField"
               color="primary"
               label="Оставить комментарий"
               class="q-ml-sm"

@@ -8,7 +8,7 @@
       <form @submit.prevent.stop="onSubmit" class="preapprovForm">
         <div class="row q-col-gutter-md">
           <div class="col-7">
-            <!-- Private data person  -->
+            <!-- Private data person -->
             <div class="privat-data tab">
               <h4 class="tab-title" ref="privatData">Персональные данные</h4>
 
@@ -53,7 +53,7 @@
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => fioValid(val)
+                      val => mValid(val)
                     ]"
                   />
                   <q-input
@@ -826,6 +826,13 @@ export default {
 
     fioValid(val) {
       return val.match(/^[A-Z]+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
+    },
+
+    mValid(val) {
+      return (
+        val.match(/^([A-Z]+\s)*[A-Z]+$/) ||
+        "Введите на латинице заглавными буквами"
+      ); // только латинские буквы
     }
   },
   components: {
