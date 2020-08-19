@@ -412,12 +412,14 @@
 <script>
 import axios from "axios";
 import { mapState } from 'vuex';
-import CommonUtils from "@/shared/utils/CommonUtils";
-import formatNumber from "../../filters/format_number.js";
+
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
+
+import CommonUtils from "@/shared/utils/CommonUtils";
+import formatNumber from "../../filters/format_number.js";
 import { validItems } from "../../filters/valid_filter";
 
 export default {

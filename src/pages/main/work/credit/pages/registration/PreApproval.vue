@@ -6,6 +6,7 @@
           <div class="preApprovalBlock__title">
             <div class="text-h6">Заявка на кредит</div>
             <q-btn 
+              v-if="!INPS"
               flat 
               class="print" 
               icon="print" 
@@ -39,7 +40,7 @@
               </tr>
               <tr>
                 <td>Доступная сумма кредита</td>
-                <td>{{ preApprovalData.maxSum | formatNumber(2) }} сум</td>
+                <td>{{ preApprovalData.maxSum | formatNumber }} сум</td>
               </tr>
             </table>
 
@@ -91,7 +92,7 @@
             </div>
 
             <q-card-actions
-              v-if="!failureCreditReason"
+              v-if="!failureCreditReason && !INPS"
               class="row justify-center"
             >
               <q-btn
@@ -113,6 +114,18 @@
                 "
               />
             </q-card-actions>
+            
+            <q-card-actions
+              v-else
+              class="row justify-center"
+            >
+              <q-btn
+                label="Отменить"
+                color="red-5"
+                @click="failureCreditINPS(false)"
+              />
+            </q-card-actions>
+            
           </div>
         </q-card-section>
       </q-card>
@@ -128,7 +141,11 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   props: {
-    confirm: Boolean
+    confirm: Boolean,
+    INPS: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -266,6 +283,11 @@ export default {
           }, 1000)
         }
       }
+    },
+
+    failureCreditINPS(flag) {
+      console.log('failureCreditINPS')
+      this.$emit("failureCreditINPS", flag);
     },
 
     async printFile(fileData) {

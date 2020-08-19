@@ -8,7 +8,7 @@
       <div class="row infoBlock">
         <div class="infoBlockItem">
           <h6 class="titleCredit">Дата</h6>
-          <span class="creditInfo">{{ date }}</span>
+          <span class="creditInfo">{{ date | formatDate('datetime') }}</span>
         </div>
 
         <div class="infoBlockItem">
@@ -972,6 +972,19 @@
                   <div class="col-6 data">Юр. лицо {{ index + 1 }}</div>
                 </div>
                 <div class="row rowForm">
+                  <div class="col-6 field">Фамилия</div>
+                  <div class="col-6 data">{{ guarantee.CEOLastName }}</div>
+                </div>
+                <div class="row rowForm">
+                  <div class="col-6 field">Имя</div>
+                  <div class="col-6 data">{{ guarantee.CEOFirstName }}</div>
+                </div>
+                <div class="row rowForm">
+                  <div class="col-6 field">Отчество</div>
+                  <div class="col-6 data">{{ guarantee.CEOMiddleName }}</div>
+                </div>
+
+                <div class="row rowForm">
                   <div class="col-6 field">Наименование организации</div>
                   <div class="col-6 data">{{ guarantee.Name }}</div>
                 </div>
@@ -1287,6 +1300,44 @@
               </div>
             </template>
 
+            <template v-if="userRole === 'CCM'">
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Среднемесячная заработная плата(сум)
+                </div>
+                <div class="col-6 data">
+                  {{ }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Профит
+                </div>
+                <div class="col-6 data">
+                  {{ }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Класс кредитоспособности
+                </div>
+                <div class="col-6 data">
+                  {{ }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Расчет максимально возможной суммы кредита (скоринг)
+                </div>
+                <div class="col-6 data">
+                  {{ }}
+                </div>
+              </div>
+            </template>
+
           </div>
 
           <h4 class="titleForm">Документы</h4>
@@ -1491,9 +1542,12 @@
 <script>
 import axios from "axios";
 import { mapState } from "vuex";
+
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
+
+import formatDate from "../../filters/formatDate"
 import { validItems, validFilter } from "../../filters/valid_filter";
 
 export default {
@@ -1552,7 +1606,7 @@ export default {
       console.log("res", res);
     } catch (error) {}
   },
-  mounted() {
+  async mounted() {
     setTimeout(() => {
       this.creditTitles = document.querySelectorAll(".titleForm");
       for (let title of this.creditTitles) {
@@ -1752,20 +1806,21 @@ export default {
   components: {
     appLoader: Loader,
     appLoaderFullScreen: LoaderFullScreen
+  },
+  filters: {
+    formatDate
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .infoBlock {
+  display: flex;
+  justify-content: space-between;
   margin: 20px 0 10px 0;
   padding: 10px 0;
   border-top: 1px solid #0054a6;
   border-bottom: 1px solid #0054a6;
-}
-
-.infoBlockItem {
-  margin-right: 200px;
 }
 
 .titleCredit {

@@ -374,7 +374,17 @@ export const profile = {
         const response = await state.bpmService.getInfoBank(data);
         console.log("getInfoBank", response.userTaskCreditDetailed.input);
         if (response.userTaskCreditDetailed.input.length) {
-          commit("setInfoBank", response.userTaskCreditDetailed.input[0].data);
+          const bankData = response.userTaskCreditDetailed.input.find(
+            i => i.label === 'responseData'
+          ).data
+          
+          if (bankData.sum > 0) {
+            commit("setInfoBank", bankData);
+          } else {
+            commit("credits/creditConfirm", bankData, { root: true })
+          }
+
+          return bankData.sum
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -653,6 +663,9 @@ export const profile = {
         },
         INN: "",
         Name: "",
+        CEOFirstName: "",
+        CEOLastName: "",
+        CEOMiddleName: "",
         Sum: 0,
         Activity: ""
       });
