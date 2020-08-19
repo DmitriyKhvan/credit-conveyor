@@ -8,8 +8,7 @@
       <form @submit.prevent.stop="onSubmit" class="preapprovForm">
         <div class="row q-col-gutter-md">
           <div class="col-7">
-            
-            <!-- Private data person -->
+            <!-- Private data person  -->
             <div class="privat-data tab">
               <h4 class="tab-title" ref="privatData">Персональные данные</h4>
 
@@ -66,7 +65,6 @@
                     :hint="loadMessage"
                     label="ИНН"
                     mask="#########"
-                    
                     :rules="[
                       val =>
                         (val && val.length == 9) ||
@@ -127,10 +125,7 @@
                 </div>
 
                 <div class="col-5 row content-between justify-end">
-                  <div
-                    v-if="personalData.personPhoto"
-                    class="personPhoto_block"
-                  >
+                  <div v-if="personalData.personPhoto" class="personPhoto_block">
                     <img
                       :src="'data:image/png;base64,' + personalData.personPhoto"
                       alt
@@ -138,11 +133,7 @@
                     />
                   </div>
                   <div v-else class="default_personPhoto_block">
-                    <img
-                      src="~assets/images/default-avatar.png"
-                      alt=""
-                      class="default_personPhoto"
-                    />
+                    <img src="~assets/images/default-avatar.png" alt class="default_personPhoto" />
                   </div>
                 </div>
               </div>
@@ -182,23 +173,23 @@
 
               <div v-if="!!personalData.typeCredit" class="col-12">
                 <h6 class="periodCredit">Выберите срок кредита</h6>
-                  <q-input
-                    ref="periodCredit"
-                    square
-                    outlined
-                    v-model.number="personalData.periodCredit"
-                    type="number"
-                    dense
-                    label="Срок кредита"
-                    :rules="[
+                <q-input
+                  ref="periodCredit"
+                  square
+                  outlined
+                  v-model.number="personalData.periodCredit"
+                  type="number"
+                  dense
+                  label="Срок кредита"
+                  :rules="[
                       val => !!val || 'Выберите срок кредита',
                       val => (val <= periodCreditMax && val >= periodCreditMin) || 
                         `Срок кредита между ${periodCreditMin} - ${periodCreditMax} мес.`
                     ]"
-                  />
+                />
                 <q-badge color="secondary">
                   Срок: {{ personalData.periodCredit }} ({{
-                    periodCreditMin
+                  periodCreditMin
                   }}
                   до {{ periodCreditMax }})
                 </q-badge>
@@ -270,9 +261,7 @@
 
             <!-- Expense/income -->
             <div class="expense-income tab">
-              <h4 class="tab-title" ref="expenseIncome">
-                Ежемесячные расходы/доходы
-              </h4>
+              <h4 class="tab-title" ref="expenseIncome">Ежемесячные расходы/доходы</h4>
               <div class="tab-content" ref="tabContent">
                 <q-input
                   ref="income"
@@ -302,8 +291,8 @@
                       (val && val.length !== null) ||
                       'Поля должно быт заполнено'
                   ]"
-                /> -->
-                 
+                />-->
+
                 <q-input
                   ref="expense"
                   square
@@ -329,7 +318,7 @@
                     val => val >= 0 || 'Некорректные данные'
                   ]"
                 />
-                
+
                 <div class="q-col-gutter-md">
                   <q-select
                     square
@@ -401,10 +390,10 @@
 
       <appLoaderFullScreen v-if="loaderFullScreen" />
       <!-- Pre-Approval -->
-      <appPreApproval 
+      <appPreApproval
         v-else
         :confirm="confirm"
-        @toggleLoaderFullScreen="($event) => loaderFullScreen = $event" 
+        @toggleLoaderFullScreen="($event) => loaderFullScreen = $event"
         @toggleLoaderForm="($event) => loaderForm = $event"
       />
     </div>
@@ -412,7 +401,7 @@
 </template>
 <script>
 import axios from "axios";
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 
 import PreApproval from "./PreApproval";
 import AutoCompleteData from "./AutoCompleteData";
@@ -437,7 +426,7 @@ export default {
       options: {
         family: [],
         //наличие дополнительного дохода
-        additIncSourOption: [], 
+        additIncSourOption: [],
 
         //источник дополнительного дохода
         typeCredits: [],
@@ -454,29 +443,42 @@ export default {
     this.$store.commit("credits/resetPersonData");
 
     try {
-      this.loaderForm = true
+      this.loaderForm = true;
       if (this.taskId) {
         this.$store.commit("credits/setTaskId", this.taskId);
 
-        if (!axios.defaults.headers.common["BPMCSRFToken"]) { // если перезагрузили страницу
-          await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
-          await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+        if (!axios.defaults.headers.common["BPMCSRFToken"]) {
+          // если перезагрузили страницу
+          await this.$store.dispatch(
+            "credits/setHeaderRole",
+            sessionStorage.getItem("userRole")
+          );
+          await this.$store.dispatch(
+            "credits/setHeaderBPM",
+            sessionStorage.getItem("csrf_token")
+          );
         }
 
-        const response = await this.$store.dispatch("profile/getFullForm", this.taskId);
+        const response = await this.$store.dispatch(
+          "profile/getFullForm",
+          this.taskId
+        );
         if (response) {
-          this.getPreapprovData(response.data.input)
-        } 
+          this.getPreapprovData(response.data.input);
+        }
 
         if (localStorage.getItem(this.taskId)) {
-          this.$store.commit("credits/setPersonalData", JSON.parse(localStorage.getItem(this.taskId)))
+          this.$store.commit(
+            "credits/setPersonalData",
+            JSON.parse(localStorage.getItem(this.taskId))
+          );
           // чтоб не оставлять предыдущий taskId в случае перехода на полную форму (следующий taskId)
-          localStorage.removeItem(this.taskIdPreapp)
+          localStorage.removeItem(this.taskIdPreapp);
         }
 
-        this.setLoan(this.personalData.typeCredit)
+        this.setLoan(this.personalData.typeCredit);
 
-        this.loaderForm = false
+        this.loaderForm = false;
       } else {
         const auth = await this.$store.dispatch("credits/authBpm");
         console.log("auth", auth);
@@ -484,14 +486,16 @@ export default {
         console.log("process", process);
 
         if (process) {
-          this.getPreapprovData(process.userTaskCreditDetailed.input)
-          this.loaderForm = false
+          this.getPreapprovData(process.userTaskCreditDetailed.input);
+          this.loaderForm = false;
         }
-
       }
     } catch (error) {
-      this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
-      this.loaderForm = false
+      this.$store.commit(
+        "credits/setMessage",
+        CommonUtils.filterServerError(error)
+      );
+      this.loaderForm = false;
     }
 
     try {
@@ -503,7 +507,7 @@ export default {
     }
   },
   mounted() {
-    // window.onunload = function() { 
+    // window.onunload = function() {
     //   localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
     // }
     // window.onbeforeunload = function() {
@@ -511,20 +515,20 @@ export default {
     // }
   },
   beforeDestroy() {
-    localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
+    localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData));
   },
   computed: {
     ...mapState({
-        loadMessage: state => state.credits.loadMessage,
-        disableInput: state => state.credits.disableInput,
-        scannerSerialNumber: state => state.credits.scannerSerialNumber,
-        personalData: state => state.credits.personalData,
-        taskIdPreapp: state => state.credits.taskId,
-        credits: state => state.credits
-      }),
-      
+      loadMessage: state => state.credits.loadMessage,
+      disableInput: state => state.credits.disableInput,
+      scannerSerialNumber: state => state.credits.scannerSerialNumber,
+      personalData: state => state.credits.personalData,
+      taskIdPreapp: state => state.credits.taskId,
+      credits: state => state.credits
+    }),
+
     taskId() {
-      return this.$route.query.taskId
+      return this.$route.query.taskId;
     }
   },
   watch: {
@@ -539,11 +543,11 @@ export default {
         this.personalData.externalIncomeSize = 0;
         this.personalData.additionalIncomeSource = "";
       }
-    },
+    }
     // Для форматирования чисeл
     // "personalData.income"(number) {
-    //   console.log(formatNumber(number)) 
-      // this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
+    //   console.log(formatNumber(number))
+    // this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
     // }
   },
   methods: {
@@ -557,25 +561,25 @@ export default {
       this.$refs.pasport.validate();
 
       this.$refs.typeCredit.validate();
-      
+
       if (!!this.personalData.typeCredit && this.personalData.typeCredit != 3) {
-        this.$refs.typeStepCredit.validate()
-        this.$refs.periodCredit.validate()
+        this.$refs.typeStepCredit.validate();
+        this.$refs.periodCredit.validate();
       } else {
-        validItems(this.$refs, "typeStepCredit")
-        validItems(this.$refs, "periodCredit")
+        validItems(this.$refs, "typeStepCredit");
+        validItems(this.$refs, "periodCredit");
       }
 
       if (!!this.personalData.typeCredit) {
         this.$refs.loan_purpose.validate();
       } else {
-        validItems(this.$refs, "loan_purpose")
+        validItems(this.$refs, "loan_purpose");
       }
 
-      this.$refs.familyStatus.validate()
+      this.$refs.familyStatus.validate();
 
       if (this.personalData.children) {
-        this.$refs.childrenCount.validate()
+        this.$refs.childrenCount.validate();
       } else {
         validItems(this.$refs, "childrenCount");
       }
@@ -585,8 +589,8 @@ export default {
       this.$refs.otherExpenses.validate();
 
       if (this.personalData.externalIncome) {
-        this.$refs.externalIncomeSize.validate()
-        this.$refs.additionalIncomeSource.validate()
+        this.$refs.externalIncomeSize.validate();
+        this.$refs.additionalIncomeSource.validate();
       } else {
         validItems(this.$refs, "externalIncomeSize");
         validItems(this.$refs, "additionalIncomeSource");
@@ -647,7 +651,10 @@ export default {
               data: {
                 maritalInfo: {
                   childrens: children,
-                  status: this.options.family.find(i => i.value == familyStatus) ? (this.options.family.find(i => i.value == familyStatus)).label : "",
+                  status: this.options.family.find(i => i.value == familyStatus)
+                    ? this.options.family.find(i => i.value == familyStatus)
+                        .label
+                    : "",
                   statusId: Number(familyStatus),
                   childrenCount: Number(childrenCount)
                 },
@@ -698,104 +705,128 @@ export default {
 
           console.log("response", response);
           if (response) {
-            const preApproval = response.nextTask.input.find(i => i.label == 'preApproval').data
-            this.credits.infoList = response.nextTask.input.find(i => i.label == 'InfoList').data // печатные формы
-            this.credits.reasonsList = response.nextTask.input.find(i => i.label == 'reasons_list').data.items;
-          
-            this.confirm = true
+            const preApproval = response.nextTask.input.find(
+              i => i.label == "preApproval"
+            ).data;
+            this.credits.infoList = response.nextTask.input.find(
+              i => i.label == "InfoList"
+            ).data; // печатные формы
+            this.credits.reasonsList = response.nextTask.input.find(
+              i => i.label == "reasons_list"
+            ).data.items;
+
+            this.confirm = true;
             this.$store.commit("credits/creditConfirm", preApproval);
           }
 
           this.loaderFullScreen = false;
         } catch (error) {
-          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
           this.loaderFullScreen = false;
           setTimeout(() => {
-            localStorage.removeItem(this.taskIdPreapp)
-          }, 1000)
+            localStorage.removeItem(this.taskIdPreapp);
+          }, 1000);
         }
       }
     },
 
     onChangeLoan(credit) {
-      console.log('credit', credit)
+      console.log("credit", credit);
       this.personalData.typeStepCredit = null;
       this.options.typeStepCredits = [];
       this.periodCreditMin = null;
       this.periodCreditMax = null;
       this.personalData.periodCredit = 0;
       this.personalData.loanRate = 0;
-      this.personalData.loan_purpose = null
+      this.personalData.loan_purpose = null;
 
-      this.setLoan(credit)
+      this.setLoan(credit);
     },
 
     setLoan(creditId) {
-      console.log('creditIddd', creditId)
+      console.log("creditIddd", creditId);
       if (creditId) {
-        const { Loan_dict } = this.loan_product_dict.find(i => i.id === creditId)
-        this.options.loanPurpose = this.loanproduct_loancode[creditId].items.map(i => {
+        const { Loan_dict } = this.loan_product_dict.find(
+          i => i.id === creditId
+        );
+        this.options.loanPurpose = this.loanproduct_loancode[
+          creditId
+        ].items.map(i => {
           return {
             label: i.label,
             value: Number(i.value)
-          }
-        })
+          };
+        });
 
-        console.log(this.loanproduct_loancode[creditId])
-        this.personalData.loanRate = Loan_dict.loan_rate_base
+        console.log(this.loanproduct_loancode[creditId]);
+        this.personalData.loanRate = Loan_dict.loan_rate_base;
         this.options.typeStepCredits = Loan_dict.payment_type.items.map(i => {
           return {
             label: i.label,
             value: Number(i.value)
-          }
-        })
+          };
+        });
 
         this.periodCreditMin = Number(
-          Loan_dict.terms_list.items.find(i => i.label === 'min').value
+          Loan_dict.terms_list.items.find(i => i.label === "min").value
         );
 
         this.periodCreditMax = Number(
-          Loan_dict.terms_list.items.find(i => i.label === 'max').value
+          Loan_dict.terms_list.items.find(i => i.label === "max").value
         );
 
-        this.personalData.periodCredit = this.periodCreditMin
+        this.personalData.periodCredit = this.periodCreditMin;
       }
     },
 
     getPreapprovData(preAppData) {
-      this.personalData.spouseCost =
-        (preAppData.find(i => i.label == "spouseCost")).data;
-      this.personalData.childCost =
-        (preAppData.find(i => i.label == "childCost")).data;
+      this.personalData.spouseCost = preAppData.find(
+        i => i.label == "spouseCost"
+      ).data;
+      this.personalData.childCost = preAppData.find(
+        i => i.label == "childCost"
+      ).data;
 
-      this.options.family = this.transformData(preAppData, "maritalStatus")
+      this.options.family = this.transformData(preAppData, "maritalStatus");
 
-      this.options.additIncSourOption = this.transformData(preAppData, "incomeSource")
+      this.options.additIncSourOption = this.transformData(
+        preAppData,
+        "incomeSource"
+      );
 
-      //this.options.loanPurpose = this.transformData(preAppData, "loanPupose") 
+      //this.options.loanPurpose = this.transformData(preAppData, "loanPupose")
 
-      this.options.typeCredits = this.transformData(preAppData, "loan_product_list") 
+      this.options.typeCredits = this.transformData(
+        preAppData,
+        "loan_product_list"
+      );
 
-      this.loan_product_dict = preAppData.find(i => i.label == "loan_product_dict").data.items
+      this.loan_product_dict = preAppData.find(
+        i => i.label == "loan_product_dict"
+      ).data.items;
 
-      this.loanproduct_loancode = preAppData.find(i => i.label == "loanproduct_loancode").data.items[0]
-
+      this.loanproduct_loancode = preAppData.find(
+        i => i.label == "loanproduct_loancode"
+      ).data.items[0];
     },
 
     transformData(preAppData, labelData) {
-      return (preAppData
-        .find(i => i.label == labelData)).data.items
-        .map(i => {
+      return preAppData
+        .find(i => i.label == labelData)
+        .data.items.map(i => {
           return {
             label: i.label,
             value: Number(i.value)
-          }
-        })
+          };
+        });
     },
 
     fioValid(val) {
-      return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
-    },
+      return val.match(/^[A-Z]+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
+    }
   },
   components: {
     appPreApproval: PreApproval,
@@ -808,9 +839,8 @@ export default {
 
 <style lang="scss">
 .registration {
-
   .preapprovForm {
-    width: 80%
+    width: 80%;
   }
 
   .tab-title {
@@ -859,8 +889,9 @@ export default {
     padding-bottom: 16px;
   }
 
-  .q-col-gutter-y-md > *, .q-col-gutter-md > * {
-    padding-bottom: 0!important;
+  .q-col-gutter-y-md > *,
+  .q-col-gutter-md > * {
+    padding-bottom: 0 !important;
   }
 
   .q-field__native,
