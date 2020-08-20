@@ -188,14 +188,14 @@
             <div class="col">
               <div class="row selectBorder items-center">
                 <div class="q-pl-sm">
-                  <q-checkbox color="blue-14" v-model="valNumber" />
+                  <q-checkbox color="blue-14" @input="form.out_number = null" v-model="valNumber" />
                 </div>
                 <div class="col">
                   <q-input
                     borderless
                     v-model="form.out_number"
                     label="Исх. номер"
-                    :disable="valNumber === false"
+                    :disable="valNumber == true"
                   />
                 </div>
               </div>
@@ -203,14 +203,14 @@
             <div class="col">
               <div class="row items-center selectBorder">
                 <div class="q-pl-sm">
-                  <q-checkbox color="blue-14" v-model="valDate" />
+                  <q-checkbox color="blue-14" @input="form.out_date = null" v-model="valDate" />
                 </div>
                 <div class="col q-pr-md">
                   <q-input
                     borderless
                     v-model="form.out_date"
                     label="Исх. дата"
-                    :disable="valDate === false"
+                    :disable="valDate === true"
                   >
                     <template v-slot:append>
                       <div class="cursor-pointer">
@@ -445,7 +445,9 @@ export default {
         (this.form.format = null),
         (this.form.listCount = null),
         (this.form.description = null),
-        (this.form.signedby = null);
+        (this.form.signedby = null),
+        (this.valNumber = false),
+        (this.valDate = false);
     },
 
     notifyRules(val) {

@@ -323,7 +323,7 @@
           <q-separator class="q-mb-md" />
           <q-item class="lined-content" v-for="(detail, k) in data.details" :key="k">
             <q-item-label class="lined-text text-weight-bold">{{detail.PAY_NAME ? detail.PAY_NAME : ''}}</q-item-label>
-            <q-item-label class="lined-value text-weight-bold" style="color:#61C9A9">{{detail.SUMM ? detail.SUMM : 0}}</q-item-label>
+            <q-item-label class="lined-value text-weight-bold" style="color:#61C9A9">{{detail.SUMM ? formatNum(detail.SUMM) : 0}}</q-item-label>
           </q-item>
         </q-tab-panel>
 
@@ -340,9 +340,9 @@
             :key="j"
           >
             <q-item-label class="text-h6 text-wight-bold">{{note.code}}</q-item-label>
-            <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" />
+            <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" class="rotate-45" />
             <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_buy_price)}}</q-item-label>
-            <q-avatar size="25px" color="red" text-color="white" icon="arrow_downward" />
+            <q-avatar size="25px" color="red" text-color="white" icon="arrow_downward" class="rotate-45" />
             <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_cell_price)}}</q-item-label>
           </q-item>
         </q-item>
