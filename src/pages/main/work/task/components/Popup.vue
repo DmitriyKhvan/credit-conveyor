@@ -171,7 +171,13 @@
               </div>
               <div class="row">
                 <div class="col q-py-sm">
-                  <q-select filled v-model="model" :options="options" dense />
+                  <q-select
+                    filled
+                    v-model="status"
+                    :options="userStatuses"
+                    dense
+                    @input="onStatusSelect"
+                  />
                 </div>
               </div>
 
@@ -181,12 +187,12 @@
 
               <div class="row">
                 <div class="col q-py-sm">
-                  <q-input standout v-model="text" label="Поиск" dense>
+                  <q-input standout v-model="searchUser" label="Поиск" dense @input="selUsers">
                     <template v-slot:append>
                       <q-icon
-                        v-if="text !== ''"
+                        v-if="searchUser !== ''"
                         name="close"
-                        @click="text = ''"
+                        @click="searchUser = ''"
                         class="cursor-pointer"
                       />
                       <q-icon name="search" />
@@ -201,6 +207,16 @@
                   <div>Баратов С. У.</div>
                 </div>
               </div>
+              <div class="row" v-if="searchResults.length !== 0">
+                <div class="col q-pb-md q-pt-sm q-px-md q-mb-sm users">
+                  <div v-for="u in searchResults" :key="u.EMP_ID">
+                    <span>
+                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
+                      {{ u.MIDDLE_NAME[0] }}.
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </q-card-section>
@@ -211,15 +227,35 @@
 <script>
 import { downloadFile, getMimeType } from "@/shared/utils/file";
 import { simpleDateFormat } from "@/shared/utils/date";
+import NotifyService from "@/services/notify.service";
 
 export default {
   data() {
     return {
       //dialog: false,
-      date: "2019/02/01",
-      model: "Новые задания",
-      options: ["Новые задания"],
-      text: ""
+      //date: "2019/02/01",
+      searchUser: "", // serch text
+      text: "", // comment text
+      searchResults: [],
+      status: null,
+      userStatuses: [
+        {
+          label: "Новые задания",
+          value: 1
+        },
+        {
+          label: "Принял(а) задания",
+          value: 2
+        },
+        {
+          label: "Работаю",
+          value: 3
+        },
+        {
+          label: "Завершенные задания",
+          value: 4
+        }
+      ]
     };
   },
   props: {
@@ -232,6 +268,8 @@ export default {
   },
   created() {
     console.log({ task: this.task });
+    console.log(this.userStatuses.find(el => el.value == this.task.u_status));
+    this.status = this.userStatuses.find(el => el.value == this.task.u_status);
   },
   methods: {
     download() {
@@ -245,7 +283,46 @@ export default {
     formatDate(date) {
       return simpleDateFormat(date);
     },
-
+    onStatusSelect() {
+      console.log({ status: this.status });
+      let obj = {
+        id: this.task.task_id,
+        status: this.status.value
+      };
+      this.$axios
+        .post("tasks/user/status", obj)
+        .then(res => {
+          console.log({ res });
+          if (res.data.status == 1) {
+            // success
+            NotifyService.showSuccessMessage(res.data.message);
+            this.$store.dispatch("reload");
+            this.hide();
+          } else {
+            // fail
+            NotifyService.showErrorMessage(res.data.message);
+          }
+        })
+        .catch(err => {
+          console.log({ err });
+        });
+    },
+    selUsers() {
+      console.log("select users ...");
+      if (this.searchUser === "") {
+        this.searchResults = [];
+      }
+      if (this.searchUser !== "") {
+        this.$axios
+          .get("/emps/search?name=" + this.searchUser)
+          .then(response => {
+            this.searchResults = response.data;
+          })
+          .catch(error => {
+            console.log("error");
+          });
+      }
+    },
     // !!! Don't change
     show() {
       this.$refs.dialog.show();
