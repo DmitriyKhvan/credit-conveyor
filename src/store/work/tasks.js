@@ -58,6 +58,13 @@ export default {
       } catch (err) {
         console.error({ err });
       }
+    },
+    async reload({ commit, state }) {
+      try {
+        let res = await axios.get(`tasks/user/${state.tabMenuNo}`);
+        console.log({ res: res.data });
+        commit("setTasks", res.data);
+      } catch (err) {}
     }
   },
   getters: {

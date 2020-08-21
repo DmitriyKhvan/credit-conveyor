@@ -238,13 +238,13 @@ export default {
       type: Object,
       default: () => {
         return {};
-      }
-    }
+      },
+    },
   },
   components: {},
   data() {
     return {
-      isChecked: false
+      isChecked: false,
     };
   },
   created() {
@@ -252,8 +252,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isListView: "getListView"
-    })
+      isListView: "getListView",
+    }),
   },
   methods: {
     download() {
@@ -269,9 +269,9 @@ export default {
         .dialog({
           component: Popup,
           parent: this,
-          task: this.task
+          task: this.task,
         })
-        .onOk(res => {
+        .onOk((res) => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
@@ -287,8 +287,8 @@ export default {
     },
     formatString(text) {
       return stringTruncate(text, 50);
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

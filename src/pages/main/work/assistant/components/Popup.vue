@@ -214,8 +214,8 @@ export default {
       type: Object,
       default: () => {
         return {};
-      }
-    }
+      },
+    },
   },
   data() {
     return {
@@ -225,22 +225,22 @@ export default {
       result: [],
       workers: [],
       activeWorker: "",
-      signed: false // podpisan
+      signed: false, // podpisan
     };
   },
   validations: {
     shablon: {
-      required
+      required,
     },
     superior: {
-      required
+      required,
     },
     workers: {
-      required
+      required,
     },
     activeWorker: {
-      required
-    }
+      required,
+    },
   },
   created() {
     // set signed button
@@ -248,14 +248,14 @@ export default {
       this.signed = true;
     }
     if (this.doc.start_emps_id) {
-      let headEmp = this.doc.start_emps_id.find(el => el.CHECK == true);
+      let headEmp = this.doc.start_emps_id.find((el) => el.CHECK == true);
       this.activeWorker = headEmp.EMP_ID;
     }
 
     // init task message in shablon
     if (this.doc.task_message) {
       let shablonObj = this.dicts(6).values.find(
-        el => el.id == this.doc.task_message
+        (el) => el.id == this.doc.task_message
       );
       this.shablon = { label: shablonObj.name[1], value: shablonObj.id }; // TODO lang
     }
@@ -264,7 +264,7 @@ export default {
       this.superior = {
         label: this.doc.superior.name,
         value: this.doc.superior.emp_id,
-        dep_code: this.doc.superior.dep_code
+        dep_code: this.doc.superior.dep_code,
       };
     }
     // initial values of emp ids
@@ -275,28 +275,28 @@ export default {
   },
   computed: {
     ...mapState({
-      superiorsList: state => state.assistant.aSuperiors
+      superiorsList: (state) => state.assistant.aSuperiors,
     }),
     ...mapGetters({
-      dicts: "dicts/getDictsList" // loads all dicts
+      dicts: "dicts/getDictsList", // loads all dicts
     }),
     shablons() {
-      return this.dicts(6).values.map(el => {
+      return this.dicts(6).values.map((el) => {
         return {
           label: el.name[1], // TODO add lang val
-          value: el.id
+          value: el.id,
         };
       });
-    }
+    },
   },
   methods: {
     saveForm() {
       const arr = [];
-      this.workers.forEach(user => {
+      this.workers.forEach((user) => {
         arr.push({
           emp_id: user.EMP_ID,
           check: user.EMP_ID === this.activeWorker ? true : false,
-          dep_code: user.DEP_CODE
+          dep_code: user.DEP_CODE,
         });
       });
 
@@ -307,14 +307,14 @@ export default {
         h_dep_code: this.superior.dep_code,
         type: 1,
         message: this.shablon.value,
-        status: this.signed === true ? 3 : 2
+        status: this.signed === true ? 3 : 2,
       };
       //console.log({ obg });
 
       this.$axios
         .post("/tasks/pomoshnik", obg)
         .then(
-          response => {
+          (response) => {
             this.$emit("ok", response.data); //
             if (response.data.status == 1) {
               NotifyService.showSuccessMessage(response.data.message);
@@ -324,12 +324,12 @@ export default {
               this.hide();
             }
           },
-          error => {
+          (error) => {
             //console.log({ error: error.response.data });
             NotifyService.showErrorMessage(error.response.data.message);
           }
         )
-        .catch(error => {
+        .catch((error) => {
           //console.log({ error: error.response.data });
           NotifyService.showErrorMessage(error.response.data.message);
           //this.hide();
@@ -339,7 +339,7 @@ export default {
       this.activeWorker = id;
     },
     removeUser(id) {
-      this.workers = this.workers.filter(user => user.EMP_ID !== id);
+      this.workers = this.workers.filter((user) => user.EMP_ID !== id);
       if (this.activeWorker === id) this.activeWorker = "";
     },
     selectedUser(user) {
@@ -354,10 +354,10 @@ export default {
       if (this.searchUser !== "") {
         this.$axios
           .get("/emps/search?name=" + this.searchUser)
-          .then(response => {
+          .then((response) => {
             this.result = response.data;
           })
-          .catch(error => {
+          .catch((error) => {
             console.log("error");
           });
       }
@@ -398,7 +398,7 @@ export default {
           title: "Confirm",
           message: this.$t("messages.confirm_exit"),
           cancel: true,
-          persistent: true
+          persistent: true,
         })
         .onOk(() => {
           this.hide();
@@ -406,8 +406,8 @@ export default {
         .onCancel(() => {
           // console.log('>>>> Cancel')
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
