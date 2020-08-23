@@ -37,7 +37,7 @@ export default {
     };
   },
   created() {
-    this.$store.dispatch("getADocs", { num: 3 });
+    this.$store.dispatch("getADocs", { num: 1 });
     //console.log({ docList: this.docList });
   },
   computed: {
