@@ -69,7 +69,14 @@
       </div>
 
       <div class="col"></div>
-      <q-input v-if="isSearchOpen" standout v-model="searchText" label="Поиск" bg-color="white">
+      <q-input
+        v-if="isSearchOpen"
+        standout
+        v-model="searchText"
+        label="Поиск"
+        bg-color="white"
+        @input="searchTask()"
+      >
         <template v-slot:append>
           <q-icon
             v-if="searchText !== ''"
@@ -101,7 +108,7 @@ export default {
     return {
       searchText: "",
       filterType: "",
-      filterTypeOptions: ["Вид список"]
+      filterTypeOptions: ["Вид список"],
     };
   },
   created() {
@@ -116,8 +123,8 @@ export default {
       isSearchOpen: "isSearchOpen",
       tabNo: "tabMenuNo",
       isListView: "getListView",
-      isBoardView: "getBoardView"
-    })
+      isBoardView: "getBoardView",
+    }),
   },
   methods: {
     menuSelect(num) {
@@ -134,8 +141,11 @@ export default {
     setSearchOpen() {
       // done
       this.$store.dispatch("setSearchOpen");
-    }
-  }
+    },
+    searchTask() {
+      this.$store.commit("setSearchText", this.searchText);
+    },
+  },
 };
 </script>
 <style scoped>
