@@ -38,7 +38,7 @@ export default {
   },
   created() {
     this.$store.dispatch("getADocs", { num: 3 });
-    console.log({ docList: this.docList });
+    //console.log({ docList: this.docList });
   },
   computed: {
     ...mapState({
@@ -54,7 +54,7 @@ export default {
       // let filtered = state.taskList.filter(el =>
       //   el.f_task_data.description.includes(searchText)
       // );
-      console.log({ docs: this.docs });
+      //console.log({ docs: this.docs });
       return this.docs.filter((el) => {
         return el.description.includes(this.searchText);
       });

@@ -104,7 +104,7 @@ export default {
           });
           commit("setSuperiors", superiors);
         }
-        console.log({ all: allData.data });
+        //console.log({ all: allData.data });
         commit("setADocs", docs);
         commit("setTotalRows", allData.data.docs_count);
         commit("setTotalPages", allData.data.page_count);

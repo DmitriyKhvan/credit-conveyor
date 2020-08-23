@@ -132,7 +132,7 @@ export default {
       this.$store.dispatch("setSearchOpen");
     },
     searchDoc() {
-      console.log({ text: this.searchText });
+      //console.log({ text: this.searchText });
       this.$store.commit("setDocSearchText", this.searchText);
     },
   },

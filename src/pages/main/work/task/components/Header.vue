@@ -133,7 +133,7 @@ export default {
       this.$store.dispatch("onTabChange", num);
     },
     changeListView() {
-      console.log(this.isListView);
+      //console.log(this.isListView);
       this.$store.dispatch("changeListView");
     },
     viewChangeTasks() {
