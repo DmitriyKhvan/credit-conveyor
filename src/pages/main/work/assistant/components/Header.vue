@@ -9,11 +9,7 @@
             @click="menuSelect(1)"
           >
             <div class="q-pr-sm">
-              <img
-                v-if="menu === 1"
-                src="@/assets/icons/New-Document-active.svg"
-                alt
-              />
+              <img v-if="menu === 1" src="@/assets/icons/New-Document-active.svg" alt />
               <img v-else src="@/assets/icons/New-Document.svg" alt />
             </div>
             <div>
@@ -29,11 +25,7 @@
             @click="menuSelect(2)"
           >
             <div class="q-pr-sm">
-              <img
-                v-if="menu === 2"
-                src="@/assets/icons/Task-Completed-active.svg"
-                alt
-              />
+              <img v-if="menu === 2" src="@/assets/icons/Task-Completed-active.svg" alt />
               <img v-else src="@/assets/icons/Task-Completed.svg" alt />
             </div>
             <div>
@@ -58,9 +50,29 @@
     </div>
 
     <div class="row q-gutter-lg header q-pb-md q-pt-md">
-      <div class="q-pa-md bg-white flexBlock">
+      <!-- search input -->
+      <q-input
+        v-if="isSearchOpen"
+        standout
+        v-model="searchText"
+        label="Поиск"
+        bg-color="white"
+        @input="searchDoc()"
+      >
+        <template v-slot:append>
+          <q-icon
+            v-if="searchText !== ''"
+            name="close"
+            @click="searchText = ''"
+            class="cursor-pointer"
+          />
+          <q-icon name="search" />
+        </template>
+      </q-input>
+      <div v-else class="q-pa-md bg-white flexBlock" @click="setSearchOpen">
         <img src="@/assets/icons/Search.svg" alt />
       </div>
+
       <q-select
         filled
         v-model="model"
@@ -90,15 +102,19 @@ export default {
       options2: ["Вид Список", "Вид Карточный"],
       model: "Вид Список",
       model2: "",
-      selectedDocs: []
+      selectedDocs: [],
+      searchText: "",
     };
   },
   computed: {
     ...mapState({
-      list: state => state.assistant.aList,
-      docs: state => state.assistant.aAllDocs,
-      menu: state => state.assistant.aMenu
-    })
+      //list: (state) => state.assistant.aList,
+      //docs: (state) => state.assistant.aAllDocs,
+      menu: (state) => state.assistant.aMenu,
+    }),
+    ...mapGetters({
+      isSearchOpen: "isSearchOpen",
+    }),
   },
   methods: {
     menuSelect(num) {
@@ -110,9 +126,17 @@ export default {
       } else {
         this.$store.dispatch("setIsListView", true);
       }
-    }
+    },
+    setSearchOpen() {
+      // done
+      this.$store.dispatch("setSearchOpen");
+    },
+    searchDoc() {
+      console.log({ text: this.searchText });
+      this.$store.commit("setDocSearchText", this.searchText);
+    },
   },
-  created() {}
+  created() {},
 };
 </script>
 <style scoped>

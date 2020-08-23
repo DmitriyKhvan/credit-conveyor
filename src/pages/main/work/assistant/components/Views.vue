@@ -26,13 +26,13 @@
           @input="selectPagesNum()"
         />
       </div>
-      <div>{{ pageStartNum }} - {{ pageEndNum }} из {{ totalPages }}</div>
+      <div>{{ pageStartNum }} - {{ pageEndNum }} из {{ totalRows }}</div>
       <div class="arrows">
-        <div>
-          <q-icon name="keyboard_arrow_left" size="sm" />
+        <div :class="isPrevActive">
+          <q-icon name="keyboard_arrow_left" size="sm" @click="onPrev" />
         </div>
-        <div class="active">
-          <q-icon name="keyboard_arrow_right" size="sm" />
+        <div :class="isNextActive">
+          <q-icon name="keyboard_arrow_right" size="sm" @click="onNext" />
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       rowNum: 5, // default
-      rowsPerPageOptions: [1, 3, 5, 10, 50] //selectRowsPerPage, rowsPerPage, page,
+      rowsPerPageOptions: [1, 3, 5, 10, 50], //selectRowsPerPage, rowsPerPage, page,
     };
   },
   created() {
@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     ...mapState({
-      selectedDocs: state => state.assistant.selectedDocs
+      selectedDocs: (state) => state.assistant.selectedDocs,
     }),
 
     ...mapGetters({
@@ -61,22 +61,30 @@ export default {
       page: "page",
       rowsPerPage: "rowsPerPage",
       totalRows: "totalRows",
-      menuNo: "menuNo"
+      menuNo: "menuNo",
     }),
     isNewDocsSection() {
       return this.menuNo == 1 ? true : false;
     },
     pageStartNum() {
-      return (this.page - 1) * this.rowsPerPage + 1;
+      if (this.totalRows == 0) return 0;
+      else return (this.page - 1) * this.rowsPerPage + 1;
     },
     pageEndNum() {
       return this.rowsPerPage * this.page > this.totalRows
         ? this.totalRows
         : this.rowsPerPage * this.page;
     },
-    pageNext() {
-      console.log({});
-    }
+    isPrevActive() {
+      if (this.page == 1) {
+        return "";
+      } else return "active";
+    },
+    isNextActive() {
+      if (this.page == this.totalPages) {
+        return "";
+      } else return "active";
+    },
   },
   methods: {
     selectPagesNum() {
@@ -87,10 +95,10 @@ export default {
       this.$q
         .dialog({
           component: MultiPopup,
-          parent: this
+          parent: this,
           // doc: this.doc
         })
-        .onOk(res => {
+        .onOk((res) => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
@@ -101,8 +109,20 @@ export default {
         .onCancel(() => {
           console.log("Cancel");
         });
-    }
-  }
+    },
+    onNext() {
+      console.log("next...");
+      if (this.isNextActive) {
+        this.$store.dispatch("getADocs", { page: this.page + 1 });
+      }
+    },
+    onPrev() {
+      if (this.isPrevActive) {
+        console.log("prev...");
+        this.$store.dispatch("getADocs", { page: this.page - 1 });
+      }
+    },
+  },
 };
 </script>
 <style scoped>

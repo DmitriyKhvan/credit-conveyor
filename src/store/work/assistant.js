@@ -11,7 +11,8 @@ export default {
     page: 1, // default
     rowsPerPage: 5, // default
     totalPages: 0, // default
-    totalRows: 0 // totalRows
+    totalRows: 0, // totalRows
+    docSearchText: ""
   },
   mutations: {
     selDoc(state, doc) {
@@ -28,7 +29,7 @@ export default {
     setIsListView(state, val) {
       state.isListView = val;
     },
-    getADocs(state, payload) {
+    setADocs(state, payload) {
       state.aAllDocs = payload;
     },
     setMenuNo(state, num) {
@@ -47,10 +48,13 @@ export default {
       state.totalPages = total;
     },
     setTotalRows(state, totalRows) {
-      state.totalPages = totalRows;
+      state.totalRows = totalRows;
     },
     resetSelectedDocs(state) {
       state.selectedDocs = [];
+    },
+    setDocSearchText(state, text) {
+      state.docSearchText = text;
     }
   },
   actions: {
@@ -71,7 +75,7 @@ export default {
       let num = payload.num; // status
       let page = payload.page; // page number
       let rows = payload.rows; // # of rows per page
-      let lang = rootState.common.langNum;
+      let lang = rootState.common.langNum; //
 
       if (num) {
         commit("setMenuNo", num); // set tab numbers
@@ -100,7 +104,8 @@ export default {
           });
           commit("setSuperiors", superiors);
         }
-        commit("getADocs", docs);
+        console.log({ all: allData.data });
+        commit("setADocs", docs);
         commit("setTotalRows", allData.data.docs_count);
         commit("setTotalPages", allData.data.page_count);
       } catch (e) {
@@ -132,6 +137,15 @@ export default {
     },
     menuNo: state => {
       return state.menuNo;
+    },
+    getDocSearchText(state) {
+      return state.docSearchText;
+    },
+    getAllDocs(state) {
+      return state.aAllDocs;
+    },
+    isListView(state) {
+      return state.isListView;
     }
   }
 };

@@ -90,6 +90,7 @@
       <div v-else class="q-pa-md bg-white flexBlock" @click="setSearchOpen">
         <img src="@/assets/icons/Search.svg" alt />
       </div>
+
       <q-select
         filled
         v-model="filterType"

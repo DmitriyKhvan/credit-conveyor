@@ -52,7 +52,7 @@ export default {
       isListView: "getListView",
       isBoardView: "getBoardView",
       tasks: "getTasks",
-      searchText: "getSearchText",
+      searchText: "getDocSearchText",
     }),
     taskList() {
       // let filtered = state.taskList.filter(el =>
