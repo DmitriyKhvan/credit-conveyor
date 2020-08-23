@@ -12,7 +12,14 @@
           <div class="row">
             <div class="col title">{{ task.f_task_data.description }}</div>
             <div class="col-1 text-right">
-              <q-btn round color="white" text-color="black" icon="clear" flat v-close-popup />
+              <q-btn
+                round
+                color="white"
+                text-color="black"
+                icon="clear"
+                flat
+                @click="onCloseDialog"
+              />
             </div>
           </div>
 
@@ -143,7 +150,7 @@
                       </div>
                       <div class="com_text">{{comment.text}}</div>
                       <div class="com_action flexBlock">
-                        <div @click="editComment(comment)">редактирвоать</div>
+                        <div @click="onEditClick(comment)">редактирвоать</div>
                         <div @click="deleteComment(comment)">удалить</div>
                       </div>
                     </div>
@@ -160,7 +167,7 @@
                         filled
                         v-model="commentText"
                         dense
-                        v-on:keyup.enter="onSendComment()"
+                        v-on:keyup.enter="onAddEditComment()"
                         label="Напишите комментарий..."
                       />
                     </div>
@@ -286,7 +293,9 @@ export default {
       workers: [],
       forwardingUsers: [],
       commentsList: [],
-      oldComments: [],
+      isAdd: true,
+      //oldComments: [],
+      commentObj: null,
     };
   },
   props: {
@@ -298,16 +307,33 @@ export default {
     },
   },
   created() {
-    console.log({ tempComments: this.tempComments });
-    console.log({
-      empId: this.empId,
-      depCode: this.depCode,
-      fullName: this.fullName,
-    });
+    //console.log({ tempComments: this.tempComments });
+
+    // console.log({
+    //   empId: this.empId,
+    //   depCode: this.depCode,
+    //   fullName: this.fullName,
+    // });
 
     this.status = this.userStatuses.find(
       (el) => el.value == this.task.u_status
     );
+    if (!!this.task.comments) {
+      this.commentsList = this.task.comments.map((com) => {
+        return {
+          id: com.id,
+          dep_code: com.dep_code,
+          created_at: com.created_at,
+          fullName:
+            com.first_name + " " + com.last_name + " " + com.middle_name,
+          emp_id: com.emp_id,
+          task_id: com.task_id,
+          text: com.text,
+          created_at: com.created_at,
+          updated_at: com.updated_at,
+        };
+      });
+    }
   },
   computed: {
     ...mapGetters({
@@ -316,25 +342,7 @@ export default {
       fullName: "auth/fullName",
     }),
     tempComments() {
-      if (!!this.task.comments) {
-        this.oldComments = this.task.comments.map((com) => {
-          return {
-            id: com.id,
-            dep_code: com.dep_code,
-            created_at: com.created_at,
-            fullName:
-              com.first_name + " " + com.last_name + " " + com.middle_name,
-            emp_id: com.emp_id,
-            task_id: com.task_id,
-            text: com.text,
-            created_at: com.created_at,
-            updated_at: com.updated_at,
-          };
-        });
-        return [...this.commentsList, ...this.oldComments];
-      } else {
-        return [];
-      }
+      return this.commentsList;
     },
   },
   methods: {
@@ -362,8 +370,10 @@ export default {
           if (res.data.status == 1) {
             // success
             NotifyService.showSuccessMessage(res.data.message);
-            this.$store.dispatch("reload");
-            this.hide();
+
+            //this.$store.dispatch("reload");
+            //this.hide();
+            this.onCloseDialog();
           } else {
             // fail
             NotifyService.showErrorMessage(res.data.message);
@@ -404,8 +414,9 @@ export default {
             console.log({ res: res.data });
             if (res.data.status == 1) {
               NotifyService.showSuccessMessage(res.data.message);
-              this.$store.dispatch("reload");
-              this.hide();
+              //this.$store.dispatch("reload");
+              //this.hide();
+              this.onCloseDialog();
             } else {
               NotifyService.showErrorMessage(res.data.message);
             }
@@ -418,39 +429,6 @@ export default {
     onClearSearch() {
       this.searchUser = "";
       this.searchResults = [];
-    },
-    onSendComment() {
-      let comment = {
-        task_id: this.task.task_id,
-        emp_id: this.empId,
-        dep_code: this.depCode,
-        text: this.commentText,
-      };
-      if (!!this.commentText)
-        this.$axios
-          .post(`/tasks/comment/add`, comment)
-          .then((resp) => {
-            console.log({ res: resp.data });
-            if (resp.data.status == 1) {
-              let msg = {
-                id: resp.data.id,
-                dep_code: this.depCode,
-                created_at: new Date(),
-                fullName: this.fullName,
-                emp_id: this.empId,
-                task_id: this.task.task_id,
-                text: this.commentText,
-              };
-              this.commentsList.splice(0, 0, msg);
-              this.commentText = "";
-            } else {
-              NotifyService.showErrorMessage(resp.data.message);
-            }
-          })
-          .catch((err) => {
-            console.error({ err });
-          });
-      //console.log({ comment });
     },
     selectedUser(user) {
       let temp = this.workers.find((usr) => usr.EMP_ID == user.EMP_ID);
@@ -475,29 +453,116 @@ export default {
         (user) => user.emp_id !== id
       );
     },
-    editComment(comment) {
-      console.log({ editComment: comment });
+    onEditClick(comment) {
+      //console.log({ editComment: comment });
+      this.commentText = comment.text;
+      this.commentObj = {
+        id: comment.id,
+        text: this.commentText,
+      };
+      this.isAdd = false;
+
+      //console.log({ commentObj: this.commentObj });
+    },
+    onAddEditComment() {
+      if (this.isAdd) {
+        // add
+        let commentObj = {
+          task_id: this.task.task_id,
+          emp_id: this.empId,
+          dep_code: this.depCode,
+          text: this.commentText,
+        };
+
+        if (!!this.commentText) {
+          this.$axios
+            .post(`/tasks/comment/add`, commentObj)
+            .then((resp) => {
+              console.log({ res: resp.data });
+              if (resp.data.status == 1) {
+                let msg = {
+                  id: resp.data.id,
+                  dep_code: this.depCode,
+                  created_at: new Date(),
+                  fullName: this.fullName,
+                  emp_id: this.empId,
+                  task_id: this.task.task_id,
+                  text: this.commentText,
+                };
+
+                this.commentsList.splice(0, 0, msg);
+                this.commentText = "";
+              } else {
+                NotifyService.showErrorMessage(resp.data.message);
+              }
+            })
+            .catch((err) => {
+              console.error({ err });
+            });
+        }
+      } else {
+        // edit
+        console.log("EDIT");
+        if (!!this.commentText) {
+          this.commentObj.text = this.commentText;
+          console.log(this.commentObj);
+
+          this.$axios
+            .post(`/tasks/comment/edit`, this.commentObj)
+            .then((resp) => {
+              if (resp.data.status == 1) {
+                //let editedComment = this.commentsList.find(el => el.id == this.commentObj.id);
+                this.commentsList.forEach((el) => {
+                  if (el.id == this.commentObj.id) {
+                    el.text = this.commentText;
+                  }
+                });
+                this.commentText = "";
+                this.isAdd = true;
+              } else {
+                NotifyService.showErrorMessage(resp.data.message);
+              }
+            })
+            .catch((err) => {
+              console.log({ err });
+            });
+        }
+      }
     },
     deleteComment(comment) {
-      console.log({ deleteComment: comment });
-      this.$axios
-        .delete(`/tasks/comment?id=${comment.id}`)
-        .then((resp) => {
-          console.log({ res: resp.data });
-          if (resp.data.status == 1) {
-            let tmp = this.tempComments.filter((el) => el.id != comment.id); // !! TODO
-            let ocom = this.oldComments.filter((el) => el.id != comment.id); // !! TODO
-            console.log({ tmp, ocom });
-          } else {
-            NotifyService.showErrorMessage(resp.data.message);
-          }
+      //console.log({ deleteComment: comment });
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: "Do really want to delete?",
+          cancel: true,
+          persistent: true,
         })
-        .catch((err) => {
-          console.log({ err });
-        });
+        .onOk((data) => {
+          this.$axios
+            .delete(`/tasks/comment?id=${comment.id}`)
+            .then((resp) => {
+              if (resp.data.status == 1) {
+                let tmp = this.commentsList.filter((el) => el.id != comment.id); // !! TODO
+                this.commentsList = tmp;
+                NotifyService.showSuccessMessage("Deleted");
+              } else {
+                NotifyService.showErrorMessage(resp.data.message);
+              }
+            })
+            .catch((err) => {
+              console.log({ err });
+            });
+        })
+        .onCancel(() => {})
+        .onDismiss(() => {});
     },
     getUserPhoto(empId) {
       return UserService.getUserProfilePhotoUrl(empId);
+    },
+    onCloseDialog() {
+      this.$store.dispatch("reload");
+      this.hide();
     },
     // !!! Don't change
     show() {

@@ -99,10 +99,10 @@
                   self="bottom middle"
                   :offset="[10, 10]"
                   content-class="bg-light-blue"
-                >25 комментариев</q-tooltip>
+                >{{commentsCount}} комментариев</q-tooltip>
                 <!-- TODO-->
               </div>
-              <div class="desp q-px-sm">25</div>
+              <div class="desp q-px-sm">{{commentsCount}}</div>
             </div>
             <div class="flexBlock q-pr-sm q-py-sm">
               <div>
@@ -114,11 +114,13 @@
                   content-class="bg-deep-purple text-center"
                 >
                   <b>Ответственные:</b>
-                  <br />Баратов С. У. Абдуллаев И. А. Драгунов А. С.
-                  <!-- TODO-->
+                  <br />
+                  <label
+                    v-for="emp in task.f_task_data.h_emps"
+                  >{{emp.FIRST_NAME}} {{emp.LAST_NAME[0]}}.{{emp.MIDDLE_NAME[0]}}&nbsp;</label>
                 </q-tooltip>
               </div>
-              <div class="desp q-px-sm">25</div>
+              <div class="desp q-px-sm">{{empsCount}}</div>
             </div>
           </div>
           <div class="row q-pt-sm">
@@ -203,7 +205,7 @@
               self="bottom middle"
               :offset="[10, 10]"
               content-class="bg-light-blue"
-            >25 комментариев</q-tooltip>
+            >{{commentsCount}} комментариев</q-tooltip>
           </div>
           <div class="desp q-px-sm">25</div>
         </div>
@@ -254,6 +256,16 @@ export default {
     ...mapGetters({
       isListView: "getListView",
     }),
+    commentsCount() {
+      ///console.log({ count: this.task.comments.length });
+      if (!!this.task.comments) return this.task.comments.length;
+      else return 0;
+    },
+    empsCount() {
+      if (!!this.task.f_task_data.h_emps) {
+        return this.task.f_task_data.h_emps.length;
+      } else return 0;
+    },
   },
   methods: {
     download() {

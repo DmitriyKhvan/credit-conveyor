@@ -3,7 +3,7 @@
     <a-header></a-header>
     <template v-if="!isBoardView">
       <template v-if="isListView">
-        <div class="row" v-for="task in tasks" :key="task.id">
+        <div class="row" v-for="task in taskList" :key="task.id">
           <div class="col">
             <div>
               <a-task :task="task"></a-task>
@@ -13,7 +13,7 @@
       </template>
       <template v-else>
         <div class="row q-col-gutter-lg q-pt-sm">
-          <div class="col-lg-3 col-md-4 col-sm-6" v-for="task in tasks" :key="task.id">
+          <div class="col-lg-3 col-md-4 col-sm-6" v-for="task in taskList" :key="task.id">
             <a-task :task="task"></a-task>
           </div>
         </div>
@@ -51,18 +51,27 @@ export default {
     ...mapGetters({
       isListView: "getListView",
       isBoardView: "getBoardView",
-      tasks: "getTasks"
-    })
+      tasks: "getTasks",
+      searchText: "getSearchText",
+    }),
+    taskList() {
+      // let filtered = state.taskList.filter(el =>
+      //   el.f_task_data.description.includes(searchText)
+      // );
+      return this.tasks.filter((el) =>
+        el.f_task_data.description.includes(this.searchText)
+      );
+    },
   },
   methods: {},
   components: {
     AHeader: Header,
     ATask: Task,
-    AManagement: Management
+    AManagement: Management,
   },
   filters: {
     // formatSize
-  }
+  },
 };
 </script>
 

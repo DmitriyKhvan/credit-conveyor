@@ -6,18 +6,8 @@ export default {
     isListView: true, // is tasks in list view or card
     tabMenuNo: 1, // # of tab
     isSearchOpen: false, // is search input open or close
-    tTasks: [
-      {
-        id: 0,
-        title:
-          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
-        pages: 2,
-        messages: 4,
-        users: 3,
-        status: 1
-      }
-    ],
-    taskList: []
+    taskList: [],
+    searchText: ""
   },
   mutations: {
     changeListView(state) {
@@ -34,6 +24,9 @@ export default {
     },
     setTasks(state, tasks) {
       state.taskList = tasks;
+    },
+    setSearchText(state, text) {
+      state.searchText = text;
     }
   },
   actions: {
@@ -64,17 +57,19 @@ export default {
         let res = await axios.get(`tasks/user/${state.tabMenuNo}`);
         console.log({ res: res.data });
         commit("setTasks", res.data);
-      } catch (err) {
-        console.error({ err });
-      }
-    },
-    async reload({ commit, state }) {
-      try {
-        let res = await axios.get(`tasks/user/${state.tabMenuNo}`);
-        console.log({ res: res.data });
-        commit("setTasks", res.data);
       } catch (err) {}
     }
+    /*
+    searchTasks({ commit, state }, searchText) {
+      console.log(searchText);
+
+      let filtered = state.taskList.filter(el =>
+        el.f_task_data.description.includes(searchText)
+      );
+      console.log(filtered);
+
+      commit("setTasks", filtered);
+    }*/
   },
   getters: {
     tabMenuNo(state) {
@@ -91,6 +86,9 @@ export default {
     },
     getBoardView(state) {
       return state.isBoardView;
+    },
+    getSearchText(state) {
+      return state.searchText;
     }
   }
 };
