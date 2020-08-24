@@ -54,11 +54,7 @@
               />
             </div>
             <div class="col">
-              <q-input
-                outlined
-                v-model="form.whoIsText"
-                label="Написать откуда"
-              />
+              <q-input outlined v-model="form.whoIsText" label="Написать откуда" />
             </div>
           </div>
           <div class="row q-col-gutter-xl q-pb-lg" v-if="file == null">
@@ -73,7 +69,7 @@
                 bg-color="blue-14"
                 label-color="white"
                 :filter="
-                  files => files.filter(file => file.type === 'application/pdf')
+                  files => files.filter(file => {if(!!file){return file.type === 'application/pdf'} else return false})
                 "
                 :rules="[
                   val => (val && val.length !== null) || 'Загрузите файл'
@@ -85,23 +81,12 @@
               </q-file>
             </div>
             <div class="col">
-              <q-btn
-                push
-                flat
-                color="grey"
-                label="Посмотреть файл"
-                size="lg"
-                @click="newFile"
-              />
+              <q-btn push flat color="grey" label="Посмотреть файл" size="lg" @click="newFile" />
             </div>
           </div>
           <div class="q-my-sm full-width" v-else>
             <div class="row q-my-md items-center">
-              <q-icon
-                size="20px"
-                name="attach_file"
-                class=" rotate-180 text-bold"
-              />
+              <q-icon size="20px" name="attach_file" class="rotate-180 text-bold" />
               <strong class="col text-no-wrap">Прикрепленные файлы</strong>
               <q-file
                 dense
@@ -115,46 +100,27 @@
                 bg-color="blue-14"
                 label-color="white"
                 clear-icon
-                display-value=""
+                display-value
                 :filter="
-                  files => files.filter(file => file.type === 'application/pdf')
+                  files => files.filter(file => {if(!!file){return file.type === 'application/pdf'} else return false})
                 "
                 :rules="[
                   val => (val && val.length !== null) || 'Загрузите файл'
                 ]"
-              >
-              </q-file>
+              ></q-file>
             </div>
             <div class="row q-pb-lg full-width text-grey">
               <q-list class="col">
-                <q-item
-                  class="q-mb-sm rounded-borders"
-                  style="border: 1px solid #e7e7e7;"
-                  dense
-                >
+                <q-item class="q-mb-sm rounded-borders" style="border: 1px solid #e7e7e7;" dense>
                   <q-item-section avatar>
                     <q-icon name="description" />
                   </q-item-section>
                   <q-item-section
                     class="text-no-wrap overflow-hidden"
                     style="overflow:hidden; text-no-wrap overflow-hidden"
-                  >
-                    {{ file ? file["name"] : "invalid file format" }}
-                  </q-item-section>
-                  <q-btn
-                    @click="newFile"
-                    flat
-                    color="grey"
-                    icon="get_app"
-                    side
-                  />
-                  <q-btn
-                    @click="file = null"
-                    flat
-                    color="grey"
-                    icon="clear"
-                    side
-                  />
+                  >{{ file ? file["name"] : "invalid file format" }}</q-item-section>
+                  <q-btn @click="newFile" flat color="grey" icon="get_app" side />
+                  <q-btn @click="file = null" flat color="grey" icon="clear" side />
                 </q-item>
               </q-list>
             </div>
@@ -168,11 +134,7 @@
                 <template v-slot:append>
                   <div class="cursor-pointer">
                     <img src="@/assets/icons/InDate.svg" />
-                    <q-popup-proxy
-                      ref="qDateProxy"
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
+                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="form.in_date"
                         mask="YYYY-MM-DD"
@@ -318,7 +280,7 @@ import { mapGetters } from "vuex";
 
 export default {
   components: {
-    APreview: Preview
+    APreview: Preview,
   },
   data() {
     return {
@@ -343,8 +305,8 @@ export default {
         format: null,
         listCount: null,
         description: null,
-        signedby: null
-      }
+        signedby: null,
+      },
     };
   },
   computed: {
@@ -352,15 +314,15 @@ export default {
       formats: "dicts/getFormat",
       journals: "dicts/getJournal",
       regions: "dicts/getRegion",
-      organs: "dicts/getOrgan"
-    })
+      organs: "dicts/getOrgan",
+    }),
   },
   created() {
     console.log({
       formats: this.formats,
       journals: this.journals,
       regions: this.regions,
-      organs: this.organs
+      organs: this.organs,
     });
   },
   methods: {
@@ -368,15 +330,15 @@ export default {
       this.$refs.inputUpload.click();
     },
     uploadFile(val) {
-      console.log(val);
+      //console.log(val);
       this.file = val;
-      // this.form.in_number = val.name.slice(0, -4);
-      console.log(this.form.file);
+      this.form.in_number = val.name.slice(0, -4);
+      //console.log(this.form.file);
     },
 
     sendNewDoc() {
       this.$q.loading.show({
-        spinner: QSpinnerFacebook
+        spinner: QSpinnerFacebook,
       });
 
       let formData = new FormData();
@@ -399,7 +361,7 @@ export default {
 
       this.$axios
         .post("/files/doc", formData)
-        .then(response => {
+        .then((response) => {
           console.log(response);
           if (response.data.status === 1) {
             this.$q.notify({
@@ -407,7 +369,7 @@ export default {
               textColor: "white",
               icon: "cloud_done",
               position: "top",
-              message: "Ваш документ успешно сохранен"
+              message: "Ваш документ успешно сохранен",
             });
             this.$refs.myform.reset();
           } else {
@@ -415,18 +377,18 @@ export default {
               color: "red-4",
               textColor: "white",
               icon: "cloud_done",
-              message: response.data.message
+              message: response.data.message,
             });
           }
           this.$q.loading.hide();
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
           this.$q.notify({
             color: "red-4",
             textColor: "white",
             icon: "cloud_done",
-            message: error
+            message: error,
           });
           this.$q.loading.hide();
         });
@@ -453,7 +415,7 @@ export default {
         color: "red-4",
         textColor: "white",
         icon: "cloud_done",
-        message: val
+        message: val,
       });
     },
     newFile() {
@@ -464,10 +426,10 @@ export default {
         link.download = this.file.name;
         link.click();
       }
-    }
+    },
   },
   watch: {
-    file: function() {
+    file: function () {
       //this.form.in_number = this.file.name.slice(0, -4);
       var now = new Date();
       var month = now.getMonth() + 1;
@@ -475,8 +437,8 @@ export default {
       if (month < 10) month = "0" + month;
       if (day < 10) day = "0" + day;
       this.form.in_date = now.getFullYear() + "-" + month + "-" + day;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
