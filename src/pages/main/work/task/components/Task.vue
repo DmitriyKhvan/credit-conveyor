@@ -116,7 +116,8 @@
                   <b>Ответственные:</b>
                   <br />
                   <label
-                    v-for="emp in task.f_task_data.h_emps"
+                    v-for="(emp, i) in task.f_task_data.h_emps"
+                    :key="i"
                   >{{emp.FIRST_NAME}} {{emp.LAST_NAME[0]}}.{{emp.MIDDLE_NAME[0]}}&nbsp;</label>
                 </q-tooltip>
               </div>
@@ -222,7 +223,8 @@
               <b>Ответственные:</b>
               <br />
               <label
-                v-for="emp in task.f_task_data.h_emps"
+                v-for="(emp, i) in task.f_task_data.h_emps"
+                :key="i"
               >{{emp.FIRST_NAME}} {{emp.LAST_NAME[0]}}.{{emp.MIDDLE_NAME[0]}}&nbsp;</label>
             </q-tooltip>
           </div>
@@ -244,13 +246,13 @@ export default {
       type: Object,
       default: () => {
         return {};
-      },
-    },
+      }
+    }
   },
   components: {},
   data() {
     return {
-      isChecked: false,
+      isChecked: false
     };
   },
   created() {
@@ -258,7 +260,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isListView: "getListView",
+      isListView: "getListView"
     }),
     commentsCount() {
       ///console.log({ count: this.task.comments.length });
@@ -269,7 +271,7 @@ export default {
       if (!!this.task.f_task_data.h_emps) {
         return this.task.f_task_data.h_emps.length;
       } else return 0;
-    },
+    }
   },
   methods: {
     download() {
@@ -285,9 +287,9 @@ export default {
         .dialog({
           component: Popup,
           parent: this,
-          task: this.task,
+          task: this.task
         })
-        .onOk((res) => {
+        .onOk(res => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
@@ -303,8 +305,8 @@ export default {
     },
     formatString(text) {
       return stringTruncate(text, 60);
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
