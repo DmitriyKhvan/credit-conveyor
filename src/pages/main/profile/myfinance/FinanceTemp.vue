@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md fontb greyf">
+  <div class="q-pa-md OpenSans greyf">
     <div class="row justify-between">
       <div class="text-h4 blackf text-weight-bolder">Поступления</div>
       <div class="raw bg-white shadow-4" style="border-radius: 5px;">
@@ -52,7 +52,7 @@
                     anchor="top middle"
                     self="bottom middle"
                     :offset="[10, 10]"
-                  >сумма: {{formatNum(b)}}</q-tooltip>
+                  >сумма: {{formatNum(b ? b : 0)}}</q-tooltip>
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@
           >{{allMonthData.sections[0].title}}</q-item-label>
           <q-item-label class="text-h5 q-pt-sm q-pb-md">{{formatNum(allMonthData.sections[0].summ)}}</q-item-label>
           <div class="raw">
-            <q-avatar size="20px" color="green" text-color="white" icon="arrow_upward" />
+            <q-avatar size="20px" color="green" text-color="white" icon="arrow_upward" class="rotate-45" />
             <q-item-label class="text-green q-ml-sm">0.22%</q-item-label>
           </div>
         </q-item>
@@ -111,7 +111,7 @@
                     anchor="top middle"
                     self="bottom middle"
                     :offset="[10, 10]"
-                  >сумма: {{formatNum(b)}}</q-tooltip>
+                  >сумма: {{formatNum(b ? b : 0)}}</q-tooltip>
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@
             class="text-h5 q-pt-sm q-pb-md"
           >{{ formatNum(allMonthData.sections[1].summ) }}</q-item-label>
           <div class="raw">
-            <q-avatar size="20px" color="green" text-color="white" icon="arrow_upward" />
+            <q-avatar size="20px" color="green" text-color="white" icon="arrow_upward" class="rotate-45" />
             <q-item-label class="text-green q-ml-sm">5.16%</q-item-label>
           </div>
         </q-item>
@@ -172,7 +172,7 @@
                     anchor="top middle"
                     self="bottom middle"
                     :offset="[10, 10]"
-                  >сумма: {{formatNum(b)}}</q-tooltip>
+                  >сумма: {{formatNum(b ? b : 0)}}</q-tooltip>
                 </div>
               </div>
             </div>
@@ -186,7 +186,7 @@
             class="text-h5 q-pt-sm q-pb-md"
           >{{ formatNum(allMonthData.sections[2].summ) }}</q-item-label>
           <div class="raw">
-            <q-avatar size="20px" color="red" text-color="white" icon="arrow_downward" />
+            <q-avatar size="20px" color="red" text-color="white" icon="arrow_downward" class="rotate-45" />
             <q-item-label class="text-red q-ml-sm">0.74%</q-item-label>
           </div>
         </q-item>
@@ -271,7 +271,7 @@
             style="padding: 4px 0;"
           >Должностной оклад</q-item-label>
           <q-item-label class="text-h5 q-pt-sm q-pb-md">
-            {{formatNum(allMonthData.staff_salary)}}
+            {{formatNum(allMonthData.staff_salary ? allMonthData.staff_salary : 0)}}
             <span class="text-caption">СУМ</span>
           </q-item-label>
         </q-item>
@@ -296,27 +296,27 @@
           v-for="(data, j) in allMonthData.sections"
           :key="j"
         >
-          <q-item-section class="raw q-my-md" style="justify-content: space-between">
+          <q-item-section class="raw q-my-md" style="justify-content: space-between; min-height: 100vh - 10vh">
             <q-item class="cal1">
               <q-item-label class="text-weight-bold text-h5">{{data.title}}</q-item-label>
-              <q-item-label class="text-weight-bold text-h5">{{data.summ}}</q-item-label>
+              <q-item-label class="text-weight-bold text-h5">{{formatNum(data.summ)}}</q-item-label>
             </q-item>
             <q-item class="cal2">
               <q-item-label class="tex-h6 text-weight-bolder">
                 ВЫ РАБОТАЛИ:
                 <span style="color:orange">
-                  <strong class="text-h5">{{allMonthData.worked_days}}</strong>
+                  <strong class="text-h5">{{allMonthData.work_days ? allMonthData.work_days : 0}}</strong>
                   дня
                 </span>
                 <span style="color:grey">
-                  <strong class="text-h5">{{allMonthData.worked_hours}}</strong>
+                  <strong class="text-h5">{{allMonthData.worked_hours ? allMonthData.worked_hours : 0}}</strong>
                   ЧАСОВ
                 </span>
               </q-item-label>
               <q-item-label class="text-wight-bolder" style="color:grey">
                 Рабочих дней в Июне месяце -
-                <strong>{{allMonthData.work_days}}</strong>дня; Выходных -
-                <strong>{{allMonthData.day_offs}}</strong>
+                <strong>{{allMonthData.work_days ? allMonthData.work_days : 0}}</strong>дня; Выходных -
+                <strong>{{allMonthData.day_offs ? allMonthData.day_offs : 0}}</strong>
               </q-item-label>
             </q-item>
           </q-item-section>
@@ -337,7 +337,7 @@
 
       <div class="right_pane">
         <!-- kurs valyuta -->
-        <q-item class="card1 cal1">
+        <q-item class="card1 cal1" v-if="exchangeRate.length > 0">
           <q-item-label>Курс валют</q-item-label>
           <q-item
             class="rowline text-caption q-gutter-sm vertical-top"
@@ -363,6 +363,11 @@
             <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_cell_price)}}</q-item-label>
           </q-item>
         </q-item>
+        <div class="card1 cal2" v-else>
+          <q-skeleton type="text" class="full-width q-mb-sm" />
+          <q-skeleton type="QToggle" class="full-width q-mb-sm" />
+          <q-skeleton type="QToggle" class="full-width " />
+        </div>
         <!-- kurs valyuta end-->
 
         <q-item class="q-pa-lg bg-white text-grey-7 cal1" style="border-radius: 5px;">
@@ -450,11 +455,13 @@ export default {
             };
             this.dateSelectOptions.push(arr);
           });
+          console.log("Month: ", this.dateSelectOptions.sort((a, b) => b.value - a.value));
           this.selectedMonth = this.dateSelectOptions[0];
           this.monthData({
             uid: this.emp_id,
             date: this.selectedMonth.value,
           });
+          console.log(this.selectedMonth);
         },
         (error) => {
           console.log({ error });
@@ -603,17 +610,11 @@ export default {
     formatNum(str) {
       str = Math.round(str);
       str = String(str);
-      // str = str.replace(/(\.(.*))/g, '');
       var arr = str.split("");
       var str_temp = "";
       if (str.length > 3) {
-        for (var i = arr.length - 1, j = 1; i >= 0; i--, j++) {
-          str_temp = arr[i] + str_temp;
-          if (j % 3 == 0) {
-            str_temp = "," + str_temp;
-          }
-        }
-        return str_temp;
+          let temp = str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return temp;
       } else {
         return str;
       }
@@ -624,8 +625,11 @@ export default {
 </script>
 <style lang="sass" scoped>
 @font-face
-  font-family: 'Avant'
-  src: url('~assets/fonts/avant.ttf') format('truetype')
+  font-family: 'OpenSans'
+  src: url('~assets/fonts/OpenSans-Regular.ttf') format('truetype')
+
+.OpenSans
+  font-family: 'OpenSans'
 
 .right_pane
   width: 300px
@@ -657,9 +661,6 @@ export default {
 
 .q-tabs__content--align-center
   justify-content: space-between  
-
-.fontb
-  font-family: 'Avant'
 
 .blackf
   color: #000000
