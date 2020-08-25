@@ -322,8 +322,13 @@
           </q-item-section>
           <q-separator class="q-mb-md" />
           <q-item class="lined-content" v-for="(detail, k) in data.details" :key="k">
-            <q-item-label class="lined-text text-weight-bold">{{detail.PAY_NAME ? detail.PAY_NAME : ''}}</q-item-label>
-            <q-item-label class="lined-value text-weight-bold" style="color:#61C9A9">{{detail.SUMM ? formatNum(detail.SUMM) : 0}}</q-item-label>
+            <q-item-label
+              class="lined-text text-weight-bold"
+            >{{detail.PAY_NAME ? detail.PAY_NAME : ''}}</q-item-label>
+            <q-item-label
+              class="lined-value text-weight-bold"
+              style="color:#61C9A9"
+            >{{detail.SUMM ? formatNum(detail.SUMM) : 0}}</q-item-label>
           </q-item>
         </q-tab-panel>
 
@@ -340,9 +345,21 @@
             :key="j"
           >
             <q-item-label class="text-h6 text-wight-bold">{{note.code}}</q-item-label>
-            <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" class="rotate-45" />
+            <q-avatar
+              size="25px"
+              color="green"
+              text-color="white"
+              icon="arrow_upward"
+              class="rotate-45"
+            />
             <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_buy_price)}}</q-item-label>
-            <q-avatar size="25px" color="red" text-color="white" icon="arrow_downward" class="rotate-45" />
+            <q-avatar
+              size="25px"
+              color="red"
+              text-color="white"
+              icon="arrow_downward"
+              class="rotate-45"
+            />
             <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_cell_price)}}</q-item-label>
           </q-item>
         </q-item>
@@ -400,7 +417,7 @@ export default {
         "#EEF6FD",
         "#EEF6FD",
         "#EEF6FD",
-        "#61A4E4"
+        "#61A4E4",
       ],
       colorb: [
         "#FEF4F4",
@@ -408,7 +425,7 @@ export default {
         "#FEF4F4",
         "#FEF4F4",
         "#FEF4F4",
-        "#FFC5C5"
+        "#FFC5C5",
       ],
       colorc: [
         "#FEF3E7",
@@ -416,25 +433,25 @@ export default {
         "#FEF3E7",
         "#FEF3E7",
         "#FEF3E7",
-        "#FFA958"
+        "#FFA958",
       ],
       heightGlobalBlock: 90,
 
       selectedMonth: null,
       dateSelectOptions: [],
       allMonthData: null,
-      exchangeRate: []
+      exchangeRate: [],
     };
   },
   created() {
     this.$axios
       .get("/emps/kvitok/dates?uid=" + this.emp_id)
       .then(
-        response => {
-          response.data.data.forEach(el => {
+        (response) => {
+          response.data.data.forEach((el) => {
             let arr = {
               label: el.text,
-              value: el.date
+              value: el.date,
             };
             this.dateSelectOptions.push(arr);
           });
@@ -442,15 +459,15 @@ export default {
           this.selectedMonth = this.dateSelectOptions[0];
           this.monthData({
             uid: this.emp_id,
-            date: this.selectedMonth.value
+            date: this.selectedMonth.value,
           });
           console.log(this.selectedMonth);
         },
-        error => {
+        (error) => {
           console.log({ error });
         }
       )
-      .catch(error => {
+      .catch((error) => {
         console.log({ error });
       });
     this.$axios
@@ -458,16 +475,16 @@ export default {
         "https://cors-anywhere.herokuapp.com/https://nbu.uz/exchange-rates/json/"
       )
       .then(
-        res => {
-          this.exchangeRate = res.data.filter(el => {
+        (res) => {
+          this.exchangeRate = res.data.filter((el) => {
             return el.code == "EUR" || el.code == "USD";
           });
         },
-        err => {
+        (err) => {
           console.error({ err });
         }
       )
-      .catch(error => {
+      .catch((error) => {
         console.error({ error });
       });
   },
@@ -480,20 +497,20 @@ export default {
   },
   computed: {
     ...mapGetters({
-      emp_id: "auth/empId"
-    })
+      emp_id: "auth/empId",
+    }),
   },
   methods: {
     monthData(params) {
       this.$axios({
         url: "/emps/kvitok/month",
         method: "post",
-        data: params
+        data: params,
       })
-        .then(response => {
+        .then((response) => {
           this.allMonthData = response.data;
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
@@ -503,7 +520,7 @@ export default {
     selected() {
       let arr = {
         uid: this.emp_id,
-        date: this.selectedMonth.value
+        date: this.selectedMonth.value,
       };
       this.monthData(arr);
     },
@@ -601,8 +618,8 @@ export default {
       } else {
         return str;
       }
-    }
-  }
+    },
+  },
 };
 // Avenir Next;
 </script>

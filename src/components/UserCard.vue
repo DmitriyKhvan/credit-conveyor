@@ -1,277 +1,37 @@
 <template>
-  <div class="card_bg">
-    <div v-if="item" class="cardBgInner">
-      <!-- MY Block -->
-
-      <div class="row">
-        <div class="col-10 card_content">
-          <div class="row">
-            <div class="col-4 img_size">
-              <div
-                :class="
-                  !view && view !== 'dialog'
-                    ? 'avatar_img'
-                    : 'avatar_img height_auto'
-                "
-              >
-                <img :src="getPhotoUrl(item.EMP_ID)" />
-              </div>
-              <div v-if="!view">{{ item.WORK }}</div>
-            </div>
-            <div class="col-8 card_text">
-              <div>
-                <div v-if="!view && view !== 'dialog'">
-                  <q-chip square color="teal" text-color="white" size="xs"
-                    >онлайн</q-chip
-                  >
-                </div>
-                {{ decode(item.LAST_NAME) }}
-                {{ decode(item.FIRST_NAME).slice(0, 1) }}.{{
-                  decode(item.MIDDLE_NAME).slice(0, 1)
-                }}.
-              </div>
-              <div class="post_name">
-                <div v-if="!view && view !== 'dialog'">
-                  {{ decode(item.POST_NAME) }}
-                </div>
-                <div v-else>
-                  {{ decode(item.POST_NAME).slice(0, 20) }}...
-                  <q-tooltip
-                    anchor="top middle"
-                    self="bottom middle"
-                    :offset="[10, 10]"
-                  >
-                    {{ decode(item.POST_NAME) }}
-                  </q-tooltip>
-                </div>
-              </div>
-              <div v-if="!view" class="block_phones">
-                <q-item-label>
-                  <q-icon name="o_local_phone" />
-                  &nbsp;{{ item.PHONE_WORK }}
-                </q-item-label>
-                <q-item-label>
-                  <q-icon name="stay_primary_portrait" />
-                  &nbsp;{{ item.PHONE_WORK }}
-                </q-item-label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-if="!view" class="col-2 block_icons">
-          <q-btn color="grey-3" size="sm" icon="contact_phone">
-            <q-tooltip
-              anchor="center right"
-              self="center left"
-              :content-style="tooltipStyle"
-            >
-              Добавить в личную адресную книгу
-            </q-tooltip>
-          </q-btn>
-          <q-btn color="grey-3" size="sm" icon="mail">
-            <q-tooltip
-              anchor="center right"
-              self="center left"
-              :content-style="tooltipStyle"
-            >
-              Отправить письмо
-            </q-tooltip>
-          </q-btn>
-          <q-btn color="grey-3" size="sm" icon="card_giftcard">
-            <q-tooltip
-              anchor="center right"
-              self="center left"
-              :content-style="tooltipStyle"
-            >
-              День рождения 2 августа
-            </q-tooltip>
-          </q-btn>
-          <q-btn color="grey-3" size="sm" icon="chat">
-            <q-tooltip
-              anchor="center right"
-              self="center left"
-              :content-style="tooltipStyle"
-            >
-              Написать в чат
-            </q-tooltip>
-          </q-btn>
-        </div>
+  <div  class="row no-wrap q-pa-md text-baseline justify-between  items-center OpenSansBold"
+        style="font-size: 16px; line-height: 40px; display:flex; flex:auto; justify-content:space-between; color:#30384B"
+        @click="DIngo(item)">
+    <div class="col-3 row no-wrap">
+      <q-avatar size="40px">
+        <img :src="getPhotoUrl(item.EMP_ID)" width="40px" />
+        <span class="bg-positive bedge" >&nbsp;</span>
+      </q-avatar>
+      <div class="text-no-wrap text-weight-bolder q-ml-md">
+        {{ decode(item.LAST_NAME) }}
+        {{ decode(item.FIRST_NAME).slice(0, 1) }}.
+        {{decode(item.MIDDLE_NAME).slice(0, 1)}}.
+        <q-tooltip  content-class="bg-blue-grey text-caption text-white"
+                    anchor="center right" self="center left" 
+                    :offset="[10, 10]">
+        {{decode(item.LAST_NAME)+' '+decode(item.FIRST_NAME)+' '+decode(item.MIDDLE_NAME)}}
+        </q-tooltip>
       </div>
-
-      <!-- <div class="row card_bg">          
-          <div class="col-10 card_content"> 
-            <div class="row">           
-              <div :class="!view && view !== 'dialog' ? 'col-md-4 img_size' : 'col-md-4 col-xs-12 col-sm-12 img_size'">
-                <div :class="!view && view !== 'dialog' ? 'avatar_img' : 'avatar_img height_auto'">
-                  <img :src="getPhotoUrl(item.EMP_ID)"/>
-                </div>
-                <div v-if="!view">{{item.WORK}}</div>
-              </div>
-              <div :class="!view && view !== 'dialog' ? 'col-md-8 card_text' : 'col-md-8 col-xs-12 col-sm-12 card_text'">
-                <div>
-                    <div v-if="!view && view !== 'dialog'" ><q-chip square color="teal" text-color="white" size="xs">онлайн</q-chip></div>
-                    {{ decode(item.LAST_NAME) }} {{ decode(item.FIRST_NAME).slice(0,1) }}.{{ decode(item.MIDDLE_NAME).slice(0,1) }}.
-                </div>
-                <div class="post_name">
-                  <div v-if="!view && view !== 'dialog'">
-                    {{ decode(item.POST_NAME) }}
-                  </div>
-                  <div v-else>
-                    {{ decode(item.POST_NAME).slice(0,20) }}...  
-                    <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-                      {{ decode(item.POST_NAME) }}
-                    </q-tooltip>
-                  </div>                  
-                </div>
-                <div v-if="!view" class="block_phones">
-                  <q-item-label>
-                    <q-icon name="o_local_phone" />
-                    &nbsp;{{ item.PHONE_WORK }}
-                  </q-item-label>
-                  <q-item-label>
-                    <q-icon name="stay_primary_portrait" />
-                    &nbsp;{{ item.PHONE_WORK }}
-                  </q-item-label>
-                </div>
-              </div>            
-            </div>
-          </div>
-          <div v-if="!view" class="col-2 block_icons">
-            <q-btn color="grey-3" size="sm" icon="contact_phone">
-              <q-tooltip anchor="center right" self="center left" :content-style="tooltipStyle">
-                Добавить в личную адресную книгу
-              </q-tooltip>
-            </q-btn>
-            <q-btn color="grey-3" size="sm" icon="mail">
-              <q-tooltip anchor="center right" self="center left" :content-style="tooltipStyle">
-                Отправить письмо
-              </q-tooltip>
-            </q-btn>
-            <q-btn color="grey-3" size="sm" icon="card_giftcard">
-              <q-tooltip anchor="center right" self="center left" :content-style="tooltipStyle">
-                День рождения 2 августа
-              </q-tooltip>
-            </q-btn>
-            <q-btn color="grey-3" size="sm" icon="chat">
-              <q-tooltip anchor="center right" self="center left" :content-style="tooltipStyle">
-                Написать в чат
-              </q-tooltip>
-            </q-btn>
-          </div>
-        </div> -->
-      <!-- End MY Block -->
-
-      <!-- BOY CARD -->
-      <!-- <div v-if="item.GENDER === 'M'">
-        
-        <q-card-section
-          class="bg-primary text-white"
-          style="padding: 5px 5px 5px 10px;"
-        >
-          <div class="text-subtitle1">
-            <q-icon
-              name="o_star_border"
-              size="25px"
-              color="yellow-14"
-              v-if="item.WORK_POSITION === 1"
-            />
-            &nbsp;{{
-              decode(item.LAST_NAME) +
-                " " +
-                decode(item.FIRST_NAME) +
-                " " +
-                decode(item.MIDDLE_NAME)
-            }}&nbsp;
-          </div>
-        </q-card-section>
-        <q-item style="padding: 0 5px 5px 10px;">
-          <q-item-section avatar>
-            <q-avatar square style="width: 80px; height: 100px">
-              <img :src="getPhotoUrl(item.EMP_ID)" />
-            </q-avatar>
-          </q-item-section>
-          <q-item-section style="padding: 0 5px 5px 10px;">
-            <q-item-label>
-              <b>{{ decode(item.POST_NAME) }}</b>
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_local_phone" />
-              &nbsp;{{ item.PHONE_WORK }}
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_local_phone" />
-              &nbsp;{{ item.PHONE_WORK }}
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_mail" />&nbsp;
-              <a
-                :href="mail + item.MAIL_ADDRESS"
-                style="text-decoration: none;"
-                >{{ item.MAIL_ADDRESS }}</a
-              >
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-card-section
-          class="bg-primary text-white"
-          style="padding: 1px 5px 1px 5px;"
-        ></q-card-section>
-      </div> -->
-      <!-- GIRL CARD -->
-      <!-- <div v-else>
-        <q-card-section
-          class="bg-purple text-white"
-          style="padding: 5px 5px 5px 10px;"
-        >
-          <div class="text-subtitle1">
-            {{
-              decode(item.LAST_NAME) +
-                " " +
-                decode(item.FIRST_NAME) +
-                " " +
-                decode(item.MIDDLE_NAME)
-            }}
-          </div>
-        </q-card-section>
-        <q-item style="padding: 0 5px 5px 10px;">
-          <q-item-section avatar>
-            <q-avatar square style="width: 80px; height: 100px">
-              <img :src="getPhotoUrl(item.EMP_ID)" />
-            </q-avatar>
-          </q-item-section>
-          <q-item-section style="padding: 0 5px 5px 10px;">
-            <q-item-label>
-              <b>{{ decode(item.POST_NAME) }}</b>
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_local_phone" />
-              &nbsp;{{ item.PHONE_WORK }}
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_local_phone" />
-              &nbsp;{{ item.PHONE_WORK }}
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_mail" />&nbsp;
-              <a
-                :href="mail + item.MAIL_ADDRESS"
-                style="text-decoration: none;"
-                >{{ item.MAIL_ADDRESS }}</a
-              >
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-card-section
-          class="bg-purple text-white"
-          style="padding: 1px 5px 1px 5px;"
-        ></q-card-section>
-      </div> -->
-      <!-- Girl CARD END-->
     </div>
-
-    <div v-else>
-      <img src="./../assets/statics/default-avatar.png" style="width:100%" />
-      <!-- <img src="../assets/statics/logoNew.png" /> -->
+    <div class="col text-no-wrap text-center text-weight-bolder">
+      {{ decode(item.POST_NAME).slice(0, 35) }}
+      <q-tooltip  content-class="bg-blue-grey text-caption text-white ellipsis-2-lines" 
+                  anchor="top middle" self="bottom middle" 
+                  :offset="[5, 5]">
+          {{decode(item.POST_NAME)}}
+        </q-tooltip>
+    </div>
+    <div class="col row ellipsis justify-between text-weight-bolder">
+      <span class="col row justify-between no-wrap text-center text-no-wrap">
+        <span>{{ item.PHONE_WORK }}</span>
+        <span>(18:88)</span>
+      </span>
+      <span class="col-4 text-center ellipsis-2-lines bg-white">{{ item.WORK }}</span>
     </div>
   </div>
 </template>
@@ -316,6 +76,9 @@ export default {
     },
     getPhotoUrl(emp_id) {
       return UserService.getUserProfilePhotoUrl(emp_id);
+    },
+    DIngo(i) {
+      // console.log();
     }
   }
 };
@@ -385,5 +148,15 @@ export default {
 }
 .q-chip {
   margin-left: 0;
-}</style
->>
+}
+.bedge {
+  position: absolute;
+  bottom: 5%;
+  right: 0;
+  border: 1px solid #ffffff;
+  border-radius: 50px;
+  width: 10px;
+  height: 10px;
+  
+}
+</style>
