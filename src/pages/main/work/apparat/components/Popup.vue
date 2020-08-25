@@ -268,12 +268,12 @@ export default {
       selectedStatus: "",
       date: "",
       // model: "",
-      startStatus: ""
+      startStatus: "",
     };
   },
   created() {
     this.selectedStatus = this.statuses.find(
-      el => el.value === this.doc.doc_status
+      (el) => el.value === this.doc.doc_status
     );
     this.startStatus = this.doc.doc_status;
     if (this.doc.deadline) {
@@ -282,12 +282,12 @@ export default {
   },
   computed: {
     ...mapState({
-      statuses: state => state.apparat.aFilters.statuses
+      statuses: (state) => state.apparat.aFilters.statuses,
     }),
     ...mapGetters(["getNameStatus"]),
     getStatus() {
       return this.getNameStatus(this.doc.doc_status);
-    }
+    },
   },
   methods: {
     download() {
@@ -306,7 +306,7 @@ export default {
       const arr = {
         doc_id: [this.doc.doc_id],
         deadline: this.date,
-        status: this.selectedStatus.value
+        status: this.selectedStatus.value,
       };
       this.$store.dispatch("updateDocStatus", arr);
       this.hide();
@@ -332,8 +332,8 @@ export default {
     // !!! Don't change
     onDialogHide() {
       this.$emit("hide");
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

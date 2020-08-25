@@ -124,13 +124,15 @@ export default {
     async updateDocStatus({ commit }, payload) {
       try {
         const res = await axios.post("/tasks/aparat", payload);
-        if (payload.status) {
-          commit("updateDocStatus", payload);
-        } else {
-          commit("updateDocDeadline", payload);
-        }
+        console.log({ payload: payload });
+        //if (payload.status) {
+        commit("updateDocStatus", payload);
+        //} else {
+        commit("updateDocDeadline", payload);
+        //}
 
         if (res.data.status == 1) {
+          //
           NotifyService.showSuccessMessage(res.data.message);
         } else {
           NotifyService.showErrorMessage(res.data.message);

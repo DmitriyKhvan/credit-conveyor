@@ -12,7 +12,10 @@ export default {
     rowsPerPage: 5, // default
     totalPages: 0, // default
     totalRows: 0, // totalRows
-    docSearchText: ""
+    docSearchText: "",
+    countNew: 0,
+    countReady: 0,
+    countSent: 0
   },
   mutations: {
     selDoc(state, doc) {
@@ -55,6 +58,15 @@ export default {
     },
     setDocSearchText(state, text) {
       state.docSearchText = text;
+    },
+    setCountNew(state, count) {
+      state.countNew = count;
+    },
+    setCountSent(state, count) {
+      state.countSent = count;
+    },
+    setCountReady(state, count) {
+      state.countReady = count;
     }
   },
   actions: {
@@ -91,7 +103,11 @@ export default {
         const allData = await axios.get(
           `/tasks/pomoshnik/${state.menuNo}?page=${state.page}&rows=${state.rowsPerPage}&lang=${lang}`
         );
-        //console.log(allData.data);
+        console.log(allData.data);
+        commit("setCountNew", allData.data.count_new);
+        commit("setCountReady", allData.data.count_ready);
+        commit("setCountSent", allData.data.count_sent);
+
         const docs = allData.data.data !== null ? allData.data.data : [];
         let superiors = [];
         if (allData.data.superiors) {
@@ -117,8 +133,10 @@ export default {
     },
     setIsListView({ commit }, payload) {
       commit("setIsListView", payload); //
-    }
+    },
+    onSelectSortBy({ commit }) {}
   },
+
   getters: {
     totalPages: state => {
       return state.totalPages;
@@ -146,6 +164,15 @@ export default {
     },
     isListView(state) {
       return state.isListView;
+    },
+    getCountNew(state) {
+      return state.countNew;
+    },
+    getCountReady(state) {
+      return state.countReady;
+    },
+    getCountSent(state) {
+      return state.countSent;
     }
   }
 };

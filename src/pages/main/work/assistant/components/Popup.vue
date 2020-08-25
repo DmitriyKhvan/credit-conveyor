@@ -10,7 +10,7 @@
       <q-card class="cardBlock q-pa-md" style="width: 820px; max-width: 80vw;">
         <q-card-section>
           <div class="row justify-between">
-            <strong>{{ doc.description }}</strong>
+            <strong>{{ formatString(doc.description) }}</strong>
             <q-space />
             <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
           </div>
@@ -207,6 +207,7 @@ import { mapState, mapGetters } from "vuex";
 import NotifyService from "@/services/notify.service";
 import { required, minLength } from "vuelidate/lib/validators";
 import { formatFileSize, downloadFile, getMimeType } from "@/shared/utils/file";
+import { stringTruncate } from "@/shared/utils/common";
 
 export default {
   props: {
@@ -376,7 +377,9 @@ export default {
       let extention = getMimeType(this.doc.file.extension);
       downloadFile(this.doc.file.id, this.doc.file.name, extention);
     },
-
+    formatString(text) {
+      return stringTruncate(text, 60);
+    },
     // !!! Don't change
     show() {
       this.$refs.dialog.show();
@@ -395,7 +398,7 @@ export default {
     onCancelClick() {
       this.$q
         .dialog({
-          title: "Confirm",
+          title: "Подтвердить",
           message: this.$t("messages.confirm_exit"),
           cancel: true,
           persistent: true,

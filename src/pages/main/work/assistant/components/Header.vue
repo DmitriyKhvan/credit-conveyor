@@ -15,7 +15,7 @@
             <div>
               <b>Новые документы</b>
               <span class="subRed q-pl-sm">
-                <b>+3</b>
+                <b>{{countNew}}</b>
               </span>
             </div>
           </div>
@@ -30,6 +30,9 @@
             </div>
             <div>
               <b>Готов к отправке</b>
+              <span class="subRed q-pl-sm">
+                <b>{{countReady}}</b>
+              </span>
             </div>
           </div>
           <div
@@ -43,6 +46,9 @@
             </div>
             <div>
               <b>Отправленные</b>
+              <span class="subRed q-pl-sm">
+                <b>{{countSent}}</b>
+              </span>
             </div>
           </div>
         </div>
@@ -63,7 +69,7 @@
           <q-icon
             v-if="searchText !== ''"
             name="close"
-            @click="searchText = ''"
+            @click="onClearSearch"
             class="cursor-pointer"
           />
           <q-icon name="search" />
@@ -75,20 +81,21 @@
 
       <q-select
         filled
-        v-model="model"
-        :options="options"
+        v-model="listView"
+        :options="listViewOptions"
         bg-color="white"
         style="width: 200px"
-        @input="change()"
+        @input="onSelectListView()"
       />
       <div class="col"></div>
       <q-select
         filled
-        v-model="model2"
-        :options="options2"
+        v-model="sortBy"
+        :options="sortOptions"
         label="Сортировать по"
         bg-color="white"
         style="width: 200px"
+        @input="onSelectSortBy()"
       />
     </div>
   </div>
@@ -98,34 +105,59 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      options: ["Вид Список", "Вид Карточный"],
-      options2: ["Вид Список", "Вид Карточный"],
-      model: "Вид Список",
-      model2: "",
-      selectedDocs: [],
+      listView: null,
+      listViewOptions: [
+        {
+          label: "Вид Список",
+          value: 1,
+        },
+        {
+          label: "Вид Карточный",
+          value: 2,
+        },
+      ],
       searchText: "",
+      sortOptions: [
+        {
+          label: "Date",
+          value: 1,
+        },
+        {
+          label: "Name",
+          value: 2,
+        },
+      ],
+      sortBy: null,
     };
+  },
+  created() {
+    this.sortBy = this.sortOptions[0];
+    this.listView = this.listViewOptions[0];
   },
   computed: {
     ...mapState({
-      //list: (state) => state.assistant.aList,
-      //docs: (state) => state.assistant.aAllDocs,
       menu: (state) => state.assistant.aMenu,
     }),
     ...mapGetters({
       isSearchOpen: "isSearchOpen",
+      countNew: "getCountNew",
+      countReady: "getCountReady",
+      countSent: "getCountSent",
     }),
   },
   methods: {
     menuSelect(num) {
       this.$store.dispatch("getADocs", { num: num });
     },
-    change(value) {
-      if (this.model === "Вид Карточный") {
-        this.$store.dispatch("setIsListView", false);
-      } else {
+    onSelectListView() {
+      if (this.listView.value == 1) {
         this.$store.dispatch("setIsListView", true);
+      } else {
+        this.$store.dispatch("setIsListView", false);
       }
+    },
+    onSelectSortBy() {
+      console.log({ sortBy: this.sortBy });
     },
     setSearchOpen() {
       // done
@@ -135,8 +167,11 @@ export default {
       //console.log({ text: this.searchText });
       this.$store.commit("setDocSearchText", this.searchText);
     },
+    onClearSearch() {
+      this.searchText = "";
+      this.$store.commit("setDocSearchText", this.searchText);
+    },
   },
-  created() {},
 };
 </script>
 <style scoped>

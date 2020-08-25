@@ -55,9 +55,11 @@ export default {
       //   el.f_task_data.description.includes(searchText)
       // );
       //console.log({ docs: this.docs });
-      return this.docs.filter((el) => {
-        return el.description.includes(this.searchText);
-      });
+      if (!!this.docs)
+        return this.docs.filter((el) => {
+          return el.description.includes(this.searchText);
+        });
+      else return this.docs;
     },
   },
 };
