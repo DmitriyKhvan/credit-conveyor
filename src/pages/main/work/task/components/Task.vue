@@ -179,7 +179,8 @@
         <br />
         <span class="subGreen">
           <!-- TODO -->
-          <b>{{formatDate(task.f_task_data.deadline)}}</b>
+          <b v-if="task.f_task_data.deadline">{{formatDate(task.f_task_data.deadline)}}</b>
+          <b v-else>Срок не назначен</b>
         </span>
       </div>
     </div>
@@ -195,7 +196,7 @@
               content-class="bg-green"
             >{{task.f_task_data.paper_count}} листов бумаги</q-tooltip>
           </div>
-          <div class="flexBlock q-px-sm">7</div>
+          <div class="flexBlock q-px-sm">{{task.f_task_data.paper_count}}</div>
         </div>
         <div class="col flexBlock twoBorders q-pr-sm q-py-sm justify-center">
           <div>
@@ -207,7 +208,7 @@
               content-class="bg-light-blue"
             >{{commentsCount}} комментариев</q-tooltip>
           </div>
-          <div class="desp q-px-sm">25</div>
+          <div class="desp q-px-sm">{{commentsCount}}</div>
         </div>
         <div class="col flexBlock q-pr-sm q-py-sm justify-center">
           <div>
@@ -219,7 +220,10 @@
               content-class="bg-deep-purple text-center"
             >
               <b>Ответственные:</b>
-              <br />Баратов С. У. Абдуллаев И. А. Драгунов А. С.
+              <br />
+              <label
+                v-for="emp in task.f_task_data.h_emps"
+              >{{emp.FIRST_NAME}} {{emp.LAST_NAME[0]}}.{{emp.MIDDLE_NAME[0]}}&nbsp;</label>
             </q-tooltip>
           </div>
           <div class="desp q-px-sm">25</div>
@@ -298,7 +302,7 @@ export default {
       return simpleDateFormat(date);
     },
     formatString(text) {
-      return stringTruncate(text, 50);
+      return stringTruncate(text, 60);
     },
   },
 };
