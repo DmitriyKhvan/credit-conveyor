@@ -37,12 +37,13 @@
       <div class="col-3 offset-md-1">
         <q-input
           filled
-          clearable
           bottom-slots
-          v-model="text"
+          clearable
+          v-model="searchText"
           label="Поиск"
           bg-color="white"
           @input="search()"
+          @clear="onClearSearch()"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -101,23 +102,23 @@ export default {
       selectedOrgans: "",
       selectedDepartments: "",
       selectedStatus: "",
-      text: "",
+      searchText: "",
       model: "",
-      options: []
+      options: [],
     };
   },
   computed: {
     ...mapState({
-      seniors: state => state.apparat.aFilters.seniors,
-      regions: state => state.apparat.aFilters.regions,
-      organs: state => state.apparat.aFilters.organs,
-      departments: state => state.apparat.aFilters.departments,
-      statuses: state => state.apparat.aFilters.statuses,
-      docks: state => state.apparat.aDocks,
+      seniors: (state) => state.apparat.aFilters.seniors,
+      regions: (state) => state.apparat.aFilters.regions,
+      organs: (state) => state.apparat.aFilters.organs,
+      departments: (state) => state.apparat.aFilters.departments,
+      statuses: (state) => state.apparat.aFilters.statuses,
+      docks: (state) => state.apparat.aDocks,
 
-      fperPage: state => state.apparat.aPerPage,
-      faPage: state => state.apparat.aPage
-    })
+      fperPage: (state) => state.apparat.aPerPage,
+      faPage: (state) => state.apparat.aPage,
+    }),
   },
   methods: {
     filter() {
@@ -144,19 +145,25 @@ export default {
           status:
             this.selectedStatus !== "" && this.selectedStatus !== null
               ? this.selectedStatus.value
-              : null
-        }
+              : null,
+        },
       };
       this.$store.dispatch("aPageSelect", arr);
     },
     search() {
-      if (this.text !== "") this.$store.dispatch("aSearchDocs", this.text);
+      console.log({ tex: this.searchText });
+      this.$store.dispatch("aSearchDocs", this.searchText);
+    },
+    onClearSearch() {
+      console.log("....");
+      this.searchText = "";
+      this.$store.dispatch("aSearchDocs", this.searchText);
     },
     clearInput() {
       this.filter();
-    }
+    },
   },
-  created() {}
+  created() {},
 };
 </script>
 <style scoped>

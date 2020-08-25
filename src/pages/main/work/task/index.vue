@@ -52,15 +52,18 @@ export default {
       isListView: "getListView",
       isBoardView: "getBoardView",
       tasks: "getTasks",
-      searchText: "getDocSearchText",
+      searchText: "getSearchText",
     }),
     taskList() {
       // let filtered = state.taskList.filter(el =>
       //   el.f_task_data.description.includes(searchText)
       // );
-      return this.tasks.filter((el) =>
-        el.f_task_data.description.includes(this.searchText)
-      );
+      //console.log({ searchText: this.searchText });
+      if (!!this.tasks)
+        return this.tasks.filter((el) =>
+          el.f_task_data.description.includes(this.searchText)
+        );
+      else return [];
     },
   },
   methods: {},

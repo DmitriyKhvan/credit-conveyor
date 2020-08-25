@@ -103,7 +103,7 @@ export default {
         const allData = await axios.get(
           `/tasks/pomoshnik/${state.menuNo}?page=${state.page}&rows=${state.rowsPerPage}&lang=${lang}`
         );
-        console.log(allData.data);
+        //console.log(allData.data);
         commit("setCountNew", allData.data.count_new);
         commit("setCountReady", allData.data.count_ready);
         commit("setCountSent", allData.data.count_sent);

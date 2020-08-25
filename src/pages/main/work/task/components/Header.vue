@@ -81,7 +81,7 @@
           <q-icon
             v-if="searchText !== ''"
             name="close"
-            @click="searchText = ''"
+            @click="onClearSearch()"
             class="cursor-pointer"
           />
           <q-icon name="search" />
@@ -144,6 +144,10 @@ export default {
       this.$store.dispatch("setSearchOpen");
     },
     searchTask() {
+      this.$store.commit("setSearchText", this.searchText);
+    },
+    onClearSearch() {
+      this.searchText = "";
       this.$store.commit("setSearchText", this.searchText);
     },
   },
