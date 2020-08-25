@@ -32,7 +32,8 @@ module.exports = function(ctx) {
 
       "roboto-font", // optional, you are not bound to itt
       "material-icons", // optional, you are not bound to it
-      "material-icons-outlined" // optional, you are not bound to it
+      "material-icons-outlined", // optional, you are not bound to it
+      "material-icons-round" // optional, you are not bound to it
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
@@ -75,8 +76,8 @@ module.exports = function(ctx) {
       analyze: false,
       env: ctx.dev
         ? {
-            VUE_APP_BASE_URL: JSON.stringify("http://localhost:4000/"),
-            SOCKET_URL: JSON.stringify("http://localhost:4000/")
+            VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/"),
+            SOCKET_URL: JSON.stringify("http://10.8.8.70:4000/")
           }
         : {
             VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/"),
