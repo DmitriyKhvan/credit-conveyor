@@ -218,7 +218,7 @@ export default {
       // tasks: state => state.tasks.tTasks
       viewTasks: (state) => state.tasks.tViewTasks,
       list: (state) => state.tasks.tList,
-      tasks: (state) => state.tasks.tTasks,
+      //tasks: (state) => state.tasks.tTasks,
       dtab: (state) => state.tasks.tTab,
     }),
 
