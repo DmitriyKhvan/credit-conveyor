@@ -8,7 +8,69 @@ export default {
     isSearchOpen: false, // is search input open or close
     taskList: [],
     searchText: "",
-    countNew: 0
+    countNew: 0,
+    // edit
+    tViewTasks: false,
+    tList: true,
+    tMenu: 1,
+    tSearch: false,
+    tTasks: [
+      {
+        id: 0,
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
+        pages: 2,
+        messages: 4,
+        users: 3,
+        status: 1
+      },
+      {
+        id: 1,
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
+        pages: 7,
+        messages: 12,
+        users: 2,
+        status: 1
+      },
+      {
+        id: 3,
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
+        pages: 4,
+        messages: 18,
+        users: 4,
+        status: 1
+      },
+      {
+        id: 4,
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
+        pages: 9,
+        messages: 7,
+        users: 6,
+        status: 2
+      },
+      {
+        id: 5,
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
+        pages: 1,
+        messages: 2,
+        users: 3,
+        status: 3
+      },
+      {
+        id: 6,
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
+        pages: 6,
+        messages: 13,
+        users: 2,
+        status: 4
+      }
+    ],
+    tTab: 1
   },
   mutations: {
     changeListView(state) {
@@ -31,6 +93,13 @@ export default {
     },
     setCountNew(state, count) {
       state.countNew = count;
+    },
+    //edit
+    tSearchChange(state) {
+      state.tSearch = !state.tSearch;
+    },
+    tTabChange(state, n) {
+      state.tTab = n;
     }
   },
   actions: {
@@ -68,6 +137,13 @@ export default {
         console.log({ res: res.data });
         commit("setTasks", res.data);
       } catch (err) {}
+    },
+    //EDIT
+    tSearchChange({ commit }) {
+      commit("tSearchChange");
+    },
+    tTabChange({ commit }, n) {
+      commit("tTabChange", n);
     }
     /*
     searchTasks({ commit, state }, searchText) {

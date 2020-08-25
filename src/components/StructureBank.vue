@@ -68,35 +68,35 @@
 
   <div class="col column" v-if="selectedFilial">
     <q-scroll-area :style="{height: heightElRight}">
-          <q-tree
-            :nodes="filials"
-            node-key="CODE"
-            label-key="DEPARTMENT_NAME1"
-            default-expand-all
-            color="black"
-            icon="o_arrow_right"
-            ref="nodes"
-          >
-            <template v-slot:default-header="prop">
-              <span class="depst">{{ decode(prop.node.DEPARTMENT_NAME1) }}</span>
-            </template>
+      <q-tree
+        :nodes="filials"
+        node-key="CODE"
+        label-key="DEPARTMENT_NAME1"
+        default-expand-all
+        color="black"
+        icon="o_arrow_right"
+        ref="nodes"
+      >
+        <template v-slot:default-header="prop">
+          <span class="depst">{{ decode(prop.node.DEPARTMENT_NAME1) }}</span>
+        </template>
 
-            <template v-slot:default-body="prop">
-                <div
-                  :class="view && view === 'dialog' ? 'userRowMin': 'userRow'"
-                  v-for="(item, index) in prop.node.emps"
-                  :key="index"
-                >
-                  <q-card   @click="emitUser(item)"
-                            style="cursor: pointer"
-                            class="userBlock q-ma-sm">
-                    <user-card :itemData="item" :view="(view === 'dialog') ? 'dialog': ''" />
-                  </q-card>
-                </div>
-                
-            </template>
-          </q-tree>
-        </q-scroll-area>
+        <template v-slot:default-body="prop">
+            <div
+              :class="view && view === 'dialog' ? 'userRowMin': 'userRow'"
+              v-for="(item, index) in prop.node.emps"
+              :key="index"
+            >
+              <q-card   @click="emitUser(item)"
+                        style="cursor: pointer"
+                        class="userBlock q-ma-sm">
+                <user-card :itemData="item" :view="(view === 'dialog') ? 'dialog': ''" />
+              </q-card>
+            </div>
+            
+        </template>
+      </q-tree>
+    </q-scroll-area>
   </div>
 </div>
 </template>
