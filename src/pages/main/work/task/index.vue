@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-lg">
+  <div class="q-pa-lg" v-if="dtab === 1">
     <a-header></a-header>
     <template v-if="!viewTasks">
       <template v-if="list">
@@ -24,6 +24,9 @@
       <a-management></a-management>
     </template>
 
+  </div>
+  <div v-else>
+    <drag></drag>
   </div>
   <!-- <div class="q-pa-md">
     <q-toolbar class="shadow-2 rounded-borders">
@@ -163,6 +166,7 @@
 </template>
 
 <script>
+import Drag from './DragTask'
 import Header from './components/Header'
 import Task from './components/Task'
 import Management from './components/Management'
@@ -174,6 +178,7 @@ import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
 import formatSize from "./filters/formatSize";
 import Decoder from "@/shared/utils/CommonUtils";
+import DragTaskVue from './DragTask.vue'
 
 
 export default {
@@ -200,6 +205,7 @@ export default {
           viewTasks: state => state.tasks.tViewTasks,
           list: state => state.tasks.tList,
           tasks: state => state.tasks.tTasks,
+          dtab: state => state.tasks.tTab,
         }),
 
     // ...mapGetters({
@@ -276,6 +282,7 @@ export default {
     AHeader: Header,
     ATask: Task,
     AManagement: Management,
+    Drag,
 
     QHierarchy,
     QTask

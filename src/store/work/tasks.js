@@ -53,7 +53,8 @@ export default {
         users: 2,
         status: 4
       },
-    ]
+    ],
+    tTab: 1
   },
   mutations: {
     tChangeView(state){
@@ -67,6 +68,9 @@ export default {
     },
     tSearchChange(state){
       state.tSearch = !state.tSearch
+    },
+    tTabChange(state, n){
+      state.tTab = n
     }
   },
   actions: {
@@ -81,6 +85,9 @@ export default {
     },
     tSearchChange({commit}){
       commit('tSearchChange')
+    },
+    tTabChange({commit}, n){
+      commit('tTabChange', n)
     }
   },
   getters: {
