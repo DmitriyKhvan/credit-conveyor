@@ -7,7 +7,8 @@ export default {
     tabMenuNo: 1, // # of tab
     isSearchOpen: false, // is search input open or close
     taskList: [],
-    searchText: ""
+    searchText: "",
+    countNew: 0
   },
   mutations: {
     changeListView(state) {
@@ -27,6 +28,9 @@ export default {
     },
     setSearchText(state, text) {
       state.searchText = text;
+    },
+    setCountNew(state, count) {
+      state.countNew = count;
     }
   },
   actions: {
@@ -46,7 +50,10 @@ export default {
       commit("setTabMenuNo", num);
       try {
         let res = await axios.get(`tasks/user/${num}`);
-        //console.log({ res: res.data });
+        if (num == 1) {
+          commit("setCountNew", res.data.length);
+        }
+        console.log({ res: res.data.length });
         commit("setTasks", res.data);
       } catch (err) {
         console.error({ err });
@@ -55,7 +62,10 @@ export default {
     async reload({ commit, state }) {
       try {
         let res = await axios.get(`tasks/user/${state.tabMenuNo}`);
-        //console.log({ res: res.data });
+        if (state.tabMenuNo == 1) {
+          commit("setCountNew", res.data.length);
+        }
+        console.log({ res: res.data });
         commit("setTasks", res.data);
       } catch (err) {}
     }
@@ -89,6 +99,9 @@ export default {
     },
     getSearchText(state) {
       return state.searchText;
+    },
+    getCountNew(state) {
+      return state.countNew;
     }
   }
 };

@@ -15,7 +15,7 @@
             <div>
               <b>Новые задания</b>
               <span class="subRed q-pl-sm">
-                <b>+3</b>
+                <b>+{{countNew}}</b>
               </span>
             </div>
           </div>
@@ -125,6 +125,7 @@ export default {
       tabNo: "tabMenuNo",
       isListView: "getListView",
       isBoardView: "getBoardView",
+      countNew: "getCountNew",
     }),
   },
   methods: {
