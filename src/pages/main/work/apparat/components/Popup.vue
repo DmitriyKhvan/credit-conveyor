@@ -284,7 +284,7 @@ export default {
     ...mapState({
       statuses: (state) => state.apparat.aFilters.statuses,
     }),
-    ...mapGetters(["getNameStatus"]),
+    ...mapGetters({ getNameStatus: "apparat/getNameStatus" }),
     getStatus() {
       return this.getNameStatus(this.doc.doc_status);
     },
@@ -308,7 +308,7 @@ export default {
         deadline: this.date,
         status: this.selectedStatus.value,
       };
-      this.$store.dispatch("updateDocStatus", arr);
+      this.$store.dispatch("apparat/updateDocStatus", arr);
       this.hide();
     },
     formatDate(data) {

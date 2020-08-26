@@ -23,25 +23,25 @@ export default {
   components: {
     ATask: Task,
     AViews: Views,
-    AFilter: Filter
+    AFilter: Filter,
   },
   data() {
     return {
       val: false,
       text: "",
       model: "",
-      options: []
+      options: [],
     };
   },
   computed: {
     ...mapState({
-      docks: state => state.apparat.aDocks
-    })
+      docks: (state) => state.apparat.aDocks,
+    }),
   },
   created() {
-    this.$store.dispatch("aAllFilters");
-    this.$store.dispatch("aAllDocs");
-  }
+    this.$store.dispatch("apparat/aAllFilters");
+    this.$store.dispatch("apparat/aAllDocs");
+  },
 };
 </script>
 <style scoped>

@@ -37,7 +37,7 @@ export default {
     };
   },
   created() {
-    this.$store.dispatch("getADocs", { num: 1 });
+    this.$store.dispatch("assistant/getADocs", { num: 1 });
     //console.log({ docList: this.docList });
   },
   computed: {
@@ -46,9 +46,9 @@ export default {
       // docs: (state) => state.assistant.aAllDocs,
     }),
     ...mapGetters({
-      searchText: "getDocSearchText",
-      docs: "getAllDocs",
-      list: "isListView",
+      searchText: "assistant/getDocSearchText",
+      docs: "assistant/getAllDocs",
+      list: "assistant/isListView",
     }),
     docList() {
       // let filtered = state.taskList.filter(el =>

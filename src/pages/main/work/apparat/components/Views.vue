@@ -50,28 +50,28 @@ export default {
       options: [],
       selPage: 5,
       options2: [1, 5, 10, 15, 20, 50],
-      curPage: 1
+      curPage: 1,
     };
   },
   computed: {
     ...mapState({
-      statusesList: state => state.apparat.aFilters.statuses,
-      checkeds: state => state.apparat.aChecked,
+      statusesList: (state) => state.apparat.aFilters.statuses,
+      checkeds: (state) => state.apparat.aChecked,
 
-      fsuperiors: state => state.apparat.aSenior,
-      fregion: state => state.apparat.aRegion,
-      forgan: state => state.apparat.aOrgan,
-      fdepartments: state => state.apparat.aManagement,
-      fstatus: state => state.apparat.aStatus,
-      fperPage: state => state.apparat.aPerPage,
-      faPage: state => state.apparat.aPage,
-      faDocks: state => state.apparat.aDocks,
-      faDocs: state => state.apparat.aDocs,
-      faAllPages: state => state.apparat.aAllPages
+      fsuperiors: (state) => state.apparat.aSenior,
+      fregion: (state) => state.apparat.aRegion,
+      forgan: (state) => state.apparat.aOrgan,
+      fdepartments: (state) => state.apparat.aManagement,
+      fstatus: (state) => state.apparat.aStatus,
+      fperPage: (state) => state.apparat.aPerPage,
+      faPage: (state) => state.apparat.aPage,
+      faDocks: (state) => state.apparat.aDocks,
+      faDocs: (state) => state.apparat.aDocs,
+      faAllPages: (state) => state.apparat.aAllPages,
     }),
     statuses() {
-      return this.statusesList.filter(el => el.value == 3 || el.value == 4);
-    }
+      return this.statusesList.filter((el) => el.value == 3 || el.value == 4);
+    },
   },
   created() {
     // this.selPage = this.
@@ -86,17 +86,17 @@ export default {
           region: this.fregion,
           organ: this.forgan,
           departments: this.fdepartments,
-          status: this.fstatus
-        }
+          status: this.fstatus,
+        },
       };
-      this.$store.dispatch("aPageSelect", arr);
+      this.$store.dispatch("apparat/aPageSelect", arr);
     },
     multiCheck() {
       const arr = {
         doc_id: this.checkeds,
-        status: this.status.value
+        status: this.status.value,
       };
-      this.$store.dispatch("multiUpdateDocStatus", arr);
+      this.$store.dispatch("apparat/multiUpdateDocStatus", arr);
     },
     pageNext() {
       if (this.faPage < this.faAllPages) {
@@ -108,10 +108,10 @@ export default {
             region: this.fregion,
             organ: this.forgan,
             departments: this.fdepartments,
-            status: this.fstatus
-          }
+            status: this.fstatus,
+          },
         };
-        this.$store.dispatch("aPageSelect", arr);
+        this.$store.dispatch("apparat/aPageSelect", arr);
       }
     },
     pagePrev() {
@@ -124,13 +124,13 @@ export default {
             region: this.fregion,
             organ: this.forgan,
             departments: this.fdepartments,
-            status: this.fstatus
-          }
+            status: this.fstatus,
+          },
         };
-        this.$store.dispatch("aPageSelect", arr);
+        this.$store.dispatch("apparat/aPageSelect", arr);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

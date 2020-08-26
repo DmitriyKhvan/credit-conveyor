@@ -145,20 +145,20 @@ export default {
   },
   computed: {
     ...mapState({
-      list: state => state.assistant.isListView,
-      selectedDocs: state => state.assistant.selectedDocs
+      list: (state) => state.assistant.isListView,
+      selectedDocs: (state) => state.assistant.selectedDocs,
     }),
     ...mapGetters({
-      menuNo: "menuNo"
+      menuNo: "assistant/menuNo",
     }),
     isNewDocsSection() {
       return this.menuNo == 1 ? true : false;
-    }
+    },
   },
   methods: {
     selectDoc() {
       console.log({ selectingDoc: this.doc });
-      this.$store.dispatch("selDoc", this.doc);
+      this.$store.dispatch("assistant/selDoc", this.doc);
     },
     download() {
       let extention = getMimeType(this.doc.file.extension);
@@ -169,13 +169,13 @@ export default {
         .dialog({
           component: Popup,
           parent: this,
-          doc: this.doc
+          doc: this.doc,
         })
-        .onOk(res => {
+        .onOk((res) => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
-            this.$store.dispatch("getADocs", { num: this.menuNo });
+            this.$store.dispatch("assistant/getADocs", { num: this.menuNo });
           }
         })
         .onCancel(() => {
@@ -185,20 +185,20 @@ export default {
     formatDate(date) {
       //console.log({ date: CommonUtils.simpleDateFormat(date) });
       return CommonUtils.simpleDateFormat(date);
-    }
+    },
   },
   data() {
     return {
-      isSelected: false
+      isSelected: false,
     };
   },
   created() {
-    if (this.selectedDocs.find(el => el.doc_id === this.doc.doc_id)) {
+    if (this.selectedDocs.find((el) => el.doc_id === this.doc.doc_id)) {
       this.isSelected = true;
     } else {
       this.isSelected = false;
     }
-  }
+  },
 };
 </script>
 <style scoped>

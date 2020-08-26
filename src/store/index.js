@@ -13,9 +13,9 @@ import { themes } from "./categorized/themes.module";
 import birthdays from "./birthdays";
 import chats from "./chat/chat";
 import my_personal from "./my_personal";
-import apparat from "./work/apparat";
+import { apparat } from "./work/apparat";
 import tasks from "./work/tasks";
-import assistant from "./work/assistant";
+import { assistant } from "./work/assistant";
 
 Vue.use(Vuex);
 
@@ -23,7 +23,6 @@ const store = new Vuex.Store({
   namespaced: true,
   modules: {
     auth,
-    assistant,
     dicts,
     socket,
     common,
@@ -37,7 +36,8 @@ const store = new Vuex.Store({
     chats,
     my_personal,
     apparat,
-    tasks
+    tasks,
+    assistant
   }
   // enable strict mode (adds overhead!)
   // for dev mode only

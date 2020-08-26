@@ -148,16 +148,16 @@ export default {
               : null,
         },
       };
-      this.$store.dispatch("aPageSelect", arr);
+      this.$store.dispatch("apparat/aPageSelect", arr);
     },
     search() {
       console.log({ tex: this.searchText });
-      this.$store.dispatch("aSearchDocs", this.searchText);
+      this.$store.dispatch("apparat/aSearchDocs", this.searchText);
     },
     onClearSearch() {
-      console.log("....");
+      //console.log("....");
       this.searchText = "";
-      this.$store.dispatch("aSearchDocs", this.searchText);
+      this.$store.dispatch("apparat/aSearchDocs", this.searchText);
     },
     clearInput() {
       this.filter();

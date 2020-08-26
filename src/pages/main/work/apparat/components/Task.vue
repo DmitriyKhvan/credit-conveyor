@@ -140,21 +140,21 @@ export default {
   },
   data() {
     return {
-      val: false
+      val: false,
     };
   },
   computed: {
     ...mapState({
-      statuses: state => state.apparat.aFilters.statuses,
-      checkeds: state => state.apparat.aChecked
+      statuses: (state) => state.apparat.aFilters.statuses,
+      checkeds: (state) => state.apparat.aChecked,
     }),
-    ...mapGetters(["getNameStatus"]),
+    ...mapGetters({ getNameStatus: "apparat/getNameStatus" }),
     getStatus() {
       return this.getNameStatus(this.doc.doc_status);
-    }
+    },
   },
   created() {
-    if (this.checkeds.find(el => el === this.doc.doc_id)) {
+    if (this.checkeds.find((el) => el === this.doc.doc_id)) {
       this.val = true;
     } else {
       this.val = false;
@@ -166,9 +166,9 @@ export default {
         .dialog({
           component: Popup,
           parent: this,
-          doc: this.doc
+          doc: this.doc,
         })
-        .onOk(res => {
+        .onOk((res) => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
@@ -192,17 +192,17 @@ export default {
       let arr = [];
       if (this.val) {
         if (
-          this.checkeds.find(el => el !== this.doc.doc_id) ||
+          this.checkeds.find((el) => el !== this.doc.doc_id) ||
           this.checkeds.length === 0
         ) {
           arr = this.checkeds;
           arr.push(this.doc.doc_id);
         }
       } else {
-        arr = this.checkeds.filter(el => el !== this.doc.doc_id);
+        arr = this.checkeds.filter((el) => el !== this.doc.doc_id);
       }
 
-      this.$store.dispatch("docsCheked", arr);
+      this.$store.dispatch("apparat/docsCheked", arr);
     },
     daysLeft(num) {
       let today = new Date();
@@ -223,8 +223,8 @@ export default {
       } else {
         return "Осталось " + daysLeft + dayname;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

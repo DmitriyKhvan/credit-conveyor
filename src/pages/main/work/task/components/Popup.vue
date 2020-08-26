@@ -468,7 +468,7 @@ export default {
       if (this.isAdd) {
         // add
         let commentObj = {
-          task_id: this.task.task_id,
+          task_id: this.task.f_task_data.doc_id,
           emp_id: this.empId,
           dep_code: this.depCode,
           text: this.commentText,
@@ -493,11 +493,13 @@ export default {
                 this.commentsList.splice(0, 0, msg);
                 this.commentText = "";
               } else {
-                NotifyService.showErrorMessage(resp.data.message);
+                console.log({ error: res.data.response.data.message });
+                NotifyService.showErrorMessage(res.data.message);
               }
             })
             .catch((err) => {
               console.error({ err });
+              NotifyService.showErrorMessage(err.response.data.message);
             });
         }
       } else {

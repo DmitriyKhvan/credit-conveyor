@@ -57,11 +57,11 @@ export default {
     }),
 
     ...mapGetters({
-      totalPages: "totalPages",
-      page: "page",
-      rowsPerPage: "rowsPerPage",
-      totalRows: "totalRows",
-      menuNo: "menuNo",
+      totalPages: "assistant/totalPages",
+      page: "assistant/page",
+      rowsPerPage: "assistant/rowsPerPage",
+      totalRows: "assistant/totalRows",
+      menuNo: "assistant/menuNo",
     }),
     isNewDocsSection() {
       return this.menuNo == 1 ? true : false;
@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     selectPagesNum() {
-      this.$store.dispatch("getADocs", { rows: this.rowNum });
+      this.$store.dispatch("assistant/getADocs", { rows: this.rowNum });
     },
     showMultiDocPopup() {
       console.log("multi popup");
@@ -102,8 +102,8 @@ export default {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
-            this.$store.dispatch("getADocs", { num: this.menuNo });
-            this.$store.dispatch("resetSelectedDocs");
+            this.$store.dispatch("assistant/getADocs", { num: this.menuNo });
+            this.$store.dispatch("assistant/resetSelectedDocs");
           }
         })
         .onCancel(() => {
@@ -113,13 +113,13 @@ export default {
     onNext() {
       console.log("next...");
       if (this.isNextActive) {
-        this.$store.dispatch("getADocs", { page: this.page + 1 });
+        this.$store.dispatch("assistant/getADocs", { page: this.page + 1 });
       }
     },
     onPrev() {
       if (this.isPrevActive) {
         console.log("prev...");
-        this.$store.dispatch("getADocs", { page: this.page - 1 });
+        this.$store.dispatch("assistant/getADocs", { page: this.page - 1 });
       }
     },
   },

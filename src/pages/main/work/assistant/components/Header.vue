@@ -139,21 +139,21 @@ export default {
       menu: (state) => state.assistant.aMenu,
     }),
     ...mapGetters({
-      isSearchOpen: "isSearchOpen",
-      countNew: "getCountNew",
-      countReady: "getCountReady",
-      countSent: "getCountSent",
+      isSearchOpen: "assistant/isSearchOpen",
+      countNew: "assistant/getCountNew",
+      countReady: "assistant/getCountReady",
+      countSent: "assistant/getCountSent",
     }),
   },
   methods: {
     menuSelect(num) {
-      this.$store.dispatch("getADocs", { num: num });
+      this.$store.dispatch("assistant/getADocs", { num: num });
     },
     onSelectListView() {
       if (this.listView.value == 1) {
-        this.$store.dispatch("setIsListView", true);
+        this.$store.dispatch("assistant/setIsListView", true);
       } else {
-        this.$store.dispatch("setIsListView", false);
+        this.$store.dispatch("assistant/setIsListView", false);
       }
     },
     onSelectSortBy() {
@@ -161,15 +161,15 @@ export default {
     },
     setSearchOpen() {
       // done
-      this.$store.dispatch("setSearchOpen");
+      this.$store.dispatch("assistant/setSearchOpen");
     },
     searchDoc() {
       //console.log({ text: this.searchText });
-      this.$store.commit("setDocSearchText", this.searchText);
+      this.$store.commit("assistant/setDocSearchText", this.searchText);
     },
     onClearSearch() {
       this.searchText = "";
-      this.$store.commit("setDocSearchText", this.searchText);
+      this.$store.commit("assistant/setDocSearchText", this.searchText);
     },
   },
 };
