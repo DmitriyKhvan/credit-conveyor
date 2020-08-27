@@ -186,8 +186,9 @@
       </div>
     </div>
     <div class="footerBlock">
-      <div class="row q-my-sm">
-        <div class="col flexBlock q-pr-sm q-py-sm justify-center">
+      <div class="row q-my-sm justify-center">
+        <q-btn color="indigo-14" label="Просмотреть" @click="showDialogView()" />
+        <!-- <div class="col flexBlock q-pr-sm q-py-sm justify-center">
           <div>
             <img src="@/assets/icons/List-active.svg" />
             <q-tooltip
@@ -229,7 +230,7 @@
             </q-tooltip>
           </div>
           <div class="desp q-px-sm">25</div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -344,7 +345,8 @@ export default {
   color: #ff4a4a;
 }
 .footerBlock {
-  border-top: 1px #e3e4e8 solid;
+  border: none;
+  /* border-top: 1px #e3e4e8 solid; */
 }
 .twoBorders {
   border-left: 1px #e3e4e8 solid;

@@ -97,11 +97,11 @@
           <q-btn v-else size="90" icon="list" color="blue-6" flat class="bg-white q-py-sm" />
         </div>
         <!-- :text-color="dtab === 2 ? 'blue-6' : 'grey'" -->
-        <div @click="onBoardView()">
+        <div @click="onBoardView">
           <q-btn
             size="90"
             icon="check_box_outline_blank"
-            color="white"
+            color="grey"
             flat
             class="bg-white q-ml-md q-py-sm"
           />
@@ -111,12 +111,17 @@
       <div class="row no-wrap">
         <q-input
           v-if="isSearchOpen"
-          standout
           v-model="searchText"
           @input="searchTask()"
-          label="Поиск"
+          placeholder="Поиск"
           bg-color="white"
+          color="black"
+          borderless
+          
         >
+        <template v-slot:prepend>
+          &nbsp;&nbsp;
+        </template>
           <template v-slot:append>
             <q-icon
               v-if="searchText !== ''"
@@ -125,6 +130,7 @@
               class="cursor-pointer"
             />
             <q-icon name="search" />
+            &nbsp;&nbsp;
           </template>
         </q-input>
         <div v-else class="q-pa-md bg-white flexBlock" @click="setSearchOpen">
@@ -185,9 +191,9 @@ export default {
       //done
       this.$store.dispatch("onTabChange", num);
     },
-    // setTab(n) {
-    //   this.$store.dispatch("tTabChange", n);
-    // },
+    setTab(n) {
+      this.$store.dispatch("tTabChange", n);
+    },
     onBoardView() {
       console.log("on board click... ");
       //
