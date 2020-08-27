@@ -6,8 +6,7 @@
       <div class="row content q-pa-md q-my-lg">
         <div class="col">
           <a-views></a-views>
-
-          <a-task v-for="d in docks" :key="d.doc_id" :doc="d"></a-task>
+          <a-task v-for="d in docs" :key="d.doc_id" :doc="d"></a-task>
         </div>
       </div>
     </div>
@@ -26,21 +25,16 @@ export default {
     AFilter: Filter,
   },
   data() {
-    return {
-      val: false,
-      text: "",
-      model: "",
-      options: [],
-    };
+    return {};
   },
   computed: {
-    ...mapState({
-      docks: (state) => state.apparat.aDocks,
+    ...mapGetters({
+      docs: "apparat/getAllDocs",
     }),
   },
   created() {
-    this.$store.dispatch("apparat/aAllFilters");
-    this.$store.dispatch("apparat/aAllDocs");
+    this.$store.dispatch("apparat/loadFilters");
+    this.$store.dispatch("apparat/loadAllDocs", { page: 1 });
   },
 };
 </script>

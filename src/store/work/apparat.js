@@ -1,7 +1,9 @@
 import axios from "axios";
+//import { valueOf } from "@/shared/utils/common";
+
 import NotifyService from "@/services/notify.service";
 const state = {
-  aFilters: {
+  filters: {
     seniors: [],
     regions: [],
     organs: [],
@@ -9,114 +11,142 @@ const state = {
     statuses: [],
     types: []
   },
-  aDocks: [],
-  aSenior: null,
-  aRegion: null,
-  aOrgan: null,
-  aManagement: null,
-  aStatus: null,
-  aType: null,
+  senior: null,
+  region: null,
+  organ: null,
+  department: null,
+  status: null,
+  type: null,
+
+  //aManagement: null,
   aChecked: [],
-  aPerPage: 10,
-  aPage: 1,
-  aDocs: 0,
-  aAllPages: 0
+
+  // pagination states
+  page: 1, // default
+  rowsPerPage: 5, // default
+  totalPages: 0, // default
+  totalRows: 0, // totalRows
+  // docs
+  allDocs: []
 };
 const mutations = {
-  aSetPage(state, payload) {
-    state.aDocs = payload.docs_count;
-    state.aPage = payload.current_page;
-    state.aAllPages = payload.page_count;
-    state.aPerPage = payload.rows_page;
+  setFilters(state, payload) {
+    state.filters = payload;
   },
-  aChangePage(state, payload) {
-    state.aSenior = payload;
-    state.aRegion = payload;
-    state.aOrgan = payload;
-    state.aManagement = payload;
-    state.aStatus = payload;
+  setAllDocs(state, payload) {
+    if (!!payload) state.allDocs = payload;
   },
-  aAllFilters(state, payload) {
-    state.aFilters = payload;
-  },
-  aAllDocs(state, payload) {
-    if (payload == null) {
-      state.aDocks = [];
-    } else {
-      state.aDocks = payload;
-    }
-  },
+
   updateDocStatus(state, payload) {
-    const arr = state.aDocks.find(doc => doc.doc_id === payload.doc_id[0]);
+    const arr = state.allDocs.find(doc => doc.doc_id === payload.doc_id[0]);
     arr.doc_status = payload.status;
   },
   updateDocDeadline(state, payload) {
-    const arr = state.aDocks.find(doc => doc.doc_id === payload.doc_id[0]);
+    const arr = state.allDocs.find(doc => doc.doc_id === payload.doc_id[0]);
     arr.deadline = payload.deadline;
   },
   multiUpdateDocStatus(state, payload) {
     payload.doc_id.forEach(id => {
-      const arr = state.aDocks.find(doc => doc.doc_id === id);
+      const arr = state.allDocs.find(doc => doc.doc_id === id);
       arr.doc_status = payload.status;
     });
   },
   docsCheked(state, payload) {
     state.aChecked = payload;
+  },
+  // selected dict options
+  setSenior(state, senior) {
+    state.senior = senior;
+  },
+  setRegion(state, region) {
+    state.region = region;
+  },
+  setOrgan(state, organ) {
+    state.organ = organ;
+  },
+  setDepartment(state, department) {
+    state.department = department;
+  },
+  setStatus(state, status) {
+    state.status = status;
+  },
+  setType(state, type) {
+    state.type = type;
+  },
+  //pagination
+  setPage(state, page) {
+    state.page = page;
+  },
+  setRowsPerPage(state, rowsPerPage) {
+    state.rowsPerPage = rowsPerPage;
+  },
+  setTotalPages(state, total) {
+    state.totalPages = total;
+  },
+  setTotalRows(state, totalRows) {
+    state.totalRows = totalRows;
   }
 };
 const actions = {
-  async aSearchDocs({ commit }, payload) {
+  async aSearchDocs({ commit, state }, payload) {
     try {
       const all = await axios.get(
         `/tasks/aparat/search?description=${payload}`
       );
-      commit("aAllDocs", all.data);
+      console.log({ searchRes: all });
+      commit("setAllDocs", all.data);
+      commit("setPage", 1); // setback to page 1
+      commit("setTotalRows", all.data.length);
+      // allrec/rows
+      let page_count = Math.ceil(all.data.length / state.rowsPerPage);
+      console.log({ page_count });
+      commit("setTotalPages", page_count);
     } catch (e) {
       throw e;
     }
   },
-  async aPageSelect({ commit }, payload) {
-    //console.log(payload);
+  async loadAllDocs({ commit, state }, payload) {
+    let page = null;
+    let rows = null;
+    if (!!payload) {
+      page = payload.page; // page number
+      rows = payload.rows; // # of rows per page
+      //let lang = rootState.common.langNum; //
+
+      if (page) {
+        commit("setPage", page);
+      }
+      if (rows) {
+        commit("setRowsPerPage", rows);
+        commit("setPage", 1); // setback to page 1
+      }
+    }
+
     try {
       const all = await axios.post(
-        `files/docs/apparat?page=${payload.page}&rowsPerPage=${payload.perPage}`,
-        payload.filters
+        `files/docs/apparat?page=${state.page}&rowsPerPage=${state.rowsPerPage}`,
+        {
+          superiors: state.superior,
+          region: state.region,
+          organ: state.organ,
+          department: state.department,
+          status: state.status
+        }
       );
-      const arrPage = {
-        docs_count: all.data.docs_count,
-        current_page: all.data.current_page,
-        page_count: all.data.page_count,
-        rows_page: all.data.rowsPerPage
-      };
-      commit("aSetPage", arrPage);
-      commit("aAllDocs", all.data.data);
-    } catch (e) {
-      throw e;
+      let docs = all.data.data;
+      if (docs) commit("setAllDocs", docs);
+      else commit("setAllDocs", []);
+
+      commit("setTotalRows", all.data.docs_count);
+      commit("setTotalPages", all.data.page_count);
+
+      console.log({ all });
+    } catch (err) {
+      console.log({ err });
+      throw err;
     }
   },
-  async aAllDocs({ commit }) {
-    try {
-      const all = await axios.post("files/docs/apparat?page=1&rowsPerPage=5", {
-        superiors: null,
-        region: null,
-        organ: null,
-        departments: null,
-        status: null
-      });
-      const arrPage = {
-        docs_count: all.data.docs_count,
-        current_page: all.data.current_page,
-        page_count: all.data.page_count,
-        rows_page: all.data.rowsPerPage
-      };
-      commit("aSetPage", arrPage);
-      commit("aAllDocs", all.data.data);
-      //console.log(all.data);
-    } catch (e) {
-      console.log("files/docs/apparat");
-      throw e;
-    }
-  },
+
   async updateDocStatus({ commit }, payload) {
     try {
       const res = await axios.post("/tasks/aparat", payload);
@@ -154,7 +184,7 @@ const actions = {
   docsCheked({ commit }, payload) {
     commit("docsCheked", payload);
   },
-  async aAllFilters({ commit }) {
+  async loadFilters({ commit }) {
     try {
       const all = await axios.get("/tasks/filters/pomoshnik");
       const seniors = [],
@@ -210,7 +240,7 @@ const actions = {
         departments,
         statuses
       };
-      commit("aAllFilters", filters);
+      commit("setFilters", filters);
     } catch (e) {
       throw e;
     }
@@ -218,12 +248,28 @@ const actions = {
 };
 const getters = {
   getNameStatus: state => num => {
-    const arr = state.aFilters.statuses.find(st => st.value === num);
+    const arr = state.filters.statuses.find(st => st.value === num);
     if (arr) {
       return arr.label;
     } else {
       return null;
     }
+  },
+  getAllDocs: state => {
+    return state.allDocs;
+  },
+  // pagination
+  totalPages: state => {
+    return state.totalPages;
+  },
+  page: state => {
+    return state.page;
+  },
+  rowsPerPage: state => {
+    return state.rowsPerPage;
+  },
+  totalRows: state => {
+    return state.totalRows;
   }
 };
 

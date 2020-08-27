@@ -282,7 +282,7 @@ export default {
   },
   computed: {
     ...mapState({
-      statuses: (state) => state.apparat.aFilters.statuses,
+      statuses: (state) => state.apparat.filters.statuses,
     }),
     ...mapGetters({ getNameStatus: "apparat/getNameStatus" }),
     getStatus() {

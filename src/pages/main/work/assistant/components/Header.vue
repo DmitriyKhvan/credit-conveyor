@@ -161,7 +161,7 @@ export default {
     },
     setSearchOpen() {
       // done
-      this.$store.dispatch("assistant/setSearchOpen");
+      this.$store.commit("assistant/setSearchOpen");
     },
     searchDoc() {
       //console.log({ text: this.searchText });

@@ -21,21 +21,21 @@
       <div>
         <q-select
           filled
-          v-model="selPage"
-          :options="options2"
+          v-model="rowNum"
+          :options="rowsPerPageOptions"
           bg-color="white"
           dense
           style="width:70px"
-          @input="selectPages()"
+          @input="selectPagesNum()"
         />
       </div>
-      <div>1-{{faDocks.length ? faDocks.length : 0}} из {{faDocs}}</div>
+      <div>{{ pageStartNum }} - {{ pageEndNum }} из {{ totalRows }}</div>
       <div class="arrows">
-        <div :class="faPage > 1 ? 'active': ''" @click="pagePrev">
-          <q-icon name="keyboard_arrow_left" />
+        <div :class="isPrevActive">
+          <q-icon name="keyboard_arrow_left" @click="onPrev()" />
         </div>
-        <div :class="faPage < faAllPages ? 'active': ''" @click="pageNext">
-          <q-icon name="keyboard_arrow_right" />
+        <div :class="isNextActive">
+          <q-icon name="keyboard_arrow_right" size="sm" @click="onNext()" />
         </div>
       </div>
     </div>
@@ -47,49 +47,59 @@ export default {
   data() {
     return {
       status: "",
-      options: [],
+      //options: [],
       selPage: 5,
-      options2: [1, 5, 10, 15, 20, 50],
+      //options2: [1, 5, 10, 15, 20, 50],
       curPage: 1,
+      //-------
+      rowNum: 5, // default
+      rowsPerPageOptions: [1, 3, 5, 10, 50], //selectRowsPerPage, rowsPerPage, page,
     };
   },
   computed: {
     ...mapState({
-      statusesList: (state) => state.apparat.aFilters.statuses,
+      statusesList: (state) => state.apparat.filters.statuses,
       checkeds: (state) => state.apparat.aChecked,
-
-      fsuperiors: (state) => state.apparat.aSenior,
-      fregion: (state) => state.apparat.aRegion,
-      forgan: (state) => state.apparat.aOrgan,
-      fdepartments: (state) => state.apparat.aManagement,
-      fstatus: (state) => state.apparat.aStatus,
-      fperPage: (state) => state.apparat.aPerPage,
-      faPage: (state) => state.apparat.aPage,
-      faDocks: (state) => state.apparat.aDocks,
-      faDocs: (state) => state.apparat.aDocs,
-      faAllPages: (state) => state.apparat.aAllPages,
     }),
+    //==== pagination
+    ...mapGetters({
+      totalPages: "apparat/totalPages",
+      page: "apparat/page",
+      rowsPerPage: "apparat/rowsPerPage",
+      totalRows: "apparat/totalRows",
+    }),
+
+    pageStartNum() {
+      if (this.totalRows == 0) return 0;
+      else return (this.page - 1) * this.rowsPerPage + 1;
+    },
+    pageEndNum() {
+      return this.rowsPerPage * this.page > this.totalRows
+        ? this.totalRows
+        : this.rowsPerPage * this.page;
+    },
+    isPrevActive() {
+      if (this.page == 1 || this.totalRows == 0) {
+        return "";
+      } else return "active";
+    },
+    isNextActive() {
+      if (this.page == this.totalPages || this.totalRows == 0) {
+        return "";
+      } else return "active";
+    },
+    // =========
     statuses() {
       return this.statusesList.filter((el) => el.value == 3 || el.value == 4);
     },
   },
   created() {
-    // this.selPage = this.
+    this.rowNum = this.rowsPerPage;
   },
   methods: {
-    selectPages() {
-      const arr = {
-        perPage: this.selPage,
-        page: this.curPage,
-        filters: {
-          superiors: this.fsuperiors,
-          region: this.fregion,
-          organ: this.forgan,
-          departments: this.fdepartments,
-          status: this.fstatus,
-        },
-      };
-      this.$store.dispatch("apparat/aPageSelect", arr);
+    selectPagesNum() {
+      console.log({ selRow: this.rowNum });
+      this.$store.dispatch("apparat/loadAllDocs", { rows: this.rowNum });
     },
     multiCheck() {
       const arr = {
@@ -98,36 +108,16 @@ export default {
       };
       this.$store.dispatch("apparat/multiUpdateDocStatus", arr);
     },
-    pageNext() {
-      if (this.faPage < this.faAllPages) {
-        const arr = {
-          perPage: this.selPage,
-          page: this.curPage + 1,
-          filters: {
-            superiors: this.fsuperiors,
-            region: this.fregion,
-            organ: this.forgan,
-            departments: this.fdepartments,
-            status: this.fstatus,
-          },
-        };
-        this.$store.dispatch("apparat/aPageSelect", arr);
+    onNext() {
+      //console.log("next...");
+      if (this.isNextActive) {
+        this.$store.dispatch("apparat/loadAllDocs", { page: this.page + 1 });
       }
     },
-    pagePrev() {
-      if (this.faPage > 0) {
-        const arr = {
-          perPage: this.selPage,
-          page: this.curPage - 1,
-          filters: {
-            superiors: this.fsuperiors,
-            region: this.fregion,
-            organ: this.forgan,
-            departments: this.fdepartments,
-            status: this.fstatus,
-          },
-        };
-        this.$store.dispatch("apparat/aPageSelect", arr);
+    onPrev() {
+      if (this.isPrevActive) {
+        console.log("prev...");
+        this.$store.dispatch("apparat/loadAllDocs", { page: this.page - 1 });
       }
     },
   },
