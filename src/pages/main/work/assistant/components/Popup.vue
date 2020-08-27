@@ -120,7 +120,11 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-input standout v-model="searchUser" label="Исполнитель" @input="selUsers">
+                  <q-input  borderless dense v-model="searchUser" 
+                            style="border: .5px solid #e1e1e1; border-radius: 4px; background: #fff;" 
+                            class="q-px-sm"
+                            label="Исполнитель" 
+                            @input="selUsers">
                     <template v-slot:append>
                       <q-icon name="search" />
                     </template>
@@ -144,7 +148,7 @@
               </div>
 
               <div class="row" v-if="workers.length !== 0">
-                <div class="col q-pb-md q-pt-sm q-px-md users">
+                <div class="col q-pb-xs q-pt-xs q-px-sm users">
                   <div
                     v-for="u in workers"
                     :key="u.EMP_ID"
@@ -165,10 +169,13 @@
               <div class="row">
                 <div class="col q-pb-md">
                   <q-select
-                    filled
+                    borderless
+                    dense
                     v-model="superior"
                     :options="superiorsList"
                     label="Руководитель"
+                    class="rounded-borders q-px-sm"
+                    style="border: 0.5px solid #e1e1e1"
                   />
                 </div>
               </div>
@@ -178,7 +185,11 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-select filled v-model="shablon" :options="shablons" label="Шаблон" />
+                  <q-select borderless v-model="shablon" :options="shablons"
+                            dense 
+                            label="Шаблон" 
+                            class="rounded-borders q-px-sm"
+                            style="border: 0.5px solid #e1e1e1" />
                 </div>
               </div>
             </div>
@@ -415,8 +426,9 @@ export default {
 </script>
 <style scoped>
 .users {
-  background: #f8f8f8;
+  background: #ffffff;
   border-radius: 5px;
+  border: 0.5px solid #e1e1e1;
 }
 
 .files {
