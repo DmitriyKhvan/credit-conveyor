@@ -7,6 +7,7 @@ const state = {
   selectedDocs: [],
   aSuperiors: [],
   isSearchOpen: false, // is search input open or close
+  sortBy: 1, // 1 date, 2 date
   // pagination states
   page: 1, // default
   rowsPerPage: 5, // default
@@ -70,6 +71,9 @@ const mutations = {
   },
   setSearchOpen(state) {
     state.isSearchOpen = !state.isSearchOpen;
+  },
+  setSortBy(state, sortBy) {
+    state.sortBy = sortBy;
   }
 };
 const actions = {
@@ -91,6 +95,7 @@ const actions = {
     let page = payload.page; // page number
     let rows = payload.rows; // # of rows per page
     let lang = rootState.common.langNum; //
+    let sortBy = payload.sortBy;
 
     if (num) {
       commit("setMenuNo", num); // set tab numbers
@@ -102,9 +107,13 @@ const actions = {
       commit("setRowsPerPage", rows);
       commit("setPage", 1); // setback to page 1
     }
+    if (sortBy) {
+      commit("setSortBy", sortBy);
+      commit("setPage", 1); // setback to page 1
+    }
     try {
       const allData = await axios.get(
-        `/tasks/pomoshnik/${state.menuNo}?page=${state.page}&rows=${state.rowsPerPage}&lang=${lang}`
+        `/tasks/pomoshnik/${state.menuNo}?page=${state.page}&rows=${state.rowsPerPage}&sort=${state.sortBy}&lang=${lang}`
       );
       //console.log(allData.data);
       commit("setCountNew", allData.data.count_new);
@@ -179,6 +188,9 @@ const getters = {
   },
   isSearchOpen(state) {
     return state.isSearchOpen;
+  },
+  getSortBy(state) {
+    return state.sortBy;
   }
 };
 

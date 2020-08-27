@@ -158,6 +158,9 @@ export default {
     },
     onSelectSortBy() {
       console.log({ sortBy: this.sortBy });
+
+      this.$store.dispatch("assistant/getADocs", { sortBy: this.sortBy.value });
+      //
     },
     setSearchOpen() {
       // done
