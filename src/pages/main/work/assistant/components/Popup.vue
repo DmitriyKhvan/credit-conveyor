@@ -7,7 +7,7 @@
       transition-show="scale"
       transition-hide="scale"
     >
-      <q-card class="cardBlock q-pa-md" style="width: 820px; max-width: 80vw;">
+      <q-card class="cardBlock OpenSans q-pa-md" style="width: 820px; max-width: 80vw;">
         <q-card-section>
           <div class="row justify-between">
             <strong>{{ formatString(doc.description) }}</strong>
@@ -116,7 +116,7 @@
             </div>
             <div class="col-6 q-pl-md rightBlock">
               <div class="row">
-                <div class="col q-pb-xs">Изменить статус:</div>
+                <div class="col q-pb-xs">Добавить исполнителя</div>
               </div>
               <div class="row">
                 <div class="col q-pb-md">
@@ -507,5 +507,13 @@ export default {
 <style>
 .custom_btn div {
   text-transform: none;
+}
+@font-face {
+  font-family: 'OpenSans';
+  src: url('~assets/fonts/OpenSans-Regular.ttf') format(truetype);
+}
+.OpenSans {
+  font-family: 'OpenSans';
+  font-weight: 500;
 }
 </style>
