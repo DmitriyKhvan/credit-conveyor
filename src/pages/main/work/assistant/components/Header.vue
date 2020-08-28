@@ -168,11 +168,14 @@ export default {
     },
     searchDoc() {
       //console.log({ text: this.searchText });
-      this.$store.commit("assistant/setDocSearchText", this.searchText);
+      //this.$store.commit("assistant/setDocSearchText", this.searchText);
+      this.$store.dispatch("assistant/getADocs", { search: this.searchText });
     },
     onClearSearch() {
       this.searchText = "";
-      this.$store.commit("assistant/setDocSearchText", this.searchText);
+      this.$store.dispatch("assistant/getADocs", { search: this.searchText });
+
+      //this.$store.commit("assistant/setDocSearchText", this.searchText);
     },
   },
 };

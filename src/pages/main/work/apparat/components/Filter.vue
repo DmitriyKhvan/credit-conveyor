@@ -141,7 +141,6 @@ export default {
   methods: {
     onFilter() {
       this.searchText = "";
-
       this.$store.dispatch("apparat/loadAllDocs", { page: 1 });
     },
     // select filters
