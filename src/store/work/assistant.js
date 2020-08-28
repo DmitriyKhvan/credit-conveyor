@@ -97,7 +97,7 @@ const actions = {
     let lang = rootState.common.langNum; //
     let sortBy = payload.sortBy;
     let search = payload.search;
-    console.log({ payload });
+    //console.log({ payload });
 
     if (num) {
       commit("setMenuNo", num); // set tab numbers
@@ -117,19 +117,19 @@ const actions = {
       commit("setDocSearchText", search);
       commit("setPage", 1); // setback to page 1
     }
-    console.log({
-      no: state.menuNo,
-      page: state.page,
-      search: state.docSearchText,
-      rows: state.rowsPerPage,
-      sort: state.sortBy,
-      lang
-    });
+    // console.log({
+    //   no: state.menuNo,
+    //   page: state.page,
+    //   search: state.docSearchText,
+    //   rows: state.rowsPerPage,
+    //   sort: state.sortBy,
+    //   lang
+    // });
     try {
       const allData = await axios.get(
         `/tasks/pomoshnik/${state.menuNo}?page=${state.page}&search=${state.docSearchText}&rows=${state.rowsPerPage}&sort=${state.sortBy}&lang=${lang}`
       );
-      console.log(allData.data);
+      //console.log(allData.data);
       commit("setCountNew", allData.data.count_new);
       commit("setCountReady", allData.data.count_ready);
       commit("setCountSent", allData.data.count_sent);
