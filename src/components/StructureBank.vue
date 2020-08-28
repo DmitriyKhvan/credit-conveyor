@@ -89,7 +89,8 @@
             >
               <q-card   @click="emitUser(item)"
                         style="cursor: pointer"
-                        class="userBlock q-ma-sm">
+                        class="userBlock q-ma-sm"
+                        :class="emp === item.EMP_ID ? 'active' : ''">
                 <user-card :itemData="item" :view="(view === 'dialog') ? 'dialog': ''" />
               </q-card>
             </div>
@@ -127,7 +128,8 @@ export default {
         'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
       ],
       heightEl: '',
-      heightElRight: ''
+      heightElRight: '',
+      emp: null
     };
   },
   props: {
@@ -158,6 +160,7 @@ export default {
   methods: {
     emitUser(item) {
       this.$emit("selectUser", item);
+      this.emp = item.EMP_ID;
     },
     getSectors(mfo, code) {
       ApiService.get(`structure/departments?mfo=${mfo}&code=${code}`)

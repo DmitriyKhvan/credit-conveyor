@@ -6,7 +6,7 @@
           <q-btn
             color="blue-14"
             size="lg"
-            :label="'Отправить выбранное: ( '+selectedDocs.length+' )'"
+            :label="selectedDocs.length !== 0 ? 'Отправить выбранное: ( '+selectedDocs.length+' )':'Отправить выбранное'"
             @click="showMultiDocPopup()"
             :disable="selectedDocs.length === 0"
           />

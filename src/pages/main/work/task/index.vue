@@ -183,7 +183,7 @@ export default {
   components: {
     AHeader: Header,
     ATask: Task,
-    AManagement: Management,
+    AManagement: Drag,
     Drag,
     QHierarchy,
     QTask,
