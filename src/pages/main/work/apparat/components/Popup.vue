@@ -93,7 +93,7 @@
                       </div>
                       <div class="q-px-sm">От:</div>
                       <div>
-                        <strong>{{doc.signed_by}}</strong>
+                        <strong>{{doc.signed_by ? doc.signed_by : 'Неизвестный'}}</strong>
                       </div>
                     </div>
                   </div>
@@ -222,7 +222,7 @@
               </div>
               <div class="row">
                 <div class="col q-py-sm">
-                  <q-input filled v-model="date" mask="date" :rules="['date']" dense>
+                  <q-input filled v-model="date" mask="date" :rules="['date']" dense placeholder="Выберите дату">
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy
