@@ -132,12 +132,13 @@
         </div>
         <q-select
           filled
-          v-model="filterType"
-          :options="filterTypeOptions"
+          v-model="sortBy"
+          :options="sortOptions"
           label="Сортировать по"
           bg-color="white"
           style="width: 200px"
           class="q-ml-sm"
+          @input="onSelectSortBy()"
         />
       </div>
     </div>
@@ -149,8 +150,17 @@ export default {
   data() {
     return {
       searchText: "",
-      filterType: "",
-      filterTypeOptions: ["Вид список"], // type of brick
+      sortOptions: [
+        {
+          label: "Date",
+          value: 1,
+        },
+        {
+          label: "Name",
+          value: 2,
+        },
+      ],
+      sortBy: null,
       // edit
       //text: "",
       tab: 1,
@@ -158,6 +168,7 @@ export default {
   },
   created() {
     this.menuSelect(1);
+    this.sortBy = this.sortOptions[0];
   },
   computed: {
     ...mapState({
@@ -221,6 +232,10 @@ export default {
     onClearSearch() {
       this.searchText = "";
       this.$store.commit("setSearchText", this.searchText);
+    },
+    onSelectSortBy() {
+      console.log({ sortBy: this.sortBy });
+      //this.$store.dispatch("assistant/getADocs", { sortBy: this.sortBy.value });
     },
   },
 };

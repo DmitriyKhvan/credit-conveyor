@@ -27,7 +27,8 @@ const state = {
   totalPages: 0, // default
   totalRows: 0, // totalRows
   // docs
-  allDocs: []
+  allDocs: [],
+  searchText: ""
 };
 const mutations = {
   setFilters(state, payload) {
@@ -85,6 +86,9 @@ const mutations = {
   },
   setTotalRows(state, totalRows) {
     state.totalRows = totalRows;
+  },
+  setSearchText(state, text) {
+    state.searchText = text;
   }
 };
 const actions = {
@@ -108,9 +112,11 @@ const actions = {
   async loadAllDocs({ commit, state }, payload) {
     let page = null;
     let rows = null;
+    let search = "";
     if (!!payload) {
       page = payload.page; // page number
       rows = payload.rows; // # of rows per page
+      search = payload.search;
       //let lang = rootState.common.langNum; //
 
       if (page) {
@@ -120,11 +126,14 @@ const actions = {
         commit("setRowsPerPage", rows);
         commit("setPage", 1); // setback to page 1
       }
+      if (search) {
+        commit("setSearchText", search);
+        commit("setPage", 1);
+      }
     }
-
     try {
       const all = await axios.post(
-        `files/docs/apparat?page=${state.page}&rowsPerPage=${state.rowsPerPage}`,
+        `files/docs/apparat?page=${state.page}&rowsPerPage=${state.rowsPerPage}&search=${state.searchText}`,
         {
           superiors: state.superior,
           region: state.region,

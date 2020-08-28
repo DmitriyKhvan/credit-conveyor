@@ -115,10 +115,11 @@ export default {
     // setTabMenuNo({ commit }, num) {
     //   commit("setTabMenuNo", num);
     // },
-    async onTabChange({ commit }, num) {
+    async onTabChange({ commit, state }, num) {
       commit("setTabMenuNo", num);
+
       try {
-        let res = await axios.get(`tasks/user/${num}`);
+        let res = await axios.get(`tasks/user/${state.tabMenuNo}`);
         if (num == 1) {
           commit("setCountNew", res.data.length);
         }
