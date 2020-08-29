@@ -151,6 +151,7 @@
 </template>
 <script>
 import { mapState, mapGetters } from "vuex";
+import { intDateFormat } from "@/shared/utils/date";
 import Popup from "./Popup";
 export default {
   props: ["doc"],
@@ -201,11 +202,12 @@ export default {
     },
 
     formatDate(data) {
-      const d = new Date(data);
-      const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
-      const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
-      const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
-      return `${ye}/${mo}/${da}`;
+      return intDateFormat(data);
+      // const d = new Date(data);
+      // const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+      // const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
+      // const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
+      // return `${ye}/${mo}/${da}`;
     },
     eventCheck() {
       let arr = [];
