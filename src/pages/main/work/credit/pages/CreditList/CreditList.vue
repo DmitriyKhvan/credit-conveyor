@@ -1,8 +1,23 @@
 <template>
+  <div>
+    
   <div 
     v-if="creditTasks.length"
     class="creditList"
   >
+    <div v-if="userRole === 'CS'" class="protocol">
+      <q-btn
+        :loading="protocol"
+        label="Протокол"
+        color="green"
+        @click="getProtocol"
+      >
+        <template v-slot:loading>
+          <q-spinner-facebook />
+        </template>
+      </q-btn>
+    </div>
+    
     <div class="q-pa-md">
       <!-- <h4>Очередь задач</h4> -->
       <q-markup-table>
@@ -466,6 +481,7 @@
 
     <!-- <iframe style="display: none" id="pdf-frame"></iframe> -->
   </div>
+  </div>
 </template>
 
 <script>
@@ -481,13 +497,12 @@ export default {
   props: ['loaderList', 'getTasks'],
   data() {
     return {
-      // userRole: this.$store.getters.userRole,
-      // loadings: this.$store.getters["credits/loadings"], // кнопки распечатать
       current: 1,
       countRow: 10,
-      //max: 10,
       maxPage: 6,
       loading: false,
+      protocol: false,
+      protocolId: null,
       
       disable: false,
       loaderFullScreen: false,
@@ -663,6 +678,32 @@ export default {
 
         return 0;
       });
+    },
+
+    async getProtocol() {
+      this.protocol = true
+      try {
+        let file = null
+
+        if (this.protocolId) {
+          file = await this.$store.dispatch(
+            "credits/getFile",
+            this.protocolId
+          );
+        } else {
+          file = await this.$store.dispatch("credits/getProtocol")
+          this.protocolId = file.id  // кеширование id file
+        }
+        console.log('file', file)
+
+        //console.log('credits', this.credits)
+        printJS(file.url);
+        this.protocol = false
+      } catch(error) {
+        this.protocol = false
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.loaderFullScreen = false;
+      }
     },
 
     async creditSign(taskId) {
@@ -907,5 +948,11 @@ export default {
       margin: 0 20px 0 0;
     }
   }
+}
+
+.protocol {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
 }
 </style>

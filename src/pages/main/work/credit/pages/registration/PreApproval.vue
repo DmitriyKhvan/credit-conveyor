@@ -224,6 +224,7 @@ export default {
           this.$store.commit("profile/setPreapprovData", data);
           this.$store.commit("profile/setDictionaries", dictionaries);
 
+          sessionStorage.setItem("preapprove_num", preapprove_num);
           sessionStorage.setItem("preapprovData", JSON.stringify(data));
           sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
           
