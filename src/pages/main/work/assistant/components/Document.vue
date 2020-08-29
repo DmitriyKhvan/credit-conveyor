@@ -5,57 +5,22 @@
     </div>
     <div class="col">
       <div class="title q-py-sm">
-        <b>{{ doc.description }}</b>
+        <b>{{ doc.description ? doc.description : 'неизвестный' }}</b>
       </div>
-      <div class="row desp">
-        <div class="col-6">
-          <div class="row">
-            <div class="col flexBlock">
-              <div class="q-pr-sm">
-                <img src="@/assets/icons/Enter-1.svg" />
-              </div>
-              <div class="q-py-sm">
-                <b>Исходящий номер:</b>
-                <br />
-                {{ doc.out_number }}
-              </div>
+      <div class="col column desp">
+
+        <div class="row items-center q-mr-md q-mb-md">
+          <div class="col column">
+            <div class="row">
+              <span class="text-grey-6" style="min-width: 120px;">Организация:&nbsp;</span>
+              <span>{{doc.organ ? doc.organ : 'неизвестный'}}</span>
             </div>
-            <div class="col flexBlock">
-              <div class="q-pr-sm">
-                <img src="@/assets/icons/Enter.svg" />
-              </div>
-              <div class="q-py-sm">
-                <b>Входящий номер:</b>
-                <br />
-                {{ doc.in_number }}
-              </div>
+            <div class="row">
+              <span class="text-grey-6" style="min-width: 120px;">Откуда:&nbsp;</span>
+              <span>{{ doc.signed_by ? doc.signed_by : 'неизвестный'}}</span>
             </div>
           </div>
-          <div class="row">
-            <div class="col flexBlock">
-              <div class="q-pr-sm">
-                <img src="@/assets/icons/Calendar.svg" />
-              </div>
-              <div class="q-py-sm">
-                <b>Исходящая дата:</b>
-                <br />
-                {{ doc.out_date }}
-              </div>
-            </div>
-            <div class="col flexBlock">
-              <div class="q-pr-sm">
-                <img src="@/assets/icons/Calendar.svg" />
-              </div>
-              <div class="q-py-sm">
-                <b>Входящая дата:</b>
-                <br />
-                {{ doc.in_date }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="row q-pl-lg q-pt-xs">
+          <div class="row col-2 q-pl-lg q-pt-xs">
             <div class="flexBlock q-pr-sm q-py-sm">
               <div>
                 <img src="@/assets/icons/List-active.svg" />
@@ -64,30 +29,95 @@
                   self="bottom middle"
                   :offset="[10, 10]"
                   content-class="bg-green"
-                >{{ doc.paper_count }} листов бумаги</q-tooltip>
+                >{{ doc.paper_count ? doc.paper_count : 'неизвестный' }} листов бумаги</q-tooltip>
               </div>
-              <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
+              <div class="flexBlock q-px-sm">{{ doc.paper_count ? doc.paper_count : 'неизвестный' }}</div>
             </div>
+            <div class="flexBlock q-pr-sm q-py-sm">
+              <div>
+                <q-icon name="receipt" size="24px" color="grey" />
+                <q-tooltip
+                  anchor="top middle"
+                  self="bottom middle"
+                  :offset="[10, 10]"
+                  content-class="bg-grey"
+                >формат: {{ doc.format ? doc.format : 'неизвестный' }}</q-tooltip>
+              </div>
+            </div>
+            
           </div>
-        </div>
-        <div class="col-2 q-pr-md q-pa-md">
           <div class="row">
             <div class="col text-right q-pr-md cursor-pointer" @click="download()">
               <img src="@/assets/icons/Download-Cloud.svg" alt />
+              <q-tooltip 
+                  anchor="top middle"
+                  self="bottom middle"
+                  :offset="[5, 5]">
+                  Скачать</q-tooltip>
             </div>
             <div class="cursor-pointer">
               <img src="@/assets/icons/Print.svg" alt />
+              <q-tooltip
+                    anchor="top middle"
+                    self="bottom middle"
+                    :offset="[5, 5]">
+                    Распечатать</q-tooltip>
             </div>
           </div>
-          <!-- posmotret button -->
-          <div class="row q-pt-md">
+        </div>
+
+          <div class=" col row items-center q-mr-md">
+
+            <div class="col flexBlock">
+              <div class="q-pr-sm">
+                <img src="@/assets/icons/Enter-1.svg" />
+              </div>
+              <div class="q-py-sm">
+                <b>Исходящий номер:</b>
+                <br />
+                {{ doc.out_number ? doc.out_number : 'неизвестный' }}
+              </div>
+            </div>
+            
+            <div class="col flexBlock">
+              <div class="q-pr-sm">
+                <img src="@/assets/icons/Calendar.svg" />
+              </div>
+              <div class="q-py-sm">
+                <b>Исходящая дата:</b>
+                <br />
+                {{ doc.out_date ? doc.out_date : 'неизвестный' }}
+              </div>
+            </div>
+
+            <div class="col flexBlock">
+              <div class="q-pr-sm">
+                <img src="@/assets/icons/Enter.svg" />
+              </div>
+              <div class="q-py-sm">
+                <b>Входящий номер:</b>
+                <br />
+                {{ doc.in_number ? doc.in_number : 'неизвестный'}}
+              </div>
+            </div>
+
+
+            <div class="col flexBlock">
+              <div class="q-pr-sm">
+                <img src="@/assets/icons/Calendar.svg" />
+              </div>
+              <div class="q-py-sm">
+                <b>Входящая дата:</b>
+                <br />
+                {{ doc.in_date ? doc.in_date : 'неизвестный' }}
+              </div>
+            </div>
+
             <div class="col text-right fontBtn">
               <!-- <a-popup :doc="doc"></a-popup> -->
               <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
             </div>
           </div>
-          <!-- -->
-        </div>
       </div>
     </div>
   </div>
@@ -95,22 +125,22 @@
   <div v-else class="bg-white task q-py-sm">
     <div class="title q-pa-md">
       <div class="row">
-        <div class="col">
-          <b>{{ doc.description }}</b>
+        <div class="col ellipsis-3-lines">
+          <b>{{ doc.description ? doc.description : 'неизвестный'}}</b>
         </div>
-        <div>
+        <div class="q-ml-md" style="height: 75px">
           <img src="@/assets/icons/help.svg" />
         </div>
       </div>
     </div>
     <div class="flexBlock q-px-md q-mb-md">
       <div class="q-pr-sm">
-        <img src="@/assets/icons/Send.svg" />
+        <img src="@/assets/icons/Enter.svg" />
       </div>
       <div>
-        <b>От:</b>
+        <b>Входящий номер:</b>
         <br />
-        {{ doc.signed_by }}
+        {{ doc.in_number ? doc.in_number : 'неизвестный' }}
       </div>
     </div>
     <div class="flexBlock q-px-md q-mb-md">
@@ -120,7 +150,7 @@
       <div>
         <b>Входящая дата:</b>
         <br />
-        {{ doc.in_date }}
+        {{ doc.in_date ? doc.in_date : 'неизвестный' }}
       </div>
     </div>
 

@@ -153,16 +153,6 @@
     </div>
     <div class="flexBlock q-px-md q-mb-md">
       <div class="q-pr-sm">
-        <img src="@/assets/icons/Send.svg" />
-      </div>
-      <div>
-        <b>От:</b>
-        <br />
-        {{task.h_first_name}} {{ task.h_last_name}}
-      </div>
-    </div>
-    <div class="flexBlock q-px-md q-mb-md">
-      <div class="q-pr-sm">
         <img src="@/assets/icons/Enter.svg" />
       </div>
       <div>
@@ -171,18 +161,14 @@
         {{task.f_task_data.in_number}}
       </div>
     </div>
-    <div class="flexBlock q-px-md q-mb-lg">
+    <div class="flexBlock q-px-md q-mb-md">
       <div class="q-pr-sm">
-        <img src="@/assets/icons/Time-Limit.svg" />
+        <img src="@/assets/icons/Calendar.svg" />
       </div>
-      <div>
-        <b>Срок сдачи:</b>
+      <div class="q-py-sm">
+        <b>Входящая дата:</b>
         <br />
-        <span class="subGreen">
-          <!-- TODO -->
-          <b v-if="task.f_task_data.deadline">{{formatDate(task.f_task_data.deadline)}}</b>
-          <b v-else>Срок не назначен</b>
-        </span>
+        {{task.f_task_data.in_date}}
       </div>
     </div>
     <div class="footerBlock">

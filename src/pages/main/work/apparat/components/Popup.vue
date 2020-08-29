@@ -93,7 +93,7 @@
                       </div>
                       <div class="q-px-sm">От:</div>
                       <div>
-                        <strong>{{doc.signed_by}}</strong>
+                        <strong>{{doc.signed_by ? doc.signed_by : 'Неизвестный'}}</strong>
                       </div>
                     </div>
                   </div>
@@ -132,7 +132,7 @@
                   <div class="row">
                     <div class="col flexBlock">
                       <div class="self-center">
-                        <img src="@/assets/icons/Enter-1.svg" />
+                        <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
                         Исходящая дата:
@@ -142,7 +142,7 @@
                     </div>
                     <div class="col flexBlock">
                       <div class="self-center">
-                        <img src="@/assets/icons/Enter.svg" />
+                        <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
                         Входящая дата:
@@ -159,20 +159,24 @@
                   <div class="row">
                     <div class="col com_title">Комментарии:</div>
                   </div>
-                  <div class="row q-pb-md com_block" v-for="comment in commentsList">
-                    <div class="col-1">
-                      <q-avatar size="32px">
-                        <img :src="getUserPhoto(comment.emp_id)" />
-                      </q-avatar>
-                    </div>
-                    <div class="col q-px-sm">
-                      <div class="com_author">
-                        {{comment.fullName}}
-                        <span>{{comment.created_at}}</span>
+                  <template>
+                    <q-scroll-area style="max-height: 300px">
+                      <div class="row q-pb-md com_block" v-for="comment in commentsList">
+                        <div class="col-1">
+                          <q-avatar size="32px">
+                            <img :src="getUserPhoto(comment.emp_id)" />
+                          </q-avatar>
+                        </div>
+                        <div class="col q-px-sm">
+                          <div class="com_author">
+                            {{comment.fullName}}
+                            <span>{{comment.created_at}}</span>
+                          </div>
+                          <div class="com_text">{{comment.text}}</div>
+                        </div>
                       </div>
-                      <div class="com_text">{{comment.text}}</div>
-                    </div>
-                  </div>
+                    </q-scroll-area>
+                  </template>
                 </div>
               </div>
             </div>
@@ -210,7 +214,14 @@
               </div>
               <div class="row">
                 <div class="col q-py-sm">
-                  <q-input filled v-model="date" mask="date" :rules="['date']" dense>
+                  <q-input
+                    filled
+                    v-model="date"
+                    mask="date"
+                    :rules="['date']"
+                    dense
+                    placeholder="Выберите дату"
+                  >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy

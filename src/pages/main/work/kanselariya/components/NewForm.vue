@@ -134,11 +134,11 @@
                 <template v-slot:append>
                   <div class="cursor-pointer">
                     <img src="@/assets/icons/InDate.svg" />
-                    <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-popup-proxy ref="iDateProxy" transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="form.in_date"
                         mask="YYYY-MM-DD"
-                        @input="() => $refs.qDateProxy.hide()"
+                        @input="() => $refs.iDateProxy.hide()"
                       />
                     </q-popup-proxy>
                   </div>

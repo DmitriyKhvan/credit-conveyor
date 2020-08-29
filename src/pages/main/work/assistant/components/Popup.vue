@@ -7,22 +7,32 @@
       transition-show="scale"
       transition-hide="scale"
     >
-      <q-card class="cardBlock OpenSans q-pa-md" style="width: 820px; max-width: 80vw;">
-        <q-card-section>
+      <q-card class="cardBlock OpenSans q-pa-md" style="width: 820px; max-width: 80vw; background: #f9f9f9">
+        <!-- <q-card-section>
           <div class="row justify-between">
             <strong>{{ formatString(doc.description) }}</strong>
             <q-space />
             <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
           </div>
-        </q-card-section>
+        </q-card-section> -->
         <q-card-section>
           <div class="row">
             <div class="col title">
-              <!-- <div class="row q-pb-md">
+              <div class="row q-pb-md">
                 <div class="col">
-                  <strong>{{doc.description}}</strong>
+                  <strong>{{ doc.description }}</strong>
                 </div>
-              </div>-->
+              </div>
+              <div class="col column">
+                <div class="row">
+                  <span class="text-grey-6" style="min-width: 100px; font-size: 14px;">Организация:&nbsp;</span>
+                  <i style="font-size: 14px;">{{doc.organ ? doc.organ : 'неизвестный'}}</i>
+                </div>
+                <div class="row">
+                  <span class="text-grey-6" style="min-width: 100px; font-size: 14px;">Откуда:&nbsp;</span>
+                  <i style="font-size: 14px;">{{ doc.signed_by ? doc.signed_by : 'неизвестный'}}</i>
+                </div>
+              </div>
               <div class="row q-py-md desp">
                 <div class="col">
                   <div class="row justify-center files">
@@ -48,6 +58,7 @@
               <div class="row q-py-md desp">
                 <div class="col">
                   <div class="row">
+
                     <div class="col flexBlock">
                       <div class="self-center">
                         <img src="@/assets/icons/Enter-1.svg" />
@@ -58,16 +69,18 @@
                         {{ doc.out_number }}
                       </div>
                     </div>
+
                     <div class="col flexBlock">
                       <div class="self-center">
                         <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
-                        <b>Дата создания:</b>
+                        <b>Входящий дата:</b>
                         <br />
-                        {{ dateFormat(doc.created_at) }}
+                        {{ dateFormat(doc.in_date) }}
                       </div>
                     </div>
+                    
                   </div>
                 </div>
               </div>
@@ -75,20 +88,7 @@
               <div class="row q-py-xs desp">
                 <div class="col">
                   <div class="row">
-                    <div class="col flexBlock">
-                      <div class="self-center q-pl-xs">
-                        <img src="@/assets/icons/file.svg" />
-                      </div>
-                      <div class="col q-px-sm lineH">
-                        <b>Документ:</b>
-                        <div class="row">
-                          <div class="col">{{ doc.file.name }}</div>
-                          <div class="col q-px-sm">
-                            <i>{{ fileSize(doc.file.file_size) }}</i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+
                     <div class="col flexBlock">
                       <div class="self-center">
                         <img src="@/assets/icons/Enter.svg" />
@@ -99,6 +99,18 @@
                         {{ doc.in_number }}
                       </div>
                     </div>
+
+                    <div class="col flexBlock">
+                      <div class="self-center">
+                        <img src="@/assets/icons/Calendar.svg" />
+                      </div>
+                      <div class="q-px-sm lineH">
+                        <b>Исходящий дата:</b>
+                        <br />
+                        {{ doc.out_date }}
+                      </div>
+                    </div>
+                    
                   </div>
                 </div>
               </div>
@@ -136,8 +148,8 @@
                 <div class="col q-pb-md q-pt-sm q-px-md q-mb-sm users">
                   <div v-for="u in result" :key="u.EMP_ID" @click="selectedUser(u)">
                     <span>
-                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
-                      {{ u.MIDDLE_NAME[0] }}.
+                      {{ decode(u.LAST_NAME) }} {{ decode(u.FIRST_NAME[0]) }}.
+                      {{ decode(u.MIDDLE_NAME[0]) }}.
                     </span>
                   </div>
                 </div>
@@ -147,27 +159,30 @@
                 <div class="col q-pb-xs">Выберите главного исполнителя</div>
               </div>
 
-              <div class="row" v-if="workers.length !== 0">
-                <div class="col q-pb-xs q-pt-xs q-px-sm users">
+              <div class="row">
+                <div v-if="workers.length !== 0" class="col q-mb-md q-pb-md q-pt-xs q-px-sm users">
                   <div
                     v-for="u in workers"
                     :key="u.EMP_ID"
                     :class="activeWorker === u.EMP_ID ? 'active' : ''"
                   >
                     <span @click="selectActiveWorker(u.EMP_ID)">
-                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
-                      {{ u.MIDDLE_NAME[0] }}.
+                      {{ decode(u.LAST_NAME) }} {{ decode(u.FIRST_NAME[0]) }}.
+                      {{ decode(u.MIDDLE_NAME[0]) }}.
                     </span>
                     <q-icon name="close" size="xs" class="icon_btn" @click="removeUser(u.EMP_ID)" />
                   </div>
                 </div>
+                <div v-else class="col q-mb-md q-pb-md q-pt-xs q-px-sm users">
+                  <p class="text-grey-7 q-pt-sm">Главный исполнитель</p>
+                </div>
               </div>
 
               <div class="row">
-                <div class="col q-pb-xs q-pt-md">Выберите руководителя</div>
+                <div class="col q-pb-xs q-pt-xs">Выберите руководителя</div>
               </div>
               <div class="row">
-                <div class="col q-pb-md">
+                <div class="col q-mb-md bg-white">
                   <q-select
                     borderless
                     dense
@@ -184,7 +199,7 @@
                 <div class="col q-pb-xs">Выберите шаблон</div>
               </div>
               <div class="row">
-                <div class="col q-pb-md">
+                <div class="col q-mb-md bg-white">
                   <q-select borderless v-model="shablon" :options="shablons"
                             dense 
                             label="Шаблон" 
@@ -218,6 +233,7 @@ import { mapState, mapGetters } from "vuex";
 import NotifyService from "@/services/notify.service";
 import { required, minLength } from "vuelidate/lib/validators";
 import { formatFileSize, downloadFile, getMimeType } from "@/shared/utils/file";
+import CommonUtils from "@/shared/utils/CommonUtils";
 import { stringTruncate } from "@/shared/utils/common";
 
 export default {
@@ -302,6 +318,9 @@ export default {
     },
   },
   methods: {
+    decode(param) {
+      return CommonUtils.decoder(param);
+    },
     saveForm() {
       const arr = [];
       this.workers.forEach((user) => {
