@@ -196,60 +196,62 @@ const actions = {
   async loadFilters({ commit }) {
     try {
       const all = await axios.get("/tasks/filters/pomoshnik");
+      console.log({ all });
       const seniors = [],
         regions = [],
         organs = [],
         departments = [],
         statuses = [];
+      if (all.data) {
+        all.data[0].superiors.forEach(el => {
+          const user = {
+            label: `${el.LAST_NAME} ${el.FIRST_NAME} ${el.MIDDLE_NAME}`,
+            value: el.EMP_ID
+          };
+          seniors.push(user);
+        });
 
-      all.data[0].superiors.forEach(el => {
-        const user = {
-          label: `${el.LAST_NAME} ${el.FIRST_NAME} ${el.MIDDLE_NAME}`,
-          value: el.EMP_ID
+        all.data[0].region.forEach(el => {
+          const region = {
+            label: el.NAME,
+            value: el.ID
+          };
+          regions.push(region);
+        });
+
+        all.data[0].organ.forEach(el => {
+          const organ = {
+            label: el.NAME,
+            value: el.ID
+          };
+          organs.push(organ);
+        });
+        if (all.data[0].departments)
+          all.data[0].departments.forEach(el => {
+            const department = {
+              label: el.NAME,
+              value: el.CODE
+            };
+            departments.push(department);
+          });
+
+        all.data[0].status.forEach(el => {
+          const status = {
+            label: el.TEXT,
+            value: el.STATUS
+          };
+          statuses.push(status);
+        });
+
+        const filters = {
+          seniors,
+          regions,
+          organs,
+          departments,
+          statuses
         };
-        seniors.push(user);
-      });
-
-      all.data[0].region.forEach(el => {
-        const region = {
-          label: el.NAME,
-          value: el.ID
-        };
-        regions.push(region);
-      });
-
-      all.data[0].organ.forEach(el => {
-        const organ = {
-          label: el.NAME,
-          value: el.ID
-        };
-        organs.push(organ);
-      });
-
-      all.data[0].departments.forEach(el => {
-        const department = {
-          label: el.NAME,
-          value: el.CODE
-        };
-        departments.push(department);
-      });
-
-      all.data[0].status.forEach(el => {
-        const status = {
-          label: el.TEXT,
-          value: el.STATUS
-        };
-        statuses.push(status);
-      });
-
-      const filters = {
-        seniors,
-        regions,
-        organs,
-        departments,
-        statuses
-      };
-      commit("setFilters", filters);
+        commit("setFilters", filters);
+      }
     } catch (e) {
       throw e;
     }

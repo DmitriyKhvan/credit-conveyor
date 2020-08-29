@@ -159,32 +159,20 @@
                   <div class="row">
                     <div class="col com_title">Комментарии:</div>
                   </div>
-                  <template v-if="doc.tasks && doc.tasks[0].comments">
-                    <div
-                      v-for="com in doc.tasks[0].comments"
-                      :key="com.id"
-                      class="row q-pb-md com_block"
-                    >
-                      <div class="col-1">
-                        <q-avatar size="32px">
-                          <img src="https://cdn.quasar.dev/img/avatar.png" />
-                        </q-avatar>
-                      </div>
-                      <div class="col q-px-sm">
-                        <div class="com_author">
-                          <strong>
-                            {{com.last_name}} {{com.first_name}} {{com.middle_name}}
-                            <span>03.06.2020</span>
-                          </strong>
-                        </div>
-                        <div class="com_text">{{com.text}}</div>
-                        <!-- <div class="com_action flexBlock">
-                          <div>редактирвоать</div>
-                          <div>удалить</div>
-                        </div>-->
-                      </div>
+                  <div class="row q-pb-md com_block" v-for="comment in commentsList">
+                    <div class="col-1">
+                      <q-avatar size="32px">
+                        <img :src="getUserPhoto(comment.emp_id)" />
+                      </q-avatar>
                     </div>
-                  </template>
+                    <div class="col q-px-sm">
+                      <div class="com_author">
+                        {{comment.fullName}}
+                        <span>{{comment.created_at}}</span>
+                      </div>
+                      <div class="com_text">{{comment.text}}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -260,6 +248,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { formatFileSize, downloadFile, getMimeType } from "@/shared/utils/file";
+import UserService from "@/services/user.service";
 
 export default {
   props: ["doc"],
@@ -287,6 +276,10 @@ export default {
     ...mapGetters({ getNameStatus: "apparat/getNameStatus" }),
     getStatus() {
       return this.getNameStatus(this.doc.doc_status);
+    },
+    commentsList() {
+      if (!!this.doc.comments) return this.doc.comments;
+      else return [];
     },
   },
   methods: {
@@ -317,6 +310,9 @@ export default {
       const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
       const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
       return `${ye}/${mo}/${da}`;
+    },
+    getUserPhoto(empId) {
+      return UserService.getUserProfilePhotoUrl(empId);
     },
 
     // !!! Don't change
