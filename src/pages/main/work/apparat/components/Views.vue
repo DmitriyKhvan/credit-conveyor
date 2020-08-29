@@ -32,7 +32,7 @@
       <div>{{ pageStartNum }} - {{ pageEndNum }} из {{ totalRows }}</div>
       <div class="arrows">
         <div :class="isPrevActive">
-          <q-icon name="keyboard_arrow_left" @click="onPrev()" />
+          <q-icon name="keyboard_arrow_left" size="sm" @click="onPrev()" />
         </div>
         <div :class="isNextActive">
           <q-icon name="keyboard_arrow_right" size="sm" @click="onNext()" />
