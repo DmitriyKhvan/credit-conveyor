@@ -10,84 +10,84 @@ export const profile = {
     fileList: [],
     loadings: [], // для лоадинга печатных форм
     disableField: false,
-    dictionaries: {},
-    // dictionaries: {
-    //   Graduation: {
-    //     items: []
-    //   },
-    //   additionalIncomeSource: {
-    //     items: []
-    //   },
-    //   VehicleType: {
-    //     items: []
-    //   },
-    //   employeesNum: {
-    //     items: []
-    //   },
-    //   BusinessType: {
-    //     items: []
-    //   },
-    //   DocumentType: {
-    //     items: []
-    //   },
-    //   Reasons: {
-    //     items: []
-    //   },
-    //   ClientRelationType: {
-    //     items: []
-    //   },
-    //   Gender: {
-    //     items: []
-    //   },
-    //   PropertyType: {
-    //     items: []
-    //   },
-    //   LoanProduct: {
-    //     items: []
-    //   },
-    //   DecisionType: {
-    //     items: []
-    //   },
-    //   MainWorkType: {
-    //     items: []
-    //   },
-    //   LoanDetails: {
-    //     items: []
-    //   },
-    //   LoanPurpose: {
-    //     items: []
-    //   },
-    //   PaymentsType: {
-    //     items: []
-    //   },
-    //   PositionType: {
-    //     items: []
-    //   },
-    //   MaritalStatus: {
-    //     items: []
-    //   },
-    //   GuaranteeType: {
-    //     items: []
-    //   },
-    //   FinancialSources: {
-    //     items: []
-    //   },
-    //   Region: {
-    //     items: []
-    //   },
-    //   Districts: {
-    //     items: []
-    //   },
-    //   jobPeriods: {
-    //     items: []
-    //   },
-    //   FamilyRelation: {
-    //     items: []
-    //   },
-    //   Countries: {
-    //     items: []
-    //   }
-    // },
+    //dictionaries: {},
+    dictionaries: {
+      Graduation: {
+        items: []
+      },
+      additionalIncomeSource: {
+        items: []
+      },
+      VehicleType: {
+        items: []
+      },
+      employeesNum: {
+        items: []
+      },
+      BusinessType: {
+        items: []
+      },
+      DocumentType: {
+        items: []
+      },
+      Reasons: {
+        items: []
+      },
+      ClientRelationType: {
+        items: []
+      },
+      Gender: {
+        items: []
+      },
+      PropertyType: {
+        items: []
+      },
+      LoanProduct: {
+        items: []
+      },
+      DecisionType: {
+        items: []
+      },
+      MainWorkType: {
+        items: []
+      },
+      LoanDetails: {
+        items: []
+      },
+      LoanPurpose: {
+        items: []
+      },
+      PaymentsType: {
+        items: []
+      },
+      PositionType: {
+        items: []
+      },
+      MaritalStatus: {
+        items: []
+      },
+      GuaranteeType: {
+        items: []
+      },
+      FinancialSources: {
+        items: []
+      },
+      Region: {
+        items: []
+      },
+      Districts: {
+        items: []
+      },
+      jobPeriods: {
+        items: []
+      },
+      FamilyRelation: {
+        items: []
+      },
+      Countries: {
+        items: []
+      }
+    },
     //filesAll: [], // для фильтрации какие файлы загружены на сервер
 
     AddressType: [
@@ -127,15 +127,15 @@ export const profile = {
         MiddleName: "",
         FullName: "",
         BirthDate: "",
-        Country: "",
+        Country: 0,
         BirthCity: "",
         INN: "",
         PINPP: "",
-        ResidentFlag: "",
+        ResidentFlag: true,
         Gender: null,
 
         Document: {
-          documentType: 2,
+          documentType: 8,
           Series: "",
           Number: null,
           ExpirationDate: "",
@@ -344,48 +344,26 @@ export const profile = {
     }
   },
   actions: {
-    async getInfoBank({ state, commit }) {
-      const data = {
-        input: [
-          {
-            name: "passSerial",
-            data: state.fullFormProfile.Customer.Document.Series
-          },
-          {
-            name: "passNumber",
-            data: state.fullFormProfile.Customer.Document.Number
-          },
-          {
-            name: "pin",
-            data: state.fullFormProfile.Customer.PINPP
-          },
-          {
-            name: "application_id",
-            data: state.preapprove_num
-          },
-          {
-            name: "from",
-            data: "front"
-          }
-        ]
-      };
-
+    async dataINPS({ state, commit }, data) {
+      console.log(JSON.stringify(data, null, 2))
       try {
-        const response = await state.bpmService.getInfoBank(data);
-        console.log("getInfoBank", response.userTaskCreditDetailed.input);
-        if (response.userTaskCreditDetailed.input.length) {
-          const bankData = response.userTaskCreditDetailed.input.find(
-            i => i.label === 'responseData'
+        const response = await state.bpmService.getDataINPS(data);
+        console.log("getDataINPS", response.userTaskCreditDetailed.input);
+        const dataINPS = response.userTaskCreditDetailed.input.find(
+          i => i.label === 'clientWagesData'
+        ).data
+        if (dataINPS.wages.items.length) {
+          const scoring = response.userTaskCreditDetailed.input.find(
+            i => i.label === 'preApprovalData'
           ).data
           
-          if (bankData.sum > 0) {
-            commit("setInfoBank", bankData);
-          } else {
-            commit("credits/creditConfirm", bankData, { root: true })
-          }
+          commit("setScoring", scoring);
 
-          return bankData.sum
+          return dataINPS
+        } else {
+          return null
         }
+
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
@@ -421,6 +399,8 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
+      state.preapprove_num = ""
+      
       let response;
       try {
         if (taskId) {
@@ -448,7 +428,7 @@ export const profile = {
           // }
           if (data.BODecision == null) { // кредит не оформлен
             
-            // для получения информации для халк банка
+            // для получения информации от халк банка
             const preapprove_num = response.data.input.find(
               i => i.label === "preapprove_num"
             ).data
@@ -462,6 +442,19 @@ export const profile = {
             commit("setFileList", response);
             commit("setFullForm", data);
             
+          } else if (data.BODecision == true) {
+
+            // для получения информации от халк банка для кредитного секретаря
+            const preApplicationNum = response.data.input.find(
+              i => i.label === "preApplicationNum"
+            ) 
+
+            if (preApplicationNum) {
+              commit("setPreapproveNum", preApplicationNum.data)
+            } 
+
+            commit("setFullForm", data);
+
           } else {
             commit("setFullForm", data);
           }
@@ -485,7 +478,7 @@ export const profile = {
       state.preapprove_num = preapprove_num
     },
 
-    setInfoBank(state, payload) {
+    setScoring(state, payload) {
       state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome = payload.incoming
       state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses = payload.expenses
       // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum = payload.payment
@@ -715,7 +708,7 @@ export const profile = {
             }
           ]
         },
-        Resident: null,
+        Resident: true,
         LastName: "",
         PINPP: "",
         BirthDate: ""
@@ -941,15 +934,15 @@ export const profile = {
           MiddleName: "",
           FullName: "",
           BirthDate: "",
-          Country: "",
+          Country: 0,
           BirthCity: "",
           INN: "",
           PINPP: "",
-          ResidentFlag: "",
+          ResidentFlag: true,
           Gender: null,
 
           Document: {
-            documentType: 2,
+            documentType: 8,
             Series: "",
             Number: null,
             ExpirationDate: "",
