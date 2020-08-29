@@ -17,6 +17,18 @@
               <div class="col-9">{{ Customer.MiddleName }}</div>
               <div class="col-3">Дата рождения</div>
               <div class="col-9">{{ Customer.BirthDate }}</div>
+
+              <div class="col-3">Страна рождения</div>
+              <div class="col-9">
+                {{
+                  dictionaries.Countries.items.find(
+                    i => i.value == Customer.Country
+                  ).label
+                }}
+              </div>
+              <div class="col-3">Место рождения</div>
+              <div class="col-9">{{ Customer.BirthCity }}</div>
+
               <div class="col-3">ИНН</div>
               <div class="col-9">{{ Customer.INN }}</div>
               <div class="col-3">ПИНФЛ</div>
@@ -66,8 +78,21 @@
               <div class="col-3">Дата окончания действия документа</div>
               <div class="col-9">{{ Customer.Document.ExpirationDate }}</div>
 
+              <div class="col-3">Регион / область выдачи документа</div>
+              <div class="col-9">
+                {{
+                  dictionaries.Region.items.find(
+                    i => i.value == Customer.Document.Region
+                  ).label
+                }}
+              </div>
+
               <div class="col-3">Кем выдан документ</div>
-              <div class="col-9">{{ Customer.Document.GivenPlace }}</div>
+              <div class="col-9">
+                {{
+                  getDistrict(Customer.Document.Region, Customer.Document.GivenPlace)
+                }}
+              </div>
 
               <div class="col-12 profileTitle">3. Контактная информация</div>
 
@@ -232,8 +257,21 @@
                     {{ relative.Document.ExpirationDate }}
                   </div>
 
+                  <div class="col-3">Регион / область выдачи документа</div>
+                  <div class="col-9">
+                    {{
+                      dictionaries.Region.items.find(
+                        i => i.value == relative.Document.Region
+                      ).label
+                    }}
+                  </div>
+
                   <div class="col-3">Кем выдан документ</div>
-                  <div class="col-9">{{ relative.Document.GivenPlace }}</div>
+                  <div class="col-9">
+                    {{
+                      getDistrict(relative.Document.Region, relative.Document.GivenPlace)
+                    }}
+                  </div>  
                 </div>
               </div>
 
@@ -544,8 +582,22 @@
                     <div class="col-9">
                       {{ guarantee.Document.ExpirationDate }}
                     </div>
+                
+                    <div class="col-3">Регион / область выдачи документа</div>
+                    <div class="col-9">
+                      {{
+                        dictionaries.Region.items.find(
+                          i => i.value == guarantee.Document.Region
+                        ).label
+                      }}
+                    </div>
+
                     <div class="col-3">Кем выдан документ</div>
-                    <div class="col-9">{{ guarantee.Document.GivenPlace }}</div>
+                    <div class="col-9">
+                      {{
+                        getDistrict(guarantee.Document.Region, guarantee.Document.GivenPlace)
+                      }}
+                    </div>
 
                     <div class="col-12 dataBlock">Адрес:</div>
                     <div class="col-3">Индекс</div>
@@ -600,6 +652,13 @@
                     <div class="col-12 profileSubTitle">
                       Юр. лицо {{ index + 1 }}
                     </div>
+                    <div class="col-3">Фамилия</div>
+                    <div class="col-9">{{ guarantee.CEOLastName }}</div>
+                    <div class="col-3">Имя</div>
+                    <div class="col-9">{{ guarantee.CEOFirstName }}</div>
+                    <div class="col-3">Отчество</div>
+                    <div class="col-9">{{ guarantee.CEOMiddleName }}</div>
+
                     <div class="col-3">Наименование организации</div>
                     <div class="col-9">{{ guarantee.Name }}</div>
                     <div class="col-12 dataBlock">Адрес:</div>
@@ -653,7 +712,14 @@
                       Страхование {{ index + 1 }}
                     </div>
                     <div class="col-3">Наименование организации</div>
-                    <div class="col-9">{{ guarantee.OrgName }}</div>
+                    <div class="col-9">
+                       <!-- {{
+                        dictionaries.Insurance_company.items.find(
+                          i => i.value == guarantee.OrgName
+                        ).label
+                      }} -->
+                      {{ guarantee.OrgName }}
+                      </div>
                     <div class="col-3">ИНН страховой компании</div>
                     <div class="col-9">{{ guarantee.INN }}</div>
                     <div class="col-3">Сумма страхового полиса</div>
@@ -699,11 +765,8 @@
               </template>
 
 
-               <div class="col-3">Процентная ставка по кредиту (максимальная)</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.MaxInitialPaymentPercent }}</div>
-
-              <div class="col-3">Процентная ставка по кредиту (минимальная)</div>
-              <div class="col-9">{{ fullProfile.LoanInfo.MinInitialPaymentPercent }}</div>
+              <div class="col-3">Процентная ставка</div>
+              <div class="col-9">{{ fullProfile.LoanInfo.MaxInterestRate }}</div>
 
               <template v-if="!!fullProfile.LoanInfo.LoanProduct">
                 <div class="col-3">Льготный период по погашению кредита (число месяцев)</div>
@@ -712,14 +775,18 @@
                 </div>
                 </template>
               
-                <div class="col-3">Удобная срок погашения (число месяцев)</div>
-                <div class="col-9">{{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}</div>
+
+                <div class="col-3">Удобный срок погашения в мес</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.TermInMonth }}</div>
 
                 <div class="col-3">Максимальное количество месяцев на кредит</div>
                 <div class="col-9">{{ fullProfile.LoanInfo.MaxTermInMonths }}</div>
 
                 <div class="col-3">Минимальное количество месяцев на кредит</div>
                 <div class="col-9">{{ fullProfile.LoanInfo.MinTermInMonths }}</div>
+
+                <div class="col-3">Удобный день погашения</div>
+                <div class="col-9">{{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}</div>
 
                 <div class="col-3">Первоначальный взнос</div>
                 <div class="col-9">{{ fullProfile.LoanInfo.InitialPayment }}</div>
@@ -841,7 +908,7 @@
                 банковского займа;
               </li>
               <li>
-                1Банк оставляет за собой право не мотивировать причины отказа;
+                Банк оставляет за собой право не мотивировать причины отказа;
               </li>
               <li>
                 В случае принятия отрицательного решения Банк не обязан
@@ -892,7 +959,9 @@
             <div class="col-6">
               Дата
             </div>
-            <div class="col-6"></div>
+            <div class="col-6">
+              {{currentDate}}
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -917,35 +986,30 @@
 </template>
 
 <script>
+import { mapState } from  "vuex"
+import printJS from "print-js"
+
 export default {
+  props: ["currentDate"],
   data() {
     return {
       confirmCredit: true
     };
   },
   computed: {
-    fullProfile() {
-     return this.$store.getters["profile/profile"].fullFormProfile;
-    },
-    profile() {
-      return this.$store.getters["profile/profile"];
-    },
-    Customer() {
-      return this.$store.getters["profile/profile"].fullFormProfile.Customer;
-    },
-    dictionaries() {
-      return this.$store.getters["profile/profile"].dictionaries;
-    },
-    credits() {
-      return this.$store.getters["credits/credits"];
-    }
+    ...mapState({
+        fullProfile: state => state.profile.fullFormProfile,
+        profile: state => state.profile,
+        Customer: state => state.profile.fullFormProfile.Customer,
+        dictionaries: state => state.profile.dictionaries,
+        credits: state => state.credits
+      })
   },
   methods: {
     callPrint(strid) {
-      //const left = document.documentElement.clientWidth/2 - 400
       const head = document.querySelector("head");
-      
       const prtContent = document.getElementById(strid);
+      
       const WinPrint = window.open(
         "",
         "",
@@ -962,18 +1026,16 @@ export default {
       WinPrint.document.write("<html>");
       WinPrint.document.write(head.innerHTML);
       WinPrint.document.write("<body>");
-      WinPrint.document.write('<div id="print" class="contentpane">');
+      // WinPrint.document.write('<div id="print" class="contentpane">');
       WinPrint.document.write(prtContent.innerHTML);
-      WinPrint.document.write("</div>");
+      // WinPrint.document.write("</div>");
       WinPrint.document.write("</body></html>");
       WinPrint.document.close();
       WinPrint.focus();
-      WinPrint.print();
       setTimeout(function(){
+          WinPrint.print();
           WinPrint.close();
       }, 500);
-      // WinPrint.close();
-      //prtContent.innerHTML = strOldOne;
     },
 
     // getLabelDic() {
@@ -983,8 +1045,6 @@ export default {
     //   }
     // }
     getDistrict(region, district) {
-      // console.log(region, district)
-      // return {region, district}
       if (district) {
         const regionId = this.dictionaries.Region.items.find(
           i => i.value == region

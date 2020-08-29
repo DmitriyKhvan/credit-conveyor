@@ -125,6 +125,16 @@ export default class BpmService {
   //   return axios.headers.common["NBU-BPM-Role"]
   // }
 
+  getInfoBank = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/startInps`,
+      data
+    })
+
+    return responce.data;
+  }
+
   uploadFiles = async (data) => {
     //const fileName = "file full form profile"
     const responce = await axios({

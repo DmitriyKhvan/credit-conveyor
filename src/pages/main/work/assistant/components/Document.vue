@@ -1,41 +1,55 @@
 <template>
   <div v-if="list" class="row bg-white q-pt-sm q-pb-lg q-mt-md q-mb-sm task">
-    <div>
-      <q-checkbox v-model="val" />
+    <div v-if="isNewDocsSection">
+      <q-checkbox v-model="isSelected" @input="selectDoc" />
     </div>
     <div class="col">
-      <div class="title q-py-sm"><b>Организация по кибербезопасности направляет вам документы по зашиты внутренних систем для ознакомления и принятие соответствующие меры</b></div>
+      <div class="title q-py-sm">
+        <b>{{ doc.description }}</b>
+      </div>
       <div class="row desp">
         <div class="col-6">
           <div class="row">
             <div class="col flexBlock">
-              <div class="q-pr-sm"><img src="@/assets/icons/Enter-1.svg" /></div>
+              <div class="q-pr-sm">
+                <img src="@/assets/icons/Enter-1.svg" />
+              </div>
               <div class="q-py-sm">
-                <b>Исходящий номер:</b><br>
-                03-1/15064
+                <b>Исходящий номер:</b>
+                <br />
+                {{ doc.out_number }}
               </div>
             </div>
             <div class="col flexBlock">
-              <div class="q-pr-sm"><img src="@/assets/icons/Enter.svg" /></div>
+              <div class="q-pr-sm">
+                <img src="@/assets/icons/Enter.svg" />
+              </div>
               <div class="q-py-sm">
-                <b>Входящий номер:</b><br>
-                517_ц
+                <b>Входящий номер:</b>
+                <br />
+                {{ doc.in_number }}
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col flexBlock">
-              <div class="q-pr-sm"><img src="@/assets/icons/Calendar.svg" /></div>
+              <div class="q-pr-sm">
+                <img src="@/assets/icons/Calendar.svg" />
+              </div>
               <div class="q-py-sm">
-                <b>Исходящая дата:</b><br>
-                02.06.2020
+                <b>Исходящая дата:</b>
+                <br />
+                {{ doc.out_date }}
               </div>
             </div>
             <div class="col flexBlock">
-              <div class="q-pr-sm"><img src="@/assets/icons/Calendar.svg" /></div>
+              <div class="q-pr-sm">
+                <img src="@/assets/icons/Calendar.svg" />
+              </div>
               <div class="q-py-sm">
-                <b>Входящая дата:</b><br>
-                02.06.2020
+                <b>Входящая дата:</b>
+                <br />
+                {{ doc.in_date }}
               </div>
             </div>
           </div>
@@ -45,48 +59,34 @@
             <div class="flexBlock q-pr-sm q-py-sm">
               <div>
                 <img src="@/assets/icons/List-active.svg" />
-                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]" content-class="bg-green">
-                  7 листов бумаги
-                </q-tooltip>
+                <q-tooltip
+                  anchor="top middle"
+                  self="bottom middle"
+                  :offset="[10, 10]"
+                  content-class="bg-green"
+                >{{ doc.paper_count }} листов бумаги</q-tooltip>
               </div>
-              <div class="flexBlock q-px-sm">7</div>
+              <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
             </div>
-            <!-- <div class="flexBlock q-pr-sm q-py-sm">
-              <div>
-                <img src="@/assets/icons/Comments-active.svg" />
-                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]" content-class="bg-light-blue">
-                  25 комментариев
-                </q-tooltip>
-              </div>
-              <div class="desp q-px-sm">25</div>
-            </div>
-            <div class="flexBlock q-pr-sm q-py-sm">
-              <div>
-                <img src="@/assets/icons/User-Account-active.svg" />
-                <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]" content-class="bg-deep-purple text-center">
-                  <b>Ответственные:</b><br>
-                  Баратов С. У. Абдуллаев И. А. Драгунов А. С.
-                </q-tooltip>
-              </div>
-              <div class="desp q-px-sm">25</div>
-            </div> -->
           </div>
-
         </div>
         <div class="col-2 q-pr-md q-pa-md">
           <div class="row">
-            <div class="col text-right q-pr-md">
-              <img src="@/assets/icons/Download-Cloud.svg" alt="">
+            <div class="col text-right q-pr-md cursor-pointer" @click="download()">
+              <img src="@/assets/icons/Download-Cloud.svg" alt />
             </div>
-            <div>
-              <img src="@/assets/icons/Print.svg" alt="">
+            <div class="cursor-pointer">
+              <img src="@/assets/icons/Print.svg" alt />
             </div>
           </div>
+          <!-- posmotret button -->
           <div class="row q-pt-md">
             <div class="col text-right fontBtn">
-              <a-popup></a-popup>
+              <!-- <a-popup :doc="doc"></a-popup> -->
+              <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
             </div>
           </div>
+          <!-- -->
         </div>
       </div>
     </div>
@@ -95,89 +95,163 @@
   <div v-else class="bg-white task q-py-sm">
     <div class="title q-pa-md">
       <div class="row">
-        <div class="col"><b>Организация по кибербезопасности направляет вам...</b></div>
-        <div><img src="@/assets/icons/help.svg" /></div>
+        <div class="col">
+          <b>{{ doc.description }}</b>
+        </div>
+        <div>
+          <img src="@/assets/icons/help.svg" />
+        </div>
       </div>
     </div>
     <div class="flexBlock q-px-md q-mb-md">
-      <div class="q-pr-sm"><img src="@/assets/icons/Send.svg" /></div>
+      <div class="q-pr-sm">
+        <img src="@/assets/icons/Send.svg" />
+      </div>
       <div>
-        <b>От:</b><br>
-        С. Баратов
+        <b>От:</b>
+        <br />
+        {{ doc.signed_by }}
       </div>
     </div>
     <div class="flexBlock q-px-md q-mb-md">
-      <div class="q-pr-sm"><img src="@/assets/icons/Calendar.svg" /></div>
+      <div class="q-pr-sm">
+        <img src="@/assets/icons/Calendar.svg" />
+      </div>
       <div>
-        <b>Входящая дата:</b><br>
-        28.03.2020
+        <b>Входящая дата:</b>
+        <br />
+        {{ doc.in_date }}
       </div>
     </div>
 
     <div class="row q-pb-md">
       <div class="col text-center">
-        <a-popup></a-popup>
+        <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+        <!-- <a-popup :doc="doc"></a-popup> -->
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex';
-import Popup from './Popup'
+import { mapState, mapGetters } from "vuex";
+import Popup from "./Popup";
+import CommonUtils from "@/shared/utils/CommonUtils";
+import { downloadFile, getMimeType } from "@/shared/utils/file";
+
 export default {
+  props: ["doc"],
   components: {
-    APopup: Popup
+    //APopup: Popup
   },
   computed: {
     ...mapState({
-          list: state => state.assistant.aList,
-          menu: state => state.assistant.aMenu,
-        }),
+      list: (state) => state.assistant.isListView,
+      selectedDocs: (state) => state.assistant.selectedDocs,
+    }),
+    ...mapGetters({
+      menuNo: "assistant/menuNo",
+    }),
+    isNewDocsSection() {
+      return this.menuNo == 1 ? true : false;
+    },
   },
-  data(){
+  methods: {
+    selectDoc() {
+      console.log({ selectingDoc: this.doc });
+      this.$store.dispatch("assistant/selDoc", this.doc);
+    },
+    download() {
+      let extention = getMimeType(this.doc.file.extension);
+      downloadFile(this.doc.file.id, this.doc.file.name, extention);
+    },
+    showDialogDetails() {
+      this.$q
+        .dialog({
+          component: Popup,
+          parent: this,
+          doc: this.doc,
+        })
+        .onOk((res) => {
+          console.log({ res: res });
+          //obnobvit dokumenti na tekushiy tab
+          if (res.status == 1) {
+            this.$store.dispatch("assistant/getADocs", { num: this.menuNo });
+          }
+        })
+        .onCancel(() => {
+          console.log("Cancel");
+        });
+    },
+    formatDate(date) {
+      //console.log({ date: CommonUtils.simpleDateFormat(date) });
+      return CommonUtils.simpleDateFormat(date);
+    },
+  },
+  data() {
     return {
-      val: false
+      isSelected: false,
+    };
+  },
+  created() {
+    if (this.selectedDocs.find((el) => el.doc_id === this.doc.doc_id)) {
+      this.isSelected = true;
+    } else {
+      this.isSelected = false;
     }
-  }
-}
+  },
+};
 </script>
 <style scoped>
-  .flexBlock {
-    display: flex;
-    align-items: center;
-    align-content: center;
-  }
-  .task {
-    border-bottom: 1px #E3E4E8 solid;
-  }
-  .task img {vertical-align: bottom;}
-  .title {
-    font-size: 16px;
-  }
-  .desp {
-    color: #606060;
-  }
-  .subject {
-    background: #F8F8F8;
-    border-radius: 30px;
-    color: #FF4A4A;
-    line-height: 19px;
-    font-weight: 600;
-  }
-  .task {color: #333}
-  .task b {font-weight: 600;}
-  .subGreen {color: #47B881}
-  .subYellow {color: #FDCC0C}
-  .subRed {color: #FF4A4A}
-  .footerBlock {border-top: 1px #E3E4E8 solid ;}
-  .twoBorders {
-    border-left: 1px #E3E4E8 solid;
-    border-right: 1px #E3E4E8 solid;
-  }
+.flexBlock {
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+.task {
+  border-bottom: 1px #e3e4e8 solid;
+}
+.task img {
+  vertical-align: bottom;
+}
+.title {
+  font-size: 16px;
+}
+.desp {
+  color: #606060;
+}
+.subject {
+  background: #f8f8f8;
+  border-radius: 30px;
+  color: #ff4a4a;
+  line-height: 19px;
+  font-weight: 600;
+}
+.task {
+  color: #333;
+}
+.task b {
+  font-weight: 600;
+}
+.subGreen {
+  color: #47b881;
+}
+.subYellow {
+  color: #fdcc0c;
+}
+.subRed {
+  color: #ff4a4a;
+}
+.footerBlock {
+  border-top: 1px #e3e4e8 solid;
+}
+.twoBorders {
+  border-left: 1px #e3e4e8 solid;
+  border-right: 1px #e3e4e8 solid;
+}
 </style>
 <style>
-  .q-btn__content {
-    text-transform: none;
-    font-size: 14px;
-  }
+.q-btn__content {
+  text-transform: none;
+  font-size: 14px;
+}
 </style>

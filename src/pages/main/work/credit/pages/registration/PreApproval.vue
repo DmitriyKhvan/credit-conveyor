@@ -6,6 +6,7 @@
           <div class="preApprovalBlock__title">
             <div class="text-h6">Заявка на кредит</div>
             <q-btn 
+              v-if="!INPS"
               flat 
               class="print" 
               icon="print" 
@@ -39,9 +40,15 @@
               </tr>
               <tr>
                 <td>Доступная сумма кредита</td>
-                <td>{{ preApprovalData.maxSum | formatNumber(2) }} сум</td>
+                <td>{{ preApprovalData.maxSum | formatNumber }} сум</td>
               </tr>
             </table>
+
+            <p
+              class="failureCredit"
+              v-if="preApprovalData.maxSum < 0">
+              Недостаточно средств для предоставления кредита
+            </p>
 
             <div v-if="failureCreditReason">
               <div class="text-h6">Причина отказа:</div>
@@ -91,10 +98,11 @@
             </div>
 
             <q-card-actions
-              v-if="!failureCreditReason"
+              v-if="!failureCreditReason && !INPS"
               class="row justify-center"
             >
               <q-btn
+                v-if="preApprovalData.maxSum > 0"
                 label="Отправить заявку"
                 color="green"
                 v-close-popup
@@ -112,6 +120,18 @@
                 "
               />
             </q-card-actions>
+            
+            <q-card-actions
+              v-if="INPS"
+              class="row justify-center"
+            >
+              <q-btn
+                label="Отменить"
+                color="red-5"
+                @click="failureCreditINPS(false)"
+              />
+            </q-card-actions>
+            
           </div>
         </q-card-section>
       </q-card>
@@ -127,7 +147,11 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   props: {
-    confirm: Boolean
+    confirm: Boolean,
+    INPS: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -135,6 +159,19 @@ export default {
       selection: [],
       model: false,
       loading: false,
+
+      confirmCreditData: {
+        output: [
+          {
+            name: "confirm",
+            data: true
+          },
+          {
+            name: "reasons",
+            data: []
+          }
+        ]
+      },
 
       fileData: {
         type: "info_list",
@@ -147,19 +184,11 @@ export default {
   computed: {
     ...mapState({
       taskIdPreapp: state => state.credits.taskId,
-    }),
-    disableBtn() {
-      return this.$store.getters["credits/credits"].disableBtn;
-    },
-    preApprovalData() {
-      return this.$store.getters["credits/credits"].preApprovalData;
-    },
-    personalData() {
-      return this.$store.getters["credits/credits"].personalData;
-    },
-    credits() {
-      return this.$store.getters["credits/credits"];
-    }
+      disableBtn: state => state.credits.disableBtn,
+      preApprovalData: state => state.credits.preApprovalData,
+      personalData: state => state.credits.personalData,
+      credits: state => state.credits
+    })
   },
 
   methods: {
@@ -167,11 +196,11 @@ export default {
       console.log(this.$store);
       //this.confirm = false
       this.$emit("toggleLoaderForm", true);
-      console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
+      console.log(JSON.stringify(this.confirmCreditData, null, 2));
       try {
         const response = await this.$store.dispatch(
           "credits/confirmationCredit",
-          this.credits.confirmCreditData
+          this.confirmCreditData
         );
 
         console.log("response", response);
@@ -184,10 +213,14 @@ export default {
             i => i.label === "inputDictionaries"
           ).data;
 
-          
+          const preapprove_num = response.nextTask.input.find(
+            i => i.label === "preapprove_num"
+          ).data
 
           console.log("dic", JSON.stringify(dictionaries, null, 2));
 
+          this.$store.commit("profile/setPreapproveNum", preapprove_num)
+          this.$store.commit("profile/resetDataFullFormProfile")
           this.$store.commit("profile/setPreapprovData", data);
           this.$store.commit("profile/setDictionaries", dictionaries);
 
@@ -199,11 +232,13 @@ export default {
             localStorage.removeItem(this.taskIdPreapp)
           }, 1000)
           
-          this.$emit("toggleLoaderForm", false);
+          //this.$emit("toggleLoaderForm", false);
         }
       } catch (error) {
+        //this.$emit("toggleLoaderForm", false);
         this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
-        this.$emit("toggleLoaderForm", false);
+        sessionStorage.clear();
+        this.$router.push("/work/credit");
         setTimeout(() => {
           localStorage.removeItem(this.taskIdPreapp)
         }, 1000)
@@ -216,15 +251,14 @@ export default {
         this.formHasError = true;
       } else {
         this.$emit("toggleLoaderFullScreen", true);
-        this.$store.commit("credits/toggleDisableInput", false);
-        this.credits.confirmCreditData.output[0].data = false;
-        this.credits.confirmCreditData.output[1].data = this.selection;
+        this.confirmCreditData.output[0].data = false;
+        this.confirmCreditData.output[1].data = this.selection;
 
-        console.log(JSON.stringify(this.credits.confirmCreditData, null, 2));
+        console.log(JSON.stringify(this.confirmCreditData, null, 2));
         try {
           const response = await this.$store.dispatch(
             "credits/confirmationCredit",
-            this.credits.confirmCreditData
+            this.confirmCreditData
           );
           console.log("res", response);
           
@@ -241,6 +275,7 @@ export default {
             this.$store.commit("credits/setMessage", "Credit failure");
             sessionStorage.clear();
             this.$router.push("/work/credit");
+            // чтоб удаление произошло после метода beforeDestroy в родительском компоненте
             setTimeout(() => {
               localStorage.removeItem(this.taskIdPreapp)
             }, 1000)
@@ -254,6 +289,11 @@ export default {
           }, 1000)
         }
       }
+    },
+
+    failureCreditINPS(flag) {
+      console.log('failureCreditINPS')
+      this.$emit("failureCreditINPS", flag);
     },
 
     async printFile(fileData) {
@@ -275,7 +315,7 @@ export default {
           );
           
           if (file) {
-            this.fileData.idFile = file.id // для кеширования id
+            this.fileData.idFile = file.id //для кеширования id
           }
         }
 
@@ -363,6 +403,13 @@ export default {
         background: #acacac;
       }
     }
+  }
+
+  .failureCredit {
+    text-align: center;
+    color: $red-5;
+    font-size: 18px;
+    margin-bottom: 10px;
   }
 }
 

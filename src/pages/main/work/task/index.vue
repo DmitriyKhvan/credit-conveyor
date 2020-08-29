@@ -1,13 +1,10 @@
 <template>
-  <div class="q-pa-lg">
+  <div class="q-pa-lg" v-if="dtab === 1">
     <a-header></a-header>
-    <template v-if="!viewTasks">
-      <template v-if="list">
-        <div class="row"
-          v-for="task in tasks"
-          :key="task.id"
-        >
-          <div class="col" >
+    <template v-if="!isBoardView">
+      <template v-if="isListView">
+        <div class="row" v-for="task in taskList" :key="task.id">
+          <div class="col">
             <div>
               <a-task :task="task"></a-task>
             </div>
@@ -16,14 +13,18 @@
       </template>
       <template v-else>
         <div class="row q-col-gutter-lg q-pt-sm">
-          <div class="col-lg-3 col-md-4 col-sm-6" v-for="n in 10" :key="n"><a-task></a-task></div>
+          <div class="col-lg-3 col-md-4 col-sm-6" v-for="task in taskList" :key="task.id">
+            <a-task :task="task"></a-task>
+          </div>
         </div>
       </template>
     </template>
     <template v-else>
       <a-management></a-management>
     </template>
-
+  </div>
+  <div v-else>
+    <drag></drag>
   </div>
   <!-- <div class="q-pa-md">
     <q-toolbar class="shadow-2 rounded-borders">
@@ -157,38 +158,38 @@
     <q-dialog v-model="taskPopup" full-width full-height>
       <q-task></q-task>
     </q-dialog>
-  </div> -->
-
-
+  </div>-->
 </template>
 
 <script>
-import Header from './components/Header'
-import Task from './components/Task'
-import Management from './components/Management'
-import { mapState, mapGetters } from 'vuex';
-
+import Drag from "./DragTask";
+import Header from "./components/Header";
+import Task from "./components/Task";
+import Management from "./components/Management";
+import { mapState, mapGetters } from "vuex";
 
 import UserService from "@/services/user.service";
 import QHierarchy from "./dialog-hierarchy.vue";
 import QTask from "./dialog-task.vue";
 import formatSize from "./filters/formatSize";
 import Decoder from "@/shared/utils/CommonUtils";
+import DragTaskVue from "./DragTask.vue";
 
+//import UserService from "@/services/user.service";
+//import formatSize from "./filters/formatSize";
+//import Decoder from "@/shared/utils/CommonUtils";
 
 export default {
+  components: {
+    AHeader: Header,
+    ATask: Task,
+    AManagement: Drag,
+    Drag,
+    QHierarchy,
+    QTask,
+  },
   data() {
-    return {
-      // viewTasks: true,
-      // list: true,
-      // taskPopup: false,
-      // usersPopup: false,
-      // tab: 1,
-      // selection: [],
-      // model: null
-      // shape: [],
-      // optionsFilter: ["Google", "Facebook", "Twitter", "Apple", "Oracle"]
-    };
+    return {};
   },
   async created() {
     try {
@@ -196,11 +197,30 @@ export default {
     } catch (error) {}
   },
   computed: {
+    ...mapGetters({
+      isListView: "getListView",
+      isBoardView: "getBoardView",
+      tasks: "getTasks",
+      searchText: "getSearchText",
+    }),
+    taskList() {
+      // let filtered = state.taskList.filter(el =>
+      //   el.f_task_data.description.includes(searchText)
+      // );
+      //console.log({ searchText: this.searchText });
+      if (!!this.tasks)
+        return this.tasks.filter((el) =>
+          el.f_task_data.description.includes(this.searchText)
+        );
+      else return [];
+    },
     ...mapState({
-          viewTasks: state => state.tasks.tViewTasks,
-          list: state => state.tasks.tList,
-          tasks: state => state.tasks.tTasks,
-        }),
+      // tasks: state => state.tasks.tTasks
+      viewTasks: (state) => state.tasks.tViewTasks,
+      list: (state) => state.tasks.tList,
+      //tasks: (state) => state.tasks.tTasks,
+      dtab: (state) => state.tasks.tTab,
+    }),
 
     // ...mapGetters({
     //       tViews: 'tViews'
@@ -221,7 +241,6 @@ export default {
     // }
   },
   methods: {
-
     // usersHierarchy(data, task) {
     //   this.$store.commit("task/setCurrentTask", task);
     //   const children = [];
@@ -237,7 +256,6 @@ export default {
     //       });
     //     }
     //   }
-
     //   const props = [
     //     {
     //       label: data.label,
@@ -246,9 +264,7 @@ export default {
     //     }
     //   ];
     //   //console.log(props);
-
     //   this.$store.commit("task/setUserHierarchy", props);
-
     //   this.usersPopup = true;
     // },
     // usersTask(task) {
@@ -256,7 +272,6 @@ export default {
     //   this.$store.commit("task/setCurrentTask", task);
     //   this.taskPopup = true;
     // },
-
     // downloadFile(item) {
     //   console.log(item);
     //   axios({
@@ -272,22 +287,14 @@ export default {
     //   });
     // }
   },
-  components: {
-    AHeader: Header,
-    ATask: Task,
-    AManagement: Management,
 
-    QHierarchy,
-    QTask
-  },
   filters: {
-    formatSize
-  }
+    // formatSize
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-
 // .sub_menu {
 //   padding: 10px 0;
 //   margin: 10px 0;

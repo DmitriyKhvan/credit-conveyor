@@ -57,19 +57,6 @@ export const credits = {
       additionalIncomeSource: "" //источник дополнительного дохода
     },
 
-    confirmCreditData: {
-      output: [
-        {
-          name: "confirm",
-          data: true
-        },
-        {
-          name: "reasons",
-          data: []
-        }
-      ]
-    },
-
     reasonsList: [], // причины отказа от кредита
     infoList: {}, // информационный лист данные
 
@@ -218,7 +205,7 @@ export const credits = {
           commit("sentScannerSerialNumber", null); //close button auto compleate
           state.loadMessage = ""
         } else {
-          throw "Возникла проблема. Не удалось считать данные. Введите данные вручную"
+          throw response.answere.AnswereComment
         }
       } catch (error) {
         state.disableInput = false
@@ -286,8 +273,8 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.clear()
-        this.$router.push("/work/credit");
+        // sessionStorage.clear()
+        // this.$router.push("/work/credit");
         throw error
       }
     },
@@ -428,6 +415,7 @@ export const credits = {
         externalIncomeSize: 0, //размер дополнительного дохода
         additionalIncomeSource: "" //источник дополнительного дохода
       };
+
     },
 
     resetMessageBar(state) {
@@ -453,6 +441,7 @@ export const credits = {
     },
 
     setCreditTasks(state, payload) {
+      state.loadings = []
       state.countRowList.find(i => i.label === 'Все').value = payload.response.all
 
       state.pages = Math.ceil(payload.response.all / payload.count)
@@ -460,14 +449,16 @@ export const credits = {
       for (let i = 0; i < payload.count; i++) {
         state.loadings[i] = false
       }
-      state.creditTasks = payload.response.infoList.sort((a, b) => {
-          if (b.date < a.date) {
-            return -1
-          }
-          if (b.date > a.date) {
-            return 1
-          }
-        })
+
+      state.creditTasks = payload.response.infoList
+      // state.creditTasks = payload.response.infoList.sort((a, b) => {
+      //     if (b.date < a.date) {
+      //       return -1
+      //     }
+      //     if (b.date > a.date) {
+      //       return 1
+      //     }
+      //   })
     },
 
     clearCreditTasks(state) {
@@ -481,14 +472,11 @@ export const credits = {
    
   },
   getters: {
-    credits: state => state,
+    // credits: state => state,
     message: state => state.messageBlock.message,
     messageId: state => state.messageBlock.id,
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
-    creditTasks: state => state.creditTasks,
-    userRole: state => state.userRole,
-    loadings: state => state.loadings
-    //fileId: state => state.fileId
+    userRole: state => state.userRole
   }
 };

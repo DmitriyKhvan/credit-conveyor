@@ -1,284 +1,80 @@
 <template>
-  <div class="card_bg">
-    <div v-if="item" class="cardBgInner">
-      <!-- MY Block -->
-
-      <div class="row">
-        <div class="col-10 card_content">
-          <div class="row">
-            <div class="col-4 img_size">
-              <div
-                :class="
-                  !view && view !== 'dialog'
-                    ? 'avatar_img'
-                    : 'avatar_img height_auto'
-                "
-              >
-                <img :src="getPhotoUrl(item.EMP_ID)" />
-              </div>
-              <div v-if="!view">{{ item.WORK }}</div>
-            </div>
-            <div class="col-8 card_text">
-              <div>
-                <div v-if="!view && view !== 'dialog'">
-                  <q-chip square color="teal" text-color="white" size="xs"
-                    >онлайн</q-chip
-                  >
-                </div>
-                {{ decode(item.LAST_NAME) }}
-                {{ decode(item.FIRST_NAME).slice(0, 1) }}.{{
-                  decode(item.MIDDLE_NAME).slice(0, 1)
-                }}.
-              </div>
-              <div class="post_name">
-                <div v-if="!view && view !== 'dialog'">
-                  {{ decode(item.POST_NAME) }}
-                </div>
-                <div v-else>
-                  {{ decode(item.POST_NAME).slice(0, 20) }}...
-                  <q-tooltip
-                    anchor="top middle"
-                    self="bottom middle"
-                    :offset="[10, 10]"
-                  >
-                    {{ decode(item.POST_NAME) }}
-                  </q-tooltip>
-                </div>
-              </div>
-              <div v-if="!view" class="block_phones">
-                <q-item-label>
-                  <q-icon name="o_local_phone" />
-                  &nbsp;{{ item.PHONE_WORK }}
-                </q-item-label>
-                <q-item-label>
-                  <q-icon name="stay_primary_portrait" />
-                  &nbsp;{{ item.PHONE_WORK }}
-                </q-item-label>
-              </div>
-            </div>
-          </div>
+  <div  class="row no-wrap q-pa-md text-baseline justify-between  items-center OpenSansBold"
+        style="font-size: 16px; line-height: 40px; display:flex; flex:auto; justify-content:space-between; color:#30384B"
+        >
+    <div class="col-3 row no-wrap">
+      <q-avatar size="40px">
+        <img :src="getPhotoUrl(item.EMP_ID)" width="40px" />
+        <span class="bg-positive bedge" >&nbsp;</span>
+      </q-avatar>
+      <div class="text-no-wrap text-weight-bolder q-ml-md">
+        {{ decode(item.LAST_NAME) }}
+        {{ decode(item.FIRST_NAME).slice(0, 1) }}.
+        {{decode(item.MIDDLE_NAME).slice(0, 1)}}.
+        <q-tooltip  content-class="bg-blue-grey text-caption text-white"
+                    anchor="center right" self="center left" 
+                    :offset="[10, 10]">
+        {{decode(item.LAST_NAME)+' '+decode(item.FIRST_NAME)+' '+decode(item.MIDDLE_NAME)}}
+        </q-tooltip>
+      </div>
+    </div>
+    <div class="col text-no-wrap text-center text-weight-bolder">
+      {{ decode(item.POST_NAME).slice(0, 35) }}
+      <q-tooltip  content-class="bg-blue-grey text-caption text-white ellipsis-2-lines" 
+                  anchor="top middle" self="bottom middle" 
+                  :offset="[5, 5]">
+          {{decode(item.POST_NAME)}}
+        </q-tooltip>
+    </div>
+    <div class="col row ellipsis justify-between text-weight-bolder">
+      <span class="col row justify-between no-wrap text-center text-no-wrap">
+        <span>{{ item.PHONE_WORK }}</span>
+        <span>(18:88)</span>
+      </span>
+      <span class="col-4 text-center ellipsis-2-lines bg-white">{{ item.WORK }}</span>
+    </div>
+    <q-menu touch-position 
+            style="width: 250px">
+      <div class="OpenSansBold column no-wrap justify-center items-center q-pa-lg">
+        <q-avatar square size="220px" class="outlined">
+          <img :src="getPhotoUrl(item.EMP_ID)" width="220px" />
+        </q-avatar>
+        <div  class="text-weight-bolder text-body1 ellipsis-3-lines text-center q-mt-md"
+              style="font-size: 16px; width: 220px">
+          {{decode(item.LAST_NAME)+' '+decode(item.FIRST_NAME)+' '+decode(item.MIDDLE_NAME)}}
         </div>
-        <div v-if="!view" class="col-2 block_icons">
-          <q-btn color="grey-3" size="sm" icon="contact_phone">
-            <q-tooltip
-              anchor="center right"
-              self="center left"
-              :content-style="tooltipStyle"
-            >
-              Добавить в личную адресную книгу
-            </q-tooltip>
+        <q-separator class="q-my-md" />
+        <div  class="column q-mb-md no-wrap items-center"
+              style="font-size: 14px">
+          <div class="row no-wrap items-center">
+            <q-icon name="card_giftcard" size="20px" color="red-7" />
+            <span class="q-ml-xs">День рождения</span>
+          </div>
+          <span>{{ DIngo(item) }}</span>
+        </div>
+        <q-btn rounded push class="row no-wrap" color="white">
+            <q-icon color="primary" name="perm_contact_calendar" size="20px" />
+            <label class="text-primary q-ml-xs cursor-pointer" style="font-size:12px">Добавить в контакты</label>
           </q-btn>
-          <q-btn color="grey-3" size="sm" icon="mail">
-            <q-tooltip
-              anchor="center right"
-              self="center left"
-              :content-style="tooltipStyle"
-            >
-              Отправить письмо
-            </q-tooltip>
+        <div class="row no-wrap q-my-md justify-between" style="font-size: 12px">
+          <q-btn class="q-mr-md row no-wrap" color="primary">
+            <q-icon color="white" name="forum" size="20px"/>
+            <label class="text-white q-ml-xs cursor-pointer" style="font-size:12px">Чат</label>
           </q-btn>
-          <q-btn color="grey-3" size="sm" icon="card_giftcard">
-            <q-tooltip
-              anchor="center right"
-              self="center left"
-              :content-style="tooltipStyle"
-            >
-              День рождения 2 августа
-            </q-tooltip>
-          </q-btn>
-          <q-btn color="grey-3" size="sm" icon="chat">
-            <q-tooltip
-              anchor="center right"
-              self="center left"
-              :content-style="tooltipStyle"
-            >
-              Написать в чат
-            </q-tooltip>
+          <q-btn class="row no-wrap" color="primary">
+            <q-icon color="white" name="email" class="q-mr-xs" size="20px"/>
+            <label class="text-white q-ml-xs cursor-pointer" style="font-size:12px">Письмо</label>
           </q-btn>
         </div>
       </div>
-
-      <!-- <div class="row card_bg">          
-          <div class="col-10 card_content"> 
-            <div class="row">           
-              <div :class="!view && view !== 'dialog' ? 'col-md-4 img_size' : 'col-md-4 col-xs-12 col-sm-12 img_size'">
-                <div :class="!view && view !== 'dialog' ? 'avatar_img' : 'avatar_img height_auto'">
-                  <img :src="getPhotoUrl(item.EMP_ID)"/>
-                </div>
-                <div v-if="!view">{{item.WORK}}</div>
-              </div>
-              <div :class="!view && view !== 'dialog' ? 'col-md-8 card_text' : 'col-md-8 col-xs-12 col-sm-12 card_text'">
-                <div>
-                    <div v-if="!view && view !== 'dialog'" ><q-chip square color="teal" text-color="white" size="xs">онлайн</q-chip></div>
-                    {{ decode(item.LAST_NAME) }} {{ decode(item.FIRST_NAME).slice(0,1) }}.{{ decode(item.MIDDLE_NAME).slice(0,1) }}.
-                </div>
-                <div class="post_name">
-                  <div v-if="!view && view !== 'dialog'">
-                    {{ decode(item.POST_NAME) }}
-                  </div>
-                  <div v-else>
-                    {{ decode(item.POST_NAME).slice(0,20) }}...  
-                    <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
-                      {{ decode(item.POST_NAME) }}
-                    </q-tooltip>
-                  </div>                  
-                </div>
-                <div v-if="!view" class="block_phones">
-                  <q-item-label>
-                    <q-icon name="o_local_phone" />
-                    &nbsp;{{ item.PHONE_WORK }}
-                  </q-item-label>
-                  <q-item-label>
-                    <q-icon name="stay_primary_portrait" />
-                    &nbsp;{{ item.PHONE_WORK }}
-                  </q-item-label>
-                </div>
-              </div>            
-            </div>
-          </div>
-          <div v-if="!view" class="col-2 block_icons">
-            <q-btn color="grey-3" size="sm" icon="contact_phone">
-              <q-tooltip anchor="center right" self="center left" :content-style="tooltipStyle">
-                Добавить в личную адресную книгу
-              </q-tooltip>
-            </q-btn>
-            <q-btn color="grey-3" size="sm" icon="mail">
-              <q-tooltip anchor="center right" self="center left" :content-style="tooltipStyle">
-                Отправить письмо
-              </q-tooltip>
-            </q-btn>
-            <q-btn color="grey-3" size="sm" icon="card_giftcard">
-              <q-tooltip anchor="center right" self="center left" :content-style="tooltipStyle">
-                День рождения 2 августа
-              </q-tooltip>
-            </q-btn>
-            <q-btn color="grey-3" size="sm" icon="chat">
-              <q-tooltip anchor="center right" self="center left" :content-style="tooltipStyle">
-                Написать в чат
-              </q-tooltip>
-            </q-btn>
-          </div>
-        </div> -->
-      <!-- End MY Block -->
-
-      <!-- BOY CARD -->
-      <!-- <div v-if="item.GENDER === 'M'">
-        
-        <q-card-section
-          class="bg-primary text-white"
-          style="padding: 5px 5px 5px 10px;"
-        >
-          <div class="text-subtitle1">
-            <q-icon
-              name="o_star_border"
-              size="25px"
-              color="yellow-14"
-              v-if="item.WORK_POSITION === 1"
-            />
-            &nbsp;{{
-              decode(item.LAST_NAME) +
-                " " +
-                decode(item.FIRST_NAME) +
-                " " +
-                decode(item.MIDDLE_NAME)
-            }}&nbsp;
-          </div>
-        </q-card-section>
-        <q-item style="padding: 0 5px 5px 10px;">
-          <q-item-section avatar>
-            <q-avatar square style="width: 80px; height: 100px">
-              <img :src="getPhotoUrl(item.EMP_ID)" />
-            </q-avatar>
-          </q-item-section>
-          <q-item-section style="padding: 0 5px 5px 10px;">
-            <q-item-label>
-              <b>{{ decode(item.POST_NAME) }}</b>
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_local_phone" />
-              &nbsp;{{ item.PHONE_WORK }}
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_local_phone" />
-              &nbsp;{{ item.PHONE_WORK }}
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_mail" />&nbsp;
-              <a
-                :href="mail + item.MAIL_ADDRESS"
-                style="text-decoration: none;"
-                >{{ item.MAIL_ADDRESS }}</a
-              >
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-card-section
-          class="bg-primary text-white"
-          style="padding: 1px 5px 1px 5px;"
-        ></q-card-section>
-      </div> -->
-      <!-- GIRL CARD -->
-      <!-- <div v-else>
-        <q-card-section
-          class="bg-purple text-white"
-          style="padding: 5px 5px 5px 10px;"
-        >
-          <div class="text-subtitle1">
-            {{
-              decode(item.LAST_NAME) +
-                " " +
-                decode(item.FIRST_NAME) +
-                " " +
-                decode(item.MIDDLE_NAME)
-            }}
-          </div>
-        </q-card-section>
-        <q-item style="padding: 0 5px 5px 10px;">
-          <q-item-section avatar>
-            <q-avatar square style="width: 80px; height: 100px">
-              <img :src="getPhotoUrl(item.EMP_ID)" />
-            </q-avatar>
-          </q-item-section>
-          <q-item-section style="padding: 0 5px 5px 10px;">
-            <q-item-label>
-              <b>{{ decode(item.POST_NAME) }}</b>
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_local_phone" />
-              &nbsp;{{ item.PHONE_WORK }}
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_local_phone" />
-              &nbsp;{{ item.PHONE_WORK }}
-            </q-item-label>
-            <q-item-label>
-              <q-icon name="o_mail" />&nbsp;
-              <a
-                :href="mail + item.MAIL_ADDRESS"
-                style="text-decoration: none;"
-                >{{ item.MAIL_ADDRESS }}</a
-              >
-            </q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-card-section
-          class="bg-purple text-white"
-          style="padding: 1px 5px 1px 5px;"
-        ></q-card-section>
-      </div> -->
-      <!-- Girl CARD END-->
-    </div>
-
-    <div v-else>
-      <img src="./../assets/statics/default-avatar.png" style="width:100%" />
-      <!-- <img src="../assets/statics/logoNew.png" /> -->
-    </div>
+    </q-menu>
   </div>
 </template>
 
 <script>
 import CommonUtils from "./../shared/utils/CommonUtils";
 import UserService from "./../services/user.service";
+import { mapState } from 'vuex';
 
 export default {
   name: "UserCard",
@@ -316,12 +112,34 @@ export default {
     },
     getPhotoUrl(emp_id) {
       return UserService.getUserProfilePhotoUrl(emp_id);
+    },
+    DIngo(i) {
+      if(i) {
+        var monthNames = [
+          "Январь", "Февраль", " Март",
+          "Апрель", "Май", "Июнь", "Июль",
+          "Август", "Сентябрь", "Октябрь",
+          "Ноябрь", "Декабрь"
+        ];
+        return i.BIRTH_DATE.slice(-2) + ' ' + monthNames[Number(i.BIRTH_DATE.slice(5, 7))];
+      }else {
+        return i.BIRTH_DATE;
+      }
     }
-  }
+  },
+
 };
 </script>
 
 <style>
+@font-face {
+  font-family: 'OpenSansBold';
+  src: url('~assets/fonts/OpenSans-Regular.ttf') format('truetype');
+}
+.OpenSansBold {
+  font-family: 'OpenSansBold';
+  font-weight: 500;
+}
 .cardBgInner {
   height: 100%;
   background: url("./../assets/images/naqsh.png") repeat-y 5px 0;
@@ -385,5 +203,15 @@ export default {
 }
 .q-chip {
   margin-left: 0;
-}</style
->>
+}
+.bedge {
+  position: absolute;
+  bottom: 5%;
+  right: 0;
+  border: 1px solid #ffffff;
+  border-radius: 50px;
+  width: 10px;
+  height: 10px;
+  
+}
+</style>
