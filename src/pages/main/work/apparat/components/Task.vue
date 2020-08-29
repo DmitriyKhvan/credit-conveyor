@@ -100,33 +100,27 @@
           <div class="desp q-pr-sm">
             <div>
               <img src="@/assets/icons/List-active.svg" />
-               <q-tooltip
-                  anchor="top middle"
-                  self="bottom middle"
-                  :offset="[10, 10]"
-                  content-class="bg-green"
-                >{{doc.paper_count}} листов бумаги</q-tooltip>
+              <q-tooltip
+                anchor="top middle"
+                self="bottom middle"
+                :offset="[10, 10]"
+                content-class="bg-green"
+              >{{doc.paper_count}} листов бумаги</q-tooltip>
             </div>
             <div class="desp q-px-sm">{{doc.paper_count}}</div>
           </div>
           <div class="desp q-pr-sm">
             <div>
-              <img
-                v-if="doc.tasks && doc.tasks[0].comments"
-                src="@/assets/icons/Comments-active.svg"
-              />
+              <img v-if="doc.comments" src="@/assets/icons/Comments-active.svg" />
               <img v-else src="@/assets/icons/Comments.svg" />
               <q-tooltip
-                  anchor="top middle"
-                  self="bottom middle"
-                  :offset="[10, 10]"
-                  content-class="bg-light-blue"
-                >{{doc.tasks && doc.tasks[0].comments ? doc.tasks[0].comments.length : 0 }} комментариев</q-tooltip>
+                anchor="top middle"
+                self="bottom middle"
+                :offset="[10, 10]"
+                content-class="bg-light-blue"
+              >{{doc.comments ? doc.comments.length : 0 }} комментариев</q-tooltip>
             </div>
-            <div
-              v-if="doc.tasks && doc.tasks[0].comments"
-              class="desp q-px-sm"
-            >{{doc.tasks[0].comments.length}}</div>
+            <div v-if="doc.comments" class="desp q-px-sm">{{doc.comments.length}}</div>
             <div v-else class="desp q-px-sm">0</div>
           </div>
           <div class="desp q-pr-sm">
@@ -134,20 +128,18 @@
               <img v-if="doc.start_emps_id" src="@/assets/icons/User-Account-active.svg" />
               <img v-else src="@/assets/icons/User-Account.svg" />
               <q-tooltip
-                  anchor="top middle"
-                  self="bottom middle"
-                  :offset="[10, 10]"
-                  content-class="bg-deep-purple text-center"
-                >
-                  <b>Ответственные:</b>
-                  <br />
-                  <label
-                    v-for="(emp, i) in doc.start_emps_id"
-                    :key="i"
-                  >
-                  {{ emp['first_name'] }} {{emp['last_name'][0]}}.{{emp['middle_name'][0]}}&nbsp;
-                  </label>
-                </q-tooltip>
+                anchor="top middle"
+                self="bottom middle"
+                :offset="[10, 10]"
+                content-class="bg-deep-purple text-center"
+              >
+                <b>Ответственные:</b>
+                <br />
+                <label
+                  v-for="(emp, i) in doc.start_emps_id"
+                  :key="i"
+                >{{ emp['first_name'] }} {{emp['last_name'][0]}}.{{emp['middle_name'][0]}}&nbsp;</label>
+              </q-tooltip>
             </div>
             <div v-if="doc.start_emps_id" class="desp q-px-sm">{{doc.start_emps_id.length}}</div>
             <div v-else class="desp q-px-sm">0</div>
