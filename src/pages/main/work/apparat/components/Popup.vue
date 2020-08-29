@@ -132,7 +132,7 @@
                   <div class="row">
                     <div class="col flexBlock">
                       <div class="self-center">
-                        <img src="@/assets/icons/Enter-1.svg" />
+                        <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
                         Исходящая дата:
@@ -142,7 +142,7 @@
                     </div>
                     <div class="col flexBlock">
                       <div class="self-center">
-                        <img src="@/assets/icons/Enter.svg" />
+                        <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
                         Входящая дата:
