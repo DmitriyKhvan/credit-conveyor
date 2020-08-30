@@ -160,7 +160,25 @@ const actions = {
   setIsListView({ commit }, payload) {
     commit("setIsListView", payload); //
   },
-  onSelectSortBy({ commit }) {}
+  onSelectSortBy({ commit }) {},
+
+  async getFile({ commit }, payload) {
+    try {
+      const { data } = await axios({
+        method: 'post',
+        url: 'http://10.8.8.90:8070/document/edocument/personal',
+        responseType: "arraybuffer",
+        data: payload
+      })
+
+      const blob = new Blob([data], { type: "application/pdf" })
+      return window.URL.createObjectURL(blob)
+
+    } catch(e) {
+      console.log(e)
+      throw e
+    }
+  }
 };
 
 const getters = {

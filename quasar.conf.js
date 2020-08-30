@@ -76,8 +76,8 @@ module.exports = function(ctx) {
       analyze: false,
       env: ctx.dev
         ? {
-            VUE_APP_BASE_URL: JSON.stringify("http://localhost:4000/"),
-            SOCKET_URL: JSON.stringify("http://localhost:4000/")
+            VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/"),
+            SOCKET_URL: JSON.stringify("http://10.8.8.70:4000/")
           }
         : {
             VUE_APP_BASE_URL: JSON.stringify("http://10.8.8.70:4000/"),
@@ -109,6 +109,7 @@ module.exports = function(ctx) {
     devServer: {
       https: false,
       port: 8088,
+      // host: "10.8.8.70",
       open: true, // opens browser window automatically
       disableHostCheck: true,
       headers: {

@@ -255,7 +255,8 @@ const actions = {
     } catch (e) {
       throw e;
     }
-  }
+  },
+  
 };
 const getters = {
   getNameStatus: state => num => {
