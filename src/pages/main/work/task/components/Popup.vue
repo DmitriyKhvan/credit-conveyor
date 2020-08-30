@@ -137,24 +137,26 @@
                   <div class="row">
                     <div class="col com_title">Комментарии:</div>
                   </div>
-                  <div class="row q-pb-md com_block" v-for="comment in tempComments">
-                    <div class="col-1">
-                      <q-avatar size="32px">
-                        <img :src="getUserPhoto(comment.emp_id)" />
-                      </q-avatar>
-                    </div>
-                    <div class="col q-px-sm">
-                      <div class="com_author">
-                        {{comment.fullName}}
-                        <span>{{comment.created_at}}</span>
+                  <q-scroll-area :style="tempComments.length >  1 ? 'height: 200px' : 'height: 80px'">
+                    <div class="row q-pb-md com_block" v-for="comment in tempComments" :key="comment">
+                      <div class="col-1">
+                        <q-avatar size="32px">
+                          <img :src="getUserPhoto(comment.emp_id)" />
+                        </q-avatar>
                       </div>
-                      <div class="com_text">{{comment.text}}</div>
-                      <div class="com_action flexBlock">
-                        <div @click="onEditClick(comment)">редактирвоать</div>
-                        <div @click="deleteComment(comment)">удалить</div>
+                      <div class="col q-px-sm">
+                        <div class="com_author">
+                          {{comment.fullName}}
+                          <span>{{ formatDate(comment.created_at) }}</span>
+                        </div>
+                        <div class="com_text text-weight-bold">{{comment.text}}</div>
+                        <div class="com_action flexBlock">
+                          <div class="cursor-pointer" @click="onEditClick(comment)">редактирвоать</div>
+                          <div class="cursor-pointer" @click="deleteComment(comment)">удалить</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </q-scroll-area>
 
                   <div class="row q-mt-md com_block">
                     <div class="col-1">

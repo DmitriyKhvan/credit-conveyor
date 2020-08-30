@@ -160,19 +160,19 @@
                     <div class="col com_title">Комментарии:</div>
                   </div>
                   <template>
-                    <q-scroll-area style="max-height: 300px">
-                      <div class="row q-pb-md com_block" v-for="comment in commentsList">
+                    <q-scroll-area :style="commentsList.length >  1 ? 'height: 200px' : 'height: 80px'">
+                      <div class="row q-pb-md com_block full-height" v-for="comment in commentsList" :key="comment">
                         <div class="col-1">
                           <q-avatar size="32px">
                             <img :src="getUserPhoto(comment.emp_id)" />
                           </q-avatar>
                         </div>
                         <div class="col q-px-sm">
-                          <div class="com_author">
-                            {{comment.fullName}}
-                            <span>{{comment.created_at}}</span>
+                          <div class="com_author text-weight-bold row items-center">
+                            {{comment.first_name+' '+comment.last_name[0]+'. '+comment.last_name[0]+'.'}}
+                            <span>{{ formatDate(comment.created_at) }}</span>
                           </div>
-                          <div class="com_text">{{comment.text}}</div>
+                          <div class="com_text text-grey-9 text-weight-bold">{{comment.text}}</div>
                         </div>
                       </div>
                     </q-scroll-area>
@@ -377,8 +377,8 @@ export default {
   line-height: 22px;
 }
 .comments {
-  padding: 20px 0;
-  margin: 20px 0;
+  /* padding: 20px 0;
+  margin: 20px 0; */
   border-top: 1px solid #e3e4e8;
 }
 .com_title {
@@ -402,6 +402,7 @@ export default {
 }
 .com_text {
   line-height: 19px;
+  font-size: 14px;
 }
 .rightBlock {
   padding: 4px 0 4px 15px;
