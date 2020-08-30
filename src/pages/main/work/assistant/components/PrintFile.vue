@@ -70,8 +70,6 @@ export default {
         }
       };
 
-      console.log(JSON.stringify(data, null, 2))
-
       try {
         this.$store.dispatch("credits/setHeaderRole", "CRM")
         const fileURL = await this.$store.dispatch("assistant/getFile", data)
