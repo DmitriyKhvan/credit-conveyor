@@ -36,10 +36,7 @@
                       <div class="q-px-sm">Скачать</div>
                     </div>
                     <div class="col flexBlock">
-                      <div class="pad-3">
-                        <img src="@/assets/icons/Print.svg" />
-                      </div>
-                      <div class="q-px-sm">Печать</div>
+                      <appPrintFile :doc="doc" label="Печать" />
                     </div>
                   </div>
                 </div>
@@ -217,6 +214,7 @@
 import { mapState, mapGetters } from "vuex";
 import NotifyService from "@/services/notify.service";
 import { required, minLength } from "vuelidate/lib/validators";
+import PrintFile from "./PrintFile";
 import { formatFileSize, downloadFile, getMimeType } from "@/shared/utils/file";
 import { stringTruncate } from "@/shared/utils/common";
 
@@ -422,6 +420,9 @@ export default {
         });
     },
   },
+  components: {
+    appPrintFile: PrintFile
+  }
 };
 </script>
 <style scoped>

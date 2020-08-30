@@ -64,7 +64,8 @@
                   self="bottom middle"
                   :offset="[10, 10]"
                   content-class="bg-green"
-                >{{ doc.paper_count }} листов бумаги</q-tooltip>
+                  >{{ doc.paper_count }} листов бумаги</q-tooltip
+                >
               </div>
               <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
             </div>
@@ -72,18 +73,27 @@
         </div>
         <div class="col-2 q-pr-md q-pa-md">
           <div class="row">
-            <div class="col text-right q-pr-md cursor-pointer" @click="download()">
-              <img src="@/assets/icons/Download-Cloud.svg" alt />
+            <div
+              class="col text-right q-pr-md cursor-pointer"
+              @click="download()"
+            >
+              <img src="@/assets/icons/Download-Cloud.svg" alt="" />
             </div>
-            <div class="cursor-pointer">
-              <img src="@/assets/icons/Print.svg" alt />
-            </div>
+            <!-- <div v-if="menuNo !== 1" class="cursor-pointer">
+              <img src="@/assets/icons/Print.svg" alt="" />
+            </div> -->
+            <appPrintFile :doc="doc" />
           </div>
           <!-- posmotret button -->
           <div class="row q-pt-md">
             <div class="col text-right fontBtn">
               <!-- <a-popup :doc="doc"></a-popup> -->
-              <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+              <q-btn
+                color="blue-14"
+                size="lg"
+                label="Просмотреть"
+                @click="showDialogDetails()"
+              />
             </div>
           </div>
           <!-- -->
@@ -126,14 +136,21 @@
 
     <div class="row q-pb-md">
       <div class="col text-center">
-        <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+        <q-btn
+          color="blue-14"
+          size="lg"
+          label="Просмотреть"
+          @click="showDialogDetails()"
+        />
         <!-- <a-popup :doc="doc"></a-popup> -->
       </div>
     </div>
   </div>
 </template>
 <script>
+import printJS from "print-js";
 import { mapState, mapGetters } from "vuex";
+import PrintFile from "./PrintFile";
 import Popup from "./Popup";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import { downloadFile, getMimeType } from "@/shared/utils/file";
@@ -142,18 +159,20 @@ export default {
   props: ["doc"],
   components: {
     //APopup: Popup
+    appPrintFile: PrintFile
   },
   computed: {
     ...mapState({
-      list: (state) => state.assistant.isListView,
-      selectedDocs: (state) => state.assistant.selectedDocs,
+      list: state => state.assistant.isListView,
+      selectedDocs: state => state.assistant.selectedDocs,
+      menuNo: state => state.assistant.menuNo
     }),
     ...mapGetters({
-      menuNo: "assistant/menuNo",
+      menuNo: "assistant/menuNo"
     }),
     isNewDocsSection() {
       return this.menuNo == 1 ? true : false;
-    },
+    }
   },
   methods: {
     selectDoc() {
@@ -169,9 +188,9 @@ export default {
         .dialog({
           component: Popup,
           parent: this,
-          doc: this.doc,
+          doc: this.doc
         })
-        .onOk((res) => {
+        .onOk(res => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
@@ -185,20 +204,20 @@ export default {
     formatDate(date) {
       //console.log({ date: CommonUtils.simpleDateFormat(date) });
       return CommonUtils.simpleDateFormat(date);
-    },
+    }
   },
   data() {
     return {
-      isSelected: false,
+      isSelected: false
     };
   },
   created() {
-    if (this.selectedDocs.find((el) => el.doc_id === this.doc.doc_id)) {
+    if (this.selectedDocs.find(el => el.doc_id === this.doc.doc_id)) {
       this.isSelected = true;
     } else {
       this.isSelected = false;
     }
-  },
+  }
 };
 </script>
 <style scoped>
@@ -248,6 +267,7 @@ export default {
   border-left: 1px #e3e4e8 solid;
   border-right: 1px #e3e4e8 solid;
 }
+
 </style>
 <style>
 .q-btn__content {
