@@ -49,7 +49,7 @@
               <img src="@/assets/icons/Download-Cloud.svg" alt />
               <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Скачать</q-tooltip>
             </div>
-            <div class="cursor-pointer">
+            <div class="cursor-pointer" v-if="!isNewDocsSection">
               <img src="@/assets/icons/Print.svg" alt />
               <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Распечатать</q-tooltip>
             </div>
