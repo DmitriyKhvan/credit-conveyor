@@ -248,7 +248,7 @@ export default {
     onCancelClick() {
       this.$q
         .dialog({
-          title: "Confirm",
+          title: "Подтверждать",
           message: this.$t("messages.confirm_exit"),
           cancel: true,
           persistent: true,

@@ -169,7 +169,7 @@
                         </div>
                         <div class="col q-px-sm">
                           <div class="com_author text-weight-bold row items-center">
-                            {{comment.first_name+' '+comment.last_name[0]+'. '+comment.last_name[0]+'.'}}
+                            {{comment.last_name+' '+comment.first_name+' '+comment.middle_name}}
                             <span>{{ formatDate(comment.created_at) }}</span>
                           </div>
                           <div class="com_text text-grey-9 text-weight-bold">{{comment.text}}</div>
