@@ -49,17 +49,20 @@
           </q-menu>
       </q-select>
     </div>
-    <q-input  dense square 
-              v-model="searchText" 
-              bg-color="white" color="grey-3" 
-              label-color="black" 
-              outlined 
-              clearable
-              label="Поиск персонала...">
-      <template v-slot:append style="float-right">
-        <q-btn round flat icon="search" />
+    <q-input dense square
+        v-model="searchText"
+        bg-color="white" color="grey-3"
+        label-color="black"
+        outlined
+        clearable
+        label="Поиск персонала..."
+        @clear="cleanning"
+        @input="checkInput">
+      <template v-slot:append>
+        <q-icon name="search" />
       </template>
     </q-input>
+      
   </div>
 
   <div class="row col q-my-md text-weight-bolder" v-if="selectedFilial">
@@ -99,6 +102,32 @@
       </q-tree>
     </q-scroll-area>
   </div>
+
+
+  <div class="row col q-my-md text-weight-bolder text-body2 " v-if="searchResult !== null ">
+    Найдено&nbsp;<b class="bg-orange text-body1 text-white">{{ searchResult.length >= 20 ? searchResult.length+'+' : searchResult.length }}</b>
+    &nbsp;сотрудников по запросу:&nbsp;<b class="bg-orange text-body1 text-white q-px-md">{{ searchText }}</b>
+  </div>
+  <div class="col column" v-if="searchResult !== null">
+    <q-scroll-area :style="{height: heightElRight}">
+    
+    <div
+      :class="view && view === 'dialog' ? 'userRowMin': 'userRow'"
+      v-for="(item, index) in searchResult"
+      :key="index"
+    >
+    <span class="depst">{{ decode(item.DEPARTMENTS_NAME) }}/{{  }}</span>
+      <q-card   @click="emitUser(item)"
+                style="cursor: pointer"
+                class="userBlock q-ma-sm"
+                :class="emp === item.EMP_ID ? 'active' : ''">
+        <user-card-old :itemData="item" :view="(view === 'dialog') ? 'dialog': ''" />
+        <!-- {{ item }} -->
+      </q-card>
+    </div>
+    </q-scroll-area>
+  </div>
+  
 </div>
 </template>
 <script>
@@ -106,18 +135,21 @@ import ApiService from "./../services/api.service";
 import CommonUtils from "./../shared/utils/CommonUtils";
 import UserService from "./../services/user.service";
 import UserCard from "./../components/UserCard";
+import UserCardOld from "./../components/UserCardOld";
 import { dom } from 'quasar'
 const { height } = dom
 
 export default {
   components: {
-    UserCard
+    UserCard,
+    UserCardOld
   },
   mixins: [],
   data() {
     return {
       mail: "mailto:",
       searchText: null,
+      searchResult: [],
       selectedBranch: null,
       selectedFilial: null,
       branches: [],
@@ -157,24 +189,46 @@ export default {
       }
     })
   },
+  computed: {
+    checkInput() {
+      if (this.searchText === null || this.searchText.length === 0) {
+        this.searchResult = null;
+      }
+      this.findPer();
+    }
+  },
   methods: {
+    cleanning() {
+      this.searchResult = null;
+    },
     emitUser(item) {
       this.$emit("selectUser", item);
       this.emp = item.EMP_ID;
     },
     getSectors(mfo, code) {
+      this.searchResult = null;
       ApiService.get(`structure/departments?mfo=${mfo}&code=${code}`)
         .then(res => {
           // set array
           this.filials = res.data;
           this.$nextTick(function() {
             this.$refs.nodes.expandAll();
+            console.log(this.filials);
           });
         })
         .catch(err => {
           console.log(err);
         });
     },
+    findPer() {
+      if (this.searchText !== null){
+        ApiService.get(`emps/search?name=${this.searchText}`)
+          .then(response => {
+            this.searchResult = response.data;
+          });
+          this.selectedFilial = null;
+      }
+    },        
     decode(param) {
       return CommonUtils.decoder(param);
     },

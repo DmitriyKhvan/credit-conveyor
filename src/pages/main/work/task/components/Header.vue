@@ -65,7 +65,7 @@
         <div
           class="flexBlock q-px-md"
           :class="tabNo === 5 ? 'filterActive': ''"
-          @click="menuSelect(5)"
+          
         >
           <div class="q-pr-sm">
             <q-icon v-if="tabNo === 5" name="r_check_circle" size="20px" style="color: #0054FE" />
@@ -73,6 +73,12 @@
           </div>
           <div>
             <b>Мои задачи</b>
+            <q-tooltip  anchor="top middle"
+                  self="bottom middle"
+                  :offset="[10, 10]"
+                  content-class="bg-grey text-no-wrap text-caption">
+                  На стадии разработки
+            </q-tooltip>
           </div>
         </div>
       </div>
