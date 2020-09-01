@@ -80,7 +80,7 @@
 
         </div>
         <div class="col row items-center justify-center q-mt-md">
-          <img src="./assets/welicon/GooPlay.png" width="175px" class="cursor-pointer" @click="printT()" />
+          <img src="./assets/welicon/GooPlay.png" width="175px" />
           <img src="./assets/welicon/AppSotre.png" width="150px" />
         </div>
       </div>
@@ -178,11 +178,6 @@ export default {
     }
   },
   methods: {
-    printT() {
-      // window.history.go(-1);
-      console.log(cookies.getAllCookieStores());
-      // window.designMode = 'on';
-    },
     handleSubmit() {
       this.loginError = false
       //Perform a simple validation that email and password have been typed in
