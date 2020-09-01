@@ -31,7 +31,12 @@
         <span>{{ item.PHONE_WORK }}</span>
         <span>(18:88)</span>
       </span>
-      <span class="col-4 text-center ellipsis-2-lines bg-white">{{ item.WORK }}</span>
+      <span class='col-5 text-center ellipsis-2-lines bg-white' >{{ working(item.WORK)[0] }}
+        <q-tooltip  content-class="bg-blue-grey text-caption text-white ellipsis-2-lines" 
+                    anchor="top middle" self="bottom middle" 
+                    :offset="[5, 5]" v-if="working(item.WORK).length > 1"
+        >{{ working(item.WORK)[1] }}</q-tooltip>
+      </span>
     </div>
     <q-menu touch-position 
             style="width: 250px">
@@ -107,6 +112,12 @@ export default {
     }
   },
   methods: {
+    working(e) {
+      if(e.search(/<br>/)) {
+        return e.split(/<br>/);
+      }
+      return e;
+    },
     decode(param) {
       return CommonUtils.decoder(param);
     },
