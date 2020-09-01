@@ -138,7 +138,7 @@
                     <div class="col com_title">Комментарии:</div>
                   </div>
                   <q-scroll-area :style="tempComments.length >  1 ? 'height: 200px' : 'height: 80px'">
-                    <div class="row q-pb-md com_block" v-for="comment in tempComments" :key="comment">
+                    <div class="row q-pb-md com_block" v-for="(comment, i) in tempComments" :key="i">
                       <div class="col-1">
                         <q-avatar size="32px">
                           <img :src="getUserPhoto(comment.emp_id)" />

@@ -19,7 +19,7 @@
           <div class="pad-3">
             <img src="@/assets/icons/Time-Limit.svg" />
           </div>
-          <div class="q-px-sm">Срок сдачи:</div>
+          <div class="q-px-sm">Срок задачи:</div>
           <div v-if="doc.deadline">
             <strong>{{formatDate(doc.deadline)}}</strong>
             <br />

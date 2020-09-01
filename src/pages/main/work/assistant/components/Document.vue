@@ -100,9 +100,14 @@
               {{ doc.in_date }}
             </div>
           </div>
+
+          <div class="col text-right fontBtn">
+            <!-- <a-popup :doc="doc"></a-popup> -->
+            <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+          </div>
         </div>
       </div>
-      <div class="col">
+      <!-- <div class="col">
         <div class="row q-pl-lg q-pt-xs">
           <div class="flexBlock q-pr-sm q-py-sm">
             <div>
@@ -117,25 +122,24 @@
             <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
           </div>
         </div>
-      </div>
-      <div class="col-2 q-pr-md q-pa-md">
+      </div> -->
+      <!-- <div class="col-2 q-pr-md q-pa-md">
         <div class="row">
           <div class="col text-right q-pr-md cursor-pointer" @click="download()">
             <img src="@/assets/icons/Download-Cloud.svg" alt />
           </div>
-          <!-- <div v-if="menuNo !== 1" class="cursor-pointer">
+          <div v-if="menuNo !== 1" class="cursor-pointer">
               <img src="@/assets/icons/Print.svg" alt="" />
-          </div>-->
+          </div>
           <appPrintFile :doc="doc" />
         </div>
-        <!-- posmotret button -->
         <div class="row q-pt-md">
           <div class="col text-right fontBtn">
-            <!-- <a-popup :doc="doc"></a-popup> -->
+            <a-popup :doc="doc"></a-popup>
             <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 

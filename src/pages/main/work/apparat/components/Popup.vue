@@ -161,7 +161,7 @@
                   </div>
                   <template>
                     <q-scroll-area :style="commentsList.length >  1 ? 'height: 200px' : 'height: 80px'">
-                      <div class="row q-pb-md com_block full-height" v-for="comment in commentsList" :key="comment">
+                      <div class="row q-pb-md com_block full-height" v-for="(comment, i) in commentsList" :key="i">
                         <div class="col-1">
                           <q-avatar size="32px">
                             <img :src="getUserPhoto(comment.emp_id)" />

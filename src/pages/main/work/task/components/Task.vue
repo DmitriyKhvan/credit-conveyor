@@ -67,10 +67,11 @@
                 <img src="@/assets/icons/Time-Limit.svg" />
               </div>
               <div class="q-py-sm">
-                <b>Срок сдачи:</b>
+                <b>Срок задачи:</b>
                 <br />
-                <span class="subGreen">
-                  <b>{{formatDate(task.f_task_data.deadline)}}</b>
+                <span>
+                  <b v-if="task.f_task_data.deadline == null" class="subYellow">нет срока</b>
+                  <b v-else class="subGreen">{{formatDate(task.f_task_data.deadline)}}</b>
                   <!-- TODO left 2 days-->
                 </span>
               </div>
