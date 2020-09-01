@@ -63,6 +63,8 @@
         v-model="searchText"
         label="Поиск"
         bg-color="white"
+        color="grey-3"
+        label-color="black"
         @input="searchDoc()"
       >
         <template v-slot:append>
@@ -109,25 +111,25 @@ export default {
       listViewOptions: [
         {
           label: "Вид Список",
-          value: 1,
+          value: 1
         },
         {
           label: "Вид Карточный",
-          value: 2,
-        },
+          value: 2
+        }
       ],
       searchText: "",
       sortOptions: [
         {
           label: "Date",
-          value: 1,
+          value: 1
         },
         {
           label: "Name",
-          value: 2,
-        },
+          value: 2
+        }
       ],
-      sortBy: null,
+      sortBy: null
     };
   },
   created() {
@@ -136,14 +138,14 @@ export default {
   },
   computed: {
     ...mapState({
-      menu: (state) => state.assistant.aMenu,
+      menu: state => state.assistant.aMenu
     }),
     ...mapGetters({
       isSearchOpen: "assistant/isSearchOpen",
       countNew: "assistant/getCountNew",
       countReady: "assistant/getCountReady",
-      countSent: "assistant/getCountSent",
-    }),
+      countSent: "assistant/getCountSent"
+    })
   },
   methods: {
     menuSelect(num) {
@@ -176,8 +178,8 @@ export default {
       this.$store.dispatch("assistant/getADocs", { search: this.searchText });
 
       //this.$store.commit("assistant/setDocSearchText", this.searchText);
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

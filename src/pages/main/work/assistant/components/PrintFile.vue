@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       loadingDoc: false
-    }
+    };
   },
   computed: {
     ...mapState({
@@ -42,16 +42,22 @@ export default {
     })
   },
   methods: {
-     async printFile(doc) {
-      this.loadingDoc = true
+    async printFile(doc) {
+      this.loadingDoc = true;
       const performer = doc.start_emps_id.map(person => {
         return {
-          name: `${person.LAST_NAME} ${person.FIRST_NAME.slice(0, 1)}.${person.MIDDLE_NAME.slice(0, 1)}.`
-        }
-      })
+          name: `${person.LAST_NAME} ${person.FIRST_NAME.slice(
+            0,
+            1
+          )}.${person.MIDDLE_NAME.slice(0, 1)}.`
+        };
+      });
 
-      const superior = doc.superior.name.split(' ')
-      const h_emp = `${superior[0]} ${superior[1].slice(0, 1)}. ${superior[2].slice(0, 1)}.`
+      const superior = doc.superior.name.split(" ");
+      const h_emp = `${superior[0]} ${superior[1].slice(
+        0,
+        1
+      )}. ${superior[2].slice(0, 1)}.`;
 
       const data = {
         type: "personal",
@@ -64,25 +70,25 @@ export default {
           out_date: CommonUtils.dateFilter(doc.out_date),
           text: doc.description,
           action: "Прошу рассмотреть в установленном порядке.",
-          date: CommonUtils.dateFilter(doc.created_at),
+          date: CommonUtils.dateFilter(doc.in_date),
           h_emp,
           performer
         }
       };
 
       try {
-        this.$store.dispatch("credits/setHeaderRole", "CRM")
-        const fileURL = await this.$store.dispatch("assistant/getFile", data)
-        printJS(fileURL)
-        window.URL.revokeObjectURL(fileURL)
-        this.loadingDoc = false
-      } catch(error) {
-        this.loadingDoc = false
-        console.log(error)
+        this.$store.dispatch("credits/setHeaderRole", "CRM");
+        const fileURL = await this.$store.dispatch("assistant/getFile", data);
+        printJS(fileURL);
+        window.URL.revokeObjectURL(fileURL);
+        this.loadingDoc = false;
+      } catch (error) {
+        this.loadingDoc = false;
+        console.log(error);
       }
     }
   }
-}
+};
 </script>
 <style lang="scss">
 .printFile {
@@ -92,7 +98,7 @@ export default {
   }
 
   .q-btn__wrapper:before {
-    box-shadow: none!important;
+    box-shadow: none !important;
   }
 }
 </style>

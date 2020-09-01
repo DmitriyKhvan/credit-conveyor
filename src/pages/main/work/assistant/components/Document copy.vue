@@ -50,6 +50,8 @@
               <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Скачать</q-tooltip>
             </div>
             <div class="cursor-pointer">
+              <!-- <img src="@/assets/icons/Print.svg" alt />
+              <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Распечатать</q-tooltip>-->
               <appPrintFile :doc="doc" />
             </div>
           </div>
@@ -99,11 +101,39 @@
               {{ doc.in_date }}
             </div>
           </div>
-
-          <div class="col flexBlock">
-            <div class="col text-right fontBtn">
-              <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+        </div>
+      </div>
+      <!-- <div class="col">
+        <div class="row q-pl-lg q-pt-xs">
+          <div class="flexBlock q-pr-sm q-py-sm">
+            <div>
+              <img src="@/assets/icons/List-active.svg" />
+              <q-tooltip
+                anchor="top middle"
+                self="bottom middle"
+                :offset="[10, 10]"
+                content-class="bg-green"
+              >{{ doc.paper_count }} листов бумаги</q-tooltip>
             </div>
+            <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
+          </div>
+        </div>
+      </div>-->
+      <div class="col-2 q-pr-md q-pa-md">
+        <!-- <div class="row"> -->
+        <!-- <div class="col text-right q-pr-md cursor-pointer" @click="download()">
+            <img src="@/assets/icons/Download-Cloud.svg" alt />
+        </div>-->
+        <!-- <div v-if="menuNo !== 1" class="cursor-pointer">
+                <img src="@/assets/icons/Print.svg" alt="" />
+        </div>-->
+        <!-- <appPrintFile :doc="doc" /> -->
+        <!-- </div> -->
+        <!-- posmotret button -->
+        <div class="row q-pt-md">
+          <div class="col text-right fontBtn">
+            <!-- <a-popup :doc="doc"></a-popup> -->
+            <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
           </div>
         </div>
       </div>
@@ -145,6 +175,7 @@
     <div class="row q-pb-md">
       <div class="col text-center">
         <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+        <!-- <a-popup :doc="doc"></a-popup> -->
       </div>
     </div>
   </div>

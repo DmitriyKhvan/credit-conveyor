@@ -7,14 +7,17 @@
       transition-show="scale"
       transition-hide="scale"
     >
-      <q-card class="cardBlock OpenSans q-pa-md" style="width: 820px; max-width: 80vw; background: #f9f9f9">
+      <q-card
+        class="cardBlock OpenSans q-pa-md"
+        style="width: 820px; max-width: 80vw; background: #f9f9f9"
+      >
         <!-- <q-card-section>
           <div class="row justify-between">
             <strong>{{ formatString(doc.description) }}</strong>
             <q-space />
             <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
           </div>
-        </q-card-section> -->
+        </q-card-section>-->
         <q-card-section>
           <div class="row">
             <div class="col title">
@@ -25,12 +28,15 @@
               </div>
               <div class="col column">
                 <div class="row">
-                  <span class="text-grey-6" style="min-width: 100px; font-size: 14px;">Организация:&nbsp;</span>
+                  <span
+                    class="text-grey-6"
+                    style="min-width: 100px; font-size: 14px;"
+                  >Организация:&nbsp;</span>
                   <i style="font-size: 14px;">{{doc.organ ? doc.organ : 'неизвестный'}}</i>
                 </div>
                 <div class="row">
                   <span class="text-grey-6" style="min-width: 100px; font-size: 14px;">Откуда:&nbsp;</span>
-                  <i style="font-size: 14px;">{{ doc.signed_by ? doc.signed_by : 'неизвестный'}}</i>
+                  <i style="font-size: 14px;">{{ doc.fio ? doc.fio : 'неизвестный'}}</i>
                 </div>
               </div>
               <div class="row q-py-md desp">
@@ -55,7 +61,6 @@
               <div class="row q-py-md desp">
                 <div class="col">
                   <div class="row">
-
                     <div class="col flexBlock">
                       <div class="self-center">
                         <img src="@/assets/icons/Enter-1.svg" />
@@ -72,12 +77,11 @@
                         <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
-                        <b>Входящий дата:</b>
+                        <b>Исходящий дата:</b>
                         <br />
-                        {{ dateFormat(doc.in_date) }}
+                        {{ doc.out_date }}
                       </div>
                     </div>
-                    
                   </div>
                 </div>
               </div>
@@ -85,7 +89,6 @@
               <div class="row q-py-xs desp">
                 <div class="col">
                   <div class="row">
-
                     <div class="col flexBlock">
                       <div class="self-center">
                         <img src="@/assets/icons/Enter.svg" />
@@ -102,12 +105,11 @@
                         <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
-                        <b>Исходящий дата:</b>
+                        <b>Входящий дата:</b>
                         <br />
-                        {{ doc.out_date }}
+                        {{ doc.in_date }}
                       </div>
                     </div>
-                    
                   </div>
                 </div>
               </div>
@@ -129,11 +131,15 @@
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-input  borderless dense v-model="searchUser" 
-                            style="border: .5px solid #e1e1e1; border-radius: 4px; background: #fff;" 
-                            class="q-px-sm"
-                            label="Исполнитель" 
-                            @input="selUsers">
+                  <q-input
+                    borderless
+                    dense
+                    v-model="searchUser"
+                    style="border: .5px solid #e1e1e1; border-radius: 4px; background: #fff;"
+                    class="q-px-sm"
+                    label="Исполнитель"
+                    @input="selUsers"
+                  >
                     <template v-slot:append>
                       <q-icon name="search" />
                     </template>
@@ -197,11 +203,15 @@
               </div>
               <div class="row">
                 <div class="col q-mb-md bg-white">
-                  <q-select borderless v-model="shablon" :options="shablons"
-                            dense 
-                            label="Шаблон" 
-                            class="rounded-borders q-px-sm"
-                            style="border: 0.5px solid #e1e1e1" />
+                  <q-select
+                    borderless
+                    v-model="shablon"
+                    :options="shablons"
+                    dense
+                    label="Шаблон"
+                    class="rounded-borders q-px-sm"
+                    style="border: 0.5px solid #e1e1e1"
+                  />
                 </div>
               </div>
             </div>
@@ -240,8 +250,8 @@ export default {
       type: Object,
       default: () => {
         return {};
-      },
-    },
+      }
+    }
   },
   data() {
     return {
@@ -251,22 +261,22 @@ export default {
       result: [],
       workers: [],
       activeWorker: "",
-      signed: false, // podpisan
+      signed: false // podpisan
     };
   },
   validations: {
     shablon: {
-      required,
+      required
     },
     superior: {
-      required,
+      required
     },
     workers: {
-      required,
+      required
     },
     activeWorker: {
-      required,
-    },
+      required
+    }
   },
   created() {
     // set signed button
@@ -274,14 +284,14 @@ export default {
       this.signed = true;
     }
     if (this.doc.start_emps_id) {
-      let headEmp = this.doc.start_emps_id.find((el) => el.CHECK == true);
+      let headEmp = this.doc.start_emps_id.find(el => el.CHECK == true);
       this.activeWorker = headEmp.EMP_ID;
     }
 
     // init task message in shablon
     if (this.doc.task_message) {
       let shablonObj = this.dicts(6).values.find(
-        (el) => el.id == this.doc.task_message
+        el => el.id == this.doc.task_message
       );
       this.shablon = { label: shablonObj.name[1], value: shablonObj.id }; // TODO lang
     }
@@ -290,7 +300,7 @@ export default {
       this.superior = {
         label: this.doc.superior.name,
         value: this.doc.superior.emp_id,
-        dep_code: this.doc.superior.dep_code,
+        dep_code: this.doc.superior.dep_code
       };
     }
     // initial values of emp ids
@@ -301,19 +311,19 @@ export default {
   },
   computed: {
     ...mapState({
-      superiorsList: (state) => state.assistant.aSuperiors,
+      superiorsList: state => state.assistant.aSuperiors
     }),
     ...mapGetters({
-      dicts: "dicts/getDictsList", // loads all dicts
+      dicts: "dicts/getDictsList" // loads all dicts
     }),
     shablons() {
-      return this.dicts(6).values.map((el) => {
+      return this.dicts(6).values.map(el => {
         return {
           label: el.name[1], // TODO add lang val
-          value: el.id,
+          value: el.id
         };
       });
-    },
+    }
   },
   methods: {
     decode(param) {
@@ -321,11 +331,11 @@ export default {
     },
     saveForm() {
       const arr = [];
-      this.workers.forEach((user) => {
+      this.workers.forEach(user => {
         arr.push({
           emp_id: user.EMP_ID,
           check: user.EMP_ID === this.activeWorker ? true : false,
-          dep_code: user.DEP_CODE,
+          dep_code: user.DEP_CODE
         });
       });
 
@@ -336,14 +346,14 @@ export default {
         h_dep_code: this.superior.dep_code,
         type: 1,
         message: this.shablon.value,
-        status: this.signed === true ? 3 : 2,
+        status: this.signed === true ? 3 : 2
       };
       //console.log({ obg });
 
       this.$axios
         .post("/tasks/pomoshnik", obg)
         .then(
-          (response) => {
+          response => {
             this.$emit("ok", response.data); //
             if (response.data.status == 1) {
               NotifyService.showSuccessMessage(response.data.message);
@@ -353,12 +363,12 @@ export default {
               this.hide();
             }
           },
-          (error) => {
+          error => {
             //console.log({ error: error.response.data });
             NotifyService.showErrorMessage(error.response.data.message);
           }
         )
-        .catch((error) => {
+        .catch(error => {
           //console.log({ error: error.response.data });
           NotifyService.showErrorMessage(error.response.data.message);
           //this.hide();
@@ -368,7 +378,7 @@ export default {
       this.activeWorker = id;
     },
     removeUser(id) {
-      this.workers = this.workers.filter((user) => user.EMP_ID !== id);
+      this.workers = this.workers.filter(user => user.EMP_ID !== id);
       if (this.activeWorker === id) this.activeWorker = "";
     },
     selectedUser(user) {
@@ -383,10 +393,10 @@ export default {
       if (this.searchUser !== "") {
         this.$axios
           .get("/emps/search?name=" + this.searchUser)
-          .then((response) => {
+          .then(response => {
             this.result = response.data;
           })
-          .catch((error) => {
+          .catch(error => {
             console.log("error");
           });
       }
@@ -429,7 +439,7 @@ export default {
           title: "Подтвердить",
           message: this.$t("messages.confirm_exit"),
           cancel: true,
-          persistent: true,
+          persistent: true
         })
         .onOk(() => {
           this.hide();
@@ -437,7 +447,7 @@ export default {
         .onCancel(() => {
           // console.log('>>>> Cancel')
         });
-    },
+    }
   },
   components: {
     appPrintFile: PrintFile
@@ -541,11 +551,11 @@ export default {
   text-transform: none;
 }
 @font-face {
-  font-family: 'OpenSans';
-  src: url('~assets/fonts/OpenSans-Regular.ttf') format(truetype);
+  font-family: "OpenSans";
+  src: url("~assets/fonts/OpenSans-Regular.ttf") format(truetype);
 }
 .OpenSans {
-  font-family: 'OpenSans';
+  font-family: "OpenSans";
   font-weight: 500;
 }
 </style>
