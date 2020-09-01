@@ -1,5 +1,5 @@
 <template>
-  <router-view></router-view>
+  <router-view class="q-ma-md"></router-view>
 </template>
 
 <script>

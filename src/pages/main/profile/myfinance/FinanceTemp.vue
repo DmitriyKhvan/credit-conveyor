@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md OpenSans greyf">
+  <div class="q-ma-lg OpenSans greyf">
     <div class="row justify-between">
       <div class="text-h4 blackf text-weight-bolder">Поступления</div>
       <div class="raw bg-white shadow-4" style="border-radius: 5px;">

@@ -1,5 +1,6 @@
 <template>
-  <div class="bg-white rounded-borders q-mt-lg q-mx-lg" >
+  <div  class="bg-white rounded-borders q-ma-lg q-mt-lg"
+        >
     <q-tabs
         v-model="tab"
         no-caps
@@ -17,7 +18,7 @@
 
       <q-separator />
 
-      <q-tab-panels v-model="tab">
+      <q-tab-panels v-model="tab" class="q-ml-lg">
           <q-tab-panel name="pers">
               <s-personal></s-personal>
           </q-tab-panel>
