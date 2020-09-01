@@ -25,7 +25,7 @@
             <q-avatar class="avatar1">
               <img :src="getPhotoUrl(empId)" />
             </q-avatar>
-            <span class="titleName">{{ fullName}}</span>
+            <span class="titleName" v-html="fullName"></span>
 
             <q-btn
               class="icon-color"
@@ -202,7 +202,7 @@ export default {
       }
     },
     list() {
-      //console.log('route', this.$route);
+      //console.log("route", this.$route);
       return this.$route.matched.filter(
         route => route.name || route.meta.label
       );
