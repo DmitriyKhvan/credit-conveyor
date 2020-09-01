@@ -80,7 +80,7 @@
 
         </div>
         <div class="col row items-center justify-center q-mt-md">
-          <img src="./assets/welicon/GooPlay.png" width="175px" @click="popup = true" />
+          <img src="./assets/welicon/GooPlay.png" width="175px" />
           <img src="./assets/welicon/AppSotre.png" width="150px" />
         </div>
       </div>
@@ -103,17 +103,17 @@
   </div>
   <div class="btm_panel">
     <q-item 
-      v-for="i in m_icons" :key="i"
+      v-for="(val, i) in m_icons" :key="i"
       flat bordered clickable 
       to="#" 
       class="mmy-card"
       v-ripple
       >
-      <q-icon :name="i.name" class="card_icon" :style="i.st" />
-      <label :key="i.text">{{i.text}}</label>
+      <q-icon :name="val.name" class="card_icon" :style="val.st" />
+      <label :key="val.text">{{val.text}}</label>
     </q-item>
   </div>
-  <c-popup popup start></c-popup>
+  <c-popup popup></c-popup>
 </div>
 </template>
 <script>
@@ -128,9 +128,7 @@ export default {
   name: "names",
   data() {
     return {
-      popup: true,    // if true Shows popup dialog, otherwise
-      start: true,    // Intro slider mode
-      lorem: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque voluptatem totam, architecto cupiditate officia rerum, error dignissimos praesentium libero ab nemo.',
+      popup: false,    // if true Shows popup dialog, otherwise
       showPass: false,
       credentials: {
         username: null,
@@ -180,7 +178,6 @@ export default {
     }
   },
   methods: {
-
     handleSubmit() {
       this.loginError = false
       //Perform a simple validation that email and password have been typed in
@@ -230,7 +227,7 @@ export default {
 
   .bg {
     width: 100%;
-    height: 80vh;
+    height: 85vh;
     overflow-y: auto;
     background: url('./assets/bg.png') 100% 100% no-repeat;
     background-attachment: fixed;
