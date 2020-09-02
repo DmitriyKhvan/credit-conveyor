@@ -28,7 +28,8 @@
                 <q-select    v-model="web"
                             class="q-mt-xl input-text"
                             style="margin-top: 30px"
-                            :options="web"
+                            :options="webOptions"
+                            :display-value="web ? web : 'none'"
                             label="Персональный веб-сайт"
                             stack-label />
             </div>
@@ -64,7 +65,8 @@ export default {
             linkedIn: '@Baratov',
             tweeter: 'Baratov@nbu.uz',
             telegram: '@strel00k',
-            web: 'Baratov.uz'
+            web: 'Baratov.uz',
+            webOptions: ['Baratov.uz', 'Baratov.nbu.uz']
         }
     }
 }

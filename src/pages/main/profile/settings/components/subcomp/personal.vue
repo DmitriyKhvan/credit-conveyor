@@ -5,19 +5,16 @@
             <div class="col column justify-between">
                 <q-input    class="q-mt-xl input-text"
                             input-class="inputs"
-                            v-model="email"
+                            v-model="personal.email"
                             type="email"
                             label="Электронная почта"
                             label-color="grey"
-                            :error="!isMailValid"
+                            hint="Введите электронную почту"
                             stack-label>
-                            <template v-slot:error>
-                                Введите электронную почту
-                            </template>
                 </q-input>
                 <q-input    class="q-mt-xl input-text"
                             input-class="inputs"
-                            v-model="phone"
+                            v-model="personal.phone"
                             label="Сотовый номер"
                             label-color="grey"
                             mask="(##) ### ## ##"
@@ -30,7 +27,7 @@
             <div class="col column justify-between">
                 <q-input    class="q-mt-xl input-text"
                             input-class="inputs"
-                            v-model="office"
+                            v-model="personal.office"
                             label="Ип телефон номер"
                             label-color="grey"
                             mask="####"
@@ -40,7 +37,7 @@
                 </q-input>
                 <q-input    class="q-mt-xl input-text"
                             input-class="inputs"
-                            v-model="work"
+                            v-model="personal.work"
                             label="Рабочий телефон"
                             label-color="grey"
                             mask="(##) ### ## ##"
@@ -51,25 +48,74 @@
             </div>
         </div>
         <div class="full-width" style="margin-top: 50px">
-            <q-btn class="q-py-sm q-px-md" color="primary" label="СОХРАНИТЬ" />
+            <q-btn class="q-py-sm q-px-md" color="primary" label="СОХРАНИТЬ" @click="getInit"/>
         </div>
     </div>
 </template>
 <script>
+import { mapState, mapGetters } from "vuex";
+import NotifyService from "@/services/notify.service";
+
 export default {
     name: 'Personal',
     data () {
         return {
-            email: 'Baratov@nbu.uz',
-            phone: '977282828',
-            office: '9755',
-            work: '712343212'
+            personal: {
+                email: '',
+                phone: '',
+                office: '',
+                work: '',
+            },
+            change: false,
+            searchResults: null
         }
     },
+    created () {
+        this.$axios.get("settings/personal")
+            .then((response) => {
+                this.searchResults = response.data;
+                if (this.searchResults) {
+                    this.personal.email = this.searchResults.mail ? this.searchResults.mail : null;
+                    this.personal.phone = this.searchResults.mobile ? this.searchResults.mobile : null;
+                    this.personal.work = this.searchResults.phone ? this.searchResults.phone : null;
+                    this.personal.office = this.searchResults.ip ? this.searchResults.ip : null;
+                }
+            })
+            .catch((error) => {
+                console.log("error");
+            });
+    },
     computed: {
-        isMailValid () {
-            if(this.email !== null)
-                return this.email.match(/@[^.]+/);
+        ...mapGetters({
+            empId: "auth/empId",
+        }),
+
+    },
+    methods: {
+        getInit() {
+            let obj = {
+                mail: this.personal.email,
+                mobile: this.personal.phone,
+                phone: this.personal.work,
+                ip: this.personal.office
+            };
+            this.$axios
+                .post("settings/personal", obj)
+                .then((res) => {
+                console.log({ res });
+                if (res.data.status == 1) {
+                    // success
+                    NotifyService.showSuccessMessage(res.data.message);
+
+                    this.onCloseDialog();
+                } else {
+                    // fail
+                    NotifyService.showErrorMessage(res.data.message);
+                }
+            })
+            .catch((err) => {
+            console.log({ err });
+            });
         }
     }
 }
