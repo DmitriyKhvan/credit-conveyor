@@ -47,11 +47,12 @@
           <div class="row">
             <div class="col text-right q-pr-md cursor-pointer" @click="download()">
               <img src="@/assets/icons/Download-Cloud.svg" alt />
-              <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Скачать</q-tooltip>
+              <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Скачать документ</q-tooltip>
             </div>
             <div class="cursor-pointer" v-if="!isNewDocsSection">
-              <img src="@/assets/icons/Print.svg" alt />
-              <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Распечатать</q-tooltip>
+              <appPrintFile :doc="doc" />
+              <!-- <img src="@/assets/icons/Print.svg" alt />
+              <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Распечатать</q-tooltip>-->
             </div>
           </div>
         </div>
@@ -194,20 +195,20 @@ export default {
   props: ["doc"],
   components: {
     //APopup: Popup
-    appPrintFile: PrintFile,
+    appPrintFile: PrintFile
   },
   computed: {
     ...mapState({
-      list: (state) => state.assistant.isListView,
-      selectedDocs: (state) => state.assistant.selectedDocs,
-      menuNo: (state) => state.assistant.menuNo,
+      list: state => state.assistant.isListView,
+      selectedDocs: state => state.assistant.selectedDocs,
+      menuNo: state => state.assistant.menuNo
     }),
     ...mapGetters({
-      menuNo: "assistant/menuNo",
+      menuNo: "assistant/menuNo"
     }),
     isNewDocsSection() {
       return this.menuNo == 1 ? true : false;
-    },
+    }
   },
   methods: {
     selectDoc() {
@@ -223,9 +224,9 @@ export default {
         .dialog({
           component: Popup,
           parent: this,
-          doc: this.doc,
+          doc: this.doc
         })
-        .onOk((res) => {
+        .onOk(res => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
@@ -239,20 +240,20 @@ export default {
     formatDate(date) {
       //console.log({ date: CommonUtils.simpleDateFormat(date) });
       return CommonUtils.simpleDateFormat(date);
-    },
+    }
   },
   data() {
     return {
-      isSelected: false,
+      isSelected: false
     };
   },
   created() {
-    if (this.selectedDocs.find((el) => el.doc_id === this.doc.doc_id)) {
+    if (this.selectedDocs.find(el => el.doc_id === this.doc.doc_id)) {
       this.isSelected = true;
     } else {
       this.isSelected = false;
     }
-  },
+  }
 };
 </script>
 <style scoped>

@@ -139,7 +139,7 @@ const routes = [
               {
                 path: "list",
                 name: "Task List",
-                component: TasksList,
+                component: TasksList
               }
             ]
           },
