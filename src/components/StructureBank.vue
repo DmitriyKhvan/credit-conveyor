@@ -55,6 +55,7 @@
         label-color="black"
         outlined
         clearable
+        debounce="600"
         label="Поиск персонала..."
         @clear="cleanning"
         @input="checkInput">

@@ -1,5 +1,5 @@
 <template>
-  <router-view />
+  <router-view class="q-ma-sm" />
 </template>
 <script>
 export default {
