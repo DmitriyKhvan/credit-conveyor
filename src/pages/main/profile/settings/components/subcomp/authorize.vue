@@ -28,8 +28,6 @@
           style="margin-top: 10px"
           stack-label
         ></q-input>
-      </div>
-      <div class="col-6 justify-between">
         <q-input
           class="q-mt-xl input-text"
           input-class="inputs"
@@ -54,19 +52,19 @@ export default {
     return {
       username: null,
       newpwd: null,
-      repwd: null,
+      repwd: null
     };
   },
   created() {
     this.$axios
       .get("settings/auth")
-      .then((resp) => {
+      .then(resp => {
         //console.log({ resp });
         if (!!resp.data) {
           this.username = resp.data.authdata.username;
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log({ err });
         throw err;
       });
@@ -79,9 +77,9 @@ export default {
             this.$axios
               .post("settings/auth", {
                 username: this.username,
-                password: this.newpwd,
+                password: this.newpwd
               })
-              .then((resp) => {
+              .then(resp => {
                 if (resp.data.status == 1) {
                   // success
                   NotifyService.showSuccessMessage(resp.data.message);
@@ -90,7 +88,7 @@ export default {
                   NotifyService.showErrorMessage(resp.data.message);
                 }
               })
-              .catch((err) => {
+              .catch(err => {
                 NotifyService.showErrorMessage(err.toString());
                 throw err;
               });
@@ -100,9 +98,9 @@ export default {
         } else {
           this.$axios
             .post("settings/auth", {
-              username: this.username,
+              username: this.username
             })
-            .then((resp) => {
+            .then(resp => {
               if (resp.data.status == 1) {
                 // success
                 NotifyService.showSuccessMessage(resp.data.message);
@@ -111,15 +109,15 @@ export default {
                 NotifyService.showErrorMessage(resp.data.message);
               }
             })
-            .catch((err) => {
+            .catch(err => {
               console.log({ err });
               NotifyService.showErrorMessage(err.toString());
               throw err;
             });
         }
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

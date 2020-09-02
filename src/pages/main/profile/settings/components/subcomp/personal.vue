@@ -35,7 +35,7 @@
           v-model="personal.office"
           label="Ип телефон номер"
           label-color="grey"
-          mask="####"
+          mask="##-##"
           fill-mask
           hint="Введите Ип телефон номер"
           stack-label
@@ -70,16 +70,16 @@ export default {
         email: "",
         phone: "",
         office: "",
-        work: "",
+        work: ""
       },
       change: false,
-      searchResults: null,
+      searchResults: null
     };
   },
   created() {
     this.$axios
       .get("settings/personal")
-      .then((response) => {
+      .then(response => {
         this.searchResults = response.data;
         if (this.searchResults) {
           this.personal.email = this.searchResults.mail
@@ -96,14 +96,14 @@ export default {
             : null;
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error");
       });
   },
   computed: {
     ...mapGetters({
-      empId: "auth/empId",
-    }),
+      empId: "auth/empId"
+    })
   },
   methods: {
     getInit() {
@@ -111,12 +111,12 @@ export default {
         mail: this.personal.email,
         mobile: this.personal.phone,
         phone: this.personal.work,
-        ip: this.personal.office,
+        ip: this.personal.office
       };
       console.log({ obj });
       this.$axios
         .post("settings/personal", obj)
-        .then((res) => {
+        .then(res => {
           console.log({ res });
           if (res.data.status == 1) {
             // success
@@ -128,11 +128,11 @@ export default {
             NotifyService.showErrorMessage(res.data.message);
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log({ err });
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
