@@ -25,9 +25,17 @@
           v-model="newpwd"
           label="Новый пароль"
           label-color="grey"
-          style="margin-top: 10px"
           stack-label
-        ></q-input>
+          :type="isPwd ? 'password' : 'text'"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
       </div>
       <div class="col-6 justify-between">
         <q-input
@@ -37,7 +45,16 @@
           label="Повторите новый пароль"
           label-color="grey"
           stack-label
-        ></q-input>
+          :type="isPwd ? 'password' : 'text'"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
       </div>
     </div>
     <div class="full-width" style="margin-top: 50px">
@@ -55,6 +72,7 @@ export default {
       username: null,
       newpwd: null,
       repwd: null,
+      isPwd: true,
     };
   },
   created() {
@@ -74,7 +92,7 @@ export default {
   methods: {
     saveAuthSettings() {
       if (!!this.username) {
-        if (!!this.newpwd) {
+        if (!!this.newpwd && !!this.repwd) {
           if (this.newpwd == this.repwd) {
             this.$axios
               .post("settings/auth", {
