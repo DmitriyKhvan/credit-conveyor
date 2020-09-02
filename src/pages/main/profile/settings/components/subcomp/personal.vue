@@ -35,7 +35,7 @@
           v-model="personal.office"
           label="Ип телефон номер"
           label-color="grey"
-          mask="####"
+          mask="##-##"
           fill-mask
           hint="Введите Ип телефон номер"
           stack-label
