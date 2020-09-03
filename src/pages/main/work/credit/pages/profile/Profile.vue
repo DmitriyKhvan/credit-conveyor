@@ -422,8 +422,8 @@
                   v-model="Customer.Document.GivenPlace"
                   :options="Customer.Document.Districts.items"
                   dense
-                  label="Кем выдан документ"
-                  :rules="[val => !!val || 'Введите кем выдан документ']"
+                  label="Кем выдан документ (ИИБ)"
+                  :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -1161,8 +1161,8 @@
                     v-model="relative.Document.GivenPlace"
                     :options="relative.Document.Districts.items"
                     dense
-                    label="Кем выдан документ"
-                    :rules="[val => !!val || 'Введите кем выдан документ']"
+                    label="Кем выдан документ (ИИБ)"
+                    :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
                     emit-value
                     map-options
                     class="q-pb-sm"
@@ -2723,8 +2723,8 @@
                       v-model="guarantee.Document.GivenPlace"
                       :options="guarantee.Document.Districts.items"
                       dense
-                      label="Кем выдан документ"
-                      :rules="[val => !!val || 'Введите кем выдан документ']"
+                      label="Кем выдан документ (ИИБ)"
+                      :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
                       emit-value
                       map-options
                       class="q-pb-sm"
