@@ -1,6 +1,6 @@
 <template>
-    <q-dialog v-model="popup" persistent>
-      <!-- <q-carousel
+  <q-dialog v-model="popup" persistent>
+    <!-- <q-carousel
         v-if="start !== false"
         v-model="slide"
         transition-prev="jump-right"
@@ -48,53 +48,56 @@
             <label class="text-normal q-py-sm q-px-lg" style="font-size: 20px">Принмаю</label>
           </q-btn>
         </q-carousel-slide>
-      </q-carousel> -->
-      <div class="col-1 column no-wrap OpenSans bg-white rounded-borders items-center">
-        <div style="width: 70vw" class="row items-center justify-around">
-          <div class="col column items-center q-ml-lg q-pl-lg q-mt-lg" style="font-size: 16px">
-            <img src="../assets/welicon/G1.svg" width="170px" />
-            <b class="text-center q-my-md">
-              Добро пожаловать на корпоративный портал Personal АО «Национальный банк ВЭД РУ»!
-            </b>
-            <p class="">
-              Корпоративный портал Personal разработан Отделом разработки ПО совместно с Отделом управления проектов и бизнес анализа Управления инновационного развития и внедрения новых продуктов Департамента ИТ
-            </p>
-            <img src="../assets/welicon/G2.svg" class="q-mt-md" width="170px" />
-            <b class="text-center q-my-md">
-              Важная информация!
-            </b>
-            <p class="">
-              Если Вы обнаружили ошибки в своих персональных данных на корпоративном портале Personal, пожалуйста обратитесь в Департамент по работе с персоналом для внесения исправлений.
-            </p>
-            
-          </div>
-
-          <div class="col row items-center justify-center">
-            <img src="../assets/welicon/GG.svg" />
-          </div>
-
+    </q-carousel>-->
+    <div class="col-1 column no-wrap OpenSans bg-white rounded-borders items-center">
+      <div style="width: 70vw" class="row items-center justify-around">
+        <div class="col column items-center q-ml-lg q-pl-lg q-mt-lg" style="font-size: 16px">
+          <img src="../assets/welicon/G1.svg" width="170px" />
+          <b
+            class="text-center q-my-md"
+          >Добро пожаловать на корпоративный портал Personal АО «Национальный банк ВЭД РУ»!</b>
+          <p
+            class
+          >Корпоративный портал Personal разработан Отделом разработки ПО совместно с Отделом управления проектов и бизнес анализа Управления инновационного развития и внедрения новых продуктов Департамента ИТ</p>
+          <img src="../assets/welicon/G2.svg" class="q-mt-md" width="170px" />
+          <b class="text-center q-my-md">Важная информация!</b>
+          <p
+            class
+          >Если Вы обнаружили ошибки в своих персональных данных на корпоративном портале Personal, пожалуйста обратитесь в вашу кадровую службу для внесения исправлений в ИАБС.</p>
         </div>
-        <q-btn rounded label="ПРОДОЛЖИТЬ" text-color="white" color="primary" size="20px" @click="welcomed()" />
-        <div class="q-py-lg text-caption">
-          Используя систему Personal, вы автоматически принимаете и соблюдаете политику  безопасности.
+
+        <div class="col row items-center justify-center">
+          <img src="../assets/welicon/GG.svg" />
         </div>
       </div>
-    </q-dialog>    
+      <q-btn
+        rounded
+        label="ПРОДОЛЖИТЬ"
+        text-color="white"
+        color="primary"
+        size="20px"
+        @click="welcomed()"
+      />
+      <div
+        class="q-py-lg text-caption"
+      >Используя систему Personal, вы автоматически принимаете и соблюдаете политику безопасности.</div>
+    </div>
+  </q-dialog>
 </template>
 <script>
 export default {
-  name: 'CPopup',
-  data () {
+  name: "CPopup",
+  data() {
     return {
-      slide: 'style',
-      popup: localStorage.getItem('welcomePopup') !== null ? false : true,
-    }
+      slide: "style",
+      popup: localStorage.getItem("welcomePopup") !== null ? false : true
+    };
   },
   methods: {
-    welcomed () {
+    welcomed() {
       this.popup = false;
-      localStorage.setItem('welcomePopup', true);
+      localStorage.setItem("welcomePopup", true);
     }
   }
-}
+};
 </script>
