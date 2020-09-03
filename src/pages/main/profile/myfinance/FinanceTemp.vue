@@ -208,8 +208,6 @@
         class="col items-center q-mr-none q-my-md q-ml-md topBlock"
         :active="active"
         active-class="act"
-        clickable
-        @click="shiftTab(3)"
       >
         <q-icon size="255px" style="position:absolute;top:0;left:0;right:0;bottom:0;">
           <svg
@@ -314,7 +312,7 @@
                 </span>
               </q-item-label>
               <q-item-label class="text-wight-bolder" style="color:grey">
-                Рабочих дней в Июне месяце -
+                Рабочих дней в {{ selectedMonth ? selectedMonth.label.split(' ')[0] : '' }} месяце -
                 <strong>{{allMonthData.work_days ? allMonthData.work_days : 0}}</strong>дня; Выходных -
                 <strong>{{allMonthData.day_offs ? allMonthData.day_offs : 0}}</strong>
               </q-item-label>
@@ -324,7 +322,7 @@
           <q-item class="lined-content" v-for="(detail, k) in data.details" :key="k">
             <q-item-label
               class="lined-text text-weight-bold"
-            >{{detail.PAY_NAME ? detail.PAY_NAME : ''}}</q-item-label>
+            v-html="detail.PAY_NAME ? detail.PAY_NAME : ''"></q-item-label>
             <q-item-label
               class="lined-value text-weight-bold"
               style="color:#61C9A9"
@@ -461,7 +459,7 @@ export default {
             uid: this.emp_id,
             date: this.selectedMonth.value,
           });
-          console.log(this.selectedMonth);
+          //console.log(this.selectedMonth);
         },
         (error) => {
           console.log({ error });
@@ -509,6 +507,7 @@ export default {
       })
         .then((response) => {
           this.allMonthData = response.data;
+          console.log(this.allMonthData);
         })
         .catch((err) => {
           console.log(err);

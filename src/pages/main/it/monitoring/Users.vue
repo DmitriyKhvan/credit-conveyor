@@ -1,11 +1,8 @@
 <template>
   <q-card>
     <q-card-section>
-      <div class="row">
+      <div class="column">
         <div class="col-9">
-          <structure-bank :view="'dialog'" @selectUser="selectUser" />
-        </div>
-        <div class="col-3">
           <div style="width: 100%;">
             <q-card>
               <user-card v-bind:itemData="item" />
@@ -20,6 +17,9 @@
               </q-card-section>
             </q-card>
           </div>
+        </div>
+        <div class="col-9">
+          <structure-bank :view="'dialog'" @selectUser="selectUser" />
         </div>
       </div>
     </q-card-section>
