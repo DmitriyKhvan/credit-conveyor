@@ -148,16 +148,24 @@
               </div>
             </div>
 
-            <div class="row rowForm">
+            <!-- <div class="row rowForm">
               <div class="col-3 field">Регион / область выдачи документа</div>
               <div class="col-9 data">
-                 {{
+                <template
+                  v-if="
+                    dictionaries.Region.items.find(
+                      i => i.value == Customer.Document.Region
+                    )
+                  "
+                >
+                  {{
                     dictionaries.Region.items.find(
                       i => i.value == Customer.Document.Region
                     ).label
                   }}
+                </template>
               </div>
-            </div>
+            </div> -->
 
             <div class="row rowForm">
               <div class="col-3 field">Кем выдан документ</div>
@@ -478,10 +486,10 @@
                 </div>
               </div>
 
-              <div class="row rowForm">
+              <!-- <div class="row rowForm">
                 <div class="col-6 field">Должность</div>
                 <div class="col-6 data">{{ Customer.JobInfo.position }}</div>
-              </div>
+              </div> -->
 
               <div class="row rowForm">
                 <div class="col-6 field">
@@ -635,6 +643,25 @@
                     ).label
                   }}
                 </template>
+              </div>
+            </div>
+            <div 
+              v-if="userRole === 'CCM'"
+              class="row rowForm"
+            >
+              
+              <div class="col-12 field">
+                <q-btn
+                  :loading="bankLoading"
+                  color="primary"
+                  label="Посмотреть заработные поступления"
+                  @click="getDataINPS"
+                  class="addItem"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-facebook />
+                  </template>
+                </q-btn>
               </div>
             </div>
           </div>
@@ -1159,7 +1186,7 @@
             </div>
 
             <div class="row rowForm">
-              <div class="col-6 field">Удобный срок погашения в мес</div>
+              <div class="col-6 field">Срок кредита в мес</div>
               <div class="col-6 data">
                 {{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}
               </div>
@@ -1538,6 +1565,19 @@
     </div>
 
     <appLoaderFullScreen v-if="loader" />
+
+    <q-dialog v-model="INPSBar" persistent>
+      <q-card class="INPSblock">
+        <q-card-section>
+          <appGetDataINPS 
+            v-if="dataINPS"
+            :salaries="dataINPS"
+            @closeBar="($event) => INPSBar=$event"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
   </div>
 </template>
 <script>
@@ -1547,6 +1587,7 @@ import { mapState } from "vuex";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
+import GetDataINPS from "../../Components/INPS/GetData";
 
 import formatDate from "../../filters/formatDate"
 import { validItems, validFilter } from "../../filters/valid_filter";
@@ -1556,9 +1597,12 @@ export default {
     return {
       creditTitles: null,
       loader: false,
+      bankLoading: false,
+      INPSBar: false,
       loaderForm: true,
       confirm: false,
       BODecision: true,
+      dataINPS: null,
       userRole: this.$store.getters["credits/userRole"],
 
       commentBO: {
@@ -1725,6 +1769,9 @@ export default {
           ]
         };
       } else if (this.userRole == "CCM") {
+        // const fullNameArr = this.$store.getters["auth/fullName"].split(' ')
+        // const fullName = `${fullNameArr[1]} ${fullNameArr[0]} ${fullNameArr[2]}`
+
         data = {
           output: [
             {
@@ -1734,6 +1781,14 @@ export default {
             {
               name: "application_comments",
               data: this.fullProfile.ApplicationComment.items
+            },
+            {
+              name: "username",
+              data: this.$store.getters["auth/username"]
+            },
+            {
+              name: "userfullname",
+              data: this.$store.getters["auth/fullName"]
             }
           ]
         };
@@ -1802,11 +1857,106 @@ export default {
           i => i.value == district
         ).label
       }
-    }
+    },
+
+    async getDataINPS() {
+      this.bankLoading = true
+      let data = {
+          input: [
+            {
+              name: "passSerial",
+              data: this.Customer.Document.Series
+            },
+            {
+              name: "passNumber",
+              data: this.Customer.Document.Number
+            },
+            {
+              name: "pin",
+              data: this.Customer.PINPP
+            },
+            {
+              name: "application_id",
+              data: this.profile.preapprove_num
+            },
+            {
+              name: "from",
+              data: "getData"
+            }
+          ]
+        };
+
+      try {
+        this.dataINPS = await this.$store.dispatch("profile/dataINPS", data)
+        if (this.dataINPS) {
+          const INPSItems = this.dataINPS.wages.items.map(i => {
+            return {
+              period: CommonUtils.dateFilter(i.period),
+              send_date: i.send_date,
+              inn: i.inn,
+              total_invoices: {
+                  balance: i.total_invoices.balance,
+                  percent: i.total_invoices.percent,
+                  full: i.total_invoices.full
+              },
+              org_addres: i.org_addres,
+              org_name: i.org_name
+            }
+          })
+
+          this.dataINPS.wages.items = INPSItems
+
+          // this.dateTransformINPS()
+        } 
+        else {
+          data = {
+            input: [
+              {
+                name: "application_id",
+                data: this.profile.preapprove_num
+                // data: '00450.null.1.2020.124'
+              },
+              {
+                name: "from",
+                data: "viewData"
+              }
+            ]
+          };
+          this.dataINPS = await this.$store.dispatch("profile/dataINPS", data)
+        }
+        
+        this.bankLoading = false
+        this.INPSBar = true
+      } catch(error) {
+        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.loader = false;
+        this.bankLoading = false
+      }
+    },
+
+    // dateTransformINPS() {
+    //   const INPSItems = this.dataINPS.wages.items.map(i => {
+    //     return {
+    //       period: CommonUtils.dateFilter(i.period),
+    //       send_date: i.send_date,
+    //       inn: i.inn,
+    //       total_invoices: {
+    //           balance: i.total_invoices.balance,
+    //           percent: i.total_invoices.percent,
+    //           full: i.total_invoices.full
+    //       },
+    //       org_addres: i.org_addres,
+    //       org_name: i.org_name
+    //     }
+    //   })
+
+    //   this.dataINPS.wages.items = INPSItems
+    // }
   },
   components: {
     appLoader: Loader,
-    appLoaderFullScreen: LoaderFullScreen
+    appLoaderFullScreen: LoaderFullScreen,
+    appGetDataINPS: GetDataINPS
   },
   filters: {
     formatDate

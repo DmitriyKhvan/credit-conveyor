@@ -125,7 +125,7 @@ export default class BpmService {
   //   return axios.headers.common["NBU-BPM-Role"]
   // }
 
-  getInfoBank = async data => {
+  getDataINPS = async (data) => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/startInps`,
@@ -160,8 +160,9 @@ export default class BpmService {
   creatFile = async data => {
     const responce = await axios({
       method: "post",
-      url: `${this._baseUrl}/file/edocument`,
-      data
+      // url: `${this._baseUrl}/document/edocument`, // на dev
+      url: `${this._baseUrl}/file/edocument`,   // на prod
+      data,
     });
 
     return responce.data;
@@ -176,4 +177,14 @@ export default class BpmService {
 
     return responce.data;
   };
+
+  getProtocol = async () => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/document/edocument/protocol_form`
+    });
+
+    return responce.data;
+  };
+
 }

@@ -5,10 +5,12 @@
 
   <!-- Server error message -->
   <errorMessage />
+  <!-- <appListGSZ /> -->
 </div>
 </template>
 <script>
-import ErrorMessage from './ErrorMessage'
+import ErrorMessage from './Components/ErrorMessage'
+import listGSZ from './Components/GSZ/listGSZ'
 
 export default {
   name: "credit",
@@ -28,7 +30,8 @@ export default {
   },
 
   components: {
-    errorMessage: ErrorMessage
+    errorMessage: ErrorMessage,
+    appListGSZ: listGSZ
   }
 };
 </script>
@@ -54,10 +57,24 @@ export default {
     align-items: center;
     height: 80vh;
   }
-</style>
 
-<style>
-  /* .subMenuCredit {
-    border-radius: 3px;
-  } */
+  .INPSblock {
+    max-width: 90% !important;
+
+    thead tr {
+      text-align: center;
+      background: #e8edff;
+      color: #093475;
+    }
+
+    tr:nth-child(2n) {
+      background: #e8edff;
+    }
+
+    .btnBlock {
+      display: flex;
+      justify-content: flex-end;
+      margin: 15px 0;
+    }
+  }
 </style>
