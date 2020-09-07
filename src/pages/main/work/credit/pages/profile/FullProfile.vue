@@ -89,7 +89,7 @@
                 }}
               </div>
 
-              <div class="col-3">Кем выдан документ</div>
+              <div class="col-3">Кем выдан документ (ИИБ)</div>
               <div class="col-3">
                 {{
                   getDistrict(Customer.Document.Region, Customer.Document.GivenPlace)
@@ -220,12 +220,12 @@
                       ).label
                     }}
                   </div>
-                  <div class="col-3">Фамилия</div>
-                  <div class="col-3">{{ relative.LastName }}</div>
-                  <div class="col-3">Имя</div>
-                  <div class="col-3">{{ relative.FirstName }}</div>
-                  <div class="col-3">Отчество</div>
-                  <div class="col-3">{{ relative.MiddleName }}</div>
+                  <div class="col-2">Фамилия</div>
+                  <div class="col-2">{{ relative.LastName }}</div>
+                  <div class="col-2">Имя</div>
+                  <div class="col-2">{{ relative.FirstName }}</div>
+                  <div class="col-2">Отчество</div>
+                  <div class="col-2">{{ relative.MiddleName }}</div>
 
                   <div class="col-3">Дата рождения</div>
                   <div class="col-3">{{ relative.BirthDate }}</div>
@@ -267,8 +267,8 @@
                     }}
                   </div>
 
-                  <div class="col-3">Кем выдан документ</div>
-                  <div class="col-9">
+                  <div class="col-3">Кем выдан документ (ИИБ)</div>
+                  <div class="col-3">
                     {{
                       getDistrict(relative.Document.Region, relative.Document.GivenPlace)
                     }}
@@ -521,28 +521,29 @@
                         ).label
                       }}
                     </div> -->
-                    <div class="col-3">Фамилия</div>
-                    <div class="col-9">{{ guarantee.LastName }}</div>
-                    <div class="col-3">Имя</div>
-                    <div class="col-9">{{ guarantee.FirstName }}</div>
-                    <div class="col-3">Отчество</div>
-                    <div class="col-9">{{ guarantee.MiddleName }}</div>
-                    <div class="col-3">Тип родственной связи</div>
-                    <div class="col-9">
+                    <div class="col-2">Фамилия</div>
+                    <div class="col-2">{{ guarantee.LastName }}</div>
+                    <div class="col-2">Имя</div>
+                    <div class="col-2">{{ guarantee.FirstName }}</div>
+                    <div class="col-2">Отчество</div>
+                    <div class="col-2">{{ guarantee.MiddleName }}</div>
+
+                    <div class="col-2">Тип родственной связи</div>
+                    <div class="col-2">
                       {{
                         dictionaries.ClientRelationType.items.find(
                           i => i.value == guarantee.ClientRelation
                         ).label
                       }}
                     </div>
-                    <div class="col-3">Дата рождения</div>
-                    <div class="col-9">{{ guarantee.BirthDate }}</div>
-                    <div class="col-3">ИНН</div>
-                    <div class="col-9">{{ guarantee.INN }}</div>
-                    <div class="col-3">ПИНФЛ</div>
-                    <div class="col-9">{{ guarantee.PINPP }}</div>
-                    <div class="col-3">Резиденство</div>
-                    <div class="col-9">
+                    <div class="col-2">Дата рождения</div>
+                    <div class="col-2">{{ guarantee.BirthDate }}</div>
+                    <div class="col-2">ИНН</div>
+                    <div class="col-2">{{ guarantee.INN }}</div>
+                    <div class="col-2">ПИНФЛ</div>
+                    <div class="col-2">{{ guarantee.PINPP }}</div>
+                    <div class="col-2">Резиденство</div>
+                    <div class="col-6">
                       <template v-if="credits.options.confirmation.find(
                           i => i.value == guarantee.Resident
                         )">
@@ -557,8 +558,8 @@
 
                     <div class="col-12 dataBlock">Данные о документе:</div>
 
-                    <div class="col-3">Вид документа</div>
-                    <div class="col-9">
+                    <div class="col-2">Вид документа</div>
+                    <div class="col-2">
                       {{
                           dictionaries.DocumentType.items.find(
                             i => i.value == guarantee.Document.documentType
@@ -567,25 +568,25 @@
                     </div>
 
                     <template  v-if="guarantee.Document.documentType == 7"> 
-                      <div class="col-3">Наименование документа</div>
-                      <div class="col-9">
+                      <div class="col-2">Наименование документа</div>
+                      <div class="col-2">
                         {{ guarantee.Document.DocumentName }}
                       </div>
                     </template>
 
-                    <div class="col-3">Серия</div>
-                    <div class="col-9">{{ guarantee.Document.Series }}</div>
-                    <div class="col-3">Номер</div>
-                    <div class="col-9">{{ guarantee.Document.Number }}</div>
-                    <div class="col-3">Дата выдачи</div>
-                    <div class="col-9">{{ guarantee.Document.GivenDate }}</div>
-                    <div class="col-3">Дата окончания действия</div>
-                    <div class="col-9">
+                    <div class="col-2">Серия</div>
+                    <div class="col-2">{{ guarantee.Document.Series }}</div>
+                    <div class="col-2">Номер</div>
+                    <div class="col-2">{{ guarantee.Document.Number }}</div>
+                    <div class="col-2">Дата выдачи</div>
+                    <div class="col-2">{{ guarantee.Document.GivenDate }}</div>
+                    <div class="col-2">Дата окончания действия</div>
+                    <div class="col-2">
                       {{ guarantee.Document.ExpirationDate }}
                     </div>
                 
-                    <div class="col-3">Регион / область выдачи документа</div>
-                    <div class="col-9">
+                    <div class="col-2">Регион / область выдачи документа</div>
+                    <div class="col-2">
                       {{
                         dictionaries.Region.items.find(
                           i => i.value == guarantee.Document.Region
@@ -593,8 +594,8 @@
                       }}
                     </div>
 
-                    <div class="col-3">Кем выдан документ</div>
-                    <div class="col-9">
+                    <div class="col-2">Кем выдан документ (ИИБ)</div>
+                    <div class="col-10">
                       {{
                         getDistrict(guarantee.Document.Region, guarantee.Document.GivenPlace)
                       }}
@@ -603,8 +604,8 @@
                     <div class="col-12 dataBlock">Адрес:</div>
                     <!-- <div class="col-3">Индекс</div>
                     <div class="col-9">{{ guarantee.Address.PostalCode }}</div> -->
-                    <div class="col-3">Регион/область</div>
-                    <div class="col-9">
+                    <div class="col-2">Регион/область</div>
+                    <div class="col-2">
                       {{
                         dictionaries.Region.items.find(
                           i => i.value == guarantee.Address.Region
@@ -614,18 +615,18 @@
                     <!-- <div class="col-3">Город</div>
                     <div class="col-9">{{ guarantee.Address.City }}</div> -->
                     
-                    <div class="col-3">Район</div>
-                    <div class="col-9">
+                    <div class="col-2">Район</div>
+                    <div class="col-2">
                       {{ getDistrict(guarantee.Address.Region, guarantee.Address.District) }}
                     </div>
-                    <div class="col-3">Улица / мкр.</div>
-                    <div class="col-9">{{ guarantee.Address.Street }}</div>
-                    <div class="col-3">Номер дома</div>
-                    <div class="col-9">{{ guarantee.Address.House }}</div>
-                    <div class="col-3">Квартира</div>
-                    <div class="col-9">{{ guarantee.Address.Apartment }}</div>
-                    <div class="col-3">Сумма поручительства</div>
-                    <div class="col-9">{{ guarantee.Sum }}</div>
+                    <div class="col-2">Улица / мкр.</div>
+                    <div class="col-2">{{ guarantee.Address.Street }}</div>
+                    <div class="col-2">Номер дома</div>
+                    <div class="col-2">{{ guarantee.Address.House }}</div>
+                    <div class="col-2">Квартира</div>
+                    <div class="col-2">{{ guarantee.Address.Apartment }}</div>
+                    <div class="col-2">Сумма поручительства</div>
+                    <div class="col-2">{{ guarantee.Sum }}</div>
 
                     <div class="col-12 dataBlock">Контактная информация:</div>
                     <div class="col-12 dataList">
@@ -921,12 +922,12 @@
           </div>
 
           <div class="row q-col-gutter-md signature">
-            <div class="col-6">
-              <p class="bor"></p>
+            <div class="col-8">
+              <p class="bor">{{ Customer.FullName }}</p>
               <p>Полностью Фамилия, Имя, Отчество</p>
             </div>
-            <div class="col-6">
-              <p class="bor"></p>
+            <div class="col-4">
+              <p class="bor">&nbsp</p>
               <p>Подпись, дата</p>
             </div>
           </div>
@@ -941,7 +942,7 @@
               <div class="col-6">
                 ФИО работника банка, принявшего заявление
               </div>
-              <div class="col-6"></div>
+              <div class="col-6">{{ fullProfile.ClientManagerName }}</div>
               <div class="col-6">
                 Должность кредитного специалиста
               </div>

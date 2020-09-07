@@ -486,10 +486,10 @@
                 </div>
               </div>
 
-              <div class="row rowForm">
+              <!-- <div class="row rowForm">
                 <div class="col-6 field">Должность</div>
                 <div class="col-6 data">{{ Customer.JobInfo.position }}</div>
-              </div>
+              </div> -->
 
               <div class="row rowForm">
                 <div class="col-6 field">
@@ -1769,6 +1769,9 @@ export default {
           ]
         };
       } else if (this.userRole == "CCM") {
+        // const fullNameArr = this.$store.getters["auth/fullName"].split(' ')
+        // const fullName = `${fullNameArr[1]} ${fullNameArr[0]} ${fullNameArr[2]}`
+
         data = {
           output: [
             {
@@ -1778,6 +1781,14 @@ export default {
             {
               name: "application_comments",
               data: this.fullProfile.ApplicationComment.items
+            },
+            {
+              name: "username",
+              data: this.$store.getters["auth/username"]
+            },
+            {
+              name: "userfullname",
+              data: this.$store.getters["auth/fullName"]
             }
           ]
         };
