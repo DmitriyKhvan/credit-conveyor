@@ -37,8 +37,8 @@ const RegistrationChancellary = () =>
 const Chancellary = () => import("pages/main/work/kanselariya/Chancellary.vue");
 
 const Tasks = () => import("pages/main/work/task/index.vue");
-const TasksList = () =>
-  import("pages/main/work/task/modules/pages/tasklist/List");
+const TasksList = () => import("pages/main/work/task/index");
+
 const apparatPage = () => import("pages/main/work/apparat");
 
 // Credit

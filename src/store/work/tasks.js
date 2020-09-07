@@ -1,5 +1,15 @@
+import axios from "axios";
+
 export default {
   state: {
+    isBoardView: false, // is view like Kanban cards
+    isListView: true, // is tasks in list view or card
+    tabMenuNo: 1, // # of tab
+    isSearchOpen: false, // is search input open or close
+    taskList: [],
+    searchText: "",
+    countNew: 0,
+    // edit
     tViewTasks: false,
     tList: true,
     tMenu: 1,
@@ -7,7 +17,8 @@ export default {
     tTasks: [
       {
         id: 0,
-        title: 'Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем',
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
         pages: 2,
         messages: 4,
         users: 3,
@@ -15,7 +26,8 @@ export default {
       },
       {
         id: 1,
-        title: 'Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем',
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
         pages: 7,
         messages: 12,
         users: 2,
@@ -23,7 +35,8 @@ export default {
       },
       {
         id: 3,
-        title: 'Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем',
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
         pages: 4,
         messages: 18,
         users: 4,
@@ -31,7 +44,8 @@ export default {
       },
       {
         id: 4,
-        title: 'Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем',
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
         pages: 9,
         messages: 7,
         users: 6,
@@ -39,7 +53,8 @@ export default {
       },
       {
         id: 5,
-        title: 'Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем',
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
         pages: 1,
         messages: 2,
         users: 3,
@@ -47,54 +62,123 @@ export default {
       },
       {
         id: 6,
-        title: 'Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем',
+        title:
+          "Министерство информационно-коммуникационные технологии направляет вам указание по оптимизацию внутренных банковских систем",
         pages: 6,
         messages: 13,
         users: 2,
         status: 4
-      },
-    ]
+      }
+    ],
+    tTab: 1
   },
   mutations: {
-    tChangeView(state){
-      state.tList = !state.tList
+    changeListView(state) {
+      state.isListView = !state.isListView;
     },
-    tChangeManegment(state){
-      state.tViewTasks = !state.tViewTasks
+    changeBoardView(state) {
+      state.isBoardView = !state.isBoardView;
     },
-    tMenuChange(state, num){
-      state.tMenu = num
+    setTabMenuNo(state, num) {
+      state.tabMenuNo = num;
     },
-    tSearchChange(state){
-      state.tSearch = !state.tSearch
+    setSearchOpen(state) {
+      state.isSearchOpen = !state.isSearchOpen;
+    },
+    setTasks(state, tasks) {
+      state.taskList = tasks;
+    },
+    setSearchText(state, text) {
+      state.searchText = text;
+    },
+    setCountNew(state, count) {
+      state.countNew = count;
+    },
+    //edit
+    tSearchChange(state) {
+      state.tSearch = !state.tSearch;
+    },
+    tTabChange(state, n) {
+      state.tTab = n;
     }
   },
   actions: {
-    tChangeView({commit}){
-      commit('tChangeView')
+    changeListView({ commit }) {
+      commit("changeListView");
     },
-    tChangeManegment({commit}){
-      commit('tChangeManegment')
+    changeBoardView({ commit }) {
+      commit("changeBoardView");
     },
-    tMenuChange({commit}, num){
-      commit('tMenuChange', num)
+    setSearchOpen({ commit }) {
+      commit("setSearchOpen");
     },
-    tSearchChange({commit}){
-      commit('tSearchChange')
+    // setTabMenuNo({ commit }, num) {
+    //   commit("setTabMenuNo", num);
+    // },
+    async onTabChange({ commit, state }, num) {
+      commit("setTabMenuNo", num);
+
+      try {
+        let res = await axios.get(`tasks/user/${state.tabMenuNo}`);
+        if (num == 1) {
+          commit("setCountNew", res.data.length);
+        }
+        console.log({ res: res.data.length });
+        commit("setTasks", res.data);
+      } catch (err) {
+        console.error({ err });
+      }
+    },
+    async reload({ commit, state }) {
+      try {
+        let res = await axios.get(`tasks/user/${state.tabMenuNo}`);
+        if (state.tabMenuNo == 1) {
+          commit("setCountNew", res.data.length);
+        }
+        console.log({ res: res.data });
+        commit("setTasks", res.data);
+      } catch (err) {}
+    },
+    //EDIT
+    tSearchChange({ commit }) {
+      commit("tSearchChange");
+    },
+    tTabChange({ commit }, n) {
+      commit("tTabChange", n);
     }
+    /*
+    searchTasks({ commit, state }, searchText) {
+      console.log(searchText);
+
+      let filtered = state.taskList.filter(el =>
+        el.f_task_data.description.includes(searchText)
+      );
+      console.log(filtered);
+
+      commit("setTasks", filtered);
+    }*/
   },
   getters: {
-    tList1(state){
-      return state.tTasks.find(task => task.status === 1)
+    tabMenuNo(state) {
+      return state.tabMenuNo;
     },
-    tList2(state){
-      return state.tTasks.find(task => task.status === 2)
+    isSearchOpen(state) {
+      return state.isSearchOpen;
     },
-    tList3(state){
-      return state.tTasks.find(task => task.status === 3)
+    getTasks(state) {
+      return state.taskList;
     },
-    tList4(state){
-      return state.tTasks.find(task => task.status === 4)
+    getListView(state) {
+      return state.isListView;
     },
+    getBoardView(state) {
+      return state.isBoardView;
+    },
+    getSearchText(state) {
+      return state.searchText;
+    },
+    getCountNew(state) {
+      return state.countNew;
+    }
   }
-}
+};

@@ -5,13 +5,13 @@
       <div class="row bg-white q-pa-md q-my-lg">
         <div class="col">
           <a-views></a-views>
-          <a-document v-for="d in docs" :key="d.doc_id" :doc="d"></a-document>
+          <a-document v-for="d in docList" :key="d.doc_id" :doc="d"></a-document>
         </div>
       </div>
     </template>
     <template v-else>
       <div class="row q-my-xs q-col-gutter-lg">
-        <div class="col-3" v-for="d in docs" :key="d.doc_id">
+        <div class="col-3" v-for="d in docList" :key="d.doc_id">
           <a-document :doc="d"></a-document>
         </div>
       </div>
@@ -29,23 +29,39 @@ export default {
   components: {
     AHeader: Header,
     ADocument: Document,
-    AViews: Views
+    AViews: Views,
   },
   data() {
     return {
-      selectedDocs: []
+      selectedDocs: [],
     };
+  },
+  created() {
+    this.$store.dispatch("assistant/getADocs", { num: 1 });
+    //console.log({ docList: this.docList });
   },
   computed: {
     ...mapState({
-      list: state => state.assistant.isListView,
-      docs: state => state.assistant.aAllDocs
-    })
+      //list: (state) => state.assistant.isListView,
+      // docs: (state) => state.assistant.aAllDocs,
+    }),
+    ...mapGetters({
+      searchText: "assistant/getDocSearchText",
+      docs: "assistant/getAllDocs",
+      list: "assistant/isListView",
+    }),
+    docList() {
+      // let filtered = state.taskList.filter(el =>
+      //   el.f_task_data.description.includes(searchText)
+      // );
+      //console.log({ docs: this.docs });
+      if (!!this.docs)
+        return this.docs.filter((el) => {
+          return el.description.includes(this.searchText);
+        });
+      else return this.docs;
+    },
   },
-  created() {
-    //console.log({ docs: this.docs });
-    this.$store.dispatch("getADocs", { num: 1 });
-  }
 };
 </script>
 <style lang="scss" scoped></style>

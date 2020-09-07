@@ -32,7 +32,8 @@ module.exports = function(ctx) {
 
       "roboto-font", // optional, you are not bound to itt
       "material-icons", // optional, you are not bound to it
-      "material-icons-outlined" // optional, you are not bound to it
+      "material-icons-outlined", // optional, you are not bound to it
+      "material-icons-round" // optional, you are not bound to it
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
@@ -108,6 +109,7 @@ module.exports = function(ctx) {
     devServer: {
       https: false,
       port: 8088,
+      // host: "10.8.8.70",
       open: true, // opens browser window automatically
       disableHostCheck: true,
       headers: {

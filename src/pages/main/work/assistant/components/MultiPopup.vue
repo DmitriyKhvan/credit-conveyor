@@ -118,7 +118,7 @@ import NotifyService from "@/services/notify.service";
 
 export default {
   components: {
-    MultiDocument: MultiDocument
+    MultiDocument: MultiDocument,
   },
   data() {
     return {
@@ -129,31 +129,31 @@ export default {
       workers: [],
       activeWorker: "",
       signed: false, // podpisan
-      docIds: []
+      docIds: [],
     };
   },
   created() {
     console.log({ selectedDocs: this.selectedDocs });
-    this.selectedDocs.forEach(doc => {
+    this.selectedDocs.forEach((doc) => {
       this.docIds.push(doc.doc_id);
     });
   },
   computed: {
     ...mapState({
-      superiorsList: state => state.assistant.aSuperiors
+      superiorsList: (state) => state.assistant.aSuperiors,
     }),
     ...mapGetters({
       dicts: "dicts/getDictsList", // loads all dicts
-      selectedDocs: "selectedDocs"
+      selectedDocs: "assistant/selectedDocs",
     }),
     shablons() {
-      return this.dicts(6).values.map(el => {
+      return this.dicts(6).values.map((el) => {
         return {
           label: el.name[1], // TODO add lang val
-          value: el.id
+          value: el.id,
         };
       });
-    }
+    },
   },
   methods: {
     searchUsers() {
@@ -163,10 +163,10 @@ export default {
       if (this.searchUser !== "") {
         this.$axios
           .get("/emps/search?name=" + this.searchUser)
-          .then(response => {
+          .then((response) => {
             this.result = response.data;
           })
-          .catch(error => {
+          .catch((error) => {
             console.log("error");
           });
       }
@@ -180,7 +180,7 @@ export default {
       this.activeWorker = id;
     },
     removeUser(id) {
-      this.workers = this.workers.filter(user => user.EMP_ID !== id);
+      this.workers = this.workers.filter((user) => user.EMP_ID !== id);
       if (this.activeWorker === id) this.activeWorker = "";
     },
     changeVal() {
@@ -188,11 +188,11 @@ export default {
     },
     saveForm() {
       const arr = [];
-      this.workers.forEach(user => {
+      this.workers.forEach((user) => {
         arr.push({
           emp_id: user.EMP_ID,
           check: user.EMP_ID === this.activeWorker ? true : false,
-          dep_code: user.DEP_CODE
+          dep_code: user.DEP_CODE,
         });
       });
 
@@ -203,13 +203,13 @@ export default {
         h_dep_code: this.superior.dep_code,
         type: 1,
         message: this.shablon.value,
-        status: this.signed === true ? 3 : 2
+        status: this.signed === true ? 3 : 2,
       };
       console.log({ obg });
       this.$axios
         .post("/tasks/pomoshnik", obg)
         .then(
-          response => {
+          (response) => {
             this.$emit("ok", response.data); //
             if (response.data.status == 1) {
               NotifyService.showSuccessMessage(response.data.message);
@@ -219,12 +219,12 @@ export default {
               this.hide();
             }
           },
-          error => {
+          (error) => {
             //console.log({ error: error.response.data });
             NotifyService.showErrorMessage(error.response.data.message);
           }
         )
-        .catch(error => {
+        .catch((error) => {
           //console.log({ error: error.response.data });
           NotifyService.showErrorMessage(error.response.data.message);
           //this.hide();
@@ -248,10 +248,10 @@ export default {
     onCancelClick() {
       this.$q
         .dialog({
-          title: "Confirm",
+          title: "Подтверждать",
           message: this.$t("messages.confirm_exit"),
           cancel: true,
-          persistent: true
+          persistent: true,
         })
         .onOk(() => {
           this.hide();
@@ -259,8 +259,8 @@ export default {
         .onCancel(() => {
           // console.log('>>>> Cancel')
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

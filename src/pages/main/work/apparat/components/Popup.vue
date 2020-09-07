@@ -93,7 +93,7 @@
                       </div>
                       <div class="q-px-sm">От:</div>
                       <div>
-                        <strong>{{doc.signed_by}}</strong>
+                        <strong>{{doc.signed_by ? doc.signed_by : 'Неизвестный'}}</strong>
                       </div>
                     </div>
                   </div>
@@ -132,7 +132,7 @@
                   <div class="row">
                     <div class="col flexBlock">
                       <div class="self-center">
-                        <img src="@/assets/icons/Enter-1.svg" />
+                        <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
                         Исходящая дата:
@@ -142,7 +142,7 @@
                     </div>
                     <div class="col flexBlock">
                       <div class="self-center">
-                        <img src="@/assets/icons/Enter.svg" />
+                        <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
                         Входящая дата:
@@ -159,31 +159,23 @@
                   <div class="row">
                     <div class="col com_title">Комментарии:</div>
                   </div>
-                  <template v-if="doc.tasks && doc.tasks[0].comments">
-                    <div
-                      v-for="com in doc.tasks[0].comments"
-                      :key="com.id"
-                      class="row q-pb-md com_block"
-                    >
-                      <div class="col-1">
-                        <q-avatar size="32px">
-                          <img src="https://cdn.quasar.dev/img/avatar.png" />
-                        </q-avatar>
-                      </div>
-                      <div class="col q-px-sm">
-                        <div class="com_author">
-                          <strong>
-                            {{com.last_name}} {{com.first_name}} {{com.middle_name}}
-                            <span>03.06.2020</span>
-                          </strong>
+                  <template>
+                    <q-scroll-area :style="commentsList.length >  1 ? 'height: 200px' : 'height: 80px'">
+                      <div class="row q-pb-md com_block full-height" v-for="(comment, i) in commentsList" :key="i">
+                        <div class="col-1">
+                          <q-avatar size="32px">
+                            <img :src="getUserPhoto(comment.emp_id)" />
+                          </q-avatar>
                         </div>
-                        <div class="com_text">{{com.text}}</div>
-                        <!-- <div class="com_action flexBlock">
-                          <div>редактирвоать</div>
-                          <div>удалить</div>
-                        </div>-->
+                        <div class="col q-px-sm">
+                          <div class="com_author text-weight-bold row items-center">
+                            {{comment.last_name+' '+comment.first_name+' '+comment.middle_name}}
+                            <span>{{ formatDate(comment.created_at) }}</span>
+                          </div>
+                          <div class="com_text text-grey-9 text-weight-bold">{{comment.text}}</div>
+                        </div>
                       </div>
-                    </div>
+                    </q-scroll-area>
                   </template>
                 </div>
               </div>
@@ -222,7 +214,14 @@
               </div>
               <div class="row">
                 <div class="col q-py-sm">
-                  <q-input filled v-model="date" mask="date" :rules="['date']" dense>
+                  <q-input
+                    filled
+                    v-model="date"
+                    mask="date"
+                    :rules="['date']"
+                    dense
+                    placeholder="Выберите дату"
+                  >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
                         <q-popup-proxy
@@ -260,6 +259,8 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { formatFileSize, downloadFile, getMimeType } from "@/shared/utils/file";
+import UserService from "@/services/user.service";
+import { intDateFormat } from "@/shared/utils/date";
 
 export default {
   props: ["doc"],
@@ -268,12 +269,12 @@ export default {
       selectedStatus: "",
       date: "",
       // model: "",
-      startStatus: ""
+      startStatus: "",
     };
   },
   created() {
     this.selectedStatus = this.statuses.find(
-      el => el.value === this.doc.doc_status
+      (el) => el.value === this.doc.doc_status
     );
     this.startStatus = this.doc.doc_status;
     if (this.doc.deadline) {
@@ -282,16 +283,16 @@ export default {
   },
   computed: {
     ...mapState({
-      statusesList: state => state.apparat.aFilters.statuses
+      statuses: (state) => state.apparat.filters.statuses,
     }),
-    ...mapGetters(["getNameStatus"]),
+    ...mapGetters({ getNameStatus: "apparat/getNameStatus" }),
     getStatus() {
       return this.getNameStatus(this.doc.doc_status);
     },
-    // apparat given access only change status "sent" and "closed"
-    statuses() {
-      return this.statusesList.filter(el => el.value == 3 || el.value == 4);
-    }
+    commentsList() {
+      if (!!this.doc.comments) return this.doc.comments;
+      else return [];
+    },
   },
   methods: {
     download() {
@@ -310,17 +311,22 @@ export default {
       const arr = {
         doc_id: [this.doc.doc_id],
         deadline: this.date,
-        status: this.selectedStatus.value
+        status: this.selectedStatus.value,
       };
-      this.$store.dispatch("updateDocStatus", arr);
+      this.$store.dispatch("apparat/updateDocStatus", arr);
       this.hide();
     },
     formatDate(data) {
-      const d = new Date(data);
-      const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
-      const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
-      const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
-      return `${ye}/${mo}/${da}`;
+      return intDateFormat(data);
+
+      // const d = new Date(data);
+      // const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+      // const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
+      // const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
+      // return `${ye}/${mo}/${da}`;
+    },
+    getUserPhoto(empId) {
+      return UserService.getUserProfilePhotoUrl(empId);
     },
 
     // !!! Don't change
@@ -336,8 +342,8 @@ export default {
     // !!! Don't change
     onDialogHide() {
       this.$emit("hide");
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -371,8 +377,8 @@ export default {
   line-height: 22px;
 }
 .comments {
-  padding: 20px 0;
-  margin: 20px 0;
+  /* padding: 20px 0;
+  margin: 20px 0; */
   border-top: 1px solid #e3e4e8;
 }
 .com_title {
@@ -396,6 +402,7 @@ export default {
 }
 .com_text {
   line-height: 19px;
+  font-size: 14px;
 }
 .rightBlock {
   padding: 4px 0 4px 15px;
