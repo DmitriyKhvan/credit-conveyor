@@ -220,7 +220,7 @@
                       ).label
                     }}
                   </div>
-                  <div class="col-3">Фамилия</div>
+                  <div class="col-3">Фамилияяяя</div>
                   <div class="col-9">{{ relative.LastName }}</div>
                   <div class="col-3">Имя</div>
                   <div class="col-9">{{ relative.FirstName }}</div>

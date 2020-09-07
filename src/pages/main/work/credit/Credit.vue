@@ -5,7 +5,7 @@
 
   <!-- Server error message -->
   <errorMessage />
-  <appListGSZ />
+  <!-- <appListGSZ /> -->
 </div>
 </template>
 <script>

@@ -1961,7 +1961,7 @@
                     label="Льготный период по погашению кредита"
                     :rules="[
                       val =>
-                        (val <= GracePeriodMin && val >= GracePeriodMax) ||
+                        (val <= GracePeriodMax && val >= GracePeriodMin) ||
                         `Льготный период между ${GracePeriodMin} - ${GracePeriodMax} мес.`
                     ]"
                   />
@@ -2232,7 +2232,7 @@
                     label="Расчетный счет продавца/производителя товара/работы/услуги"
                     mask="####################"
                     :rules="[
-                      val => (val && val.length === 20) || 'Расчетный счет',
+                      val => (val && val.length === 20) || 'Количество символов должно быт ровно 20',
                       val => !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
                     ]"
                   />
@@ -3697,7 +3697,7 @@
       </q-dialog>
 
       <!-- credit result -->
-      <appFullProfile :currentDate="currentDate" v-if="profile.confirmCredit=true" />
+      <appFullProfile :currentDate="currentDate" v-if="profile.confirmCredit" />
     </div>
 
     <appLoaderFullScreen v-if="loader" />
@@ -3885,9 +3885,9 @@ export default {
     ].Countries.items;
   },
   mounted() {
-    // setTimeout(() => {
-    //   this.onSubmit("start");
-    // }, 1000);
+    setTimeout(() => {
+      this.onSubmit("start");
+    }, 1000);
   },
   computed: {
     ...mapState({
@@ -4071,7 +4071,7 @@ export default {
         this.$refs.innOfEmployer.validate();
         this.$refs.typeOrganization.validate();
         this.$refs.amountWorkes.validate();
-        this.$refs.position.validate();
+        // this.$refs.position.validate();
         this.$refs.positionCategory.validate();
         this.$refs.workExperience.validate();
         this.$refs.totalWorkExperience.validate();
@@ -4080,7 +4080,7 @@ export default {
         validItems(this.$refs, "innOfEmployer");
         validItems(this.$refs, "typeOrganization");
         validItems(this.$refs, "amountWorkes");
-        validItems(this.$refs, "position");
+        // validItems(this.$refs, "position");
         validItems(this.$refs, "positionCategory");
         validItems(this.$refs, "workExperience");
         validItems(this.$refs, "totalWorkExperience");
@@ -4383,7 +4383,7 @@ export default {
         this.$refs.innOfEmployer.hasError ||
         this.$refs.typeOrganization.hasError ||
         this.$refs.amountWorkes.hasError ||
-        this.$refs.position.hasError ||
+        // this.$refs.position.hasError ||
         this.$refs.positionCategory.hasError ||
         this.$refs.workExperience.hasError ||
         this.$refs.totalWorkExperience.hasError ||
@@ -4540,417 +4540,417 @@ export default {
       }
     },
 
-    async onSubmit() {
-      const data = {
-        output: [
-          {
-            name: "application",
-            data: {
-              Status: "",
-              BODecision: false,
-              BOLogin: "",
-              ClientManagerLogin: "man",
-              CreditCommiteeDecisions: {
-                items: []
-              },
-              Customer: {
-                DigID: false,
-                Email: "",
-                FirstName: "SDFSD",
-                LastName: "SDF",
-                MiddleName: "SDF SDFSD",
-                FullName: "SDF SDFSD SDF SDFSD",
-                BirthDate: "08.09.1990",
-                Country: 68,
-                BirthCity: "DSFSD",
-                INN: "123131313",
-                PINPP: "23424324242342",
-                ResidentFlag: "",
-                Gender: 1,
-                Document: {
-                  documentType: 2,
-                  Series: "SD",
-                  Number: "2342424",
-                  ExpirationDate: "31.08.2020",
-                  GivenDate: "01.08.2020",
-                  GUID: "",
-                  Country: "Uzbekistan",
-                  DocLink: "",
-                  DocumentName: "",
-                  Region: 5,
-                  Districts: {
-                    items: [
-                      {
-                        label: "НАВОИЙ ШАХРИ",
-                        value: 58
-                      },
-                      {
-                        label: "ЗАРАФШОН ШАХРИ",
-                        value: 59
-                      },
-                      {
-                        label: "Г.УЧКУДУК",
-                        value: 60
-                      },
-                      {
-                        label: "КАРМАНА ТУМАНИ",
-                        value: 61
-                      },
-                      {
-                        label: "КОНИМЕХ ТУМАНИ",
-                        value: 62
-                      },
-                      {
-                        label: "КИЗИЛТЕПА ТУМАНИ",
-                        value: 63
-                      },
-                      {
-                        label: "НАВБАХОР ТУМАНИ",
-                        value: 64
-                      },
-                      {
-                        label: "НУРОТА ТУМАНИ",
-                        value: 65
-                      },
-                      {
-                        label: "ХАТИРЧИ ТУМАНИ",
-                        value: 66
-                      },
-                      {
-                        label: "ТОМДИ ТУМАНИ",
-                        value: 67
-                      },
-                      {
-                        label: "УЧКУДУК ТУМАНИ",
-                        value: 211
-                      },
-                      {
-                        label: "ГОЗГОН ШАХРИ",
-                        value: 224
-                      }
-                    ]
-                  },
-                  GivenPlace: 62
-                },
-                Education: 3,
-                PhoneList: {
-                  items: [
-                    {
-                      Number: "+998134345353"
-                    }
-                  ]
-                },
-                AddressList: {
-                  items: [
-                    {
-                      Building: "",
-                      OwnershipType: null,
-                      HouseType: "",
-                      PostalCode: "",
-                      Region: 2,
-                      District: 20,
-                      Street: "SDF",
-                      Block: "",
-                      House: "12",
-                      City: "",
-                      Apartment: "",
-                      AddressType: "Адрес постоянной регистрации",
-                      Districts: {
-                        items: [
-                          {
-                            label: "ОЛОТ ТУМАНИ",
-                            value: 19
-                          },
-                          {
-                            label: "ВОБКЕНТ ТУМАНИ",
-                            value: 20
-                          },
-                          {
-                            label: "ГИЖДУВОН ТУМАНИ",
-                            value: 21
-                          },
-                          {
-                            label: "БУХОРО ТУМАНИ",
-                            value: 22
-                          },
-                          {
-                            label: "КОРАКУЛ ТУМАНИ",
-                            value: 23
-                          },
-                          {
-                            label: "РОМИТАН ТУМАНИ",
-                            value: 24
-                          },
-                          {
-                            label: "ЖОНДОР ТУМАНИ",
-                            value: 25
-                          },
-                          {
-                            label: "ШОФИРКОН ТУМАНИ",
-                            value: 26
-                          },
-                          {
-                            label: "ПЕШКУ ТУМАНИ",
-                            value: 27
-                          },
-                          {
-                            label: "КОРОВУЛБОЗОР ТУМАНИ",
-                            value: 28
-                          },
-                          {
-                            label: "КОГОН ТУМАНИ",
-                            value: 29
-                          },
-                          {
-                            label: "БУХОРО ШАХРИ",
-                            value: 30
-                          },
-                          {
-                            label: "КОГОН ШАХРИ",
-                            value: 220
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                },
-                MaritalStatus: 2,
-                hasChildren: true,
-                UnderAgeChildrenNum: 1,
-                Relatives: {
-                  items: [
-                    {
-                      FirstName: "GFHFH",
-                      FamilyConnectionType: 2,
-                      LastName: "SDF",
-                      MiddleName: "FGHFGH",
-                      BirthDate: "23.09.1989",
-                      Document: {
-                        documentType: 5,
-                        Series: "SD",
-                        Number: "2313131",
-                        ExpirationDate: "31.08.2020",
-                        GivenDate: "01.08.2020",
-                        GUID: "",
-                        Country: "",
-                        DocLink: "",
-                        DocumentName: "",
-                        Region: 7,
-                        Districts: {
-                          items: [
-                            {
-                              label: "ОКДАРЁ ТУМАНИ",
-                              value: 80
-                            },
-                            {
-                              label: "БУЛУНГУР ТУМАНИ",
-                              value: 81
-                            },
-                            {
-                              label: "ГУЗАЛКЕНТСКИЙ",
-                              value: 82
-                            },
-                            {
-                              label: "ЖОМБОЙ ТУМАНИ",
-                              value: 83
-                            },
-                            {
-                              label: "ИШТИХОН ТУМАНИ",
-                              value: 84
-                            },
-                            {
-                              label: "КАТТАКУРГОН ТУМАНИ",
-                              value: 85
-                            },
-                            {
-                              label: "КУШРАБОТ ТУМАНИ",
-                              value: 86
-                            },
-                            {
-                              label: "НАРПАЙ ТУМАНИ",
-                              value: 87
-                            },
-                            {
-                              label: "НУРОБОД ТУМАНИ",
-                              value: 88
-                            },
-                            {
-                              label: "ПАСТДАРГОМ ТУМАНИ",
-                              value: 89
-                            },
-                            {
-                              label: "ПАХТАЧИ ТУМАНИ",
-                              value: 90
-                            },
-                            {
-                              label: "ПАЙАРИК ТУМАНИ",
-                              value: 91
-                            },
-                            {
-                              label: "САМАРКАНД ТУМАНИ",
-                              value: 92
-                            },
-                            {
-                              label: "ТАЙЛОК ТУМАНИ",
-                              value: 93
-                            },
-                            {
-                              label: "УРГУТ ТУМАНИ",
-                              value: 94
-                            },
-                            {
-                              label: "ЧЕЛЕКСКИЙ",
-                              value: 95
-                            },
-                            {
-                              label: "САМАРКАНД ШАХРИ",
-                              value: 96
-                            },
-                            {
-                              label: "КАТТАКУРГОН ШАХРИ",
-                              value: 97
-                            },
-                            {
-                              label: "ТЕМИРЮЛЬСКИЙ",
-                              value: 215
-                            },
-                            {
-                              label: "Г.АКТАШ",
-                              value: 218
-                            },
-                            {
-                              label: "Г.УРГУТ",
-                              value: 219
-                            }
-                          ]
-                        },
-                        GivenPlace: 86
-                      }
-                    }
-                  ]
-                },
-                JobInfo: {
-                  employerActivityType: null,
-                  positionType: null,
-                  INN: "",
-                  employeesNum: 0,
-                  employerName: "",
-                  totalJobExperienceMonths: 0,
-                  activeYears: 0,
-                  position: "",
-                  type: 4,
-                  lastJobExperienceMonths: 0
-                },
-                MonthlyExpenses: {
-                  recurringExpenses: 2000000,
-                  obligations: 0
-                },
-                MonthlyIncome: {
-                  confirmMonthlyIncome: 10000000,
-                  hasAdditionalIncome: false,
-                  additionalIncome: {
-                    incomeType: null,
-                    sum: 0
-                  }
-                },
-                PropertyInformation: {
-                  Realty_new: {
-                    items: []
-                  },
-                  Transport_new: {
-                    items: []
-                  }
-                }
-              },
-              Guarantee: {
-                Insurance: {
-                  items: [
-                    {
-                      INN: "305684696",
-                      OrgName: '"OOO ""APEX INSURANCE"""',
-                      Sum: 50000000
-                    }
-                  ]
-                },
-                RelatedLegalPerson: {
-                  items: []
-                },
-                RelatedPerson: {
-                  items: []
-                }
-              },
-              LoanInfo: {
-                LoanProduct: 1,
-                Sum: 20000000,
-                Currency: "СУМ",
-                RepaymentType: 1,
-                LoanType: null,
-                MinInterestRate: 32,
-                MaxInterestRate: 32,
-                MaxDefferalRepaymentPeriod: 0,
-                ConvenientRepaymentTerm: 5,
-                TermInMonth: 12,
-                MaxTermInMonths: 12,
-                MinTermInMonths: 1,
-                InitialPayment: 0,
-                MaxInitialPaymentPercent: 0,
-                MinInitialPaymentPercent: 0,
-                LoanPurpose: 261,
-                FundingSource: 1,
-                FacilitiesForRepaymentDate: false,
-                consumerLoan: {
-                  nameBankProd: "",
-                  nameService: "",
-                  agreementDate: "",
-                  nameProduction: "",
-                  billProd: "",
-                  agreementNumber: "",
-                  idBankProd: 0
-                }
-              },
-              ApplicationComment: {
-                items: []
-              },
-              AttachedDocuments: {
-                items: [
-                  {
-                    id: 1557,
-                    DocLink: "",
-                    DocumentName: "SDF"
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      };
+    // async onSubmit() {
+    //   const data = {
+    //     output: [
+    //       {
+    //         name: "application",
+    //         data: {
+    //           Status: "",
+    //           BODecision: false,
+    //           BOLogin: "",
+    //           ClientManagerLogin: "man",
+    //           CreditCommiteeDecisions: {
+    //             items: []
+    //           },
+    //           Customer: {
+    //             DigID: false,
+    //             Email: "",
+    //             FirstName: "SDFSD",
+    //             LastName: "SDF",
+    //             MiddleName: "SDF SDFSD",
+    //             FullName: "SDF SDFSD SDF SDFSD",
+    //             BirthDate: "08.09.1990",
+    //             Country: 68,
+    //             BirthCity: "DSFSD",
+    //             INN: "123131313",
+    //             PINPP: "23424324242342",
+    //             ResidentFlag: "",
+    //             Gender: 1,
+    //             Document: {
+    //               documentType: 2,
+    //               Series: "SD",
+    //               Number: "2342424",
+    //               ExpirationDate: "31.08.2020",
+    //               GivenDate: "01.08.2020",
+    //               GUID: "",
+    //               Country: "Uzbekistan",
+    //               DocLink: "",
+    //               DocumentName: "",
+    //               Region: 5,
+    //               Districts: {
+    //                 items: [
+    //                   {
+    //                     label: "НАВОИЙ ШАХРИ",
+    //                     value: 58
+    //                   },
+    //                   {
+    //                     label: "ЗАРАФШОН ШАХРИ",
+    //                     value: 59
+    //                   },
+    //                   {
+    //                     label: "Г.УЧКУДУК",
+    //                     value: 60
+    //                   },
+    //                   {
+    //                     label: "КАРМАНА ТУМАНИ",
+    //                     value: 61
+    //                   },
+    //                   {
+    //                     label: "КОНИМЕХ ТУМАНИ",
+    //                     value: 62
+    //                   },
+    //                   {
+    //                     label: "КИЗИЛТЕПА ТУМАНИ",
+    //                     value: 63
+    //                   },
+    //                   {
+    //                     label: "НАВБАХОР ТУМАНИ",
+    //                     value: 64
+    //                   },
+    //                   {
+    //                     label: "НУРОТА ТУМАНИ",
+    //                     value: 65
+    //                   },
+    //                   {
+    //                     label: "ХАТИРЧИ ТУМАНИ",
+    //                     value: 66
+    //                   },
+    //                   {
+    //                     label: "ТОМДИ ТУМАНИ",
+    //                     value: 67
+    //                   },
+    //                   {
+    //                     label: "УЧКУДУК ТУМАНИ",
+    //                     value: 211
+    //                   },
+    //                   {
+    //                     label: "ГОЗГОН ШАХРИ",
+    //                     value: 224
+    //                   }
+    //                 ]
+    //               },
+    //               GivenPlace: 62
+    //             },
+    //             Education: 3,
+    //             PhoneList: {
+    //               items: [
+    //                 {
+    //                   Number: "+998134345353"
+    //                 }
+    //               ]
+    //             },
+    //             AddressList: {
+    //               items: [
+    //                 {
+    //                   Building: "",
+    //                   OwnershipType: null,
+    //                   HouseType: "",
+    //                   PostalCode: "",
+    //                   Region: 2,
+    //                   District: 20,
+    //                   Street: "SDF",
+    //                   Block: "",
+    //                   House: "12",
+    //                   City: "",
+    //                   Apartment: "",
+    //                   AddressType: "Адрес постоянной регистрации",
+    //                   Districts: {
+    //                     items: [
+    //                       {
+    //                         label: "ОЛОТ ТУМАНИ",
+    //                         value: 19
+    //                       },
+    //                       {
+    //                         label: "ВОБКЕНТ ТУМАНИ",
+    //                         value: 20
+    //                       },
+    //                       {
+    //                         label: "ГИЖДУВОН ТУМАНИ",
+    //                         value: 21
+    //                       },
+    //                       {
+    //                         label: "БУХОРО ТУМАНИ",
+    //                         value: 22
+    //                       },
+    //                       {
+    //                         label: "КОРАКУЛ ТУМАНИ",
+    //                         value: 23
+    //                       },
+    //                       {
+    //                         label: "РОМИТАН ТУМАНИ",
+    //                         value: 24
+    //                       },
+    //                       {
+    //                         label: "ЖОНДОР ТУМАНИ",
+    //                         value: 25
+    //                       },
+    //                       {
+    //                         label: "ШОФИРКОН ТУМАНИ",
+    //                         value: 26
+    //                       },
+    //                       {
+    //                         label: "ПЕШКУ ТУМАНИ",
+    //                         value: 27
+    //                       },
+    //                       {
+    //                         label: "КОРОВУЛБОЗОР ТУМАНИ",
+    //                         value: 28
+    //                       },
+    //                       {
+    //                         label: "КОГОН ТУМАНИ",
+    //                         value: 29
+    //                       },
+    //                       {
+    //                         label: "БУХОРО ШАХРИ",
+    //                         value: 30
+    //                       },
+    //                       {
+    //                         label: "КОГОН ШАХРИ",
+    //                         value: 220
+    //                       }
+    //                     ]
+    //                   }
+    //                 }
+    //               ]
+    //             },
+    //             MaritalStatus: 2,
+    //             hasChildren: true,
+    //             UnderAgeChildrenNum: 1,
+    //             Relatives: {
+    //               items: [
+    //                 {
+    //                   FirstName: "GFHFH",
+    //                   FamilyConnectionType: 2,
+    //                   LastName: "SDF",
+    //                   MiddleName: "FGHFGH",
+    //                   BirthDate: "23.09.1989",
+    //                   Document: {
+    //                     documentType: 5,
+    //                     Series: "SD",
+    //                     Number: "2313131",
+    //                     ExpirationDate: "31.08.2020",
+    //                     GivenDate: "01.08.2020",
+    //                     GUID: "",
+    //                     Country: "",
+    //                     DocLink: "",
+    //                     DocumentName: "",
+    //                     Region: 7,
+    //                     Districts: {
+    //                       items: [
+    //                         {
+    //                           label: "ОКДАРЁ ТУМАНИ",
+    //                           value: 80
+    //                         },
+    //                         {
+    //                           label: "БУЛУНГУР ТУМАНИ",
+    //                           value: 81
+    //                         },
+    //                         {
+    //                           label: "ГУЗАЛКЕНТСКИЙ",
+    //                           value: 82
+    //                         },
+    //                         {
+    //                           label: "ЖОМБОЙ ТУМАНИ",
+    //                           value: 83
+    //                         },
+    //                         {
+    //                           label: "ИШТИХОН ТУМАНИ",
+    //                           value: 84
+    //                         },
+    //                         {
+    //                           label: "КАТТАКУРГОН ТУМАНИ",
+    //                           value: 85
+    //                         },
+    //                         {
+    //                           label: "КУШРАБОТ ТУМАНИ",
+    //                           value: 86
+    //                         },
+    //                         {
+    //                           label: "НАРПАЙ ТУМАНИ",
+    //                           value: 87
+    //                         },
+    //                         {
+    //                           label: "НУРОБОД ТУМАНИ",
+    //                           value: 88
+    //                         },
+    //                         {
+    //                           label: "ПАСТДАРГОМ ТУМАНИ",
+    //                           value: 89
+    //                         },
+    //                         {
+    //                           label: "ПАХТАЧИ ТУМАНИ",
+    //                           value: 90
+    //                         },
+    //                         {
+    //                           label: "ПАЙАРИК ТУМАНИ",
+    //                           value: 91
+    //                         },
+    //                         {
+    //                           label: "САМАРКАНД ТУМАНИ",
+    //                           value: 92
+    //                         },
+    //                         {
+    //                           label: "ТАЙЛОК ТУМАНИ",
+    //                           value: 93
+    //                         },
+    //                         {
+    //                           label: "УРГУТ ТУМАНИ",
+    //                           value: 94
+    //                         },
+    //                         {
+    //                           label: "ЧЕЛЕКСКИЙ",
+    //                           value: 95
+    //                         },
+    //                         {
+    //                           label: "САМАРКАНД ШАХРИ",
+    //                           value: 96
+    //                         },
+    //                         {
+    //                           label: "КАТТАКУРГОН ШАХРИ",
+    //                           value: 97
+    //                         },
+    //                         {
+    //                           label: "ТЕМИРЮЛЬСКИЙ",
+    //                           value: 215
+    //                         },
+    //                         {
+    //                           label: "Г.АКТАШ",
+    //                           value: 218
+    //                         },
+    //                         {
+    //                           label: "Г.УРГУТ",
+    //                           value: 219
+    //                         }
+    //                       ]
+    //                     },
+    //                     GivenPlace: 86
+    //                   }
+    //                 }
+    //               ]
+    //             },
+    //             JobInfo: {
+    //               employerActivityType: null,
+    //               positionType: null,
+    //               INN: "",
+    //               employeesNum: 0,
+    //               employerName: "",
+    //               totalJobExperienceMonths: 0,
+    //               activeYears: 0,
+    //               position: "",
+    //               type: 4,
+    //               lastJobExperienceMonths: 0
+    //             },
+    //             MonthlyExpenses: {
+    //               recurringExpenses: 2000000,
+    //               obligations: 0
+    //             },
+    //             MonthlyIncome: {
+    //               confirmMonthlyIncome: 10000000,
+    //               hasAdditionalIncome: false,
+    //               additionalIncome: {
+    //                 incomeType: null,
+    //                 sum: 0
+    //               }
+    //             },
+    //             PropertyInformation: {
+    //               Realty_new: {
+    //                 items: []
+    //               },
+    //               Transport_new: {
+    //                 items: []
+    //               }
+    //             }
+    //           },
+    //           Guarantee: {
+    //             Insurance: {
+    //               items: [
+    //                 {
+    //                   INN: "305684696",
+    //                   OrgName: '"OOO ""APEX INSURANCE"""',
+    //                   Sum: 50000000
+    //                 }
+    //               ]
+    //             },
+    //             RelatedLegalPerson: {
+    //               items: []
+    //             },
+    //             RelatedPerson: {
+    //               items: []
+    //             }
+    //           },
+    //           LoanInfo: {
+    //             LoanProduct: 1,
+    //             Sum: 20000000,
+    //             Currency: "СУМ",
+    //             RepaymentType: 1,
+    //             LoanType: null,
+    //             MinInterestRate: 32,
+    //             MaxInterestRate: 32,
+    //             MaxDefferalRepaymentPeriod: 0,
+    //             ConvenientRepaymentTerm: 5,
+    //             TermInMonth: 12,
+    //             MaxTermInMonths: 12,
+    //             MinTermInMonths: 1,
+    //             InitialPayment: 0,
+    //             MaxInitialPaymentPercent: 0,
+    //             MinInitialPaymentPercent: 0,
+    //             LoanPurpose: 261,
+    //             FundingSource: 1,
+    //             FacilitiesForRepaymentDate: false,
+    //             consumerLoan: {
+    //               nameBankProd: "",
+    //               nameService: "",
+    //               agreementDate: "",
+    //               nameProduction: "",
+    //               billProd: "",
+    //               agreementNumber: "",
+    //               idBankProd: 0
+    //             }
+    //           },
+    //           ApplicationComment: {
+    //             items: []
+    //           },
+    //           AttachedDocuments: {
+    //             items: [
+    //               {
+    //                 id: 1557,
+    //                 DocLink: "",
+    //                 DocumentName: "SDF"
+    //               }
+    //             ]
+    //           }
+    //         }
+    //       }
+    //     ]
+    //   };
 
-      console.log(JSON.stringify(data, null, 2));
+    //   console.log(JSON.stringify(data, null, 2));
 
-      try {
-        const response = await this.$store.dispatch(
-          "credits/confirmationCredit",
-          data
-        );
-        console.log("response", JSON.stringify(response, null, 2));
-        //console.log('nextTaskId', response.nextTask.id)
+    //   try {
+    //     const response = await this.$store.dispatch(
+    //       "credits/confirmationCredit",
+    //       data
+    //     );
+    //     console.log("response", JSON.stringify(response, null, 2));
+    //     //console.log('nextTaskId', response.nextTask.id)
 
-        if (response) {
-          this.$store.commit("credits/setMessage", "Credit complete");
-          this.$store.commit("credits/removeTask", this.taskId);
-          this.$router.push("/work/credit");
-          //this.$router.go(-1);
-        }
+    //     if (response) {
+    //       this.$store.commit("credits/setMessage", "Credit complete");
+    //       this.$store.commit("credits/removeTask", this.taskId);
+    //       this.$router.push("/work/credit");
+    //       //this.$router.go(-1);
+    //     }
 
-        this.loader = false;
-      } catch (error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
-        this.loader = false;
-      }
-    },
+    //     this.loader = false;
+    //   } catch (error) {
+    //     this.$store.commit(
+    //       "credits/setMessage",
+    //       CommonUtils.filterServerError(error)
+    //     );
+    //     this.loader = false;
+    //   }
+    // },
 
     async getDataINPS() {
       this.bankLoading = true;
@@ -5501,7 +5501,7 @@ export default {
     },
 
     fioValid(val) {
-      return val.match(/^[A-Z]+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
+      return val.match(/^[A-Z']+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
     },
 
     mValid(val) {
