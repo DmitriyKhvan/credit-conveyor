@@ -4,9 +4,9 @@ export default class BpmService {
   // _baseUrlLocal = "http://10.8.7.71:8070/bpm"
   _personalUrl = "http://10.8.8.70:4000";
   _digIdUrl = "http://localhost:50000/api/Identification";
-  _baseUrl = "http://10.8.8.86:8070"; //dev
+  // _baseUrl = "http://10.8.8.90:8070"; //dev
   // _baseUrl = "http://10.1.4.10:8070" //local
-  // _baseUrl = "http://10.8.8.86:8070"; //prod
+  _baseUrl = "http://10.8.8.86:8070"; //prod
 
   getBPMToken = async () => {
     const responce = await axios({
@@ -125,7 +125,7 @@ export default class BpmService {
   //   return axios.headers.common["NBU-BPM-Role"]
   // }
 
-  getInfoBank = async data => {
+  getDataINPS = async (data) => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/startInps`,
@@ -160,8 +160,9 @@ export default class BpmService {
   creatFile = async data => {
     const responce = await axios({
       method: "post",
-      url: `${this._baseUrl}/file/edocument`,
-      data
+      // url: `${this._baseUrl}/document/edocument`, // на dev
+      url: `${this._baseUrl}/file/edocument`,   // на prod
+      data,
     });
 
     return responce.data;
@@ -176,4 +177,14 @@ export default class BpmService {
 
     return responce.data;
   };
+
+  getProtocol = async () => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/document/edocument/protocol_form`
+    });
+
+    return responce.data;
+  };
+
 }

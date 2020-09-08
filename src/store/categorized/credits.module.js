@@ -356,6 +356,23 @@ export const credits = {
         commit("setMessage", errorMessage);
         throw error
       }
+    },
+
+    async getProtocol({state, commit, dispatch}) {
+      try {
+        const file = await state.bpmService.getProtocol()
+        const response = await state.bpmService.getFile(file.infos[0].id)
+        const blob = new Blob([response], { type: "application/pdf" })
+        return {
+          url: window.URL.createObjectURL(blob),
+          id: file ? file.infos[0].id : fileData
+          // fileName: file.infos[0].filename
+        }
+      } catch(error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+        throw error
+      }
     }
   },
   mutations: {

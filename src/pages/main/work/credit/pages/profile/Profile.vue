@@ -69,7 +69,8 @@
                   v-model="Customer.BirthDate"
                   mask="##.##.####"
                   :rules="[
-                    val => (val && val.length === 10) || 'Введите дату рождения',
+                    val =>
+                      (val && val.length === 10) || 'Введите дату рождения',
                     val => adulthoodValid(val) || 'Несовершеннолетний'
                   ]"
                 >
@@ -120,7 +121,7 @@
                   dense
                   @filter="filterFn"
                   behavior="menu"
-                  :rules="[val => (!!val || val === 0) || 'Выберите страну']"
+                  :rules="[val => !!val || val === 0 || 'Выберите страну']"
                   emit-value
                   map-options
                   class="q-pb-sm"
@@ -147,7 +148,6 @@
                   :rules="[val => !!val || 'Введите место рождения']"
                 />
               </div>
-
             </div>
 
             <div class="row q-col-gutter-md">
@@ -179,9 +179,7 @@
                   label="ПИНФЛ"
                   mask="##############"
                   lazy-rules
-                  :rules="[
-                    val => (val && val.length === 14) || 'Введите ПНФЛ'
-                  ]"
+                  :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
                 />
               </div>
               <div class="col-4">
@@ -216,16 +214,11 @@
                   emit-value
                   map-options
                   class="q-pb-sm"
-                  :rules="[
-                    val => !!val || 'Выберите вид документа'
-                  ]"
+                  :rules="[val => !!val || 'Выберите вид документа']"
                 />
               </div>
 
-              <div 
-                v-if="Customer.Document.documentType == 7"
-                class="col-4"
-              >
+              <div v-if="Customer.Document.documentType == 7" class="col-4">
                 <q-input
                   :disable="disableField"
                   ref="DocumentName"
@@ -234,9 +227,7 @@
                   v-model="Customer.Document.DocumentName"
                   dense
                   label="Наименование документа"
-                  :rules="[
-                    val => !!val || 'Введите наименование документа'
-                  ]"
+                  :rules="[val => !!val || 'Введите наименование документа']"
                 />
               </div>
 
@@ -251,12 +242,11 @@
                   label="Серия документа"
                   mask="AA"
                   :rules="[
-                    val => (val && val.length === 2) || 'Введите серию документа'
+                    val =>
+                      (val && val.length === 2) || 'Введите серию документа'
                   ]"
                 />
               </div>
-
-              
             </div>
 
             <div class="row q-col-gutter-md">
@@ -272,7 +262,8 @@
                   mask="#######"
                   lazy-rules
                   :rules="[
-                    val => (val && val.length === 7) || 'Введите номер документа'
+                    val =>
+                      (val && val.length === 7) || 'Введите номер документа'
                   ]"
                 />
               </div>
@@ -309,13 +300,15 @@
                       (val && val.length === 10) ||
                       'Введите дату выдачи документа',
 
-                      Customer.Document.ExpirationDate
-                      ? (val => msecond(val) < msecond(Customer.Document.ExpirationDate) ||
-                      'Неверная дата')
+                    Customer.Document.ExpirationDate
+                      ? val =>
+                          msecond(val) <
+                            msecond(Customer.Document.ExpirationDate) ||
+                          'Неверная дата'
                       : null,
 
-                      val => msecond(val) < msecond(currentDate) || 
-                      'Неверная дата'
+                    val =>
+                      msecond(val) < msecond(currentDate) || 'Неверная дата'
                   ]"
                 >
                   <template v-slot:append>
@@ -328,10 +321,11 @@
                         <q-date
                           mask="DD.MM.YYYY"
                           v-model="Customer.Document.GivenDate"
-                          @input="($event) => {
-                            $refs.qDatePasportDateStart.hide()
-                            validDatePerson($event)
-                          }  
+                          @input="
+                            $event => {
+                              $refs.qDatePasportDateStart.hide();
+                              validDatePerson($event);
+                            }
                           "
                         />
                       </q-popup-proxy>
@@ -354,12 +348,13 @@
                     val =>
                       (val && val.length === 10) ||
                       'Введите дату окончания действия документа',
-                      Customer.Document.GivenDate 
-                      ? (val => msecond(val) > msecond(Customer.Document.GivenDate) ||
-                      'Неверная дата')
+                    Customer.Document.GivenDate
+                      ? val =>
+                          msecond(val) > msecond(Customer.Document.GivenDate) ||
+                          'Неверная дата'
                       : null,
-                      val => msecond(val) > msecond(currentDate) || 
-                      'Неверная дата'
+                    val =>
+                      msecond(val) > msecond(currentDate) || 'Неверная дата'
                   ]"
                 >
                   <template v-slot:append>
@@ -372,10 +367,11 @@
                         <q-date
                           mask="DD.MM.YYYY"
                           v-model="Customer.Document.ExpirationDate"
-                          @input="($event) => {
-                            $refs.qDatePasportDateFinish.hide()
-                            validDatePerson($event)
-                          }
+                          @input="
+                            $event => {
+                              $refs.qDatePasportDateFinish.hide();
+                              validDatePerson($event);
+                            }
                           "
                         />
                       </q-popup-proxy>
@@ -418,7 +414,6 @@
                   ]"
                 /> -->
 
-                
                 <q-select
                   :disable="disableField"
                   ref="DocumentGivenPlace"
@@ -427,14 +422,13 @@
                   v-model="Customer.Document.GivenPlace"
                   :options="Customer.Document.Districts.items"
                   dense
-                  label="Кем выдан документ"
-                  :rules="[val => !!val || 'Введите кем выдан документ']"
+                  label="Кем выдан документ (ИИБ)"
+                  :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
                   emit-value
                   map-options
                   class="q-pb-sm"
                 />
               </div>
-
             </div>
 
             <div class="row q-col-gutter-md">
@@ -914,7 +908,7 @@
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => fioValid(val)
+                      val => mValid(val)
                     ]"
                   />
                 </div>
@@ -934,7 +928,7 @@
                     :rules="[
                       val =>
                         (val && val.length === 10) || 'Введите дату рождения',
-                        val => adulthoodValid(val) || 'Несовершеннолетний'
+                      val => adulthoodValid(val) || 'Несовершеннолетний'
                     ]"
                   >
                     <template v-slot:append>
@@ -970,16 +964,11 @@
                     emit-value
                     map-options
                     class="q-pb-sm"
-                    :rules="[
-                      val => !!val || 'Выберите вид документа'
-                    ]"
+                    :rules="[val => !!val || 'Выберите вид документа']"
                   />
                 </div>
 
-                <div 
-                  v-if="relative.Document.documentType == 7"
-                  class="col-4"
-                >
+                <div v-if="relative.Document.documentType == 7" class="col-4">
                   <q-input
                     :disable="disableField"
                     ref="relativesDocumentDocumentName"
@@ -988,12 +977,9 @@
                     v-model="relative.Document.DocumentName"
                     dense
                     label="Наименование документа"
-                    :rules="[
-                      val => !!val || 'Введите наименование документа'
-                    ]"
+                    :rules="[val => !!val || 'Введите наименование документа']"
                   />
                 </div>
-                
               </div>
 
               <div class="row q-col-gutter-md">
@@ -1048,13 +1034,15 @@
                         (val && val.length === 10) ||
                         'Введите дату выдачи документа',
 
-                        relative.Document.ExpirationDate
-                        ? (val => msecond(val) < msecond(relative.Document.ExpirationDate) ||
-                        'Неверная дата')
+                      relative.Document.ExpirationDate
+                        ? val =>
+                            msecond(val) <
+                              msecond(relative.Document.ExpirationDate) ||
+                            'Неверная дата'
                         : null,
 
-                         val => msecond(val) < msecond(currentDate) || 
-                        'Неверная дата'
+                      val =>
+                        msecond(val) < msecond(currentDate) || 'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -1068,11 +1056,11 @@
                             mask="DD.MM.YYYY"
                             v-model="relative.Document.GivenDate"
                             @input="
-                              ($event) => {
+                              $event => {
                                 $refs.qDateRelativeDocumentGivenDate[
                                   index
-                                ].hide()
-                                validDateRelatives($event, index)
+                                ].hide();
+                                validDateRelatives($event, index);
                               }
                             "
                           />
@@ -1096,12 +1084,14 @@
                       val =>
                         (val && val.length === 10) ||
                         'Введите дату окончания документа',
-                        relative.Document.GivenDate
-                        ? (val => msecond(val) > msecond(relative.Document.GivenDate) ||
-                        'Неверная дата')
+                      relative.Document.GivenDate
+                        ? val =>
+                            msecond(val) >
+                              msecond(relative.Document.GivenDate) ||
+                            'Неверная дата'
                         : null,
-                        val => msecond(val) > msecond(currentDate) ||
-                        'Неверная дата'
+                      val =>
+                        msecond(val) > msecond(currentDate) || 'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -1115,11 +1105,11 @@
                             mask="DD.MM.YYYY"
                             v-model="relative.Document.ExpirationDate"
                             @input="
-                              ($event) => {
+                              $event => {
                                 $refs.qDateRelativeDocumentExpirationDate[
                                   index
-                                ].hide()
-                                validDateRelatives($event, index)
+                                ].hide();
+                                validDateRelatives($event, index);
                               }
                             "
                           />
@@ -1148,7 +1138,7 @@
                     class="q-pb-sm"
                   />
                 </div>
-               <div class="col-4">
+                <div class="col-4">
                   <!-- <q-input
                     :disable="disableField"
                     ref="relativesDocumentGivenPlace"
@@ -1171,8 +1161,8 @@
                     v-model="relative.Document.GivenPlace"
                     :options="relative.Document.Districts.items"
                     dense
-                    label="Кем выдан документ"
-                    :rules="[val => !!val || 'Введите кем выдан документ']"
+                    label="Кем выдан документ (ИИБ)"
+                    :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
                     emit-value
                     map-options
                     class="q-pb-sm"
@@ -1233,7 +1223,6 @@
             </div>
 
             <template v-if="dictionaries.MainWorkType.items.length">
-
               <template
                 v-if="
                   Customer.JobInfo.type ===
@@ -1268,7 +1257,8 @@
                       mask="#########"
                       :rules="[
                         val =>
-                          (val && val.length == 9) || 'Введите ИНН работодателя',
+                          (val && val.length == 9) ||
+                          'Введите ИНН работодателя',
                         val => innValid(val)
                       ]"
                     />
@@ -1313,7 +1303,7 @@
                       class="q-pb-sm"
                     />
                   </div>
-                  <div class="col-4">
+                  <!-- <div class="col-4">
                     <q-input
                       :disable="disableField"
                       ref="position"
@@ -1321,11 +1311,11 @@
                       outlined
                       v-model="Customer.JobInfo.position"
                       dense
-                      label="Должность"
+                      label="Деятельность"
                       lazy-rules
-                      :rules="[val => !!val || 'Введите должность']"
+                      :rules="[val => !!val || 'Введите деятельность']"
                     />
-                  </div>
+                  </div> -->
                   <div class="col-4">
                     <q-select
                       :disable="disableField"
@@ -1339,7 +1329,8 @@
                       emit-value
                       map-options
                       :rules="[
-                        val => !!val || 'Выберите категорию занимаемой должности'
+                        val =>
+                          !!val || 'Выберите категорию занимаемой должности'
                       ]"
                       class="q-pb-sm"
                     />
@@ -1363,7 +1354,9 @@
                       :reactive-rules="false"
                       :rules="[
                         val => !!val || 'Выберите стаж работы',
-                        val => (Customer.JobInfo.totalJobExperienceMonths >= Customer.JobInfo.lastJobExperienceMonths) ||
+                        val =>
+                          Customer.JobInfo.totalJobExperienceMonths >=
+                            Customer.JobInfo.lastJobExperienceMonths ||
                           'Некорректные данные'
                       ]"
                       class="q-pb-sm"
@@ -1385,7 +1378,9 @@
                       :reactive-rules="false"
                       :rules="[
                         val => !!val || 'Выберите общий трудовой стаж',
-                        val => (Customer.JobInfo.totalJobExperienceMonths >= Customer.JobInfo.lastJobExperienceMonths) ||
+                        val =>
+                          Customer.JobInfo.totalJobExperienceMonths >=
+                            Customer.JobInfo.lastJobExperienceMonths ||
                           'Некорректные данные'
                       ]"
                       class="q-pb-sm"
@@ -1588,19 +1583,28 @@
                   label="Класс кредитоспособности"
                 />
               </div> -->
-            </div>  
+            </div>
 
-            <q-btn
+            <!-- <q-btn
               :loading="bankLoading"
               :disable="disableField"
               color="primary"
               label="Получить данные с Халк банка"
               @click="getInfoBank"
               class="addItem"
+            > -->
+
+            <q-btn
+              v-if="profile.preapprove_num"
+              :loading="bankLoading"
+              color="primary"
+              label="Получить данные с Халк банка"
+              @click="getDataINPS"
+              class="addItem"
             >
-            <template v-slot:loading>
-              <q-spinner-facebook />
-            </template>
+              <template v-slot:loading>
+                <q-spinner-facebook />
+              </template>
             </q-btn>
           </div>
         </div>
@@ -1768,7 +1772,6 @@
                     class="q-pb-sm"
                   />
                 </div>
-
               </div>
               <div class="row q-col-gutter-md">
                 <div class="col-4">
@@ -1783,7 +1786,7 @@
                     label="Рыночная стоимость"
                     :rules="[
                       val => !!val || 'Введите рыночную стоимость',
-                      val => val > 0 || 'Некорректные данные'  
+                      val => val > 0 || 'Некорректные данные'
                     ]"
                   />
                 </div>
@@ -1812,1086 +1815,6 @@
               @click="addVehicle"
               class="addItem"
             ></q-btn>
-          </div>
-        </div>
-
-        <!-- Guarantees -->
-        <div class="guarantees">
-          <h4
-            class="tab-title"
-            ref="guarantees"
-            @click="toggleForm('guarantees')"
-          >
-            Гарантии и поручительство
-          </h4>
-          <div class="tab-content" ref="tabContent">
-            <q-field
-              ref="guaranteesValid"
-              :value="!!guaranteeCount.length"
-              :rules="[
-                val => !!val || 'Добавьте гарантию или поручительство',
-                val => (totalGuaranteesSum - fullProfile.LoanInfo.Sum >= fullProfile.LoanInfo.Sum * 0.25) ||
-                      'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%'
-              ]"
-            >
-            <h5
-              v-if="!fullProfile.Guarantee.RelatedPerson.items.length"
-              class="tab-content_title"
-            >
-              Данные по физ. лицу отсутствуют
-            </h5>
-
-            <fieldset
-              class="fieldset_block"
-              v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson.items"
-              :key="'RelatedPerson' + index"
-            >
-              <legend class="legend_title">Физ. лицо {{ index + 1 }}</legend>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    :disable="disableField"
-                    ref="customersAttitude"
-                    square
-                    outlined
-                    v-model="guarantee.ClientRelation"
-                    :options="dictionaries.ClientRelationType.items"
-                    dense
-                    label="Отношение к клиенту"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите отношение к клиенту']"
-                    class="q-pb-sm"
-                  />
-                </div>
-
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="priceGuarantees"
-                    square
-                    outlined
-                    v-model.number="guarantee.Sum"
-                    type="number"
-                    dense
-                    label="Сумма поручительства"
-                    @input="guaranteesValid"
-                    :rules="[
-                      val => !!val || 'Введите сумму',
-                      val => val > 0 || 'Некорректные данные'
-                    ]"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="surnameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.LastName"
-                    dense
-                    label="Фамилия"
-                    :rules="[
-                      val => !!val || 'Введите фамилию',
-                      val => fioValid(val)
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="nameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.FirstName"
-                    dense
-                    label="Имя"
-                    :rules="[
-                      val => !!val || 'Введите имя',
-                      val => fioValid(val)
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="mnameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.MiddleName"
-                    dense
-                    label="Отчество"
-                    :rules="[
-                      val => !!val || 'Введите отчество',
-                      val => fioValid(val)
-                    ]"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="birthdayGuarantees"
-                    outlined
-                    square
-                    dense
-                    label="Дата рождения"
-                    v-model="guarantee.BirthDate"
-                    mask="##.##.####"
-                    :rules="[
-                      val =>
-                        (val && val.length === 10) || 'Введите дату рождения',
-                        val => adulthoodValid(val) || 'Несовершеннолетний'
-                    ]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          transition-show="scale"
-                          transition-hide="scale"
-                          ref="qDateBirthdayGuarantees"
-                        >
-                          <q-date
-                            mask="DD.MM.YYYY"
-                            v-model="guarantee.BirthDate"
-                            @input="() =>
-                              $refs.qDateBirthdayGuarantees[index].hide()
-                            "
-                          />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="innGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.INN"
-                    dense
-                    label="ИНН"
-                    mask="#########"
-                    :rules="[
-                      val =>
-                        (val && val.length === 9) ||
-                        'Количество цифр должно быть 9',
-                      val => innValid(val)
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="pinppGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.PINPP"
-                    dense
-                    label="ПИНФЛ"
-                    mask="##############"
-                    :rules="[
-                      val => (val && val.length === 14) || 'Введите ПНФЛ',
-                      val => pinppValid(val)
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-select
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Resident"
-                    :options="credits.options.confirmation"
-                    dense
-                    label="Резидентство"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    :disable="disableField"
-                    ref="guaranteesDocumentDocumentType"
-                    square
-                    outlined
-                    v-model="guarantee.Document.documentType"
-                    :options="dictionaries.DocumentType.items"
-                    dense
-                    label="Вид документа"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                    :rules="[
-                      val => !!val || 'Выберите вид документа'
-                    ]"
-                  />
-                </div>
-
-                <div 
-                  v-if="guarantee.Document.documentType == 7"
-                  class="col-4"
-                >
-                  <q-input
-                    :disable="disableField"
-                    ref="guaranteesDocumentDocumentName"
-                    square
-                    outlined
-                    v-model="guarantee.Document.DocumentName"
-                    dense
-                    label="Наименование документа"
-                    :rules="[
-                      val => !!val || 'Введите наименование документа'
-                    ]"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="guaranteesDocumentSeries"
-                    square
-                    outlined
-                    v-model="guarantee.Document.Series"
-                    dense
-                    label="Серия документа"
-                    mask="AA"
-                    :rules="[
-                      val =>
-                        (val && val.length === 2) || 'Введите Серию документа'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="guaranteesDocumentNumber"
-                    square
-                    outlined
-                    v-model="guarantee.Document.Number"
-                    dense
-                    label="Номер документа"
-                    mask="#######"
-                    :rules="[
-                      val =>
-                        (val && val.length === 7) || 'Введите Номер документа',
-                      val => docNumberValid(val)
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="guaranteesDocumentGivenDate"
-                    outlined
-                    square
-                    dense
-                    label="Дата выдачи документа"
-                    v-model="guarantee.Document.GivenDate"
-                    mask="##.##.####"
-                    :rules="[
-                      val =>
-                        (val && val.length === 10) ||
-                        'Введите дату выдачи документа',
-
-                        guarantee.Document.ExpirationDate
-                        ? (val => msecond(val) < msecond(guarantee.Document.ExpirationDate) ||
-                        'Неверная дата')
-                        : null,
-
-                         val => msecond(val) < msecond(currentDate) || 
-                        'Неверная дата'
-                    ]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          transition-show="scale"
-                          transition-hide="scale"
-                          ref="qDateGuaranteeDocumentGivenDate"
-                        >
-                          <q-date
-                            mask="DD.MM.YYYY"
-                            v-model="guarantee.Document.GivenDate"
-                            @input="($event) => {
-                              $refs.qDateGuaranteeDocumentGivenDate[index].hide()
-                              validDateGuarantees($event, index)
-                            }
-                            "
-                          />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="guaranteesDocumentExpirationDate"
-                    outlined
-                    square
-                    dense
-                    label="Дата окончания действия документа"
-                    v-model="guarantee.Document.ExpirationDate"
-                    mask="##.##.####"
-                    :rules="[
-                      val =>
-                        (val && val.length === 10) ||
-                        'Введите дату  окончания действия документа',
-                        guarantee.Document.GivenDate
-                        ? (val => msecond(val) > msecond(guarantee.Document.GivenDate) ||
-                        'Неверная дата')
-                        : null,
-                        val => msecond(val) > msecond(currentDate) ||
-                        'Неверная дата'
-                    ]"
-                  >
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy
-                          transition-show="scale"
-                          transition-hide="scale"
-                          ref="qDateGuaranteeDocumentExpirationDate"
-                        >
-                          <q-date
-                            mask="DD.MM.YYYY"
-                            v-model="guarantee.Document.ExpirationDate"
-                            @input="($event) => {
-                              $refs.qDateGuaranteeDocumentExpirationDate[index].hide()
-                              validDateGuarantees($event, index)
-                            }
-                            "
-                          />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-                </div>
-
-                <div class="col-4">
-                  <q-select
-                    :disable="disableField"
-                    ref="guaranteesDocumentRegionsGivenPlace"
-                    square
-                    outlined
-                    v-model="guarantee.Document.Region"
-                    @input="setGivenPlaceGuarantee($event, index, 'RelatedPerson')"
-                    :options="dictionaries.Region.items"
-                    dense
-                    label="Регион/область выдачи документа"
-                    :rules="[val => !!val || 'Выберите регион/область']"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-
-                <div class="col-4">
-                  <!-- <q-input
-                    :disable="disableField"
-                    ref="guaranteesDocumentGivenPlace"
-                    square
-                    outlined
-                    v-model="guarantee.Document.GivenPlace"
-                    dense
-                    label="Кем выдан документ"
-                    :rules="[
-                      val => !!val || 'Введите кем выдан документ',
-                      val => givenPlaceValid(val)
-                    ]"
-                  /> -->
-
-                  <q-select
-                    :disable="disableField"
-                    ref="guaranteesDocumentGivenPlace"
-                    square
-                    outlined
-                    v-model="guarantee.Document.GivenPlace"
-                    :options="guarantee.Document.Districts.items"
-                    dense
-                    label="Кем выдан документ"
-                    :rules="[val => !!val || 'Введите кем выдан документ']"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <!-- <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="indexGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.PostalCode"
-                    dense
-                    label="Индекс"
-                    mask="######"
-                  />
-                </div> -->
-                <div class="col-4">
-                  <q-select
-                    :disable="disableField"
-                    ref="regionGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Region"
-                    :options="dictionaries.Region.items"
-                    @input="setDistrictsGuarantee($event, index, 'RelatedPerson')"
-                    dense
-                    label="Регион/область"
-                    :rules="[val => !!val || 'Выберите регион/область']"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.City"
-                    dense
-                    label="Город"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-select
-                    :disable="disableField"
-                    ref="districtGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.District"
-                    :options="guarantee.Address.Districts.items"
-                    dense
-                    label="Район"
-                    :rules="[val => !!val || 'Выберите район']"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                    />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="streetGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Street"
-                    dense
-                    label="Улица / Мкр."
-                    :rules="[
-                      val => !!val || 'Введите наименование улицы / мкр.'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="houseNumberGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.House"
-                    dense
-                    label="Номер дома"
-                    :rules="[val => !!val || 'Введите номер дома']"
-                  />
-                </div>
-                <!-- <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Block"
-                    dense
-                    label="Корпус"
-                  />
-                </div> -->
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <!-- <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Building"
-                    dense
-                    label="Строение"
-                  />
-                </div> -->
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Apartment"
-                    dense
-                    label="Номер квартиры"
-                  />
-                </div>
-              </div>
-
-              <!-- phone -->
-              <fieldset
-                class="fieldset_block"
-                v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
-                :key="'RelatedPerson' + phoneIndex"
-              >
-                <legend class="legend_title">
-                  Телефон {{ phoneIndex + 1 }}
-                </legend>
-                <div class="row q-col-gutter-md">
-                  <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      ref="phonesGuarantees"
-                      square
-                      outlined
-                      v-model="phone.Number"
-                      dense
-                      label="Тел. номер"
-                      mask="+############"
-                      :rules="[
-                        val =>
-                          (val && val.length === 13) || 'Введите номер телефона',
-                        val => phoneValid(val)
-                      ]"
-                    />
-                  </div>
-                </div>
-
-                <q-btn
-                  :disable="disableField"
-                  v-if="phoneIndex > 0"
-                  color="red"
-                  label="Удалить"
-                  @click="
-                    confirmDeleteItem(
-                      'Телефон ' + (phoneIndex + 1),
-                      removePhoneGuarantee,
-                      'RelatedPerson',
-                      index,
-                      phoneIndex
-                    )
-                  "
-                  class="removeItem"
-                ></q-btn>
-              </fieldset>
-
-              <q-btn
-                :disable="disableField"
-                color="primary"
-                label="Добавить номер телефона"
-                @click="addPhoneGuarantee({ item: 'RelatedPerson', index })"
-                class="addItem"
-              ></q-btn>
-
-              <q-btn
-                :disable="disableField"
-                color="red"
-                label="Удалить"
-                @click="
-                  confirmDeleteItem(
-                    'Физ. лицо ' + (index + 1),
-                    removeGuarantee,
-                    'RelatedPerson',
-                    index
-                  )
-                "
-                class="removeItem"
-              ></q-btn>
-            </fieldset>
-            <q-btn
-              :disable="disableField"
-              color="primary"
-              label="Добавить физ. лицо"
-              @click="addRelatedPerson('RelatedPerson')"
-              class="addItem"
-            ></q-btn>
-
-            <h5
-              v-if="!fullProfile.Guarantee.RelatedLegalPerson.items.length"
-              class="tab-content_title"
-            >
-              Данные по юр. лицу отсутствуют
-            </h5>
-
-            <fieldset
-              class="fieldset_block"
-              v-for="(guarantee, index) of fullProfile.Guarantee
-                .RelatedLegalPerson.items"
-              :key="'RelatedLegalPerson' + index"
-            >
-              <legend class="legend_title">Юр. лицо {{ index + 1 }}</legend>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="priceGuarantees"
-                    square
-                    outlined
-                    v-model.number="guarantee.Sum"
-                    type="number"
-                    dense
-                    label="Сумма поручительства"
-                    @input="guaranteesValid"
-                    :rules="[
-                      val => !!val || 'Введите сумму',
-                      val => val > 0 || 'Некорректные данные'
-                    ]"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                      :disable="disableField"
-                      ref="CEOLastName"
-                      square
-                      outlined
-                      v-model="guarantee.CEOLastName"
-                      dense
-                      label="Фамилия"
-                      :rules="[
-                        val => !!val || 'Введите фамилию'
-                      ]"
-                    />
-                </div>
- 
-                <div class="col-4">
-                  <q-input
-                      :disable="disableField"
-                      ref="CEOFirstName"
-                      square
-                      outlined
-                      v-model="guarantee.CEOFirstName"
-                      dense
-                      label="Имя"
-                      :rules="[
-                        val => !!val || 'Введите имя'
-                      ]"
-                    />
-                </div>
-
-                <div class="col-4">
-                  <q-input
-                      :disable="disableField"
-                      ref="CEOMiddleName"
-                      square
-                      outlined
-                      v-model="guarantee.CEOMiddleName"
-                      dense
-                      label="Отчество"
-                      :rules="[
-                        val => !!val || 'Введите отчество'
-                      ]"
-                    />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="nameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Name"
-                    dense
-                    label="Название"
-                    :rules="[
-                      val => !!val || 'Введите название'
-                    ]"
-                  />
-                </div>
-
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="innGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.INN"
-                    dense
-                    label="ИНН"
-                    mask="#########"
-                    :rules="[
-                      val =>
-                        (val && val.length === 9) ||
-                        'Количество цифр должно быть 9',
-                      val => innValid(val)
-                    ]"
-                  />
-                </div>
-
-                <!-- Надо добавить в BPM -->
-                <div class="col-4">
-                  <q-select
-                    :disable="disableField"
-                    ref="kindOfActivityGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Activity"
-                    :options="dictionaries.MainWorkType.items"
-                    dense
-                    label="Вид деятельности"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите вид деятельности']"
-                    class="q-pb-sm"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <!-- <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.PostalCode"
-                    dense
-                    label="Индекс"
-                    mask="######"
-                  />
-                </div> -->
-                <div class="col-4">
-                  <q-select
-                    :disable="disableField"
-                    ref="regionGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Region"
-                    :options="dictionaries.Region.items"
-                    @input="setDistrictsGuarantee($event, index, 'RelatedLegalPerson')"
-                    dense
-                    label="Регион/область"
-                    :rules="[val => !!val || 'Выберите регион/область']"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.City"
-                    dense
-                    label="Город"
-                  />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <!-- <q-input
-                    square
-                    outlined
-                    v-model="guarantee.Address.District"
-                    dense
-                    label="Район"
-                  />  -->
-
-                  <q-select
-                    :disable="disableField"
-                    ref="districtGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.District"
-                    :options="guarantee.Address.Districts.items"
-                    dense
-                    label="Район"
-                    :rules="[val => !!val || 'Выберите район']"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                    />
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="streetGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Street"
-                    dense
-                    label="Улица / Мкр."
-                    :rules="[
-                      val => !!val || 'Введите наименование улицы / мкр.'
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="houseNumberGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.Address.House"
-                    dense
-                    label="Номер дома"
-                    :rules="[val => !!val || 'Введите номер дома']"
-                  />
-                </div>
-                <!-- <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Block"
-                    dense
-                    label="Корпус"
-                  />
-                </div> -->
-              </div>
-
-              <div class="row q-col-gutter-md">
-                <!-- <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.Building"
-                    dense
-                    label="Строение"
-                  />
-                </div> -->
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    square
-                    outlined
-                    v-model="guarantee.Address.OfficeNum"
-                    dense
-                    label="Номер офиса"
-                  />
-                </div>
-              </div>
-
-              <!-- phone -->
-              <fieldset
-                class="fieldset_block"
-                v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
-                :key="'RelatedLegalPersonPhone' + phoneIndex"
-              >
-                <legend class="legend_title">
-                  Телефон {{ phoneIndex + 1 }}
-                </legend>
-                <div class="row q-col-gutter-md">
-                  <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      ref="phonesGuarantees"
-                      square
-                      outlined
-                      v-model="phone.Number"
-                      dense
-                      label="Тел. номер"
-                      mask="+############"
-                      :rules="[
-                        val =>
-                          (val && val.length === 13) || 'Введите номер телефона',
-                        val => phoneValid(val)
-                      ]"
-                    />
-                  </div>
-                </div>
-
-                <q-btn
-                  :disable="disableField"
-                  v-if="phoneIndex > 0"
-                  color="red"
-                  label="Удалить"
-                  @click="
-                    confirmDeleteItem(
-                      'Телефон ' + (phoneIndex + 1),
-                      removePhoneGuarantee,
-                      'RelatedLegalPerson',
-                      index,
-                      phoneIndex
-                    )
-                  "
-                  class="removeItem"
-                ></q-btn>
-              </fieldset>
-
-              <q-btn
-                :disable="disableField"
-                color="primary"
-                label="Добавить номер телефона"
-                @click="
-                  addPhoneGuarantee({ item: 'RelatedLegalPerson', index })
-                "
-                class="addItem"
-              ></q-btn>
-
-              <q-btn
-                :disable="disableField"
-                color="red"
-                label="Удалить"
-                @click="
-                  confirmDeleteItem(
-                    'Юр. лицо ' + (index + 1),
-                    removeGuarantee,
-                    'RelatedLegalPerson',
-                    index
-                  )
-                "
-                class="removeItem"
-              ></q-btn>
-            </fieldset>
-            <q-btn
-              :disable="disableField"
-              color="primary"
-              label="Добавить юр. лицо"
-              @click="addRelatedLegalPerson('RelatedLegalPerson')"
-              class="addItem"
-            ></q-btn>
-
-            <h5
-              v-if="!fullProfile.Guarantee.Insurance.items.length"
-              class="tab-content_title"
-            >
-              Данные по страхованию отсутствуют
-            </h5>
-
-            <fieldset
-              class="fieldset_block"
-              v-for="(guarantee, index) of fullProfile.Guarantee.Insurance.items"
-              :key="'Insurance' + index"
-            >
-              <legend class="legend_title">Страхование {{ index + 1 }}</legend>
-
-              <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <!-- <q-input
-                    :disable="disableField"
-                    ref="nameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.OrgName"
-                    dense
-                    label="Наименование страховой компании"
-                    :rules="[
-                      val => !!val || 'Введите наименование страховой компании'
-                    ]"
-                  /> -->
-
-                  <q-select
-                    :disable="disableField"
-                    ref="nameGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.OrgName"
-                    :options="dictionaries.Insurance_company.items"
-                    @input="setINNCompany($event, index)"
-                    dense
-                    label="Наименование страховой компании"
-                    :rules="[
-                      val => !!val || 'Выберите страховую компанию'
-                    ]"
-                    emit-value
-                    map-options
-                    class="q-pb-sm"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="innGuarantees"
-                    square
-                    outlined
-                    v-model="guarantee.INN"
-                    dense
-                    label="ИНН страховой компании"
-                    mask="#########"
-                    :rules="[
-                      val =>
-                        (val && val.length === 9) ||
-                        'Количество цифр должно быть 9',
-                      val => innValid(val)
-                    ]"
-                  />
-                </div>
-                <div class="col-4">
-                  <q-input
-                    :disable="disableField"
-                    ref="priceGuarantees"
-                    square
-                    outlined
-                    v-model.number="guarantee.Sum"
-                    @input="guaranteesValid"
-                    type="number"
-                    dense
-                    label="Сумма страхового полиса"
-                    :rules="[
-                      val => !!val || 'Введите сумму',
-                      val => val > 0 || 'Некорректные данные'
-                    ]"
-                  />
-                </div>
-              </div>
-
-              <q-btn
-                :disable="disableField"
-                color="red"
-                label="Удалить"
-                @click="
-                  confirmDeleteItem(
-                    'Страхование ' + (index + 1),
-                    removeGuarantee,
-                    'Insurance',
-                    index
-                  )
-                "
-                class="removeItem"
-              ></q-btn>
-            </fieldset>
-
-            <q-btn
-              :disable="disableField"
-              color="primary"
-              label="Добавить страхование"
-              @click="addInsurance('Insurance')"
-              class="addItem"
-            ></q-btn>
-            </q-field>
           </div>
         </div>
 
@@ -2937,14 +1860,16 @@
                   :rules="[
                     val => !!val || 'Введите сумму кредита',
                     val => val > 0 || 'Некорректные данные',
-                    val => (totalGuaranteesSum - fullProfile.LoanInfo.Sum >= fullProfile.LoanInfo.Sum * 0.25) ||
+                    val =>
+                      totalGuaranteesSum - fullProfile.LoanInfo.Sum >=
+                        fullProfile.LoanInfo.Sum * 0.25 ||
                       'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%',
-                    fullProfile.max_loan_sum_preapprove 
-                    ?  (val =>
-                      (val > 0 &&
-                      val <= fullProfile.max_loan_sum_preapprove ) ||
-                      `Максимальная сумма кредита ${fullProfile.max_loan_sum_preapprove }`)
-                    : null
+                    fullProfile.max_loan_sum_preapprove
+                      ? val =>
+                          (val > 0 &&
+                            val <= fullProfile.max_loan_sum_preapprove) ||
+                          `Максимальная сумма кредита ${fullProfile.max_loan_sum_preapprove}`
+                      : null
                   ]"
                 />
               </div>
@@ -2965,8 +1890,11 @@
 
             <div class="row q-col-gutter-md">
               <!-- если не овердрафт -->
-              <div 
-                v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
+              <div
+                v-if="
+                  !!fullProfile.LoanInfo.LoanProduct &&
+                    fullProfile.LoanInfo.LoanProduct !== 3
+                "
                 class="col-4"
               >
                 <q-select
@@ -3015,27 +1943,29 @@
                 />
               </div> -->
 
-              <!-- <q-select
-                  ref="periodRepayment"
-                  square
-                  outlined
-                  v-model="fullProfile.LoanInfo.MaxDefferalRepaymentPeriod"
-                  :options="options.periodRepayment"
-                  dense
-                  label="Льготный период по погашению кредита"
-                  :rules="[val => !!val || 'Выберите период погашения']"
-                  emit-value
-                  map-options
-                  class="q-pb-sm"
-                /> -->
             </div>
 
             <div class="row q-col-gutter-md">
-              <div class="col-4">
+              <div class="col-6">
                 <div v-if="!!fullProfile.LoanInfo.LoanProduct" class="col-12">
                   <h6 class="periodCredit">
                     Льготный период по погашению кредита
                   </h6>
+
+                  <q-input
+                    square
+                    outlined
+                    v-model.number="fullProfile.LoanInfo.MaxDefferalRepaymentPeriod"
+                    type="number"
+                    dense
+                    label="Льготный период по погашению кредита"
+                    :rules="[
+                      val =>
+                        (val <= GracePeriodMax && val >= GracePeriodMin) ||
+                        `Льготный период между ${GracePeriodMin} - ${GracePeriodMax} мес.`
+                    ]"
+                  />
+
                   <q-badge color="secondary">
                     Срок:
                     {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }} ({{
@@ -3057,6 +1987,7 @@
                     class="sliderCredit"
                   />
                 </div>
+
               </div>
             </div>
 
@@ -3070,15 +2001,47 @@
                   v-model.number="fullProfile.LoanInfo.TermInMonth"
                   type="number"
                   dense
-                  label="Удобный срок погашения в мес"
+                  label="Срок кредита"
                   mask="##"
                   :rules="[
-                    val => !!val || 'Введите удобный срок погашения в мес',
+                    val => !!val || 'Введите срок кредита',
                     val => val > 0 || 'Некорректные данные'
                   ]"
                 />
               </div>
+
               <div class="col-4">
+                <q-input
+                  :disable="disableField"
+                  ref="comfortableDayRepayment"
+                  square
+                  outlined
+                  v-model.number="fullProfile.LoanInfo.ConvenientRepaymentTerm"
+                  type="number"
+                  dense
+                  label="Удобный день погашения"
+                  mask="##"
+                  :rules="[
+                    val => !!val || 'Введите удобный день погашения',
+                    val =>
+                      (val > 0 && val < 29) ||
+                      `Введите удобный день погашения (1-28)`
+                  ]"
+                />
+              </div>
+
+              <div class="col-4">
+                <q-input
+                  disable
+                  square
+                  outlined
+                  v-model.number="fullProfile.LoanInfo.InitialPayment"
+                  type="number"
+                  dense
+                  label="Первоначальный взнос"
+                />
+              </div>
+              <!-- <div class="col-4">
                 <q-input
                   disable
                   ref="periodRepaymentMin"
@@ -3095,8 +2058,8 @@
                       'Введите минимальное количество месяцев на кредит'
                   ]"
                 />
-              </div>
-              <div class="col-4">
+              </div> -->
+              <!-- <div class="col-4">
                 <q-input
                   disable
                   ref="periodRepaymentMax"
@@ -3113,31 +2076,10 @@
                       'Введите максимальное количество месяцев на кредит'
                   ]"
                 />
-              </div>
+              </div> -->
             </div>
 
-            <div class="row q-col-gutter-md">
-              <div class="col-4">
-                <q-input
-                  :disable="disableField"
-                  ref="comfortableDayRepayment"
-                  square
-                  outlined
-                  v-model.number="fullProfile.LoanInfo.ConvenientRepaymentTerm"
-                  type="number"
-                  dense
-                  label="Удобный день погашения"
-                  mask="##"
-                  :rules="[
-                    val => !!val || 'Введите удобный день погашения',
-                    val =>
-                      val > 0 && val < 29 || `Введите удобный день погашения (1-28)`
-                  ]"
-                />
-              </div>
-            </div>
-
-            <div class="row q-col-gutter-md">
+            <!-- <div class="row q-col-gutter-md"> -->
               <!-- <div 
                 v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
                 class="col-4">
@@ -3156,19 +2098,8 @@
                   ]"
                 />
               </div> -->
-              <div class="col-4">
-                <q-input
-                  disable
-                  square
-                  outlined
-                  v-model.number="fullProfile.LoanInfo.InitialPayment"
-                  type="number"
-                  dense
-                  label="Первоначальный взнос"
-                />
-              </div>
 
-              <div class="col-4">
+              <!-- <div class="col-4">
                 <q-input
                   ref="procentInitialFeeMax"
                   square
@@ -3182,9 +2113,9 @@
                     val => !!val || 'Введите максимальный первоначальный взнос'
                   ]"
                 />
-              </div>
+              </div> -->
 
-              <div class="col-4">
+              <!-- <div class="col-4">
                 <q-input
                   ref="procentInitialFeeMin"
                   square
@@ -3198,9 +2129,8 @@
                     val => !!val || 'Введите минимальный первоначальный взнос'
                   ]"
                 />
-              </div>
-              
-            </div>
+              </div> -->
+            <!-- </div> -->
 
             <div class="row q-col-gutter-md">
               <div class="col-4">
@@ -3249,7 +2179,11 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.nameProduction"
                     dense
                     label="Наименование продавца/производителя товара/работы/услуги"
-                    :rules="[val => !!val || 'Введите наименование продавца/производителя товара/работы/услуги']"
+                    :rules="[
+                      val =>
+                        !!val ||
+                        'Введите наименование продавца/производителя товара/работы/услуги'
+                    ]"
                   />
                 </div>
                 <div class="col-4">
@@ -3262,11 +2196,12 @@
                     dense
                     label="Наименование товара/работы/услуги"
                     :rules="[
-                      val => !!val || 'Введите наименование товара/работы/услуги'
+                      val =>
+                        !!val || 'Введите наименование товара/работы/услуги'
                     ]"
                   />
                 </div>
-              
+
                 <div class="col-4">
                   <q-input
                     :disable="disableField"
@@ -3276,7 +2211,11 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.nameBankProd"
                     dense
                     label="Наименование банка продавца/производителя товара/работы/услуги"
-                    :rules="[val => !!val || 'Введите наименование банка продавца/производителя товара/работы/услуги']"
+                    :rules="[
+                      val =>
+                        !!val ||
+                        'Введите наименование банка продавца/производителя товара/работы/услуги'
+                    ]"
                   />
                 </div>
               </div>
@@ -3291,10 +2230,10 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.billProd"
                     dense
                     label="Расчетный счет продавца/производителя товара/работы/услуги"
-                    mask="#########################"
+                    mask="####################"
                     :rules="[
-                      val => !!val || 'Введите расчетный счет продавца/производителя товара/работы/услуги',
-                      val =>  val.length < 26 || 'Введите не более 25 цифр'
+                      val => (val && val.length === 20) || 'Количество символов должно быт ровно 20',
+                      val => !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
                     ]"
                   />
                 </div>
@@ -3307,11 +2246,14 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.agreementNumber"
                     dense
                     label="Номер договора с продавцом/поставщиком  товара/работы/услуги"
-                    :rules="[val => !!val || 'Введите номер договора с продавцом/поставщиком  товара/работы/услуги']"
+                    :rules="[
+                      val =>
+                        !!val ||
+                        'Введите номер договора с продавцом/поставщиком  товара/работы/услуги'
+                    ]"
                   />
                 </div>
                 <div class="col-4">
-                  
                   <q-input
                     :disable="disableField"
                     ref="agreementDate"
@@ -3322,9 +2264,11 @@
                     v-model="fullProfile.LoanInfo.consumerLoan.agreementDate"
                     mask="##.##.####"
                     :rules="[
-                      val => (val && val.length === 10) || 'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
-                      val => msecond(val) <= msecond(currentDate) || 
-                      'Неверная дата'
+                      val =>
+                        (val && val.length === 10) ||
+                        'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
+                      val =>
+                        msecond(val) <= msecond(currentDate) || 'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
@@ -3336,17 +2280,1125 @@
                         >
                           <q-date
                             mask="DD.MM.YYYY"
-                            v-model="fullProfile.LoanInfo.consumerLoan.agreementDate"
+                            v-model="
+                              fullProfile.LoanInfo.consumerLoan.agreementDate
+                            "
                             @input="() => $refs.qDateContract.hide()"
                           />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
                   </q-input>
-             
                 </div>
               </div>
             </template>
+          </div>
+        </div>
+
+        <!-- Guarantees -->
+        <div class="guarantees">
+          <h4
+            class="tab-title"
+            ref="guarantees"
+            @click="toggleForm('guarantees')"
+          >
+            Гарантии и поручительство
+          </h4>
+          <div class="tab-content" ref="tabContent">
+            <q-field
+              ref="guaranteesValid"
+              :value="!!guaranteeCount.length"
+              :rules="[
+                val => !!val || 'Добавьте гарантию или поручительство',
+                val =>
+                  totalGuaranteesSum - fullProfile.LoanInfo.Sum >=
+                    fullProfile.LoanInfo.Sum * 0.25 ||
+                  'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%'
+              ]"
+            >
+              <h5
+                v-if="!fullProfile.Guarantee.RelatedPerson.items.length"
+                class="tab-content_title"
+              >
+                Данные по физ. лицу отсутствуют
+              </h5>
+
+              <fieldset
+                class="fieldset_block"
+                v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson
+                  .items"
+                :key="'RelatedPerson' + index"
+              >
+                <legend class="legend_title">Физ. лицо {{ index + 1 }}</legend>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      ref="customersAttitude"
+                      square
+                      outlined
+                      v-model="guarantee.ClientRelation"
+                      :options="dictionaries.ClientRelationType.items"
+                      dense
+                      label="Отношение к клиенту"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите отношение к клиенту']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="priceGuarantees"
+                      square
+                      outlined
+                      v-model.number="guarantee.Sum"
+                      type="number"
+                      dense
+                      label="Сумма поручительства"
+                      @input="guaranteesValid"
+                      :rules="[
+                        val => !!val || 'Введите сумму',
+                        val => val > 0 || 'Некорректные данные'
+                      ]"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="surnameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.LastName"
+                      dense
+                      label="Фамилия"
+                      :rules="[
+                        val => !!val || 'Введите фамилию',
+                        val => fioValid(val)
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="nameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.FirstName"
+                      dense
+                      label="Имя"
+                      :rules="[
+                        val => !!val || 'Введите имя',
+                        val => fioValid(val)
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="mnameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.MiddleName"
+                      dense
+                      label="Отчество"
+                      :rules="[
+                        val => !!val || 'Введите отчество',
+                        val => mValid(val)
+                      ]"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="birthdayGuarantees"
+                      outlined
+                      square
+                      dense
+                      label="Дата рождения"
+                      v-model="guarantee.BirthDate"
+                      mask="##.##.####"
+                      :rules="[
+                        val =>
+                          (val && val.length === 10) || 'Введите дату рождения',
+                        val => adulthoodValid(val) || 'Несовершеннолетний'
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            transition-show="scale"
+                            transition-hide="scale"
+                            ref="qDateBirthdayGuarantees"
+                          >
+                            <q-date
+                              mask="DD.MM.YYYY"
+                              v-model="guarantee.BirthDate"
+                              @input="
+                                () =>
+                                  $refs.qDateBirthdayGuarantees[index].hide()
+                              "
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="innGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.INN"
+                      dense
+                      label="ИНН"
+                      mask="#########"
+                      :rules="[
+                        val =>
+                          (val && val.length === 9) ||
+                          'Количество цифр должно быть 9',
+                        val => innValid(val)
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="pinppGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.PINPP"
+                      dense
+                      label="ПИНФЛ"
+                      mask="##############"
+                      :rules="[
+                        val => (val && val.length === 14) || 'Введите ПНФЛ',
+                        val => pinppValid(val)
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      square
+                      outlined
+                      v-model="guarantee.Resident"
+                      :options="credits.options.confirmation"
+                      dense
+                      label="Резидентство"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      ref="guaranteesDocumentDocumentType"
+                      square
+                      outlined
+                      v-model="guarantee.Document.documentType"
+                      :options="dictionaries.DocumentType.items"
+                      dense
+                      label="Вид документа"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                      :rules="[val => !!val || 'Выберите вид документа']"
+                    />
+                  </div>
+
+                  <div
+                    v-if="guarantee.Document.documentType == 7"
+                    class="col-4"
+                  >
+                    <q-input
+                      :disable="disableField"
+                      ref="guaranteesDocumentDocumentName"
+                      square
+                      outlined
+                      v-model="guarantee.Document.DocumentName"
+                      dense
+                      label="Наименование документа"
+                      :rules="[
+                        val => !!val || 'Введите наименование документа'
+                      ]"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="guaranteesDocumentSeries"
+                      square
+                      outlined
+                      v-model="guarantee.Document.Series"
+                      dense
+                      label="Серия документа"
+                      mask="AA"
+                      :rules="[
+                        val =>
+                          (val && val.length === 2) || 'Введите Серию документа'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="guaranteesDocumentNumber"
+                      square
+                      outlined
+                      v-model="guarantee.Document.Number"
+                      dense
+                      label="Номер документа"
+                      mask="#######"
+                      :rules="[
+                        val =>
+                          (val && val.length === 7) ||
+                          'Введите Номер документа',
+                        val => docNumberValid(val)
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="guaranteesDocumentGivenDate"
+                      outlined
+                      square
+                      dense
+                      label="Дата выдачи документа"
+                      v-model="guarantee.Document.GivenDate"
+                      mask="##.##.####"
+                      :rules="[
+                        val =>
+                          (val && val.length === 10) ||
+                          'Введите дату выдачи документа',
+
+                        guarantee.Document.ExpirationDate
+                          ? val =>
+                              msecond(val) <
+                                msecond(guarantee.Document.ExpirationDate) ||
+                              'Неверная дата'
+                          : null,
+
+                        val =>
+                          msecond(val) < msecond(currentDate) || 'Неверная дата'
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            transition-show="scale"
+                            transition-hide="scale"
+                            ref="qDateGuaranteeDocumentGivenDate"
+                          >
+                            <q-date
+                              mask="DD.MM.YYYY"
+                              v-model="guarantee.Document.GivenDate"
+                              @input="
+                                $event => {
+                                  $refs.qDateGuaranteeDocumentGivenDate[
+                                    index
+                                  ].hide();
+                                  validDateGuarantees($event, index);
+                                }
+                              "
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="guaranteesDocumentExpirationDate"
+                      outlined
+                      square
+                      dense
+                      label="Дата окончания действия документа"
+                      v-model="guarantee.Document.ExpirationDate"
+                      mask="##.##.####"
+                      :rules="[
+                        val =>
+                          (val && val.length === 10) ||
+                          'Введите дату  окончания действия документа',
+                        guarantee.Document.GivenDate
+                          ? val =>
+                              msecond(val) >
+                                msecond(guarantee.Document.GivenDate) ||
+                              'Неверная дата'
+                          : null,
+                        val =>
+                          msecond(val) > msecond(currentDate) || 'Неверная дата'
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            transition-show="scale"
+                            transition-hide="scale"
+                            ref="qDateGuaranteeDocumentExpirationDate"
+                          >
+                            <q-date
+                              mask="DD.MM.YYYY"
+                              v-model="guarantee.Document.ExpirationDate"
+                              @input="
+                                $event => {
+                                  $refs.qDateGuaranteeDocumentExpirationDate[
+                                    index
+                                  ].hide();
+                                  validDateGuarantees($event, index);
+                                }
+                              "
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      ref="guaranteesDocumentRegionsGivenPlace"
+                      square
+                      outlined
+                      v-model="guarantee.Document.Region"
+                      @input="
+                        setGivenPlaceGuarantee($event, index, 'RelatedPerson')
+                      "
+                      :options="dictionaries.Region.items"
+                      dense
+                      label="Регион/область выдачи документа"
+                      :rules="[val => !!val || 'Выберите регион/область']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <!-- <q-input
+                    :disable="disableField"
+                    ref="guaranteesDocumentGivenPlace"
+                    square
+                    outlined
+                    v-model="guarantee.Document.GivenPlace"
+                    dense
+                    label="Кем выдан документ"
+                    :rules="[
+                      val => !!val || 'Введите кем выдан документ',
+                      val => givenPlaceValid(val)
+                    ]"
+                  /> -->
+
+                    <q-select
+                      :disable="disableField"
+                      ref="guaranteesDocumentGivenPlace"
+                      square
+                      outlined
+                      v-model="guarantee.Document.GivenPlace"
+                      :options="guarantee.Document.Districts.items"
+                      dense
+                      label="Кем выдан документ (ИИБ)"
+                      :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <!-- <div class="col-4">
+                  <q-input
+                    :disable="disableField"
+                    ref="indexGuarantees"
+                    square
+                    outlined
+                    v-model="guarantee.Address.PostalCode"
+                    dense
+                    label="Индекс"
+                    mask="######"
+                  />
+                </div> -->
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      ref="regionGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Region"
+                      :options="dictionaries.Region.items"
+                      @input="
+                        setDistrictsGuarantee($event, index, 'RelatedPerson')
+                      "
+                      dense
+                      label="Регион/область"
+                      :rules="[val => !!val || 'Выберите регион/область']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      square
+                      outlined
+                      v-model="guarantee.Address.City"
+                      dense
+                      label="Город"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      ref="districtGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.District"
+                      :options="guarantee.Address.Districts.items"
+                      dense
+                      label="Район"
+                      :rules="[val => !!val || 'Выберите район']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="streetGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Street"
+                      dense
+                      label="Улица / Мкр."
+                      :rules="[
+                        val => !!val || 'Введите наименование улицы / мкр.'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="houseNumberGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.House"
+                      dense
+                      label="Номер дома"
+                      :rules="[val => !!val || 'Введите номер дома']"
+                    />
+                  </div>
+                  <!-- <div class="col-4">
+                  <q-input
+                    :disable="disableField"
+                    square
+                    outlined
+                    v-model="guarantee.Address.Block"
+                    dense
+                    label="Корпус"
+                  />
+                </div> -->
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <!-- <div class="col-4">
+                  <q-input
+                    :disable="disableField"
+                    square
+                    outlined
+                    v-model="guarantee.Address.Building"
+                    dense
+                    label="Строение"
+                  />
+                </div> -->
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Apartment"
+                      dense
+                      label="Номер квартиры"
+                    />
+                  </div>
+                </div>
+
+                <!-- phone -->
+                <fieldset
+                  class="fieldset_block"
+                  v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
+                  :key="'RelatedPerson' + phoneIndex"
+                >
+                  <legend class="legend_title">
+                    Телефон {{ phoneIndex + 1 }}
+                  </legend>
+                  <div class="row q-col-gutter-md">
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="phonesGuarantees"
+                        square
+                        outlined
+                        v-model="phone.Number"
+                        dense
+                        label="Тел. номер"
+                        mask="+############"
+                        :rules="[
+                          val =>
+                            (val && val.length === 13) ||
+                            'Введите номер телефона',
+                          val => phoneValid(val)
+                        ]"
+                      />
+                    </div>
+                  </div>
+
+                  <q-btn
+                    :disable="disableField"
+                    v-if="phoneIndex > 0"
+                    color="red"
+                    label="Удалить"
+                    @click="
+                      confirmDeleteItem(
+                        'Телефон ' + (phoneIndex + 1),
+                        removePhoneGuarantee,
+                        'RelatedPerson',
+                        index,
+                        phoneIndex
+                      )
+                    "
+                    class="removeItem"
+                  ></q-btn>
+                </fieldset>
+
+                <q-btn
+                  :disable="disableField"
+                  color="primary"
+                  label="Добавить номер телефона"
+                  @click="addPhoneGuarantee({ item: 'RelatedPerson', index })"
+                  class="addItem"
+                ></q-btn>
+
+                <q-btn
+                  :disable="disableField"
+                  color="red"
+                  label="Удалить"
+                  @click="
+                    confirmDeleteItem(
+                      'Физ. лицо ' + (index + 1),
+                      removeGuarantee,
+                      'RelatedPerson',
+                      index
+                    )
+                  "
+                  class="removeItem"
+                ></q-btn>
+              </fieldset>
+              <q-btn
+                :disable="disableField"
+                color="primary"
+                label="Добавить физ. лицо"
+                @click="addRelatedPerson('RelatedPerson')"
+                class="addItem"
+              ></q-btn>
+
+              <h5
+                v-if="!fullProfile.Guarantee.RelatedLegalPerson.items.length"
+                class="tab-content_title"
+              >
+                Данные по юр. лицу отсутствуют
+              </h5>
+
+              <fieldset
+                class="fieldset_block"
+                v-for="(guarantee, index) of fullProfile.Guarantee
+                  .RelatedLegalPerson.items"
+                :key="'RelatedLegalPerson' + index"
+              >
+                <legend class="legend_title">Юр. лицо {{ index + 1 }}</legend>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="priceGuarantees"
+                      square
+                      outlined
+                      v-model.number="guarantee.Sum"
+                      type="number"
+                      dense
+                      label="Сумма поручительства"
+                      @input="guaranteesValid"
+                      :rules="[
+                        val => !!val || 'Введите сумму',
+                        val => val > 0 || 'Некорректные данные'
+                      ]"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="CEOLastName"
+                      square
+                      outlined
+                      v-model="guarantee.CEOLastName"
+                      dense
+                      label="Фамилия директора"
+                      :rules="[
+                        val => !!val || 'Введите фамилию',
+                        val => fioValid(val)
+                      ]"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="CEOFirstName"
+                      square
+                      outlined
+                      v-model="guarantee.CEOFirstName"
+                      dense
+                      label="Имя директора"
+                      :rules="[
+                        val => !!val || 'Введите имя',
+                        val => fioValid(val)
+                      ]"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="CEOMiddleName"
+                      square
+                      outlined
+                      v-model="guarantee.CEOMiddleName"
+                      dense
+                      label="Отчество директора"
+                      :rules="[
+                        val => !!val || 'Введите отчество',
+                        val => mValid(val)
+                      ]"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="nameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Name"
+                      dense
+                      label="Название"
+                      :rules="[val => !!val || 'Введите название']"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="innGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.INN"
+                      dense
+                      label="ИНН"
+                      mask="#########"
+                      :rules="[
+                        val =>
+                          (val && val.length === 9) ||
+                          'Количество цифр должно быть 9',
+                        val => innValid(val)
+                      ]"
+                    />
+                  </div>
+
+                  <!-- Надо добавить в BPM -->
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      ref="kindOfActivityGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Activity"
+                      :options="dictionaries.MainWorkType.items"
+                      dense
+                      label="Вид деятельности"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите вид деятельности']"
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <!-- <div class="col-4">
+                  <q-input
+                    :disable="disableField"
+                    square
+                    outlined
+                    v-model="guarantee.Address.PostalCode"
+                    dense
+                    label="Индекс"
+                    mask="######"
+                  />
+                </div> -->
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      ref="regionGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Region"
+                      :options="dictionaries.Region.items"
+                      @input="
+                        setDistrictsGuarantee(
+                          $event,
+                          index,
+                          'RelatedLegalPerson'
+                        )
+                      "
+                      dense
+                      label="Регион/область"
+                      :rules="[val => !!val || 'Выберите регион/область']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      square
+                      outlined
+                      v-model="guarantee.Address.City"
+                      dense
+                      label="Город"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <!-- <q-input
+                    square
+                    outlined
+                    v-model="guarantee.Address.District"
+                    dense
+                    label="Район"
+                  />  -->
+
+                    <q-select
+                      :disable="disableField"
+                      ref="districtGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.District"
+                      :options="guarantee.Address.Districts.items"
+                      dense
+                      label="Район"
+                      :rules="[val => !!val || 'Выберите район']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="streetGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.Street"
+                      dense
+                      label="Улица / Мкр."
+                      :rules="[
+                        val => !!val || 'Введите наименование улицы / мкр.'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="houseNumberGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.Address.House"
+                      dense
+                      label="Номер дома"
+                      :rules="[val => !!val || 'Введите номер дома']"
+                    />
+                  </div>
+                  <!-- <div class="col-4">
+                  <q-input
+                    :disable="disableField"
+                    square
+                    outlined
+                    v-model="guarantee.Address.Block"
+                    dense
+                    label="Корпус"
+                  />
+                </div> -->
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <!-- <div class="col-4">
+                  <q-input
+                    :disable="disableField"
+                    square
+                    outlined
+                    v-model="guarantee.Address.Building"
+                    dense
+                    label="Строение"
+                  />
+                </div> -->
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      square
+                      outlined
+                      v-model="guarantee.Address.OfficeNum"
+                      dense
+                      label="Номер офиса"
+                    />
+                  </div>
+                </div>
+
+                <!-- phone -->
+                <fieldset
+                  class="fieldset_block"
+                  v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
+                  :key="'RelatedLegalPersonPhone' + phoneIndex"
+                >
+                  <legend class="legend_title">
+                    Телефон {{ phoneIndex + 1 }}
+                  </legend>
+                  <div class="row q-col-gutter-md">
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="phonesGuarantees"
+                        square
+                        outlined
+                        v-model="phone.Number"
+                        dense
+                        label="Тел. номер"
+                        mask="+############"
+                        :rules="[
+                          val =>
+                            (val && val.length === 13) ||
+                            'Введите номер телефона',
+                          val => phoneValid(val)
+                        ]"
+                      />
+                    </div>
+                  </div>
+
+                  <q-btn
+                    :disable="disableField"
+                    v-if="phoneIndex > 0"
+                    color="red"
+                    label="Удалить"
+                    @click="
+                      confirmDeleteItem(
+                        'Телефон ' + (phoneIndex + 1),
+                        removePhoneGuarantee,
+                        'RelatedLegalPerson',
+                        index,
+                        phoneIndex
+                      )
+                    "
+                    class="removeItem"
+                  ></q-btn>
+                </fieldset>
+
+                <q-btn
+                  :disable="disableField"
+                  color="primary"
+                  label="Добавить номер телефона"
+                  @click="
+                    addPhoneGuarantee({ item: 'RelatedLegalPerson', index })
+                  "
+                  class="addItem"
+                ></q-btn>
+
+                <q-btn
+                  :disable="disableField"
+                  color="red"
+                  label="Удалить"
+                  @click="
+                    confirmDeleteItem(
+                      'Юр. лицо ' + (index + 1),
+                      removeGuarantee,
+                      'RelatedLegalPerson',
+                      index
+                    )
+                  "
+                  class="removeItem"
+                ></q-btn>
+              </fieldset>
+              <q-btn
+                :disable="disableField"
+                color="primary"
+                label="Добавить юр. лицо"
+                @click="addRelatedLegalPerson('RelatedLegalPerson')"
+                class="addItem"
+              ></q-btn>
+
+              <h5
+                v-if="!fullProfile.Guarantee.Insurance.items.length"
+                class="tab-content_title"
+              >
+                Данные по страхованию отсутствуют
+              </h5>
+
+              <fieldset
+                class="fieldset_block"
+                v-for="(guarantee, index) of fullProfile.Guarantee.Insurance
+                  .items"
+                :key="'Insurance' + index"
+              >
+                <legend class="legend_title">
+                  Страхование {{ index + 1 }}
+                </legend>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <!-- <q-input
+                    :disable="disableField"
+                    ref="nameGuarantees"
+                    square
+                    outlined
+                    v-model="guarantee.OrgName"
+                    dense
+                    label="Наименование страховой компании"
+                    :rules="[
+                      val => !!val || 'Введите наименование страховой компании'
+                    ]"
+                  /> -->
+
+                    <q-select
+                      :disable="disableField"
+                      ref="nameGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.OrgName"
+                      :options="dictionaries.Insurance_company.items"
+                      @input="setINNCompany($event, index)"
+                      dense
+                      label="Наименование страховой компании"
+                      :rules="[val => !!val || 'Выберите страховую компанию']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="innGuarantees"
+                      square
+                      outlined
+                      v-model="guarantee.INN"
+                      dense
+                      label="ИНН страховой компании"
+                      mask="#########"
+                      :rules="[
+                        val =>
+                          (val && val.length === 9) ||
+                          'Количество цифр должно быть 9',
+                        val => innValid(val)
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="priceGuarantees"
+                      square
+                      outlined
+                      v-model.number="guarantee.Sum"
+                      @input="guaranteesValid"
+                      type="number"
+                      dense
+                      label="Сумма страхового полиса"
+                      :rules="[
+                        val => !!val || 'Введите сумму',
+                        val => val > 0 || 'Некорректные данные'
+                      ]"
+                    />
+                  </div>
+                </div>
+
+                <q-btn
+                  :disable="disableField"
+                  color="red"
+                  label="Удалить"
+                  @click="
+                    confirmDeleteItem(
+                      'Страхование ' + (index + 1),
+                      removeGuarantee,
+                      'Insurance',
+                      index
+                    )
+                  "
+                  class="removeItem"
+                ></q-btn>
+              </fieldset>
+
+              <q-btn
+                :disable="disableField"
+                color="primary"
+                label="Добавить страхование"
+                @click="addInsurance('Insurance')"
+                class="addItem"
+              ></q-btn>
+            </q-field>
           </div>
         </div>
 
@@ -3361,14 +3413,14 @@
           </h4>
           <div class="tab-content" ref="tabContent">
             <div class="row">
-              <div 
+              <div
                 class="col-12 uploadFileBlock"
-                @drag.prevent.stop 
-                @dragstart.prevent.stop 
-                @dragend.prevent.stop 
-                @dragover.prevent.stop="dragoverFile" 
-                @dragenter.prevent.stop="dragenterFile" 
-                @dragleave="dragleaveFile($event)" 
+                @drag.prevent.stop
+                @dragstart.prevent.stop
+                @dragend.prevent.stop
+                @dragover.prevent.stop="dragoverFile"
+                @dragenter.prevent.stop="dragenterFile"
+                @dragleave="dragleaveFile($event)"
                 @drop.prevent.stop
                 @drop="dropFile($event)"
               >
@@ -3453,9 +3505,7 @@
                         ref="fileName"
                         square
                         outlined
-                        v-model="
-                          file.DocumentName
-                        "
+                        v-model="file.DocumentName"
                         dense
                         label="Название файла"
                         :rules="[val => !!val || 'Введите название файла']"
@@ -3487,8 +3537,8 @@
                       @click.prevent="
                         confirmDeleteItem(
                           file.DocumentName,
-                          removeUploadFile, 
-                          item = null,
+                          removeUploadFile,
+                          (item = null),
                           index
                         )
                       "
@@ -3513,14 +3563,14 @@
           </h4>
           <div class="tab-content" ref="tabContent">
             <template v-if="fullProfile.ApplicationComment">
-              <div 
+              <div
                 class="comments"
                 v-for="comment of fullProfile.ApplicationComment.items"
                 :key="comment.id"
               >
-                <h6 class="tab-content_title">{{comment.CommentPerson}}</h6>
+                <h6 class="tab-content_title">{{ comment.CommentPerson }}</h6>
                 <!-- <span>{{comment.CommentDate}}</span> -->
-                <p>{{comment.Comment}}</p>
+                <p>{{ comment.Comment }}</p>
               </div>
             </template>
 
@@ -3545,7 +3595,6 @@
               class="q-ml-sm"
               @click="addComment"
             />
-
           </div>
         </div>
 
@@ -3563,18 +3612,19 @@
             <div class="tab-content" ref="tabContent">
               <ul class="fileBlock">
                 <li
-                  class="fileLi" 
-                  v-for="(fileData, index) of profile.fileList" 
+                  class="fileLi"
+                  v-for="(fileData, index) of profile.fileList"
                   :key="index"
                 >
-                  <p>{{ fileData.label }} 
-                     {{ fileData.number ? +fileData.number + 1 : null}}
-                  </p> 
-                  <q-btn 
-                      :disable="disable"
-                      icon="print" 
-                      @click="printFile(fileData, index)" 
-                      :loading="loadings[index]"
+                  <p>
+                    {{ fileData.label }}
+                    {{ fileData.number ? +fileData.number + 1 : null }}
+                  </p>
+                  <q-btn
+                    :disable="disable"
+                    icon="print"
+                    @click="printFile(fileData, index)"
+                    :loading="loadings[index]"
                   >
                     <template v-slot:loading>
                       <q-spinner-facebook />
@@ -3651,34 +3701,52 @@
     </div>
 
     <appLoaderFullScreen v-if="loader" />
-    <appInfoList 
+    <!-- <appInfoList 
       :confirm="infoList" 
       :INPS="true" 
       @failureCreditINPS="($event) => infoList = $event"
-    />
+    /> -->
+
+    <q-dialog v-model="INPSBar" persistent>
+      <q-card class="INPSblock">
+        <q-card-section>
+          <appGetDataINPS
+            v-if="dataINPS"
+            :salaries="dataINPS"
+            @closeBar="$event => (INPSBar = $event)"
+          />
+
+          <appSetDataINPS v-else @closeBar="$event => (INPSBar = $event)" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { mapState } from 'vuex';
+import { mapState } from "vuex";
 import printJS from "print-js";
 
-import InfoList from "../registration/PreApproval";
+// import InfoList from "../registration/PreApproval";
+import SetDataINPS from "../../Components/INPS/SetData";
+import GetDataINPS from "../../Components/INPS/GetData";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 import CommonUtils from "@/shared/utils/CommonUtils";
 import dataTransform from "../../filters/dataTransform";
-import { validItems, validFilter } from "../../filters/valid_filter"
+import { validItems, validFilter } from "../../filters/valid_filter";
 
 export default {
   name: "profile",
   data() {
     return {
       bankLoading: false,
-      infoList: false,
+      // infoList: false,
+      INPSBar: false,
+      dataINPS: null,
       countRelativeDocumentName: -1,
       countGuaranteeDocumentName: -1,
       currentDate: CommonUtils.dateFilter(new Date()),
@@ -3696,7 +3764,7 @@ export default {
       bar: false,
       GracePeriodMin: null,
       GracePeriodMax: null,
-      creditManagerComment:"",
+      creditManagerComment: "",
 
       options: {
         //Countries: this.$store.getters["profile/dictionaries"].Countries.items,
@@ -3719,35 +3787,42 @@ export default {
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
         data: {}
       }
-
     };
   },
 
   async created() {
     // this.$store.commit("profile/resetDataFullFormProfile")
-    
+
     if (this.taskId) {
-      this.loaderForm = true
+      this.loaderForm = true;
       this.$store.commit("credits/setTaskId", this.taskId);
 
       // если перезагрузили страницу
       if (!axios.defaults.headers.common["BPMCSRFToken"]) {
-        await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
-        await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
+        await this.$store.dispatch(
+          "credits/setHeaderRole",
+          sessionStorage.getItem("userRole")
+        );
+        await this.$store.dispatch(
+          "credits/setHeaderBPM",
+          sessionStorage.getItem("csrf_token")
+        );
       }
-      
+
       try {
         const response = await this.$store.dispatch("profile/getFullForm");
 
         //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-        console.log('response', response)
+        console.log("response", response);
 
         if (response) {
-          const { data } = response.data.input.find(i => i.label == 'application')
-        
+          const { data } = response.data.input.find(
+            i => i.label == "application"
+          );
+
           if (data.BODecision != null) {
-            const uploadedFiles = data.AttachedDocuments.items
-            const guarantees = data.Guarantee
+            const uploadedFiles = data.AttachedDocuments.items;
+            const guarantees = data.Guarantee;
 
             for (let file of uploadedFiles) {
               this.filesAll.push({
@@ -3760,52 +3835,74 @@ export default {
 
             for (let guarantee in guarantees) {
               for (let i of guarantees[guarantee].items) {
-                this.guaranteeCount.push("guarantee")
+                this.guaranteeCount.push("guarantee");
               }
             }
           }
         }
-        
-        this.loaderForm = false
+
+        this.loaderForm = false;
       } catch (error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
-        this.loaderForm = false
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.loaderForm = false;
       }
-    } else if (!axios.defaults.headers.common["BPMCSRFToken"]) { // если перезагрузили страницу
-        await this.$store.dispatch("credits/setHeaderRole", sessionStorage.getItem("userRole"))
-        await this.$store.dispatch("credits/setHeaderBPM", sessionStorage.getItem("csrf_token"))
-        this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData"))) //синхронизация с preapprov
-        this.$store.commit("profile/setDictionaries", JSON.parse(sessionStorage.getItem("dictionaries")))
-        this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));  
-        //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    } 
+    } else if (!axios.defaults.headers.common["BPMCSRFToken"]) {
+      // если перезагрузили страницу
+      await this.$store.dispatch(
+        "credits/setHeaderRole",
+        sessionStorage.getItem("userRole")
+      );
+      await this.$store.dispatch(
+        "credits/setHeaderBPM",
+        sessionStorage.getItem("csrf_token")
+      );
+      this.$store.commit(
+        "profile/setPreapprovData",
+        JSON.parse(sessionStorage.getItem("preapprovData"))
+      ); //синхронизация с preapprov
+      this.$store.commit(
+        "profile/setDictionaries",
+        JSON.parse(sessionStorage.getItem("dictionaries"))
+      );
+      this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
+      this.$store.commit(
+        "profile/setPreapproveNum",
+        sessionStorage.getItem("preapprove_num")
+      );
+      //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+    }
     // else {
     //     this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
     //     //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
     // }
 
-    this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    this.options.Countries = this.$store.getters["profile/dictionaries"].Countries.items
+    this.setLoan(this.fullProfile.LoanInfo.LoanProduct);
+    this.options.Countries = this.$store.getters[
+      "profile/dictionaries"
+    ].Countries.items;
   },
   mounted() {
     setTimeout(() => {
-      this.onSubmit("start")
-    }, 1000)
+      this.onSubmit("start");
+    }, 1000);
   },
   computed: {
     ...mapState({
-        disableField: state => state.profile.disableField,
-        fullProfile: state => state.profile.fullFormProfile,
-        Customer: state => state.profile.fullFormProfile.Customer,
-        dictionaries: state => state.profile.dictionaries,
-        profile: state => state.profile,
-        credits: state => state.credits,
-        preApprovalData: state => state.credits.preApprovalData,
-        loadings: state => state.profile.loadings,
-      }),
-      
+      disableField: state => state.profile.disableField,
+      fullProfile: state => state.profile.fullFormProfile,
+      Customer: state => state.profile.fullFormProfile.Customer,
+      dictionaries: state => state.profile.dictionaries,
+      profile: state => state.profile,
+      credits: state => state.credits,
+      preApprovalData: state => state.credits.preApprovalData,
+      loadings: state => state.profile.loadings
+    }),
+
     taskId() {
-      return this.$route.query.taskId
+      return this.$route.query.taskId;
     }
   },
   watch: {
@@ -3828,7 +3925,7 @@ export default {
     //     this.$refs.totalWorkExperience.validate()
     //   }
     // },
-    
+
     // "Customer.JobInfo.totalJobExperienceMonths"() {
     //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
     //     this.$refs.workExperience.validate()
@@ -3842,9 +3939,8 @@ export default {
       if (flag) {
         //this.addFlagRegistration({ item: "Адрес фактического проживания", value: flag })
         this.removeRegistration({ item: "Адрес фактического проживания" });
-        this.sameRegistration = null
-      } 
-      else {
+        this.sameRegistration = null;
+      } else {
         //this.addRegistration("Адрес фактического проживания");
         //this.addFlagRegistration({ item: "Адрес фактического проживания", value: flag })
       }
@@ -3852,8 +3948,8 @@ export default {
   },
   methods: {
     async onSubmit(submitForm = true) {
-      this.countRelativeDocumentName = -1
-      this.countGuaranteeDocumentName = -1
+      this.countRelativeDocumentName = -1;
+      this.countGuaranteeDocumentName = -1;
 
       console.log("fullProfile", this.$store.state.profile);
       console.log("submit", submitForm);
@@ -3871,7 +3967,7 @@ export default {
       this.$refs.documentType.validate();
 
       if (this.Customer.documentType == 7) {
-        this.$refs.DocumentName.validate()
+        this.$refs.DocumentName.validate();
       } else {
         validItems(this.$refs, "DocumentName");
       }
@@ -3902,7 +3998,11 @@ export default {
       validFilter(this.$refs, "relativesMnameValid", "relatives_mname");
       validFilter(this.$refs, "relativesBirthdayValid", "relatives_birthday");
 
-      validFilter(this.$refs, "relativesDocumentDocumentTypeValid", "relativesDocumentDocumentType")
+      validFilter(
+        this.$refs,
+        "relativesDocumentDocumentTypeValid",
+        "relativesDocumentDocumentType"
+      );
 
       // this.Customer.Relatives.items.forEach(i => {
       //   if (i.Document.documentType == 7) {
@@ -3916,26 +4016,50 @@ export default {
 
       this.Customer.Relatives.items.forEach(i => {
         if (i.Document.documentType == 7) {
-          this.countRelativeDocumentName++
+          this.countRelativeDocumentName++;
           // console.log('relativesDocumentDocumentName', this.$refs.relativesDocumentDocumentName)
-          validFilter(this.$refs, "relativesDocumentDocumentNameValid", "relativesDocumentDocumentName", true, this.countRelativeDocumentName)
+          validFilter(
+            this.$refs,
+            "relativesDocumentDocumentNameValid",
+            "relativesDocumentDocumentName",
+            true,
+            this.countRelativeDocumentName
+          );
         } else {
           validItems(this.$refs, "relativesDocumentDocumentNameValid");
         }
-      })
+      });
 
-      validFilter(this.$refs, 
+      validFilter(
+        this.$refs,
         "relativesDocumentSeriesValid",
         "relativesDocumentSeries"
       );
-      validFilter(this.$refs, 
+      validFilter(
+        this.$refs,
         "relativesDocumentNumberValid",
         "relativesDocumentNumber"
       );
-      validFilter(this.$refs, "relativesDocumentGivenDateValid", "relativesDocumentGivenDate");
-      validFilter(this.$refs, "relativesDocumentExpirationDateValid", "relativesDocumentExpirationDate");
-      validFilter(this.$refs, "relativesDocumentRegionsGivenPlaceValid", "relativesDocumentRegionsGivenPlace");
-      validFilter(this.$refs, "relativesDocumentGivenPlaceValid", "relativesDocumentGivenPlace");
+      validFilter(
+        this.$refs,
+        "relativesDocumentGivenDateValid",
+        "relativesDocumentGivenDate"
+      );
+      validFilter(
+        this.$refs,
+        "relativesDocumentExpirationDateValid",
+        "relativesDocumentExpirationDate"
+      );
+      validFilter(
+        this.$refs,
+        "relativesDocumentRegionsGivenPlaceValid",
+        "relativesDocumentRegionsGivenPlace"
+      );
+      validFilter(
+        this.$refs,
+        "relativesDocumentGivenPlaceValid",
+        "relativesDocumentGivenPlace"
+      );
 
       this.$refs.kindOfActivity.validate();
 
@@ -3947,7 +4071,7 @@ export default {
         this.$refs.innOfEmployer.validate();
         this.$refs.typeOrganization.validate();
         this.$refs.amountWorkes.validate();
-        this.$refs.position.validate();
+        // this.$refs.position.validate();
         this.$refs.positionCategory.validate();
         this.$refs.workExperience.validate();
         this.$refs.totalWorkExperience.validate();
@@ -3956,7 +4080,7 @@ export default {
         validItems(this.$refs, "innOfEmployer");
         validItems(this.$refs, "typeOrganization");
         validItems(this.$refs, "amountWorkes");
-        validItems(this.$refs, "position");
+        // validItems(this.$refs, "position");
         validItems(this.$refs, "positionCategory");
         validItems(this.$refs, "workExperience");
         validItems(this.$refs, "totalWorkExperience");
@@ -4008,37 +4132,77 @@ export default {
         validFilter(this.$refs, "surnameGuaranteesValid", "surnameGuarantees");
         validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
         validFilter(this.$refs, "mnameGuaranteesValid", "mnameGuarantees");
-        validFilter(this.$refs, "birthdayGuaranteesValid", "birthdayGuarantees");
+        validFilter(
+          this.$refs,
+          "birthdayGuaranteesValid",
+          "birthdayGuarantees"
+        );
         validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
         validFilter(this.$refs, "pinppGuaranteesValid", "pinppGuarantees");
 
-        validFilter(this.$refs, "guaranteesDocumentDocumentTypeValid", "guaranteesDocumentDocumentType");
+        validFilter(
+          this.$refs,
+          "guaranteesDocumentDocumentTypeValid",
+          "guaranteesDocumentDocumentType"
+        );
 
         this.fullProfile.Guarantee.RelatedPerson.items.forEach(i => {
           if (i.Document.documentType == 7) {
-            this.countGuaranteeDocumentName++
-            validFilter(this.$refs, "guaranteesDocumentDocumentNameValid" ,"guaranteesDocumentDocumentName", true, this.countGuaranteeDocumentName);
+            this.countGuaranteeDocumentName++;
+            validFilter(
+              this.$refs,
+              "guaranteesDocumentDocumentNameValid",
+              "guaranteesDocumentDocumentName",
+              true,
+              this.countGuaranteeDocumentName
+            );
           } else {
             validItems(this.$refs, "guaranteesDocumentDocumentNameValid");
           }
-        })
+        });
 
-        validFilter(this.$refs, 
+        validFilter(
+          this.$refs,
           "guaranteesDocumentSeriesValid",
           "guaranteesDocumentSeries"
         );
-        validFilter(this.$refs, 
+        validFilter(
+          this.$refs,
           "guaranteesDocumentNumberValid",
           "guaranteesDocumentNumber"
         );
-        validFilter(this.$refs, "guaranteesDocumentGivenDateValid", "guaranteesDocumentGivenDate");
-        validFilter(this.$refs, "guaranteesDocumentExpirationDateValid", "guaranteesDocumentExpirationDate");
-        validFilter(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid", "guaranteesDocumentRegionsGivenPlace");
-        validFilter(this.$refs, "guaranteesDocumentGivenPlaceValid", "guaranteesDocumentGivenPlace");
+        validFilter(
+          this.$refs,
+          "guaranteesDocumentGivenDateValid",
+          "guaranteesDocumentGivenDate"
+        );
+        validFilter(
+          this.$refs,
+          "guaranteesDocumentExpirationDateValid",
+          "guaranteesDocumentExpirationDate"
+        );
+        validFilter(
+          this.$refs,
+          "guaranteesDocumentRegionsGivenPlaceValid",
+          "guaranteesDocumentRegionsGivenPlace"
+        );
+        validFilter(
+          this.$refs,
+          "guaranteesDocumentGivenPlaceValid",
+          "guaranteesDocumentGivenPlace"
+        );
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
-        validFilter(this.$refs, "districtGuaranteesValid", "districtGuarantees");
+        validFilter(
+          this.$refs,
+          "districtGuaranteesValid",
+          "districtGuarantees"
+        );
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
-        validFilter(this.$refs, "houseNumberGuaranteesValid", "houseNumberGuarantees");
+        validFilter(
+          this.$refs,
+          "houseNumberGuaranteesValid",
+          "houseNumberGuarantees"
+        );
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
       } else {
         validItems(this.$refs, "customersAttitudeValid");
@@ -4068,17 +4232,30 @@ export default {
         validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
         validFilter(this.$refs, "CEOLastNameGuaranteesValid", "CEOLastName");
         validFilter(this.$refs, "CEOFirstNameGuaranteesValid", "CEOFirstName");
-        validFilter(this.$refs, "CEOMiddleNameGuaranteesValid", "CEOMiddleName");
+        validFilter(
+          this.$refs,
+          "CEOMiddleNameGuaranteesValid",
+          "CEOMiddleName"
+        );
         validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
         validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
-        validFilter(this.$refs, 
+        validFilter(
+          this.$refs,
           "kindOfActivityGuaranteesValid",
           "kindOfActivityGuarantees"
         );
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
-        validFilter(this.$refs, "districtGuaranteesValid", "districtGuarantees");
+        validFilter(
+          this.$refs,
+          "districtGuaranteesValid",
+          "districtGuarantees"
+        );
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
-        validFilter(this.$refs, "houseNumberGuaranteesValid", "houseNumberGuarantees");
+        validFilter(
+          this.$refs,
+          "houseNumberGuaranteesValid",
+          "houseNumberGuarantees"
+        );
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
       } else {
         validItems(this.$refs, "priceGuaranteesValid");
@@ -4133,7 +4310,10 @@ export default {
       }
 
       //если не овердрафт
-      if (!!this.fullProfile.LoanInfo.LoanProduct && this.fullProfile.LoanInfo.LoanProduct !== 3) {
+      if (
+        !!this.fullProfile.LoanInfo.LoanProduct &&
+        this.fullProfile.LoanInfo.LoanProduct !== 3
+      ) {
         this.$refs.typeRepayment.validate();
         // this.$refs.initialFee.validate();
       } else {
@@ -4142,23 +4322,22 @@ export default {
       }
 
       if (!this.fullProfile.AttachedDocuments.items.length) {
-        
         this.$refs.uploadFile.validate();
       } else {
         validItems(this.$refs, "uploadFile");
       }
 
-      if (!this.fullProfile.Guarantee.Insurance.items.length ||
-          !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
-          !this.fullProfile.Guarantee.RelatedPerson.items.length 
-        ) {
-          this.guaranteesValid()
+      if (
+        !this.fullProfile.Guarantee.Insurance.items.length ||
+        !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
+        !this.fullProfile.Guarantee.RelatedPerson.items.length
+      ) {
+        this.guaranteesValid();
       } else {
         validItems(this.$refs, "guaranteesValid");
-        
       }
-      
-      console.log('files', this.$refs.files);
+
+      console.log("files", this.$refs.files);
 
       if (
         this.$refs.surname.hasError ||
@@ -4170,7 +4349,6 @@ export default {
         this.$refs.inn.hasError ||
         this.$refs.pinpp.hasError ||
         this.$refs.sex.hasError ||
-
         this.$refs.documentType.hasError ||
         this.$refs.DocumentName.hasError ||
         this.$refs.DocumentSeries.hasError ||
@@ -4181,7 +4359,6 @@ export default {
         this.$refs.DocumentGivenPlace.hasError ||
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
-
         this.$refs.regionValid.hasError ||
         this.$refs.districtValid.hasError ||
         this.$refs.streetValid.hasError ||
@@ -4192,10 +4369,8 @@ export default {
         this.$refs.relativesNameValid.hasError ||
         this.$refs.relativesMnameValid.hasError ||
         this.$refs.relativesBirthdayValid.hasError ||
-
         this.$refs.relativesDocumentDocumentTypeValid.hasError ||
         this.$refs.relativesDocumentDocumentNameValid.hasError ||
-
         this.$refs.relativesDocumentSeriesValid.hasError ||
         this.$refs.relativesDocumentNumberValid.hasError ||
         this.$refs.relativesDocumentGivenDateValid.hasError ||
@@ -4208,7 +4383,7 @@ export default {
         this.$refs.innOfEmployer.hasError ||
         this.$refs.typeOrganization.hasError ||
         this.$refs.amountWorkes.hasError ||
-        this.$refs.position.hasError ||
+        // this.$refs.position.hasError ||
         this.$refs.positionCategory.hasError ||
         this.$refs.workExperience.hasError ||
         this.$refs.totalWorkExperience.hasError ||
@@ -4236,7 +4411,6 @@ export default {
         this.$refs.innGuaranteesValid.hasError ||
         this.$refs.kindOfActivityGuaranteesValid.hasError ||
         this.$refs.pinppGuaranteesValid.hasError ||
-
         this.$refs.guaranteesDocumentDocumentTypeValid.hasError ||
         this.$refs.guaranteesDocumentDocumentNameValid.hasError ||
         this.$refs.guaranteesDocumentSeriesValid.hasError ||
@@ -4260,7 +4434,6 @@ export default {
         // this.$refs.typeCredit.hasError ||
         // this.$refs.initialFee.hasError ||
         this.$refs.purposeCredit.hasError ||
-       
         // если потребительский кредит
         this.$refs.nameProduction.hasError ||
         this.$refs.productName.hasError ||
@@ -4268,7 +4441,6 @@ export default {
         this.$refs.billProd.hasError ||
         this.$refs.agreementNumber.hasError ||
         this.$refs.agreementDate.hasError ||
-
         this.$refs.sourceFinancs.hasError ||
         this.$refs.uploadFile.hasError ||
         this.$refs.guaranteesValid.hasError
@@ -4276,181 +4448,652 @@ export default {
         this.formHasError = true;
         this.bar = true;
       } else {
-         if (submitForm === "start") {
-           this.profile.confirmCredit = false;
-         } else if (submitForm) {
-        this.loader = true;
-        this.fullProfile.ClientManagerLogin = this.$store.getters["auth/username"]
-        console.log("fullProfile", this.$store.state.profile.fullFormProfile);
-        const {
-          Status,
-          // ApplicationID,
-          // ProtocolNumber,
-          // Number,
-          // Branch,
-          BODecision,
-          // FinalDecision,
-          // Date,
-          BOLogin,
-          // Department,
-          ClientManagerLogin,
-          CreditCommiteeDecisions,
-          Customer,
-          Guarantee,
-          LoanInfo,
-          ApplicationComment,
-          AttachedDocuments,
-        } = this.fullProfile;
+        if (submitForm === "start") {
+          this.profile.confirmCredit = false;
+        } else if (submitForm) {
+          this.loader = true;
+          this.fullProfile.ClientManagerLogin = this.$store.getters[
+            "auth/username"
+          ];
+          console.log("fullProfile", this.$store.state.profile.fullFormProfile);
+          const {
+            Status,
+            // ApplicationID,
+            // ProtocolNumber,
+            // Number,
+            // Branch,
+            BODecision,
+            // FinalDecision,
+            // Date,
+            BOLogin,
+            // Department,
+            ClientManagerLogin,
+            CreditCommiteeDecisions,
+            Customer,
+            Guarantee,
+            LoanInfo,
+            ApplicationComment,
+            AttachedDocuments
+          } = this.fullProfile;
 
-        Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`
+          Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
           // Customer.Document.Number = Number(Customer.Document.Number)
           // Customer.Relatives.items.map(i => i.Document.Number = Number(i.Document.Number))
           // Guarantee.RelatedPerson.items.map(i => i.Document.Number = Number(i.Document.Number))
-        //LoanInfo.RepaymentType = Number(LoanInfo.RepaymentType)
+          //LoanInfo.RepaymentType = Number(LoanInfo.RepaymentType)
 
-        // удалил из объекта - Date!!!
-        const data = {
-          output: [
-            {
-              name: "application",
-              data: {
-                Status,
-                // ApplicationID,
-                // ProtocolNumber,
-                // Number,
-                // Branch,
-                BODecision,
-                // FinalDecision,
-                BOLogin,
-                // Department,
-                ClientManagerLogin,
-                CreditCommiteeDecisions,
-                Customer,
-                Guarantee,
-                LoanInfo,
-                ApplicationComment,
-                AttachedDocuments,
-              },
-            },
-          ],
-        };
+          // удалил из объекта - Date!!!
+          const data = {
+            output: [
+              {
+                name: "application",
+                data: {
+                  Status,
+                  // ApplicationID,
+                  // ProtocolNumber,
+                  // Number,
+                  // Branch,
+                  BODecision,
+                  // FinalDecision,
+                  BOLogin,
+                  // Department,
+                  ClientManagerLogin,
+                  CreditCommiteeDecisions,
+                  Customer,
+                  Guarantee,
+                  LoanInfo,
+                  ApplicationComment,
+                  AttachedDocuments
+                }
+              }
+            ]
+          };
 
-        console.log(JSON.stringify(data, null, 2));
+          console.log(JSON.stringify(data, null, 2));
 
-        try {
-          const response = await this.$store.dispatch("credits/confirmationCredit", data);
-          console.log("response", JSON.stringify(response, null, 2));
-          //console.log('nextTaskId', response.nextTask.id)
+          try {
+            const response = await this.$store.dispatch(
+              "credits/confirmationCredit",
+              data
+            );
+            console.log("response", JSON.stringify(response, null, 2));
+            //console.log('nextTaskId', response.nextTask.id)
 
-          if (response) {
-            this.$store.commit('credits/setMessage', 'Credit complete')
-            this.$store.commit("credits/removeTask", this.taskId)
-            this.$router.push("/work/credit")
-            //this.$router.go(-1);
+            if (response) {
+              this.$store.commit("credits/setMessage", "Credit complete");
+              this.$store.commit("credits/removeTask", this.taskId);
+              this.$router.push("/work/credit");
+              //this.$router.go(-1);
+            }
+
+            this.loader = false;
+          } catch (error) {
+            this.$store.commit(
+              "credits/setMessage",
+              CommonUtils.filterServerError(error)
+            );
+            this.loader = false;
           }
-          
-          this.loader = false;
-        } catch (error) {
-          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
-          this.loader = false;
-        }
         } else {
           this.profile.confirmCredit = true;
         }
       }
     },
 
-    async getInfoBank() {
-      this.bankLoading = true
-      try{
-        const response = await this.$store.dispatch("profile/getInfoBank")
-        if (response <= 0) {
-          this.infoList = true
+    // async onSubmit() {
+    //   const data = {
+    //     output: [
+    //       {
+    //         name: "application",
+    //         data: {
+    //           Status: "",
+    //           BODecision: false,
+    //           BOLogin: "",
+    //           ClientManagerLogin: "man",
+    //           CreditCommiteeDecisions: {
+    //             items: []
+    //           },
+    //           Customer: {
+    //             DigID: false,
+    //             Email: "",
+    //             FirstName: "SDFSD",
+    //             LastName: "SDF",
+    //             MiddleName: "SDF SDFSD",
+    //             FullName: "SDF SDFSD SDF SDFSD",
+    //             BirthDate: "08.09.1990",
+    //             Country: 68,
+    //             BirthCity: "DSFSD",
+    //             INN: "123131313",
+    //             PINPP: "23424324242342",
+    //             ResidentFlag: "",
+    //             Gender: 1,
+    //             Document: {
+    //               documentType: 2,
+    //               Series: "SD",
+    //               Number: "2342424",
+    //               ExpirationDate: "31.08.2020",
+    //               GivenDate: "01.08.2020",
+    //               GUID: "",
+    //               Country: "Uzbekistan",
+    //               DocLink: "",
+    //               DocumentName: "",
+    //               Region: 5,
+    //               Districts: {
+    //                 items: [
+    //                   {
+    //                     label: "НАВОИЙ ШАХРИ",
+    //                     value: 58
+    //                   },
+    //                   {
+    //                     label: "ЗАРАФШОН ШАХРИ",
+    //                     value: 59
+    //                   },
+    //                   {
+    //                     label: "Г.УЧКУДУК",
+    //                     value: 60
+    //                   },
+    //                   {
+    //                     label: "КАРМАНА ТУМАНИ",
+    //                     value: 61
+    //                   },
+    //                   {
+    //                     label: "КОНИМЕХ ТУМАНИ",
+    //                     value: 62
+    //                   },
+    //                   {
+    //                     label: "КИЗИЛТЕПА ТУМАНИ",
+    //                     value: 63
+    //                   },
+    //                   {
+    //                     label: "НАВБАХОР ТУМАНИ",
+    //                     value: 64
+    //                   },
+    //                   {
+    //                     label: "НУРОТА ТУМАНИ",
+    //                     value: 65
+    //                   },
+    //                   {
+    //                     label: "ХАТИРЧИ ТУМАНИ",
+    //                     value: 66
+    //                   },
+    //                   {
+    //                     label: "ТОМДИ ТУМАНИ",
+    //                     value: 67
+    //                   },
+    //                   {
+    //                     label: "УЧКУДУК ТУМАНИ",
+    //                     value: 211
+    //                   },
+    //                   {
+    //                     label: "ГОЗГОН ШАХРИ",
+    //                     value: 224
+    //                   }
+    //                 ]
+    //               },
+    //               GivenPlace: 62
+    //             },
+    //             Education: 3,
+    //             PhoneList: {
+    //               items: [
+    //                 {
+    //                   Number: "+998134345353"
+    //                 }
+    //               ]
+    //             },
+    //             AddressList: {
+    //               items: [
+    //                 {
+    //                   Building: "",
+    //                   OwnershipType: null,
+    //                   HouseType: "",
+    //                   PostalCode: "",
+    //                   Region: 2,
+    //                   District: 20,
+    //                   Street: "SDF",
+    //                   Block: "",
+    //                   House: "12",
+    //                   City: "",
+    //                   Apartment: "",
+    //                   AddressType: "Адрес постоянной регистрации",
+    //                   Districts: {
+    //                     items: [
+    //                       {
+    //                         label: "ОЛОТ ТУМАНИ",
+    //                         value: 19
+    //                       },
+    //                       {
+    //                         label: "ВОБКЕНТ ТУМАНИ",
+    //                         value: 20
+    //                       },
+    //                       {
+    //                         label: "ГИЖДУВОН ТУМАНИ",
+    //                         value: 21
+    //                       },
+    //                       {
+    //                         label: "БУХОРО ТУМАНИ",
+    //                         value: 22
+    //                       },
+    //                       {
+    //                         label: "КОРАКУЛ ТУМАНИ",
+    //                         value: 23
+    //                       },
+    //                       {
+    //                         label: "РОМИТАН ТУМАНИ",
+    //                         value: 24
+    //                       },
+    //                       {
+    //                         label: "ЖОНДОР ТУМАНИ",
+    //                         value: 25
+    //                       },
+    //                       {
+    //                         label: "ШОФИРКОН ТУМАНИ",
+    //                         value: 26
+    //                       },
+    //                       {
+    //                         label: "ПЕШКУ ТУМАНИ",
+    //                         value: 27
+    //                       },
+    //                       {
+    //                         label: "КОРОВУЛБОЗОР ТУМАНИ",
+    //                         value: 28
+    //                       },
+    //                       {
+    //                         label: "КОГОН ТУМАНИ",
+    //                         value: 29
+    //                       },
+    //                       {
+    //                         label: "БУХОРО ШАХРИ",
+    //                         value: 30
+    //                       },
+    //                       {
+    //                         label: "КОГОН ШАХРИ",
+    //                         value: 220
+    //                       }
+    //                     ]
+    //                   }
+    //                 }
+    //               ]
+    //             },
+    //             MaritalStatus: 2,
+    //             hasChildren: true,
+    //             UnderAgeChildrenNum: 1,
+    //             Relatives: {
+    //               items: [
+    //                 {
+    //                   FirstName: "GFHFH",
+    //                   FamilyConnectionType: 2,
+    //                   LastName: "SDF",
+    //                   MiddleName: "FGHFGH",
+    //                   BirthDate: "23.09.1989",
+    //                   Document: {
+    //                     documentType: 5,
+    //                     Series: "SD",
+    //                     Number: "2313131",
+    //                     ExpirationDate: "31.08.2020",
+    //                     GivenDate: "01.08.2020",
+    //                     GUID: "",
+    //                     Country: "",
+    //                     DocLink: "",
+    //                     DocumentName: "",
+    //                     Region: 7,
+    //                     Districts: {
+    //                       items: [
+    //                         {
+    //                           label: "ОКДАРЁ ТУМАНИ",
+    //                           value: 80
+    //                         },
+    //                         {
+    //                           label: "БУЛУНГУР ТУМАНИ",
+    //                           value: 81
+    //                         },
+    //                         {
+    //                           label: "ГУЗАЛКЕНТСКИЙ",
+    //                           value: 82
+    //                         },
+    //                         {
+    //                           label: "ЖОМБОЙ ТУМАНИ",
+    //                           value: 83
+    //                         },
+    //                         {
+    //                           label: "ИШТИХОН ТУМАНИ",
+    //                           value: 84
+    //                         },
+    //                         {
+    //                           label: "КАТТАКУРГОН ТУМАНИ",
+    //                           value: 85
+    //                         },
+    //                         {
+    //                           label: "КУШРАБОТ ТУМАНИ",
+    //                           value: 86
+    //                         },
+    //                         {
+    //                           label: "НАРПАЙ ТУМАНИ",
+    //                           value: 87
+    //                         },
+    //                         {
+    //                           label: "НУРОБОД ТУМАНИ",
+    //                           value: 88
+    //                         },
+    //                         {
+    //                           label: "ПАСТДАРГОМ ТУМАНИ",
+    //                           value: 89
+    //                         },
+    //                         {
+    //                           label: "ПАХТАЧИ ТУМАНИ",
+    //                           value: 90
+    //                         },
+    //                         {
+    //                           label: "ПАЙАРИК ТУМАНИ",
+    //                           value: 91
+    //                         },
+    //                         {
+    //                           label: "САМАРКАНД ТУМАНИ",
+    //                           value: 92
+    //                         },
+    //                         {
+    //                           label: "ТАЙЛОК ТУМАНИ",
+    //                           value: 93
+    //                         },
+    //                         {
+    //                           label: "УРГУТ ТУМАНИ",
+    //                           value: 94
+    //                         },
+    //                         {
+    //                           label: "ЧЕЛЕКСКИЙ",
+    //                           value: 95
+    //                         },
+    //                         {
+    //                           label: "САМАРКАНД ШАХРИ",
+    //                           value: 96
+    //                         },
+    //                         {
+    //                           label: "КАТТАКУРГОН ШАХРИ",
+    //                           value: 97
+    //                         },
+    //                         {
+    //                           label: "ТЕМИРЮЛЬСКИЙ",
+    //                           value: 215
+    //                         },
+    //                         {
+    //                           label: "Г.АКТАШ",
+    //                           value: 218
+    //                         },
+    //                         {
+    //                           label: "Г.УРГУТ",
+    //                           value: 219
+    //                         }
+    //                       ]
+    //                     },
+    //                     GivenPlace: 86
+    //                   }
+    //                 }
+    //               ]
+    //             },
+    //             JobInfo: {
+    //               employerActivityType: null,
+    //               positionType: null,
+    //               INN: "",
+    //               employeesNum: 0,
+    //               employerName: "",
+    //               totalJobExperienceMonths: 0,
+    //               activeYears: 0,
+    //               position: "",
+    //               type: 4,
+    //               lastJobExperienceMonths: 0
+    //             },
+    //             MonthlyExpenses: {
+    //               recurringExpenses: 2000000,
+    //               obligations: 0
+    //             },
+    //             MonthlyIncome: {
+    //               confirmMonthlyIncome: 10000000,
+    //               hasAdditionalIncome: false,
+    //               additionalIncome: {
+    //                 incomeType: null,
+    //                 sum: 0
+    //               }
+    //             },
+    //             PropertyInformation: {
+    //               Realty_new: {
+    //                 items: []
+    //               },
+    //               Transport_new: {
+    //                 items: []
+    //               }
+    //             }
+    //           },
+    //           Guarantee: {
+    //             Insurance: {
+    //               items: [
+    //                 {
+    //                   INN: "305684696",
+    //                   OrgName: '"OOO ""APEX INSURANCE"""',
+    //                   Sum: 50000000
+    //                 }
+    //               ]
+    //             },
+    //             RelatedLegalPerson: {
+    //               items: []
+    //             },
+    //             RelatedPerson: {
+    //               items: []
+    //             }
+    //           },
+    //           LoanInfo: {
+    //             LoanProduct: 1,
+    //             Sum: 20000000,
+    //             Currency: "СУМ",
+    //             RepaymentType: 1,
+    //             LoanType: null,
+    //             MinInterestRate: 32,
+    //             MaxInterestRate: 32,
+    //             MaxDefferalRepaymentPeriod: 0,
+    //             ConvenientRepaymentTerm: 5,
+    //             TermInMonth: 12,
+    //             MaxTermInMonths: 12,
+    //             MinTermInMonths: 1,
+    //             InitialPayment: 0,
+    //             MaxInitialPaymentPercent: 0,
+    //             MinInitialPaymentPercent: 0,
+    //             LoanPurpose: 261,
+    //             FundingSource: 1,
+    //             FacilitiesForRepaymentDate: false,
+    //             consumerLoan: {
+    //               nameBankProd: "",
+    //               nameService: "",
+    //               agreementDate: "",
+    //               nameProduction: "",
+    //               billProd: "",
+    //               agreementNumber: "",
+    //               idBankProd: 0
+    //             }
+    //           },
+    //           ApplicationComment: {
+    //             items: []
+    //           },
+    //           AttachedDocuments: {
+    //             items: [
+    //               {
+    //                 id: 1557,
+    //                 DocLink: "",
+    //                 DocumentName: "SDF"
+    //               }
+    //             ]
+    //           }
+    //         }
+    //       }
+    //     ]
+    //   };
+
+    //   console.log(JSON.stringify(data, null, 2));
+
+    //   try {
+    //     const response = await this.$store.dispatch(
+    //       "credits/confirmationCredit",
+    //       data
+    //     );
+    //     console.log("response", JSON.stringify(response, null, 2));
+    //     //console.log('nextTaskId', response.nextTask.id)
+
+    //     if (response) {
+    //       this.$store.commit("credits/setMessage", "Credit complete");
+    //       this.$store.commit("credits/removeTask", this.taskId);
+    //       this.$router.push("/work/credit");
+    //       //this.$router.go(-1);
+    //     }
+
+    //     this.loader = false;
+    //   } catch (error) {
+    //     this.$store.commit(
+    //       "credits/setMessage",
+    //       CommonUtils.filterServerError(error)
+    //     );
+    //     this.loader = false;
+    //   }
+    // },
+
+    async getDataINPS() {
+      this.bankLoading = true;
+
+      const data = {
+        input: [
+          {
+            name: "passSerial",
+            data: this.Customer.Document.Series
+          },
+          {
+            name: "passNumber",
+            data: this.Customer.Document.Number
+          },
+          {
+            name: "pin",
+            data: this.Customer.PINPP
+          },
+          {
+            name: "application_id",
+            data: this.profile.preapprove_num
+          },
+          {
+            name: "from",
+            data: "getData"
+          }
+        ]
+      };
+
+      try {
+        this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
+        if (this.dataINPS) {
+          const INPSItems = this.dataINPS.wages.items.map(i => {
+            return {
+              period: CommonUtils.dateFilter(i.period),
+              send_date: i.send_date,
+              inn: i.inn,
+              total_invoices: {
+                balance: i.total_invoices.balance,
+                percent: i.total_invoices.percent,
+                full: i.total_invoices.full
+              },
+              org_addres: i.org_addres,
+              org_name: i.org_name
+            };
+          });
+
+          this.dataINPS.wages.items = INPSItems;
+          console.log("dataINPS", this.dataINPS);
         }
 
-        this.bankLoading = false
-      } catch(error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.bankLoading = false;
+        this.INPSBar = true;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
         this.loader = false;
-        this.bankLoading = false
+        this.bankLoading = false;
       }
     },
 
     setINNCompany(companyName, idx) {
-      console.log(companyName, idx)
-      const company = this.dictionaries.Insurance_company.items.find(i => i.label == companyName)
+      console.log(companyName, idx);
+      const company = this.dictionaries.Insurance_company.items.find(
+        i => i.label == companyName
+      );
       if (company) {
-        this.fullProfile.Guarantee.Insurance.items[idx].INN = company.INN
+        this.fullProfile.Guarantee.Insurance.items[idx].INN = company.INN;
       }
     },
 
     validDatePerson(date) {
-
       if (this.Customer.Document.ExpirationDate) {
-        this.$refs.DocumentExpirationDate.validate()
+        this.$refs.DocumentExpirationDate.validate();
       }
 
       if (this.Customer.Document.GivenDate) {
-        this.$refs.DocumentGivenDate.validate()
+        this.$refs.DocumentGivenDate.validate();
       }
     },
 
     validWorkExperience() {
       if (this.Customer.JobInfo.totalJobExperienceMonths) {
-        this.$refs.workExperience.validate()
+        this.$refs.workExperience.validate();
       }
 
       if (this.Customer.JobInfo.lastJobExperienceMonths) {
-        this.$refs.totalWorkExperience.validate()
+        this.$refs.totalWorkExperience.validate();
       }
     },
 
     validDateRelatives(date, idx) {
-
       if (this.Customer.Relatives.items[idx].Document.ExpirationDate) {
-        this.$refs.relativesDocumentExpirationDate[idx].validate()
+        this.$refs.relativesDocumentExpirationDate[idx].validate();
       }
 
       if (this.Customer.Relatives.items[idx].Document.GivenDate) {
-        this.$refs.relativesDocumentGivenDate[idx].validate()
+        this.$refs.relativesDocumentGivenDate[idx].validate();
       }
     },
 
     validDateGuarantees(date, idx) {
-      console.log(date)
-      if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.ExpirationDate) {
-        this.$refs.guaranteesDocumentExpirationDate[idx].validate()
-      } 
-      if (this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.GivenDate) {
-        this.$refs.guaranteesDocumentGivenDate[idx].validate()
+      console.log(date);
+      if (
+        this.fullProfile.Guarantee.RelatedPerson.items[idx].Document
+          .ExpirationDate
+      ) {
+        this.$refs.guaranteesDocumentExpirationDate[idx].validate();
       }
-    }, 
+      if (
+        this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.GivenDate
+      ) {
+        this.$refs.guaranteesDocumentGivenDate[idx].validate();
+      }
+    },
 
     onChangeLoan(credit) {
-      console.log("Аннуит, диффер")
+      console.log("Аннуит, диффер");
       this.fullProfile.LoanInfo.RepaymentType = null;
       this.options.RepaymentType = [];
 
       this.fullProfile.LoanInfo.consumerLoan = {
-          nameBankProd: "",    // Наименование банка
-          nameService: "",     // Наименование товара/работы/услуги
-          agreementDate: "",   // Дата договора
-          nameProduction: "",  // Наименование продавца
-          billProd: "",        // Расчетный счет продавца
-          agreementNumber: "", // Номер договора
-          idBankProd: 0
-        }
-      this.fullProfile.LoanInfo.InitialPayment = 0
+        nameBankProd: "", // Наименование банка
+        nameService: "", // Наименование товара/работы/услуги
+        agreementDate: "", // Дата договора
+        nameProduction: "", // Наименование продавца
+        billProd: "", // Расчетный счет продавца
+        agreementNumber: "", // Номер договора
+        idBankProd: 0
+      };
+      this.fullProfile.LoanInfo.InitialPayment = 0;
 
-      this.setLoan(credit)
+      this.setLoan(credit);
     },
 
     setLoan(credit) {
-      console.log('credit', credit)
+      console.log("credit", credit);
       const idx = this.dictionaries.LoanDetails.items.findIndex(
         item => item.LOAN_ID == credit
       );
-      console.log('idx', idx);
+      console.log("idx", idx);
       if (idx !== -1) {
         this.fullProfile.LoanInfo.MinTermInMonths = this.dictionaries.LoanDetails.items[
           idx
@@ -4486,36 +5129,48 @@ export default {
       }
 
       // источник финансирования
-      this.options.FinancialSources = this.dictionaries.LOANPRODUCT_FINSOURCE.items[0][credit]
+      this.options.FinancialSources = this.dictionaries.LOANPRODUCT_FINSOURCE.items[0][
+        credit
+      ];
     },
-    
+
     setGivenPlace(event, idx, item) {
-        console.log('event', event, idx, item)
-        const districts = this.getDistricts(event)
-        this.$store.commit("profile/setGivenPlace", {idx, item, districts})
+      console.log("event", event, idx, item);
+      const districts = this.getDistricts(event);
+      this.$store.commit("profile/setGivenPlace", { idx, item, districts });
     },
 
     setDistricts(event, idx, item) {
-        console.log('event', event, idx, item)
-        const districts = this.getDistricts(event)
-        this.$store.commit("profile/setDistricts", {idx, item, districts})
+      console.log("event", event, idx, item);
+      const districts = this.getDistricts(event);
+      this.$store.commit("profile/setDistricts", { idx, item, districts });
     },
 
     setGivenPlaceGuarantee(event, idx, guarantee) {
-        //console.log('event', event, idx, guarantee)
-        const districts = this.getDistricts(event)
-        this.$store.commit("profile/setGivenPlaceGuarantee", {idx, guarantee, districts})
+      //console.log('event', event, idx, guarantee)
+      const districts = this.getDistricts(event);
+      this.$store.commit("profile/setGivenPlaceGuarantee", {
+        idx,
+        guarantee,
+        districts
+      });
     },
 
     setDistrictsGuarantee(event, idx, guarantee) {
-        //console.log('event', event, idx, guarantee)
-        const districts = this.getDistricts(event)
-        this.$store.commit("profile/setDistrictsGuarantee", {idx, guarantee, districts})
+      //console.log('event', event, idx, guarantee)
+      const districts = this.getDistricts(event);
+      this.$store.commit("profile/setDistrictsGuarantee", {
+        idx,
+        guarantee,
+        districts
+      });
     },
 
     getDistricts(id) {
-      const { region_id } = this.dictionaries.Region.items.find(i => i.value == id)
-      return this.dictionaries.Districts.items[0][region_id]
+      const { region_id } = this.dictionaries.Region.items.find(
+        i => i.value == id
+      );
+      return this.dictionaries.Districts.items[0][region_id];
     },
 
     addPhone() {
@@ -4539,17 +5194,17 @@ export default {
     },
 
     addInsurance(guarantee) {
-      this.guaranteeCount.push(guarantee)
+      this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addInsurance");
     },
 
     addRelatedLegalPerson(guarantee) {
-      this.guaranteeCount.push(guarantee)
+      this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addRelatedLegalPerson");
     },
 
     addRelatedPerson(guarantee) {
-      this.guaranteeCount.push(guarantee)
+      this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addRelatedPerson");
     },
 
@@ -4558,7 +5213,7 @@ export default {
     },
 
     removeGuarantee(payload) {
-      this.guaranteeCount.pop()
+      this.guaranteeCount.pop();
       this.$store.commit("profile/removeGuarantee", payload);
     },
 
@@ -4611,37 +5266,39 @@ export default {
     },
 
     dropFile(event) {
-      this.$refs.dragover.classList.remove('dragover')
+      this.$refs.dragover.classList.remove("dragover");
       let uploadedFiles = event.dataTransfer.files;
-      console.log('uploadFile', uploadedFiles)
+      console.log("uploadFile", uploadedFiles);
       // e.dataTransfer.files
-      this.uploadFile(uploadedFiles)
+      this.uploadFile(uploadedFiles);
     },
 
     dragoverFile() {
-      this.$refs.dragover.classList.add('dragover')
+      this.$refs.dragover.classList.add("dragover");
     },
 
     dragenterFile() {
-      this.$refs.dragover.classList.add('dragover')
+      this.$refs.dragover.classList.add("dragover");
     },
 
     dragleaveFile(event) {
-      let fileBlock = this.$refs.dragover.getBoundingClientRect()
-      
-      if ((event.pageX < fileBlock.left) || 
-        (event.pageX > fileBlock.right) || 
-        (event.pageY < fileBlock.top) || 
-        (event.pageY > fileBlock.bottom)) {
-        this.$refs.dragover.classList.remove('dragover')
-      };
+      let fileBlock = this.$refs.dragover.getBoundingClientRect();
+
+      if (
+        event.pageX < fileBlock.left ||
+        event.pageX > fileBlock.right ||
+        event.pageY < fileBlock.top ||
+        event.pageY > fileBlock.bottom
+      ) {
+        this.$refs.dragover.classList.remove("dragover");
+      }
     },
 
     handleFilesUpload() {
       this.loaderFile = false;
       let uploadedFiles = this.$refs.files.files;
-      console.log('uploadFile', uploadedFiles)
-      this.uploadFile(uploadedFiles)
+      console.log("uploadFile", uploadedFiles);
+      this.uploadFile(uploadedFiles);
     },
 
     // uploadFile(uploadedFiles) {
@@ -4692,48 +5349,58 @@ export default {
         this.loaderFile = true;
 
         let formData = new FormData();
-        let onlyNullId = this.filesAll.filter(i => i.id === null)
-       
+        let onlyNullId = this.filesAll.filter(i => i.id === null);
+
         for (let i = 0; i < this.files.length; i++) {
           let file = this.files[i];
-          let documentTypes = onlyNullId[i].DocumentName
+          let documentTypes = onlyNullId[i].DocumentName;
           formData.append("files", file);
           formData.append("documentTypes", documentTypes);
         }
 
-        console.log('formData', formData.getAll("files"))
+        console.log("formData", formData.getAll("files"));
 
         try {
-          const response = await this.$store.dispatch("profile/uploadFiles", formData);
-          console.log('resFile', response)
+          const response = await this.$store.dispatch(
+            "profile/uploadFiles",
+            formData
+          );
+          console.log("resFile", response);
           if (response) {
             this.files = []; // удалить все файлы после загрузки на сервер
             this.loaderFile = false;
             for (let el of response.infos) {
-              const item = this.filesAll.find(i => i.id === null)
-              item.id = Number(el.id)
+              const item = this.filesAll.find(i => i.id === null);
+              item.id = Number(el.id);
             }
           } else {
             this.loaderFile = false;
 
             // el.upload = true; // загрузка была, но прошла не удачна
             this.filesAll
-                .filter(i => i.id === null)
-                .map(i => i.upload = true)
+              .filter(i => i.id === null)
+              .map(i => (i.upload = true));
           }
         } catch (error) {
-          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
         }
       }
 
       // удалить все не загруженные файлы перед отправкой на сервер!!!!
-      this.fullProfile.AttachedDocuments.items = this.filesAll.filter(i => i.id !== null)
-                                                              .map(i => i = {
-                                                                    id: i.id,
-                                                                    DocLink: "",
-                                                                    DocumentName: i.DocumentName
-                                                                  })
-      console.log("document", this.fullProfile.AttachedDocuments)
+      this.fullProfile.AttachedDocuments.items = this.filesAll
+        .filter(i => i.id !== null)
+        .map(
+          i =>
+            (i = {
+              id: i.id,
+              DocLink: "",
+              DocumentName: i.DocumentName
+            })
+        );
+      console.log("document", this.fullProfile.AttachedDocuments);
     },
 
     removeAllFile() {
@@ -4749,20 +5416,28 @@ export default {
 
     async removeUploadFile(payload) {
       try {
-        console.log('idFile', this.filesAll[payload.index].id)
-        const idFile = this.filesAll[payload.index].id
-        const response = await this.$store.dispatch("profile/removeFiles", idFile)
+        console.log("idFile", this.filesAll[payload.index].id);
+        const idFile = this.filesAll[payload.index].id;
+        const response = await this.$store.dispatch(
+          "profile/removeFiles",
+          idFile
+        );
 
-        console.log('delFile', response)
+        console.log("delFile", response);
         if (response == "OK") {
           this.filesAll.splice([payload.index], 1);
-          const idx = this.fullProfile.AttachedDocuments.items.findIndex(i => i.id == idFile)
+          const idx = this.fullProfile.AttachedDocuments.items.findIndex(
+            i => i.id == idFile
+          );
           if (idx != -1) {
-            this.fullProfile.AttachedDocuments.items.splice(idx, 1)
+            this.fullProfile.AttachedDocuments.items.splice(idx, 1);
           }
         }
-      } catch(error){
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
       }
     },
 
@@ -4772,106 +5447,127 @@ export default {
 
     addComment() {
       const comment = {
-              Comment: this.creditManagerComment,
-              Type: "",
-              CommentPerson: this.$store.getters["auth/username"],
-              //id: 0,
-              //CommentDate: ""
-            }
+        Comment: this.creditManagerComment,
+        Type: "",
+        CommentPerson: this.$store.getters["auth/username"]
+        //id: 0,
+        //CommentDate: ""
+      };
 
-      this.$store.commit("profile/addComment", {commentBlock: "ApplicationComment", comment})
-      this.creditManagerComment = ""
-      console.log('comments', this.fullProfile.ApplicationComment)
+      this.$store.commit("profile/addComment", {
+        commentBlock: "ApplicationComment",
+        comment
+      });
+      this.creditManagerComment = "";
+      console.log("comments", this.fullProfile.ApplicationComment);
     },
-    
+
     msecond(val) {
-      return new Date(val.slice(-4) + val.slice(2, 6) + val.slice(0, 2))
+      return new Date(val.slice(-4) + val.slice(2, 6) + val.slice(0, 2));
     },
 
     adulthoodValid(date) {
-      return (this.msecond(this.currentDate) - this.msecond(date) - 432000000)/1000/60/60/24/365 > 18 // с учетом высокосных годов (4)
+      return (
+        (this.msecond(this.currentDate) - this.msecond(date) - 432000000) /
+          1000 /
+          60 /
+          60 /
+          24 /
+          365 >
+        18
+      ); // с учетом высокосных годов (4)
     },
 
     guaranteesValid() {
-      console.log(this.$refs.guaranteesValid)
-      this.totalGuaranteesSum = 0
+      console.log(this.$refs.guaranteesValid);
+      this.totalGuaranteesSum = 0;
 
       for (let guarantee in this.fullProfile.Guarantee) {
         for (let i of this.fullProfile.Guarantee[guarantee].items) {
-          this.totalGuaranteesSum = this.totalGuaranteesSum + i.Sum
+          this.totalGuaranteesSum = this.totalGuaranteesSum + i.Sum;
         }
       }
 
-      console.log('totalGuaranteesSum',this.totalGuaranteesSum)
+      console.log("totalGuaranteesSum", this.totalGuaranteesSum);
       this.$refs.guaranteesValid.validate();
       this.$refs.priceCredit.validate();
     },
 
     givenPlaceValid(val) {
-      return val.match(/[^А-Яа-яa-z0-9]+$/) || 'Введите на латинице заглавными буквами' // все кроме кирилицы
+      return (
+        val.match(/[^А-Яа-яa-z0-9]+$/) ||
+        "Введите на латинице заглавными буквами"
+      ); // все кроме кирилицы
     },
 
     fioValid(val) {
-      return val.match(/^[A-Z]+$/) || 'Введите на латинице заглавными буквами' // только латинские буквы
+      return val.match(/^[A-Z']+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
+    },
+
+    mValid(val) {
+      return (
+        val.match(/^([A-Z']+\s)*[A-Z']+$/) ||
+        "Введите на латинице заглавными буквами"
+      ); // только латинские буквы
     },
 
     phoneValid(val) {
-      return !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные'
+      return !val.match(/(?=([^1-9]))\1{7,}/) || "Неверные данные";
     },
 
     docNumberValid(val) {
-      return !val.match(/(?=(.))\1{7,}/) || 'Неверные данные'
+      return !val.match(/(?=(.))\1{7,}/) || "Неверные данные";
     },
 
     innValid(val) {
-      return !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
+      return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
     },
 
     pinppValid(val) {
-      return !val.match(/(?=(.))\1{14,}/) || 'Неверные данные'
+      return !val.match(/(?=(.))\1{14,}/) || "Неверные данные";
     },
 
     async printFile(fileData, idx) {
-      this.disable = true
-      this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
-      let file = null
-      this.fileData.type = fileData.label
-      this.fileData.data = dataTransform(fileData.data)
+      this.disable = true;
+      this.loadings.splice(idx, 1, true); // для ререндеринга (особенность vue)
+      let file = null;
+      this.fileData.type = fileData.label;
+      this.fileData.data = dataTransform(fileData.data);
       try {
-        console.log(JSON.stringify(this.fileData, null, 2))
+        console.log(JSON.stringify(this.fileData, null, 2));
 
         if (this.profile.fileList[idx].idFile) {
-            file = await this.$store.dispatch(
+          file = await this.$store.dispatch(
             "credits/getFile",
             this.profile.fileList[idx].idFile
           );
         } else {
-            file = await this.$store.dispatch(
-            "credits/getFile",
-            this.fileData
-          );
+          file = await this.$store.dispatch("credits/getFile", this.fileData);
 
-          this.profile.fileList[idx].idFile = file.id
+          this.profile.fileList[idx].idFile = file.id;
         }
 
-        console.log('file', file)
+        console.log("file", file);
 
         if (file) {
           printJS(file.url);
           window.URL.revokeObjectURL(file.url);
         }
-       
-        this.disable = false
-        this.loadings.splice(idx, 1, false)
-      } catch(error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
-        this.disable = false
-        this.loadings.splice(idx, 1, false)
+
+        this.disable = false;
+        this.loadings.splice(idx, 1, false);
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.disable = false;
+        this.loadings.splice(idx, 1, false);
       }
     },
 
     // dataTransform(data) {
-      
+
     //   for (let i in data) {
     //     if (data[i] != null) {
     //       if (data[i].items) {
@@ -4883,29 +5579,32 @@ export default {
     //   return data
     // },
 
-    filterFn (val, update) {
-      console.log('filterFn', val)
-      if (val === '') {
+    filterFn(val, update) {
+      console.log("filterFn", val);
+      if (val === "") {
         update(() => {
-          console.log(this.dictionaries.Countries)
-          this.options.Countries = this.dictionaries.Countries.items
-        })
-        return
+          console.log(this.dictionaries.Countries);
+          this.options.Countries = this.dictionaries.Countries.items;
+        });
+        return;
       }
 
       update(() => {
-        const needle = val.toLowerCase()
-        console.log('needle',needle)
-        this.options.Countries = this.dictionaries.Countries.items.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
-      })
+        const needle = val.toLowerCase();
+        console.log("needle", needle);
+        this.options.Countries = this.dictionaries.Countries.items.filter(
+          v => v.label.toLowerCase().indexOf(needle) > -1
+        );
+      });
     }
   },
   components: {
     appLoader: Loader,
     appFullProfile: FullProfile,
     appLoaderFullScreen: LoaderFullScreen,
-    appInfoList: InfoList
-    // appUploadFiles: UploadFiles
+    appSetDataINPS: SetDataINPS,
+    appGetDataINPS: GetDataINPS
+    // appInfoList: InfoList
   }
 };
 </script>
@@ -4977,26 +5676,27 @@ export default {
   }
 
   .guarantees {
-      .q-field__control {
-        // color: rgba(0, 0, 0, 0.87);
-      }
+    .q-field__control {
+      // color: rgba(0, 0, 0, 0.87);
+    }
 
-      .q-field--auto-height .q-field__control, .q-field--auto-height, .q-field__native {
-        min-height: 40px;
-      }
+    .q-field--auto-height .q-field__control,
+    .q-field--auto-height,
+    .q-field__native {
+      min-height: 40px;
+    }
 
-      .q-field--standard .q-field__control:after {
-        // border-width: 0;
-        // height: 0;
-      }
+    .q-field--standard .q-field__control:after {
+      // border-width: 0;
+      // height: 0;
+    }
 
-      .q-field--standard .q-field__control:after {
-        height: auto;
-        top: 0;
-        background: none;
-      }
+    .q-field--standard .q-field__control:after {
+      height: auto;
+      top: 0;
+      background: none;
+    }
   }
-
 
   .fieldset_block,
   .legend_title {
@@ -5049,13 +5749,14 @@ export default {
   .periodCredit {
     font-size: 16px;
     line-height: 13px;
+    margin: 5px;
   }
 
   .sliderCredit {
     margin: 20px 15px;
   }
 
-  .commentCredit{
+  .commentCredit {
     margin-bottom: 20px;
   }
 
@@ -5171,7 +5872,7 @@ export default {
       margin-bottom: 10px;
     }
   }
-  
+
   .submitBlock {
     margin-top: 20px;
   }
