@@ -908,7 +908,7 @@
                     label="Отчество"
                     :rules="[
                       val => !!val || 'Введите отчество',
-                      val => fioValid(val)
+                      val => mValid(val)
                     ]"
                   />
                 </div>
