@@ -493,7 +493,7 @@
                   <div class="col-3">Рыночная стоимость</div>
                   <div class="col-3">{{ vehicle.marketValue }}</div>
                 </div>
-              </div>
+              </div> 
 
               <div class="col-12 profileTitle">
                 11 Поручительство и страхование
@@ -1056,6 +1056,19 @@ export default {
 </script>
 
 <style lang="scss">
+@page {
+  size: A4;
+  margin: 20px;
+}
+@media print {
+  html, body {
+    margin: 0 auto;
+    width: 190mm;
+    height: 297mm;
+  }
+  /* ... the rest of the rules ... */
+}
+
 .fullProfileBlock {
   max-width: 70%!important;
 }
