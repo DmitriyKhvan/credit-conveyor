@@ -3697,7 +3697,7 @@
       </q-dialog>
 
       <!-- credit result -->
-      <appFullProfile :currentDate="currentDate" v-if="profile.confirmCredit=true" />
+      <appFullProfile :currentDate="currentDate" v-if="profile.confirmCredit" />
     </div>
 
     <appLoaderFullScreen v-if="loader" />
