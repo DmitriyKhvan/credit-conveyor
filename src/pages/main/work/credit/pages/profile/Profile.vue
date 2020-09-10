@@ -1,5 +1,6 @@
 <template>
   <div class="fullProfile">
+    
     <div class="loaderForm" v-if="loaderForm">
       <appLoader />
     </div>
@@ -14,6 +15,7 @@
           >
             Личные данные клиента
           </h4>
+          <a href=".contactData" @click="goToBlock">Контактные данные</a>
           <div class="tab-content" ref="tabContent">
             <div class="row q-col-gutter-md">
               <div class="col-4">
@@ -5596,6 +5598,13 @@ export default {
           v => v.label.toLowerCase().indexOf(needle) > -1
         );
       });
+    },
+
+    goToBlock(event) {
+      event.preventDefault()
+      console.log(event.target)
+      let link = event.target.getAttribute('href')
+      document.querySelector(link).scrollIntoView({behavior: 'smooth', block: 'start'})
     }
   },
   components: {
