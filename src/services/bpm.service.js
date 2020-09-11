@@ -69,8 +69,8 @@ export default class BpmService {
   confirmationCredit = async ({ taskId, data }) => {
     const responce = await axios({
       method: "post",
-      url: `${this._baseUrl}/bpm/credit/confirmation/${taskId}`,
-      //url: `${this._baseUrl}/bpm/credit/confirmation/2078.10062`,
+      // url: `${this._baseUrl}/bpm/credit/confirmation/${taskId}`,
+      url: `${this._baseUrl}/bpm/credit/confirmation/2078.10062`,
       data,
     });
 
