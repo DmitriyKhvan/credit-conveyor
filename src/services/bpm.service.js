@@ -70,8 +70,7 @@ export default class BpmService {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/confirmation/${taskId}`,
-      //url: `${this._baseUrl}/bpm/credit/confirmation/2078.10062`,
-      data
+      data,
     });
 
     return responce.data;
@@ -160,8 +159,7 @@ export default class BpmService {
   creatFile = async data => {
     const responce = await axios({
       method: "post",
-      // url: `${this._baseUrl}/document/edocument`, // на dev
-      url: `${this._baseUrl}/file/edocument`,   // на prod
+      url: `${this._baseUrl}/document/edocument`,
       data,
     });
 
