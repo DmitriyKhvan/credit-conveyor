@@ -5620,24 +5620,18 @@ export default {
     },
 
     handleScroll(event) {
-      // console.log(event.target.scrollTop)
-      // console.log(document.querySelector('.privatData').getBoundingClientRect().y - 155)
-      // console.log(document.querySelectorAll('.navMenu a'))
       let scrollTop = event.target.scrollTop
       
       document.querySelectorAll('.navMenu a').forEach(node => {
         let selector = node.getAttribute('href')
-        // let blockTop = document.querySelector(selector).getBoundingClientRect().y + pageYOffset - 155
-        // let blockBottom = document.querySelector(selector).getBoundingClientRect().y + 
-        //                   document.querySelector(selector).getBoundingClientRect().height + pageYOffset - 155
-
+        
         let blockTop = document.querySelector(selector).offsetTop
         let blockBottom = document.querySelector(selector).offsetTop + 
                           document.querySelector(selector).getBoundingClientRect().height
 
-        console.log('scrollTop', scrollTop, selector)
-        console.log('blockTop', blockTop)
-        console.log('blockBottom', blockBottom)
+        // console.log('scrollTop', scrollTop, selector)
+        // console.log('blockTop', blockTop)
+        // console.log('blockBottom', blockBottom)
 
         if (scrollTop >= blockTop && scrollTop <= blockBottom) {
           document.querySelector('.navMenu a.active').classList.remove('active')
