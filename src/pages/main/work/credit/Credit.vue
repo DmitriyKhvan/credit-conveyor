@@ -5,12 +5,12 @@
 
   <!-- Server error message -->
   <errorMessage />
-  <!-- <appListGSZ /> -->
+  <appScoring />
 </div>
 </template>
 <script>
 import ErrorMessage from './Components/ErrorMessage'
-import listGSZ from './Components/GSZ/listGSZ'
+import Scoring from './Components/Scoring/Scoring'
 
 export default {
   name: "credit",
@@ -31,7 +31,7 @@ export default {
 
   components: {
     errorMessage: ErrorMessage,
-    appListGSZ: listGSZ
+    appScoring: Scoring
   }
 };
 </script>
