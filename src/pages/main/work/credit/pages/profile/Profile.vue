@@ -3668,8 +3668,8 @@
           <li><a href=".properties" @click="goToBlock">Сведения об имуществе</a></li>
           <li><a href=".infoCredit" @click="goToBlock">Сведения о запрашиваемом кредите</a></li>
           <li><a href=".guarantees" @click="goToBlock">Гарантии и поручительство</a></li>
-          <!-- <li><a href=".loadDocuments" @click="goToBlock">Загрузить документ</a></li>
-          <li><a href=".commentCredit" @click="goToBlock">Комментарии по кредиту</a></li> -->
+          <li><a href=".loadDocuments" @click="goToBlock">Загрузить документ</a></li>
+          <li><a href=".commentCredit" @click="goToBlock">Комментарии по кредиту</a></li>
         </ul>
       </div>
 
@@ -5620,30 +5620,21 @@ export default {
     },
 
     handleScroll(event) {
-      // console.log(event.target.scrollTop)
-      // console.log(document.querySelector('.privatData').getBoundingClientRect().y - 155)
-      // console.log(document.querySelectorAll('.navMenu a'))
       let scrollTop = event.target.scrollTop
       
       document.querySelectorAll('.navMenu a').forEach(node => {
         let selector = node.getAttribute('href')
-        // let blockTop = document.querySelector(selector).getBoundingClientRect().y + pageYOffset - 155
-        // let blockBottom = document.querySelector(selector).getBoundingClientRect().y + 
-        //                   document.querySelector(selector).getBoundingClientRect().height + pageYOffset - 155
-
         let blockTop = document.querySelector(selector).offsetTop
         let blockBottom = document.querySelector(selector).offsetTop + 
                           document.querySelector(selector).getBoundingClientRect().height
 
-        console.log('scrollTop', scrollTop, selector)
-        console.log('blockTop', blockTop)
-        console.log('blockBottom', blockBottom)
+        // console.log('scrollTop', scrollTop, selector)
+        // console.log('blockTop', blockTop)
+        // console.log('blockBottom', blockBottom)
 
         if (scrollTop >= blockTop && scrollTop <= blockBottom) {
           document.querySelector('.navMenu a.active').classList.remove('active')
           node.classList.add('active')
-        } else {
-          // node.classList.remove('active')
         }
       })
     },
@@ -5655,7 +5646,7 @@ export default {
       document.querySelector(link).scrollIntoView({behavior: 'smooth', block: 'start'})
     }
   },
-  destroyed() {
+  beforeDestroy() {
     document.querySelectorAll('.scroll')[1].removeEventListener('scroll', this.handleScroll);
   },
   components: {

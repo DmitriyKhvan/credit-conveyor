@@ -16,7 +16,8 @@ export const credits = {
       CreditManager: "CRM",
       BackOfficee: "BO",
       CreditCommitteeMember: "CCM",
-      CreditSecretary: "CS"
+      CreditSecretary: "CS",
+      Underwriter: "UW"
     },
     
     messageBar: false,
