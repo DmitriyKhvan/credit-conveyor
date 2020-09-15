@@ -7,11 +7,52 @@
     <div v-else class="q-pa-md row justify-center">
       <form @submit.prevent.stop="onSubmit" class="preapprovForm">
         <div class="row q-col-gutter-md">
+
+          <div class="col-2">
+            <div
+              v-if="personalData.personPhoto"
+              class="personPhoto_block"
+            >
+              <img
+                :src="'data:image/png;base64,' + personalData.personPhoto"
+                alt
+                class="personPhoto"
+              />
+            </div>
+            <div v-else class="default_personPhoto_block">
+              <img
+                src="~assets/images/default-avatar.png"
+                alt=""
+                class="default_personPhoto"
+              />
+            </div>
+          </div>
+          
+          <div class="col-10">
+            <div class="row q-col-gutter-md">
+              <div class="row">
+                <div class="col-6">
+
+                </div>
+                <div class="col-6">
+
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+
+                </div>
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+            </div>
+          </div>
+
           <div class="col-7">
             <!-- Private data person -->
             <div class="privat-data tab">
-              <h4 class="tab-title" ref="privatData">Персональные данныеeee</h4>
-
+              <h4 class="tab-title" ref="privatData">Персональные данные</h4>
               <div class="tab-content row" ref="tabContent">
                 <div class="col-7">
                   <q-input
@@ -936,7 +977,7 @@ export default {
 <style lang="scss">
 .registration {
   .preapprovForm {
-    width: 80%;
+    width: 100%;
   }
 
   .tab-title {
