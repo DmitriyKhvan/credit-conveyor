@@ -10,7 +10,7 @@
           <div class="col-7">
             <!-- Private data person -->
             <div class="privat-data tab">
-              <h4 class="tab-title" ref="privatData">Персональные данные</h4>
+              <h4 class="tab-title" ref="privatData">Персональные данныеeee</h4>
 
               <div class="tab-content row" ref="tabContent">
                 <div class="col-7">
