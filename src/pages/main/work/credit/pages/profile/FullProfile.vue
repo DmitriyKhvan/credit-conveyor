@@ -938,7 +938,7 @@
               <div class="col-6">
                 Филиал / Подразделение
               </div>
-              <div class="col-6"></div>
+              <div class="col-6">{{ bankName }}</div>
               <div class="col-6">
                 ФИО работника банка, принявшего заявление
               </div>
@@ -989,8 +989,12 @@ export default {
   props: ["currentDate"],
   data() {
     return {
-      confirmCredit: true
+      confirmCredit: true,
+      bankName: ''
     };
+  },
+  created() {
+    this.bankName = this.dictionaries.Branches.items.find(i => i.id === this.fullProfile.Branch).bank_name
   },
   computed: {
     ...mapState({

@@ -5,7 +5,7 @@
 
   <!-- Server error message -->
   <errorMessage />
-  <appScoring />
+  <!-- <appScoring /> -->
 </div>
 </template>
 <script>

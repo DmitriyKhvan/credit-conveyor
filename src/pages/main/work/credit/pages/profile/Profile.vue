@@ -3600,6 +3600,9 @@
             </div>
           </div>
 
+          <!-- Client info -->
+          <appClientInfo />
+
           <!-- file list -->
           <template v-if="profile.fileList.length">
             <!-- Comment -->
@@ -3749,6 +3752,7 @@ import printJS from "print-js";
 // import InfoList from "../registration/PreApproval";
 import SetDataINPS from "../../Components/INPS/SetData";
 import GetDataINPS from "../../Components/INPS/GetData";
+import ClientInfo from "../../Components/ClientInfo";
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
@@ -5654,7 +5658,8 @@ export default {
     appFullProfile: FullProfile,
     appLoaderFullScreen: LoaderFullScreen,
     appSetDataINPS: SetDataINPS,
-    appGetDataINPS: GetDataINPS
+    appGetDataINPS: GetDataINPS,
+    appClientInfo: ClientInfo
     // appInfoList: InfoList
   }
 };

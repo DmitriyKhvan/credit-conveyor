@@ -19,7 +19,7 @@ export const creditsAdmin = {
       }
     },
 
-    async getCommitteeGroups({ commit }, mfo) {
+    async getCommitteeGroups({ commit }, mfo="") {
       try {
         let { data } = await ApiService.get(`/credit/groups/search?mfo=${mfo}`);
         console.log("group", data);

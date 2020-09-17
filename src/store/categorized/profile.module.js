@@ -101,13 +101,14 @@ export const profile = {
       // ApplicationID: "",
       // ProtocolNumber: "",
       // Number: "",
-      // Branch: "",
+      Branch: "",
       BODecision: false,
       // FinalDecision: "",
       // Date: "",
       BOLogin: "", // логин авторизованного пользователя
       // Department: "",
       ClientManagerLogin: "", // при авторизации
+      ClientManagerName: null,
       CreditCommiteeDecisions: {
         items: [
           // {
@@ -498,6 +499,8 @@ export const profile = {
       state.fileList = [];
 
       // Для корректной валидации
+      state.fullFormProfile.Branch = payload.Branch;
+      state.fullFormProfile.ClientManagerName = payload.ClientManagerName;
       state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
       state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
@@ -910,13 +913,14 @@ export const profile = {
         // ApplicationID: "",
         // ProtocolNumber: "",
         // Number: "",
-        // Branch: "",
+        Branch: "",
         BODecision: false,
         // FinalDecision: "",
         // Date: "",
         BOLogin: "", // логин авторизованного пользователя
         // Department: "",
         ClientManagerLogin: "", // при авторизации
+        ClientManagerName: null,
         CreditCommiteeDecisions: {
           items: [
             // {

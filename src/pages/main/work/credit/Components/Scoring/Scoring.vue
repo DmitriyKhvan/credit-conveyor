@@ -206,7 +206,7 @@ export default {
 
 <style lang="scss">
 .scoring {
-  padding: 40px;
+  // padding: 40px;
 
   &__title {
     font-size: 20px;
