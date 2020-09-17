@@ -37,6 +37,7 @@ export default {
 </script>
 <style lang="scss">
   .creditConveyor {
+    background: #fff;
     .creditMenu {
       margin: 15px;
     }
@@ -47,7 +48,7 @@ export default {
       margin-right: 15px;
     }
     .ellipsis {
-      font-size: 1rem
+      // font-size: 1rem
     }
   }
   
