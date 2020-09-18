@@ -133,11 +133,12 @@
                       ]"
                     />
 
+                    <!-- Preloader auto compleate -->
                     <appLoader v-if="loader" />
 
                     <!-- Button auto complete person data -->
                     <app-auto-complete-data v-else-if="scannerSerialNumber" />
-                    <!-- <app-auto-complete-data /> -->
+                    
                   </div>
                 </div>
               </div>
