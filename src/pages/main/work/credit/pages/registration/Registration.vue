@@ -136,8 +136,8 @@
                     <appLoader v-if="loader" />
 
                     <!-- Button auto complete person data -->
-                    <!-- <app-auto-complete-data v-else-if="scannerSerialNumber" /> -->
-                    <app-auto-complete-data />
+                    <app-auto-complete-data v-else-if="scannerSerialNumber" />
+                    <!-- <app-auto-complete-data /> -->
                   </div>
                 </div>
               </div>
@@ -725,88 +725,88 @@ export default {
       }
     },
 
-    // async onSubmit() {
-    //   const data = {
-    //     output: [
-    //       {
-    //         name: "preApp",
-    //         data: {
-    //           maritalInfo: {
-    //             childrens: true,
-    //             status: "женат/замужем",
-    //             statusId: 2,
-    //             childrenCount: 1
-    //           },
-    //           loan_product_id: 1,
-    //           finance: {
-    //             loan_purpose: 261,
-    //             incomingOther: 0,
-    //             expensesOther: 0,
-    //             expensesPeriodic: 2000000,
-    //             incomingConfirm: 10000000,
-    //             incomeType: ""
-    //           },
-    //           customer: {
-    //             firstName: "SDFSD",
-    //             lastName: "SDF",
-    //             middleName: "SDF SDFSD",
-    //             passport: {
-    //               number: "2342424",
-    //               series: "SD"
-    //             },
-    //             mainPhone: "+998134345353",
-    //             tin: "123131313",
-    //             pinpp: "23424324242342"
-    //           }
-    //         }
-    //       },
-    //       {
-    //         name: "creditProduct",
-    //         data: {
-    //           repaymentType: 1,
-    //           spouseCost: 300000,
-    //           childCost: 200000,
-    //           creditTerm: 12,
-    //           loanRate: 32
-    //         }
-    //       }
-    //     ]
-    //   };
+    async onSubmit() {
+      const data = {
+        output: [
+          {
+            name: "preApp",
+            data: {
+              maritalInfo: {
+                childrens: true,
+                status: "женат/замужем",
+                statusId: 2,
+                childrenCount: 1
+              },
+              loan_product_id: 1,
+              finance: {
+                loan_purpose: 261,
+                incomingOther: 0,
+                expensesOther: 0,
+                expensesPeriodic: 2000000,
+                incomingConfirm: 10000000,
+                incomeType: ""
+              },
+              customer: {
+                firstName: "SDFSD",
+                lastName: "SDF",
+                middleName: "SDF SDFSD",
+                passport: {
+                  number: "2342424",
+                  series: "SD"
+                },
+                mainPhone: "+998134345353",
+                tin: "123131313",
+                pinpp: "23424324242342"
+              }
+            }
+          },
+          {
+            name: "creditProduct",
+            data: {
+              repaymentType: 1,
+              spouseCost: 300000,
+              childCost: 200000,
+              creditTerm: 12,
+              loanRate: 32
+            }
+          }
+        ]
+      };
 
-    //   try {
-    //     const response = await this.$store.dispatch(
-    //       "credits/confirmationCredit",
-    //       data
-    //     );
+      try {
+        const response = await this.$store.dispatch(
+          "credits/confirmationCredit",
+          data
+        );
 
-    //     console.log("response", response);
-    //     if (response) {
-    //       const preApproval = response.nextTask.input.find(
-    //         i => i.label == "preApproval"
-    //       ).data;
-    //       this.credits.infoList = response.nextTask.input.find(
-    //         i => i.label == "InfoList"
-    //       ).data; // печатные формы
-    //       this.credits.reasonsList = response.nextTask.input.find(
-    //         i => i.label == "reasons_list"
-    //       ).data.items;
+        console.log("response", response);
+        if (response) {
+          const preApproval = response.nextTask.input.find(
+            i => i.label == "preApproval"
+          ).data;
+          this.credits.infoList = response.nextTask.input.find(
+            i => i.label == "InfoList"
+          ).data; // печатные формы
+          this.credits.reasonsList = response.nextTask.input.find(
+            i => i.label == "reasons_list"
+          ).data.items;
 
-    //       this.confirm = true;
-    //       this.$store.commit("credits/creditConfirm", preApproval);
-    //     }
+          this.confirm = true;
+          this.$store.commit("credits/creditConfirm", preApproval);
+        }
 
-    //     this.loaderFullScreen = false;
-    //   } catch (error) {
-    //     this.$store.commit(
-    //       "credits/setMessage",
-    //       CommonUtils.filterServerError(error)
-    //     );
-    //     this.loaderFullScreen = false;
-    //     setTimeout(() => {
-    //       localStorage.removeItem(this.taskIdPreapp);
-    //     }, 1000);
-    //   }
-    // },
+        this.loaderFullScreen = false;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.loaderFullScreen = false;
+        setTimeout(() => {
+          localStorage.removeItem(this.taskIdPreapp);
+        }, 1000);
+      }
+    },
 
     onChangeLoan(credit) {
       console.log("credit", credit);

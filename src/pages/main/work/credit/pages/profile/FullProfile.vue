@@ -713,7 +713,7 @@
                     <div class="col-12 profileSubTitle">
                       Страхование {{ index + 1 }}
                     </div>
-                    <div class="col-3">Наименование организации</div>
+                    <div class="col-3 fieldData">Наименование организации</div>
                     <div class="col-3">
                        <!-- {{
                         dictionaries.Insurance_company.items.find(

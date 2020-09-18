@@ -213,7 +213,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
