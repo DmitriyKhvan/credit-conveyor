@@ -17,7 +17,6 @@
           label="Время для авто выхода из системы"
           hint="Через какое количество времени нужно перезайти в систему"
           stack-label
-          @input="onSelectTimeout"
         />
       </div>
       <div class="col column justify-between"></div>
@@ -40,7 +39,7 @@
       <div class="col column justify-between"></div>
     </div>
     <div class="full-width" style="margin-top: 50px">
-      <q-btn class="q-py-sm q-px-md" color="primary" label="СОХРАНИТЬ" />
+      <q-btn class="q-py-sm q-px-md" color="primary" label="СОХРАНИТЬ" @click="onSaveTimeout" />
     </div>
   </div>
 </template>
@@ -97,14 +96,14 @@ export default {
     };
   },
   methods: {
-    onSelectTimeout(option) {
+    onSaveTimeout() {
       //console.log({ option });
       this.$axios
-        .post(`settings/timeout`, { timeout: option.value })
+        .post(`settings/timeout`, { timeout: this.timeout.value })
         .then((resp) => {
           if (resp.data.status == 1) {
             // change local timeout in store
-            this.$store.dispatch("auth/setLogoutTime", option.value);
+            this.$store.dispatch("auth/setLogoutTime", this.timeout.value);
             NotifyService.showSuccessMessage(resp.data.message);
           } else NotifyService.showErrorMessage(resp.data.message);
         })
