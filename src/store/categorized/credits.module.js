@@ -13,10 +13,15 @@ export const credits = {
     },
     roles: {
       //Admin: "CRM",
-      CreditManager: "CRM",
-      BackOfficee: "BO",
-      CreditCommitteeMember: "CCM",
-      CreditSecretary: "CS"
+      // CreditManager: "CRM",
+      CreditManager: "ROLE_KM",
+      BackOfficee: "ROLE_BO",
+      CreditCommitteeMember: "ROLE_CC",
+      CreditSecretary: "ROLE_CCS",
+      Underwriter: "ROLE_UrWr",
+      CreditCommitteeChief: "ROLE_CCC",
+      ProcessManager: "ROLE_PM",
+
     },
     
     messageBar: false,

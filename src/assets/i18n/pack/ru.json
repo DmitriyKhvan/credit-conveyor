@@ -456,5 +456,18 @@
     "Main": "Главная",
     "Work": "Работа",
     "Credit": "Кредит"
+  },
+
+  "printForms" : {
+    "overdraft": "Овердрафт",
+    "consumer_credit": "Потребительский кредит",
+    "microloan": "Микрокредит",
+    "payment_schedule": "График платажей",
+    "overdraft_guarantor_physical": "Договор о поручитесльстве для физ. лиц",
+    "overdraft_guarantor_legal": "Договор о поручительстве для юр лиц",
+    "microloan_guarantor_physical": "Договор на поручительство микрозайм физ. лица",
+    "microloan_guarantor_legal": "Договор на поручительство микрозайм юр. лица",
+    "consumer_guarantor_physical": "Договор на поручительство потреб кредит физ. лица",
+    "consumer_guarantor_legal": "Договор на поручительство потреб кредит юр. лица"
   }
 }

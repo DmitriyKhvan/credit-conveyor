@@ -5,7 +5,7 @@
     v-if="creditTasks.length"
     class="creditList"
   >
-    <div v-if="userRole === 'CS'" class="protocol">
+    <div v-if="userRole === 'ROLE_CCS'" class="protocol">
       <q-btn
         :loading="protocol"
         label="Протокол"
@@ -120,7 +120,7 @@
                 </template>
               </q-input>
             </th>
-            <th v-if="userRole === 'CS'" class="text-left"></th>
+            <th v-if="userRole === 'ROLE_CCS'" class="text-left"></th>
           </tr>
 
           <tr class="titleApplication">
@@ -170,7 +170,7 @@
                 Дата
               </button>
             </th>
-            <th v-if="userRole === 'CS'" class="text-left"></th>
+            <th v-if="userRole === 'ROLE_CCS'" class="text-left"></th>
           </tr>
         </thead>
         <tbody v-if="loaderList || loading">
@@ -182,13 +182,13 @@
           <tr v-for="(credit, index) of credits" :key="credit.id">
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ index + 1 }}
               </template>
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'CRM' ? 'Profile' : 'CreditTask',
+                  name: userRole === 'ROLE_KM' ? 'Profile' : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
@@ -205,7 +205,7 @@
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ credit.applicationNumber }}
               </template>
               <router-link
@@ -213,7 +213,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
@@ -229,7 +229,7 @@
             </td>
 
             <td class="text-left client applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ credit.client }}
               </template>
               <router-link
@@ -237,7 +237,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
@@ -253,7 +253,7 @@
             </td>
 
             <td class="text-left manager applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ credit.kmfio }}
               </template>
               <router-link
@@ -261,7 +261,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
@@ -277,7 +277,7 @@
             </td>
 
             <td class="text-left MFO applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ credit.filial }}
               </template>
               <router-link
@@ -285,7 +285,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
@@ -301,7 +301,7 @@
             </td>
 
             <td class="text-left filialName applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ credit.filialName }}
               </template>
               <router-link
@@ -309,7 +309,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
@@ -325,7 +325,7 @@
             </td>
 
             <td class="text-left taskName applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ credit.taskName }}
               </template>
               <router-link
@@ -333,7 +333,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
@@ -349,7 +349,7 @@
             </td>
 
             <td class="text-left taskStatus applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ credit.taskStatus }}
               </template>
               <router-link
@@ -357,7 +357,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
@@ -373,7 +373,7 @@
             </td>
 
             <td class="text-left date applicationRow">
-              <template v-if="userRole === 'CS'">
+              <template v-if="userRole === 'ROLE_CCS'">
                 {{ credit.date | formatDate('datetime') }}
               </template>
               <router-link
@@ -381,7 +381,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'CRM'
+                    : userRole === 'ROLE_KM'
                       ? 'Profile'
                       : 'CreditTask',
                   params: { id: credit.id },
@@ -396,10 +396,10 @@
               >
             </td>
 
-            <td v-if="userRole === 'CS'" class="text-left print">
+            <td v-if="userRole === 'ROLE_CCS'" class="text-left print">
               <div class="text-blue q-gutter-md">
                 
-                <!-- <template v-if="userRole === 'CS'"> -->
+                <!-- <template v-if="userRole === 'ROLE_CCS'"> -->
                   <q-btn 
                     :disable="disable"
                     icon="print" 
