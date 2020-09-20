@@ -22,7 +22,7 @@ const state = {
   activeUsers: [],
   onlineUsers: [],
   isUserLogged: false,
-  logoutTime: 6000000 // 100min
+  logoutTime: 600 // 10min
 };
 
 /**
@@ -31,7 +31,7 @@ const state = {
 
 const getters = {
   logoutTime: state => {
-    return state.logoutTime;
+    return state.logoutTime * 1000;
   },
   loggedIn: state => {
     return state.isUserLogged;
@@ -155,9 +155,11 @@ const actions = {
   setActiveUsers({ commit }, users) {
     commit("setActiveUsers", users);
   },
-
   setOnlineUsers({ commit }, users) {
     commit("setOnlineUsers", users);
+  },
+  setLogoutTime({ commit }, timeout) {
+    commit("setLogoutTime", timeout);
   }
 };
 
@@ -226,6 +228,10 @@ const mutations = {
   },
   setOnlineUsers(state, users) {
     state.onlineUsers = users;
+  },
+  setLogoutTime(state, timeout) {
+    //console.log({ logoutTime: data });
+    state.logoutTime = timeout;
   }
 };
 
