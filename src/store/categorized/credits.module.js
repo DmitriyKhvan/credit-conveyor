@@ -499,6 +499,18 @@ export const credits = {
     messageId: state => state.messageBlock.id,
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
-    userRole: state => state.userRole
+    userRole: state => state.userRole,
+    creditTasks: state => {
+      return state.creditTasks.map(credit => {
+        let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
+                ? true
+                : false
+
+        return {
+          ...credit,
+          time
+        }
+      })
+    }
   }
 };

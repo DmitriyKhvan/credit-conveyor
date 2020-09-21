@@ -7,7 +7,7 @@
             <h4 class="fullFormTitle">Анкета-заявления</h4>
             <div class="row">
               <div class="col-3">Номер анкеты</div>
-              <div class="col-9">132131231</div>
+              <div class="col-9">{{ profile.applicationNumber }}</div>
               <div class="col-12 profileTitle">1. Персональные данные</div>
               <div class="col-2 fieldData">Фамилия</div>
               <div class="col-2">{{ Customer.LastName }}</div>
@@ -927,7 +927,7 @@
               <p>Полностью Фамилия, Имя, Отчество</p>
             </div>
             <div class="col-4">
-              <p class="bor">&nbsp</p>
+              <p class="bor"></p>
               <p>Подпись, дата</p>
             </div>
           </div>
@@ -938,7 +938,7 @@
               <div class="col-6">
                 Филиал / Подразделение
               </div>
-              <div class="col-6">{{ bankName }}</div>
+              <div class="col-6">{{ fullProfile.BranchName }}</div>
               <div class="col-6">
                 ФИО работника банка, принявшего заявление
               </div>
@@ -946,7 +946,7 @@
               <div class="col-6">
                 Должность кредитного специалиста
               </div>
-              <div class="col-6"></div>
+              <div class="col-6">{{ profile.userrole }}</div>
               <div class="col-6">
                 Подпись работника банка
               </div>
@@ -990,12 +990,12 @@ export default {
   data() {
     return {
       confirmCredit: true,
-      bankName: ''
+      // bankName: ''
     };
   },
-  created() {
-    this.bankName = this.dictionaries.Branches.items.find(i => i.id === this.fullProfile.Branch).bank_name
-  },
+  // created() {
+  //   this.bankName = this.dictionaries.Branches.items.find(i => i.id === this.fullProfile.Branch).bank_name
+  // },
   computed: {
     ...mapState({
         fullProfile: state => state.profile.fullFormProfile,

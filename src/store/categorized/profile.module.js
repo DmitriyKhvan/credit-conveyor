@@ -6,6 +6,8 @@ export const profile = {
   state: {
     bpmService: new BpmService(),
     preapprove_num: "",
+    applicationNumber: "",
+    userrole: "",
     confirmCredit: false,
     fileList: [],
     loadings: [], // для лоадинга печатных форм
@@ -102,7 +104,8 @@ export const profile = {
       // ProtocolNumber: "",
       // Number: "",
       Branch: "",
-      BODecision: false,
+      BranchName: "",
+      BODecision: null,
       // FinalDecision: "",
       // Date: "",
       BOLogin: "", // логин авторизованного пользователя
@@ -422,7 +425,17 @@ export const profile = {
             i => i.label === "inputDictionaries"
           ).data;
 
+          const applicationNumber = response.data.input.find(
+            i => i.label === "process_info_fullApp"
+          ).data.applicationNumber;
+
+          const userrole = response.data.input.find(
+            i => i.label === "userrole"
+          ).data;
+
           commit("setDictionaries", dictionaries);
+          commit("setApplicationNumber", applicationNumber);
+          commit("setUserrole", userrole);
 
           // if (response.data.name == "Full Application Filling") { // кредит не оформлен
           //   commit("setPreapprovData", data);
@@ -450,10 +463,8 @@ export const profile = {
               i => i.label === "preApplicationNum"
             ) 
 
-            if (preApplicationNum) {
-              commit("setPreapproveNum", preApplicationNum.data)
-            } 
-
+            commit("setPreapproveNum", preApplicationNum.data)
+          
             commit("setFullForm", data);
 
           } else {
@@ -500,6 +511,7 @@ export const profile = {
 
       // Для корректной валидации
       state.fullFormProfile.Branch = payload.Branch;
+      state.fullFormProfile.BranchName = payload.BranchName;
       state.fullFormProfile.ClientManagerName = payload.ClientManagerName;
       state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
@@ -904,6 +916,14 @@ export const profile = {
       // );
       state.dictionaries = objectTransform(dictionaries);
     },
+    
+    setApplicationNumber(state, applicationNumber) {
+      state.applicationNumber = applicationNumber
+    },
+
+    setUserrole(state, userrole) {
+      state.userrole = userrole
+    },
 
     resetDataFullFormProfile(state) {
       state.fileList = []; // очистка файлов на печать
@@ -914,7 +934,8 @@ export const profile = {
         // ProtocolNumber: "",
         // Number: "",
         Branch: "",
-        BODecision: false,
+        BranchName: "",
+        BODecision: null,
         // FinalDecision: "",
         // Date: "",
         BOLogin: "", // логин авторизованного пользователя

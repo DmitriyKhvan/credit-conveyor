@@ -3873,6 +3873,8 @@ export default {
         this.loaderForm = false;
       }
     } else if (!axios.defaults.headers.common["BPMCSRFToken"]) {
+      this.loaderForm = true;
+
       // если перезагрузили страницу
       await this.$store.dispatch(
         "credits/setHeaderRole",
@@ -3882,20 +3884,34 @@ export default {
         "credits/setHeaderBPM",
         sessionStorage.getItem("csrf_token")
       );
-      this.$store.commit(
-        "profile/setPreapprovData",
-        JSON.parse(sessionStorage.getItem("preapprovData"))
-      ); //синхронизация с preapprov
-      this.$store.commit(
-        "profile/setDictionaries",
-        JSON.parse(sessionStorage.getItem("dictionaries"))
-      );
+
       this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
-      this.$store.commit(
-        "profile/setPreapproveNum",
-        sessionStorage.getItem("preapprove_num")
+
+      try {
+      const response = await this.$store.dispatch("profile/getFullForm");
+      this.loaderForm = false;
+      } catch (error) {
+        this.$store.commit(
+        "credits/setMessage",
+        CommonUtils.filterServerError(error)
       );
-      //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
+      this.loaderForm = false;
+      }
+
+      // this.$store.commit(
+      //   "profile/setPreapprovData",
+      //   JSON.parse(sessionStorage.getItem("preapprovData"))
+      // ); //синхронизация с preapprov
+      // this.$store.commit(
+      //   "profile/setDictionaries",
+      //   JSON.parse(sessionStorage.getItem("dictionaries"))
+      // );
+      // this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
+      // this.$store.commit(
+      //   "profile/setPreapproveNum",
+      //   sessionStorage.getItem("preapprove_num")
+      // );
+      
     }
     // else {
     //     this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
@@ -5629,7 +5645,7 @@ export default {
       
       document.querySelectorAll('.navMenu a').forEach(node => {
         let selector = node.getAttribute('href')
-        let blockTop = document.querySelector(selector).offsetTop
+        let blockTop = document.querySelector(selector).offsetTop - 150
         let blockBottom = document.querySelector(selector).offsetTop + 
                           document.querySelector(selector).getBoundingClientRect().height
 

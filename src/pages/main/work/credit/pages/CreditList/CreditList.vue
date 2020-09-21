@@ -179,7 +179,11 @@
           </tr>
         </tbody>
         <tbody v-else>
-          <tr v-for="(credit, index) of credits" :key="credit.id">
+          <tr 
+            v-for="(credit, index) of credits" 
+            :key="credit.id"
+            :class="{ time: credit.time }"  
+          >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
               <template v-if="userRole === 'ROLE_CCS'">
@@ -485,7 +489,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import printJS from "print-js";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatDate from "../../filters/formatDate"
@@ -541,11 +545,13 @@ export default {
   mounted() {
     // console.log('pages', this.pages)
     // console.log('lang', this.$store.getters["common/getLangNum"])
-    const filters = document.querySelectorAll(".filter");
-    for (let filter of filters) {
-      filter.addEventListener("click", () => this.toggleFilter(filter));
-    }
-
+    setTimeout(() => {
+      const filters = document.querySelectorAll(".filter");
+      for (let filter of filters) {
+        filter.addEventListener("click", () => this.toggleFilter(filter));
+      }
+    }, 1000)
+    
   },
   watch: {
     countRow(val) {
@@ -562,6 +568,10 @@ export default {
           loadings: state => state.credits.loadings,
           userRole: state => state.credits.userRole
         }),
+    
+    // ...mapGetters({
+    //       creditTasks: "credits/creditTasks"
+    //     }),
 
     // Фильтры
     credits() {
@@ -661,7 +671,7 @@ export default {
         const itemB = b[idx];
         if (order) {
           if (itemA < itemB) {
-            //console.log('sorting')
+            // console.log('sorting')
             return -1;
           }
           if (itemA > itemB) {
@@ -860,6 +870,10 @@ export default {
   td {
     /* word-break: break-all; */
     white-space: pre-wrap;
+  }
+
+  .time {
+    background: rgba(255, 129, 129, 0.5) !important;
   }
 
   .number {
