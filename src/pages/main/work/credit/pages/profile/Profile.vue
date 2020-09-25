@@ -299,8 +299,19 @@
                     v-model="Customer.Document.GivenDate"
                     mask="##.##.####"
                     :rules="[
-                      val => !!val || 'Введите отчество',
-                      val => mValid(val)
+                      val =>
+                        (val && val.length === 10) ||
+                        'Введите дату выдачи документа',
+
+                      Customer.Document.ExpirationDate
+                        ? val =>
+                            msecond(val) <
+                              msecond(Customer.Document.ExpirationDate) ||
+                            'Неверная дата'
+                        : null,
+
+                      val =>
+                        msecond(val) < msecond(currentDate) || 'Неверная дата'
                     ]"
                   >
                     <template v-slot:append>
