@@ -1327,12 +1327,7 @@
               </div>
             </template>
 
-<<<<<<< HEAD
-            <!-- кредитный комитет -->
-            <template v-if="userRole === 'CCM'">
-=======
             <template v-if="userRole === 'ROLE_CC'">
->>>>>>> feature/credit
               <div class="row rowForm">
                 <div class="col-6 field">
                   Среднемесячная заработная плата(сум)
