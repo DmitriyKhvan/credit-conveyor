@@ -105,11 +105,38 @@ const routes = [
     meta: {
       requiresAuth: true
     },
+<<<<<<< HEAD
     children: [
       {
         path: "home",
         name: "Home",
         component: HomePage
+=======
+    {
+      path: "task",
+      name: "My Tasks",
+      component: Tasks,
+      children: [{
+        path: "list",
+        name: "Task List",
+        component: TasksList
+      }]
+    },
+    {
+      path: "apparat",
+      name: "Apparat",
+      component: apparatPage,
+    },
+    {
+      path: "credit",
+      redirect: 'credit/applications',
+      name: "Credit",
+      component: Credit,
+      children: [{
+        path: "applications",
+        name: "CreditApplications",
+        component: CreditApplications
+>>>>>>> feature/credit
       },
       {
         path: "work",

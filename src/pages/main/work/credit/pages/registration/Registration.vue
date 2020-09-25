@@ -7,6 +7,7 @@
     <div v-else class="q-pa-md row justify-center">
       <form @submit.prevent.stop="onSubmit" class="preapprovForm">
         <div class="row q-col-gutter-md">
+<<<<<<< HEAD
           <div class="col-7">
             
             <!-- Private data person -->
@@ -121,276 +122,385 @@
                     ]"
                   />
                 </div>
-
-                <div class="col-5 row content-between justify-end">
-                  <div
-                    v-if="personalData.personPhoto"
-                    class="personPhoto_block"
-                  >
-                    <img
-                      :src="'data:image/png;base64,' + personalData.personPhoto"
-                      alt
-                      class="personPhoto"
-                    />
-                  </div>
-                  <div v-else class="default_personPhoto_block">
-                    <img
-                      src="~assets/images/default-avatar.png"
-                      alt=""
-                      class="default_personPhoto"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div class="row q-col-gutter-md justify-between">
-                <div class="col-6">
-                  <q-select
-                    ref="typeCredit"
-                    square
-                    outlined
-                    v-model="personalData.typeCredit"
-                    :options="options.typeCredits"
-                    @input="onChangeLoan($event)"
-                    dense
-                    label="Кредитный продукт"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите кредитный продукт']"
-                  />
-                </div>
-                <div class="col-6">
-                  <q-select
-                    v-if="
-                      !!personalData.typeCredit && personalData.typeCredit != 3
-                    "
-                    ref="typeStepCredit"
-                    square
-                    outlined
-                    v-model="personalData.typeStepCredit"
-                    :options="options.typeStepCredits"
-                    dense
-                    label="Тип графика гашения"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите тип графика гашения']"
-                  />
-                </div>
-              </div>
-
-              <div v-if="!!personalData.typeCredit" class="col-12">
-                <h6 class="periodCredit">Выберите срок кредита</h6>
-                <q-input
-                  ref="periodCredit"
-                  square
-                  outlined
-                  v-model.number="personalData.periodCredit"
-                  type="number"
-                  dense
-                  label="Срок кредита"
-                  :rules="[
-                    val => !!val || 'Выберите срок кредита',
-                    val =>
-                      (val <= periodCreditMax && val >= periodCreditMin) ||
-                      `Срок кредита между ${periodCreditMin} - ${periodCreditMax} мес.`
-                  ]"
-                />
-                <q-badge color="secondary">
-                  Срок: {{ personalData.periodCredit }} ({{
-                    periodCreditMin
-                  }}
-                  до {{ periodCreditMax }})
-                </q-badge>
-                <q-slider
-                  v-model.number="personalData.periodCredit"
-                  :min="periodCreditMin"
-                  :max="periodCreditMax"
-                  :step="1"
-                  label
-                  label-always
-                  color="light-green"
-                />
-              </div>
-
-              <div class="row col-12 justify-center items-center">
-                <!-- Preloader auto compleate -->
-                <appLoader v-if="loader" />
-
-                <!-- Button auto complete person data -->
-                <app-auto-complete-data v-else-if="scannerSerialNumber" />
-              </div>
+=======
+          <div class="col-2">
+            <div v-if="personalData.personPhoto" class="personPhoto_block">
+              <img
+                :src="'data:image/png;base64,' + personalData.personPhoto"
+                alt
+                class="personPhoto"
+              />
             </div>
-          </div>
-
-          <div class="col-5">
-            <!-- Family status -->
-            <div class="family-status tab">
-              <h4 class="tab-title">Семейное положение</h4>
-              <div class="tab-content q-col-gutter-md" ref="tabContent">
-                <q-select
-                  ref="familyStatus"
-                  square
-                  outlined
-                  v-model="personalData.familyStatus"
-                  :options="options.family"
-                  dense
-                  label="Семейное положения"
-                  emit-value
-                  map-options
-                  :rules="[val => !!val || 'Выберите семейное положение']"
-                />
-                <q-select
-                  square
-                  outlined
-                  v-model="personalData.children"
-                  :options="credits.options.confirmation"
-                  dense
-                  label="Есть ли дети"
-                  emit-value
-                  map-options
-                />
-                <q-input
-                  ref="childrenCount"
-                  v-if="personalData.children"
-                  square
-                  outlined
-                  v-model.number="personalData.childrenCount"
-                  type="number"
-                  dense
-                  label="Количество детей до 18 лет"
-                  :rules="[
-                    val => (val && val > 0) || 'Введите количество детей'
-                  ]"
-                />
-              </div>
-            </div>
-
-            <!-- Expense/income -->
-            <div class="expense-income tab">
-              <h4 class="tab-title" ref="expenseIncome">
-                Ежемесячные расходы/доходы
-              </h4>
-              <div class="tab-content" ref="tabContent">
-                <q-input
-                  ref="income"
-                  square
-                  outlined
-                  v-model.number="personalData.income"
-                  type="number"
-                  dense
-                  label="Подтвержденный ежемесячный доход"
-                  :rules="[
-                    val => !!val || 'Поля должно быт заполнено',
-                    val => val > 0 || 'Некорректные данные'
-                  ]"
-                />
-
-                <!-- Для форматирования числе -->
-                <!-- <q-input
-                  ref="income"
-                  square
-                  outlined
-                  v-model="personalData.income"
-                  dense
-                  label="Подтвержденный ежемесячный доход"
-                  
-                  :rules="[
-                    val =>
-                      (val && val.length !== null) ||
-                      'Поля должно быт заполнено'
-                  ]"
-                /> -->
-
-                <q-input
-                  ref="expense"
-                  square
-                  outlined
-                  v-model.number="personalData.expense"
-                  type="number"
-                  dense
-                  label="Периодические расходы "
-                  :rules="[
-                    val => !!val || 'Поля должно быт заполнено',
-                    val => val > 0 || 'Некорректные данные'
-                  ]"
-                />
-                <q-input
-                  ref="otherExpenses"
-                  square
-                  outlined
-                  v-model.number="personalData.otherExpenses"
-                  type="number"
-                  dense
-                  label="Плата за облуживание других обязательств"
-                  :rules="[val => val >= 0 || 'Некорректные данные']"
-                />
-
-                <div class="q-col-gutter-md">
-                  <q-select
-                    square
-                    outlined
-                    v-model="personalData.externalIncome"
-                    :options="credits.options.confirmation"
-                    dense
-                    label="Наличие дополнительного дохода"
-                    emit-value
-                    map-options
-                  />
-                  <q-input
-                    ref="externalIncomeSize"
-                    v-if="personalData.externalIncome"
-                    square
-                    outlined
-                    v-model.number="personalData.externalIncomeSize"
-                    type="number"
-                    dense
-                    label="Размер дополнительного дохода"
-                    :rules="[
-                      val => !!val || 'Поля должно быт заполнено',
-                      val => val > 0 || 'Некорректные данные'
-                    ]"
-                  />
-                  <q-select
-                    ref="additionalIncomeSource"
-                    v-if="personalData.externalIncome"
-                    square
-                    outlined
-                    v-model="personalData.additionalIncomeSource"
-                    :options="options.additIncSourOption"
-                    dense
-                    label="Источник дополнительного дохода"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Поля должно быт заполнено']"
-                  />
-
-                  <q-select
-                    v-if="!!this.personalData.typeCredit"
-                    ref="loan_purpose"
-                    square
-                    outlined
-                    v-model="personalData.loan_purpose"
-                    :options="options.loanPurpose"
-                    dense
-                    label="Цель кредитования"
-                    emit-value
-                    map-options
-                    :rules="[val => !!val || 'Выберите цель кредитования']"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Credit result -->
-            <div class="row calCreditBtn">
-              <q-btn
-                type="submit"
-                color="green"
-                label="РАССЧИТАТЬ КРЕДИТ"
-                class="q-ml-sm full-width"
+            <div v-else class="default_personPhoto_block">
+              <img
+                src="~assets/images/default-avatar.png"
+                alt
+                class="default_personPhoto"
               />
             </div>
           </div>
+>>>>>>> feature/credit
+
+          <div class="col-10">
+            <div class="row preappBlock">
+              <div class="col-8 privatData">
+                <h4 class="tab-title" ref="privatData">Персональные данные</h4>
+                <div class="row q-col-gutter-md">
+                  <div class="col-6">
+                    <q-input
+                      ref="surname"
+                      outlined
+                      v-model="personalData.surname"
+                      dense
+                      :hint="loadMessage"
+                      :disable="disableInput"
+                      label="Фамилия"
+                      :rules="[
+                        val => (val && val.length > 1) || 'Введите фамилию',
+                        val => fioValid(val)
+                      ]"
+                    />
+
+                    <q-input
+                      ref="name"
+                      outlined
+                      v-model="personalData.name"
+                      dense
+                      :hint="loadMessage"
+                      :disable="disableInput"
+                      label="Имя"
+                      :rules="[
+                        val => (val && val.length > 3) || 'Введите имя',
+                        val => fioValid(val)
+                      ]"
+                    />
+
+                    <q-input
+                      ref="mname"
+                      outlined
+                      v-model="personalData.mname"
+                      dense
+                      :hint="loadMessage"
+                      :disable="disableInput"
+                      label="Отчество"
+                      :rules="[
+                        val => !!val || 'Введите отчество',
+
+                        val => mValid(val)
+                      ]"
+                    />
+
+                    <q-input
+                      ref="inn"
+                      outlined
+                      v-model="personalData.inn"
+                      dense
+                      :hint="loadMessage"
+                      label="ИНН"
+                      mask="#########"
+                      :rules="[
+                        val =>
+                          (val && val.length == 9) ||
+                          'Количество символов должно быт ровно 9',
+                        val => !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <q-input
+                      ref="phone"
+                      outlined
+                      v-model="personalData.phone"
+                      dense
+                      label="Тел. номер"
+                      mask="+############"
+                      :rules="[
+                        val =>
+                          (val && val.length === 13) ||
+                          'Введите номер телефона',
+                        val =>
+                          !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные'
+                      ]"
+                    />
+
+                    <q-input
+                      ref="pinpp"
+                      outlined
+                      v-model.lazy="personalData.pinpp"
+                      dense
+                      :hint="loadMessage"
+                      :disable="disableInput"
+                      label="ПИНФЛ"
+                      mask="##############"
+                      :rules="[
+                        val => (val && val.length === 14) || 'Введите ПНФЛ',
+                        val => !val.match(/(?=(.))\1{14,}/) || 'Неверные данные'
+                      ]"
+                    />
+
+                    <q-input
+                      ref="pasport"
+                      outlined
+                      v-model="personalData.passport"
+                      dense
+                      :hint="loadMessage"
+                      :disable="disableInput"
+                      label="Серия номер паспорта"
+                      mask="AA#######"
+                      :rules="[
+                        val =>
+                          (val && val.length === 9) ||
+                          'Введите Серию и номер паспорта',
+                        val => !val.match(/(?=(.))\1{7,}/) || 'Неверные данные'
+                      ]"
+                    />
+
+                    <!-- Preloader auto compleate -->
+                    <appLoader v-if="loader" />
+
+                    <!-- Button auto complete person data -->
+                    <app-auto-complete-data v-else-if="scannerSerialNumber" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <h4 class="tab-title">Семейное положение</h4>
+                <div class="row q-col-gutter-md">
+                  <div class="col-12">
+                    <q-select
+                      ref="familyStatus"
+                      outlined
+                      v-model="personalData.familyStatus"
+                      :options="options.family"
+                      dense
+                      label="Семейное положения"
+                      emit-value
+                      map-options
+                      :rules="[val => !!val || 'Выберите семейное положение']"
+                    />
+                    <q-select
+                      outlined
+                      v-model="personalData.children"
+                      :options="credits.options.confirmation"
+                      dense
+                      label="Есть ли дети"
+                      emit-value
+                      map-options
+                      :rules="[]"
+                    />
+                    <q-input
+                      ref="childrenCount"
+                      v-if="personalData.children"
+                      outlined
+                      v-model.number="personalData.childrenCount"
+                      type="number"
+                      dense
+                      label="Количество детей до 18 лет"
+                      :rules="[
+                        val => (val && val > 0) || 'Введите количество детей'
+                      ]"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-4">
+                <div class="preappBlock">
+                  <h4 class="tab-title">Кредитный продукт</h4>
+                  <div class="row">
+                    <div class="col-12">
+                      <q-select
+                        ref="typeCredit"
+                        outlined
+                        v-model="personalData.typeCredit"
+                        :options="options.typeCredits"
+                        @input="onChangeLoan($event)"
+                        dense
+                        label="Кредитный продукт"
+                        emit-value
+                        map-options
+                        :rules="[val => !!val || 'Выберите кредитный продукт']"
+                      />
+
+                      <q-select
+                        v-if="
+                          !!personalData.typeCredit &&
+                            personalData.typeCredit != 3
+                        "
+                        ref="typeStepCredit"
+                        outlined
+                        v-model="personalData.typeStepCredit"
+                        :options="options.typeStepCredits"
+                        dense
+                        label="Тип графика гашения"
+                        emit-value
+                        map-options
+                        :rules="[
+                          val => !!val || 'Выберите тип графика гашения'
+                        ]"
+                      />
+
+                      <div v-if="!!personalData.typeCredit" class="col-12">
+                        <!-- <h6 class="periodCredit">Выберите срок кредита</h6> -->
+                        <q-input
+                          ref="periodCredit"
+                          outlined
+                          v-model.number="personalData.periodCredit"
+                          type="number"
+                          dense
+                          label="Срок кредита"
+                          :rules="[
+                            val => !!val || 'Выберите срок кредита',
+                            val =>
+                              (val <= periodCreditMax &&
+                                val >= periodCreditMin) ||
+                              `Срок кредита между ${periodCreditMin} - ${periodCreditMax} мес.`
+                          ]"
+                        />
+                        <div class="slider">
+                          <q-slider
+                            v-model.number="personalData.periodCredit"
+                            :min="periodCreditMin"
+                            :max="periodCreditMax"
+                            :step="1"
+                            label
+                            :label-value="personalData.periodCredit + ' мес.'"
+                            label-always
+                            color="blue-9"
+                          />
+                          <span class="periodCreditMin"
+                            >{{ periodCreditMin }} мес.</span
+                          >
+                          <span class="periodCreditMax"
+                            >{{ periodCreditMax }} мес.</span
+                          >
+                        </div>
+
+                        <q-badge color="white" text-color="grey">
+                          Срок средита: от {{ periodCreditMin }} до
+                          {{ periodCreditMax }} мес.
+                        </q-badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-8">
+                <div class="preappBlock">
+                  <h4 class="tab-title" ref="expenseIncome">
+                    Ежемесячные расходы/доходы
+                  </h4>
+                  <div class="row q-col-gutter-md">
+                    <div class="col-6">
+                      <q-input
+                        ref="income"
+                        outlined
+                        v-model.number="personalData.income"
+                        type="number"
+                        dense
+                        label="Подтвержденный ежемесячный доход"
+                        :rules="[
+                          val => !!val || 'Поля должно быт заполнено',
+                          val => val > 0 || 'Некорректные данные'
+                        ]"
+                      />
+
+                      <q-input
+                        ref="otherExpenses"
+                        outlined
+                        v-model.number="personalData.otherExpenses"
+                        type="number"
+                        dense
+                        label="Плата за облуживание других обязательств"
+                        :rules="[val => val >= 0 || 'Некорректные данные']"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-input
+                        ref="expense"
+                        outlined
+                        v-model.number="personalData.expense"
+                        type="number"
+                        dense
+                        label="Периодические расходы "
+                        :rules="[
+                          val => !!val || 'Поля должно быт заполнено',
+                          val => val > 0 || 'Некорректные данные'
+                        ]"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row q-col-gutter-md">
+                    <div class="col-6">
+                      <q-select
+                        outlined
+                        v-model="personalData.externalIncome"
+                        :options="credits.options.confirmation"
+                        dense
+                        label="Наличие дополнительного дохода"
+                        emit-value
+                        map-options
+                        :rules="[]"
+                      />
+
+                      <q-select
+                        ref="additionalIncomeSource"
+                        v-if="personalData.externalIncome"
+                        outlined
+                        v-model="personalData.additionalIncomeSource"
+                        :options="options.additIncSourOption"
+                        dense
+                        label="Источник дополнительного дохода"
+                        emit-value
+                        map-options
+                        :rules="[val => !!val || 'Поля должно быт заполнено']"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <q-input
+                        ref="externalIncomeSize"
+                        v-if="personalData.externalIncome"
+                        outlined
+                        v-model.number="personalData.externalIncomeSize"
+                        type="number"
+                        dense
+                        label="Размер дополнительного дохода"
+                        :rules="[
+                          val => !!val || 'Поля должно быт заполнено',
+                          val => val > 0 || 'Некорректные данные'
+                        ]"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row q-col-gutter-md">
+                    <div class="col-12">
+                      <q-select
+                        v-if="!!this.personalData.typeCredit"
+                        ref="loan_purpose"
+                        outlined
+                        v-model="personalData.loan_purpose"
+                        :options="options.loanPurpose"
+                        dense
+                        label="Цель кредитования"
+                        emit-value
+                        map-options
+                        :rules="[val => !!val || 'Выберите цель кредитования']"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row calCreditBtn">
+          <q-btn type="submit" label="РАССЧИТАТЬ КРЕДИТ" class="q-ml-sm" />
         </div>
       </form>
 
@@ -761,16 +871,16 @@ export default {
     //             incomeType: ""
     //           },
     //           customer: {
-    //             firstName: "SDFSD",
+    //             firstName: "DFGDG",
     //             lastName: "SDF",
-    //             middleName: "SDF SDFSD",
+    //             middleName: "DFGDFG",
     //             passport: {
-    //               number: "2342424",
-    //               series: "SD"
+    //               number: "3242333",
+    //               series: "DS"
     //             },
-    //             mainPhone: "+998134345353",
-    //             tin: "123131313",
-    //             pinpp: "23424324242342"
+    //             mainPhone: "+998234234234",
+    //             tin: "234243242",
+    //             pinpp: "23423444444233"
     //           }
     //         }
     //       },
@@ -780,8 +890,8 @@ export default {
     //           repaymentType: 1,
     //           spouseCost: 300000,
     //           childCost: 200000,
-    //           creditTerm: 12,
-    //           loanRate: 32
+    //           creditTerm: 9,
+    //           loanRate: 24
     //         }
     //       }
     //     ]
@@ -936,30 +1046,26 @@ export default {
 <style lang="scss">
 .registration {
   .preapprovForm {
-    width: 80%;
+    width: 100%;
   }
 
   .tab-title {
-    background-color: #ededed;
-    color: #0e3475;
-    margin-top: 10px;
-    padding: 9px 11px;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 16px;
-    //text-transform: uppercase
+    color: #333333;
+    margin: 20px 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 33px;
   }
 
   .tab-content {
-    color: #212121;
+    font-size: 14px;
+    color: #74798c;
   }
 
   .personPhoto_block,
   .default_personPhoto_block {
-    width: 94%;
     height: auto;
-    border: 1px solid #acacac;
+    border: 1px solid #e7e7e7;
   }
 
   .personPhoto,
@@ -968,9 +1074,40 @@ export default {
     display: block;
   }
 
-  // .creditContent {
-  //   width: 48%;
-  // }
+  .preappBlock {
+    border: 1px solid #e7e7e7;
+    border-radius: 20px;
+    padding: 0 30px;
+    margin-bottom: 20px;
+
+    .privatData {
+      padding-right: 50px;
+    }
+  }
+
+  .slider {
+    position: relative;
+    margin: 20px 0;
+    .periodCreditMin,
+    .periodCreditMax {
+      position: absolute;
+    }
+
+    .periodCreditMin {
+      top: 70%;
+      left: 0;
+    }
+
+    .periodCreditMax {
+      top: 70%;
+      right: 0;
+    }
+  }
+
+  .q-badge {
+    padding: 0;
+    margin-bottom: 20px;
+  }
 
   .loader {
     margin-bottom: 15px;
@@ -982,7 +1119,7 @@ export default {
 
   .q-field--with-bottom,
   .q-pb-sm {
-    padding-bottom: 16px;
+    // padding-bottom: 16px;
   }
 
   .q-col-gutter-y-md > *,
@@ -1005,7 +1142,19 @@ export default {
   }
 
   .calCreditBtn {
-    padding-top: 16px;
+    display: flex;
+    justify-content: center;
+    button {
+      background: #47b881;
+      margin: 10px 0 20px 0;
+      padding: 7px 85px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .q-btn__content {
+      font-size: 14px;
+    }
   }
 }
 </style>
