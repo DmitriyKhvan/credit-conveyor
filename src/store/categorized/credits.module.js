@@ -18,7 +18,7 @@ export const credits = {
       BackOfficee: "ROLE_BO",
       CreditCommitteeMember: "ROLE_CC",
       CreditSecretary: "ROLE_CCS",
-      Underwriter: "ROLE_UrWr",
+      UnderWriter: "ROLE_UrWr",
       CreditCommitteeChief: "ROLE_CCC",
       ProcessManager: "ROLE_PM",
 
@@ -472,7 +472,19 @@ export const credits = {
         state.loadings[i] = false
       }
 
-      state.creditTasks = payload.response.infoList
+      // state.creditTasks = payload.response.infoList
+
+      state.creditTasks = payload.response.infoList.map(credit => {
+        let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
+                ? true
+                : false
+
+        return {
+          ...credit,
+          time
+        }
+      })
+
       // state.creditTasks = payload.response.infoList.sort((a, b) => {
       //     if (b.date < a.date) {
       //       return -1
@@ -500,17 +512,17 @@ export const credits = {
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
     userRole: state => state.userRole,
-    creditTasks: state => {
-      return state.creditTasks.map(credit => {
-        let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
-                ? true
-                : false
+    // creditTasks: state => {
+    //   return state.creditTasks.map(credit => {
+    //     let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
+    //             ? true
+    //             : false
 
-        return {
-          ...credit,
-          time
-        }
-      })
-    }
+    //     return {
+    //       ...credit,
+    //       time
+    //     }
+    //   })
+    // }
   }
 };

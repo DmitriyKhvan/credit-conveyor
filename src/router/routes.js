@@ -147,7 +147,7 @@ const routes = [{
     },
     {
       path: "credit",
-      // redirect: 'credit/applications',
+      redirect: 'credit/applications',
       name: "Credit",
       component: Credit,
       children: [{

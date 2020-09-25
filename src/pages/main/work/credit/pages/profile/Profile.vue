@@ -1,6 +1,5 @@
 <template>
   <div class="fullProfile">
-    
     <div class="loaderForm" v-if="loaderForm">
       <appLoader />
     </div>
@@ -181,7 +180,9 @@
                     label="ПИНФЛ"
                     mask="##############"
                     lazy-rules
-                    :rules="[val => (val && val.length === 14) || 'Введите ПНФЛ']"
+                    :rules="[
+                      val => (val && val.length === 14) || 'Введите ПНФЛ'
+                    ]"
                   />
                 </div>
                 <div class="col-4">
@@ -352,7 +353,8 @@
                         'Введите дату окончания действия документа',
                       Customer.Document.GivenDate
                         ? val =>
-                            msecond(val) > msecond(Customer.Document.GivenDate) ||
+                            msecond(val) >
+                              msecond(Customer.Document.GivenDate) ||
                             'Неверная дата'
                         : null,
                       val =>
@@ -425,7 +427,9 @@
                     :options="Customer.Document.Districts.items"
                     dense
                     label="Кем выдан документ (ИИБ)"
-                    :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
+                    :rules="[
+                      val => !!val || 'Введите кем выдан документ (ИИБ)'
+                    ]"
                     emit-value
                     map-options
                     class="q-pb-sm"
@@ -483,7 +487,8 @@
                       mask="+############"
                       :rules="[
                         val =>
-                          (val && val.length === 13) || 'Введите номер телефона',
+                          (val && val.length === 13) ||
+                          'Введите номер телефона',
                         val => phoneValid(val)
                       ]"
                     />
@@ -549,7 +554,9 @@
 
                 <div class="tab-content" ref="tabContent">
                   <div
-                    v-if="address.AddressType === 'Адрес фактического проживания'"
+                    v-if="
+                      address.AddressType === 'Адрес фактического проживания'
+                    "
                     class="row q-col-gutter-md"
                   >
                     <div class="col-4">
@@ -848,7 +855,9 @@
                 v-for="(relative, index) of Customer.Relatives.items"
                 :key="'Relatives' + index"
               >
-                <legend class="legend_title">Родственник {{ index + 1 }}</legend>
+                <legend class="legend_title">
+                  Родственник {{ index + 1 }}
+                </legend>
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -979,7 +988,9 @@
                       v-model="relative.Document.DocumentName"
                       dense
                       label="Наименование документа"
-                      :rules="[val => !!val || 'Введите наименование документа']"
+                      :rules="[
+                        val => !!val || 'Введите наименование документа'
+                      ]"
                     />
                   </div>
                 </div>
@@ -1013,7 +1024,8 @@
                       mask="#######"
                       :rules="[
                         val =>
-                          (val && val.length === 7) || 'Введите номер документа',
+                          (val && val.length === 7) ||
+                          'Введите номер документа',
                         val => docNumberValid(val)
                       ]"
                     />
@@ -1164,10 +1176,44 @@
                       :options="relative.Document.Districts.items"
                       dense
                       label="Кем выдан документ (ИИБ)"
-                      :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
+                      :rules="[
+                        val => !!val || 'Введите кем выдан документ (ИИБ)'
+                      ]"
                       emit-value
                       map-options
                       class="q-pb-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-checkbox
+                      disable
+                      left-label
+                      v-model="relative.LSBO"
+                      label="ЛСБО"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      disable
+                      square
+                      outlined
+                      v-model="relative.filial"
+                      dense
+                      label="Номер филиала"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      disable
+                      square
+                      outlined
+                      v-model="relative.role"
+                      dense
+                      label="Должность"
                     />
                   </div>
                 </div>
@@ -1196,12 +1242,29 @@
                 @click="addRelative"
                 class="addItem"
               ></q-btn>
+
+              <q-btn
+                v-if="profile.preapprove_num"
+                :loading="LSBOLoading"
+                color="primary"
+                label="Получить данные ЛСБО"
+                @click="getLSBO"
+                class="addItem"
+              >
+                <template v-slot:loading>
+                  <q-spinner-facebook />
+                </template>
+              </q-btn>
             </div>
           </div>
 
           <!-- Information on work -->
           <div class="infoWork tab">
-            <h4 class="tab-title" ref="infoWork" @click="toggleForm('infoWork')">
+            <h4
+              class="tab-title"
+              ref="infoWork"
+              @click="toggleForm('infoWork')"
+            >
               Сведения по основной работе
             </h4>
             <div class="tab-content" ref="tabContent">
@@ -1278,7 +1341,8 @@
                         emit-value
                         map-options
                         :rules="[
-                          val => !!val || 'Выберите вид деятельности организации'
+                          val =>
+                            !!val || 'Выберите вид деятельности организации'
                         ]"
                         class="q-pb-sm"
                       />
@@ -1300,7 +1364,8 @@
                         map-options
                         :rules="[
                           val =>
-                            !!val || 'Выберите количество работников организации'
+                            !!val ||
+                            'Выберите количество работников организации'
                         ]"
                         class="q-pb-sm"
                       />
@@ -1413,7 +1478,8 @@
                         emit-value
                         map-options
                         :rules="[
-                          val => !!val || 'Выберите вид деятельности организации'
+                          val =>
+                            !!val || 'Выберите вид деятельности организации'
                         ]"
                         class="q-pb-sm"
                       />
@@ -1518,7 +1584,9 @@
                       disable
                       square
                       outlined
-                      v-model.number="Customer.MonthlyIncome.additionalIncome.sum"
+                      v-model.number="
+                        Customer.MonthlyIncome.additionalIncome.sum
+                      "
                       type="number"
                       dense
                       label="Размер дополнительного дохода"
@@ -1530,7 +1598,9 @@
                       disable
                       square
                       outlined
-                      v-model="Customer.MonthlyIncome.additionalIncome.incomeType"
+                      v-model="
+                        Customer.MonthlyIncome.additionalIncome.incomeType
+                      "
                       :options="dictionaries.additionalIncomeSource.items"
                       dense
                       label="Источник дополнительного дохода"
@@ -1633,7 +1703,9 @@
                   .Realty_new.items"
                 :key="'Realty_new' + index"
               >
-                <legend class="legend_title">Недвижимость {{ index + 1 }}</legend>
+                <legend class="legend_title">
+                  Недвижимость {{ index + 1 }}
+                </legend>
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
@@ -1864,8 +1936,8 @@
                       val => val > 0 || 'Некорректные данные',
                       val =>
                         totalGuaranteesSum - fullProfile.LoanInfo.Sum >=
-                          fullProfile.LoanInfo.Sum * 0.25 ||
-                        'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%',
+                          fullProfile.LoanInfo.Sum * (profile.percent / 100) ||
+                        `Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на ${profile.percent}%`,
                       fullProfile.max_loan_sum_preapprove
                         ? val =>
                             (val > 0 &&
@@ -1944,7 +2016,6 @@
                     ]"
                   />
                 </div> -->
-
               </div>
 
               <div class="row q-col-gutter-md">
@@ -1957,7 +2028,9 @@
                     <q-input
                       square
                       outlined
-                      v-model.number="fullProfile.LoanInfo.MaxDefferalRepaymentPeriod"
+                      v-model.number="
+                        fullProfile.LoanInfo.MaxDefferalRepaymentPeriod
+                      "
                       type="number"
                       dense
                       label="Льготный период по погашению кредита"
@@ -1989,7 +2062,6 @@
                       class="sliderCredit"
                     />
                   </div>
-
                 </div>
               </div>
 
@@ -2018,7 +2090,9 @@
                     ref="comfortableDayRepayment"
                     square
                     outlined
-                    v-model.number="fullProfile.LoanInfo.ConvenientRepaymentTerm"
+                    v-model.number="
+                      fullProfile.LoanInfo.ConvenientRepaymentTerm
+                    "
                     type="number"
                     dense
                     label="Удобный день погашения"
@@ -2082,7 +2156,7 @@
               </div>
 
               <!-- <div class="row q-col-gutter-md"> -->
-                <!-- <div 
+              <!-- <div 
                   v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3"
                   class="col-4">
                   <q-input
@@ -2101,7 +2175,7 @@
                   />
                 </div> -->
 
-                <!-- <div class="col-4">
+              <!-- <div class="col-4">
                   <q-input
                     ref="procentInitialFeeMax"
                     square
@@ -2117,7 +2191,7 @@
                   />
                 </div> -->
 
-                <!-- <div class="col-4">
+              <!-- <div class="col-4">
                   <q-input
                     ref="procentInitialFeeMin"
                     square
@@ -2162,7 +2236,9 @@
                     :options="options.FinancialSources.items"
                     dense
                     label="Источник финансирования"
-                    :rules="[val => !!val || 'Выберите источник финансирования']"
+                    :rules="[
+                      val => !!val || 'Выберите источник финансирования'
+                    ]"
                     emit-value
                     map-options
                     class="q-pb-sm"
@@ -2234,7 +2310,9 @@
                       label="Расчетный счет продавца/производителя товара/работы/услуги"
                       mask="####################"
                       :rules="[
-                        val => (val && val.length === 20) || 'Количество символов должно быт ровно 20',
+                        val =>
+                          (val && val.length === 20) ||
+                          'Количество символов должно быт ровно 20',
                         val => !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
                       ]"
                     />
@@ -2245,7 +2323,9 @@
                       ref="agreementNumber"
                       square
                       outlined
-                      v-model="fullProfile.LoanInfo.consumerLoan.agreementNumber"
+                      v-model="
+                        fullProfile.LoanInfo.consumerLoan.agreementNumber
+                      "
                       dense
                       label="Номер договора с продавцом/поставщиком  товара/работы/услуги"
                       :rules="[
@@ -2270,7 +2350,8 @@
                           (val && val.length === 10) ||
                           'Введите дату договора с продавцом/поставщиком товара/работы/услуги',
                         val =>
-                          msecond(val) <= msecond(currentDate) || 'Неверная дата'
+                          msecond(val) <= msecond(currentDate) ||
+                          'Неверная дата'
                       ]"
                     >
                       <template v-slot:append>
@@ -2314,8 +2395,8 @@
                   val => !!val || 'Добавьте гарантию или поручительство',
                   val =>
                     totalGuaranteesSum - fullProfile.LoanInfo.Sum >=
-                      fullProfile.LoanInfo.Sum * 0.25 ||
-                    'Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на 25%'
+                      fullProfile.LoanInfo.Sum * (profile.percent / 100) ||
+                    `Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на ${profile.percent}%`
                 ]"
               >
                 <h5
@@ -2327,11 +2408,13 @@
 
                 <fieldset
                   class="fieldset_block"
-                  v-for="(guarantee, index) of fullProfile.Guarantee.RelatedPerson
-                    .items"
+                  v-for="(guarantee, index) of fullProfile.Guarantee
+                    .RelatedPerson.items"
                   :key="'RelatedPerson' + index"
                 >
-                  <legend class="legend_title">Физ. лицо {{ index + 1 }}</legend>
+                  <legend class="legend_title">
+                    Физ. лицо {{ index + 1 }}
+                  </legend>
 
                   <div class="row q-col-gutter-md">
                     <div class="col-4">
@@ -2346,7 +2429,9 @@
                         label="Отношение к клиенту"
                         emit-value
                         map-options
-                        :rules="[val => !!val || 'Выберите отношение к клиенту']"
+                        :rules="[
+                          val => !!val || 'Выберите отношение к клиенту'
+                        ]"
                         class="q-pb-sm"
                       />
                     </div>
@@ -2431,7 +2516,8 @@
                         mask="##.##.####"
                         :rules="[
                           val =>
-                            (val && val.length === 10) || 'Введите дату рождения',
+                            (val && val.length === 10) ||
+                            'Введите дату рождения',
                           val => adulthoodValid(val) || 'Несовершеннолетний'
                         ]"
                       >
@@ -2558,7 +2644,8 @@
                         mask="AA"
                         :rules="[
                           val =>
-                            (val && val.length === 2) || 'Введите Серию документа'
+                            (val && val.length === 2) ||
+                            'Введите Серию документа'
                         ]"
                       />
                     </div>
@@ -2603,7 +2690,8 @@
                             : null,
 
                           val =>
-                            msecond(val) < msecond(currentDate) || 'Неверная дата'
+                            msecond(val) < msecond(currentDate) ||
+                            'Неверная дата'
                         ]"
                       >
                         <template v-slot:append>
@@ -2654,7 +2742,8 @@
                                 'Неверная дата'
                             : null,
                           val =>
-                            msecond(val) > msecond(currentDate) || 'Неверная дата'
+                            msecond(val) > msecond(currentDate) ||
+                            'Неверная дата'
                         ]"
                       >
                         <template v-slot:append>
@@ -2726,7 +2815,9 @@
                         :options="guarantee.Document.Districts.items"
                         dense
                         label="Кем выдан документ (ИИБ)"
-                        :rules="[val => !!val || 'Введите кем выдан документ (ИИБ)']"
+                        :rules="[
+                          val => !!val || 'Введите кем выдан документ (ИИБ)'
+                        ]"
                         emit-value
                         map-options
                         class="q-pb-sm"
@@ -3488,7 +3579,10 @@
                       class="file-listing"
                     >
                       <div class="fileNameBlock">
-                        <span class="material-icons fileDownload" v-if="file.id">
+                        <span
+                          class="material-icons fileDownload"
+                          v-if="file.id"
+                        >
                           done
                           <q-tooltip>Файл загружен</q-tooltip>
                         </span>
@@ -3601,7 +3695,31 @@
           </div>
 
           <!-- Client info -->
-          <appClientInfo />
+          <!-- <div class="clientInfo tab">
+            <h4
+              class="tab-title"
+              ref="clientInfo"
+              @click="toggleForm('clientInfo')"
+            >
+              Информация о клиенте
+            </h4>
+            <div class="tab-content" ref="tabContent">
+
+               <appClientInfo v-if="clientInfo" :data="clientInfo" />
+
+               <q-btn
+                :loading="clientInfoLoading"
+                color="primary"
+                label="Получить данные клиента"
+                @click="getClientInfo"
+                class="addItem"
+              >
+                <template v-slot:loading>
+                  <q-spinner-facebook />
+                </template>
+              </q-btn>
+            </div>
+          </div> -->
 
           <!-- file list -->
           <template v-if="profile.fileList.length">
@@ -3660,20 +3778,50 @@
             />
           </div>
         </form>
-      </div>  
+      </div>
       <div class="col-2 navMenuBlock">
         <ul class="navMenu">
-          <li><a class="active" href=".privatData" @click="goToBlock">Личные данные клиента</a></li>
-          <li><a href=".contactData" @click="goToBlock">Контактные данные</a></li>
+          <li>
+            <a class="active" href=".privatData" @click="goToBlock"
+              >Личные данные клиента</a
+            >
+          </li>
+          <li>
+            <a href=".contactData" @click="goToBlock">Контактные данные</a>
+          </li>
           <li><a href=".address" @click="goToBlock">Адрес клиента</a></li>
           <li><a href=".family-status" @click="goToBlock">Родственники</a></li>
-          <li><a href=".infoWork" @click="goToBlock">Сведения по основной работе</a></li>
-          <li><a href=".expense-income" @click="goToBlock">Ежемесячные расходы/доходы</a></li>
-          <li><a href=".properties" @click="goToBlock">Сведения об имуществе</a></li>
-          <li><a href=".infoCredit" @click="goToBlock">Сведения о запрашиваемом кредите</a></li>
-          <li><a href=".guarantees" @click="goToBlock">Гарантии и поручительство</a></li>
-          <li><a href=".loadDocuments" @click="goToBlock">Загрузить документ</a></li>
-          <li><a href=".commentCredit" @click="goToBlock">Комментарии по кредиту</a></li>
+          <li>
+            <a href=".infoWork" @click="goToBlock"
+              >Сведения по основной работе</a
+            >
+          </li>
+          <li>
+            <a href=".expense-income" @click="goToBlock"
+              >Ежемесячные расходы/доходы</a
+            >
+          </li>
+          <li>
+            <a href=".properties" @click="goToBlock">Сведения об имуществе</a>
+          </li>
+          <li>
+            <a href=".infoCredit" @click="goToBlock"
+              >Сведения о запрашиваемом кредите</a
+            >
+          </li>
+          <li>
+            <a href=".guarantees" @click="goToBlock"
+              >Гарантии и поручительство</a
+            >
+          </li>
+          <li>
+            <a href=".loadDocuments" @click="goToBlock">Загрузить документ</a>
+          </li>
+          <li>
+            <a href=".commentCredit" @click="goToBlock"
+              >Комментарии по кредиту</a
+            >
+          </li>
         </ul>
       </div>
 
@@ -3767,9 +3915,12 @@ export default {
   data() {
     return {
       bankLoading: false,
+      LSBOLoading: false,
+      clientInfoLoading: false,
       // infoList: false,
       INPSBar: false,
       dataINPS: null,
+      clientInfo: null,
       countRelativeDocumentName: -1,
       countGuaranteeDocumentName: -1,
       currentDate: CommonUtils.dateFilter(new Date()),
@@ -3888,14 +4039,14 @@ export default {
       this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
 
       try {
-      const response = await this.$store.dispatch("profile/getFullForm");
-      this.loaderForm = false;
+        const response = await this.$store.dispatch("profile/getFullForm");
+        this.loaderForm = false;
       } catch (error) {
         this.$store.commit(
-        "credits/setMessage",
-        CommonUtils.filterServerError(error)
-      );
-      this.loaderForm = false;
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.loaderForm = false;
       }
 
       // this.$store.commit(
@@ -3911,7 +4062,6 @@ export default {
       //   "profile/setPreapproveNum",
       //   sessionStorage.getItem("preapprove_num")
       // );
-      
     }
     // else {
     //     this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
@@ -3924,12 +4074,12 @@ export default {
     ].Countries.items;
   },
   mounted() {
-    document.querySelectorAll('.scroll')[1].addEventListener('scroll', this.handleScroll);
-    // setTimeout(() => {
-    //   this.onSubmit("start");
-    // }, 1000);
-
-    
+    document
+      .querySelectorAll(".scroll")[1]
+      .addEventListener("scroll", this.handleScroll);
+    setTimeout(() => {
+      this.onSubmit("start");
+    }, 1000);
   },
   computed: {
     ...mapState({
@@ -4582,417 +4732,425 @@ export default {
       }
     },
 
-    async onSubmit() {
-      const data = {
-        output: [
-          {
-            name: "application",
-            data: {
-              Status: "",
-              BODecision: false,
-              BOLogin: "",
-              ClientManagerLogin: "man",
-              CreditCommiteeDecisions: {
-                items: []
-              },
-              Customer: {
-                DigID: false,
-                Email: "",
-                FirstName: "SDFSD",
-                LastName: "SDF",
-                MiddleName: "SDF SDFSD",
-                FullName: "SDF SDFSD SDF SDFSD",
-                BirthDate: "08.09.1990",
-                Country: 68,
-                BirthCity: "DSFSD",
-                INN: "123131313",
-                PINPP: "23424324242342",
-                ResidentFlag: "",
-                Gender: 1,
-                Document: {
-                  documentType: 2,
-                  Series: "SD",
-                  Number: "2342424",
-                  ExpirationDate: "31.08.2020",
-                  GivenDate: "01.08.2020",
-                  GUID: "",
-                  Country: "Uzbekistan",
-                  DocLink: "",
-                  DocumentName: "",
-                  Region: 5,
-                  Districts: {
-                    items: [
-                      {
-                        label: "НАВОИЙ ШАХРИ",
-                        value: 58
-                      },
-                      {
-                        label: "ЗАРАФШОН ШАХРИ",
-                        value: 59
-                      },
-                      {
-                        label: "Г.УЧКУДУК",
-                        value: 60
-                      },
-                      {
-                        label: "КАРМАНА ТУМАНИ",
-                        value: 61
-                      },
-                      {
-                        label: "КОНИМЕХ ТУМАНИ",
-                        value: 62
-                      },
-                      {
-                        label: "КИЗИЛТЕПА ТУМАНИ",
-                        value: 63
-                      },
-                      {
-                        label: "НАВБАХОР ТУМАНИ",
-                        value: 64
-                      },
-                      {
-                        label: "НУРОТА ТУМАНИ",
-                        value: 65
-                      },
-                      {
-                        label: "ХАТИРЧИ ТУМАНИ",
-                        value: 66
-                      },
-                      {
-                        label: "ТОМДИ ТУМАНИ",
-                        value: 67
-                      },
-                      {
-                        label: "УЧКУДУК ТУМАНИ",
-                        value: 211
-                      },
-                      {
-                        label: "ГОЗГОН ШАХРИ",
-                        value: 224
-                      }
-                    ]
-                  },
-                  GivenPlace: 62
-                },
-                Education: 3,
-                PhoneList: {
-                  items: [
-                    {
-                      Number: "+998134345353"
-                    }
-                  ]
-                },
-                AddressList: {
-                  items: [
-                    {
-                      Building: "",
-                      OwnershipType: null,
-                      HouseType: "",
-                      PostalCode: "",
-                      Region: 2,
-                      District: 20,
-                      Street: "SDF",
-                      Block: "",
-                      House: "12",
-                      City: "",
-                      Apartment: "",
-                      AddressType: "Адрес постоянной регистрации",
-                      Districts: {
-                        items: [
-                          {
-                            label: "ОЛОТ ТУМАНИ",
-                            value: 19
-                          },
-                          {
-                            label: "ВОБКЕНТ ТУМАНИ",
-                            value: 20
-                          },
-                          {
-                            label: "ГИЖДУВОН ТУМАНИ",
-                            value: 21
-                          },
-                          {
-                            label: "БУХОРО ТУМАНИ",
-                            value: 22
-                          },
-                          {
-                            label: "КОРАКУЛ ТУМАНИ",
-                            value: 23
-                          },
-                          {
-                            label: "РОМИТАН ТУМАНИ",
-                            value: 24
-                          },
-                          {
-                            label: "ЖОНДОР ТУМАНИ",
-                            value: 25
-                          },
-                          {
-                            label: "ШОФИРКОН ТУМАНИ",
-                            value: 26
-                          },
-                          {
-                            label: "ПЕШКУ ТУМАНИ",
-                            value: 27
-                          },
-                          {
-                            label: "КОРОВУЛБОЗОР ТУМАНИ",
-                            value: 28
-                          },
-                          {
-                            label: "КОГОН ТУМАНИ",
-                            value: 29
-                          },
-                          {
-                            label: "БУХОРО ШАХРИ",
-                            value: 30
-                          },
-                          {
-                            label: "КОГОН ШАХРИ",
-                            value: 220
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                },
-                MaritalStatus: 2,
-                hasChildren: true,
-                UnderAgeChildrenNum: 1,
-                Relatives: {
-                  items: [
-                    {
-                      FirstName: "GFHFH",
-                      FamilyConnectionType: 2,
-                      LastName: "SDF",
-                      MiddleName: "FGHFGH",
-                      BirthDate: "23.09.1989",
-                      Document: {
-                        documentType: 5,
-                        Series: "SD",
-                        Number: "2313131",
-                        ExpirationDate: "31.08.2020",
-                        GivenDate: "01.08.2020",
-                        GUID: "",
-                        Country: "",
-                        DocLink: "",
-                        DocumentName: "",
-                        Region: 7,
-                        Districts: {
-                          items: [
-                            {
-                              label: "ОКДАРЁ ТУМАНИ",
-                              value: 80
-                            },
-                            {
-                              label: "БУЛУНГУР ТУМАНИ",
-                              value: 81
-                            },
-                            {
-                              label: "ГУЗАЛКЕНТСКИЙ",
-                              value: 82
-                            },
-                            {
-                              label: "ЖОМБОЙ ТУМАНИ",
-                              value: 83
-                            },
-                            {
-                              label: "ИШТИХОН ТУМАНИ",
-                              value: 84
-                            },
-                            {
-                              label: "КАТТАКУРГОН ТУМАНИ",
-                              value: 85
-                            },
-                            {
-                              label: "КУШРАБОТ ТУМАНИ",
-                              value: 86
-                            },
-                            {
-                              label: "НАРПАЙ ТУМАНИ",
-                              value: 87
-                            },
-                            {
-                              label: "НУРОБОД ТУМАНИ",
-                              value: 88
-                            },
-                            {
-                              label: "ПАСТДАРГОМ ТУМАНИ",
-                              value: 89
-                            },
-                            {
-                              label: "ПАХТАЧИ ТУМАНИ",
-                              value: 90
-                            },
-                            {
-                              label: "ПАЙАРИК ТУМАНИ",
-                              value: 91
-                            },
-                            {
-                              label: "САМАРКАНД ТУМАНИ",
-                              value: 92
-                            },
-                            {
-                              label: "ТАЙЛОК ТУМАНИ",
-                              value: 93
-                            },
-                            {
-                              label: "УРГУТ ТУМАНИ",
-                              value: 94
-                            },
-                            {
-                              label: "ЧЕЛЕКСКИЙ",
-                              value: 95
-                            },
-                            {
-                              label: "САМАРКАНД ШАХРИ",
-                              value: 96
-                            },
-                            {
-                              label: "КАТТАКУРГОН ШАХРИ",
-                              value: 97
-                            },
-                            {
-                              label: "ТЕМИРЮЛЬСКИЙ",
-                              value: 215
-                            },
-                            {
-                              label: "Г.АКТАШ",
-                              value: 218
-                            },
-                            {
-                              label: "Г.УРГУТ",
-                              value: 219
-                            }
-                          ]
-                        },
-                        GivenPlace: 86
-                      }
-                    }
-                  ]
-                },
-                JobInfo: {
-                  employerActivityType: null,
-                  positionType: null,
-                  INN: "",
-                  employeesNum: 0,
-                  employerName: "",
-                  totalJobExperienceMonths: 0,
-                  activeYears: 0,
-                  position: "",
-                  type: 4,
-                  lastJobExperienceMonths: 0
-                },
-                MonthlyExpenses: {
-                  recurringExpenses: 2000000,
-                  obligations: 0
-                },
-                MonthlyIncome: {
-                  confirmMonthlyIncome: 10000000,
-                  hasAdditionalIncome: false,
-                  additionalIncome: {
-                    incomeType: null,
-                    sum: 0
-                  }
-                },
-                PropertyInformation: {
-                  Realty_new: {
-                    items: []
-                  },
-                  Transport_new: {
-                    items: []
-                  }
-                }
-              },
-              Guarantee: {
-                Insurance: {
-                  items: [
-                    {
-                      INN: "305684696",
-                      OrgName: '"OOO ""APEX INSURANCE"""',
-                      Sum: 50000000
-                    }
-                  ]
-                },
-                RelatedLegalPerson: {
-                  items: []
-                },
-                RelatedPerson: {
-                  items: []
-                }
-              },
-              LoanInfo: {
-                LoanProduct: 1,
-                Sum: 20000000,
-                Currency: "СУМ",
-                RepaymentType: 1,
-                LoanType: null,
-                MinInterestRate: 32,
-                MaxInterestRate: 32,
-                MaxDefferalRepaymentPeriod: 0,
-                ConvenientRepaymentTerm: 5,
-                TermInMonth: 12,
-                MaxTermInMonths: 12,
-                MinTermInMonths: 1,
-                InitialPayment: 0,
-                MaxInitialPaymentPercent: 0,
-                MinInitialPaymentPercent: 0,
-                LoanPurpose: 261,
-                FundingSource: 1,
-                FacilitiesForRepaymentDate: false,
-                consumerLoan: {
-                  nameBankProd: "",
-                  nameService: "",
-                  agreementDate: "",
-                  nameProduction: "",
-                  billProd: "",
-                  agreementNumber: "",
-                  idBankProd: 0
-                }
-              },
-              ApplicationComment: {
-                items: []
-              },
-              AttachedDocuments: {
-                items: [
-                  {
-                    id: 1557,
-                    DocLink: "",
-                    DocumentName: "SDF"
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      };
+    // async onSubmit() {
+    //   const data = {
+    //     output: [
+    //       {
+    //         name: "application",
+    //         data: {
+    //           Status: "",
+    //           BODecision: null,
+    //           BOLogin: "",
+    //           ClientManagerLogin: "man",
+    //           CreditCommiteeDecisions: {
+    //             items: []
+    //           },
+    //           Customer: {
+    //             DigID: false,
+    //             Email: "",
+    //             FirstName: "DFGDG",
+    //             LastName: "SDF",
+    //             MiddleName: "DFGDFG",
+    //             FullName: "SDF DFGDG DFGDFG",
+    //             BirthDate: "07.08.1969",
+    //             Country: 0,
+    //             BirthCity: "DSF",
+    //             INN: "234243242",
+    //             PINPP: "23423444444233",
+    //             ResidentFlag: true,
+    //             Gender: 1,
+    //             Document: {
+    //               documentType: 8,
+    //               Series: "DS",
+    //               Number: "3242333",
+    //               ExpirationDate: "14.09.2022",
+    //               GivenDate: "11.09.1969",
+    //               GUID: "",
+    //               Country: "Uzbekistan",
+    //               DocLink: "",
+    //               DocumentName: "",
+    //               Region: 1,
+    //               Districts: {
+    //                 items: [
+    //                   {
+    //                     label: "АНДИЖОН ШАХРИ",
+    //                     value: 1
+    //                   },
+    //                   {
+    //                     label: "АСАКА ШАХРИ",
+    //                     value: 2
+    //                   },
+    //                   {
+    //                     label: "ХОНОБОД ШАХРИ",
+    //                     value: 3
+    //                   },
+    //                   {
+    //                     label: "КОРАСУВ ШАХРИ",
+    //                     value: 4
+    //                   },
+    //                   {
+    //                     label: "Г.ШАХРИХАН",
+    //                     value: 5
+    //                   },
+    //                   {
+    //                     label: "АНДИЖОН ТУМАНИ",
+    //                     value: 6
+    //                   },
+    //                   {
+    //                     label: "АСАКА ТУМАНИ",
+    //                     value: 7
+    //                   },
+    //                   {
+    //                     label: "БАЛИКЧИ ТУМАНИ",
+    //                     value: 8
+    //                   },
+    //                   {
+    //                     label: "БУЗ ТУМАНИ",
+    //                     value: 9
+    //                   },
+    //                   {
+    //                     label: "БУЛОКБОШИ ТУМАНИ",
+    //                     value: 10
+    //                   },
+    //                   {
+    //                     label: "ЖАЛОЛКУДУК ТУМАНИ",
+    //                     value: 11
+    //                   },
+    //                   {
+    //                     label: "ИЗБОСКАН ТУМАНИ",
+    //                     value: 12
+    //                   },
+    //                   {
+    //                     label: "КОМСОМОЛАБАДСКИЙ",
+    //                     value: 13
+    //                   },
+    //                   {
+    //                     label: "КУРГОНТЕПА ТУМАНИ",
+    //                     value: 14
+    //                   },
+    //                   {
+    //                     label: "МАРХАМАТ ТУМАНИ",
+    //                     value: 15
+    //                   },
+    //                   {
+    //                     label: "ОЛТИНКУЛ ТУМАНИ",
+    //                     value: 16
+    //                   },
+    //                   {
+    //                     label: "ПАХТАОБОД ТУМАНИ",
+    //                     value: 17
+    //                   },
+    //                   {
+    //                     label: "ХУЖАОБОД ТУМАНИ",
+    //                     value: 18
+    //                   },
+    //                   {
+    //                     label: "УЛУГНОР ТУМАНИ",
+    //                     value: 210
+    //                   },
+    //                   {
+    //                     label: "ШАХРИХОН ТУМАНИ",
+    //                     value: 214
+    //                   }
+    //                 ]
+    //               },
+    //               GivenPlace: 1
+    //             },
+    //             Education: 3,
+    //             PhoneList: {
+    //               items: [
+    //                 {
+    //                   Number: "+998234234234"
+    //                 }
+    //               ]
+    //             },
+    //             AddressList: {
+    //               items: [
+    //                 {
+    //                   Building: "",
+    //                   OwnershipType: null,
+    //                   HouseType: "",
+    //                   PostalCode: "",
+    //                   Region: 6,
+    //                   District: 75,
+    //                   Street: "SDF",
+    //                   Block: "",
+    //                   House: "12",
+    //                   City: "",
+    //                   Apartment: "",
+    //                   AddressType: "Адрес постоянной регистрации",
+    //                   Districts: {
+    //                     items: [
+    //                       {
+    //                         label: "НАМАНГАН ШАХРИ",
+    //                         value: 68
+    //                       },
+    //                       {
+    //                         label: "МИНГБУЛОК ТУМАНИ",
+    //                         value: 69
+    //                       },
+    //                       {
+    //                         label: "КОСОНСОЙ ТУМАНИ",
+    //                         value: 70
+    //                       },
+    //                       {
+    //                         label: "НОРИН ТУМАНИ",
+    //                         value: 71
+    //                       },
+    //                       {
+    //                         label: "ПОП ТУМАНИ",
+    //                         value: 72
+    //                       },
+    //                       {
+    //                         label: "ТУРАКУРГОН ТУМАНИ",
+    //                         value: 73
+    //                       },
+    //                       {
+    //                         label: "УЙЧИ ТУМАНИ",
+    //                         value: 74
+    //                       },
+    //                       {
+    //                         label: "УЧКУРГОН ТУМАНИ",
+    //                         value: 75
+    //                       },
+    //                       {
+    //                         label: "ЧУСТ ТУМАНИ",
+    //                         value: 76
+    //                       },
+    //                       {
+    //                         label: "ЯНГИКУРГОН ТУМАНИ",
+    //                         value: 77
+    //                       },
+    //                       {
+    //                         label: "НАМАНГАН ТУМАНИ",
+    //                         value: 78
+    //                       },
+    //                       {
+    //                         label: "ЧОРТОК ТУМАНИ",
+    //                         value: 79
+    //                       }
+    //                     ]
+    //                   }
+    //                 }
+    //               ]
+    //             },
+    //             MaritalStatus: 2,
+    //             hasChildren: true,
+    //             UnderAgeChildrenNum: 1,
+    //             Relatives: {
+    //               items: [
+    //                 {
+    //                   FirstName: "GFHGF",
+    //                   FamilyConnectionType: 2,
+    //                   LastName: "DFG",
+    //                   MiddleName: "DSG",
+    //                   BirthDate: "24.08.1989",
+    //                   LSBO: false,
+    //                   role: "",
+    //                   filial: "",
+    //                   personal_id: "",
+    //                   Document: {
+    //                     documentType: 1,
+    //                     Series: "SD",
+    //                     Number: "3422342",
+    //                     ExpirationDate: "06.09.2022",
+    //                     GivenDate: "01.09.2020",
+    //                     GUID: "",
+    //                     Country: "",
+    //                     DocLink: "",
+    //                     DocumentName: "",
+    //                     Region: 8,
+    //                     Districts: {
+    //                       items: [
+    //                         {
+    //                           label: "ТЕРМИЗ ШАХРИ",
+    //                           value: 98
+    //                         },
+    //                         {
+    //                           label: "БОЙСУН ТУМАНИ",
+    //                           value: 99
+    //                         },
+    //                         {
+    //                           label: "ДЕНОВ ТУМАНИ",
+    //                           value: 100
+    //                         },
+    //                         {
+    //                           label: "ЖАРКУРГОН ТУМАНИ",
+    //                           value: 101
+    //                         },
+    //                         {
+    //                           label: "МУЗРАБОТ ТУМАНИ",
+    //                           value: 102
+    //                         },
+    //                         {
+    //                           label: "ШЕРОБОД ТУМАНИ",
+    //                           value: 103
+    //                         },
+    //                         {
+    //                           label: "ШУРЧИ ТУМАНИ",
+    //                           value: 104
+    //                         },
+    //                         {
+    //                           label: "УЗУН ТУМАНИ",
+    //                           value: 105
+    //                         },
+    //                         {
+    //                           label: "САРИОСИЁ ТУМАНИ",
+    //                           value: 106
+    //                         },
+    //                         {
+    //                           label: "АНГОР ТУМАНИ",
+    //                           value: 107
+    //                         },
+    //                         {
+    //                           label: "КИЗИРИК ТУМАНИ",
+    //                           value: 108
+    //                         },
+    //                         {
+    //                           label: "КУМКУРГОН ТУМАНИ",
+    //                           value: 109
+    //                         },
+    //                         {
+    //                           label: "ТЕРМИЗ ТУМАНИ",
+    //                           value: 110
+    //                         },
+    //                         {
+    //                           label: "ОЛТИНСОЙ ТУМАНИ",
+    //                           value: 111
+    //                         },
+    //                         {
+    //                           label: "БАНДИХОН ТУМАНИ",
+    //                           value: 112
+    //                         }
+    //                       ]
+    //                     },
+    //                     GivenPlace: 105
+    //                   }
+    //                 }
+    //               ]
+    //             },
+    //             JobInfo: {
+    //               employerActivityType: null,
+    //               positionType: null,
+    //               INN: "",
+    //               employeesNum: 0,
+    //               employerName: "",
+    //               totalJobExperienceMonths: 0,
+    //               activeYears: 0,
+    //               position: "",
+    //               type: 4,
+    //               lastJobExperienceMonths: 0
+    //             },
+    //             MonthlyExpenses: {
+    //               recurringExpenses: 2500000,
+    //               obligations: 0
+    //             },
+    //             MonthlyIncome: {
+    //               confirmMonthlyIncome: 10000000,
+    //               hasAdditionalIncome: false,
+    //               additionalIncome: {
+    //                 incomeType: null,
+    //                 sum: 0
+    //               }
+    //             },
+    //             PropertyInformation: {
+    //               Realty_new: {
+    //                 items: []
+    //               },
+    //               Transport_new: {
+    //                 items: []
+    //               }
+    //             }
+    //           },
+    //           Guarantee: {
+    //             Insurance: {
+    //               items: [
+    //                 {
+    //                   INN: "207002342",
+    //                   OrgName: '"СК OOO ""MY-INSURANCE"""',
+    //                   Sum: 1000000000
+    //                 }
+    //               ]
+    //             },
+    //             RelatedLegalPerson: {
+    //               items: []
+    //             },
+    //             RelatedPerson: {
+    //               items: []
+    //             }
+    //           },
+    //           LoanInfo: {
+    //             LoanProduct: 1,
+    //             Sum: 10000000,
+    //             Currency: "СУМ",
+    //             RepaymentType: 1,
+    //             LoanType: null,
+    //             MinInterestRate: 24,
+    //             MaxInterestRate: 24,
+    //             MaxDefferalRepaymentPeriod: 0,
+    //             ConvenientRepaymentTerm: 3,
+    //             TermInMonth: 9,
+    //             MaxTermInMonths: 12,
+    //             MinTermInMonths: 1,
+    //             InitialPayment: 0,
+    //             MaxInitialPaymentPercent: 0,
+    //             MinInitialPaymentPercent: 0,
+    //             LoanPurpose: 261,
+    //             FundingSource: 1,
+    //             FacilitiesForRepaymentDate: false,
+    //             consumerLoan: {
+    //               nameBankProd: "",
+    //               nameService: "",
+    //               agreementDate: "",
+    //               nameProduction: "",
+    //               billProd: "",
+    //               agreementNumber: "",
+    //               idBankProd: 0
+    //             }
+    //           },
+    //           ApplicationComment: {
+    //             items: []
+    //           },
+    //           AttachedDocuments: {
+    //             items: [
+    //               {
+    //                 id: 1727,
+    //                 DocLink: "",
+    //                 DocumentName: "SDF"
+    //               }
+    //             ]
+    //           }
+    //         }
+    //       }
+    //     ]
+    //   };
 
-      console.log(JSON.stringify(data, null, 2));
+    //   console.log(JSON.stringify(data, null, 2));
 
-      try {
-        const response = await this.$store.dispatch(
-          "credits/confirmationCredit",
-          data
-        );
-        console.log("response", JSON.stringify(response, null, 2));
-        //console.log('nextTaskId', response.nextTask.id)
+    //   try {
+    //     const response = await this.$store.dispatch(
+    //       "credits/confirmationCredit",
+    //       data
+    //     );
+    //     console.log("response", JSON.stringify(response, null, 2));
+    //     //console.log('nextTaskId', response.nextTask.id)
 
-        if (response) {
-          this.$store.commit("credits/setMessage", "Credit complete");
-          this.$store.commit("credits/removeTask", this.taskId);
-          this.$router.push("/work/credit");
-          //this.$router.go(-1);
-        }
+    //     if (response) {
+    //       this.$store.commit("credits/setMessage", "Credit complete");
+    //       this.$store.commit("credits/removeTask", this.taskId);
+    //       this.$router.push("/work/credit");
+    //       //this.$router.go(-1);
+    //     }
 
-        this.loader = false;
-      } catch (error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
-        this.loader = false;
-      }
-    },
+    //     this.loader = false;
+    //   } catch (error) {
+    //     this.$store.commit(
+    //       "credits/setMessage",
+    //       CommonUtils.filterServerError(error)
+    //     );
+    //     this.loader = false;
+    //   }
+    // },
 
     async getDataINPS() {
       this.bankLoading = true;
@@ -5051,8 +5209,35 @@ export default {
           "credits/setMessage",
           CommonUtils.filterServerError(error)
         );
-        this.loader = false;
         this.bankLoading = false;
+      }
+    },
+
+    async getLSBO() {
+      this.LSBOLoading = true;
+      try {
+        await this.$store.dispatch("profile/dataLSBO");
+        this.LSBOLoading = false;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.LSBOLoading = false;
+      }
+    },
+
+    async getClientInfo() {
+      this.clientInfoLoading = true
+      try {
+        this.clientInfo = await this.$store.dispatch("profile/clientInfo")
+        this.clientInfoLoading = false
+      } catch(error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.clientInfoLoading = false;
       }
     },
 
@@ -5641,34 +5826,47 @@ export default {
     },
 
     handleScroll(event) {
-      let scrollTop = event.target.scrollTop
-      
-      document.querySelectorAll('.navMenu a').forEach(node => {
-        let selector = node.getAttribute('href')
-        let blockTop = document.querySelector(selector).offsetTop - 150
-        let blockBottom = document.querySelector(selector).offsetTop + 
-                          document.querySelector(selector).getBoundingClientRect().height
+      let scrollTop = event.target.scrollTop;
+      console.log('scrollTop', scrollTop)
+      if (scrollTop > 99) {
+        document.querySelector('.navMenuBlock').classList.add('topNavMenu')
+      } else {
+        document.querySelector('.navMenuBlock').classList.remove('topNavMenu')
+      }
+
+      document.querySelectorAll(".navMenu a").forEach(node => {
+        let selector = node.getAttribute("href");
+        let blockTop = document.querySelector(selector).offsetTop - 150;
+        let blockBottom =
+          document.querySelector(selector).offsetTop +
+          document.querySelector(selector).getBoundingClientRect().height;
 
         // console.log('scrollTop', scrollTop, selector)
         // console.log('blockTop', blockTop)
         // console.log('blockBottom', blockBottom)
 
         if (scrollTop >= blockTop && scrollTop <= blockBottom) {
-          document.querySelector('.navMenu a.active').classList.remove('active')
-          node.classList.add('active')
+          document
+            .querySelector(".navMenu a.active")
+            .classList.remove("active");
+          node.classList.add("active");
         }
-      })
+      });
     },
 
     goToBlock(event) {
-      event.preventDefault()
-      console.log(event.target)
-      let link = event.target.getAttribute('href')
-      document.querySelector(link).scrollIntoView({behavior: 'smooth', block: 'start'})
+      event.preventDefault();
+      console.log(event.target);
+      let link = event.target.getAttribute("href");
+      document
+        .querySelector(link)
+        .scrollIntoView({ behavior: "smooth", block: "start" });
     }
   },
   beforeDestroy() {
-    document.querySelectorAll('.scroll')[1].removeEventListener('scroll', this.handleScroll);
+    document
+      .querySelectorAll(".scroll")[1]
+      .removeEventListener("scroll", this.handleScroll);
   },
   components: {
     appLoader: Loader,
@@ -5685,8 +5883,9 @@ export default {
 .fullProfile {
   .navMenuBlock {
     position: fixed;
-    top: 85px;
+    top: 144px;
     right: 0;
+    // transition: top 1s ease-out 0.1s;
 
     .navMenu {
       list-style: none;
@@ -5710,6 +5909,12 @@ export default {
         background: #e6f1fc;
       }
     }
+
+  }
+
+  .topNavMenu {
+    top: 10px;
+    // transition: top 1s ease-out 0.5s;
   }
 
   .tab-title {

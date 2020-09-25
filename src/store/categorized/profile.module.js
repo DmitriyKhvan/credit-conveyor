@@ -6,8 +6,15 @@ export const profile = {
   state: {
     bpmService: new BpmService(),
     preapprove_num: "",
-    applicationNumber: "",
+    applicationNumber: "", // номер заявки для печатной формы
     userrole: "",
+    percent: 25,
+
+    avgSalary: null,
+    loanAbilityClass: null,
+    profit: null,
+    LoanMax: null,
+
     confirmCredit: false,
     fileList: [],
     loadings: [], // для лоадинга печатных форм
@@ -211,6 +218,10 @@ export const profile = {
               LastName: "",
               MiddleName: "",
               BirthDate: "",
+              LSBO: false,
+              role: "",
+              filial: "",
+              personal_id: "",
               Document: {
                 documentType: null,
                 Series: "",
@@ -349,25 +360,124 @@ export const profile = {
   },
   actions: {
     async dataINPS({ state, commit }, data) {
-      console.log(JSON.stringify(data, null, 2))
+      console.log(JSON.stringify(data, null, 2));
       try {
         const response = await state.bpmService.getDataINPS(data);
-        console.log("getDataINPS", response.userTaskCreditDetailed.input);
-        const dataINPS = response.userTaskCreditDetailed.input.find(
-          i => i.label === 'clientWagesData'
-        ).data
+        console.log("getDataINPS", response.input);
+        const dataINPS = response.input.find(i => i.label === "clientWagesData")
+          .data;
         if (dataINPS.wages.items.length) {
-          const scoring = response.userTaskCreditDetailed.input.find(
-            i => i.label === 'preApprovalData'
-          ).data
-          
+          const scoring = response.input.find(
+            i => i.label === "preApprovalData"
+          ).data;
+
           commit("setScoring", scoring);
+          commit("setINNandNameOrg", dataINPS.wages.items.slice().pop());
 
-          return dataINPS
+          return dataINPS;
         } else {
-          return null
+          return null;
         }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", errorMessage, { root: true });
+        throw error;
+      }
+    },
 
+    async dataLSBO({ state, commit }) {
+      let users = [];
+      users.push({
+        // pin: state.fullFormProfile.Customer.PINPP, //ИНПС
+        pin: "", //ИНПС
+        passNumber: state.fullFormProfile.Customer.Document.Number,
+        passSerial: state.fullFormProfile.Customer.Document.Series
+      });
+
+      state.fullFormProfile.Customer.Relatives.items.forEach(relative => {
+        relative.role = "";
+        relative.LSBO = false;
+        relative.filial = "";
+
+        if (!relative.Document.Number || !relative.Document.Series) {
+          throw "Заполните все данные родственников!";
+        }
+        users.push({
+          pin: "",
+          passNumber: relative.Document.Number,
+          passSerial: relative.Document.Series
+        });
+      });
+
+      const data = {
+        input: [
+          {
+            name: "persons",
+            data: users
+          },
+          {
+            data: state.preapprove_num,
+            name: "application_id"
+          }
+        ]
+      };
+
+      console.log("lsbo", data);
+
+      try {
+        const response = await state.bpmService.getDataLSBO(data);
+
+        response.input
+          .find(i => i.label === "response")
+          .data.items.forEach(user => {
+            // console.log("user", user)
+            if (user.lsbo) {
+              let relative = state.fullFormProfile.Customer.Relatives.items.find(
+                rel => rel.Document.Number == user.passNumber
+              );
+              // console.log('relative', relative)
+              if (relative) {
+                relative.role = user.role;
+                relative.LSBO = user.lsbo;
+                relative.filial = user.filial;
+              }
+            }
+          });
+
+        const lsbo = response.input
+          .find(user => user.label === "response")
+          .data.items.findIndex(lsbo => lsbo.lsbo);
+
+        console.log("lsboFlag", lsbo);
+        if (lsbo !== -1) {
+          state.percent = 30;
+        } else {
+          state.percent = 25;
+        }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", errorMessage, { root: true });
+        throw error;
+      }
+    },
+
+    async clientInfo({ state, commit }) {
+      const data = {
+        input: [
+          {
+            data: "589196899",
+            name: "clientInn"
+          },
+          {
+            data: "2",
+            name: "customerId"
+          }
+        ]
+      };
+
+      try {
+        const response = await state.bpmService.getClientInfo(data);
+        return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
@@ -403,8 +513,8 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
-      state.preapprove_num = ""
-      
+      state.preapprove_num = "";
+
       let response;
       try {
         if (taskId) {
@@ -425,48 +535,58 @@ export const profile = {
             i => i.label === "inputDictionaries"
           ).data;
 
-          const applicationNumber = response.data.input.find(
-            i => i.label === "process_info_fullApp"
-          ).data.applicationNumber;
-
-          const userrole = response.data.input.find(
-            i => i.label === "userrole"
-          ).data;
-
           commit("setDictionaries", dictionaries);
-          commit("setApplicationNumber", applicationNumber);
-          commit("setUserrole", userrole);
 
-          // if (response.data.name == "Full Application Filling") { // кредит не оформлен
-          //   commit("setPreapprovData", data);
-          // }
-          if (data.BODecision == null) { // кредит не оформлен
-            
+          if (response.data.name == "Full Application Filling") {
             // для получения информации от халк банка
             const preapprove_num = response.data.input.find(
               i => i.label === "preapprove_num"
-            ).data
-            
-            commit("setPreapproveNum", preapprove_num)
+            ).data;
+
+            // номер заявки печатная форма
+            const applicationNumber = response.data.input.find(
+              i => i.label === "process_info_fullApp"
+            ).data.applicationNumber;
+
+            // должность
+            const userrole = response.data.input.find(
+              i => i.label === "userrole"
+            ).data;
+
+            commit("setApplicationNumber", applicationNumber);
+            commit("setUserrole", userrole);
+
+            commit("setPreapproveNum", preapprove_num);
+          }
+
+          // кредит не оформлен
+          if (
+            response.data.name == "Full Application Filling" &&
+            data.BODecision == null
+          ) {
             commit("resetDataFullFormProfile");
             commit("setPreapprovData", data);
-
           } else if (response.data.name == "Работа с документами") {
-
             commit("setFileList", response);
             commit("setFullForm", data);
-            
-          } else if (data.BODecision == true) {
-
+          } else if (
+            response.data.name != "Full Application Filling" &&
+            response.data.name != "Проверка документов" &&
+            data.BODecision == true
+          ) {
             // для получения информации от халк банка для кредитного секретаря
             const preApplicationNum = response.data.input.find(
               i => i.label === "preApplicationNum"
-            ) 
+            );
 
-            commit("setPreapproveNum", preApplicationNum.data)
-          
+            const processInfo = response.data.input.find(
+              i => i.label === "processInfo"
+            );
+
+            commit("setPreapproveNum", preApplicationNum.data);
+            commit("setProcessInfo", processInfo.data);
+
             commit("setFullForm", data);
-
           } else {
             commit("setFullForm", data);
           }
@@ -487,14 +607,30 @@ export const profile = {
   },
   mutations: {
     setPreapproveNum(state, preapprove_num) {
-      state.preapprove_num = preapprove_num
+      state.preapprove_num = preapprove_num;
+    },
+
+    setProcessInfo(state, processInfo) {
+      state.avgSalary = processInfo.avgSalary
+      state.loanAbilityClass = processInfo.loanAbilityClass
+      state.profit = processInfo.profit
+      state.LoanMax = processInfo.LoanMax
     },
 
     setScoring(state, payload) {
-      state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome = payload.incoming
-      state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses = payload.expenses
+      state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
+        payload.incoming;
+      state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+        payload.expenses;
       // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum = payload.payment
-      state.fullFormProfile.max_loan_sum_preapprove = payload.sum
+      state.fullFormProfile.max_loan_sum_preapprove = payload.sum;
+    },
+
+    setINNandNameOrg(state, payload) {
+      if (state.fullFormProfile.Customer.JobInfo.type == 1) {
+        state.fullFormProfile.Customer.JobInfo.employerName = payload.org_name;
+        state.fullFormProfile.Customer.JobInfo.INN = payload.inn;
+      }
     },
 
     setFullForm(state, payload) {
@@ -592,14 +728,14 @@ export const profile = {
             number: index
           };
           fileList.push(doc);
-        })
+        });
       }
 
       console.log("fileList", fileList);
 
       fileList.forEach((item, index) => {
-        state.loadings[index] = false
-      })
+        state.loadings[index] = false;
+      });
 
       state.fileList = fileList;
     },
@@ -802,6 +938,10 @@ export const profile = {
         LastName: "",
         MiddleName: "",
         BirthDate: "",
+        LSBO: false,
+        role: "",
+        filial: "",
+        personal_id: "",
         Document: {
           documentType: null,
           Series: "",
@@ -916,13 +1056,13 @@ export const profile = {
       // );
       state.dictionaries = objectTransform(dictionaries);
     },
-    
+
     setApplicationNumber(state, applicationNumber) {
-      state.applicationNumber = applicationNumber
+      state.applicationNumber = applicationNumber;
     },
 
     setUserrole(state, userrole) {
-      state.userrole = userrole
+      state.userrole = userrole;
     },
 
     resetDataFullFormProfile(state) {
@@ -1041,6 +1181,10 @@ export const profile = {
                 LastName: "",
                 MiddleName: "",
                 BirthDate: "",
+                LSBO: false,
+                role: "",
+                filial: "",
+                personal_id: "",
                 Document: {
                   documentType: null,
                   Series: "",

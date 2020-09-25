@@ -80,6 +80,12 @@ import Contract from './ASOKI/Contract'
 import Expiration from './ASOKI/Expiration'
 
 export default {
+  props: {
+    data: {
+      type: Object,
+      default: {}
+    }
+  },
   data () {
     return {
       tab: 'asoki',

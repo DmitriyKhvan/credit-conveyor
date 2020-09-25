@@ -666,6 +666,7 @@ export default {
 
     sortValue(idx, order = true) {
       console.log('sort', idx)
+      console.log('creditTasks', this.creditTasks)
       this.creditTasks.sort((a, b) => {
         const itemA = a[idx];
         const itemB = b[idx];

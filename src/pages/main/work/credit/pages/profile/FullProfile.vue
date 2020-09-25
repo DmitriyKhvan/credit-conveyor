@@ -938,7 +938,8 @@
               <div class="col-6">
                 Филиал / Подразделение
               </div>
-              <div class="col-6">{{ fullProfile.BranchName }}</div>
+              <!-- <div class="col-6">{{ fullProfile.BranchName }}</div> -->
+              <div class="col-6">{{ bankName }}</div>
               <div class="col-6">
                 ФИО работника банка, принявшего заявление
               </div>
@@ -950,7 +951,7 @@
               <div class="col-6">
                 Подпись работника банка
               </div>
-              <div class="col-6"></div>
+              <div class="col-6">_____________________</div>
               <div class="col-6">
                 Дата
               </div>
@@ -990,12 +991,17 @@ export default {
   data() {
     return {
       confirmCredit: true,
-      // bankName: ''
+      bankName: ''
     };
   },
-  // created() {
-  //   this.bankName = this.dictionaries.Branches.items.find(i => i.id === this.fullProfile.Branch).bank_name
-  // },
+  created() {
+    const bankInfo = this.dictionaries.Branches.items.find(i => i.id === this.fullProfile.Branch)
+    if (bankInfo){
+      this.bankName = bankInfo.bank_name
+    }
+    // this.bankName = this.dictionaries.Branches.items.find(i => i.id === "00890").bank_name
+    // console.log('bankName', this.bankName)
+  },
   computed: {
     ...mapState({
         fullProfile: state => state.profile.fullFormProfile,
@@ -1160,6 +1166,7 @@ export default {
   font-size: 14px;
   margin: 10px 0 0 0;
   line-height: 25px;
+  font-weight: 600;
 }
 
 .agreementList, .serviceInfo {

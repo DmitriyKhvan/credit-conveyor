@@ -199,7 +199,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      val: true
+    };
   },
 };
 </script>

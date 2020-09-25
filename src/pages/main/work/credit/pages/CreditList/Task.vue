@@ -1333,7 +1333,7 @@
                   Среднемесячная заработная плата(сум)
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.avgSalary }}
                 </div>
               </div>
 
@@ -1342,7 +1342,7 @@
                   Профит
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.profit }}
                 </div>
               </div>
 
@@ -1351,7 +1351,7 @@
                   Класс кредитоспособности
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.loanAbilityClass }}
                 </div>
               </div>
 
@@ -1360,7 +1360,7 @@
                   Расчет максимально возможной суммы кредита (скоринг)
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.LoanMax }}
                 </div>
               </div>
             </template>
@@ -2088,7 +2088,7 @@ export default {
 .modalView {
   display: none;
   position: fixed;
-  top: 48px;
+  top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
