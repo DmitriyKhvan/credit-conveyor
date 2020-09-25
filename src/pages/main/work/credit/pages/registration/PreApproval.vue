@@ -13,10 +13,11 @@
               @click="printFile(credits.infoList)" 
               :loading="loading"
             >
+              <div class="print__text">Печать</div> 
               <template v-slot:loading>
                 <q-spinner-facebook />
               </template>
-              <q-tooltip>Распечатать</q-tooltip>
+              <!-- <q-tooltip>Распечатать</q-tooltip> -->
             </q-btn>
           </div>
           <div class="creditBackground">
@@ -25,24 +26,28 @@
                 `${personalData.surname} ${personalData.name} ${personalData.mname}`
               }}
             </h4>
-            <table class="creditTable" align="center">
-              <tr>
-                <td>Eжемесячный доход</td>
-                <td>{{ personalData.income | formatNumber }} сум</td>
-              </tr>
-              <tr>
-                <td>Расходы</td>
-                <td>{{ preApprovalData.expense | formatNumber }} сум</td>
-              </tr>
-              <tr>
-                <td>Eжемесячная плата</td>
-                <td>{{ preApprovalData.maxPayment | formatNumber }} сум</td>
-              </tr>
-              <tr>
-                <td>Доступная сумма кредита</td>
-                <td>{{ preApprovalData.maxSum | formatNumber }} сум</td>
-              </tr>
-            </table>
+            <div class="creditTable" align="center">
+              <div class="creditTable__row">
+                <div class="creditTable__field">Eжемесячный доход</div>
+                <div class="creditTable__value__green">{{ personalData.income | formatNumber }} сум</div>
+                <div class="dashed"></div>
+              </div>
+              <div class="creditTable__row">
+                <div class="creditTable__field">Расходы</div>
+                <div class="creditTable__value__red">{{ preApprovalData.expense | formatNumber }} сум</div>
+                <div class="dashed"></div>
+              </div>
+              <div class="creditTable__row">
+                <div class="creditTable__field">Eжемесячная плата</div>
+                <div class="creditTable__value__red">{{ preApprovalData.maxPayment | formatNumber }} сум</div>
+                <div class="dashed"></div>
+              </div>
+              <div class="creditTable__row">
+                <div class="creditTable__field">Доступная сумма кредита</div>
+                <div class="creditTable__value__green">{{ preApprovalData.maxSum | formatNumber }} сум</div>
+                <div class="dashed"></div>
+              </div>
+            </div>
 
             <p
               class="failureCredit"
@@ -51,7 +56,7 @@
             </p>
 
             <div v-if="failureCreditReason">
-              <div class="text-h6">Причина отказа:</div>
+              <div class="text-h6 resonFailure">Причина отказа</div>
 
               <form @submit.prevent="failureCredit">
                 <q-field
@@ -59,9 +64,9 @@
                   :value="!!selection.length"
                   :rules="[val => !!val || 'выберите причину']"
                 >
-                  <div class="row">
+                  <div class="row q-col-gutter-y-sm">
                     <div
-                      class="col-6"
+                      class="col-6 reson"
                       v-for="(reson, index) of this.credits.reasonsList.slice(
                         0,
                         Math.round(this.credits.reasonsList.length / 2)
@@ -76,7 +81,7 @@
                     </div>
 
                     <div
-                      class="col-6"
+                      class="col-6 reson"
                       v-for="(reson, index) of this.credits.reasonsList.slice(
                         Math.round(this.credits.reasonsList.length / 2)
                       )"
@@ -92,7 +97,7 @@
                 </q-field>
 
                 <q-card-actions class="row justify-center">
-                  <q-btn label="Продолжить" color="green" type="submit" />
+                  <q-btn class="continue" label="Продолжить" type="submit" />
                 </q-card-actions>
               </form>
             </div>
@@ -102,16 +107,16 @@
               class="row justify-center"
             >
               <q-btn
+                class="preappBtnSuccess"
                 v-if="preApprovalData.maxSum > 0"
                 label="Отправить заявку"
-                color="green"
                 v-close-popup
                 :disable="disableBtn"
                 @click="successCredit"
               />
               <q-btn
+                class="preappBtnFailure"
                 label="Отменить"
-                color="red-5"
                 v-close-popup
                 @click="
                   () => {
@@ -213,9 +218,19 @@ export default {
             i => i.label === "inputDictionaries"
           ).data;
 
+          //ИНПС
           const preapprove_num = response.nextTask.input.find(
             i => i.label === "preapprove_num"
           ).data
+
+          // Номер заявки печатная форма
+          const applicationNumber = response.nextTask.input.find(
+            i => i.label === "process_info_fullApp"
+          ).data.applicationNumber;
+
+          // Должность
+          const userrole = response.nextTask.input.find(i => i.label === "userrole")
+            .data;
 
           console.log("dic", JSON.stringify(dictionaries, null, 2));
 
@@ -223,10 +238,12 @@ export default {
           this.$store.commit("profile/resetDataFullFormProfile")
           this.$store.commit("profile/setPreapprovData", data);
           this.$store.commit("profile/setDictionaries", dictionaries);
+          this.$store.commit("profile/setApplicationNumber", applicationNumber);
+          this.$store.commit("profile/setUserrole", userrole);
 
-          sessionStorage.setItem("preapprove_num", preapprove_num);
-          sessionStorage.setItem("preapprovData", JSON.stringify(data));
-          sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
+          // sessionStorage.setItem("preapprove_num", preapprove_num);
+          // sessionStorage.setItem("preapprovData", JSON.stringify(data));
+          // sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
           
           this.$router.push("profile");
           setTimeout(() => {
@@ -340,10 +357,12 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .preApprovalBlock {
-  width: 510px;
+  max-width: 620px!important;
+  width: 620px;
   min-height: 290px;
+  padding: 20px 30px;
 
   &__title {
     width: 100%;
@@ -351,8 +370,24 @@ export default {
     justify-content: space-between;
   }
 
+  // .q-dialog__inner--minimized > div {
+  //   max-width: 620px;
+  // }
+
   .print {
-    width: 10%;
+    
+    .q-btn__content {
+      font-size: 12px;
+      color: #74798C;
+    }
+
+    .q-btn__wrapper {
+      padding: 0;
+    }
+
+    &__text {
+      margin-left: 5px;
+    }
 
     .q-btn__wrapper::before {
       box-shadow: none;
@@ -363,45 +398,75 @@ export default {
     padding: 0;
 
     .text-h6 {
-      padding: 10px 25px;
-      color: #acacac;
-      width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .resonFailure {
+      color: #EA2250;
+      text-align: center;
+      margin-bottom: 10px;
     }
 
     .creditBackground {
       padding-bottom: 12px;
       width: 100%;
-      background: url("~assets/images/credit/ornament.png") no-repeat 0 0;
+      // background: url("~assets/images/credit/ornament.png") no-repeat 0 0;
       //assets/images/credit/ornament.png
       .personName {
         margin: 15px 0 0 0;
         text-align: center;
-        font-size: 22px;
-        color: #0e3475;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 24px;
+        color: #384966;
+
+        &::after {
+          content: "";
+          display: block;
+          height: 1px;
+          background: #F2F2F2;
+          margin-top: 15px;
+        }
       }
 
       .creditTable {
-        margin-bottom: 5px;
-        width: 70%;
+        margin: 30px 0 60px 0;
+        &__row {
+          position: relative;
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 30px;
+          font-size: 16px;
+          font-weight: 600;
 
-        td {
-          padding: 8px 0;
+          .dashed {
+            position: absolute;
+            border: 1px dashed #F2F2F2;
+            width: 100%;
+            top: 13px;
+          }
         }
 
-        td:nth-child(odd) {
-          color: #acacac;
+        &__field, &__value__green, &__value__red {
+          background: #ffffff;
+          z-index: 10;
         }
 
-        td:nth-child(even) {
-          color: #5bb85d;
+        &__field {
+          color: #273959;
+          padding-right: 60px;
         }
-      }
 
-      &::before {
-        content: "";
-        display: block;
-        height: 1px;
-        background: #acacac;
+        &__value__green {
+          color: #61C9A9;
+          padding-left: 60px;
+        }
+
+        &__value__red {
+          color: #FF8787;
+          padding-left: 60px;
+        }
       }
     }
   }
@@ -412,11 +477,47 @@ export default {
     font-size: 18px;
     margin-bottom: 10px;
   }
+
+  .preappBtnSuccess, .preappBtnFailure {
+    margin: 0 10px;
+    border-radius: 0;
+    width: 186px;
+    
+    .q-btn__content {
+      font-size: 14px;
+      padding: 12px;
+      color: #ffffff;
+    }
+  }
+
+  .preappBtnFailure {
+    background: #FF4A4A;
+  }
+
+  .preappBtnSuccess {
+    background: #47B881;
+  }
+
+  .continue {
+    background: #47B881;
+    border-radius: 0;
+    margin-top: 40px;
+
+    .q-btn__content {
+      font-size: 14px;
+      padding: 12px 45px;
+      color: #ffffff;
+    }
+  }
+
+  .reson {
+    color: #A0A5BA;
+  }
+
+  .q-field__control:before, .q-field__control:after {
+    content: none;
+  }
 }
 
-.q-btn--rectangle {
-  margin: 0 10px;
-  border-radius: 0;
-  width: 35%;
-}
+
 </style>
