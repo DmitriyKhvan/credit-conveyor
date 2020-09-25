@@ -299,10 +299,6 @@
                     v-model="Customer.Document.GivenDate"
                     mask="##.##.####"
                     :rules="[
-<<<<<<< HEAD
-                      val => !!val || 'Введите отчество',
-                      val => fioValid(val)
-=======
                       val =>
                         (val && val.length === 10) ||
                         'Введите дату выдачи документа',
@@ -316,7 +312,6 @@
 
                       val =>
                         msecond(val) < msecond(currentDate) || 'Неверная дата'
->>>>>>> feature/credit
                     ]"
                   >
                     <template v-slot:append>
