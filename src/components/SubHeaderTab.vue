@@ -1,17 +1,20 @@
 <template>
-  <q-tabs align="left">
-    <q-route-tab
-      :to="menu.url"
-      :key="index"
-      v-for="(menu, index) in getSubMenus"
-      class="bg-primary text-white"
-    >
-      <span>
-        <q-icon v-if="menu.icon" :name="menu.icon" />
-        {{menu.name}}
-      </span>
-    </q-route-tab>
-  </q-tabs>
+  <div class="subMenu">
+    <q-tabs align="left">
+      <q-route-tab
+        :to="menu.url"
+        :key="index"
+        v-for="(menu, index) in getSubMenus"
+        class="bg-white text-grey"
+        :class="menu.url == '/work/credit/registration' ? 'createCredit' : null"
+      >
+        <span>
+          <q-icon v-if="menu.icon" :name="menu.icon" />
+          {{menu.name}}
+        </span>
+      </q-route-tab>
+    </q-tabs>                               
+  </div>
 </template>
 
 <script>
@@ -53,5 +56,41 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+  .subMenu {
+    background: #ffffff;
+    margin: 30px 10px;
+    border-radius: 5px;
+    .q-tab--active .q-tab__indicator {
+      opacity: 0;
+    }
+
+    .q-tab--active {
+      color: #282D30!important;
+
+      .q-icon {
+        color: #0054FE;
+      }
+    }
+
+    .q-tab {
+      text-transform: none;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .createCredit {
+      background: #47B881!important;
+      color: #ffffff!important;
+      border-radius: 5px;
+
+      .q-icon {
+        color: #ffffff;
+      }
+    }
+
+    .q-icon {
+      font-size: 20px;
+    }
+  }
 </style>

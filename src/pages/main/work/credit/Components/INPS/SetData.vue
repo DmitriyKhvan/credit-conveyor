@@ -1,7 +1,9 @@
 <template>
   <div class="addSalary">
+    <!-- <q-btn @click="closeModal" icon="close" round /> -->
     <div class="salaryMessage">
       <p>Данные по клиенту в базе данных Халк Банка отсутствуют. Необходимо ввести данные вручную со справки о заработной плате с места работы клиента.</p>
+      
     </div>
     <form @submit.prevent.stop="onSubmit">
       <q-field
@@ -112,6 +114,13 @@
         </q-markup-table>
 
         <div class="btnBlock">
+          <q-btn
+            color="red"
+            label="Закрыть"
+            class="q-ml-sm"
+            @click="closeModel"
+          />
+
           <q-btn
             color="green"
             label="Добавить месяц"
@@ -238,6 +247,10 @@ export default {
           this.loader = false;
         }
       }
+    },
+
+    closeModel() {
+      this.$emit('closeBar', false)
     }
       
   },
@@ -250,7 +263,18 @@ export default {
 
 <style lang="scss">
 .addSalary {
+  .q-btn__wrapper:before {
+      box-shadow: none;
+  }
+
+  .closeModel {
+    margin-left: auto;
+  }
+
   .salaryMessage {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     text-align: center;
     font-weight: bold;
     font-size: 18px;

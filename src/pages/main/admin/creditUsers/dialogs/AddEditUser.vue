@@ -348,9 +348,9 @@ export default {
       // is_risk_manager: {
       //   required
       // },
-      groups: {
-        required
-      }
+      // groups: {
+      //   required
+      // }
     }
   },
   props: {
@@ -367,6 +367,10 @@ export default {
     try {
       this.$store.dispatch("creditsAdmin/getFilials")
     } catch(error) {}
+
+    try {
+      this.$store.dispatch("creditsAdmin/getCommitteeGroups")
+    } catch(error) {}
   },
   computed: {
     filials() {
@@ -379,14 +383,14 @@ export default {
     }
   },
   watch: {
-    "details.mfos"(val) {
-      console.log('mfos', val)
-      // console.log('mfos', this.mfos)
-        try {
-          this.$store.dispatch("creditsAdmin/getCommitteeGroups", val[0])
-        } catch(error) {}
+    // "details.mfos"(val) {
+    //   console.log('mfos', val)
+    //   // console.log('mfos', this.mfos)
+    //     try {
+    //       this.$store.dispatch("creditsAdmin/getCommitteeGroups", val[0])
+    //     } catch(error) {}
       
-    },
+    // },
 
     // "details.role_name"(val) {
     //   console.log('role_name', val)

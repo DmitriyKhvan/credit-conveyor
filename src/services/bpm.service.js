@@ -70,8 +70,7 @@ export default class BpmService {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/confirmation/${taskId}`,
-      //url: `${this._baseUrl}/bpm/credit/confirmation/2078.10062`,
-      data
+      data,
     });
 
     return responce.data;
@@ -135,7 +134,27 @@ export default class BpmService {
     return responce.data;
   };
 
-  uploadFiles = async data => {
+  getDataLSBO = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/startLsbo`,
+      data
+    })
+
+    return responce.data;
+  }
+
+  getClientInfo = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/startInteg`,
+      data
+    })
+
+    return responce.data;
+  }
+
+  uploadFiles = async (data) => {
     //const fileName = "file full form profile"
     const responce = await axios({
       method: "post",
@@ -160,8 +179,7 @@ export default class BpmService {
   creatFile = async data => {
     const responce = await axios({
       method: "post",
-      // url: `${this._baseUrl}/document/edocument`, // на dev
-      url: `${this._baseUrl}/file/edocument`,   // на prod
+      url: `${this._baseUrl}/document/edocument`,
       data,
     });
 
