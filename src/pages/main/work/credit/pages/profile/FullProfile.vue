@@ -938,8 +938,8 @@
               <div class="col-6">
                 Филиал / Подразделение
               </div>
-              <!-- <div class="col-6">{{ fullProfile.BranchName }}</div> -->
-              <div class="col-6">{{ bankName }}</div>
+              <div class="col-6">{{ fullProfile.BranchName }}</div>
+              <!-- <div class="col-6">{{ bankName }}</div> -->
               <div class="col-6">
                 ФИО работника банка, принявшего заявление
               </div>
@@ -995,10 +995,10 @@ export default {
     };
   },
   created() {
-    const bankInfo = this.dictionaries.Branches.items.find(i => i.id === this.fullProfile.Branch)
-    if (bankInfo){
-      this.bankName = bankInfo.bank_name
-    }
+    // const bankInfo = this.dictionaries.Branches.items.find(i => i.id === this.fullProfile.Branch)
+    // if (bankInfo){
+    //   this.bankName = bankInfo.bank_name
+    // }
     // this.bankName = this.dictionaries.Branches.items.find(i => i.id === "00890").bank_name
     // console.log('bankName', this.bankName)
   },

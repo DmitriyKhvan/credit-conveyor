@@ -1617,11 +1617,24 @@
                   <q-input
                     square
                     outlined
-                    v-model.number="fullProfile.max_loan_sum_preapprove"
+                    v-model.number="fullProfile.LoanInfo.max_loan_sum_preapprove"
                     type="number"
                     dense
                     disable
                     label="Расчет макс.возм.суммы кредита (скоринг)"
+                    class="q-pb-sm"
+                  />
+                </div>
+
+                <div class="col-4">
+                  <q-input
+                    square
+                    outlined
+                    v-model.number="fullProfile.LoanInfo.ProductMaxSum"
+                    type="number"
+                    dense
+                    disable
+                    label="Расчет макс.возм.суммы кредитного продукта"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1938,11 +1951,11 @@
                         totalGuaranteesSum - fullProfile.LoanInfo.Sum >=
                           fullProfile.LoanInfo.Sum * (profile.percent / 100) ||
                         `Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на ${profile.percent}%`,
-                      fullProfile.max_loan_sum_preapprove
+                      fullProfile.max_loan_sum
                         ? val =>
                             (val > 0 &&
-                              val <= fullProfile.max_loan_sum_preapprove) ||
-                            `Максимальная сумма кредита ${fullProfile.max_loan_sum_preapprove}`
+                              val <= fullProfile.max_loan_sum) ||
+                            `Максимальная сумма кредита ${fullProfile.max_loan_sum}`
                         : null
                     ]"
                   />
@@ -4650,10 +4663,11 @@ export default {
           console.log("fullProfile", this.$store.state.profile.fullFormProfile);
           const {
             Status,
-            // ApplicationID,
+            ApplicationID,
             // ProtocolNumber,
-            // Number,
-            // Branch,
+            Number,
+            Branch,
+            BranchName,
             BODecision,
             // FinalDecision,
             // Date,
@@ -4681,10 +4695,11 @@ export default {
                 name: "application",
                 data: {
                   Status,
-                  // ApplicationID,
+                  ApplicationID,
                   // ProtocolNumber,
-                  // Number,
-                  // Branch,
+                  Number,
+                  Branch,
+                  BranchName,
                   BODecision,
                   // FinalDecision,
                   BOLogin,

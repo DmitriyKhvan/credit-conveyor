@@ -45,6 +45,7 @@ export const credits = {
       typeStepCredit: null,
       periodCredit: 0,
       loanRate: 0, //ставка по кредиту
+      ProductMaxSum: 0, // маск. сумма по кредитному продукту
       spouseCost: 0,
       childCost: 0,
 
@@ -421,6 +422,7 @@ export const credits = {
         typeStepCredit: null,
         periodCredit: 0,
         loanRate: 0, //ставка по кредиту
+        ProductMaxSum: 0, // маск. сумма по кредитному продукту
         spouseCost: 0,
         childCost: 0,
 
