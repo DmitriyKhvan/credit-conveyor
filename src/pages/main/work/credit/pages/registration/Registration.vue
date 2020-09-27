@@ -286,7 +286,7 @@
                         dense
                         label="Подтвержденный ежемесячный доход"
                         :rules="[
-                          val => !!val || 'Поля должно быт заполнено',
+                          val => !!val || 'Поле должно быть заполнено',
                           val => val > 0 || 'Некорректные данные'
                         ]"
                       />
@@ -310,7 +310,7 @@
                         dense
                         label="Периодические расходы "
                         :rules="[
-                          val => !!val || 'Поля должно быт заполнено',
+                          val => !!val || 'Поле должно быть заполнено',
                           val => val > 0 || 'Некорректные данные'
                         ]"
                       />
@@ -340,7 +340,7 @@
                         label="Источник дополнительного дохода"
                         emit-value
                         map-options
-                        :rules="[val => !!val || 'Поля должно быт заполнено']"
+                        :rules="[val => !!val || 'Поле должно быть заполнено']"
                       />
                     </div>
                     <div class="col-6">
@@ -353,7 +353,7 @@
                         dense
                         label="Размер дополнительного дохода"
                         :rules="[
-                          val => !!val || 'Поля должно быт заполнено',
+                          val => !!val || 'Поле должно быть заполнено',
                           val => val > 0 || 'Некорректные данные'
                         ]"
                       />
@@ -639,6 +639,7 @@ export default {
           pinpp,
           periodCredit,
           loanRate,
+          ProductMaxSum,
           spouseCost,
           childCost
         } = this.personalData;
@@ -688,7 +689,8 @@ export default {
                 spouseCost: Number(spouseCost),
                 childCost: Number(childCost),
                 creditTerm: Number(periodCredit),
-                loanRate: Number(loanRate)
+                loanRate: Number(loanRate),
+                ProductMaxSum: Number(ProductMaxSum)
               }
             }
           ]
@@ -845,6 +847,7 @@ export default {
 
         console.log(this.loanproduct_loancode[creditId]);
         this.personalData.loanRate = Loan_dict.loan_rate_base;
+        this.personalData.ProductMaxSum = Loan_dict.productMaxSum;
         this.options.typeStepCredits = Loan_dict.payment_type.items.map(i => {
           return {
             label: i.label,
