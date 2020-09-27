@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <div v-if="userRole === 'ROLE_CCS'" class="protocol">
       <q-btn
         :loading="protocol"
@@ -18,6 +17,7 @@
     v-if="creditTasks.length"
     class="creditList"
   >
+    
     
     <div class="q-pa-md">
       <!-- <h4>Очередь задач</h4> -->

@@ -107,7 +107,7 @@ export const profile = {
 
     fullFormProfile: {
       Status: "",
-      // ApplicationID: "",
+      ApplicationID: "",
       // ProtocolNumber: "",
       // Number: "",
       Branch: "",
@@ -332,9 +332,13 @@ export const profile = {
           billProd: "", // Расчетный счет продавца
           agreementNumber: "", // Номер договора
           idBankProd: 0
-        }
+        },
         //InitialPaymentPercent: 0
+        ProductMaxSum: null, // максимальная сумма по кредитному продукту
+        max_loan_sum_preapprove: null // максимальная сумма кредита
       },
+
+      max_loan_sum: null,
 
       ApplicationComment: {
         items: [
@@ -353,9 +357,7 @@ export const profile = {
           //   "DocumentName": "1"
           // }
         ]
-      },
-
-      max_loan_sum_preapprove: null // максимальная сумма кредита
+      }
     }
   },
   actions: {
@@ -623,7 +625,9 @@ export const profile = {
       state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
         payload.expenses;
       // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum = payload.payment
-      state.fullFormProfile.max_loan_sum_preapprove = payload.sum;
+      state.fullFormProfile.LoanInfo.max_loan_sum_preapprove = payload.sum;
+      
+      state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
     setINNandNameOrg(state, payload) {
@@ -646,6 +650,8 @@ export const profile = {
       state.fileList = [];
 
       // Для корректной валидации
+      state.fullFormProfile.ApplicationID = payload.ApplicationID;
+      state.fullFormProfile.Number = payload.Number;
       state.fullFormProfile.Branch = payload.Branch;
       state.fullFormProfile.BranchName = payload.BranchName;
       state.fullFormProfile.ClientManagerName = payload.ClientManagerName;
@@ -689,8 +695,13 @@ export const profile = {
       state.fullFormProfile.LoanInfo.TermInMonth = payload.LoanInfo.TermInMonth;
       state.fullFormProfile.LoanInfo.LoanPurpose = payload.LoanInfo.LoanPurpose;
 
-      state.fullFormProfile.max_loan_sum_preapprove =
+      state.fullFormProfile.LoanInfo.max_loan_sum_preapprove =
         payload.LoanInfo.max_loan_sum_preapprove;
+
+      state.fullFormProfile.LoanInfo.ProductMaxSum =
+        payload.LoanInfo.ProductMaxSum;
+
+      state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
     setFileList(state, response) {
@@ -1070,9 +1081,9 @@ export const profile = {
       state.disableField = false;
       state.fullFormProfile = {
         Status: "",
-        // ApplicationID: "",
+        ApplicationID: "",
         // ProtocolNumber: "",
-        // Number: "",
+        Number: "",
         Branch: "",
         BranchName: "",
         BODecision: null,
@@ -1295,9 +1306,13 @@ export const profile = {
             billProd: "", // Расчетный счет продавца
             agreementNumber: "", // Номер договора
             idBankProd: 0
-          }
+          },
           //InitialPaymentPercent: 0
+          ProductMaxSum: null, // максимальная сумма по кредитному продукту
+          max_loan_sum_preapprove: null // максимальная сумма кредита
         },
+
+        max_loan_sum: null,
 
         ApplicationComment: {
           items: [
@@ -1316,9 +1331,7 @@ export const profile = {
             //   "DocumentName": "1"
             // }
           ]
-        },
-
-        max_loan_sum_preapprove: null // максимальная сумма кредита
+        }
       };
     }
   },
