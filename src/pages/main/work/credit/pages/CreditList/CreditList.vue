@@ -183,7 +183,8 @@
           <tr 
             v-for="(credit, index) of credits" 
             :key="credit.id"
-            :class="{ time: credit.time }"  
+            :class="{ time: credit.time, creditCompleate: credit.creditCompleate}"  
+            
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
@@ -876,6 +877,10 @@ export default {
 
   .time {
     background: rgba(255, 129, 129, 0.5) !important;
+  }
+
+  .creditCompleate {
+    background: rgba(99, 195, 148, 0.5) !important;
   }
 
   .number {

@@ -13,14 +13,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+        <tr v-for="(overdue_payment, index) of data" :key="overdue_payment.id_contract">
+          <td>{{ overdue_payment.id_contract }}</td>
+          <td>{{ overdue_payment.overdue.items[index].month }}</td>
+          <td>{{ overdue_payment.overdue.items[index].begin_sum }}</td>
+          <td>{{ overdue_payment.overdue.items[index].overdue_sum }}</td>
+          <td>{{ overdue_payment.overdue.items[index].end_sum }}</td>
+          <td>{{ overdue_payment.overdue.items[index].overdue_percent }}</td>
+          <td>{{ overdue_payment.overdue.items[index].total_overdue }}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -28,7 +28,12 @@
 </template>
 <script>
 export default {
-  
+  props: {
+    data: {
+      type: Array,
+      default: []
+    }
+  }
 }
 </script>
 
