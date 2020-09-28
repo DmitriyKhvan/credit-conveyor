@@ -436,6 +436,28 @@
                 </div>
               </div>  
 
+              <div class="row rowForm">
+                <div class="col-12 field">
+                  <q-checkbox
+                      disable
+                      left-label
+                      v-model="relative.LSBO"
+                      label="ЛСБО"
+                    />
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Номер филиала</div>
+                <div class="col-3 data">
+                  {{ relative.filial }}
+                </div>
+                <div class="col-3 field">Должность</div>
+                <div class="col-3 data">
+                  {{ relative.role }}
+                </div>
+              </div>
+
               <!-- <div class="row rowForm">
             <div class="col-2 field">ИНН</div>
             <div class="col-10 data">45445156151</div>
@@ -1431,6 +1453,34 @@
             </template>
           </div>
         </div>
+
+        <div class="col-12" v-if="userRole !== 'ROLE_UrWr'">
+          <div class="clientInfo tab">
+            <h4 class="titleForm">
+              Информация о клиенте
+            </h4>
+            <div class="formBlock">
+
+               <appClientInfo 
+                v-if="clientInfo" 
+                :data="clientInfo" 
+                :scoring="fullProfile"
+               />
+
+               <q-btn
+                :loading="clientInfoLoading"
+                color="primary"
+                label="Получить данные клиента"
+                @click="getClientInfo"
+                class="addItem"
+              >
+                <template v-slot:loading>
+                  <q-spinner-facebook />
+                </template>
+              </q-btn>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="row q-col-gutter-md btn-decision">
@@ -1595,10 +1645,13 @@ import GetDataINPS from "../../Components/INPS/GetData";
 
 import formatDate from "../../filters/formatDate"
 import { validItems, validFilter } from "../../filters/valid_filter";
+import ClientInfo from "../../Components/ClientInfo";
 
 export default {
   data() {
     return {
+      clientInfo: null,
+      clientInfoLoading: false,
       creditTitles: null,
       loader: false,
       bankLoading: false,
@@ -1691,6 +1744,20 @@ export default {
     }
   },
   methods: {
+    async getClientInfo() {
+      this.clientInfoLoading = true
+      try {
+        this.clientInfo = await this.$store.dispatch("profile/clientInfo")
+        this.clientInfoLoading = false
+      } catch(error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.clientInfoLoading = false;
+      }
+    },
+
     creditSuccess() {
       console.log("userRole", this.userRole);
       console.log("fulForm", this.fullProfile);
@@ -1960,7 +2027,8 @@ export default {
   components: {
     appLoader: Loader,
     appLoaderFullScreen: LoaderFullScreen,
-    appGetDataINPS: GetDataINPS
+    appGetDataINPS: GetDataINPS,
+    appClientInfo: ClientInfo
   },
   filters: {
     formatDate

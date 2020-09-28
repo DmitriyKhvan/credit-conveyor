@@ -3718,7 +3718,11 @@
             </h4>
             <div class="tab-content" ref="tabContent">
 
-               <appClientInfo v-if="clientInfo" :data="clientInfo" />
+               <appClientInfo 
+                v-if="clientInfo" 
+                :data="clientInfo" 
+                :scoring="fullProfile"
+               />
 
                <q-btn
                 :loading="clientInfoLoading"
@@ -5242,19 +5246,19 @@ export default {
       }
     },
 
-    async getClientInfo() {
-      this.clientInfoLoading = true
-      try {
-        this.clientInfo = await this.$store.dispatch("profile/clientInfo")
-        this.clientInfoLoading = false
-      } catch(error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
-        this.clientInfoLoading = false;
-      }
-    },
+    // async getClientInfo() {
+    //   this.clientInfoLoading = true
+    //   try {
+    //     this.clientInfo = await this.$store.dispatch("profile/clientInfo")
+    //     this.clientInfoLoading = false
+    //   } catch(error) {
+    //     this.$store.commit(
+    //       "credits/setMessage",
+    //       CommonUtils.filterServerError(error)
+    //     );
+    //     this.clientInfoLoading = false;
+    //   }
+    // },
 
     setINNCompany(companyName, idx) {
       console.log(companyName, idx);

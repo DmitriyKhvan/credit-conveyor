@@ -131,6 +131,7 @@ export const profile = {
       },
 
       Customer: {
+        CustomerId: 0,
         DigID: false,
         Email: "",
         FirstName: "",
@@ -467,12 +468,19 @@ export const profile = {
       const data = {
         input: [
           {
-            data: "589196899",
+            // data: "589196899",
+            data: state.fullFormProfile.Customer.INN,
             name: "clientInn"
           },
           {
-            data: "2",
+            // data: "0",
+            data: state.fullFormProfile.Customer.CustomerId,
             name: "customerId"
+          },
+          {
+            // data: "12345",
+            data: state.fullFormProfile.ApplicationID,
+            name: "appId"
           }
         ]
       };
@@ -572,9 +580,10 @@ export const profile = {
             commit("setFileList", response);
             commit("setFullForm", data);
           } else if (
-            response.data.name != "Full Application Filling" &&
-            response.data.name != "Проверка документов" &&
-            data.BODecision == true
+            // response.data.name != "Full Application Filling" &&
+            // response.data.name != "Проверка документов" &&
+            // data.BODecision == true
+            response.data.name == "Голосование КК"
           ) {
             // для получения информации от халк банка для кредитного секретаря
             const preApplicationNum = response.data.input.find(
@@ -1105,6 +1114,7 @@ export const profile = {
         },
 
         Customer: {
+          CustomerId: 0,
           DigID: false,
           Email: "",
           FirstName: "",
