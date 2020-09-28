@@ -12,6 +12,7 @@
         <q-tab name="asoki" label="АСОКИ" />
         <q-tab name="gsz" label="ГСЗ" />
         <q-tab name="scoring" label="Скоринг" />
+        <q-tab name="deposits" label="Депозиты" />
       </q-tabs>
 
       <q-separator />
@@ -30,9 +31,13 @@
                 vertical
                 class="text-teal"
               >
-                <q-tab name="innerContract" icon="mail" label="Contract" />
-                <q-tab name="innerApplication" icon="alarm" label="Application" />
-                <q-tab name="innerExpiration" icon="movie" label="Expiration" />
+                <q-tab name="innerContract" icon="mail" label="Договора" />
+                <q-tab 
+                  name="innerApplication" 
+                  icon="alarm" 
+                  label="Заявки" 
+                />
+                <q-tab name="innerExpiration" icon="movie" label="Просрочки" />
               </q-tabs>
             </template>
 
@@ -44,15 +49,15 @@
                 transition-next="slide-up"
               >
                 <q-tab-panel name="innerContract">
-                  <appContract />
+                  <appContract :data="contracts" />
                 </q-tab-panel>
 
                 <q-tab-panel name="innerApplication">
-                  <appApplication />
+                  <appApplication :data="claims"/>
                 </q-tab-panel>
 
                 <q-tab-panel name="innerExpiration">
-                  <appExpiration />
+                  <appExpiration :data="overdue_payments" />
                 </q-tab-panel>
               </q-tab-panels>
             </template>
@@ -61,12 +66,17 @@
         </q-tab-panel>
 
         <q-tab-panel name="gsz">
-          <appGSZ />
+          <appGSZ :data="GRCInfo" />
         </q-tab-panel>
 
         <q-tab-panel name="scoring">
-          <appScoring />
+          <appScoring :data="scoring"/>
         </q-tab-panel>
+
+        <q-tab-panel name="deposits">
+          <appDeposits :data="deposits"/>
+        </q-tab-panel>
+
       </q-tab-panels>
     </q-card>
   </div>
@@ -74,6 +84,7 @@
 
 <script>
 import Scoring from './Scoring/Scoring'
+import Deposits from './Deposits'
 import GSZ from './GSZ/listGSZ'
 import Application from './ASOKI/Application'
 import Contract from './ASOKI/Contract'
@@ -82,6 +93,10 @@ import Expiration from './ASOKI/Expiration'
 export default {
   props: {
     data: {
+      type: Object,
+      default: {}
+    },
+    scoring: {
       type: Object,
       default: {}
     }
@@ -93,8 +108,56 @@ export default {
       splitterModel: 20
     }
   },
+  created() {
+    console.log('data', JSON.stringify(this.data.output.find(i => i.name === 'asokiReport').data.claims_information.claims.items, null, 2))
+    // console.log('data', JSON.stringify(this.scoring, null, 2))
+  },
+  computed: {
+    ASOKI() {
+      if (this.data.output.find(i => i.name === 'asokiReport')) {
+        return this.data.output.find(i => i.name === 'asokiReport').data
+      }
+
+      return null
+    },
+
+    claims() {
+      if (this.ASOKI) {
+        return this.ASOKI.claims_information.claims.items
+      }
+    },
+    contracts() {
+      if (this.ASOKI) {
+        return this.ASOKI.contracts.contract.items
+      }
+    },
+    overdue_payments() {
+      if (this.ASOKI) {
+        return this.ASOKI.overdue_payments.overdue_contract.items
+      }
+    },
+
+    // client() {
+    //   if (this.ASOKI) {
+    //     return this.ASOKI.client
+    //   }
+    // },
+
+    GRCInfo() {
+      if (this.data.output.find(i => i.name === 'GRCInfo')) {
+        return this.data.output.find(i => i.name === 'GRCInfo').data.items
+      }
+    },
+
+    deposits() {
+      if (this.data.output.find(i => i.name === 'deposits')) {
+        return this.data.output.find(i => i.name === 'deposits').data.items
+      }
+    }
+  }, 
   components: {
     appScoring: Scoring,
+    appDeposits: Deposits,
     appGSZ: GSZ,
     appContract: Contract,
     appExpiration: Expiration,

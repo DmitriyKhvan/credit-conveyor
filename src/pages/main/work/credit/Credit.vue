@@ -10,7 +10,7 @@
 </template>
 <script>
 import ErrorMessage from './Components/ErrorMessage'
-import Scoring from './Components/PaymentOrder'
+import Scoring from './Components/ClientInfo'
 
 export default {
   name: "credit",
