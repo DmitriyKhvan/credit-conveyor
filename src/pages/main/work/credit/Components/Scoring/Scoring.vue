@@ -14,7 +14,8 @@
 
             <div class="col-5">
               <p class="scoringList__value">
-                Соответствует
+                {{data.Customer.BirthDate ? "Соответствует" : "Не соответствует"}}
+                
               </p>
             </div>  
           </div>
@@ -25,7 +26,7 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                Соответствует
+                {{data.Customer.ResidentFlag ? "Соответствует" : "Не соответствует"}}
               </p>
             </div>
           </div>
@@ -36,7 +37,12 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                Соответствует
+                {{
+                  data.Customer.JobInfo.lastJobExperienceMonths 
+                  ? "Соответствует"
+                    : data.Customer.JobInfo.activeYears 
+                      ? "Соответствует"
+                      : "Не соответствует"}}
               </p>
             </div>
           </div>
@@ -198,10 +204,22 @@
 </template>
 <script>
 export default {
+  props: {
+    data: {
+      type: Object,
+      default: {}
+    }
+  },
   data() {
     return {
-      val: true
+      val: true,
+      // birthday: null,
     };
+  },
+  computed: {
+    // BirthDate() {
+    //   return (new Date() - new Date(data.Customer.BirthDate)).getYear()
+    // }
   },
 };
 </script>

@@ -477,13 +477,17 @@ export const credits = {
       // state.creditTasks = payload.response.infoList
 
       state.creditTasks = payload.response.infoList.map(credit => {
+        let creditCompleate = credit.taskName == "Step: Решение о выдаче"
+                ? true
+                : false
         let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
                 ? true
                 : false
 
         return {
           ...credit,
-          time
+          time,
+          creditCompleate
         }
       })
 

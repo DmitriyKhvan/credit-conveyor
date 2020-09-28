@@ -30,31 +30,31 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+        <tr v-for="contract of data" :key="contract.claim_id">
+          <td>{{ contract.claim_id }}</td>
+          <td>{{ contract.claim_date }}</td>
+          <td>{{ contract.branch }}</td>
+          <td>{{ contract.contract_id }}</td>
+          <td>{{ contract.contract_type }}</td>
+          <td>{{ contract.contract_date }}</td>
+          <td>{{ contract.contract_end_date }}</td>
+          <td>{{ contract.credit_type }}</td>
+          <td>{{ contract.credit_object }}</td>
+          <td>{{ contract.percent }}</td>
+          <td>{{ contract.currency }}</td>
+          <td>{{ contract.quality }}</td>
+          <td>{{ contract.summa }}</td>
+          <td>{{ contract.loan_summa }}</td>
+          <td>{{ contract.revised_summa }}</td>
+          <td>{{ contract.revised_date }}</td>
+          <td>{{ contract.expired_summa }}</td>
+          <td>{{ contract.expired_date }}</td>
+          <td>{{ contract.lawsuit_summa  }}</td>
+          <td>{{ contract.lawsuit_date }}</td>
+          <td>{{ contract.expired_percent_summa }}</td>
+          <td>{{ contract.expired_percent_date }}</td>
+          <td>{{ contract.percent_summa }}</td>
+          <td>{{ contract.percent_date }}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -62,7 +62,12 @@
 </template>
 <script>
 export default {
-  
+   props: {
+    data: {
+      type: Array,
+      default: []
+    }
+  }, 
 }
 </script>
 
