@@ -38,13 +38,13 @@ import NewRequest from './subcomponents/NewRequest'
 export default {
   data () {
     return {
-        taskTab: 'new_task',
-        tDialog: false
+      taskTab: 'new_task',
+      tDialog: false
     }
   },
   components: {
-      NewTask,
-      NewRequest
+    NewTask,
+    NewRequest
   }
 }
 </script>
