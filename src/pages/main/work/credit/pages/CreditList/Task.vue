@@ -436,6 +436,28 @@
                 </div>
               </div>  
 
+              <div class="row rowForm">
+                <div class="col-12 field">
+                  <q-checkbox
+                      disable
+                      left-label
+                      v-model="relative.LSBO"
+                      label="ЛСБО"
+                    />
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Номер филиала</div>
+                <div class="col-3 data">
+                  {{ relative.filial }}
+                </div>
+                <div class="col-3 field">Должность</div>
+                <div class="col-3 data">
+                  {{ relative.role }}
+                </div>
+              </div>
+
               <!-- <div class="row rowForm">
             <div class="col-2 field">ИНН</div>
             <div class="col-10 data">45445156151</div>
@@ -646,7 +668,7 @@
               </div>
             </div>
             <div 
-              v-if="userRole === 'CCM'"
+              v-if="userRole === 'ROLE_CC'"
               class="row rowForm"
             >
               
@@ -1327,14 +1349,13 @@
               </div>
             </template>
 
-            <!-- кредитный комитет -->
-            <template v-if="userRole === 'CCM'">
+            <template v-if="userRole === 'ROLE_CC'">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Среднемесячная заработная плата(сум)
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.avgSalary }}
                 </div>
               </div>
 
@@ -1343,7 +1364,7 @@
                   Профит
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.profit }}
                 </div>
               </div>
 
@@ -1352,7 +1373,7 @@
                   Класс кредитоспособности
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.loanAbilityClass }}
                 </div>
               </div>
 
@@ -1361,7 +1382,7 @@
                   Расчет максимально возможной суммы кредита (скоринг)
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.LoanMax }}
                 </div>
               </div>
             </template>
@@ -1427,6 +1448,34 @@
             </template>
           </div>
         </div>
+
+        <div class="col-12" v-if="userRole !== 'ROLE_UrWr'">
+          <div class="clientInfo tab">
+            <h4 class="titleForm">
+              Информация о клиенте
+            </h4>
+            <div class="formBlock">
+
+               <appClientInfo 
+                v-if="clientInfo" 
+                :data="clientInfo" 
+                :scoring="fullProfile"
+               />
+
+               <q-btn
+                :loading="clientInfoLoading"
+                color="primary"
+                label="Получить данные клиента"
+                @click="getClientInfo"
+                class="addItem"
+              >
+                <template v-slot:loading>
+                  <q-spinner-facebook />
+                </template>
+              </q-btn>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="row q-col-gutter-md btn-decision">
@@ -1452,7 +1501,7 @@
           />
         </div>
 
-        <div v-if="userRole === 'CCM'" class="col-3">
+        <div v-if="userRole === 'ROLE_CC'" class="col-3">
           <q-btn
             color="blue"
             label="На доработку"
@@ -1494,7 +1543,7 @@
             /> -->
 
               <!-- <div v-if="reason === options.reason[3]" style="max-width: 100%"> -->
-              <div v-if="userRole == 'BO'" style="max-width: 100%">
+              <div v-if="userRole == 'ROLE_CCC' || this.userRole == 'ROLE_UrWr'" style="max-width: 100%">
                 <q-input
                   ref="comment"
                   square
@@ -1591,10 +1640,13 @@ import GetDataINPS from "../../Components/INPS/GetData";
 
 import formatDate from "../../filters/formatDate"
 import { validItems, validFilter } from "../../filters/valid_filter";
+import ClientInfo from "../../Components/ClientInfo";
 
 export default {
   data() {
     return {
+      clientInfo: null,
+      clientInfoLoading: false,
       creditTitles: null,
       loader: false,
       bankLoading: false,
@@ -1687,13 +1739,27 @@ export default {
     }
   },
   methods: {
+    async getClientInfo() {
+      this.clientInfoLoading = true
+      try {
+        this.clientInfo = await this.$store.dispatch("profile/clientInfo")
+        this.clientInfoLoading = false
+      } catch(error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.clientInfoLoading = false;
+      }
+    },
+
     creditSuccess() {
       console.log("userRole", this.userRole);
       console.log("fulForm", this.fullProfile);
 
-      if (this.userRole == "BO") {
+      if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
         this.BODecision = true; // кредит одобрен
-      } else if (this.userRole == "CCM") {
+      } else if (this.userRole == "ROLE_CC") {
         this.$store.commit("profile/addComment", {
           commentBlock: "CreditCommiteeDecisions",
           comment: this.commentCC
@@ -1719,13 +1785,13 @@ export default {
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
-        if (this.userRole == "BO") {
+        if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
           this.BODecision = false; // кредит отклонен
           this.$store.commit("profile/addComment", {
             commentBlock: "ApplicationComment",
             comment: this.commentBO
           });
-        } else if (this.userRole == "CCM") {
+        } else if (this.userRole == "ROLE_CC") {
           this.$store.commit("profile/addComment", {
             commentBlock: "CreditCommiteeDecisions",
             comment: this.commentCC
@@ -1751,7 +1817,7 @@ export default {
     async sentData(message) {
       this.loader = true;
       let data = {};
-      if (this.userRole == "BO") {
+      if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
         data = {
           output: [
             {
@@ -1768,7 +1834,7 @@ export default {
             }
           ]
         };
-      } else if (this.userRole == "CCM") {
+      } else if (this.userRole == "ROLE_CC") {
         // const fullNameArr = this.$store.getters["auth/fullName"].split(' ')
         // const fullName = `${fullNameArr[1]} ${fullNameArr[0]} ${fullNameArr[2]}`
 
@@ -1956,7 +2022,8 @@ export default {
   components: {
     appLoader: Loader,
     appLoaderFullScreen: LoaderFullScreen,
-    appGetDataINPS: GetDataINPS
+    appGetDataINPS: GetDataINPS,
+    appClientInfo: ClientInfo
   },
   filters: {
     formatDate
@@ -2089,7 +2156,7 @@ export default {
 .modalView {
   display: none;
   position: fixed;
-  top: 48px;
+  top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;

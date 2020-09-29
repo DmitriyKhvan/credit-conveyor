@@ -13,10 +13,15 @@ export const credits = {
     },
     roles: {
       //Admin: "CRM",
-      CreditManager: "CRM",
-      BackOfficee: "BO",
-      CreditCommitteeMember: "CCM",
-      CreditSecretary: "CS"
+      // CreditManager: "CRM",
+      CreditManager: "ROLE_KM",
+      BackOfficee: "ROLE_BO",
+      CreditCommitteeMember: "ROLE_CC",
+      CreditSecretary: "ROLE_CCS",
+      UnderWriter: "ROLE_UrWr",
+      CreditCommitteeChief: "ROLE_CCC",
+      ProcessManager: "ROLE_PM",
+
     },
     
     messageBar: false,
@@ -40,6 +45,7 @@ export const credits = {
       typeStepCredit: null,
       periodCredit: 0,
       loanRate: 0, //ставка по кредиту
+      ProductMaxSum: 0, // маск. сумма по кредитному продукту
       spouseCost: 0,
       childCost: 0,
 
@@ -416,6 +422,7 @@ export const credits = {
         typeStepCredit: null,
         periodCredit: 0,
         loanRate: 0, //ставка по кредиту
+        ProductMaxSum: 0, // маск. сумма по кредитному продукту
         spouseCost: 0,
         childCost: 0,
 
@@ -467,7 +474,23 @@ export const credits = {
         state.loadings[i] = false
       }
 
-      state.creditTasks = payload.response.infoList
+      // state.creditTasks = payload.response.infoList
+
+      state.creditTasks = payload.response.infoList.map(credit => {
+        let creditCompleate = credit.taskName == "Step: Решение о выдаче"
+                ? true
+                : false
+        let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
+                ? true
+                : false
+
+        return {
+          ...credit,
+          time,
+          creditCompleate
+        }
+      })
+
       // state.creditTasks = payload.response.infoList.sort((a, b) => {
       //     if (b.date < a.date) {
       //       return -1
@@ -494,6 +517,18 @@ export const credits = {
     messageId: state => state.messageBlock.id,
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
-    userRole: state => state.userRole
+    userRole: state => state.userRole,
+    // creditTasks: state => {
+    //   return state.creditTasks.map(credit => {
+    //     let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
+    //             ? true
+    //             : false
+
+    //     return {
+    //       ...credit,
+    //       time
+    //     }
+    //   })
+    // }
   }
 };

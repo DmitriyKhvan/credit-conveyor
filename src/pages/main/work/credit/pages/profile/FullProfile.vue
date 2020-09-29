@@ -7,7 +7,7 @@
             <h4 class="fullFormTitle">Анкета-заявления</h4>
             <div class="row">
               <div class="col-3">Номер анкеты</div>
-              <div class="col-9">132131231</div>
+              <div class="col-9">{{ profile.applicationNumber }}</div>
               <div class="col-12 profileTitle">1. Персональные данные</div>
               <div class="col-2 fieldData">Фамилия</div>
               <div class="col-2">{{ Customer.LastName }}</div>
@@ -713,7 +713,7 @@
                     <div class="col-12 profileSubTitle">
                       Страхование {{ index + 1 }}
                     </div>
-                    <div class="col-3">Наименование организации</div>
+                    <div class="col-3 fieldData">Наименование организации</div>
                     <div class="col-3">
                        <!-- {{
                         dictionaries.Insurance_company.items.find(
@@ -927,7 +927,7 @@
               <p>Полностью Фамилия, Имя, Отчество</p>
             </div>
             <div class="col-4">
-              <p class="bor">&nbsp</p>
+              <p class="bor"></p>
               <p>Подпись, дата</p>
             </div>
           </div>
@@ -938,7 +938,8 @@
               <div class="col-6">
                 Филиал / Подразделение
               </div>
-              <div class="col-6"></div>
+              <div class="col-6">{{ fullProfile.BranchName }}</div>
+              <!-- <div class="col-6">{{ bankName }}</div> -->
               <div class="col-6">
                 ФИО работника банка, принявшего заявление
               </div>
@@ -946,11 +947,11 @@
               <div class="col-6">
                 Должность кредитного специалиста
               </div>
-              <div class="col-6"></div>
+              <div class="col-6">{{ profile.userrole }}</div>
               <div class="col-6">
                 Подпись работника банка
               </div>
-              <div class="col-6"></div>
+              <div class="col-6">_____________________</div>
               <div class="col-6">
                 Дата
               </div>
@@ -989,8 +990,17 @@ export default {
   props: ["currentDate"],
   data() {
     return {
-      confirmCredit: true
+      confirmCredit: true,
+      bankName: ''
     };
+  },
+  created() {
+    // const bankInfo = this.dictionaries.Branches.items.find(i => i.id === this.fullProfile.Branch)
+    // if (bankInfo){
+    //   this.bankName = bankInfo.bank_name
+    // }
+    // this.bankName = this.dictionaries.Branches.items.find(i => i.id === "00890").bank_name
+    // console.log('bankName', this.bankName)
   },
   computed: {
     ...mapState({
@@ -1156,6 +1166,7 @@ export default {
   font-size: 14px;
   margin: 10px 0 0 0;
   line-height: 25px;
+  font-weight: 600;
 }
 
 .agreementList, .serviceInfo {
