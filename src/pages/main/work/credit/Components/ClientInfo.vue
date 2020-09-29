@@ -109,7 +109,7 @@ export default {
     }
   },
   created() {
-    console.log('data', JSON.stringify(this.data.output.find(i => i.name === 'asokiReport').data.claims_information.claims.items, null, 2))
+    // console.log('data', JSON.stringify(this.data.output.find(i => i.name === 'asokiReport').data.claims_information.claims.items, null, 2))
     // console.log('data', JSON.stringify(this.scoring, null, 2))
   },
   computed: {
