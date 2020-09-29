@@ -138,7 +138,7 @@ export const getData = (n, g) => {
   }
   const result = []
   for (let i = 0; i < n; i++) {
-    result.push(g(i))
+    result.push(g(initdata))
   }
   return result
 }

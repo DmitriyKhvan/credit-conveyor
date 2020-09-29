@@ -13,11 +13,15 @@
           @drag-start="(e) => log('drag start', e)"
           @drag-end="(e) => log('drag end', e)"
           :get-child-payload="getCardPayload(column.id)"
-          :drag-class="$root.$children[0].$children[0].$children[0].$children[4].$el.attributes[1].value === 'padding-top: 70px; padding-left: 255px;' ? 'card-ghost' : 'card-ghost-o'"
+          drag-class="card-ghost"
           drop-class="card-ghost-drop"
           :drop-placeholder="upperDropPlaceholderOptions"
           style="height: 70vh"
         >
+        <!--
+          :drag-class="$root.$children[0].$children[0].$children[0].$children[4].$el.attributes[1].value === 'padding-top: 70px; padding-left: 255px;' ? 'card-ghost' : 'card-ghost-o'"
+
+         -->
           <Draggable v-for="card in column.children" :key="card.id">
             <div :class="card.props.className" :style="card.props.style">
               <p style="font-size: 14px">{{ card.data }}</p>
