@@ -286,6 +286,7 @@
     <!-- Card Section End -->
 
     <div class="row">
+      <div class="col bg-white" style="min-height: 300px">
       <q-tab-panels v-model="tab" style="display: flex; flex: auto;" v-if="allMonthData">
         <!-- Tabs start -->
         <q-tab-panel
@@ -332,6 +333,7 @@
 
         <!-- Tabs end -->
       </q-tab-panels>
+      </div>
 
       <div class="right_pane">
         <!-- kurs valyuta -->
@@ -397,96 +399,96 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
-  data() {
+  data () {
     return {
       active: false,
       tab: 0,
       graf: [[10, 8, 13, 19, 18, 11.5]],
       grafb: [[11, 8, 14, 10, 15, 12]],
       grafc: [[9, 8, 16, 13, 12, 17]],
-      //months: null,
-      //names: null,
+      // months: null,
+      // names: null,
       colora: [
-        "#EEF6FD",
-        "#EEF6FD",
-        "#EEF6FD",
-        "#EEF6FD",
-        "#EEF6FD",
-        "#61A4E4",
+        '#EEF6FD',
+        '#EEF6FD',
+        '#EEF6FD',
+        '#EEF6FD',
+        '#EEF6FD',
+        '#61A4E4'
       ],
       colorb: [
-        "#FEF4F4",
-        "#FEF4F4",
-        "#FEF4F4",
-        "#FEF4F4",
-        "#FEF4F4",
-        "#FFC5C5",
+        '#FEF4F4',
+        '#FEF4F4',
+        '#FEF4F4',
+        '#FEF4F4',
+        '#FEF4F4',
+        '#FFC5C5'
       ],
       colorc: [
-        "#FEF3E7",
-        "#FEF3E7",
-        "#FEF3E7",
-        "#FEF3E7",
-        "#FEF3E7",
-        "#FFA958",
+        '#FEF3E7',
+        '#FEF3E7',
+        '#FEF3E7',
+        '#FEF3E7',
+        '#FEF3E7',
+        '#FFA958'
       ],
       heightGlobalBlock: 90,
 
       selectedMonth: null,
       dateSelectOptions: [],
       allMonthData: null,
-      exchangeRate: [],
-    };
+      exchangeRate: []
+    }
   },
-  created() {
+  created () {
     this.$axios
-      .get("/emps/kvitok/dates?uid=" + this.emp_id)
+      .get('/emps/kvitok/dates?uid=' + this.emp_id)
       .then(
         (response) => {
           response.data.data.forEach((el) => {
             let arr = {
               label: el.text,
-              value: el.date,
-            };
-            this.dateSelectOptions.push(arr);
-          });
-          console.log("Month: ", this.dateSelectOptions.sort((a, b) => b.value - a.value));
-          this.selectedMonth = this.dateSelectOptions[0];
+              value: el.date
+            }
+            this.dateSelectOptions.push(arr)
+          })
+          console.log('Month: ', this.dateSelectOptions.sort((a, b) => b.value - a.value))
+          this.selectedMonth = this.dateSelectOptions[0]
           this.monthData({
             uid: this.emp_id,
-            date: this.selectedMonth.value,
-          });
-          //console.log(this.selectedMonth);
+            date: this.selectedMonth.value
+          })
+          // console.log(this.selectedMonth);
         },
         (error) => {
-          console.log({ error });
+          console.log({ error })
         }
       )
       .catch((error) => {
-        console.log({ error });
-      });
+        console.log({ error })
+      })
     this.$axios
       .get(
-        "https://cors-anywhere.herokuapp.com/https://nbu.uz/exchange-rates/json/"
+        'https://cors-anywhere.herokuapp.com/https://nbu.uz/exchange-rates/json/'
       )
       .then(
         (res) => {
           this.exchangeRate = res.data.filter((el) => {
-            return el.code == "EUR" || el.code == "USD";
-          });
+            return el.code === 'EUR' || el.code === 'USD'
+          })
         },
         (err) => {
-          console.error({ err });
+          console.error({ err })
         }
       )
       .catch((error) => {
-        console.error({ error });
-      });
+        console.error({ error })
+      })
   },
-  mounted() {
+  mounted () {
     // this.graf = this.tables.graf;
     // if (this.tables.months) this.months = this.tables.months;
     // if (this.tables.heightGlobalBlock)
@@ -495,131 +497,129 @@ export default {
   },
   computed: {
     ...mapGetters({
-      emp_id: "auth/empId",
-    }),
+      emp_id: 'auth/empId'
+    })
   },
   methods: {
-    monthData(params) {
+    monthData (params) {
       this.$axios({
-        url: "/emps/kvitok/month",
-        method: "post",
-        data: params,
+        url: '/emps/kvitok/month',
+        method: 'post',
+        data: params
       })
         .then((response) => {
-          this.allMonthData = response.data;
-          console.log(this.allMonthData);
+          this.allMonthData = response.data
+          console.log(this.allMonthData)
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    shiftTab(tabNo) {
-      this.tab = tabNo;
+    shiftTab (tabNo) {
+      this.tab = tabNo
     },
-    selected() {
+    selected () {
       let arr = {
         uid: this.emp_id,
-        date: this.selectedMonth.value,
-      };
-      this.monthData(arr);
+        date: this.selectedMonth.value
+      }
+      this.monthData(arr)
     },
-    aColor(num) {
-      return this.colora[num];
+    aColor (num) {
+      return this.colora[num]
     },
-    bColor(num) {
-      return this.colorb[num];
+    bColor (num) {
+      return this.colorb[num]
     },
-    cColor(num) {
-      return this.colorc[num];
+    cColor (num) {
+      return this.colorc[num]
     },
-    widthBlock() {
-      const width = 100 / this.graf.length - 4 + "%";
-      return `width: ${width}`;
+    widthBlock () {
+      const width = 100 / this.graf.length - 4 + '%'
+      return `width: ${width}`
     },
-    widthMinBlock() {
-      const width = 100 / this.graf.length + "%";
-      return width;
+    widthMinBlock () {
+      const width = 100 / this.graf.length + '%'
+      return width
     },
-    maxNum() {
-      let arr = [];
+    maxNum () {
+      let arr = []
       for (let i = 0; i < this.graf.length; i++) {
         for (let e = 0; e < this.graf[i].length; e++) {
-          arr.push(this.graf[i][e]);
+          arr.push(this.graf[i][e])
         }
       }
-      return Math.max.apply(null, arr);
+      return Math.max.apply(null, arr)
     },
-    grid() {
-      let maxNum = this.maxNum();
+    grid () {
+      let maxNum = this.maxNum()
 
-      let numMin = ["1"];
+      let numMin = ['1']
       for (let i = 1; i < String(maxNum).length; i++) {
-        numMin.push("0");
+        numMin.push('0')
       }
 
-      let resMaxNum = maxNum / Number(numMin.join(""));
+      let resMaxNum = maxNum / Number(numMin.join(''))
 
       if (String(resMaxNum)[2] >= 5) {
-        resMaxNum = Number(String(resMaxNum)[0]) + 1;
+        resMaxNum = Number(String(resMaxNum)[0]) + 1
       } else if (String(resMaxNum)[2] > 0) {
-        resMaxNum = Number(String(resMaxNum)[0] + "." + "5");
+        resMaxNum = Number(String(resMaxNum)[0] + '.' + '5')
       } else {
-        resMaxNum = Number(String(resMaxNum)[0]);
+        resMaxNum = Number(String(resMaxNum)[0])
       }
 
-      if (String(maxNum).length == 1) {
+      if (String(maxNum).length === 1) {
         if (resMaxNum >= 5) {
-          resMaxNum = 10;
+          resMaxNum = 10
         } else {
-          resMaxNum = 5;
+          resMaxNum = 5
         }
       } else {
         if (resMaxNum >= 3 && resMaxNum < 5) {
-          resMaxNum = 5;
+          resMaxNum = 5
         } else if (resMaxNum > 5 && resMaxNum < 10) {
-          resMaxNum = 10;
-        } else if (resMaxNum == 1) {
-          resMaxNum = resMaxNum + 0.5;
+          resMaxNum = 10
+        } else if (resMaxNum === 1) {
+          resMaxNum = resMaxNum + 0.5
         }
       }
 
-      let del = resMaxNum < 10 ? (resMaxNum * 10) / 5 : resMaxNum / 5;
-      if (del > 4) del = 5;
+      let del = resMaxNum < 10 ? (resMaxNum * 10) / 5 : resMaxNum / 5
+      if (del > 4) del = 5
 
-      if (numMin.length > 1) resMaxNum *= Number(numMin.join(""));
+      if (numMin.length > 1) resMaxNum *= Number(numMin.join(''))
 
-      let delArr = [0];
+      let delArr = [0]
       for (let i = 0; i < del; i++) {
-        delArr.push(delArr[i] + resMaxNum / del);
+        delArr.push(delArr[i] + resMaxNum / del)
       }
-      return delArr;
+      return delArr
     },
-    grafBlockHight(num) {
-      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock;
-      return num / proc + "px";
+    grafBlockHight (num) {
+      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock
+      return num / proc + 'px'
     },
-    gridTableHeight(num) {
-      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock;
-      return num / proc + "px";
+    gridTableHeight (num) {
+      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock
+      return num / proc + 'px'
     },
-    leftWidth() {
-      const num = String(this.maxNum()).length;
-      return Number(num) * 5 + "px";
+    leftWidth () {
+      const num = String(this.maxNum()).length
+      return Number(num) * 5 + 'px'
     },
-    formatNum(str) {
-      str = Math.round(str);
-      str = String(str);
-      var arr = str.split("");
-      var str_temp = "";
+    formatNum (str) {
+      str = Math.round(str)
+      str = String(str)
       if (str.length > 3) {
-          let temp = str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        return temp;
+        let temp = str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+        return temp
       } else {
-        return str;
+        return str
       }
-    },
-  },
-};
+    }
+  }
+}
 // Avenir Next;
 </script>
 <style lang="sass" scoped>
@@ -636,7 +636,7 @@ export default {
   margin-left: 20px
   justify-items: center
 
-.topBlock 
+.topBlock
   background: #fff
   display: flex
   border-radius: 5px
@@ -659,7 +659,7 @@ export default {
   border-radius: 5px
 
 .q-tabs__content--align-center
-  justify-content: space-between  
+  justify-content: space-between
 
 .blackf
   color: #000000
@@ -703,12 +703,12 @@ export default {
     outline: 2px solid #0000ff
   &:hover + .topcard
     -moz-outline-radius: 4px
-    
+
 .lined-box
   display: flex
   flex-direction: column
   flex-grow: 1
-  
+
 .lined-content
   display: flex
   flex-direction: row
@@ -732,7 +732,7 @@ export default {
     height: 1px
     background: rgba(0,0,0,0.12)
     z-index: 1
-      
+
 .raw
   display: flex
   flex-direction: row
@@ -748,14 +748,13 @@ export default {
 .row
   display: flex
   flex-direction: row
-  align-items: flex-start 
+  align-items: flex-start
   justify-content: space-between
   flex-wrap: nowrap
 
 .cal1
   display: flex
   flex-direction: column
-  
 
 .cal2
   display: flex
@@ -773,7 +772,7 @@ export default {
 .font
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 
-.tooltip .tooltiptext 
+.tooltip .tooltiptext
   visibility: hidden
   width: 120px
   background-color: #555
@@ -789,9 +788,8 @@ export default {
   opacity: 0
   transition: opacity 0.3s
 
-
 .tooltip .tooltiptext
-  &::after 
+  &::after
     content: ""
     position: absolute
     bottom: 100%
@@ -801,9 +799,8 @@ export default {
     border-style: solid
     border-color: transparent transparent #555 transparent
 
-
 .tooltip
-  &:hover .tooltiptext 
+  &:hover .tooltiptext
     visibility: visible
     opacity: 1
 
