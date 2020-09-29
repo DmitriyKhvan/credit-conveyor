@@ -75,6 +75,7 @@ const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
 // const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 
 const TestList = () => import("pages/main/test/TestList.vue");
+const Instruction = () => import("pages/main/test/Instruction.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
 const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
@@ -349,6 +350,11 @@ const routes = [
         path: "selfdev",
         name: "Test List",
         component: TestList
+      },
+      {
+        path: 'instruction',
+        name: 'Instruction',
+        component: Instruction
       },
       {
         path: "completeTest",

@@ -65,7 +65,7 @@
         <div
           class="flexBlock q-px-md"
           :class="tabNo === 5 ? 'filterActive': ''"
-          
+          @click="menuSelect(5)"
         >
           <div class="q-pr-sm">
             <q-icon v-if="tabNo === 5" name="r_check_circle" size="20px" style="color: #0054FE" />
@@ -88,7 +88,7 @@
       class="row header q-pb-md justify-between no-wrap"
       :class="isBoardView ? 'q-pt-none': 'q-pt-md'"
     >
-      <div class="row no-wrap">
+      <div class="row no-wrap" :class="tabNo === 5 ? 'hidden' : ''">
         <!-- :text-color="dtab === 1 ? 'blue-6' : 'grey'" -->
         <div @click="changeListView">
           <q-btn
@@ -113,6 +113,7 @@
           />
         </div>
       </div>
+      <p-t :class="tabNo === 5 ? '' : 'hidden'"></p-t>
 
       <div class="row no-wrap">
         <q-input
@@ -150,6 +151,7 @@
           bg-color="white"
           style="width: 200px"
           class="q-ml-sm"
+           :class="tabNo === 5 ? 'hidden' : ''"
           @input="onSelectSortBy()"
         />
       </div>
@@ -157,6 +159,7 @@
   </div>
 </template>
 <script>
+import MyTaskPopup from './MyTasksPopup'
 import { mapState, mapGetters } from "vuex";
 export default {
   data() {
@@ -177,6 +180,9 @@ export default {
       //text: "",
       tab: 1,
     };
+  },
+  components: {
+    PT: MyTaskPopup
   },
   created() {
     this.menuSelect(1);
