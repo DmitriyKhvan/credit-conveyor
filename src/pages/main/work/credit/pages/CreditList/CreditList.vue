@@ -188,7 +188,7 @@
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ index + 1 }}
               </template>
               <router-link
@@ -211,7 +211,7 @@
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ credit.applicationNumber }}
               </template>
               <router-link
@@ -235,7 +235,7 @@
             </td>
 
             <td class="text-left client applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ credit.client }}
               </template>
               <router-link
@@ -259,7 +259,7 @@
             </td>
 
             <td class="text-left manager applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ credit.kmfio }}
               </template>
               <router-link
@@ -283,7 +283,7 @@
             </td>
 
             <td class="text-left MFO applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ credit.filial }}
               </template>
               <router-link
@@ -307,7 +307,7 @@
             </td>
 
             <td class="text-left filialName applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ credit.filialName }}
               </template>
               <router-link
@@ -331,7 +331,7 @@
             </td>
 
             <td class="text-left taskName applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ credit.taskName }}
               </template>
               <router-link
@@ -355,7 +355,7 @@
             </td>
 
             <td class="text-left taskStatus applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ credit.taskStatus }}
               </template>
               <router-link
@@ -379,7 +379,7 @@
             </td>
 
             <td class="text-left date applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">
                 {{ credit.date | formatDate('datetime') }}
               </template>
               <router-link
