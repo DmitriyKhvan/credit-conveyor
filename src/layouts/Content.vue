@@ -7,10 +7,17 @@
       class="shadow-2"
       id="eee"
     >
-      <q-header reveal elevated class="bg-primary text-white" height-hint="98">
+      <!-- <q-header reveal elevated class="bg-primary text-white" height-hint="98"> -->
         <!-- <bread-crumb :list="list()" /> -->
-        <sub-header-tab :path="path" />
-      </q-header>
+        <!-- <sub-header-tab :path="path" />
+      </q-header> -->
+
+      <!-- <q-header reveal elevated class="bg-white text-white" height-hint="98"> -->
+        <!-- <bread-crumb :list="list()" /> -->
+        <!-- <sub-header-tab :path="path" />
+      </q-header> -->
+      
+      <sub-header-tab :path="path" />
 
       <q-page-container>
         <router-view />
