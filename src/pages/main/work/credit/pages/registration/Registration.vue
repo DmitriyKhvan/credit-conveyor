@@ -931,6 +931,7 @@ export default {
 
 <style lang="scss">
 .registration {
+  background: #ffffff;
   .preapprovForm {
     width: 100%;
   }

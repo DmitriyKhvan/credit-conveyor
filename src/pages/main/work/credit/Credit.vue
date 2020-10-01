@@ -37,7 +37,7 @@ export default {
 </script>
 <style lang="scss">
   .creditConveyor {
-    background: #fff;
+    // background: #fff;
     .creditMenu {
       margin: 15px;
     }

@@ -292,6 +292,7 @@ export default {
 </script>
 <style lang="scss">
   .paymentOrder {
+    background: #ffffff;
     .paymentBlock {
       border: 1px solid #ccc;
       border-radius: 5px;
