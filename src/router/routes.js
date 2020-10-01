@@ -50,6 +50,8 @@ const CreditReg = () =>
   );
 const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
+const CreditPayment = () =>
+  import("pages/main/work/credit/pages/PaymentOrder.vue");
 // const CreditProfileRework = () =>
 //   import("pages/main/work/credit/pages/profile/ProfileRework.vue");
 const CreditApplications = () =>
@@ -92,6 +94,21 @@ const NewLogin = () => import('pages/main/auth/newlogin')
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
   if (sessionStorage.getItem("csrf_token")) {
+    next();
+    return;
+  }
+  next("/work/credit");
+};
+
+const ifAuthenticatedCM = (to, from, next) => {
+  let userRole
+  (async () => {
+    let empId = this.$store.getters["auth/empId"];
+    let role = await this.$store.dispatch("credits/getUserRole", empId);
+    userRole = role.value[0].authority
+    console.log("sdfdsfdsfsdf", userRole)
+  })()
+  if (userRole == "CreditManager") {
     next();
     return;
   }
@@ -169,13 +186,20 @@ const routes = [{
       {
         path: "registration",
         name: "Registration",
-        component: CreditReg
+        component: CreditReg,
+        // beforeEnter: ifAuthenticatedCM
       },
       {
         path: "profile",
         name: "Profile",
         component: CreditProfile,
         beforeEnter: ifAuthenticated
+      },
+      {
+        path: "payment",
+        name: "Payment",
+        component: CreditPayment,
+        // beforeEnter: ifAuthenticatedCM
       }
       ]
     }
