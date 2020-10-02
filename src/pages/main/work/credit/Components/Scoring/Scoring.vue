@@ -1,5 +1,6 @@
 <template>
   <div class="scoring">
+    <h2 class="scoring__title">Название филиала: {{ data.BranchName }}</h2>
     <h2 class="scoring__title">Результаты скоринга:</h2>
     
     <div class="row scoringList q-col-gutter-xl">
@@ -75,14 +76,16 @@
           </div>
           
         </div>
+      </div>
 
+      <div class="col-6">
         <div class="scoringList__block">
           <div class="row">
             <div class="col-7">
               <h3 class="scoringList__title">4. ЛСБО:</h3>
             </div>
             <div class="col-5">
-              <q-checkbox v-model="val" />
+              <q-checkbox v-model="val" disable/>
             </div>
           </div>
           
@@ -125,10 +128,7 @@
           </div>
         </div>
 
-      </div>
-
-      <div class="col-6">
-        <div class="scoringList__block">
+        <!-- <div class="scoringList__block">
           <h3 class="scoringList__title">6. Внешняя кредитная история:</h3>
           <div class="row subList">
             <div class="col-7">
@@ -190,14 +190,14 @@
             </div>
           </div>
 
-        </div>
+        </div> -->
       </div>
     </div>
 
     <div class="maxSum">
-      <h3 class="scoringList__title">Максимальная возможнаясумма кредита</h3>
+      <h3 class="scoringList__title">Расчетная сумма кредита</h3>
       <p class="scoringList__value">
-        20 000 000 сум
+        {{ data.LoanInfo.max_loan_sum_preapprove }} сум
       </p>
     </div>
   </div>
@@ -212,7 +212,7 @@ export default {
   },
   data() {
     return {
-      val: true,
+      val: false,
       // birthday: null,
     };
   },

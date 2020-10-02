@@ -1,27 +1,14 @@
 <template>
   <div>
-    <div v-if="userRole === 'ROLE_CCS'" class="protocol">
-      <q-btn
-        :loading="protocol"
-        label="Протокол"
-        color="green"
-        @click="getProtocol"
-      >
-        <template v-slot:loading>
-          <q-spinner-facebook />
-        </template>
-      </q-btn>
-    </div>
-
-  <div 
+  <!-- <div 
     v-if="creditTasks.length"
     class="creditList"
-  >
-    
-    
-    <div class="q-pa-md">
+  > -->
+
+  <div class="creditList">
+    <div class="q-px-md">
       <!-- <h4>Очередь задач</h4> -->
-      <q-markup-table>
+      <q-markup-table separator="none">
         <thead>
           <tr>
             <!-- <th class="text-left"></th> -->
@@ -121,11 +108,24 @@
                 </template>
               </q-input>
             </th>
-            <th v-if="userRole === 'ROLE_CCS'" class="text-left"></th>
+            <th v-if="userRole === 'ROLE_CCS'" class="text-left">
+              <div class="protocol">
+                <q-btn
+                  :loading="protocol"
+                  label="Протокол"
+                  class="btnCCS"
+                  @click="getProtocol"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-facebook />
+                  </template>
+                </q-btn>
+              </div>
+            </th>
           </tr>
 
           <tr class="titleApplication">
-            <th class="text-center number"><span>№</span></th>
+            <th class="text-center number"><span>#</span></th>
             <th class="text-left applicationNumber">
               <button class="filter" idx="applicationNumber">
                 Заявка
@@ -188,22 +188,24 @@
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ index + 1 }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ index + 1 }}</template>
               <router-link
                 v-else
                 :to="{
-                  name: userRole === 'ROLE_KM' ? 'Profile' : 'CreditTask',
+                  name: credit.taskName === 'PreApprove'
+                    ?  'Registration'
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
-                    protocolNumber: credit.additionalInfo
-                      ? credit.additionalInfo.protocolNumber
-                      : null
+                    status: credit.taskName
                   }
                 }"
                 >{{ index + 1 }}</router-link
@@ -211,23 +213,24 @@
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ credit.applicationNumber }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.applicationNumber }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'ROLE_KM'
-                      ? 'Profile'
-                      : 'CreditTask',
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.applicationNumber }}</router-link
@@ -235,23 +238,24 @@
             </td>
 
             <td class="text-left client applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ credit.client }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.client }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'ROLE_KM'
-                      ? 'Profile'
-                      : 'CreditTask',
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.client }}</router-link
@@ -259,23 +263,24 @@
             </td>
 
             <td class="text-left manager applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ credit.kmfio }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.kmfio }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'ROLE_KM'
-                      ? 'Profile'
-                      : 'CreditTask',
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.kmfio }}</router-link
@@ -283,23 +288,24 @@
             </td>
 
             <td class="text-left MFO applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ credit.filial }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.filial }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'ROLE_KM'
-                      ? 'Profile'
-                      : 'CreditTask',
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.filial }}</router-link
@@ -307,23 +313,24 @@
             </td>
 
             <td class="text-left filialName applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ credit.filialName }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.filialName }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'ROLE_KM'
-                      ? 'Profile'
-                      : 'CreditTask',
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.filialName }}</router-link
@@ -331,23 +338,24 @@
             </td>
 
             <td class="text-left taskName applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ credit.taskName }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.taskName }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'ROLE_KM'
-                      ? 'Profile'
-                      : 'CreditTask',
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.taskName }}</router-link
@@ -355,23 +363,24 @@
             </td>
 
             <td class="text-left taskStatus applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ credit.taskStatus }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.taskStatus }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'ROLE_KM'
-                      ? 'Profile'
-                      : 'CreditTask',
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName 
                   }
                 }"
                 >{{ credit.taskStatus }}</router-link
@@ -379,35 +388,44 @@
             </td>
 
             <td class="text-left date applicationRow">
-              <template v-if="userRole === 'ROLE_CCS'">
-                {{ credit.date | formatDate('datetime') }}
-              </template>
+              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.date | formatDate('datetime') }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : userRole === 'ROLE_KM'
-                      ? 'Profile'
-                      : 'CreditTask',
+                    : credit.taskName === 'Step: Решение о выдаче'
+                      ? 'Payment'
+                      : userRole === 'ROLE_KM'
+                        ? 'Profile'
+                        : 'CreditTask',
                   params: { id: credit.id },
                   query: {
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.date | formatDate('datetime')}}</router-link
               >
             </td>
 
-            <td v-if="userRole === 'ROLE_CCS'" class="text-left print">
-              <div class="text-blue q-gutter-md">
+            <td v-if="userRole === 'ROLE_CCS'" class="print">
+              <div class="btnBlock">
                 
                 <!-- <template v-if="userRole === 'ROLE_CCS'"> -->
+                  <q-btn
+                    :disable="disable"
+                    class="btnCCS"
+                    label="Подписать"
+                    @click="creditSign(credit.taskId)"
+                  /> 
+
                   <q-btn 
                     :disable="disable"
+                    class="btnPrint"
                     icon="print" 
                     @click="printFile(credit.taskId, index)" 
                     :loading="loadings[index]"
@@ -442,14 +460,6 @@
                     icon="cloud_download" 
                     @click="downloadFile(credit.taskId)" 
                   /> -->
-
-                  <q-btn
-                    :disable="disable"
-                    class="full-width"
-                    label="Подписать"
-                    color="green"
-                    @click="creditSign(credit.taskId)"
-                  />
                 <!-- </template> -->
               </div>
             </td>
@@ -653,16 +663,32 @@ export default {
     toggleFilter(event) {
       const idx = event.getAttribute("idx");
       console.log('idx', idx)
-      for (let item of document.querySelectorAll(".active")) {
-        if (item !== event) {
-          item.classList.remove("active");
-        }
+
+      
+      
+      // event.classList.toggle("active");
+      if (event.classList.contains("active")) {
+        this.removeClasses()
+        event.classList.add("passive");
+      } else {
+        this.removeClasses()
+        event.classList.add("active");
       }
-      event.classList.toggle("active");
+
       if (event.classList.contains("active")) {
         this.sortValue(idx);
       } else {
         this.sortValue(idx, false);
+      }
+    },
+
+    removeClasses() {
+      for (let item of document.querySelectorAll(".active")) {
+        item.classList.remove("active");
+      }
+
+      for (let item of document.querySelectorAll(".passive")) {
+        item.classList.remove("passive");
       }
     },
 
@@ -858,21 +884,66 @@ export default {
 
 <style lang="scss">
 .creditList {
-  tr:nth-child(2n) {
-    background: #e8edff;
+  .q-table {
+    border-spacing: 0 10px;
+  }
+
+  .items-start {
+    background: #FFFFFF;
+    border: 1px solid #E7E7E7;
+    border-radius: 5px;
+  }
+
+  .q-field--square .q-field__control {
+    border-radius: 5px !important;
+  }
+
+  .q-table__card {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  // tr:nth-child(2n) {
+  //   background: #e8edff;
+  // }
+  .q-table {
+    thead {
+      tr {
+        background: transparent;
+      }
+    }
+
+    tr {
+      background: #FFFFFF;
+      border: 2px solid #FFFFFF;
+      box-sizing: border-box;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.0212249);
+      border-radius: 5px;
+    }
+
+    td:first-child {
+      border-radius: 5px 0 0 5px;
+    }
+
+    td:last-child {
+      border-radius: 0 5px 5px 0;
+    }
   }
 
   th {
-    padding: 2px;
+    padding: 0 20px 0 0;
   }
 
-  td {
+  th:last-child {
     padding: 0;
   }
 
   td {
-    /* word-break: break-all; */
+    padding: 0;
     white-space: pre-wrap;
+    &:before {
+      background: rgba(0, 0, 0, 0.15) !important;
+    }
   }
 
   .time {
@@ -884,10 +955,17 @@ export default {
   }
 
   .number {
-    width: 3%;
+    width: 5%;
+    padding: 0;
+
+    a {
+      justify-content: center;
+      padding-right: 0 !important;
+    }
+
     span {
-      font-size: 16px;
-      color: #093475;
+      font-size: 12px;
+      color: #A0A5BA;
     }
   }
 
@@ -907,24 +985,61 @@ export default {
 
   .print {
     width: 6%;
+
+    .btnBlock {
+      display: flex;
+      padding-left: 20px;
+    
+
+      .btnPrint {
+        margin: 0;
+        background: transparent;
+        color: #000000;
+        .q-btn__wrapper:before {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  .btnCCS {
+    background: #47B881;
+    color: #ffffff;
   }
 
   .filter {
     width: 100%;
     height: 40px;
+    padding-left: 0;
+    outline: none;
     border: none;
     background: inherit;
     cursor: pointer;
     text-align: left;
-    color: #093475;
-    font-size: 16px;
+    color: #A0A5BA;
+    font-size: 12px;
+    text-transform: uppercase;
 
+    // &:after {
+    //   content: "";
+    //   float: right;
+    //   border: 1px solid #0054FE;
+    //   border-width: 0 3px 3px 0;
+    //   padding: 3px;
+    //   border-radius: 2px;
+    //   margin-top: 4px;
+    //   transform: rotate(45deg);
+    // }
+  }
+
+  .passive {
     &:after {
       content: "";
       float: right;
-      border: 1px solid $blue;
+      border: 1px solid #0054FE;
       border-width: 0 3px 3px 0;
-      padding: 4px;
+      padding: 3px;
+      border-radius: 2px;
       margin-top: 4px;
       transform: rotate(45deg);
     }
@@ -934,9 +1049,10 @@ export default {
     &:after {
       content: "";
       float: right;
-      border: 1px solid $blue;
+      border: 1px solid #0054FE;
       border-width: 0 3px 3px 0;
-      padding: 4px;
+      padding: 3px;
+      border-radius: 2px;
       margin-top: 4px;
       transform: rotate(-135deg);
     }
@@ -952,7 +1068,7 @@ export default {
       width: 100%;
       height: 100%;
       align-items: center;
-      padding: 0 5px;
+      padding-right: 20px;
     }
   }
 
@@ -967,6 +1083,8 @@ export default {
 
     &__count {
       margin: 0 20px 0 0;
+      background: transparent;
+      border: none;
     }
   }
 }
@@ -974,6 +1092,5 @@ export default {
 .protocol {
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
 }
 </style>
