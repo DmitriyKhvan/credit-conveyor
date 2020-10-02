@@ -16,6 +16,7 @@ import my_personal from "./my_personal";
 import { apparat } from "./work/apparat";
 import tasks from "./work/tasks";
 import { assistant } from "./work/assistant";
+import { instruction } from './development/instruction'
 
 Vue.use(Vuex);
 
@@ -37,7 +38,8 @@ const store = new Vuex.Store({
     my_personal,
     apparat,
     tasks,
-    assistant
+    assistant,
+    instruction
   }
   // enable strict mode (adds overhead!)
   // for dev mode only

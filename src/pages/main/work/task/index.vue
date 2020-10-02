@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-lg" v-if="dtab === 1">
     <a-header></a-header>
+    <my-tasks v-if="tabNo == 5" :itemsData="res"></my-tasks>
     <template v-if="!isBoardView">
       <template v-if="isListView">
         <div class="row" v-for="task in taskList" :key="task.id">
@@ -165,6 +166,7 @@
 import Drag from "./DragTask";
 import Header from "./components/Header";
 import Task from "./components/Task";
+import MyTasks from "./components/MyTasks";
 import Management from "./components/Management";
 import { mapState, mapGetters } from "vuex";
 
@@ -187,9 +189,21 @@ export default {
     Drag,
     QHierarchy,
     QTask,
+    MyTasks
   },
   data() {
-    return {};
+    return {
+      res: [
+        {
+          title: 'Организация по кибербезопасности направенная ...',
+          avatar: require('assets/logo.svg'),
+          name: 'Nbu',
+          deadline: '12-02-2020',
+          prior: 3,
+          status: 3
+        }
+      ]
+    };
   },
   async created() {
     try {
@@ -202,6 +216,7 @@ export default {
       isBoardView: "getBoardView",
       tasks: "getTasks",
       searchText: "getSearchText",
+      tabNo: "tabMenuNo"
     }),
     taskList() {
       // let filtered = state.taskList.filter(el =>

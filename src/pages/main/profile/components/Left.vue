@@ -88,6 +88,8 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+import UserService from "@/services/user.service";
+
 export default {
   data() {
     return {
@@ -98,7 +100,7 @@ export default {
   },
   methods: {
     getUserProfilePhotoUrl(emp_id) {
-      return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
+      return UserService.getUserProfilePhotoUrl(emp_id);
     },
     menu(id) {
       this.$store.dispatch("setMenuId", id);

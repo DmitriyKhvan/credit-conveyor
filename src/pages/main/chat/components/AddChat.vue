@@ -115,7 +115,7 @@ export default {
         return UserService.isUserOnline(emp_id)
       },
       getUserProfilePhotoUrl(emp_id) {
-        return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
+        return UserService.getUserProfilePhotoUrl(emp_id);
       },
       selUsers () {
         if(this.searchUser === '') {this.result = []}

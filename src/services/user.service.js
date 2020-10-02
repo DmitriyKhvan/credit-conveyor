@@ -1,5 +1,3 @@
-import ApiService from "./api.service";
-import TokenService from "./storage.service";
 import store from "@/store/index";
 
 const UserService = {
@@ -8,7 +6,7 @@ const UserService = {
   },
   isUserOnline(empId) {
     let userList = store.getters["auth/onlineUsers"];
-    return userList.includes(empId) ? true : false;
+    return userList.includes(empId); // ? true : false;
   }
 };
 

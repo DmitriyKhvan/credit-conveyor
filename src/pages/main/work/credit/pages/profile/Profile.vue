@@ -436,6 +436,46 @@
                   />
                 </div>
               </div>
+              
+              <div class="row q-col-gutter-md">
+                <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="CardNumber"
+                      square
+                      outlined
+                      v-model="fullProfile.Customer.CardNumber"
+                      dense
+                      label="Номер карты"
+                      mask="################"
+                      :rules="[
+                        val =>
+                          (val && val.length === 16) ||
+                          'Количество символов должно быт ровно 16',
+                        val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                      ]"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="BankInps"
+                      square
+                      outlined
+                      v-model="fullProfile.Customer.BankInps"
+                      dense
+                      label="Номер карты поручителя"
+                      mask="################"
+                      :rules="[
+                        val =>
+                          (val && val.length === 16) ||
+                          'Количество символов должно быт ровно 16',
+                        val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                      ]"
+                    />
+                  </div>
+              </div>
 
               <div class="row q-col-gutter-md">
                 <div class="col-4">
@@ -1621,7 +1661,7 @@
                     type="number"
                     dense
                     disable
-                    label="Расчет макс.возм.суммы кредита (скоринг)"
+                    label="Расчетная сумма кредита"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1634,7 +1674,7 @@
                     type="number"
                     dense
                     disable
-                    label="Расчет макс.возм.суммы кредитного продукта"
+                    label="Максимальная сумма кредитного продукта"
                     class="q-pb-sm"
                   />
                 </div>
@@ -1955,7 +1995,7 @@
                         ? val =>
                             (val > 0 &&
                               val <= fullProfile.max_loan_sum) ||
-                            `Максимальная сумма кредита ${fullProfile.max_loan_sum}`
+                            `Расчетная сумма ${fullProfile.max_loan_sum}`
                         : null
                     ]"
                   />
@@ -2113,8 +2153,8 @@
                     :rules="[
                       val => !!val || 'Введите удобный день погашения',
                       val =>
-                        (val > 0 && val < 29) ||
-                        `Введите удобный день погашения (1-28)`
+                        (val > 5 && val < 26) ||
+                        `Введите удобный день погашения (6-25)`
                     ]"
                   />
                 </div>
@@ -2836,6 +2876,46 @@
                         class="q-pb-sm"
                       />
                     </div>
+                  </div>
+
+                  <div class="row q-col-gutter-md">
+                    <div class="col-4">
+                        <q-input
+                          :disable="disableField"
+                          ref="CardNumberGuarantees"
+                          square
+                          outlined
+                          v-model="guarantee.CardNumber"
+                          dense
+                          label="Номер карты"
+                          mask="################"
+                          :rules="[
+                            val =>
+                              (val && val.length === 16) ||
+                              'Количество символов должно быт ровно 16',
+                            val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                          ]"
+                        />
+                      </div>
+
+                      <div class="col-4">
+                        <q-input
+                          :disable="disableField"
+                          ref="BankInpsGuarantees"
+                          square
+                          outlined
+                          v-model="guarantee.BankInps"
+                          dense
+                          label="Номер карты поручителя"
+                          mask="################"
+                          :rules="[
+                            val =>
+                              (val && val.length === 16) ||
+                              'Количество символов должно быт ровно 16',
+                            val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                          ]"
+                        />
+                      </div>
                   </div>
 
                   <div class="row q-col-gutter-md">
@@ -3790,7 +3870,11 @@
             <q-btn
               type="submit"
               color="primary"
-              label="Оформить кредит"
+              :label="fullProfile.BODecision == false
+                ? 'Завершить редактирование'
+                : status === 'Step: Работа с документами' 
+                  ? 'Отправить андеррайтеру'
+                  : 'Оформить кредит'"
               class="q-ml-sm"
             />
           </div>
@@ -4112,6 +4196,10 @@ export default {
 
     taskId() {
       return this.$route.query.taskId;
+    },
+
+    status() {
+      return this.$route.query.status
     }
   },
   watch: {
@@ -4188,6 +4276,9 @@ export default {
 
       this.$refs.DocumentRegionsGivenPlace.validate();
       this.$refs.DocumentGivenPlace.validate();
+
+      this.$refs.CardNumber.validate();
+      this.$refs.BankInps.validate();
 
       this.$refs.education.validate();
 
@@ -4400,6 +4491,10 @@ export default {
           "guaranteesDocumentGivenPlaceValid",
           "guaranteesDocumentGivenPlace"
         );
+
+        validFilter(this.$refs, "BankInpsGuaranteesValid", "BankInpsGuarantees");
+        validFilter(this.$refs, "CardNumberGuaranteesValid", "CardNumberGuarantees");
+
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
           this.$refs,
@@ -4430,6 +4525,8 @@ export default {
         validItems(this.$refs, "guaranteesDocumentExpirationDateValid");
         validItems(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid");
         validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
+        validItems(this.$refs, "BankInpsGuaranteesValid");
+        validItems(this.$refs, "CardNumberGuaranteesValid");
         validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
@@ -4566,6 +4663,10 @@ export default {
         this.$refs.DocumentExpirationDate.hasError ||
         this.$refs.DocumentRegionsGivenPlace.hasError ||
         this.$refs.DocumentGivenPlace.hasError ||
+
+        this.$refs.CardNumber.hasError ||
+        this.$refs.BankInps.hasError ||
+
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
         this.$refs.regionValid.hasError ||
@@ -4628,6 +4729,8 @@ export default {
         this.$refs.guaranteesDocumentExpirationDateValid.hasError ||
         this.$refs.guaranteesDocumentRegionsGivenPlaceValid.hasError ||
         this.$refs.guaranteesDocumentGivenPlaceValid.hasError ||
+        this.$refs.BankInpsGuaranteesValid.hasError ||
+        this.$refs.CardNumberGuaranteesValid.hasError ||
         this.$refs.regionGuaranteesValid.hasError ||
         this.$refs.districtGuaranteesValid.hasError ||
         this.$refs.streetGuaranteesValid.hasError ||
