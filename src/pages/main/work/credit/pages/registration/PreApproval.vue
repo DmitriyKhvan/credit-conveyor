@@ -47,6 +47,11 @@
                 <div class="creditTable__value__green">{{ preApprovalData.maxSum | formatNumber }} сум</div>
                 <div class="dashed"></div>
               </div>
+              <div class="creditTable__row">
+                <div class="creditTable__field">Максимальная сумма по кредитному продукту</div>
+                <div class="creditTable__value__green">{{ personalData.ProductMaxSum | formatNumber }} сум</div>
+                <div class="dashed"></div>
+              </div>
             </div>
 
             <p
@@ -457,6 +462,8 @@ export default {
         &__field {
           color: #273959;
           padding-right: 60px;
+          text-align: left;
+          max-width: 365px;
         }
 
         &__value__green {

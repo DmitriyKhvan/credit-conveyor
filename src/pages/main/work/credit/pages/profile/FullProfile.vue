@@ -96,6 +96,16 @@
                 }}
               </div>
 
+              <div class="col-3 fieldData">Номер карты</div>
+              <div class="col-3">
+                {{ Customer.CardNumber }}
+              </div>
+
+              <div class="col-3 fieldData">Номер карты поручителя</div>
+              <div class="col-3">
+                {{ Customer.BankInps }}
+              </div>
+
               <div class="col-12 profileTitle fieldData">3. Контактная информация</div>
 
               <div class="col-12 dataList">
@@ -601,6 +611,16 @@
                       }}
                     </div>
 
+                    <div class="col-3 fieldData">Номер карты</div>
+                    <div class="col-3">
+                      {{ guarantee.CardNumber }}
+                    </div>
+
+                    <div class="col-3 fieldData">Номер карты поручителя</div>
+                    <div class="col-3">
+                      {{ guarantee.BankInps }}
+                    </div>
+
                     <div class="col-12 dataBlock">Адрес:</div>
                     <!-- <div class="col-3">Индекс</div>
                     <div class="col-9">{{ guarantee.Address.PostalCode }}</div> -->
@@ -927,7 +947,7 @@
               <p>Полностью Фамилия, Имя, Отчество</p>
             </div>
             <div class="col-4">
-              <p class="bor"></p>
+              <p class="bor">&nbsp</p>
               <p>Подпись, дата</p>
             </div>
           </div>

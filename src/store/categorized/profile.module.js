@@ -145,6 +145,8 @@ export const profile = {
         PINPP: "",
         ResidentFlag: true,
         Gender: null,
+        CardNumber: null, // номер карты
+        BankInps: null, // инпс банка
 
         Document: {
           documentType: 8,
@@ -859,6 +861,8 @@ export const profile = {
         INN: "",
         Sum: 0,
         MiddleName: "",
+        CardNumber: null, // номер карты
+        BankInps: null, // инпс банка
         Document: {
           documentType: null,
           Series: "",
@@ -1128,6 +1132,8 @@ export const profile = {
           PINPP: "",
           ResidentFlag: true,
           Gender: null,
+          CardNumber: null, // номер карты
+          BankInps: null, // инпс банка
 
           Document: {
             documentType: 8,

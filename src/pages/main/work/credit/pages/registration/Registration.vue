@@ -278,7 +278,7 @@
                   </h4>
                   <div class="row q-col-gutter-md">
                     <div class="col-6">
-                      <q-input
+                      <!-- <q-input
                         ref="income"
                         outlined
                         v-model.number="personalData.income"
@@ -289,29 +289,45 @@
                           val => !!val || 'Поле должно быть заполнено',
                           val => val > 0 || 'Некорректные данные'
                         ]"
+                      /> -->
+
+                      <q-input
+                        ref="income"
+                        outlined
+                        v-model="personalData.income"
+                        @input="formatNumber('income')"
+                        dense
+                        label="Подтвержденный ежемесячный доход"
+                        :rules="[
+                          val => !!val || 'Поле должно быть заполнено',
+                          val => val != 0 || 'Некорректные данные'
+                        ]"
                       />
 
                       <q-input
                         ref="otherExpenses"
                         outlined
-                        v-model.number="personalData.otherExpenses"
-                        type="number"
+                        v-model="personalData.otherExpenses"
+                        @input="formatNumber('otherExpenses')"
                         dense
                         label="Плата за облуживание других обязательств"
-                        :rules="[val => val >= 0 || 'Некорректные данные']"
+                        :rules="[
+                          val => !!val || 'Поле должно быть заполнено',
+                          val => val != 0 || 'Некорректные данные'
+                        ]"
                       />
                     </div>
                     <div class="col-6">
                       <q-input
                         ref="expense"
                         outlined
-                        v-model.number="personalData.expense"
-                        type="number"
+                        v-model="personalData.expense"
+                        @input="formatNumber('expense')"
                         dense
-                        label="Периодические расходы "
+                        label="Периодические расходы (коммунальные расходы, налоги и др.)"
                         :rules="[
                           val => !!val || 'Поле должно быть заполнено',
-                          val => val > 0 || 'Некорректные данные'
+                          val => val != 0 || 'Некорректные данные'
                         ]"
                       />
                     </div>
@@ -348,13 +364,13 @@
                         ref="externalIncomeSize"
                         v-if="personalData.externalIncome"
                         outlined
-                        v-model.number="personalData.externalIncomeSize"
-                        type="number"
+                        v-model="personalData.externalIncomeSize"
+                        @input="formatNumber('externalIncomeSize')"
                         dense
                         label="Размер дополнительного дохода"
                         :rules="[
                           val => !!val || 'Поле должно быть заполнено',
-                          val => val > 0 || 'Некорректные данные'
+                          val => val != 0 || 'Некорректные данные'
                         ]"
                       />
                     </div>
@@ -387,10 +403,10 @@
         </div>
       </form>
 
-      <appLoaderFullScreen v-if="loaderFullScreen" />
+      <appLoaderFullScreen v-if="loaderFullScreen"/>
       <!-- Pre-Approval -->
       <appPreApproval
-        v-else
+        v-else-if="confirm"
         :confirm="confirm"
         @toggleLoaderFullScreen="$event => (loaderFullScreen = $event)"
         @toggleLoaderForm="$event => (loaderForm = $event)"
@@ -542,15 +558,24 @@ export default {
         this.personalData.externalIncomeSize = 0;
         this.personalData.additionalIncomeSource = "";
       }
-    }
+    },
     // Для форматирования чисeл
     // "personalData.income"(number) {
     //   console.log(formatNumber(number))
     // this.personalData.income = formatNumber((this.personalData.income).replace(/\s+/g, ''))
+    // // this.personalData.income = formatNumber(number)
     // }
   },
   methods: {
+    formatNumber(item) {
+      // this.personalData[item] = this.personalData[item].replace(/[^0-9]/gim,'')
+      // console.log('number', number)
+      // this.personalData[item] = formatNumber((this.personalData[item]).replace(/\s+/g, ''))
+      this.personalData[item] = formatNumber(this.personalData[item])
+    },
+
     async onSubmit() {
+      console.log("preapp", this.personalData)
       this.$refs.surname.validate();
       this.$refs.name.validate();
       this.$refs.mname.validate();
@@ -662,10 +687,10 @@ export default {
                 loan_product_id: Number(typeCredit),
                 finance: {
                   loan_purpose, // цель кредитования
-                  incomingOther: externalIncomeSize, //доп. доход
-                  expensesOther: otherExpenses, //др. переод. расходы
-                  expensesPeriodic: expense, //переод. расходы
-                  incomingConfirm: income, //ежем. доход
+                  incomingOther: Number(externalIncomeSize.replace(/[^0-9]/gim,'')), //доп. доход
+                  expensesOther: Number(otherExpenses.replace(/[^0-9]/gim,'')), //др. переод. расходы
+                  expensesPeriodic: Number(expense.replace(/[^0-9]/gim,'')), //переод. расходы
+                  incomingConfirm: Number(income.replace(/[^0-9]/gim,'')), //ежем. доход
                   incomeType: additionalIncomeSource //тип доп. дохода
                 },
                 customer: {

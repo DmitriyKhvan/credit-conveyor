@@ -179,6 +179,16 @@
             </div>
 
             <div class="row rowForm">
+              <div class="col-3 field">Номер карты</div>
+              <div class="col-9 data">{{ Customer.CardNumber }}</div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-3 field">Номер карты поручителя</div>
+              <div class="col-9 data">{{ Customer.BankInps }}</div>
+            </div>
+
+            <div class="row rowForm">
               <div class="col-3 field">ИНН</div>
               <div class="col-9 data">{{ Customer.INN }}</div>
             </div>
@@ -952,6 +962,20 @@
                 </div>
 
                 <div class="row rowForm">
+                  <div class="col-6 field">Номер карты</div>
+                  <div class="col-6 data">
+                    {{ guarantee.CardNumber }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер карты поручителя</div>
+                  <div class="col-6 data">
+                    {{ guarantee.BankInps }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
                   <div class="col-12 field">Адрес:</div>
                 </div>
 
@@ -1536,6 +1560,7 @@
           <q-card-section class="row titleFailureCredit">
             <span class="q-ml-sm">Введите причину отказа</span>
           </q-card-section>
+          <div class="separate"></div>
           <form
             class="failureCreditForm row q-col-gutter-md"
             @submit.prevent.stop="submitHandler"
@@ -1589,9 +1614,9 @@
               </div>
             </div>
 
-            <div class="col-6">
+            <div class="btnBlock">
               <q-btn
-                class="btnFailureCredit full-width"
+                class="btnCancel"
                 label="Отмена"
                 color="red"
                 v-close-popup
@@ -1602,10 +1627,9 @@
                   }
                 "
               />
-            </div>
-            <div class="col-6">
+            
               <q-btn
-                class="btnFailureCredit full-width"
+                class="btnOk"
                 type="submit"
                 label="Отправить"
                 color="green"
@@ -2054,6 +2078,7 @@ export default {
 
 <style lang="scss">
 .taskBlock {
+  background: #ffffff;
   padding-bottom: 170px;
   .infoBlock {
     display: flex;
@@ -2169,26 +2194,6 @@ export default {
     border-radius: 2px;
   }
 
-  .titleFailureCredit {
-    font-size: 16px;
-    color: #868686;
-    background: #ebebeb;
-    padding: 15px 20px;
-    margin-bottom: 20px;
-  }
-
-  .failureCredit {
-    width: 600px;
-  }
-
-  .failureCreditForm {
-    padding: 0 40px 20px 40px;
-  }
-
-  .btnFailureCredit {
-    margin: 0;
-  }
-
   .close {
     display: none;
   }
@@ -2240,6 +2245,44 @@ export default {
 
   .btnRework {
     background: #4AB8FF;
+  }
+}
+
+
+
+.failureCredit {
+  width: 600px;
+
+  .separate {
+    width: auto;
+    height: 1px;
+    background: #F2F2F2;
+    margin: 0 30px 20px 30px;
+  }
+
+  .titleFailureCredit {
+    font-size: 24px;
+    font-weight: 600;
+    color: #384966;
+    padding: 15px 48px;
+  }
+
+  .failureCreditForm {
+    padding: 0 30px 40px 30px;
+  }
+
+  .btnBlock {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .btnCancel, .btnOk {
+      min-width: 186px;
+      min-height: 50px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      margin: 0 10px;
+    }
   }
 }
 </style>

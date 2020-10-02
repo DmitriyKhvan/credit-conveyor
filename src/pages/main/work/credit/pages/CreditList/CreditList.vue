@@ -204,7 +204,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ index + 1 }}</router-link
@@ -228,7 +229,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.applicationNumber }}</router-link
@@ -252,7 +254,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.client }}</router-link
@@ -276,7 +279,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.kmfio }}</router-link
@@ -300,7 +304,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.filial }}</router-link
@@ -324,7 +329,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.filialName }}</router-link
@@ -348,7 +354,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.taskName }}</router-link
@@ -372,7 +379,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName 
                   }
                 }"
                 >{{ credit.taskStatus }}</router-link
@@ -396,7 +404,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.date | formatDate('datetime')}}</router-link
@@ -460,7 +469,7 @@
       <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
     </div>
 
-    <div v-if="loaderList" class="q-pa-lg flex justify-end items-center pagination">
+    <div class="q-pa-lg flex justify-end items-center pagination">
       <span class="pagination__title">Строк на странице: </span>
       <q-select 
         class="pagination__count"
@@ -898,8 +907,10 @@ export default {
   //   background: #e8edff;
   // }
   .q-table {
-    thead tr {
-      background: transparent;
+    thead {
+      tr {
+        background: transparent;
+      }
     }
 
     tr {
@@ -929,15 +940,10 @@ export default {
 
   td {
     padding: 0;
+    white-space: pre-wrap;
     &:before {
       background: rgba(0, 0, 0, 0.15) !important;
     }
-  }
-
-  td {
-    /* word-break: break-all; */
-    white-space: pre-wrap;
-    padding-right: 20px;
   }
 
   .time {
@@ -954,6 +960,7 @@ export default {
 
     a {
       justify-content: center;
+      padding-right: 0 !important;
     }
 
     span {
@@ -1061,7 +1068,7 @@ export default {
       width: 100%;
       height: 100%;
       align-items: center;
-      padding: 0 5px;
+      padding-right: 20px;
     }
   }
 
@@ -1076,6 +1083,8 @@ export default {
 
     &__count {
       margin: 0 20px 0 0;
+      background: transparent;
+      border: none;
     }
   }
 }
