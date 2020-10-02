@@ -188,7 +188,12 @@
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ index + 1 }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ index + 1 }}</template>
               <router-link
                 v-else
                 :to="{
@@ -213,7 +218,12 @@
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.applicationNumber }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.applicationNumber }}</template>
               <router-link
                 v-else
                 :to="{
@@ -238,7 +248,12 @@
             </td>
 
             <td class="text-left client applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.client }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.client }}</template>
               <router-link
                 v-else
                 :to="{
@@ -263,7 +278,12 @@
             </td>
 
             <td class="text-left manager applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.kmfio }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.kmfio }}</template>
               <router-link
                 v-else
                 :to="{
@@ -288,7 +308,12 @@
             </td>
 
             <td class="text-left MFO applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.filial }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.filial }}</template>
               <router-link
                 v-else
                 :to="{
@@ -313,7 +338,12 @@
             </td>
 
             <td class="text-left filialName applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.filialName }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.filialName }}</template>
               <router-link
                 v-else
                 :to="{
@@ -338,7 +368,12 @@
             </td>
 
             <td class="text-left taskName applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.taskName }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.taskName }}</template>
               <router-link
                 v-else
                 :to="{
@@ -363,7 +398,12 @@
             </td>
 
             <td class="text-left taskStatus applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.taskStatus }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.taskStatus }}</template>
               <router-link
                 v-else
                 :to="{
@@ -388,7 +428,12 @@
             </td>
 
             <td class="text-left date applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.date | formatDate('datetime') }}</template>
+              <template
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.date | formatDate('datetime') }}</template>
               <router-link
                 v-else
                 :to="{
