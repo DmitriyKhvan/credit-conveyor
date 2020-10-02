@@ -195,7 +195,7 @@
     </div>
 
     <div class="maxSum">
-      <h3 class="scoringList__title">Максимальная возможная сумма кредита</h3>
+      <h3 class="scoringList__title">Расчетная сумма кредита</h3>
       <p class="scoringList__value">
         {{ data.LoanInfo.max_loan_sum_preapprove }} сум
       </p>

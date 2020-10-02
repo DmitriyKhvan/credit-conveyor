@@ -48,6 +48,8 @@ const CreditReg = () =>
   import("pages/main/work/credit/pages/registration/Registration.vue");
 const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
+const CreditPayment = () =>
+  import("pages/main/work/credit/pages/PaymentOrder.vue");
 // const CreditProfileRework = () =>
 //   import("pages/main/work/credit/pages/profile/ProfileRework.vue");
 const CreditApplications = () =>
@@ -96,7 +98,34 @@ const ifAuthenticated = (to, from, next) => {
   next("/work/credit");
 };
 
-const routes = [
+const ifAuthenticatedCM = (to, from, next) => {
+  let userRole
+  (async () => {
+    let empId = this.$store.getters["auth/empId"];
+    let role = await this.$store.dispatch("credits/getUserRole", empId);
+    userRole = role.value[0].authority
+    console.log("sdfdsfdsfsdf", userRole)
+  })()
+  if (userRole == "CreditManager") {
+    next();
+    return;
+  }
+  next("/work/credit");
+};
+
+const routes = [{
+  path: "/",
+  redirect: "/home",
+  component: MainContainer,
+  name: "Main",
+  meta: {
+    requiresAuth: true
+  },
+  children: [{
+    path: "home",
+    name: "Home",
+    component: HomePage
+  },
   {
     path: "/",
     redirect: "/home",
@@ -252,77 +281,118 @@ const routes = [
         ]
       },
       {
-        path: "tools",
-        name: "Tools",
-        component: Tools,
-        children: [
-          {
-            path: "phones",
-            name: "Phones",
-            component: Phones
-          }
-        ]
+        path: "registration",
+        name: "Registration",
+        component: CreditReg,
+        // beforeEnter: ifAuthenticatedCM
       },
       {
         path: "profile",
-        name: "Profile Page",
-        component: Profile,
-        children: [
-          {
-            path: "mydata",
-            name: "My Data",
-            component: MyData
-          },
-          {
-            path: "myfinance",
-            name: "My Finance",
-            component: MyFinance
-          },
-          {
-            path: "settings",
-            name: "Settings",
-            component: Settings,
-            children: [
-              {
-                path: "themesAdmin",
-                name: "ThemesAdmin",
-                component: ThemesAdmin
-              },
-              {
-                path: "themesUser",
-                name: "ThemesUser",
-                component: ThemesUser
-              }
-            ]
-          }
-        ]
+        name: "Profile",
+        component: CreditProfile,
+        beforeEnter: ifAuthenticated
       },
       {
-        path: "it",
-        name: "IT section",
-        component: It,
-        children: [
-          {
-            path: "devices",
-            name: "Devices",
-            component: Devices
-          },
-          {
-            path: "pcinfo",
-            name: "Devices Accounting",
-            component: DevicesAccounting
-          },
-          {
-            path: "history",
-            name: "Devices History",
-            component: DevicesHistory
-          },
-          {
-            path: "monitoring",
-            name: "Devices Monotoring",
-            component: DevicesMonitoring
-          }
-        ]
+        path: "payment/:id",
+        name: "Payment",
+        component: CreditPayment,
+        // beforeEnter: ifAuthenticatedCM
+      }
+      ]
+    }
+    ]
+  },
+  {
+    path: "admin",
+    name: "Admin Page",
+    component: AdminPage,
+    children: [{
+      path: "users",
+      name: "Users List",
+      component: Users
+    },
+    {
+      path: "creditUsers",
+      name: "Credit Users List",
+      component: CreditUsers
+    },
+    {
+      path: "committeeGroups",
+      name: "Committee Group List",
+      component: CommitteeGroups
+    },
+    {
+      path: "roles",
+      name: "User Roles",
+      component: Roles
+    },
+    {
+      path: "menus",
+      name: "Menus List",
+      component: Menus
+    },
+    {
+      path: "moderator",
+      name: "Moderators",
+      component: Moderators
+    },
+    {
+      path: "dictionaries",
+      name: "Dictionaries",
+      component: Dictionaries
+    },
+    {
+      path: "selfdev",
+      name: "Self Developer",
+      redirect: "selfdev/crud",
+      component: SelfDevIndex,
+      children: [
+        {
+          path: "crud",
+          name: "Self Developer CRUD",
+          component: SelfDevCrud
+        },
+        {
+          path: "monitoring",
+          name: "Monitoring",
+          component: SelfDevMonitoring
+        }
+      ]
+    }
+    ]
+  },
+  {
+    path: "tools",
+    name: "Tools",
+    component: Tools,
+    children: [{
+      path: "phones",
+      name: "Phones",
+      component: Phones
+    }]
+  },
+  {
+    path: "profile",
+    name: "Profile Page",
+    component: Profile,
+    children: [{
+      path: "mydata",
+      name: "My Data",
+      component: MyData
+    },
+    {
+      path: "myfinance",
+      name: "My Finance",
+      component: MyFinance
+    },
+    {
+      path: "settings",
+      name: "Settings",
+      component: Settings,
+      children: [{
+        path: "themesAdmin",
+        name: "ThemesAdmin",
+        component: ThemesAdmin
       },
       {
         path: "chat",
