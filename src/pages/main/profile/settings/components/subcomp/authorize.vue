@@ -17,10 +17,10 @@
       ></q-input>
     </div>
     <div class="full-width OpenSansXB text-h6 q-mt-xl text-weight-bolder">Смена пароля</div>
-    <div class="row no-wrap full-width">
-      <div class="col-6 justify-between">
+    <div class="column no-wrap full-width">
+      <div class="row justify-between">
         <q-input
-          class="q-mt-xl input-text"
+          class="col-5 q-mt-xl input-text"
           input-class="inputs"
           v-model="newpwd"
           label="Новый пароль"
@@ -37,9 +37,9 @@
           </template>
         </q-input>
       </div>
-      <div class="col-6 justify-between">
+      <div class="row justify-between">
         <q-input
-          class="q-mt-xl input-text"
+          class="col-5 q-mt-xl input-text"
           input-class="inputs"
           v-model="repwd"
           label="Повторите новый пароль"

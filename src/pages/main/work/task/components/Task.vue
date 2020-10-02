@@ -172,6 +172,17 @@
         {{task.f_task_data.in_date}}
       </div>
     </div>
+    <div class="flexBlock q-px-md q-mb-md">
+      <div class="q-pr-sm">
+        <img src="@/assets/icons/Calendar.svg" />
+      </div>
+      <div class="q-py-sm">
+        <b>Срок сдачи::</b>
+        <br />
+        {{formatDate(task.f_task_data.deadline)}}
+      </div>
+    </div>
+    
     <div class="footerBlock">
       <div class="row q-my-sm justify-center">
         <q-btn color="indigo-14" label="Просмотреть" @click="showDialogView()" />

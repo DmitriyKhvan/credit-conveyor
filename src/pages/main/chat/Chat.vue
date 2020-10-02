@@ -75,6 +75,7 @@ const { height } = dom
 import { mapGetters } from "vuex";
 import commonUtils from "@/shared/utils/CommonUtils";
 import axios from "axios";
+import UserService from "@/services/user.service";
 
 export default {
     name: "Chat",
@@ -155,7 +156,7 @@ export default {
             }
         },
         getUserProfilePhotoUrl(emp_id) {
-          return `http://10.8.88.219/index.php?module=Tools&file=phones&prefix=profile&act=img&uid=${emp_id}`;
+          return UserService.getUserProfilePhotoUrl(emp_id);
         },
         formatDate(date) {
           let current_datetime = new Date(date)
