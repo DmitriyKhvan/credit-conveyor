@@ -206,11 +206,12 @@
         </div>
       </div>
 
-      <q-btn type="submit" color="primary" label="Отправить" class="paymentBtn" />
+      <q-btn type="submit" color="primary" label="Сформировать платёжку" class="paymentBtn" />
     </form>
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import formatDate from "../filters/formatDate"
 
 export default {
@@ -255,6 +256,37 @@ export default {
       }
     };
   },
+  async created() {
+    this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+
+    // если перезагрузили страницу
+    if (!axios.defaults.headers.common["BPMCSRFToken"]) {
+      this.userRole = sessionStorage.getItem("userRole");
+      await this.$store.dispatch(
+        "credits/setHeaderRole",
+        sessionStorage.getItem("userRole")
+      );
+      await this.$store.dispatch(
+        "credits/setHeaderBPM",
+        sessionStorage.getItem("csrf_token")
+      );
+    }
+
+    try {
+      const res = await this.$store.dispatch("profile/getFullForm");
+      this.loaderForm = false;
+      console.log("res", res);
+    } catch (error) {}
+  },
+  computed: {
+    ...mapState({
+      fullProfile: state => state.profile.fullFormProfile,
+      profile: state => state.profile,
+      Customer: state => state.profile.fullFormProfile.Customer,
+      dictionaries: state => state.profile.dictionaries,
+      credits: state => state.credits
+    })
+  },
   methods: {
     async onSubmit() {
       this.$refs.documentType.validate()
@@ -292,6 +324,7 @@ export default {
 </script>
 <style lang="scss">
   .paymentOrder {
+    background: #ffffff;
     .paymentBlock {
       border: 1px solid #ccc;
       border-radius: 5px;
