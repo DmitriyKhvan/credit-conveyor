@@ -8,44 +8,46 @@ const Page404 = () => import("pages/extras/Error404");
 const AdminPage = () => import("pages/main/admin/admin");
 const Users = () => import("pages/main/admin/users/Users");
 const CreditUsers = () => import("pages/main/admin/creditUsers/CreditUsers");
-const CommitteeGroups = () =>
-  import("pages/main/admin/committeeGroups/CommitteeGroups");
+const CommitteeGroups = () => import("pages/main/admin/committeeGroups/CommitteeGroups");
 const Roles = () => import("pages/main/admin/roles/Roles");
 const Menus = () => import("pages/main/admin/menus/Menus");
 const Moderators = () => import("pages/main/admin/moderators/Moderators");
 const Dictionaries = () => import("pages/main/admin/dictionaries/Dictionaries");
 
 const SelfDevCrud = () => import("pages/main/admin/self_dev/crud");
-const SelfDevMonitoring = () =>
-  import("pages/main/admin/self_dev/monitoring/Monitoring");
+const SelfDevMonitoring = () => import("pages/main/admin/self_dev/monitoring/Monitoring")
 const SelfDevIndex = () => import("pages/main/admin/self_dev/SelfDev.vue");
 
 // Work
 const WorkPage = () => import("pages/main/work/Work");
-const Assistant = () => import("pages/main/work/assistant/Assistant.vue");
+const Assistant = () =>
+  import("pages/main/work/assistant/Assistant.vue");
 const Profile = () => import("pages/main/profile/Profile.vue");
 const Settings = () => import("pages/main/profile/settings/Settings.vue");
 const ThemesAdmin = () => import("pages/main/profile/settings/ThemesAdmin.vue");
 const ThemesUser = () => import("pages/main/profile/settings/ThemesUser.vue");
 
 const MyData = () => import("pages/main/profile/mydata/MyData.vue");
-//const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue"); // ! DEPRECATED OLD VERSION
-const MyFinance = () => import("pages/main/profile/myfinance/FinanceTemp.vue");
+const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue");
 // chancellary
 const RegistrationChancellary = () =>
   import("pages/main/work/kanselariya/Registration.vue");
-const Chancellary = () => import("pages/main/work/kanselariya/Chancellary.vue");
+const Chancellary = () =>
+  import("pages/main/work/kanselariya/Chancellary.vue");
 
 const Tasks = () => import("pages/main/work/task/index.vue");
-const TasksList = () => import("pages/main/work/task/index");
-
-const apparatPage = () => import("pages/main/work/apparat");
+const TasksList = () =>
+  import("pages/main/work/task/modules/pages/tasklist/List");
+const apparatPage = () =>
+  import("pages/main/work/apparat");
 
 // Credit
 const Credit = () => import("pages/main/work/credit/Credit");
 
 const CreditReg = () =>
-  import("pages/main/work/credit/pages/registration/Registration.vue");
+  import(
+    "pages/main/work/credit/pages/registration/Registration.vue"
+  );
 const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
 const CreditPayment = () =>
@@ -77,18 +79,17 @@ const DevicesMonitoring = () => import("pages/main/it/monitoring/Users");
 // const MonitoringPage = () => import("pages/main/admin/self_dev/tests/Tests");
 
 const TestList = () => import("pages/main/test/TestList.vue");
-const Instruction = () => import("pages/main/test/Instruction.vue");
 const Topic = () => import("pages/main/test/Topic.vue");
 const CompleteTest = () => import("pages/main/test/CompleteTest.vue");
 
 //Chat
-const ChatIndexPage = () => import("pages/main/chat/Index");
-const ChatTwoPage = () => import("pages/main/chat/Two");
-const Notifications = () => import("pages/main/chat/Test");
+const ChatIndexPage = () => import('pages/main/chat/Index');
+const ChatTwoPage = () => import('pages/main/chat/Two');
+const Notifications = () => import('pages/main/chat/Test');
 const ChatPage = () => import("pages/main/chat/Chat");
 
 //test
-const NewLogin = () => import("pages/main/auth/newlogin");
+const NewLogin = () => import('pages/main/auth/newlogin')
 
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
@@ -128,158 +129,59 @@ const routes = [{
     component: HomePage
   },
   {
-    path: "/",
-    redirect: "/home",
-    component: MainContainer,
-    name: "Main",
-    meta: {
-      requiresAuth: true
+    path: "work",
+    name: "Work",
+    component: WorkPage,
+    children: [{
+      path: "assistant",
+      name: "Assistant",
+      component: Assistant
     },
-    children: [
-      {
-        path: "home",
-        name: "Home",
-        component: HomePage
+    {
+      path: "chancellary",
+      name: "Kanselariya",
+      component: Chancellary,
+    },
+    {
+      path: "registration-document",
+      name: "Registration Document",
+      component: RegistrationChancellary,
+    },
+    {
+      path: "task",
+      name: "My Tasks",
+      component: Tasks,
+      children: [{
+        path: "list",
+        name: "Task List",
+        component: TasksList
+      }]
+    },
+    {
+      path: "apparat",
+      name: "Apparat",
+      component: apparatPage,
+    },
+    {
+      path: "credit",
+      redirect: 'credit/applications',
+      name: "Credit",
+      component: Credit,
+      children: [{
+        path: "applications",
+        name: "CreditApplications",
+        component: CreditApplications
       },
       {
-        path: "work",
-        name: "Work",
-        component: WorkPage,
-        children: [
-          {
-            path: "assistant",
-            name: "Assistant",
-            component: Assistant
-          },
-          {
-            path: "chancellary",
-            name: "Kanselariya",
-            component: Chancellary
-          },
-          {
-            path: "registration-document",
-            name: "Registration Document",
-            component: RegistrationChancellary
-          },
-          {
-            path: "task",
-            name: "My Tasks",
-            component: Tasks,
-            children: [
-              {
-                path: "list",
-                name: "Task List",
-                component: TasksList
-              }
-            ]
-          },
-          {
-            path: "apparat",
-            name: "Apparat",
-            component: apparatPage
-          },
-          {
-            path: "credit",
-            redirect: 'credit/applications',
-            name: "Credit",
-            component: Credit,
-            children: [
-              {
-                path: "applications",
-                name: "CreditApplications",
-                component: CreditApplications
-              },
-              {
-                path: "tasks",
-                name: "CreditTasks",
-                component: CreditTasks
-              },
-              {
-                path: "task/:id",
-                name: "CreditTask",
-                component: CreditTask,
-                beforeEnter: ifAuthenticated
-              },
-              {
-                path: "registration",
-                name: "Registration",
-                component: CreditReg
-              },
-              {
-                path: "profile",
-                name: "Profile",
-                component: CreditProfile,
-                beforeEnter: ifAuthenticated
-              }
-              // {
-              //   path: "profile/:id",
-              //   name: "ProfileRework",
-              //   component: CreditProfileRework,
-              //   beforeEnter: ifAuthenticated
-              // }
-            ]
-          }
-        ]
+        path: "tasks",
+        name: "CreditTasks",
+        component: CreditTasks
       },
       {
-        path: "admin",
-        name: "Admin Page",
-        component: AdminPage,
-        children: [
-          {
-            path: "users",
-            name: "Users List",
-            component: Users
-          },
-          {
-            path: "creditUsers",
-            name: "Credit Users List",
-            component: CreditUsers
-          },
-          {
-            path: "committeeGroups",
-            name: "Committee Group List",
-            component: CommitteeGroups
-          },
-          {
-            path: "roles",
-            name: "User Roles",
-            component: Roles
-          },
-          {
-            path: "menus",
-            name: "Menus List",
-            component: Menus
-          },
-          {
-            path: "moderator",
-            name: "Moderators",
-            component: Moderators
-          },
-          {
-            path: "dictionaries",
-            name: "Dictionaries",
-            component: Dictionaries
-          },
-          {
-            path: "selfdev",
-            name: "Self Developer",
-            redirect: "selfdev/crud",
-            component: SelfDevIndex,
-            children: [
-              {
-                path: "crud",
-                name: "Self Developer CRUD",
-                component: SelfDevCrud
-              },
-              {
-                path: "monitoring",
-                name: "Monitoring",
-                component: SelfDevMonitoring
-              }
-            ]
-          }
-        ]
+        path: "task/:id",
+        name: "CreditTask",
+        component: CreditTask,
+        beforeEnter: ifAuthenticated,
       },
       {
         path: "registration",
@@ -396,69 +298,99 @@ const routes = [{
         component: ThemesAdmin
       },
       {
-        path: "chat",
-        name: "Chat Page",
-        component: ChatIndexPage,
-        children: [
-          {
-            path: "notification",
-            name: "Notifications",
-            component: Notifications
-          },
-          {
-            path: "mainchat",
-            name: "Main Chat",
-            component: ChatPage
-          },
-          {
-            path: "chat2",
-            name: "Two Chat",
-            component: ChatTwoPage
-          }
-        ]
-      },
-      {
-        path: "selfdev",
-        name: "Test List",
-        component: TestList
-      },
-      {
-        path: 'instruction',
-        name: 'Instruction',
-        component: Instruction
-      },
-      {
-        path: "completeTest",
-        name: "Complete Test",
-        component: CompleteTest,
-        props: true
-      },
-      {
-        path: "topic/:id",
-        name: "Topic",
-        component: Topic
+        path: "themesUser",
+        name: "ThemesUser",
+        component: ThemesUser
       }
+      ]
+    },
     ]
   },
-
   {
-    path: "/login",
-    name: "Login Page",
-    component: LoginPage,
-    meta: {
-      public: true, // Allow access to even if not logged in
-      onlyWhenLoggedOut: true
+    path: "it",
+    name: "IT section",
+    component: It,
+    children: [{
+      path: "devices",
+      name: "Devices",
+      component: Devices
+    },
+    {
+      path: "pcinfo",
+      name: "Devices Accounting",
+      component: DevicesAccounting
+    },
+    {
+      path: "history",
+      name: "Devices History",
+      component: DevicesHistory
+    },
+    {
+      path: "monitoring",
+      name: "Devices Monotoring",
+      component: DevicesMonitoring
     }
+    ]
   },
-
   {
-    path: "/404",
-    name: "Page404",
-    component: Page404,
-    meta: {
-      public: true
-    }
+    path: "chat",
+    name: "Chat Page",
+    component: ChatIndexPage,
+    children: [{
+      path: "notification",
+      name: "Notifications",
+      component: Notifications
+    },
+    {
+      path: "mainchat",
+      name: "Main Chat",
+      component: ChatPage
+    },
+    {
+      path: "chat2",
+      name: "Two Chat",
+      component: ChatTwoPage
+    },
+
+    ]
+  },
+  {
+    path: "selfdev",
+    name: "Test List",
+    component: TestList
+  },
+  {
+    path: "completeTest",
+    name: "Complete Test",
+    component: CompleteTest,
+    props: true
+  },
+  {
+    path: "topic/:id",
+    name: "Topic",
+    component: Topic
   }
+  ]
+},
+
+{
+  path: "/login",
+  name: "Login Page",
+  component: LoginPage,
+  meta: {
+    public: true, // Allow access to even if not logged in
+    onlyWhenLoggedOut: true
+  }
+},
+
+{
+  path: "/404",
+  name: "Page404",
+  component: Page404,
+  meta: {
+    public: true
+  }
+}
 ];
 
 // Always leave this as last one
