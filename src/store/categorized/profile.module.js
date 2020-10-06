@@ -146,7 +146,7 @@ export const profile = {
         ResidentFlag: true,
         Gender: null,
         CardNumber: null, // номер карты
-        BankInps: null, // инпс банка
+        // BankInps: null, // инпс банка
 
         Document: {
           documentType: 8,
@@ -800,7 +800,10 @@ export const profile = {
       state.fullFormProfile.Guarantee.Insurance.items.push({
         INN: "",
         OrgName: "",
-        Sum: 0
+        Sum: 0,
+        ContractNumber: "", // Номер Страхового договора
+        StartDate: "", // Дата начала действия договора
+        ExpDate: "" //Дата истечения действия договора
       });
     },
 
@@ -1133,7 +1136,7 @@ export const profile = {
           ResidentFlag: true,
           Gender: null,
           CardNumber: null, // номер карты
-          BankInps: null, // инпс банка
+          // BankInps: null, // инпс банка
 
           Document: {
             documentType: 8,

@@ -417,6 +417,9 @@ export const credits = {
         pinpp: "",
         passport: "",
         personPhoto: "",
+        birthDate: "",
+        givenDate: "", // дата выдачи паспорта
+        expDate: "",  // дата окончания паспорта
 
         typeCredit: null,
         typeStepCredit: null,
@@ -430,12 +433,13 @@ export const credits = {
         familyStatus: null,
         children: false,
         childrenCount: 0,
+
         // MONEY //
         income: 0, //подтвержденный ежемесячный доход
         loan_purpose: null, // цель кредитования
         expense: 0, //периодические расходы
         otherExpenses: 0, //плата за облуживание других обязательств
-        externalIncome: "", //наличие дополнительного дохода
+        externalIncome: false, //наличие дополнительного дохода
         externalIncomeSize: 0, //размер дополнительного дохода
         additionalIncomeSource: "" //источник дополнительного дохода
       };

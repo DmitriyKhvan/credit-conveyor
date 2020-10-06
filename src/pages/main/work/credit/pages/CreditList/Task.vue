@@ -614,14 +614,14 @@
             <div class="row rowForm">
               <div class="col-6 field">Подвержденный ежемесячный доход</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyIncome.confirmMonthlyIncome }}
+                {{ Customer.MonthlyIncome.confirmMonthlyIncome | formatNumber }}
               </div>
             </div>
 
             <div class="row rowForm">
               <div class="col-6 field">Периодические расходы</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyExpenses.recurringExpenses }}
+                {{ Customer.MonthlyExpenses.recurringExpenses | formatNumber }}
               </div>
             </div>
 
@@ -649,14 +649,14 @@
                 Плата за обслуживание других обязательств
               </div>
               <div class="col-6 data">
-                {{ Customer.MonthlyExpenses.obligations }}
+                {{ Customer.MonthlyExpenses.obligations | formatNumber }}
               </div>
             </div>
 
             <div class="row rowForm">
               <div class="col-6 field">Размер дополнительного дохода</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyIncome.additionalIncome.sum }}
+                {{ Customer.MonthlyIncome.additionalIncome.sum | formatNumber }}
               </div>
             </div>
 
@@ -1028,7 +1028,7 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма поручительства</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
                 <div class="row rowForm">
@@ -1113,7 +1113,7 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма поручительства</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
                 <div class="row rowForm">
@@ -1160,7 +1160,22 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма страхового полиса</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер страхового договора</div>
+                  <div class="col-6 data">{{ guarantee.ContractNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Дата начала действия договора</div>
+                  <div class="col-6 data">{{ guarantee.StartDate }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Дата истечения действия договора</div>
+                  <div class="col-6 data">{{ guarantee.ExpDate }}</div>
                 </div>
               </div>
             </template>
@@ -1189,7 +1204,7 @@
 
             <div class="row rowForm">
               <div class="col-6 field">Запрашиваемая сумма кредита</div>
-              <div class="col-6 data">{{ fullProfile.LoanInfo.Sum }}</div>
+              <div class="col-6 data">{{ fullProfile.LoanInfo.Sum | formatNumber }}</div>
             </div>
 
             <div class="row rowForm">
@@ -1338,7 +1353,7 @@
               </div>
             </div>
 
-            <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Наименование продавца/производителя товара/работы/услуги
@@ -1425,7 +1440,7 @@
                   Расчет максимально возможной суммы кредита (скоринг)
                 </div>
                 <div class="col-6 data">
-                  {{ profile.LoanMax }}
+                  {{ profile.LoanMax | formatNumber }}
                 </div>
               </div>
             </template>
@@ -1677,6 +1692,7 @@ import LoaderFullScreen from "@/components/LoaderFullScreen";
 import GetDataINPS from "../../Components/INPS/GetData";
 
 import formatDate from "../../filters/formatDate";
+import formatNumber from "../../filters/format_number.js";
 import { validItems, validFilter } from "../../filters/valid_filter";
 import ClientInfo from "../../Components/ClientInfo";
 
@@ -2071,7 +2087,8 @@ export default {
     appClientInfo: ClientInfo
   },
   filters: {
-    formatDate
+    formatDate,
+    formatNumber
   }
 };
 </script>
@@ -2252,6 +2269,14 @@ export default {
 
 .failureCredit {
   width: 600px;
+
+  .q-field__control:after {
+    border-radius: 5px!important;
+  }
+
+  .q-field--square .q-field__control {
+    border-radius: 5px!important;
+  }
 
   .separate {
     width: auto;

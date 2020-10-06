@@ -199,7 +199,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
+                    : credit.taskName === 'Step: Решение о выдаче'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -992,11 +992,13 @@ export default {
   }
 
   .time {
-    background: rgba(255, 129, 129, 0.5) !important;
+    // background: rgba(255, 129, 129, 0.5) !important;
+    background: rgba(255, 74, 74, 0.5) !important;
   }
 
   .creditCompleate {
-    background: rgba(99, 195, 148, 0.5) !important;
+    // background: rgba(99, 195, 148, 0.5) !important;
+    background: rgba(71, 184, 129, 0.5) !important;
   }
 
   .number {

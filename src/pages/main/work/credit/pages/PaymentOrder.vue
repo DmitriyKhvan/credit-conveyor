@@ -56,7 +56,7 @@
             </div>
 
             <div class="col-12">
-              <q-input
+              <!-- <q-input
                 disable
                 square
                 outlined
@@ -64,15 +64,34 @@
                 dense
                 label="Номер кредитного договора"
                 :rules="[]"
-              />
-            </div>
-
-            <div class="col-12">
+              /> -->
               <q-input
                 disable
                 square
                 outlined
+                v-model="profile.applicationNumber"
+                dense
+                label="Номер кредитного договора"
+                :rules="[]"
+              />
+            </div>
+
+            <div class="col-12">
+              <!-- <q-input
+                disable
+                square
+                outlined
                 v-model="amountCredit"
+                dense
+                label="Сумма кредита"
+                :rules="[]"
+              /> -->
+
+              <q-input
+                disable
+                square
+                outlined
+                v-model="fullProfile.LoanInfo.Sum"
                 dense
                 label="Сумма кредита"
                 :rules="[]"
@@ -208,9 +227,11 @@
 
       <q-btn type="submit" color="primary" label="Сформировать платёжку" class="paymentBtn" />
     </form>
+
   </div>
 </template>
 <script>
+import axios from "axios";
 import { mapState } from "vuex";
 import formatDate from "../filters/formatDate"
 
@@ -219,28 +240,28 @@ export default {
     return {
       documentType: "",
       numberPP: "",
-      MFO: "",
-      codeCredit: "",
+      MFO: "00887",
+      codeCredit: "132",
       codePayment: "",
       numberCredit: "",
       amountCredit: "",
-      UIDClient: "",
-      INNClient: "",
+      UIDClient: "10945828",
+      INNClient: "500439371",
       recipientAccount: "",
-      MFOBank: "",
-      BankName: "",
+      MFOBank: "00887",
+      BankName: "НБУ Бош филлиали",
       detailsPayment: "",
       date: formatDate(new Date()),
       options: {
         documentType: [
           {
-            label: "Тип документа 1",
+            label: "PayOrder",
             value: 1
           },
-          {
-            label: "Тип документа 2",
-            value: 2
-          }
+          // {
+          //   label: "Тип документа 2",
+          //   value: 2
+          // }
         ],
 
         codePayment: [
