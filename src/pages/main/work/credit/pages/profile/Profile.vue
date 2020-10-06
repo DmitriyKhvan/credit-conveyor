@@ -33,7 +33,6 @@
                   <q-input
                     disable
                     ref="name"
-                    
                     outlined
                     v-model="Customer.FirstName"
                     dense
@@ -46,7 +45,6 @@
                   <q-input
                     disable
                     ref="mname"
-                    
                     outlined
                     v-model="Customer.MiddleName"
                     dense
@@ -63,7 +61,6 @@
                     :disable="disableField"
                     ref="birthday"
                     outlined
-                    
                     dense
                     label="Дата рождения"
                     v-model="Customer.BirthDate"
@@ -111,7 +108,6 @@
                   <q-select
                     :disable="disableField"
                     ref="Country"
-                    
                     outlined
                     v-model="Customer.Country"
                     use-input
@@ -140,7 +136,6 @@
                   <q-input
                     :disable="disableField"
                     ref="BirthCity"
-                    
                     outlined
                     v-model="Customer.BirthCity"
                     dense
@@ -155,7 +150,6 @@
                   <q-input
                     disable
                     ref="inn"
-                    
                     outlined
                     v-model="Customer.INN"
                     dense
@@ -172,7 +166,6 @@
                   <q-input
                     disable
                     ref="pinpp"
-                    
                     outlined
                     v-model="Customer.PINPP"
                     dense
@@ -188,7 +181,6 @@
                   <q-select
                     :disable="disableField"
                     ref="sex"
-                    
                     outlined
                     v-model="Customer.Gender"
                     :options="dictionaries.Gender.items"
@@ -207,7 +199,6 @@
                   <q-select
                     disable
                     ref="documentType"
-                    
                     outlined
                     v-model="Customer.Document.documentType"
                     :options="dictionaries.DocumentType.items"
@@ -224,7 +215,6 @@
                   <q-input
                     :disable="disableField"
                     ref="DocumentName"
-                    
                     outlined
                     v-model="Customer.Document.DocumentName"
                     dense
@@ -237,7 +227,6 @@
                   <q-input
                     disable
                     ref="DocumentSeries"
-                    
                     outlined
                     v-model="Customer.Document.Series"
                     dense
@@ -256,7 +245,6 @@
                   <q-input
                     disable
                     ref="DocumentNumber"
-                    
                     outlined
                     v-model="Customer.Document.Number"
                     dense
@@ -273,7 +261,6 @@
                 <div class="col-4">
                   <q-select
                     :disable="disableField"
-                    
                     outlined
                     v-model="Customer.ResidentFlag"
                     :options="credits.options.confirmation"
@@ -292,7 +279,6 @@
                     :disable="disableField"
                     ref="DocumentGivenDate"
                     outlined
-                    
                     dense
                     label="Дата выдачи документа"
                     v-model="Customer.Document.GivenDate"
@@ -341,7 +327,6 @@
                     :disable="disableField"
                     ref="DocumentExpirationDate"
                     outlined
-                    
                     dense
                     label="Дата окончания действия документа"
                     v-model="Customer.Document.ExpirationDate"
@@ -389,7 +374,6 @@
                   <q-select
                     :disable="disableField"
                     ref="DocumentRegionsGivenPlace"
-                    
                     outlined
                     v-model="Customer.Document.Region"
                     @input="setGivenPlace($event, null, 'Document')"
@@ -420,7 +404,6 @@
                   <q-select
                     :disable="disableField"
                     ref="DocumentGivenPlace"
-                    
                     outlined
                     v-model="Customer.Document.GivenPlace"
                     :options="Customer.Document.Districts.items"
@@ -435,28 +418,27 @@
                   />
                 </div>
               </div>
-              
+
               <div class="row q-col-gutter-md">
                 <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      ref="CardNumber"
-                      
-                      outlined
-                      v-model="fullProfile.Customer.CardNumber"
-                      dense
-                      label="Номер карты"
-                      mask="################"
-                      :rules="[
-                        val =>
-                          (val && val.length === 16) ||
-                          'Количество символов должно быт ровно 16',
-                        val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
-                      ]"
-                    />
-                  </div>
+                  <q-input
+                    :disable="disableField"
+                    ref="CardNumber"
+                    outlined
+                    v-model="fullProfile.Customer.CardNumber"
+                    dense
+                    label="Номер карты"
+                    mask="################"
+                    :rules="[
+                      val =>
+                        (val && val.length === 16) ||
+                        'Количество символов должно быт ровно 16',
+                      val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                    ]"
+                  />
+                </div>
 
-                  <!-- <div class="col-4">
+                <!-- <div class="col-4">
                     <q-input
                       :disable="disableField"
                       ref="BankInps"
@@ -481,7 +463,6 @@
                   <q-select
                     :disable="disableField"
                     ref="education"
-                    
                     outlined
                     v-model="Customer.Education"
                     :options="dictionaries.Graduation.items"
@@ -518,7 +499,6 @@
                     <q-input
                       :disable="(index === 0 ? true : false) || disableField"
                       ref="phones"
-                      
                       outlined
                       v-model="phone.Number"
                       dense
@@ -537,7 +517,6 @@
                 <q-btn
                   :disable="disableField"
                   v-if="index > 0"
-                  
                   label="Удалить"
                   @click="
                     confirmDeleteItem(
@@ -562,7 +541,6 @@
                 <div class="col-4">
                   <q-input
                     :disable="disableField"
-                    
                     outlined
                     v-model.lazy="Customer.Email"
                     dense
@@ -590,30 +568,27 @@
                   {{ address.AddressType }}
                 </h6>
 
-                  <div
-                    v-if="
-                      address.AddressType === 'Адрес фактического проживания'
-                    "
-                    class="row q-col-gutter-md"
-                  >
-                    <div class="col-4">
-                      <q-select
-                        :disable="disableField"
-                        
-                        outlined
-                        v-model="sameRegistration"
-                        :options="credits.options.confirmation"
-                        dense
-                        label="Совпадает ли с адресом постоянной регистрации"
-                        emit-value
-                        map-options
-                        class="q-pb-sm"
-                      />
-                    </div>
+                <div
+                  v-if="address.AddressType === 'Адрес фактического проживания'"
+                  class="row q-col-gutter-md"
+                >
+                  <div class="col-4">
+                    <q-select
+                      :disable="disableField"
+                      outlined
+                      v-model="sameRegistration"
+                      :options="credits.options.confirmation"
+                      dense
+                      label="Совпадает ли с адресом постоянной регистрации"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
                   </div>
+                </div>
 
-                  <div class="row q-col-gutter-md">
-                    <!-- <div class="col-4">
+                <div class="row q-col-gutter-md">
+                  <!-- <div class="col-4">
                       <q-input
                         :disable="address.flag || disableField"
                         
@@ -625,54 +600,51 @@
                       />
                     </div> -->
 
-                    <div class="col-4">
-                      <q-select
-                        :disable="address.flag || disableField"
-                        :ref="address.flag ? '' : 'region'"
-                        
-                        outlined
-                        v-model="address.Region"
-                        @input="setDistricts($event, index, 'AddressList')"
-                        :options="dictionaries.Region.items"
-                        dense
-                        label="Регион/область"
-                        :rules="[val => !!val || 'Выберите регион/область']"
-                        emit-value
-                        map-options
-                        class="q-pb-sm"
-                      />
-                    </div>
-
-                    <div class="col-4">
-                      <q-input
-                        :disable="address.flag || disableField"
-                        
-                        outlined
-                        v-model="address.City"
-                        dense
-                        label="Город"
-                      />
-                    </div>
+                  <div class="col-4">
+                    <q-select
+                      :disable="address.flag || disableField"
+                      :ref="address.flag ? '' : 'region'"
+                      outlined
+                      v-model="address.Region"
+                      @input="setDistricts($event, index, 'AddressList')"
+                      :options="dictionaries.Region.items"
+                      dense
+                      label="Регион/область"
+                      :rules="[val => !!val || 'Выберите регион/область']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
                   </div>
 
-                  <div class="row q-col-gutter-md">
-                    <div class="col-4">
-                      <q-select
-                        ref="district"
-                        :disable="address.flag || disableField"
-                        
-                        outlined
-                        v-model="address.District"
-                        :options="address.Districts.items"
-                        dense
-                        label="Район"
-                        :rules="[val => !!val || 'Выберите район']"
-                        emit-value
-                        map-options
-                        class="q-pb-sm"
-                      />
+                  <div class="col-4">
+                    <q-input
+                      :disable="address.flag || disableField"
+                      outlined
+                      v-model="address.City"
+                      dense
+                      label="Город"
+                    />
+                  </div>
+                </div>
 
-                      <!-- <q-select
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-select
+                      ref="district"
+                      :disable="address.flag || disableField"
+                      outlined
+                      v-model="address.District"
+                      :options="address.Districts.items"
+                      dense
+                      label="Район"
+                      :rules="[val => !!val || 'Выберите район']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+
+                    <!-- <q-select
                         
                         outlined
                         filled
@@ -695,37 +667,35 @@
                           </q-item>
                         </template>
                       </q-select> -->
-                    </div>
                   </div>
+                </div>
 
-                  <div class="row q-col-gutter-md">
-                    <div class="col-4">
-                      <q-input
-                        :disable="address.flag || disableField"
-                        :ref="address.flag ? '' : 'street'"
-                        
-                        outlined
-                        v-model="address.Street"
-                        dense
-                        label="Улица / Мкр."
-                        :rules="[
-                          val => !!val || 'Введите наименование улицы / мкр.'
-                        ]"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <q-input
-                        :disable="address.flag || disableField"
-                        :ref="address.flag ? '' : 'houseNumber'"
-                        
-                        outlined
-                        v-model="address.House"
-                        dense
-                        label="Номер дома"
-                        :rules="[val => !!val || 'Введите номер дома']"
-                      />
-                    </div>
-                    <!-- <div class="col-4">
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="address.flag || disableField"
+                      :ref="address.flag ? '' : 'street'"
+                      outlined
+                      v-model="address.Street"
+                      dense
+                      label="Улица / Мкр."
+                      :rules="[
+                        val => !!val || 'Введите наименование улицы / мкр.'
+                      ]"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="address.flag || disableField"
+                      :ref="address.flag ? '' : 'houseNumber'"
+                      outlined
+                      v-model="address.House"
+                      dense
+                      label="Номер дома"
+                      :rules="[val => !!val || 'Введите номер дома']"
+                    />
+                  </div>
+                  <!-- <div class="col-4">
                       <q-input
                         :disable="address.flag || disableField"
                         
@@ -735,10 +705,10 @@
                         label="Корпус"
                       />
                     </div> -->
-                  </div>
+                </div>
 
-                  <div class="row q-col-gutter-md">
-                    <!-- <div class="col-4">
+                <div class="row q-col-gutter-md">
+                  <!-- <div class="col-4">
                       <q-input
                         :disable="address.flag || disableField"
                         
@@ -748,36 +718,33 @@
                         label="Строение"
                       />
                     </div> -->
-                    <div class="col-4">
-                      <q-input
-                        :disable="address.flag || disableField"
-                        
-                        outlined
-                        v-model="address.Apartment"
-                        dense
-                        label="Номер квартиры"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <q-select
-                        :disable="address.flag || disableField"
-                        
-                        outlined
-                        v-model="address.OwnershipType"
-                        :options="dictionaries.PropertyType.items"
-                        dense
-                        label="Вид владения"
-                        :rules="[val => !!val || 'Выберите вид владения']"
-                        emit-value
-                        map-options
-                        class="q-pb-sm"
-                      />
-                    </div>
+                  <div class="col-4">
+                    <q-input
+                      :disable="address.flag || disableField"
+                      outlined
+                      v-model="address.Apartment"
+                      dense
+                      label="Номер квартиры"
+                    />
                   </div>
+                  <div class="col-4">
+                    <q-select
+                      :disable="address.flag || disableField"
+                      outlined
+                      v-model="address.OwnershipType"
+                      :options="dictionaries.PropertyType.items"
+                      dense
+                      label="Вид владения"
+                      :rules="[val => !!val || 'Выберите вид владения']"
+                      emit-value
+                      map-options
+                      class="q-pb-sm"
+                    />
+                  </div>
+                </div>
 
                 <q-btn
                   v-if="address.AddressType == 'Адрес временной регистрации'"
-                  
                   label="Удалить"
                   @click="
                     confirmDeleteItem(
@@ -803,7 +770,6 @@
 
                 <q-btn
                   :disable="disableField"
-                  
                   label="Добавить адрес фактического проживания"
                   @click="addRegistration('Адрес фактического проживания')"
                   class="addItem"
@@ -823,7 +789,6 @@
 
                 <q-btn
                   :disable="disableField"
-                  
                   label="Добавить адрес временной регистрации"
                   @click="addRegistration('Адрес временной регистрации')"
                   class="addItem"
@@ -846,7 +811,6 @@
                 <div class="col-4">
                   <q-select
                     disable
-                    
                     outlined
                     v-model="Customer.MaritalStatus"
                     :options="dictionaries.MaritalStatus.items"
@@ -860,7 +824,6 @@
                 <div class="col-4">
                   <q-select
                     disable
-                    
                     outlined
                     v-model="Customer.hasChildren"
                     :options="credits.options.confirmation"
@@ -875,7 +838,6 @@
                   <q-input
                     disable
                     v-if="Customer.hasChildren"
-                    
                     outlined
                     v-model="Customer.UnderAgeChildrenNum"
                     mask="##"
@@ -891,16 +853,13 @@
                 v-for="(relative, index) of Customer.Relatives.items"
                 :key="'Relatives' + index"
               >
-                <h6 class="legend_title">
-                  Родственник {{ index + 1 }}
-                </h6>
+                <h6 class="legend_title">Родственник {{ index + 1 }}</h6>
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
                       :disable="disableField"
                       ref="relatives"
-                      
                       outlined
                       v-model="relative.FamilyConnectionType"
                       :options="dictionaries.FamilyRelation.items"
@@ -918,7 +877,6 @@
                     <q-input
                       :disable="disableField"
                       ref="relatives_surname"
-                      
                       outlined
                       v-model="relative.LastName"
                       dense
@@ -933,7 +891,6 @@
                     <q-input
                       :disable="disableField"
                       ref="relatives_name"
-                      
                       outlined
                       v-model="relative.FirstName"
                       dense
@@ -948,7 +905,6 @@
                     <q-input
                       :disable="disableField"
                       ref="relatives_mname"
-                      
                       outlined
                       v-model="relative.MiddleName"
                       dense
@@ -967,7 +923,6 @@
                       :disable="disableField"
                       ref="relatives_birthday"
                       outlined
-                      
                       dense
                       label="Дата рождения"
                       v-model="relative.BirthDate"
@@ -1002,7 +957,6 @@
                     <q-select
                       :disable="disableField"
                       ref="relativesDocumentDocumentType"
-                      
                       outlined
                       v-model="relative.Document.documentType"
                       :options="dictionaries.DocumentType.items"
@@ -1019,7 +973,6 @@
                     <q-input
                       :disable="disableField"
                       ref="relativesDocumentDocumentName"
-                      
                       outlined
                       v-model="relative.Document.DocumentName"
                       dense
@@ -1036,7 +989,6 @@
                     <q-input
                       :disable="disableField"
                       ref="relativesDocumentSeries"
-                      
                       outlined
                       v-model="relative.Document.Series"
                       dense
@@ -1052,7 +1004,6 @@
                     <q-input
                       :disable="disableField"
                       ref="relativesDocumentNumber"
-                      
                       outlined
                       v-model="relative.Document.Number"
                       dense
@@ -1074,7 +1025,6 @@
                       :disable="disableField"
                       ref="relativesDocumentGivenDate"
                       outlined
-                      
                       dense
                       label="Дата выдачи документа"
                       v-model="relative.Document.GivenDate"
@@ -1125,7 +1075,6 @@
                       :disable="disableField"
                       ref="relativesDocumentExpirationDate"
                       outlined
-                      
                       dense
                       label="Дата окончания действия документа"
                       v-model="relative.Document.ExpirationDate"
@@ -1175,7 +1124,6 @@
                     <q-select
                       :disable="disableField"
                       ref="relativesDocumentRegionsGivenPlace"
-                      
                       outlined
                       v-model="relative.Document.Region"
                       @input="setGivenPlace($event, index, 'Relatives')"
@@ -1206,7 +1154,6 @@
                     <q-select
                       :disable="disableField"
                       ref="relativesDocumentGivenPlace"
-                      
                       outlined
                       v-model="relative.Document.GivenPlace"
                       :options="relative.Document.Districts.items"
@@ -1235,7 +1182,6 @@
                   <div class="col-4">
                     <q-input
                       disable
-                      
                       outlined
                       v-model="relative.filial"
                       dense
@@ -1245,7 +1191,6 @@
                   <div class="col-4">
                     <q-input
                       disable
-                      
                       outlined
                       v-model="relative.role"
                       dense
@@ -1257,7 +1202,6 @@
                 <q-btn
                   :disable="disableField"
                   v-if="index > 0"
-                  
                   label="Удалить"
                   @click="
                     confirmDeleteItem(
@@ -1273,7 +1217,6 @@
 
               <q-btn
                 :disable="disableField"
-                
                 label="Добавить родственника"
                 @click="addRelative"
                 class="addItem"
@@ -1282,7 +1225,6 @@
               <q-btn
                 v-if="profile.preapprove_num"
                 :loading="LSBOLoading"
-                
                 label="Получить данные ЛСБО"
                 @click="getLSBO"
                 class="addItem"
@@ -1309,7 +1251,6 @@
                   <q-select
                     :disable="disableField"
                     ref="kindOfActivity"
-                    
                     outlined
                     v-model="Customer.JobInfo.type"
                     :options="dictionaries.MainWorkType.items"
@@ -1335,7 +1276,6 @@
                       <q-input
                         :disable="disableField"
                         ref="nameOfEmployer"
-                        
                         outlined
                         v-model="Customer.JobInfo.employerName"
                         dense
@@ -1350,7 +1290,6 @@
                       <q-input
                         :disable="disableField"
                         ref="innOfEmployer"
-                        
                         outlined
                         v-model="Customer.JobInfo.INN"
                         dense
@@ -1368,7 +1307,6 @@
                       <q-select
                         :disable="disableField"
                         ref="typeOrganization"
-                        
                         outlined
                         v-model="Customer.JobInfo.employerActivityType"
                         :options="dictionaries.BusinessType.items"
@@ -1390,7 +1328,6 @@
                       <q-select
                         :disable="disableField"
                         ref="amountWorkes"
-                        
                         outlined
                         v-model="Customer.JobInfo.employeesNum"
                         :options="dictionaries.employeesNum.items"
@@ -1423,7 +1360,6 @@
                       <q-select
                         :disable="disableField"
                         ref="positionCategory"
-                        
                         outlined
                         v-model="Customer.JobInfo.positionType"
                         :options="dictionaries.PositionType.items"
@@ -1445,7 +1381,6 @@
                       <q-select
                         :disable="disableField"
                         ref="workExperience"
-                        
                         outlined
                         v-model="Customer.JobInfo.lastJobExperienceMonths"
                         @input="validWorkExperience"
@@ -1469,7 +1404,6 @@
                       <q-select
                         :disable="disableField"
                         ref="totalWorkExperience"
-                        
                         outlined
                         v-model="Customer.JobInfo.totalJobExperienceMonths"
                         @input="validWorkExperience"
@@ -1505,7 +1439,6 @@
                       <q-select
                         :disable="disableField"
                         ref="typeOrganization2"
-                        
                         outlined
                         v-model="Customer.JobInfo.employerActivityType"
                         :options="dictionaries.BusinessType.items"
@@ -1524,7 +1457,6 @@
                       <q-select
                         :disable="disableField"
                         ref="activityPeriod"
-                        
                         outlined
                         v-model="Customer.JobInfo.activeYears"
                         :options="dictionaries.jobPeriods.items"
@@ -1571,8 +1503,10 @@
                 <div class="col-4">
                   <div class="creditBlock">
                     <p class="labelCredit">Подтвержденный ежемесячный доход</p>
-                    <span class="valueCredit">{{ Customer.MonthlyIncome.confirmMonthlyIncome | formatNumber }}</span>
-                    </div>
+                    <span class="valueCredit">{{
+                      Customer.MonthlyIncome.confirmMonthlyIncome | formatNumber
+                    }}</span>
+                  </div>
                 </div>
 
                 <!-- <div class="col-4">
@@ -1592,9 +1526,13 @@
 
                 <div class="col-4">
                   <div class="creditBlock">
-                    <p class="labelCredit">Периодические расходы (коммунальные расходы, налоги и др.)</p>
-                    <span class="valueCredit">{{ Customer.MonthlyExpenses.recurringExpenses | formatNumber }}</span>
-                    </div>
+                    <p class="labelCredit">
+                      Периодические расходы (коммунальные расходы, налоги и др.)
+                    </p>
+                    <span class="valueCredit">{{
+                      Customer.MonthlyExpenses.recurringExpenses | formatNumber
+                    }}</span>
+                  </div>
                 </div>
 
                 <!-- <div class="col-4">
@@ -1614,9 +1552,13 @@
 
                 <div class="col-4">
                   <div class="creditBlock">
-                    <p class="labelCredit">Плата за облуживание других обязательств</p>
-                    <span class="valueCredit">{{ Customer.MonthlyExpenses.obligations | formatNumber }}</span>
-                    </div>
+                    <p class="labelCredit">
+                      Плата за облуживание других обязательств
+                    </p>
+                    <span class="valueCredit">{{
+                      Customer.MonthlyExpenses.obligations | formatNumber
+                    }}</span>
+                  </div>
                 </div>
               </div>
 
@@ -1624,7 +1566,6 @@
                 <div class="col-4">
                   <q-select
                     disable
-                    
                     outlined
                     v-model="Customer.MonthlyIncome.hasAdditionalIncome"
                     :options="credits.options.confirmation"
@@ -1655,14 +1596,16 @@
                   <div class="col-4">
                     <div class="creditBlock">
                       <p class="labelCredit">Размер дополнительного дохода</p>
-                      <span class="valueCredit">{{ Customer.MonthlyIncome.additionalIncome.sum | formatNumber }}</span>
-                      </div>
+                      <span class="valueCredit">{{
+                        Customer.MonthlyIncome.additionalIncome.sum
+                          | formatNumber
+                      }}</span>
+                    </div>
                   </div>
 
                   <div class="col-4">
                     <q-select
                       disable
-                      
                       outlined
                       v-model="
                         Customer.MonthlyIncome.additionalIncome.incomeType
@@ -1695,8 +1638,11 @@
                 <div class="col-4">
                   <div class="creditBlock">
                     <p class="labelCredit">Расчетная сумма кредита</p>
-                    <span class="valueCredit">{{ fullProfile.LoanInfo.max_loan_sum_preapprove | formatNumber }}</span>
-                    </div>
+                    <span class="valueCredit">{{
+                      fullProfile.LoanInfo.max_loan_sum_preapprove
+                        | formatNumber
+                    }}</span>
+                  </div>
                 </div>
 
                 <!-- <div class="col-4">
@@ -1714,9 +1660,13 @@
 
                 <div class="col-4">
                   <div class="creditBlock">
-                    <p class="labelCredit">Максимальная сумма кредитного продукта</p>
-                    <span class="valueCredit">{{ fullProfile.LoanInfo.ProductMaxSum | formatNumber }}</span>
-                    </div>
+                    <p class="labelCredit">
+                      Максимальная сумма кредитного продукта
+                    </p>
+                    <span class="valueCredit">{{
+                      fullProfile.LoanInfo.ProductMaxSum | formatNumber
+                    }}</span>
+                  </div>
                 </div>
 
                 <!-- <div class="col-4">
@@ -1763,7 +1713,6 @@
               <q-btn
                 v-if="profile.preapprove_num"
                 :loading="bankLoading"
-                
                 label="Получить данные с Халк банка"
                 @click="getDataINPS"
                 class="addItem"
@@ -1797,15 +1746,12 @@
                   .Realty_new.items"
                 :key="'Realty_new' + index"
               >
-                <h6 class="legend_title">
-                  Недвижимость {{ index + 1 }}
-                </h6>
+                <h6 class="legend_title">Недвижимость {{ index + 1 }}</h6>
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-select
                       :disable="disableField"
                       ref="typeProperties"
-                      
                       outlined
                       v-model="property.PropertyType"
                       :options="dictionaries.PropertyType.items"
@@ -1821,7 +1767,6 @@
                     <q-select
                       :disable="disableField"
                       ref="regionsProperties"
-                      
                       outlined
                       v-model="property.Region"
                       :options="dictionaries.Region.items"
@@ -1838,7 +1783,6 @@
                     <q-input
                       :disable="disableField"
                       ref="pricesProperties"
-                      
                       outlined
                       v-model.number="property.MarketValue"
                       type="number"
@@ -1854,7 +1798,6 @@
 
                 <q-btn
                   :disable="disableField"
-                  
                   label="Удалить"
                   @click="
                     confirmDeleteItem(
@@ -1870,7 +1813,6 @@
 
               <q-btn
                 :disable="disableField"
-                
                 label="Добавить недвижимость"
                 @click="addProperty"
                 class="addItem"
@@ -1897,7 +1839,6 @@
                     <q-select
                       :disable="disableField"
                       ref="typeVehicles"
-                      
                       outlined
                       v-model="vehicle.VehicleType"
                       :options="dictionaries.VehicleType.items"
@@ -1915,7 +1856,6 @@
                     <q-input
                       :disable="disableField"
                       ref="vehicleBrands"
-                      
                       outlined
                       v-model="vehicle.transportBrand"
                       dense
@@ -1928,7 +1868,6 @@
                     <q-select
                       :disable="disableField"
                       ref="yearsOfIssue"
-                      
                       outlined
                       v-model="vehicle.yearOfRelease"
                       :options="options.yearsOfIssueVehicle"
@@ -1946,7 +1885,6 @@
                     <q-input
                       :disable="disableField"
                       ref="priceVehicles"
-                      
                       outlined
                       v-model.number="vehicle.marketValue"
                       type="number"
@@ -1962,7 +1900,6 @@
 
                 <q-btn
                   :disable="disableField"
-                  
                   label="Удалить"
                   @click="
                     confirmDeleteItem(
@@ -1978,7 +1915,6 @@
 
               <q-btn
                 :disable="disableField"
-                
                 label="Добавить транспортное средство"
                 @click="addVehicle"
                 class="addItem"
@@ -2001,7 +1937,6 @@
                   <q-select
                     disable
                     ref="productCredit"
-                    
                     outlined
                     v-model="fullProfile.LoanInfo.LoanProduct"
                     :options="dictionaries.LoanProduct.items"
@@ -2018,23 +1953,37 @@
                   <q-input
                     :disable="disableField"
                     ref="priceCredit"
-                    
                     outlined
                     v-model="fullProfile.LoanInfo.Sum"
                     @input="guaranteesValid('LoanInfo')"
-                    
                     dense
                     label="Запрашиваемая сумма кредита"
                     :rules="[
                       val => !!val || 'Введите сумму кредита',
                       val => val != 0 || 'Некорректные данные',
                       val =>
-                        totalGuaranteesSum - Number(String(fullProfile.LoanInfo.Sum).replace(/[^0-9]/gim,'')) >=
-                          Number(String(fullProfile.LoanInfo.Sum).replace(/[^0-9]/gim,'')) * (profile.percent / 100) ||
+                        totalGuaranteesSum -
+                          Number(
+                            String(fullProfile.LoanInfo.Sum).replace(
+                              /[^0-9]/gim,
+                              ''
+                            )
+                          ) >=
+                          Number(
+                            String(fullProfile.LoanInfo.Sum).replace(
+                              /[^0-9]/gim,
+                              ''
+                            )
+                          ) *
+                            (profile.percent / 100) ||
                         `Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на ${profile.percent}%`,
                       fullProfile.max_loan_sum
-                        ? val => Number(String(val).replace(/[^0-9]/gim,'')) <= fullProfile.max_loan_sum ||
-                            `Расчетная сумма ${this.formatNum(fullProfile.max_loan_sum)}`
+                        ? val =>
+                            Number(String(val).replace(/[^0-9]/gim, '')) <=
+                              fullProfile.max_loan_sum ||
+                            `Расчетная сумма ${this.formatNum(
+                              fullProfile.max_loan_sum
+                            )}`
                         : null
                     ]"
                   />
@@ -2042,7 +1991,6 @@
                 <div class="col-4">
                   <q-input
                     ref="currencyCredit"
-                    
                     outlined
                     v-model="fullProfile.LoanInfo.Currency"
                     dense
@@ -2066,7 +2014,6 @@
                   <q-select
                     disable
                     ref="typeRepayment"
-                    
                     outlined
                     v-model="fullProfile.LoanInfo.RepaymentType"
                     :options="options.RepaymentType"
@@ -2082,7 +2029,6 @@
                 <div class="col-4">
                   <q-input
                     ref="interestRateMax"
-                    
                     outlined
                     v-model="fullProfile.LoanInfo.MaxInterestRate"
                     dense
@@ -2118,7 +2064,6 @@
                     </h6>
 
                     <q-input
-                      
                       outlined
                       v-model.number="
                         fullProfile.LoanInfo.MaxDefferalRepaymentPeriod
@@ -2162,7 +2107,6 @@
                   <q-input
                     disable
                     ref="comfortablePeriodRepayment"
-                    
                     outlined
                     v-model.number="fullProfile.LoanInfo.TermInMonth"
                     type="number"
@@ -2180,7 +2124,6 @@
                   <q-input
                     :disable="disableField"
                     ref="comfortableDayRepayment"
-                    
                     outlined
                     v-model.number="
                       fullProfile.LoanInfo.ConvenientRepaymentTerm
@@ -2201,7 +2144,6 @@
                 <div class="col-4">
                   <q-input
                     disable
-                    
                     outlined
                     v-model.number="fullProfile.LoanInfo.InitialPayment"
                     type="number"
@@ -2305,7 +2247,6 @@
                   <q-select
                     disable
                     ref="purposeCredit"
-                    
                     outlined
                     v-model="fullProfile.LoanInfo.LoanPurpose"
                     :options="dictionaries.LoanPurpose.items"
@@ -2322,7 +2263,6 @@
                   <q-select
                     :disable="disableField"
                     ref="sourceFinancs"
-                    
                     outlined
                     v-model="fullProfile.LoanInfo.FundingSource"
                     :options="options.FinancialSources.items"
@@ -2338,13 +2278,17 @@
                 </div>
               </div>
 
-              <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
+              <template
+                v-if="
+                  fullProfile.LoanInfo.LoanProduct == 1 ||
+                    fullProfile.LoanInfo.LoanProduct == 2
+                "
+              >
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
                       :disable="disableField"
                       ref="nameProduction"
-                      
                       outlined
                       v-model="fullProfile.LoanInfo.consumerLoan.nameProduction"
                       dense
@@ -2360,7 +2304,6 @@
                     <q-input
                       :disable="disableField"
                       ref="productName"
-                      
                       outlined
                       v-model="fullProfile.LoanInfo.consumerLoan.nameService"
                       dense
@@ -2376,7 +2319,6 @@
                     <q-input
                       :disable="disableField"
                       ref="nameBankProd"
-                      
                       outlined
                       v-model="fullProfile.LoanInfo.consumerLoan.nameBankProd"
                       dense
@@ -2395,7 +2337,6 @@
                     <q-input
                       :disable="disableField"
                       ref="billProd"
-                      
                       outlined
                       v-model="fullProfile.LoanInfo.consumerLoan.billProd"
                       dense
@@ -2413,7 +2354,6 @@
                     <q-input
                       :disable="disableField"
                       ref="agreementNumber"
-                      
                       outlined
                       v-model="
                         fullProfile.LoanInfo.consumerLoan.agreementNumber
@@ -2432,7 +2372,6 @@
                       :disable="disableField"
                       ref="agreementDate"
                       outlined
-                      
                       dense
                       label="Дата договора с продавцом/поставщиком товара/работы/услуги"
                       v-model="fullProfile.LoanInfo.consumerLoan.agreementDate"
@@ -2486,8 +2425,14 @@
                 :rules="[
                   val => !!val || 'Добавьте гарантию или поручительство',
                   val =>
-                    totalGuaranteesSum - Number(fullProfile.LoanInfo.Sum.replace(/[^0-9]/gim,'')) >=
-                      Number(fullProfile.LoanInfo.Sum.replace(/[^0-9]/gim,'')) * (profile.percent / 100) ||
+                    totalGuaranteesSum -
+                      Number(
+                        fullProfile.LoanInfo.Sum.replace(/[^0-9]/gim, '')
+                      ) >=
+                      Number(
+                        fullProfile.LoanInfo.Sum.replace(/[^0-9]/gim, '')
+                      ) *
+                        (profile.percent / 100) ||
                     `Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на ${profile.percent}%`
                 ]"
               >
@@ -2504,16 +2449,13 @@
                     .RelatedPerson.items"
                   :key="'RelatedPerson' + index"
                 >
-                  <h6 class="legend_title">
-                    Физ. лицо {{ index + 1 }}
-                  </h6>
+                  <h6 class="legend_title">Физ. лицо {{ index + 1 }}</h6>
 
                   <div class="row q-col-gutter-md">
                     <div class="col-4">
                       <q-select
                         :disable="disableField"
                         ref="customersAttitude"
-                        
                         outlined
                         v-model="guarantee.ClientRelation"
                         :options="dictionaries.ClientRelationType.items"
@@ -2532,7 +2474,6 @@
                       <q-input
                         :disable="disableField"
                         ref="priceGuarantees"
-                        
                         outlined
                         v-model="guarantee.Sum"
                         dense
@@ -2551,7 +2492,6 @@
                       <q-input
                         :disable="disableField"
                         ref="surnameGuarantees"
-                        
                         outlined
                         v-model="guarantee.LastName"
                         dense
@@ -2566,7 +2506,6 @@
                       <q-input
                         :disable="disableField"
                         ref="nameGuarantees"
-                        
                         outlined
                         v-model="guarantee.FirstName"
                         dense
@@ -2581,7 +2520,6 @@
                       <q-input
                         :disable="disableField"
                         ref="mnameGuarantees"
-                        
                         outlined
                         v-model="guarantee.MiddleName"
                         dense
@@ -2600,7 +2538,6 @@
                         :disable="disableField"
                         ref="birthdayGuarantees"
                         outlined
-                        
                         dense
                         label="Дата рождения"
                         v-model="guarantee.BirthDate"
@@ -2639,7 +2576,6 @@
                       <q-input
                         :disable="disableField"
                         ref="innGuarantees"
-                        
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -2657,7 +2593,6 @@
                       <q-input
                         :disable="disableField"
                         ref="pinppGuarantees"
-                        
                         outlined
                         v-model="guarantee.PINPP"
                         dense
@@ -2672,7 +2607,6 @@
                     <div class="col-4">
                       <q-select
                         :disable="disableField"
-                        
                         outlined
                         v-model="guarantee.Resident"
                         :options="credits.options.confirmation"
@@ -2690,7 +2624,6 @@
                       <q-select
                         :disable="disableField"
                         ref="guaranteesDocumentDocumentType"
-                        
                         outlined
                         v-model="guarantee.Document.documentType"
                         :options="dictionaries.DocumentType.items"
@@ -2710,7 +2643,6 @@
                       <q-input
                         :disable="disableField"
                         ref="guaranteesDocumentDocumentName"
-                        
                         outlined
                         v-model="guarantee.Document.DocumentName"
                         dense
@@ -2727,7 +2659,6 @@
                       <q-input
                         :disable="disableField"
                         ref="guaranteesDocumentSeries"
-                        
                         outlined
                         v-model="guarantee.Document.Series"
                         dense
@@ -2744,7 +2675,6 @@
                       <q-input
                         :disable="disableField"
                         ref="guaranteesDocumentNumber"
-                        
                         outlined
                         v-model="guarantee.Document.Number"
                         dense
@@ -2763,7 +2693,6 @@
                         :disable="disableField"
                         ref="guaranteesDocumentGivenDate"
                         outlined
-                        
                         dense
                         label="Дата выдачи документа"
                         v-model="guarantee.Document.GivenDate"
@@ -2817,7 +2746,6 @@
                         :disable="disableField"
                         ref="guaranteesDocumentExpirationDate"
                         outlined
-                        
                         dense
                         label="Дата окончания действия документа"
                         v-model="guarantee.Document.ExpirationDate"
@@ -2866,7 +2794,6 @@
                       <q-select
                         :disable="disableField"
                         ref="guaranteesDocumentRegionsGivenPlace"
-                        
                         outlined
                         v-model="guarantee.Document.Region"
                         @input="
@@ -2900,7 +2827,6 @@
                       <q-select
                         :disable="disableField"
                         ref="guaranteesDocumentGivenPlace"
-                        
                         outlined
                         v-model="guarantee.Document.GivenPlace"
                         :options="guarantee.Document.Districts.items"
@@ -2917,43 +2843,43 @@
                   </div>
 
                   <div class="row q-col-gutter-md">
-                      <div class="col-4">
-                        <q-input
-                          :disable="disableField"
-                          ref="CardNumberGuarantees"
-                          
-                          outlined
-                          v-model="guarantee.CardNumber"
-                          dense
-                          label="Номер карты"
-                          mask="################"
-                          :rules="[
-                            val =>
-                              (val && val.length === 16) ||
-                              'Количество символов должно быт ровно 16',
-                            val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
-                          ]"
-                        />
-                      </div>
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="CardNumberGuarantees"
+                        outlined
+                        v-model="guarantee.CardNumber"
+                        dense
+                        label="Номер карты"
+                        mask="################"
+                        :rules="[
+                          val =>
+                            (val && val.length === 16) ||
+                            'Количество символов должно быт ровно 16',
+                          val =>
+                            !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                        ]"
+                      />
+                    </div>
 
-                      <div class="col-4">
-                        <q-input
-                          :disable="disableField"
-                          ref="BankInpsGuarantees"
-                          
-                          outlined
-                          v-model="guarantee.BankInps"
-                          dense
-                          label="Номер карты поручителя"
-                          mask="################"
-                          :rules="[
-                            val =>
-                              (val && val.length === 16) ||
-                              'Количество символов должно быт ровно 16',
-                            val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
-                          ]"
-                        />
-                      </div>
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="BankInpsGuarantees"
+                        outlined
+                        v-model="guarantee.BankInps"
+                        dense
+                        label="Номер карты поручителя"
+                        mask="################"
+                        :rules="[
+                          val =>
+                            (val && val.length === 16) ||
+                            'Количество символов должно быт ровно 16',
+                          val =>
+                            !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                        ]"
+                      />
+                    </div>
                   </div>
 
                   <div class="row q-col-gutter-md">
@@ -2973,7 +2899,6 @@
                       <q-select
                         :disable="disableField"
                         ref="regionGuarantees"
-                        
                         outlined
                         v-model="guarantee.Address.Region"
                         :options="dictionaries.Region.items"
@@ -2991,7 +2916,6 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        
                         outlined
                         v-model="guarantee.Address.City"
                         dense
@@ -3005,7 +2929,6 @@
                       <q-select
                         :disable="disableField"
                         ref="districtGuarantees"
-                        
                         outlined
                         v-model="guarantee.Address.District"
                         :options="guarantee.Address.Districts.items"
@@ -3024,7 +2947,6 @@
                       <q-input
                         :disable="disableField"
                         ref="streetGuarantees"
-                        
                         outlined
                         v-model="guarantee.Address.Street"
                         dense
@@ -3038,7 +2960,6 @@
                       <q-input
                         :disable="disableField"
                         ref="houseNumberGuarantees"
-                        
                         outlined
                         v-model="guarantee.Address.House"
                         dense
@@ -3072,7 +2993,6 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        
                         outlined
                         v-model="guarantee.Address.Apartment"
                         dense
@@ -3087,15 +3007,12 @@
                     v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
                     :key="'RelatedPerson' + phoneIndex"
                   >
-                    <h6 class="legend_title">
-                      Телефон {{ phoneIndex + 1 }}
-                    </h6>
+                    <h6 class="legend_title">Телефон {{ phoneIndex + 1 }}</h6>
                     <div class="row q-col-gutter-md">
                       <div class="col-4">
                         <q-input
                           :disable="disableField"
                           ref="phonesGuarantees"
-                          
                           outlined
                           v-model="phone.Number"
                           dense
@@ -3114,7 +3031,6 @@
                     <q-btn
                       :disable="disableField"
                       v-if="phoneIndex > 0"
-                      
                       label="Удалить"
                       @click="
                         confirmDeleteItem(
@@ -3138,7 +3054,6 @@
 
                   <q-btn
                     :disable="disableField"
-                    
                     label="Удалить"
                     @click="
                       confirmDeleteItem(
@@ -3178,7 +3093,6 @@
                       <q-input
                         :disable="disableField"
                         ref="priceGuarantees"
-                        
                         outlined
                         v-model="guarantee.Sum"
                         dense
@@ -3197,7 +3111,6 @@
                       <q-input
                         :disable="disableField"
                         ref="CEOLastName"
-                        
                         outlined
                         v-model="guarantee.CEOLastName"
                         dense
@@ -3213,7 +3126,6 @@
                       <q-input
                         :disable="disableField"
                         ref="CEOFirstName"
-                        
                         outlined
                         v-model="guarantee.CEOFirstName"
                         dense
@@ -3229,7 +3141,6 @@
                       <q-input
                         :disable="disableField"
                         ref="CEOMiddleName"
-                        
                         outlined
                         v-model="guarantee.CEOMiddleName"
                         dense
@@ -3247,7 +3158,6 @@
                       <q-input
                         :disable="disableField"
                         ref="nameGuarantees"
-                        
                         outlined
                         v-model="guarantee.Name"
                         dense
@@ -3260,7 +3170,6 @@
                       <q-input
                         :disable="disableField"
                         ref="innGuarantees"
-                        
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -3280,7 +3189,6 @@
                       <q-select
                         :disable="disableField"
                         ref="kindOfActivityGuarantees"
-                        
                         outlined
                         v-model="guarantee.Activity"
                         :options="dictionaries.MainWorkType.items"
@@ -3310,7 +3218,6 @@
                       <q-select
                         :disable="disableField"
                         ref="regionGuarantees"
-                        
                         outlined
                         v-model="guarantee.Address.Region"
                         :options="dictionaries.Region.items"
@@ -3332,7 +3239,6 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        
                         outlined
                         v-model="guarantee.Address.City"
                         dense
@@ -3354,7 +3260,6 @@
                       <q-select
                         :disable="disableField"
                         ref="districtGuarantees"
-                        
                         outlined
                         v-model="guarantee.Address.District"
                         :options="guarantee.Address.Districts.items"
@@ -3373,7 +3278,6 @@
                       <q-input
                         :disable="disableField"
                         ref="streetGuarantees"
-                        
                         outlined
                         v-model="guarantee.Address.Street"
                         dense
@@ -3387,7 +3291,6 @@
                       <q-input
                         :disable="disableField"
                         ref="houseNumberGuarantees"
-                        
                         outlined
                         v-model="guarantee.Address.House"
                         dense
@@ -3421,7 +3324,6 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        
                         outlined
                         v-model="guarantee.Address.OfficeNum"
                         dense
@@ -3436,15 +3338,12 @@
                     v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
                     :key="'RelatedLegalPersonPhone' + phoneIndex"
                   >
-                    <h6 class="legend_title">
-                      Телефон {{ phoneIndex + 1 }}
-                    </h6>
+                    <h6 class="legend_title">Телефон {{ phoneIndex + 1 }}</h6>
                     <div class="row q-col-gutter-md">
                       <div class="col-4">
                         <q-input
                           :disable="disableField"
                           ref="phonesGuarantees"
-                          
                           outlined
                           v-model="phone.Number"
                           dense
@@ -3463,7 +3362,6 @@
                     <q-btn
                       :disable="disableField"
                       v-if="phoneIndex > 0"
-                      
                       label="Удалить"
                       @click="
                         confirmDeleteItem(
@@ -3481,7 +3379,6 @@
                   <q-btn
                     size="14px"
                     :disable="disableField"
-                    
                     label="Добавить номер телефона"
                     @click="
                       addPhoneGuarantee({ item: 'RelatedLegalPerson', index })
@@ -3491,7 +3388,6 @@
 
                   <q-btn
                     :disable="disableField"
-                    
                     label="Удалить"
                     @click="
                       confirmDeleteItem(
@@ -3506,7 +3402,6 @@
                 </div>
                 <q-btn
                   :disable="disableField"
-                  
                   label="Добавить юр. лицо"
                   @click="addRelatedLegalPerson('RelatedLegalPerson')"
                   class="addItem"
@@ -3525,9 +3420,7 @@
                     .items"
                   :key="'Insurance' + index"
                 >
-                  <h6 class="legend_title">
-                    Страхование {{ index + 1 }}
-                  </h6>
+                  <h6 class="legend_title">Страхование {{ index + 1 }}</h6>
 
                   <div class="row q-col-gutter-md">
                     <div class="col-4">
@@ -3547,7 +3440,6 @@
                       <q-select
                         :disable="disableField"
                         ref="nameGuarantees"
-                        
                         outlined
                         v-model="guarantee.OrgName"
                         :options="dictionaries.Insurance_company.items"
@@ -3564,7 +3456,6 @@
                       <q-input
                         :disable="disableField"
                         ref="innGuarantees"
-                        
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -3582,7 +3473,6 @@
                       <q-input
                         :disable="disableField"
                         ref="priceGuarantees"
-                        
                         outlined
                         v-model="guarantee.Sum"
                         @input="guaranteesValid('Insurance', index)"
@@ -3601,12 +3491,10 @@
                       <q-input
                         :disable="disableField"
                         ref="ContractNumberGuarantees"
-                        
                         outlined
                         v-model="guarantee.ContractNumber"
                         dense
                         label="Номер страхового договора"
-                        
                         :rules="[
                           val => val.match(/^\d+$/) || 'Неверные данные'
                         ]"
@@ -3618,7 +3506,6 @@
                         :disable="disableField"
                         ref="guaranteesContractGivenDate"
                         outlined
-                        
                         dense
                         label="Дата начала действия договора"
                         v-model="guarantee.StartDate"
@@ -3630,8 +3517,7 @@
 
                           guarantee.ExpDate
                             ? val =>
-                                msecond(val) <
-                                  msecond(guarantee.ExpDate) ||
+                                msecond(val) < msecond(guarantee.ExpDate) ||
                                 'Неверная дата'
                             : null,
 
@@ -3670,7 +3556,6 @@
                         :disable="disableField"
                         ref="guaranteesContractExpirationDate"
                         outlined
-                        
                         dense
                         label="Дата истечения действия договора"
                         v-model="guarantee.ExpDate"
@@ -3681,8 +3566,7 @@
                             'Введите дату  окончания действия документа',
                           guarantee.StartDate
                             ? val =>
-                                msecond(val) >
-                                  msecond(guarantee.StartDate) ||
+                                msecond(val) > msecond(guarantee.StartDate) ||
                                 'Неверная дата'
                             : null,
                           val =>
@@ -3718,7 +3602,6 @@
 
                   <q-btn
                     :disable="disableField"
-                    
                     label="Удалить"
                     @click="
                       confirmDeleteItem(
@@ -3734,7 +3617,6 @@
 
                 <q-btn
                   :disable="disableField"
-                  
                   label="Добавить страхование"
                   @click="addInsurance('Insurance')"
                   class="addItem"
@@ -3786,6 +3668,7 @@
                         >
                           <q-tooltip>Удалить все файлы</q-tooltip>
                         </q-btn>
+                        <q-icon class="clip" name="attach_file" />
                         <span>Загрузка файлов</span>
                         <input
                           type="file"
@@ -3798,25 +3681,17 @@
 
                       <div>
                         <q-btn
-                          flat
-                          round
-                          color="#0054a6"
-                          icon="add_box"
+                          class="addFileBtn"
+                          label="Добавить"
                           @click.prevent="addFiles()"
-                        >
-                          <q-tooltip>Добавить файл(ы)</q-tooltip>
-                        </q-btn>
+                        />
 
                         <q-btn
                           v-if="files.length"
-                          flat
-                          round
-                          color="#0054a6"
-                          icon="cloud_upload"
+                          class="uploadFileBtn"
+                          label="Загрузить"
                           @click.prevent="submitFiles()"
-                        >
-                          <q-tooltip>Загрузить файл(ы)</q-tooltip>
-                        </q-btn>
+                        />
                       </div>
                     </div>
                   </q-field>
@@ -3831,7 +3706,7 @@
                           class="material-icons fileDownload"
                           v-if="file.id"
                         >
-                          done
+                          description
                           <q-tooltip>Файл загружен</q-tooltip>
                         </span>
 
@@ -3847,7 +3722,6 @@
                           :disable="!!file.id || file.upload"
                           class="fileNameInput"
                           ref="fileName"
-                          
                           outlined
                           v-model="file.DocumentName"
                           dense
@@ -3865,8 +3739,9 @@
                         v-else-if="!loaderFile && !file.id"
                         flat
                         round
-                        color="black"
-                        icon="clear"
+                        color="grey"
+                        icon="cancel"
+                        class="cancel"
                         @click.prevent="removeFile(index)"
                       >
                         <q-tooltip>Удалить файл</q-tooltip>
@@ -3876,8 +3751,9 @@
                         v-else
                         flat
                         round
-                        color="black"
-                        icon="clear"
+                        color="grey"
+                        icon="cancel"
+                        class="cancel"
                         @click.prevent="
                           confirmDeleteItem(
                             file.DocumentName,
@@ -3934,9 +3810,8 @@
 
               <!-- Add comment-->
               <q-btn
-                
                 label="Оставить комментарий"
-                class="q-ml-sm"
+                class="addItem"
                 @click="addComment"
               />
             </div>
@@ -4017,20 +3892,20 @@
             <!-- Print version button-->
             <q-btn
               @click="onSubmit(false)"
-              
               label="Версия для печати"
-              class="q-ml-sm"
+              class="printBtn"
             />
 
             <q-btn
               type="submit"
-              
-              :label="fullProfile.BODecision == false
-                ? 'Завершить редактирование'
-                : status === 'Step: Работа с документами' 
+              :label="
+                fullProfile.BODecision == false || reworkCC != -1
+                  ? 'Завершить редактирование'
+                  : status === 'Step: Работа с документами'
                   ? 'Отправить андеррайтеру'
-                  : 'Оформить кредит'"
-              class="q-ml-sm"
+                  : 'Оформить кредит'
+              "
+              class="submitBtn"
             />
           </div>
         </form>
@@ -4092,13 +3967,8 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn
-              label="Удалить"
-              
-              v-close-popup
-              @click="itemFunc(payload)"
-            />
-            <q-btn flat label="Нет"  v-close-popup />
+            <q-btn class="removePopUp" label="Удалить" v-close-popup @click="itemFunc(payload)" />
+            <q-btn flat label="Нет" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -4355,7 +4225,13 @@ export default {
     },
 
     status() {
-      return this.$route.query.status
+      return this.$route.query.status;
+    },
+
+    reworkCC() {
+      return this.fullProfile.CreditCommiteeDecisions.items.findIndex(
+        i => i.Decision == "R"
+      );
     }
   },
   watch: {
@@ -4401,21 +4277,20 @@ export default {
   },
   methods: {
     formatNum(number) {
-      return formatNumber(number)
+      return formatNumber(number);
     },
 
     async onSubmit(submitForm = true) {
+      // for (let guarantee in this.fullProfile.Guarantee) {
+      //   for (let i of this.fullProfile.Guarantee[guarantee].items) {
+      //     if (i.Sum) {
+      //       console.log('Sum', Number(String(i.Sum).replace(/[^0-9]/gim,'')))
+      //       i.Sum = Number(String(i.Sum).replace(/[^0-9]/gim,''));
+      //     }
+      //   }
+      // }
 
-        // for (let guarantee in this.fullProfile.Guarantee) {
-        //   for (let i of this.fullProfile.Guarantee[guarantee].items) {
-        //     if (i.Sum) {
-        //       console.log('Sum', Number(String(i.Sum).replace(/[^0-9]/gim,'')))
-        //       i.Sum = Number(String(i.Sum).replace(/[^0-9]/gim,''));
-        //     }
-        //   }
-        // }
-
-        // this.fullProfile.LoanInfo.Sum = Number(this.fullProfile.LoanInfo.Sum.replace(/[^0-9]/gim,''))
+      // this.fullProfile.LoanInfo.Sum = Number(this.fullProfile.LoanInfo.Sum.replace(/[^0-9]/gim,''))
 
       this.countRelativeDocumentName = -1;
       this.countGuaranteeDocumentName = -1;
@@ -4664,8 +4539,16 @@ export default {
           "guaranteesDocumentGivenPlace"
         );
 
-        validFilter(this.$refs, "BankInpsGuaranteesValid", "BankInpsGuarantees");
-        validFilter(this.$refs, "CardNumberGuaranteesValid", "CardNumberGuarantees");
+        validFilter(
+          this.$refs,
+          "BankInpsGuaranteesValid",
+          "BankInpsGuarantees"
+        );
+        validFilter(
+          this.$refs,
+          "CardNumberGuaranteesValid",
+          "CardNumberGuarantees"
+        );
 
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
@@ -4754,9 +4637,21 @@ export default {
         validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
         validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
         validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
-        validFilter(this.$refs, "ContractNumberGuaranteesValid", "ContractNumberGuarantees");
-        validFilter(this.$refs, "guaranteesContractGivenDateValid", "guaranteesContractGivenDate");
-        validFilter(this.$refs, "guaranteesContractExpirationDateValid", "guaranteesContractExpirationDate");
+        validFilter(
+          this.$refs,
+          "ContractNumberGuaranteesValid",
+          "ContractNumberGuarantees"
+        );
+        validFilter(
+          this.$refs,
+          "guaranteesContractGivenDateValid",
+          "guaranteesContractGivenDate"
+        );
+        validFilter(
+          this.$refs,
+          "guaranteesContractExpirationDateValid",
+          "guaranteesContractExpirationDate"
+        );
       } else {
         validItems(this.$refs, "priceGuaranteesValid");
         validItems(this.$refs, "nameGuaranteesValid");
@@ -4777,7 +4672,10 @@ export default {
       this.$refs.sourceFinancs.validate();
 
       //если потребительский или микрозайм кредит
-      if (this.fullProfile.LoanInfo.LoanProduct == 1 || this.fullProfile.LoanInfo.LoanProduct == 2) {
+      if (
+        this.fullProfile.LoanInfo.LoanProduct == 1 ||
+        this.fullProfile.LoanInfo.LoanProduct == 2
+      ) {
         this.$refs.nameProduction.validate();
         this.$refs.productName.validate();
         this.$refs.nameBankProd.validate();
@@ -4841,7 +4739,6 @@ export default {
         this.$refs.DocumentExpirationDate.hasError ||
         this.$refs.DocumentRegionsGivenPlace.hasError ||
         this.$refs.DocumentGivenPlace.hasError ||
-
         this.$refs.CardNumber.hasError ||
         // this.$refs.BankInps.hasError ||
 
@@ -4971,17 +4868,17 @@ export default {
           } = this.fullProfile;
 
           Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
-          
+
           for (let guarantee in Guarantee) {
             for (let i of Guarantee[guarantee].items) {
               if (i.Sum) {
-                console.log('Sum', String(i.Sum).replace(/[^0-9]/gim,''))
-                i.Sum = Number(String(i.Sum).replace(/[^0-9]/gim,''));
+                console.log("Sum", String(i.Sum).replace(/[^0-9]/gim, ""));
+                i.Sum = Number(String(i.Sum).replace(/[^0-9]/gim, ""));
               }
             }
           }
 
-          LoanInfo.Sum = Number(LoanInfo.Sum.replace(/[^0-9]/gim,''))
+          LoanInfo.Sum = Number(LoanInfo.Sum.replace(/[^0-9]/gim, ""));
 
           // удалил из объекта - Date!!!
           const data = {
@@ -5608,14 +5505,10 @@ export default {
 
     validDateGuaranteesContract(date, idx) {
       console.log(date);
-      if (
-        this.fullProfile.Guarantee.Insurance.items[idx].ExpDate
-      ) {
+      if (this.fullProfile.Guarantee.Insurance.items[idx].ExpDate) {
         this.$refs.guaranteesContractExpirationDate[idx].validate();
       }
-      if (
-        this.fullProfile.Guarantee.Insurance.items[idx].StartDate
-      ) {
+      if (this.fullProfile.Guarantee.Insurance.items[idx].StartDate) {
         this.$refs.guaranteesContractGivenDate[idx].validate();
       }
     },
@@ -6029,19 +5922,23 @@ export default {
       ); // с учетом высокосных годов (4)
     },
 
-    guaranteesValid(item='LoanInfo', index) {
+    guaranteesValid(item = "LoanInfo", index) {
       console.log(this.$refs.guaranteesValid);
       this.totalGuaranteesSum = 0;
 
       if (item == "LoanInfo") {
-        this.fullProfile[item].Sum = formatNumber(this.fullProfile[item].Sum)
+        this.fullProfile[item].Sum = formatNumber(this.fullProfile[item].Sum);
       } else {
-        this.fullProfile.Guarantee[item].items[index].Sum = formatNumber(this.fullProfile.Guarantee[item].items[index].Sum)
+        this.fullProfile.Guarantee[item].items[index].Sum = formatNumber(
+          this.fullProfile.Guarantee[item].items[index].Sum
+        );
       }
 
       for (let guarantee in this.fullProfile.Guarantee) {
         for (let i of this.fullProfile.Guarantee[guarantee].items) {
-          this.totalGuaranteesSum = this.totalGuaranteesSum + Number(String(i.Sum).replace(/[^0-9]/gim,''));
+          this.totalGuaranteesSum =
+            this.totalGuaranteesSum +
+            Number(String(i.Sum).replace(/[^0-9]/gim, ""));
         }
       }
 
@@ -6158,9 +6055,9 @@ export default {
     handleScroll(event) {
       let scrollTop = event.target.scrollTop;
       if (scrollTop > 99) {
-        document.querySelector('.navMenuBlock').classList.add('topNavMenu')
+        document.querySelector(".navMenuBlock").classList.add("topNavMenu");
       } else {
-        document.querySelector('.navMenuBlock').classList.remove('topNavMenu')
+        document.querySelector(".navMenuBlock").classList.remove("topNavMenu");
       }
 
       document.querySelectorAll(".navMenu a").forEach(node => {
@@ -6213,7 +6110,6 @@ export default {
 </script>
 <style lang="scss">
 .fullProfile {
-
   .creditBlock {
     padding: 3px 9px;
     border: 1px solid #ccc;
@@ -6229,7 +6125,6 @@ export default {
       line-height: 11px;
     }
   }
-  
 
   .navMenuBlock {
     position: fixed;
@@ -6259,7 +6154,6 @@ export default {
         background: #e6f1fc;
       }
     }
-
   }
 
   .topNavMenu {
@@ -6270,10 +6164,10 @@ export default {
   .tab-title {
     margin: 0 0 4px 0;
     background-color: #ffffff;
-    color: #282D30;
+    color: #282d30;
     cursor: pointer;
     padding: 10px 30px;
-    
+
     text-align: left;
     outline: none;
     font-size: 24px;
@@ -6289,7 +6183,7 @@ export default {
     &:after {
       content: "";
       float: right;
-      border: 1px solid #222B45;
+      border: 1px solid #222b45;
       border-width: 0 3px 3px 0;
       margin: 13px 20px 13px;
       padding: 4px;
@@ -6363,7 +6257,6 @@ export default {
 
   .fieldset_block,
   .legend_title {
-    
   }
 
   .fieldset_block {
@@ -6380,11 +6273,12 @@ export default {
   .removeItem {
     position: absolute;
     right: 0;
-    top: 35px;
+    // top: 35px;
+    top: -16px;
     margin: 0;
     min-width: 128px;
     min-height: 47px;
-    background: #FF4A4A;
+    background: #ff4a4a;
 
     .q-btn__content {
       font-size: 14px;
@@ -6395,7 +6289,7 @@ export default {
     min-width: 348px;
     min-height: 47px;
     margin-bottom: 60px;
-    background: #4AB8FF;
+    background: #4ab8ff;
 
     .q-btn__content {
       font-size: 14px;
@@ -6440,9 +6334,9 @@ export default {
   // file
   .uploadFileBlock {
     position: relative;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14),
-      0 3px 1px -2px rgba(0, 0, 0, 0.12);
-    border-radius: 4px;
+    // box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14),
+    //   0 3px 1px -2px rgba(0, 0, 0, 0.12);
+    // border-radius: 4px;
     vertical-align: top;
     background: #fff;
     position: relative;
@@ -6468,10 +6362,37 @@ export default {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding-left: 10px;
-    background: #ededed;
     font-weight: 600;
-    color: #1360ac;
+    font-size: 20px;
+    color: #333333;
+
+    .addFileBtn, .uploadFileBtn {
+      .q-btn__content {
+        font-size: 14px;
+        font-weight: 600;
+      }
+    }
+
+    .addFileBtn {
+      background: #FFFFFF;
+      border: 1px solid #C4C4C4;
+      box-sizing: border-box;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      color: #333333;
+    }
+
+    .uploadFileBtn {
+      background: #4AB8FF;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+    }
+
+    .clip {
+      margin-right: 10px;
+      transform: rotate(180deg);
+      color: grey;
+    }
   }
 
   .fileNameBlock {
@@ -6484,12 +6405,12 @@ export default {
 
   .fileDownload,
   .fileNotDownload {
-    margin-right: 10px;
-    font-size: 40px;
+    margin: 6px 10px 9px;
+    font-size: 24px;
   }
 
   .fileDownload {
-    color: green;
+    color: grey;
   }
 
   .fileNotDownload {
@@ -6498,15 +6419,22 @@ export default {
 
   .fileName {
     font-weight: 600;
-    padding: 9px;
+    font-size: 12px;
+    padding: 11px 20px;
   }
 
-  .fileNameInput.q-field-- .q-field__control {
+  .cancel {
+    .q-icon {
+      font-size: 24px;
+    }
+  }
+
+  .fileNameInput .q-field__control {
     width: 300px;
-    border-radius: 5px !important;
-    border: 1px solid #3a3a3a;
+    // border-radius: 5px !important;
+    // border: 1px solid #3a3a3a;
     background: #fff;
-    outline: 0;
+    outline: none;
   }
 
   input[type="file"] {
@@ -6521,10 +6449,10 @@ export default {
     justify-content: space-between;
     align-items: flex-start;
     width: 100%;
-    padding: 16px 0 0 16px;
+    padding: 16px 16px 0 16px;
     margin-bottom: 10px;
     border: 1px solid #e0e0e0;
-    background: #f5f5f5;
+    background: #F5F6FA;
     border-radius: 5px;
   }
 
@@ -6551,7 +6479,44 @@ export default {
   }
 
   .submitBlock {
-    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    margin: 80px 0;
+
+    .printBtn, .submitBtn {
+      width: 196px;
+      height: 47px;
+      margin: 0 15px;
+
+      .q-btn__content {
+        font-size: 14px;
+        font-weight: 600;
+      }
+    }
+
+    .printBtn {
+      background: #FFFFFF;
+      border: 1px solid #C4C4C4;
+      box-sizing: border-box;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      color: #333333;
+    }
+
+    .submitBtn {
+      background: #47B881;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+    }
   }
 }
+
+.removePopUp {
+    background: #ff4a4a;
+    color: #ffffff;
+
+    // .q-btn__content {
+    //   font-size: 14px;
+    // }
+  }
 </style>

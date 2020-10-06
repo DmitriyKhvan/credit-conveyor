@@ -14,13 +14,15 @@
       </thead>
       <tbody>
         <tr v-for="(overdue_payment, index) of data" :key="overdue_payment.id_contract">
-          <td>{{ overdue_payment.id_contract }}</td>
-          <td>{{ overdue_payment.overdue.items[index].month }}</td>
-          <td>{{ overdue_payment.overdue.items[index].begin_sum }}</td>
-          <td>{{ overdue_payment.overdue.items[index].overdue_sum }}</td>
-          <td>{{ overdue_payment.overdue.items[index].end_sum }}</td>
-          <td>{{ overdue_payment.overdue.items[index].overdue_percent }}</td>
-          <td>{{ overdue_payment.overdue.items[index].total_overdue }}</td>
+          <template v-if="overdue_payment.overdue.items.length">
+            <td>{{ overdue_payment.id_contract }}</td>
+            <td>{{ overdue_payment.overdue.items[index].month }}</td>
+            <td>{{ overdue_payment.overdue.items[index].begin_sum }}</td>
+            <td>{{ overdue_payment.overdue.items[index].overdue_sum }}</td>
+            <td>{{ overdue_payment.overdue.items[index].end_sum }}</td>
+            <td>{{ overdue_payment.overdue.items[index].overdue_percent }}</td>
+            <td>{{ overdue_payment.overdue.items[index].total_overdue }}</td>
+          </template>
         </tr>
       </tbody>
     </q-markup-table>
