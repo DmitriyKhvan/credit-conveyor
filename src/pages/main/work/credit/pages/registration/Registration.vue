@@ -311,10 +311,7 @@
                         @input="formatNumber('otherExpenses')"
                         dense
                         label="Плата за облуживание других обязательств"
-                        :rules="[
-                          val => !!val || 'Поле должно быть заполнено',
-                          val => val != 0 || 'Некорректные данные'
-                        ]"
+                        :rules="[]"
                       />
                     </div>
                     <div class="col-6">
@@ -659,6 +656,9 @@ export default {
           surname,
           mname,
           passport,
+          birthDate,
+          givenDate, 
+          expDate,
           phone,
           inn,
           pinpp,
@@ -687,8 +687,8 @@ export default {
                 loan_product_id: Number(typeCredit),
                 finance: {
                   loan_purpose, // цель кредитования
-                  incomingOther: Number(externalIncomeSize.replace(/[^0-9]/gim,'')), //доп. доход
-                  expensesOther: Number(otherExpenses.replace(/[^0-9]/gim,'')), //др. переод. расходы
+                  incomingOther: Number(String(externalIncomeSize).replace(/[^0-9]/gim,'')), //доп. доход
+                  expensesOther: Number(String(otherExpenses).replace(/[^0-9]/gim,'')), //др. переод. расходы
                   expensesPeriodic: Number(expense.replace(/[^0-9]/gim,'')), //переод. расходы
                   incomingConfirm: Number(income.replace(/[^0-9]/gim,'')), //ежем. доход
                   incomeType: additionalIncomeSource //тип доп. дохода
@@ -697,9 +697,12 @@ export default {
                   firstName: name,
                   lastName: surname,
                   middleName: mname,
+                  birthDate,
                   passport: {
                     number: passport.slice(2),
-                    series: passport.slice(0, 2)
+                    series: passport.slice(0, 2),
+                    givenDate,
+                    expDate,
                   },
                   mainPhone: phone.replace(/[\s()]/g, ""),
                   tin: inn,
