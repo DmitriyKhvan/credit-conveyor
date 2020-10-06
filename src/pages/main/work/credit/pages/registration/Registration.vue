@@ -7,122 +7,6 @@
     <div v-else class="q-pa-md row justify-center">
       <form @submit.prevent.stop="onSubmit" class="preapprovForm">
         <div class="row q-col-gutter-md">
-<<<<<<< HEAD
-          <div class="col-7">
-            
-            <!-- Private data person -->
-            <div class="privat-data tab">
-              <h4 class="tab-title" ref="privatData">Персональные данные</h4>
-
-              <div class="tab-content row" ref="tabContent">
-                <div class="col-7">
-                  <q-input
-                    ref="surname"
-                    square
-                    outlined
-                    v-model="personalData.surname"
-                    dense
-                    :hint="loadMessage"
-                    :disable="disableInput"
-                    label="Фамилия"
-                    :rules="[
-                      val => (val && val.length > 1) || 'Введите фамилию',
-                      val => fioValid(val)
-                    ]"
-                  />
-                  <q-input
-                    ref="name"
-                    square
-                    outlined
-                    v-model="personalData.name"
-                    dense
-                    :hint="loadMessage"
-                    :disable="disableInput"
-                    label="Имя"
-                    :rules="[
-                      val => (val && val.length > 3) || 'Введите имя',
-                      val => fioValid(val)
-                    ]"
-                  />
-                  <q-input
-                    ref="mname"
-                    square
-                    outlined
-                    v-model="personalData.mname"
-                    dense
-                    :hint="loadMessage"
-                    :disable="disableInput"
-                    label="Отчество"
-                    :rules="[
-                      val => !!val || 'Введите отчество',
-                      val => mValid(val)
-                    ]"
-                  />
-                  <q-input
-                    ref="inn"
-                    square
-                    outlined
-                    v-model="personalData.inn"
-                    dense
-                    :hint="loadMessage"
-                    label="ИНН"
-                    mask="#########"
-                    :rules="[
-                      val =>
-                        (val && val.length == 9) ||
-                        'Количество символов должно быт ровно 9',
-                      val => !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
-                    ]"
-                  />
-                  <q-input
-                    ref="phone"
-                    square
-                    outlined
-                    v-model="personalData.phone"
-                    dense
-                    label="Тел. номер"
-                    mask="+############"
-                    :rules="[
-                      val =>
-                        (val && val.length === 13) || 'Введите номер телефона',
-                      val =>
-                        !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные'
-                    ]"
-                  />
-                  <q-input
-                    ref="pinpp"
-                    square
-                    outlined
-                    v-model.lazy="personalData.pinpp"
-                    dense
-                    :hint="loadMessage"
-                    :disable="disableInput"
-                    label="ПИНФЛ"
-                    mask="##############"
-                    :rules="[
-                      val => (val && val.length === 14) || 'Введите ПНФЛ',
-                      val => !val.match(/(?=(.))\1{14,}/) || 'Неверные данные'
-                    ]"
-                  />
-                  <q-input
-                    ref="pasport"
-                    square
-                    outlined
-                    v-model="personalData.passport"
-                    dense
-                    :hint="loadMessage"
-                    :disable="disableInput"
-                    label="Серия номер паспорта"
-                    mask="AA#######"
-                    :rules="[
-                      val =>
-                        (val && val.length === 9) ||
-                        'Введите Серию и номер паспорта',
-                      val => !val.match(/(?=(.))\1{7,}/) || 'Неверные данные'
-                    ]"
-                  />
-                </div>
-=======
           <div class="col-2">
             <div v-if="personalData.personPhoto" class="personPhoto_block">
               <img
@@ -139,7 +23,6 @@
               />
             </div>
           </div>
->>>>>>> feature/credit
 
           <div class="col-10">
             <div class="row preappBlock">
@@ -428,10 +311,7 @@
                         @input="formatNumber('otherExpenses')"
                         dense
                         label="Плата за облуживание других обязательств"
-                        :rules="[
-                          val => !!val || 'Поле должно быть заполнено',
-                          val => val != 0 || 'Некорректные данные'
-                        ]"
+                        :rules="[]"
                       />
                     </div>
                     <div class="col-6">
@@ -776,6 +656,9 @@ export default {
           surname,
           mname,
           passport,
+          birthDate,
+          givenDate, 
+          expDate,
           phone,
           inn,
           pinpp,
@@ -804,8 +687,8 @@ export default {
                 loan_product_id: Number(typeCredit),
                 finance: {
                   loan_purpose, // цель кредитования
-                  incomingOther: Number(externalIncomeSize.replace(/[^0-9]/gim,'')), //доп. доход
-                  expensesOther: Number(otherExpenses.replace(/[^0-9]/gim,'')), //др. переод. расходы
+                  incomingOther: Number(String(externalIncomeSize).replace(/[^0-9]/gim,'')), //доп. доход
+                  expensesOther: Number(String(otherExpenses).replace(/[^0-9]/gim,'')), //др. переод. расходы
                   expensesPeriodic: Number(expense.replace(/[^0-9]/gim,'')), //переод. расходы
                   incomingConfirm: Number(income.replace(/[^0-9]/gim,'')), //ежем. доход
                   incomeType: additionalIncomeSource //тип доп. дохода
@@ -814,9 +697,12 @@ export default {
                   firstName: name,
                   lastName: surname,
                   middleName: mname,
+                  birthDate,
                   passport: {
                     number: passport.slice(2),
-                    series: passport.slice(0, 2)
+                    series: passport.slice(0, 2),
+                    givenDate,
+                    expDate,
                   },
                   mainPhone: phone.replace(/[\s()]/g, ""),
                   tin: inn,
