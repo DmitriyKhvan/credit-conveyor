@@ -4855,7 +4855,7 @@ export default {
             Status,
             ApplicationID,
             // ProtocolNumber,
-            // Number,
+            Number,
             Branch,
             BranchName,
             BODecision,
@@ -4878,12 +4878,12 @@ export default {
             for (let i of Guarantee[guarantee].items) {
               if (i.Sum) {
                 console.log("Sum", String(i.Sum).replace(/[^0-9]/gim, ""));
-                i.Sum = Number(String(i.Sum).replace(/[^0-9]/gim, ""));
+                i.Sum = +String(i.Sum).replace(/[^0-9]/gim, "");
               }
             }
           }
 
-          LoanInfo.Sum = Number(LoanInfo.Sum.replace(/[^0-9]/gim, ""));
+          LoanInfo.Sum = +LoanInfo.Sum.replace(/[^0-9]/gim, "");
 
           // удалил из объекта - Date!!!
           const data = {
@@ -4894,7 +4894,7 @@ export default {
                   Status,
                   ApplicationID,
                   // ProtocolNumber,
-                  // Number,
+                  Number,
                   Branch,
                   BranchName,
                   BODecision,
