@@ -1,12 +1,12 @@
 <template>
-  <q-page-container>
+  <!-- <q-page-container>
     <q-layout
       view="hHh lpR fFf"
       container
       style="height: calc(100vh - 70px)"
       class="shadow-2"
       id="eee"
-    >
+    > -->
       <!-- <q-header reveal elevated class="bg-primary text-white" height-hint="98"> -->
         <!-- <bread-crumb :list="list()" /> -->
         <!-- <sub-header-tab :path="path" />
@@ -17,13 +17,21 @@
         <!-- <sub-header-tab :path="path" />
       </q-header> -->
       
-      <sub-header-tab :path="path" />
 
       <q-page-container>
+        <q-layout
+          view="hHh lpR fFf"
+          container
+          style="height: calc(100vh - 70px)"
+          class="shadow-2"
+          id="eee"
+        >
+          <sub-header-tab :path="path" />
         <router-view />
+        </q-layout>
       </q-page-container>
-    </q-layout>
-  </q-page-container>
+    <!-- </q-layout>
+  </q-page-container> -->
 </template>
 
 <script>

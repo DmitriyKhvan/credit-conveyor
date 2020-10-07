@@ -3873,14 +3873,19 @@
                     </p>
                     <q-btn
                       :disable="disable"
+                      size="10px"
+                      flat 
+                      style="color: #74798C" 
                       icon="print"
+                      label="Печать"
                       @click="printFile(fileData, index)"
                       :loading="loadings[index]"
+
                     >
                       <template v-slot:loading>
                         <q-spinner-facebook />
                       </template>
-                      <q-tooltip>Распечатать</q-tooltip>
+                      <!-- <q-tooltip>Распечатать</q-tooltip> -->
                     </q-btn>
                   </li>
                 </ul>
@@ -6273,11 +6278,10 @@ export default {
   .removeItem {
     position: absolute;
     right: 0;
-    // top: 35px;
-    top: -16px;
+    top: -5px;
     margin: 0;
-    min-width: 128px;
-    min-height: 47px;
+    min-width: 97px;
+    min-height: 35px;
     background: #ff4a4a;
 
     .q-btn__content {
@@ -6484,8 +6488,8 @@ export default {
     margin: 80px 0;
 
     .printBtn, .submitBtn {
-      width: 196px;
-      height: 47px;
+      min-width: 196px;
+      min-height: 47px;
       margin: 0 15px;
 
       .q-btn__content {
