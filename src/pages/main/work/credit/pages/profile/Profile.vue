@@ -488,68 +488,78 @@
               Контактные данные
             </h4>
             <div class="tab-content" ref="tabContent">
-              <div
-                class="fieldset_block"
-                v-for="(phone, index) of Customer.PhoneList.items"
-                :key="'PhoneList' + index"
-              >
-                <h6 class="legend_title">Телефон {{ index + 1 }}</h6>
-                <div class="row q-col-gutter-md">
-                  <div class="col-4">
-                    <q-input
-                      :disable="(index === 0 ? true : false) || disableField"
-                      ref="phones"
-                      outlined
-                      v-model="phone.Number"
-                      dense
-                      label="Тел. номер"
-                      mask="+############"
-                      :rules="[
-                        val =>
-                          (val && val.length === 13) ||
-                          'Введите номер телефона',
-                        val => phoneValid(val)
-                      ]"
-                    />
-                  </div>
-                </div>
-
-                <q-btn
-                  :disable="disableField"
-                  v-if="index > 0"
-                  label="Удалить"
-                  @click="
-                    confirmDeleteItem(
-                      'Телефон ' + (index + 1),
-                      removeItem,
-                      'PhoneList',
-                      index
-                    )
-                  "
-                  class="removeItem"
-                ></q-btn>
-              </div>
-
-              <q-btn
-                :disable="disableField"
-                label="Добавить номер телефона"
-                @click="addPhone"
-                class="addItem"
-              ></q-btn>
 
               <div class="row q-col-gutter-md">
-                <div class="col-4">
-                  <q-input
+                <div class="col-6">
+                  <div
+                    class="fieldset_block"
+                    v-for="(phone, index) of Customer.PhoneList.items"
+                    :key="'PhoneList' + index"
+                  >
+                    <h6 class="legend_title">Телефон {{ index + 1 }}</h6>
+                    <div class="row q-col-gutter-md">
+                      <div class="col-12">
+                        <q-input
+                          :disable="(index === 0 ? true : false) || disableField"
+                          ref="phones"
+                          outlined
+                          v-model="phone.Number"
+                          dense
+                          label="Тел. номер"
+                          mask="+############"
+                          :rules="[
+                            val =>
+                              (val && val.length === 13) ||
+                              'Введите номер телефона',
+                            val => phoneValid(val)
+                          ]"
+                        />
+                      </div>
+                    </div>
+
+                    <q-btn
+                      :disable="disableField"
+                      v-if="index > 0"
+                      label="Удалить"
+                      @click="
+                        confirmDeleteItem(
+                          'Телефон ' + (index + 1),
+                          removeItem,
+                          'PhoneList',
+                          index
+                        )
+                      "
+                      class="removeItem"
+                    ></q-btn>
+                  </div>
+
+                  <q-btn
                     :disable="disableField"
-                    outlined
-                    v-model.lazy="Customer.Email"
-                    dense
-                    label="Email"
-                    error-message="Ведите корректный Email"
-                    :error="!isValid"
-                  />
+                    label="Добавить номер телефона"
+                    @click="addPhone"
+                    class="addItem"
+                  ></q-btn>
+                </div>
+
+                <div class="col-6">
+                  <h6 class="legend_title">Электронная почта</h6>
+                  <div class="row q-col-gutter-md">
+                    <div class="col-12">
+                      <q-input
+                        :disable="disableField"
+                        outlined
+                        v-model.lazy="Customer.Email"
+                        dense
+                        label="Email"
+                        error-message="Ведите корректный Email"
+                        :error="!isValid"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              
             </div>
           </div>
 
@@ -2078,26 +2088,33 @@
                       ]"
                     />
 
-                    <q-badge color="secondary">
-                      Срок:
-                      {{ fullProfile.LoanInfo.MaxDefferalRepaymentPeriod }} ({{
-                        GracePeriodMin
-                      }}
-                      до {{ GracePeriodMax }})
+                    <div class="slider">
+                      <q-slider
+                        :disable="disableField"
+                        v-model.number="
+                          fullProfile.LoanInfo.MaxDefferalRepaymentPeriod
+                        "
+                        :min="GracePeriodMin"
+                        :max="GracePeriodMax"
+                        :step="1"
+                        label
+                        :label-value="fullProfile.LoanInfo.MaxDefferalRepaymentPeriod + ' мес.'"
+                        label-always
+                        color="blue-9"
+                        class="sliderCredit"
+                      />
+
+                      <span class="periodCreditMin"
+                        >{{ GracePeriodMin }} мес.</span
+                      >
+                      <span class="periodCreditMax"
+                        >{{ GracePeriodMax }} мес.</span
+                      >
+                    </div>
+                    
+                    <q-badge class="badgePeriod" color="white" text-color="grey">
+                      Срок льготного периода по погашению кредита: от {{ GracePeriodMin }} до {{ GracePeriodMax }}
                     </q-badge>
-                    <q-slider
-                      :disable="disableField"
-                      v-model.number="
-                        fullProfile.LoanInfo.MaxDefferalRepaymentPeriod
-                      "
-                      :min="GracePeriodMin"
-                      :max="GracePeriodMax"
-                      :step="1"
-                      label
-                      label-always
-                      color="light-green"
-                      class="sliderCredit"
-                    />
                   </div>
                 </div>
               </div>
@@ -3522,7 +3539,7 @@
                             : null,
 
                           val =>
-                            msecond(val) < msecond(currentDate) ||
+                            msecond(val) <= msecond(currentDate) ||
                             'Неверная дата'
                         ]"
                       >
@@ -3873,7 +3890,7 @@
                     </p>
                     <q-btn
                       :disable="disable"
-                      size="10px"
+                      class="printDoc"
                       flat 
                       style="color: #74798C" 
                       icon="print"
@@ -6095,6 +6112,7 @@ export default {
     }
   },
   beforeDestroy() {
+    console.log('beforeDestroy')
     document
       .querySelectorAll(".scroll")[1]
       .removeEventListener("scroll", this.handleScroll);
@@ -6324,11 +6342,11 @@ export default {
   .periodCredit {
     font-size: 16px;
     line-height: 13px;
-    margin: 5px;
+    margin: 0 0 8px 0;
   }
 
   .sliderCredit {
-    margin: 20px 15px;
+    // margin: 20px 15px;
   }
 
   .commentCredit {
@@ -6473,12 +6491,26 @@ export default {
   }
 
   .fileBlock {
-    padding-left: 15px;
+    padding: 14px 0 14px 20px;
+    margin: 0;
+    background: #F5F6FA;
+    border-radius: 5px;
     .fileLi {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      height: 30px;
+    }
+  }
+
+  .fileList {
+    .printDoc {
+      background: transparent;
+      margin: 0;
+
+      .q-btn__content {
+        font-size: 14px;
+      }
     }
   }
 
@@ -6512,6 +6544,30 @@ export default {
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
       border-radius: 2px;
     }
+  }
+
+  .slider {
+    position: relative;
+    margin: 20px 0 10px;
+    .periodCreditMin,
+    .periodCreditMax {
+      position: absolute;
+    }
+
+    .periodCreditMin {
+      top: 70%;
+      left: 0;
+    }
+
+    .periodCreditMax {
+      top: 70%;
+      right: 0;
+    }
+  }
+
+  .badgePeriod {
+    padding: 0;
+    margin-bottom: 20px;
   }
 }
 

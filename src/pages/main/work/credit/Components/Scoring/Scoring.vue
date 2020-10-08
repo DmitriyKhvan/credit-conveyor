@@ -85,7 +85,7 @@
               <h3 class="scoringList__title">4. ЛСБО:</h3>
             </div>
             <div class="col-5">
-              <q-checkbox v-model="val" disable/>
+              <q-checkbox v-model="data.Customer.LSBO" disable/>
             </div>
           </div>
           

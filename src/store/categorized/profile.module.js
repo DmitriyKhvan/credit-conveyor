@@ -147,6 +147,10 @@ export const profile = {
         Gender: null,
         CardNumber: null, // номер карты
         // BankInps: null, // инпс банка
+        LSBO : false,
+        role: "",
+        filial: "",
+        personal_id: "",
 
         Document: {
           documentType: 8,
@@ -437,6 +441,12 @@ export const profile = {
           .data.items.forEach(user => {
             // console.log("user", user)
             if (user.lsbo) {
+              if (state.fullFormProfile.Customer.Document.Number == user.passNumber) {
+                state.fullFormProfile.Customer.LSBO = user.lsbo
+                state.fullFormProfile.Customer.role = user.role
+                state.fullFormProfile.Customer.filial = user.filial
+              }
+
               let relative = state.fullFormProfile.Customer.Relatives.items.find(
                 rel => rel.Document.Number == user.passNumber
               );
@@ -1137,6 +1147,10 @@ export const profile = {
           Gender: null,
           CardNumber: null, // номер карты
           // BankInps: null, // инпс банка
+          LSBO : false,
+          role: "",
+          filial: "",
+          personal_id: "",
 
           Document: {
             documentType: 8,

@@ -18,7 +18,7 @@
       </q-header> -->
       
 
-      <q-page-container>
+      <q-page-container v-if="path !== '/work/task/list'">
         <q-layout
           view="hHh lpR fFf"
           container
@@ -27,8 +27,12 @@
           id="eee"
         >
           <sub-header-tab :path="path" />
+          {{ path }}
         <router-view />
         </q-layout>
+      </q-page-container>
+      <q-page-container v-else>
+        <router-view />
       </q-page-container>
     <!-- </q-layout>
   </q-page-container> -->
