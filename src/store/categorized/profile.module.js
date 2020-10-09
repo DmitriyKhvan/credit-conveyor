@@ -5,6 +5,7 @@ export const profile = {
   namespaced: true,
   state: {
     bpmService: new BpmService(),
+    payOrder: null,
     preapprove_num: "",
     applicationNumber: "", // номер заявки для печатной формы
     userrole: "",
@@ -550,7 +551,14 @@ export const profile = {
 
         console.log("response", response);
 
-        if (response.data.input && response.data.input.length) {
+        if (response.data.name === "Get PayOrder data from front") {
+          const payOrder = response.data.input.find(
+            i => i.label === "payOrder"
+          );
+
+          commit("setPayOrder", payOrder.data);
+        }
+        else if (response.data.input && response.data.input.length) {
           const data = response.data.input.find(i => i.label === "application")
             .data;
           const dictionaries = response.data.input.find(
@@ -631,6 +639,10 @@ export const profile = {
   mutations: {
     setPreapproveNum(state, preapprove_num) {
       state.preapprove_num = preapprove_num;
+    },
+
+    setPayOrder(state, payOrder) {
+      state.payOrder = payOrder
     },
 
     setProcessInfo(state, processInfo) {

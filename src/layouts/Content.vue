@@ -27,7 +27,6 @@
           id="eee"
         >
           <sub-header-tab :path="path" />
-          {{ path }}
         <router-view />
         </q-layout>
       </q-page-container>
