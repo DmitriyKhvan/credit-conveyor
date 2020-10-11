@@ -3503,7 +3503,10 @@
                     </div>
                   </div>
 
-                  <div class="row q-col-gutter-md">
+                  <div 
+                    v-if="status === 'Step: Работа с документами'"
+                    class="row q-col-gutter-md"
+                  >
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
@@ -4659,6 +4662,14 @@ export default {
         validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
         validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
         validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
+        
+      } else {
+        validItems(this.$refs, "priceGuaranteesValid");
+        validItems(this.$refs, "nameGuaranteesValid");
+        validItems(this.$refs, "innGuaranteesValid");
+      }
+
+      if (this.status === 'Step: Работа с документами') {
         validFilter(
           this.$refs,
           "ContractNumberGuaranteesValid",
@@ -4675,9 +4686,6 @@ export default {
           "guaranteesContractExpirationDate"
         );
       } else {
-        validItems(this.$refs, "priceGuaranteesValid");
-        validItems(this.$refs, "nameGuaranteesValid");
-        validItems(this.$refs, "innGuaranteesValid");
         validItems(this.$refs, "ContractNumberGuaranteesValid");
         validItems(this.$refs, "guaranteesContractGivenDateValid");
         validItems(this.$refs, "guaranteesContractExpirationDateValid");
@@ -5977,7 +5985,7 @@ export default {
     },
 
     fioValid(val) {
-      return val.match(/^[A-Z']+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
+      return val.match(/^[A-Z'`]+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
     },
 
     mValid(val) {

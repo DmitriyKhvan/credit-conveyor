@@ -40,6 +40,10 @@ export const credits = {
       pinpp: null,
       passport: "",
       personPhoto: "",
+      birthDate: "",
+      gender: null,
+      givenDate: "", // дата выдачи паспорта
+      expDate: "",  // дата окончания паспорта
 
       typeCredit: null,
       typeStepCredit: null,
@@ -401,10 +405,14 @@ export const credits = {
       state.personalData.name = payload.Person.NameL;
       state.personalData.surname = payload.Person.SurnameL;
       state.personalData.mname = payload.Person.PatronymL;
+      state.personalData.gender = payload.Person.Sex;
       state.personalData.passport = payload.Person.DocumentSerialNumber;
       state.personalData.pinpp = payload.Person.Pinpp;
       state.personalData.inn = payload.Person.Inn ? payload.Person.Inn : payload.Additional.Inn;
       state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
+      state.personalData.birthDate = payload.Person.BirthDate
+      state.personalData.givenDate = payload.Person.DocumentDateIssue
+      state.personalData.expDate = payload.Person.DocumentDateValid
       state.DigID = true
     },
     resetPersonData(state) {
@@ -418,6 +426,7 @@ export const credits = {
         passport: "",
         personPhoto: "",
         birthDate: "",
+        gender: "",
         givenDate: "", // дата выдачи паспорта
         expDate: "",  // дата окончания паспорта
 

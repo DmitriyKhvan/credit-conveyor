@@ -4,6 +4,8 @@
       <thead>
         <tr>
           <th>Номер заявки</th>
+          <th>Сумма договора</th>
+          <th>Сумма срочной задолженности</th>
           <th>Дата заявки</th>
           <th>Код отделения банка</th>
           <th>Номер договора</th>
@@ -15,8 +17,8 @@
           <th>Процентная ставка</th>
           <th>Валюта договора</th>
           <th>Класс качества активов</th>
-          <th>Сумма договора</th>
-          <th>Сумма срочной задолженности</th>
+          
+          
           <th>Сумма пересмотренной ссудной задолженности</th>
           <th>Дата пересмотренной ссудной задолженности</th>
           <th>Сумма просроченной задолженности</th>
@@ -32,6 +34,8 @@
       <tbody>
         <tr v-for="contract of data" :key="contract.claim_id">
           <td>{{ contract.claim_id }}</td>
+          <td>{{ contract.summa }}</td>
+          <td>{{ contract.loan_summa }}</td>
           <td>{{ contract.claim_date }}</td>
           <td>{{ contract.branch }}</td>
           <td>{{ contract.contract_id }}</td>
@@ -43,8 +47,8 @@
           <td>{{ contract.percent }}</td>
           <td>{{ contract.currency }}</td>
           <td>{{ contract.quality }}</td>
-          <td>{{ contract.summa }}</td>
-          <td>{{ contract.loan_summa }}</td>
+          
+          
           <td>{{ contract.revised_summa }}</td>
           <td>{{ contract.revised_date }}</td>
           <td>{{ contract.expired_summa }}</td>

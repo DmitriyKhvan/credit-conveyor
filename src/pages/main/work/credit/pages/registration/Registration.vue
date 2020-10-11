@@ -409,6 +409,7 @@
         @toggleLoaderForm="$event => (loaderForm = $event)"
       />
     </div>
+    {{confirm}}
   </div>
 </template>
 <script>
@@ -657,6 +658,7 @@ export default {
           mname,
           passport,
           birthDate,
+          gender,
           givenDate, 
           expDate,
           phone,
@@ -698,6 +700,7 @@ export default {
                   lastName: surname,
                   middleName: mname,
                   birthDate,
+                  gender: Number(gender),
                   passport: {
                     number: passport.slice(2),
                     series: passport.slice(0, 2),
@@ -938,7 +941,7 @@ export default {
     },
 
     fioValid(val) {
-      return val.match(/^[A-Z']+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
+      return val.match(/^[A-Z'`]+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
     },
 
     mValid(val) {

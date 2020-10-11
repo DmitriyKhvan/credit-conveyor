@@ -5,15 +5,15 @@
         <q-card-section class="column items-start">
           <div class="preApprovalBlock__title">
             <div class="text-h6">Заявка на кредит</div>
-            <q-btn 
+            <q-btn
               v-if="!INPS"
-              flat 
-              class="print" 
-              icon="print" 
-              @click="printFile(credits.infoList)" 
+              flat
+              class="print"
+              icon="print"
+              @click="printFile(credits.infoList)"
               :loading="loading"
             >
-              <div class="print__text">Печать</div> 
+              <div class="print__text">Печать</div>
               <template v-slot:loading>
                 <q-spinner-facebook />
               </template>
@@ -29,35 +29,44 @@
             <div class="creditTable" align="center">
               <div class="creditTable__row">
                 <div class="creditTable__field">Eжемесячный доход</div>
-                <div class="creditTable__value__green">{{ personalData.income | formatNumber }} сум</div>
+                <div class="creditTable__value__green">
+                  {{ personalData.income | formatNumber }} сум
+                </div>
                 <div class="dashed"></div>
               </div>
               <div class="creditTable__row">
                 <div class="creditTable__field">Расходы</div>
-                <div class="creditTable__value__red">{{ preApprovalData.expense | formatNumber }} сум</div>
+                <div class="creditTable__value__red">
+                  {{ preApprovalData.expense | formatNumber }} сум
+                </div>
                 <div class="dashed"></div>
               </div>
               <div class="creditTable__row">
                 <div class="creditTable__field">Eжемесячная плата</div>
-                <div class="creditTable__value__red">{{ preApprovalData.maxPayment | formatNumber }} сум</div>
+                <div class="creditTable__value__red">
+                  {{ preApprovalData.maxPayment | formatNumber }} сум
+                </div>
                 <div class="dashed"></div>
               </div>
               <div class="creditTable__row">
                 <div class="creditTable__field">Доступная сумма кредита</div>
-                <div class="creditTable__value__green">{{ preApprovalData.maxSum | formatNumber }} сум</div>
+                <div class="creditTable__value__green">
+                  {{ preApprovalData.maxSum | formatNumber }} сум
+                </div>
                 <div class="dashed"></div>
               </div>
               <div class="creditTable__row">
-                <div class="creditTable__field">Максимальная сумма по кредитному продукту</div>
-                <div class="creditTable__value__green">{{ personalData.ProductMaxSum | formatNumber }} сум</div>
+                <div class="creditTable__field">
+                  Максимальная сумма по кредитному продукту
+                </div>
+                <div class="creditTable__value__green">
+                  {{ personalData.ProductMaxSum | formatNumber }} сум
+                </div>
                 <div class="dashed"></div>
               </div>
             </div>
 
-            <p
-            
-              class="failureCredit"
-              v-if="preApprovalData.maxSum < 0">
+            <p class="failureCredit" v-if="preApprovalData.maxSum < 0">
               Недостаточно средств для предоставления кредита
             </p>
 
@@ -131,18 +140,14 @@
                 "
               />
             </q-card-actions>
-            
-            <q-card-actions
-              v-if="INPS"
-              class="row justify-center"
-            >
+
+            <q-card-actions v-if="INPS" class="row justify-center">
               <q-btn
                 label="Отменить"
                 color="red-5"
                 @click="failureCreditINPS(false)"
               />
             </q-card-actions>
-            
           </div>
         </q-card-section>
       </q-card>
@@ -158,7 +163,7 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   props: {
-    confirm: Boolean,
+    // confirm: Boolean,
     INPS: {
       type: Boolean,
       default: false
@@ -167,6 +172,7 @@ export default {
   data() {
     return {
       failureCreditReason: false,
+      confirm: true,
       selection: [],
       model: false,
       loading: false,
@@ -206,66 +212,70 @@ export default {
     async successCredit() {
       console.log(this.$store);
       //this.confirm = false
-      this.$emit("toggleLoaderForm", true);
-      console.log(JSON.stringify(this.confirmCreditData, null, 2));
-      try {
-        const response = await this.$store.dispatch(
-          "credits/confirmationCredit",
-          this.confirmCreditData
-        );
+      if (Object.keys(this.fileData.data).length == 0) {
+        this.$store.commit("credits/setMessage", "Распечатайте информационный лист");
+      } else {
+        this.$emit("toggleLoaderForm", true);
+        console.log(JSON.stringify(this.confirmCreditData, null, 2));
+        try {
+          const response = await this.$store.dispatch(
+            "credits/confirmationCredit",
+            this.confirmCreditData
+          );
 
-        console.log("response", response);
+          console.log("response", response);
 
-        if (response) {
-          const data = response.nextTask.input.find(
-            i => i.label === "application"
-          ).data;
-          const dictionaries = response.nextTask.input.find(
-            i => i.label === "inputDictionaries"
-          ).data;
+          if (response) {
+            const data = response.nextTask.input.find(
+              i => i.label === "application"
+            ).data;
+            const dictionaries = response.nextTask.input.find(
+              i => i.label === "inputDictionaries"
+            ).data;
 
-          //ИНПС
-          const preapprove_num = response.nextTask.input.find(
-            i => i.label === "preapprove_num"
-          ).data
+            //ИНПС
+            const preapprove_num = response.nextTask.input.find(
+              i => i.label === "preapprove_num"
+            ).data
 
-          // Номер заявки печатная форма
-          const applicationNumber = response.nextTask.input.find(
-            i => i.label === "process_info_fullApp"
-          ).data.applicationNumber;
+            // Номер заявки печатная форма
+            const applicationNumber = response.nextTask.input.find(
+              i => i.label === "process_info_fullApp"
+            ).data.applicationNumber;
 
-          // Должность
-          const userrole = response.nextTask.input.find(i => i.label === "userrole")
-            .data;
+            // Должность
+            const userrole = response.nextTask.input.find(i => i.label === "userrole")
+              .data;
 
-          console.log("dic", JSON.stringify(dictionaries, null, 2));
+            console.log("dic", JSON.stringify(dictionaries, null, 2));
 
-          this.$store.commit("profile/setPreapproveNum", preapprove_num)
-          this.$store.commit("profile/resetDataFullFormProfile")
-          this.$store.commit("profile/setPreapprovData", data);
-          this.$store.commit("profile/setDictionaries", dictionaries);
-          this.$store.commit("profile/setApplicationNumber", applicationNumber);
-          this.$store.commit("profile/setUserrole", userrole);
+            this.$store.commit("profile/setPreapproveNum", preapprove_num)
+            this.$store.commit("profile/resetDataFullFormProfile")
+            this.$store.commit("profile/setPreapprovData", data);
+            this.$store.commit("profile/setDictionaries", dictionaries);
+            this.$store.commit("profile/setApplicationNumber", applicationNumber);
+            this.$store.commit("profile/setUserrole", userrole);
 
-          // sessionStorage.setItem("preapprove_num", preapprove_num);
-          // sessionStorage.setItem("preapprovData", JSON.stringify(data));
-          // sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
-          
-          this.$router.push("profile");
+            // sessionStorage.setItem("preapprove_num", preapprove_num);
+            // sessionStorage.setItem("preapprovData", JSON.stringify(data));
+            // sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
+
+            this.$router.push("profile");
+            setTimeout(() => {
+              localStorage.removeItem(this.taskIdPreapp)
+            }, 1000)
+
+            //this.$emit("toggleLoaderForm", false);
+          }
+        } catch (error) {
+          //this.$emit("toggleLoaderForm", false);
+          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+          sessionStorage.clear();
+          this.$router.push("/work/credit");
           setTimeout(() => {
             localStorage.removeItem(this.taskIdPreapp)
           }, 1000)
-          
-          //this.$emit("toggleLoaderForm", false);
         }
-      } catch (error) {
-        //this.$emit("toggleLoaderForm", false);
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
-        sessionStorage.clear();
-        this.$router.push("/work/credit");
-        setTimeout(() => {
-          localStorage.removeItem(this.taskIdPreapp)
-        }, 1000)
       }
     },
 
@@ -285,7 +295,7 @@ export default {
             this.confirmCreditData
           );
           console.log("res", response);
-          
+
           // if (res.requestedTask.state === "completed") {
           //   this.$store.commit("credits/setMessage", "Credit failure");
           //   sessionStorage.clear();
@@ -304,7 +314,7 @@ export default {
               localStorage.removeItem(this.taskIdPreapp)
             }, 1000)
           }
-          
+
         } catch (error) {
           this.$emit("toggleLoaderFullScreen", false);
           this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
@@ -337,7 +347,7 @@ export default {
             "credits/getFile",
             this.fileData
           );
-          
+
           if (file) {
             this.fileData.idFile = file.id // для кеширования id
           }
@@ -365,7 +375,7 @@ export default {
 </script>
 <style lang="scss">
 .preApprovalBlock {
-  max-width: 620px!important;
+  max-width: 620px !important;
   width: 620px;
   min-height: 290px;
   padding: 20px 30px;
@@ -381,10 +391,9 @@ export default {
   // }
 
   .print {
-    
     .q-btn__content {
       font-size: 12px;
-      color: #74798C;
+      color: #74798c;
     }
 
     .q-btn__wrapper {
@@ -409,7 +418,7 @@ export default {
     }
 
     .resonFailure {
-      color: #EA2250;
+      color: #ea2250;
       text-align: center;
       margin-bottom: 10px;
     }
@@ -431,7 +440,7 @@ export default {
           content: "";
           display: block;
           height: 1px;
-          background: #F2F2F2;
+          background: #f2f2f2;
           margin-top: 15px;
         }
       }
@@ -448,13 +457,15 @@ export default {
 
           .dashed {
             position: absolute;
-            border: 1px dashed #F2F2F2;
+            border: 1px dashed #f2f2f2;
             width: 100%;
             top: 13px;
           }
         }
 
-        &__field, &__value__green, &__value__red {
+        &__field,
+        &__value__green,
+        &__value__red {
           background: #ffffff;
           z-index: 10;
         }
@@ -467,12 +478,12 @@ export default {
         }
 
         &__value__green {
-          color: #61C9A9;
+          color: #61c9a9;
           padding-left: 60px;
         }
 
         &__value__red {
-          color: #FF8787;
+          color: #ff8787;
           padding-left: 60px;
         }
       }
@@ -480,18 +491,18 @@ export default {
   }
 
   .failureCredit {
-    
     text-align: center;
     color: $red-5;
     font-size: 18px;
     margin-bottom: 10px;
   }
 
-  .preappBtnSuccess, .preappBtnFailure {
+  .preappBtnSuccess,
+  .preappBtnFailure {
     margin: 0 10px;
     border-radius: 0;
     width: 186px;
-    
+
     .q-btn__content {
       font-size: 14px;
       padding: 12px;
@@ -500,15 +511,15 @@ export default {
   }
 
   .preappBtnFailure {
-    background: #FF4A4A;
+    background: #ff4a4a;
   }
 
   .preappBtnSuccess {
-    background: #47B881;
+    background: #47b881;
   }
 
   .continue {
-    background: #47B881;
+    background: #47b881;
     border-radius: 0;
     margin-top: 40px;
 
@@ -520,13 +531,12 @@ export default {
   }
 
   .reson {
-    color: #A0A5BA;
+    color: #a0a5ba;
   }
 
-  .q-field__control:before, .q-field__control:after {
+  .q-field__control:before,
+  .q-field__control:after {
     content: none;
   }
 }
-
-
 </style>

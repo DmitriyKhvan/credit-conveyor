@@ -49,13 +49,13 @@
             <p>{{ salary.period }}</p>
           </td>
           <td>
-            <p>{{ salary.total_invoices.full }}</p>
+            <p>{{ salary.total_invoices.full | formatNumber }}</p>
           </td>
           <td>
-            <p>{{ salary.total_invoices.percent }}</p>
+            <p>{{ salary.total_invoices.percent | formatNumber }}</p>
           </td>
           <td>
-            <p>{{ salary.total_invoices.balance }}</p>
+            <p>{{ salary.total_invoices.balance | formatNumber }}</p>
           </td>
         </tr>
       </tbody>
@@ -184,6 +184,8 @@
 </template>
 
 <script>
+import formatNumber from "../../filters/format_number"
+
 export default {
   props: ["salaries"],
   data() {
@@ -194,6 +196,10 @@ export default {
     closeDataINPS() {
       this.$emit("closeBar", false);
     }
+  },
+
+  filters: {
+    formatNumber
   }
 };
 </script>

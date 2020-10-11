@@ -691,6 +691,11 @@ export const profile = {
       state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
       state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
+
+      state.fullFormProfile.Customer.FullName = payload.Customer.FullName;
+      state.fullFormProfile.Customer.BirthDate = payload.Customer.BirthDate;
+      state.fullFormProfile.Customer.Gender = payload.Customer.Gender;
+
       state.fullFormProfile.Customer.INN = payload.Customer.INN;
       state.fullFormProfile.Customer.PhoneList.items[0].Number =
         payload.Customer.PhoneList.items[0].Number;
@@ -699,6 +704,12 @@ export const profile = {
         payload.Customer.Document.Series;
       state.fullFormProfile.Customer.Document.Number =
         payload.Customer.Document.Number;
+      
+      state.fullFormProfile.Customer.Document.GivenDate =
+        payload.Customer.Document.GivenDate;
+
+      state.fullFormProfile.Customer.Document.ExpirationDate =
+        payload.Customer.Document.ExpirationDate;
 
       state.fullFormProfile.Customer.MaritalStatus =
         payload.Customer.MaritalStatus;
