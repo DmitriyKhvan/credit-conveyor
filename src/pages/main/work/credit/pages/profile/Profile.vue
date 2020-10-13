@@ -4115,9 +4115,7 @@ export default {
 
         yearsOfIssueVehicle: [],
 
-        FinancialSources: {
-          items: []
-        } // источник финансирования
+        FinancialSources: [] // источник финансирования
       },
 
       guaranteeCount: [],
@@ -4134,7 +4132,7 @@ export default {
   },
 
   async created() {
-    this.$store.commit("profile/resetDataFullFormProfile")
+    // this.$store.commit("profile/resetDataFullFormProfile")
 
     if (this.taskId) {
       this.loaderForm = true;

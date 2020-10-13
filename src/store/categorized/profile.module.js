@@ -536,7 +536,10 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
-      state.preapprove_num = "";
+      state.preapprove_num = ""
+      state.fileList = [] // очистка файлов на печать
+      state.disableField = false
+      state.FinalDecision = ""
 
       let response;
       try {
@@ -1127,9 +1130,9 @@ export const profile = {
     },
 
     resetDataFullFormProfile(state) {
-      state.fileList = []; // очистка файлов на печать
-      state.disableField = false;
-      state.FinalDecision = "",
+      state.fileList = [] // очистка файлов на печать
+      state.disableField = false
+      state.FinalDecision = ""
       state.fullFormProfile = {
         Status: "",
         ApplicationID: "",
