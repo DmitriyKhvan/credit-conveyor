@@ -536,10 +536,11 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
-      state.preapprove_num = ""
-      state.fileList = [] // очистка файлов на печать
-      state.disableField = false
-      state.FinalDecision = ""
+      // state.preapprove_num = ""
+      // state.fileList = [] // очистка файлов на печать
+      // state.disableField = false
+      // state.FinalDecision = ""
+      commit("resetDataFullFormProfile");
 
       let response;
       try {
@@ -597,7 +598,7 @@ export const profile = {
             response.data.name == "Full Application Filling" &&
             data.BODecision == null
           ) {
-            commit("resetDataFullFormProfile");
+            // commit("resetDataFullFormProfile");
             commit("setPreapprovData", data);
           } else if (response.data.name == "Работа с документами") {
             commit("setFileList", response);
