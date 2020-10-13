@@ -114,7 +114,7 @@ export const profile = {
       Branch: "",
       BranchName: "",
       BODecision: null,
-      // FinalDecision: "",
+      FinalDecision: "", // отказ кредитного менеджера
       // Date: "",
       BOLogin: "", // логин авторизованного пользователя
       // Department: "",
@@ -660,7 +660,7 @@ export const profile = {
       // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum = payload.payment
       state.fullFormProfile.LoanInfo.max_loan_sum_preapprove = payload.sum;
       
-      state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
+      // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
     setINNandNameOrg(state, payload) {
@@ -684,6 +684,7 @@ export const profile = {
 
       // Для корректной валидации
       state.fullFormProfile.ApplicationID = payload.ApplicationID;
+      state.fullFormProfile.BODecision = payload.BODecision;
       state.fullFormProfile.Number = payload.Number;
       state.fullFormProfile.Branch = payload.Branch;
       state.fullFormProfile.BranchName = payload.BranchName;
@@ -745,7 +746,7 @@ export const profile = {
       state.fullFormProfile.LoanInfo.ProductMaxSum =
         payload.LoanInfo.ProductMaxSum;
 
-      state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
+      // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
     setFileList(state, response) {
@@ -1128,6 +1129,7 @@ export const profile = {
     resetDataFullFormProfile(state) {
       state.fileList = []; // очистка файлов на печать
       state.disableField = false;
+      state.FinalDecision = "",
       state.fullFormProfile = {
         Status: "",
         ApplicationID: "",
@@ -1136,7 +1138,7 @@ export const profile = {
         Branch: "",
         BranchName: "",
         BODecision: null,
-        // FinalDecision: "",
+        FinalDecision: "", // отказ кредитного менеджера
         // Date: "",
         BOLogin: "", // логин авторизованного пользователя
         // Department: "",

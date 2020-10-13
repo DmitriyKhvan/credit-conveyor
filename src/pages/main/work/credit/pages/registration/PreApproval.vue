@@ -77,7 +77,7 @@
                 <q-field
                   ref="toggle"
                   :value="!!selection.length"
-                  :rules="[val => !!val || 'выберите причину']"
+                  :rules="[(val) => !!val || 'выберите причину']"
                 >
                   <div class="row q-col-gutter-y-sm">
                     <div
@@ -125,14 +125,12 @@
                 class="preappBtnSuccess"
                 v-if="preApprovalData.maxSum > 0"
                 label="Отправить заявку"
-                v-close-popup
                 :disable="disableBtn"
                 @click="successCredit"
               />
               <q-btn
                 class="preappBtnFailure"
                 label="Отменить"
-                v-close-popup
                 @click="
                   () => {
                     failureCreditReason = true;
@@ -155,7 +153,7 @@
   </div>
 </template>
 <script>
-import {mapState} from "vuex"
+import { mapState } from "vuex";
 import printJS from "print-js";
 import formatNumber from "../../filters/format_number.js";
 import CommonUtils from "@/shared/utils/CommonUtils";
@@ -166,8 +164,8 @@ export default {
     // confirm: Boolean,
     INPS: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -181,39 +179,40 @@ export default {
         output: [
           {
             name: "confirm",
-            data: true
+            data: true,
           },
           {
             name: "reasons",
-            data: []
-          }
-        ]
+            data: [],
+          },
+        ],
       },
 
       fileData: {
         type: "info_list",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
-        data: {}
+        data: {},
       },
     };
   },
 
   computed: {
     ...mapState({
-      taskIdPreapp: state => state.credits.taskId,
-      disableBtn: state => state.credits.disableBtn,
-      preApprovalData: state => state.credits.preApprovalData,
-      personalData: state => state.credits.personalData,
-      credits: state => state.credits
-    })
+      taskIdPreapp: (state) => state.credits.taskId,
+      disableBtn: (state) => state.credits.disableBtn,
+      preApprovalData: (state) => state.credits.preApprovalData,
+      personalData: (state) => state.credits.personalData,
+      credits: (state) => state.credits,
+    }),
   },
 
   methods: {
     async successCredit() {
-      console.log(this.$store);
-      //this.confirm = false
       if (Object.keys(this.fileData.data).length == 0) {
-        this.$store.commit("credits/setMessage", "Распечатайте информационный лист");
+        this.$store.commit(
+          "credits/setMessage",
+          "Распечатайте документ"
+        );
       } else {
         this.$emit("toggleLoaderForm", true);
         console.log(JSON.stringify(this.confirmCreditData, null, 2));
@@ -227,30 +226,31 @@ export default {
 
           if (response) {
             const data = response.nextTask.input.find(
-              i => i.label === "application"
+              (i) => i.label === "application"
             ).data;
             const dictionaries = response.nextTask.input.find(
-              i => i.label === "inputDictionaries"
+              (i) => i.label === "inputDictionaries"
             ).data;
 
             //ИНПС
             const preapprove_num = response.nextTask.input.find(
-              i => i.label === "preapprove_num"
-            ).data
+              (i) => i.label === "preapprove_num"
+            ).data;
 
             // Номер заявки печатная форма
             const applicationNumber = response.nextTask.input.find(
-              i => i.label === "process_info_fullApp"
+              (i) => i.label === "process_info_fullApp"
             ).data.applicationNumber;
 
             // Должность
-            const userrole = response.nextTask.input.find(i => i.label === "userrole")
-              .data;
+            const userrole = response.nextTask.input.find(
+              (i) => i.label === "userrole"
+            ).data;
 
             console.log("dic", JSON.stringify(dictionaries, null, 2));
 
-            this.$store.commit("profile/setPreapproveNum", preapprove_num)
-            this.$store.commit("profile/resetDataFullFormProfile")
+            this.$store.commit("profile/setPreapproveNum", preapprove_num);
+            this.$store.commit("profile/resetDataFullFormProfile");
             this.$store.commit("profile/setPreapprovData", data);
             this.$store.commit("profile/setDictionaries", dictionaries);
             this.$store.commit("profile/setApplicationNumber", applicationNumber);
@@ -262,19 +262,23 @@ export default {
 
             this.$router.push("profile");
             setTimeout(() => {
-              localStorage.removeItem(this.taskIdPreapp)
-            }, 1000)
+              localStorage.removeItem(this.taskIdPreapp);
+            }, 1000);
 
             //this.$emit("toggleLoaderForm", false);
           }
         } catch (error) {
           //this.$emit("toggleLoaderForm", false);
-          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
           sessionStorage.clear();
           this.$router.push("/work/credit");
           setTimeout(() => {
-            localStorage.removeItem(this.taskIdPreapp)
-          }, 1000)
+            localStorage.removeItem(this.taskIdPreapp);
+          }, 1000);
+            
         }
       }
     },
@@ -311,66 +315,68 @@ export default {
             this.$router.push("/work/credit");
             // чтоб удаление произошло после метода beforeDestroy в родительском компоненте
             setTimeout(() => {
-              localStorage.removeItem(this.taskIdPreapp)
-            }, 1000)
+              localStorage.removeItem(this.taskIdPreapp);
+            }, 1000);
           }
-
         } catch (error) {
           this.$emit("toggleLoaderFullScreen", false);
-          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
           setTimeout(() => {
-            localStorage.removeItem(this.taskIdPreapp)
-          }, 1000)
+            localStorage.removeItem(this.taskIdPreapp);
+          }, 1000);
         }
       }
     },
 
     failureCreditINPS(flag) {
-      console.log('failureCreditINPS')
+      console.log("failureCreditINPS");
       this.$emit("failureCreditINPS", flag);
     },
 
     async printFile(fileData) {
-      this.loading = true
-      let file = null
-      this.fileData.data = fileData
+      this.loading = true;
+      let file = null;
+      this.fileData.data = fileData;
       try {
-        console.log(JSON.stringify(this.fileData, null, 2))
+        console.log(JSON.stringify(this.fileData, null, 2));
 
         if (this.fileData.idFile) {
-            file = await this.$store.dispatch(
+          file = await this.$store.dispatch(
             "credits/getFile",
             this.fileData.idFile
           );
         } else {
-            file = await this.$store.dispatch(
-            "credits/getFile",
-            this.fileData
-          );
+          file = await this.$store.dispatch("credits/getFile", this.fileData);
 
           if (file) {
-            this.fileData.idFile = file.id // для кеширования id
+            this.fileData.idFile = file.id; // для кеширования id
           }
         }
 
-        console.log('file', file)
+        console.log("file", file);
 
         if (file) {
           printJS(file.url);
           window.URL.revokeObjectURL(file.url);
         }
 
-        this.loading = false
-      } catch(error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
-        this.loading = false
+        this.loading = false;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.loading = false;
       }
-    }
+    },
   },
 
   filters: {
-    formatNumber
-  }
+    formatNumber,
+  },
 };
 </script>
 <style lang="scss">

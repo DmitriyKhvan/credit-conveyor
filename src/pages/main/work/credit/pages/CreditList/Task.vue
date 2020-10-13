@@ -1790,7 +1790,22 @@ export default {
     },
     filialName() {
       return this.$route.query.filialName;
+    },
+    messageApprove() {
+      return this.userRole == "ROLE_CCC"
+              ? 'Form approve'
+              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+                ? 'Credit success'
+                : null
+    },
+    messageReject() {
+      return this.userRole == "ROLE_CCC"
+              ? 'Form reject'
+              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+                ? 'Credit failure'
+                : null
     }
+
   },
   methods: {
     async getClientInfo() {
@@ -1819,7 +1834,7 @@ export default {
           comment: this.commentCC
         });
       }
-      this.sentData("Credit success");
+      this.sentData(this.messageApprove);
     },
 
     submitHandler(event) {
@@ -1861,7 +1876,7 @@ export default {
           });
         }
 
-        this.sentData("Credit failure");
+        this.sentData(this.messageReject);
 
         this.confirm = false;
       }

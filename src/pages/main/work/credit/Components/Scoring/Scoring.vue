@@ -197,12 +197,14 @@
     <div class="maxSum">
       <h3 class="scoringList__title">Расчетная сумма кредита</h3>
       <p class="scoringList__value">
-        {{ data.LoanInfo.max_loan_sum_preapprove }} сум
+        {{ data.LoanInfo.max_loan_sum_preapprove | formatNumber}} сум
       </p>
     </div>
   </div>
 </template>
 <script>
+import formatNumber from "../../filters/format_number";
+
 export default {
   props: {
     data: {
@@ -221,6 +223,9 @@ export default {
     //   return (new Date() - new Date(data.Customer.BirthDate)).getYear()
     // }
   },
+  filters: {
+    formatNumber
+  }
 };
 </script>
 

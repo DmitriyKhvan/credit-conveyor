@@ -1040,6 +1040,7 @@ export default {
   },
   methods: {
     callPrint(strid) {
+      this.$emit('printFullForm', true)
       const head = document.querySelector("head");
       const prtContent = document.getElementById(strid);
       

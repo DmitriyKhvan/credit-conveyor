@@ -409,7 +409,6 @@
         @toggleLoaderForm="$event => (loaderForm = $event)"
       />
     </div>
-    {{confirm}}
   </div>
 </template>
 <script>
@@ -700,7 +699,7 @@ export default {
                   lastName: surname,
                   middleName: mname,
                   birthDate,
-                  gender: Number(gender),
+                  gender: gender ? Number(gender) : null,
                   passport: {
                     number: passport.slice(2),
                     series: passport.slice(0, 2),
