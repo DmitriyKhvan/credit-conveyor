@@ -1,5 +1,5 @@
 <template>
-  <div class="" style="max-width: auto">
+  <div class="clientInfo">
     <q-card>
       <q-tabs
         v-model="tab"
@@ -165,3 +165,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .clientInfo {
+    max-width: auto;
+    margin-bottom: 16px;
+  }
+</style>

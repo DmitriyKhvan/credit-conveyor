@@ -2171,29 +2171,32 @@ export default {
 
   .formBlock {
     font-size: 16px;
+    padding: 30px;
+    margin-top: -5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .rowForm {
     display: flex;
     align-items: center;
     margin: 8px 0 4px 0;
-  }
 
-  .field {
-    color: #A0A5BA;
-    padding: 0 5px 0 30px;
-  }
+    .field {
+      color: #A0A5BA;
+      padding: 0 5px 0 0;
+    }
 
-  .data {
-    display: flex;
-    min-height: 45px;
-    justify-content: space-between;
-    align-items: center;
-    color: #2A3C63;
-    padding: 10px 20px;
-    border: 1px solid #E7E7E7;
-    border-radius: 5px;
-    background: #FAFAFA;
+    .data {
+      display: flex;
+      min-height: 45px;
+      justify-content: space-between;
+      align-items: center;
+      color: #2A3C63;
+      padding: 10px 20px;
+      border: 1px solid #E7E7E7;
+      border-radius: 5px;
+      background: #FAFAFA;
+    }
   }
 
   .subTitleForm {

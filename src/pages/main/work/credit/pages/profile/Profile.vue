@@ -1290,7 +1290,6 @@
                         v-model="Customer.JobInfo.employerName"
                         dense
                         label="Наименование работодателя"
-                        lazy-rules
                         :rules="[
                           val => !!val || 'Введите наименование работодателя'
                         ]"
@@ -1870,7 +1869,6 @@
                       v-model="vehicle.transportBrand"
                       dense
                       label="Марка транспортного средства"
-                      lazy-rules
                       :rules="[val => !!val || 'Поле должно быть заполнено']"
                     />
                   </div>
@@ -2006,7 +2004,6 @@
                     dense
                     disable
                     label="Валюта"
-                    lazy-rules
                     :rules="[val => !!val || 'Введите валюту']"
                   />
                 </div>
@@ -4080,6 +4077,7 @@ export default {
   name: "profile",
   data() {
     return {
+      clientInfoData: false,
       printForm: false,
       bankLoading: false,
       LSBOLoading: false,
@@ -4161,7 +4159,9 @@ export default {
             i => i.label == "application"
           );
 
-          if (this.status === 'Step: Работа с документами' || this.status === 'Step: Ввод данных с интеграциями') {
+          if (this.status === 'Step: Работа с документами' || 
+              this.status === 'Step: Ввод данных с интеграциями' ||
+              this.fullProfile.BODecision != null) {
             
             const uploadedFiles = data.AttachedDocuments.items;
             const guarantees = data.Guarantee;
@@ -4887,10 +4887,15 @@ export default {
           this.profile.confirmCredit = false;
         } else if (submitForm) {
 
-          if (!this.printForm && 
-              this.fullProfile.BODecision == null && 
-              status !== 'Step: Ввод данных с интеграциями'
-          ) {
+          if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями' ) {
+            this.$store.commit(
+                "credits/setMessage",
+                "Получите данные клиента"
+              );
+          } 
+          else if (!this.printForm && 
+                  this.status !== 'Работа с документами' &&
+                  this.fullProfile.BODecision == null) {
             this.$store.commit(
                 "credits/setMessage",
                 "Распечатайте анкету"
@@ -5503,6 +5508,7 @@ export default {
       this.clientInfoLoading = true
       try {
         this.clientInfo = await this.$store.dispatch("profile/clientInfo")
+        this.clientInfoData = true
         this.clientInfoLoading = false
       } catch(error) {
         this.$store.commit(

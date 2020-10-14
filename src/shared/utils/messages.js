@@ -11,6 +11,6 @@ export default {
     'Form complete': 'Анкета оформлена',
     'Form approve': 'Анкета одобрена',
     'Form reject' : 'Анкета отклонена',
-    'Deal complete': 'Сделака оформлена',
+    'Deal complete': 'Сделка оформлена',
     'Payment complete': 'Платежка оформлена'
 }
