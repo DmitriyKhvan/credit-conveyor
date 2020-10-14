@@ -958,6 +958,17 @@ export default {
       }
     }
 
+    // tbody {
+    //   tr {
+    //     &:hover {
+    //       &:hover{
+    //         background: rgba(0, 0, 0, 0.1) !important;
+    //         border-radius: 5px;
+    //       }
+    //     }
+    //   }
+    // }
+
     tr {
       background: #FFFFFF;
       border: 2px solid #FFFFFF;
@@ -988,6 +999,7 @@ export default {
     white-space: pre-wrap;
     &:before {
       background: rgba(0, 0, 0, 0.15) !important;
+      // background: none;
     }
   }
 

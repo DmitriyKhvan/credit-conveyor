@@ -4178,6 +4178,8 @@ export default {
             for (let guarantee in guarantees) {
               for (let i of guarantees[guarantee].items) {
                 this.guaranteeCount.push("guarantee");
+
+                i.Sum = formatNumber(i.Sum);
               }
             }
           }
@@ -5994,7 +5996,6 @@ export default {
     },
 
     guaranteesValid(item = "LoanInfo", index) {
-      console.log(this.$refs.guaranteesValid);
       this.totalGuaranteesSum = 0;
 
       if (item == "LoanInfo") {
