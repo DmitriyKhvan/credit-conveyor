@@ -429,16 +429,11 @@
                     dense
                     label="Номер карты"
                     mask="################"
-                    :rules="[
-                      val =>
-                        (val && val.length === 16) ||
-                        'Количество символов должно быт ровно 16',
-                      val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
-                    ]"
+                    :rules="[]"
                   />
                 </div>
 
-                <!-- <div class="col-4">
+                <div class="col-4">
                     <q-input
                       :disable="disableField"
                       ref="BankInps"
@@ -446,16 +441,15 @@
                       outlined
                       v-model="fullProfile.Customer.BankInps"
                       dense
-                      label="Номер карты поручителя"
-                      mask="################"
+                      label="Банк ИНПС"
+                      mask="#####"
                       :rules="[
                         val =>
-                          (val && val.length === 16) ||
-                          'Количество символов должно быт ровно 16',
-                        val => !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                          (val && val.length === 5) ||
+                          'Количество символов должно быт ровно 5'
                       ]"
                     />
-                  </div> -->
+                  </div>
               </div>
 
               <div class="row q-col-gutter-md">
@@ -3580,15 +3574,15 @@
                         :rules="[
                           val =>
                             (val && val.length === 10) ||
-                            'Введите дату  окончания действия документа',
+                            'Введите дату окончания действия документа',
                           guarantee.StartDate
                             ? val =>
                                 msecond(val) > msecond(guarantee.StartDate) ||
                                 'Неверная дата'
                             : null,
                           val =>
-                            msecond(val) > msecond(currentDate) ||
-                            'Неверная дата'
+                            msecond(val) > msecond(currentDate).setMonth(msecond(currentDate).getMonth() + fullProfile.LoanInfo.TermInMonth) ||
+                            'Дата не должна быть меньше даты окончания срока кредита'
                         ]"
                       >
                         <template v-slot:append>
@@ -3664,10 +3658,11 @@
                   @drop.prevent.stop
                   @drop="dropFile($event)"
                 >
+                <!-- :value="!!filesAll.find(file => file.id != null)" -->
                   <div ref="dragover"></div>
                   <q-field
                     ref="uploadFile"
-                    :value="!!filesAll.find(file => file.id != null)"
+                    :value="filesAll.filter(file => file.id != null).length == countFile"
                     :rules="[val => !!val || 'Загрузите файлы']"
                   >
                     <div class="uploadFile">
@@ -4125,7 +4120,15 @@ export default {
         type: "",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
         data: {}
-      }
+      },
+
+      // navigation
+      // navigation: [
+      //   {
+      //     label: "",
+      //     link: ""
+      //   }
+      // ]
     };
   },
 
@@ -4285,6 +4288,12 @@ export default {
       return this.status === 'Step: Работа с документами' 
               ? 'Deal complete'
               : 'Form complete'
+    },
+
+    countFile() {
+      return this.status === 'Step: Работа с документами'
+              ? 2
+              : 1
     }
   },
   watch: {
@@ -4366,8 +4375,8 @@ export default {
       this.$refs.DocumentRegionsGivenPlace.validate();
       this.$refs.DocumentGivenPlace.validate();
 
-      this.$refs.CardNumber.validate();
-      // this.$refs.BankInps.validate();
+      // this.$refs.CardNumber.validate();
+      this.$refs.BankInps.validate();
 
       this.$refs.education.validate();
 
@@ -4750,11 +4759,15 @@ export default {
         // validItems(this.$refs, "initialFee");
       }
 
-      if (!this.fullProfile.AttachedDocuments.items.length) {
-        this.$refs.uploadFile.validate();
-      } else {
-        validItems(this.$refs, "uploadFile");
-      }
+      this.$refs.uploadFile.validate();
+
+      // if (!this.fullProfile.AttachedDocuments.items.length) {
+      //   debugger
+      //   this.$refs.uploadFile.validate();
+      // } else {
+      //   debugger
+      //   validItems(this.$refs, "uploadFile");
+      // }
 
       if (
         !this.fullProfile.Guarantee.Insurance.items.length ||
@@ -4786,8 +4799,8 @@ export default {
         this.$refs.DocumentExpirationDate.hasError ||
         this.$refs.DocumentRegionsGivenPlace.hasError ||
         this.$refs.DocumentGivenPlace.hasError ||
-        this.$refs.CardNumber.hasError ||
-        // this.$refs.BankInps.hasError ||
+        // this.$refs.CardNumber.hasError ||
+        this.$refs.BankInps.hasError ||
 
         this.$refs.phonesValid.hasError ||
         this.$refs.education.hasError ||
@@ -5949,6 +5962,8 @@ export default {
           if (idx != -1) {
             this.fullProfile.AttachedDocuments.items.splice(idx, 1);
           }
+
+          console.log('this.filesAll', this.filesAll)
         }
       } catch (error) {
         this.$store.commit(

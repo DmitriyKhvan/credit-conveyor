@@ -147,7 +147,7 @@ export const profile = {
         ResidentFlag: true,
         Gender: null,
         CardNumber: null, // номер карты
-        // BankInps: null, // инпс банка
+        BankInps: null, // инпс банка
         LSBO : false,
         role: "",
         filial: "",
@@ -492,7 +492,8 @@ export const profile = {
           },
           {
             // data: "12345",
-            data: state.fullFormProfile.ApplicationID,
+            // data: state.fullFormProfile.ApplicationID,
+            data: state.fullFormProfile.Number,
             name: "appId"
           }
         ]
@@ -1175,7 +1176,7 @@ export const profile = {
           ResidentFlag: true,
           Gender: null,
           CardNumber: null, // номер карты
-          // BankInps: null, // инпс банка
+          BankInps: null, // инпс банка
           LSBO : false,
           role: "",
           filial: "",

@@ -170,5 +170,13 @@ export default {
   .clientInfo {
     max-width: auto;
     margin-bottom: 16px;
+
+    .q-table--no-wrap th, .q-table--no-wrap td {
+      white-space: normal;
+    }
+
+    .q-splitter--vertical > .q-splitter__panel {
+      width: 130px !important;
+    }
   }
 </style>

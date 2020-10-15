@@ -3,22 +3,22 @@
     <div class="salaryBlock">
       <div class="salaryItem">
         <h6>Минимальное поступление</h6>
-        <span>{{ salaries.min }}</span>
+        <span>{{ salaries.min | formatNumber }}</span>
       </div>
 
       <div class="salaryItem">
         <h6>Максимальное поступление</h6>
-        <span>{{ salaries.max }}</span>
+        <span>{{ salaries.max | formatNumber }}</span>
       </div>
 
       <div class="salaryItem">
         <h6>Среднее значение</h6>
-        <span>{{ salaries.average }}</span>
+        <span>{{ salaries.average | formatNumber }}</span>
       </div>
 
       <div class="salaryItem">
         <h6>Поступлений за период 12 месяцев</h6>
-        <span>{{ salaries.yearWages }}</span>
+        <span>{{ salaries.yearWages | formatNumber }}</span>
       </div>
     </div>
     <q-markup-table separator="cell" flat bordered>
