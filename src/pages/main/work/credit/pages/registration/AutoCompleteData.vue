@@ -33,7 +33,7 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
   // .q-btn--rectangle {
   //   border-radius: 0;
   // }
@@ -43,8 +43,11 @@ export default {
   // }
 
   .digIdBtn {
-    background: #4AB8FF;
-    font-size: 14px;
+    background: #4AB8FF !important;
     font-weight: bold;
+
+    .q-btn__content {
+        font-size: 14px;
+      }
   }
 </style>

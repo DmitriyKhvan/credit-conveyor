@@ -380,21 +380,21 @@
               </div>
               <div class="col-9 fieldData">Подтвержденный ежемесячный доход</div>
               <div class="col-3">
-                {{ Customer.MonthlyIncome.confirmMonthlyIncome }}
+                {{ Customer.MonthlyIncome.confirmMonthlyIncome | formatNumber }}
               </div>
               <div class="col-9 fieldData">
                 Периодические расходы (доля расходов на налоги, содержание
                 семьи, оплата аренды, образование, алименты и др.)
               </div>
               <div class="col-3">
-                {{ Customer.MonthlyExpenses.recurringExpenses }}
+                {{ Customer.MonthlyExpenses.recurringExpenses | formatNumber }}
               </div>
               <div class="col-9 fieldData">
                 Плата за облуживание других обязательств (погашение кредитов в
                 банках, фин. организациях и др.)
               </div>
               <div class="col-3">
-                {{ Customer.MonthlyExpenses.obligations }}
+                {{ Customer.MonthlyExpenses.obligations | formatNumber }}
               </div>
               <div class="col-9 fieldData">Наличие дополнительного дохода</div>
               <div class="col-3">
@@ -416,7 +416,7 @@
               </div>
               <div class="col-9 fieldData">Размер дополнительного дохода</div>
               <div class="col-3">
-                {{ Customer.MonthlyIncome.additionalIncome.sum }}
+                {{ Customer.MonthlyIncome.additionalIncome.sum | formatNumber }}
               </div>
               <div class="col-9 fieldData">
                 Источник дополнительного дохода (появляются при наличии доп.
@@ -745,7 +745,13 @@
                     <div class="col-3 fieldData">ИНН страховой компании</div>
                     <div class="col-3">{{ guarantee.INN }}</div>
                     <div class="col-3 fieldData">Сумма страхового полиса</div>
-                    <div class="col-9">{{ guarantee.Sum }}</div>
+                    <div class="col-3">{{ guarantee.Sum }}</div>
+                    <div class="col-3 fieldData">Номер страхового договора</div>
+                    <div class="col-3">{{ guarantee.ContractNumber }}</div>
+                    <div class="col-3 fieldData">Дата начала действия договора</div>
+                    <div class="col-3">{{ guarantee.StartDate }}</div>
+                    <div class="col-3 fieldData">Дата истечения действия договора</div>
+                    <div class="col-3">{{ guarantee.ExpDate }}</div>
                   </div>
                 </div>
               </template>
@@ -837,7 +843,7 @@
                   }}
                 </div>
 
-                <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+                <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
                   <div class="col-3 fieldData">Наименование продавца/производителя товара/работы/услуги</div>
                   <div class="col-3">{{ fullProfile.LoanInfo.consumerLoan.nameProduction }}</div>
 
@@ -943,7 +949,7 @@
 
           <div class="row q-col-gutter-md signature">
             <div class="col-8">
-              <p class="bor">{{ Customer.FullName }}</p>
+              <p class="bor">{{ Customer.LastName }} {{ Customer.FirstName }} {{ Customer.MiddleName }}</p>
               <p>Полностью Фамилия, Имя, Отчество</p>
             </div>
             <div class="col-4">
@@ -1005,6 +1011,7 @@
 <script>
 import { mapState } from  "vuex"
 import printJS from "print-js"
+import formatNumber from "../../filters/format_number.js";
 
 export default {
   props: ["currentDate"],
@@ -1033,6 +1040,7 @@ export default {
   },
   methods: {
     callPrint(strid) {
+      this.$emit('printFullForm', true)
       const head = document.querySelector("head");
       const prtContent = document.getElementById(strid);
       
@@ -1081,6 +1089,9 @@ export default {
         ).label
       }
     }
+  },
+  filters: {
+    formatNumber
   }
 };
 </script>

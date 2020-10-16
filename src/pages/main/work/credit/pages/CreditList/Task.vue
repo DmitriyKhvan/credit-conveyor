@@ -614,14 +614,14 @@
             <div class="row rowForm">
               <div class="col-6 field">Подвержденный ежемесячный доход</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyIncome.confirmMonthlyIncome }}
+                {{ Customer.MonthlyIncome.confirmMonthlyIncome | formatNumber }}
               </div>
             </div>
 
             <div class="row rowForm">
               <div class="col-6 field">Периодические расходы</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyExpenses.recurringExpenses }}
+                {{ Customer.MonthlyExpenses.recurringExpenses | formatNumber }}
               </div>
             </div>
 
@@ -649,14 +649,14 @@
                 Плата за обслуживание других обязательств
               </div>
               <div class="col-6 data">
-                {{ Customer.MonthlyExpenses.obligations }}
+                {{ Customer.MonthlyExpenses.obligations | formatNumber }}
               </div>
             </div>
 
             <div class="row rowForm">
               <div class="col-6 field">Размер дополнительного дохода</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyIncome.additionalIncome.sum }}
+                {{ Customer.MonthlyIncome.additionalIncome.sum | formatNumber }}
               </div>
             </div>
 
@@ -1028,7 +1028,7 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма поручительства</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
                 <div class="row rowForm">
@@ -1113,7 +1113,7 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма поручительства</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
                 <div class="row rowForm">
@@ -1160,7 +1160,22 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма страхового полиса</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер страхового договора</div>
+                  <div class="col-6 data">{{ guarantee.ContractNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Дата начала действия договора</div>
+                  <div class="col-6 data">{{ guarantee.StartDate }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Дата истечения действия договора</div>
+                  <div class="col-6 data">{{ guarantee.ExpDate }}</div>
                 </div>
               </div>
             </template>
@@ -1189,7 +1204,7 @@
 
             <div class="row rowForm">
               <div class="col-6 field">Запрашиваемая сумма кредита</div>
-              <div class="col-6 data">{{ fullProfile.LoanInfo.Sum }}</div>
+              <div class="col-6 data">{{ fullProfile.LoanInfo.Sum | formatNumber }}</div>
             </div>
 
             <div class="row rowForm">
@@ -1338,7 +1353,7 @@
               </div>
             </div>
 
-            <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Наименование продавца/производителя товара/работы/услуги
@@ -1425,7 +1440,7 @@
                   Расчет максимально возможной суммы кредита (скоринг)
                 </div>
                 <div class="col-6 data">
-                  {{ profile.LoanMax }}
+                  {{ profile.LoanMax | formatNumber }}
                 </div>
               </div>
             </template>
@@ -1677,6 +1692,7 @@ import LoaderFullScreen from "@/components/LoaderFullScreen";
 import GetDataINPS from "../../Components/INPS/GetData";
 
 import formatDate from "../../filters/formatDate";
+import formatNumber from "../../filters/format_number.js";
 import { validItems, validFilter } from "../../filters/valid_filter";
 import ClientInfo from "../../Components/ClientInfo";
 
@@ -1774,7 +1790,22 @@ export default {
     },
     filialName() {
       return this.$route.query.filialName;
+    },
+    messageApprove() {
+      return this.userRole == "ROLE_CCC"
+              ? 'Form approve'
+              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+                ? 'Credit success'
+                : null
+    },
+    messageReject() {
+      return this.userRole == "ROLE_CCC"
+              ? 'Form reject'
+              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+                ? 'Credit failure'
+                : null
     }
+
   },
   methods: {
     async getClientInfo() {
@@ -1803,7 +1834,7 @@ export default {
           comment: this.commentCC
         });
       }
-      this.sentData("Credit success");
+      this.sentData(this.messageApprove);
     },
 
     submitHandler(event) {
@@ -1845,7 +1876,7 @@ export default {
           });
         }
 
-        this.sentData("Credit failure");
+        this.sentData(this.messageReject);
 
         this.confirm = false;
       }
@@ -2071,7 +2102,8 @@ export default {
     appClientInfo: ClientInfo
   },
   filters: {
-    formatDate
+    formatDate,
+    formatNumber
   }
 };
 </script>
@@ -2139,29 +2171,32 @@ export default {
 
   .formBlock {
     font-size: 16px;
+    padding: 30px;
+    margin-top: -5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .rowForm {
     display: flex;
     align-items: center;
     margin: 8px 0 4px 0;
-  }
 
-  .field {
-    color: #A0A5BA;
-    padding: 0 5px 0 30px;
-  }
+    .field {
+      color: #A0A5BA;
+      padding: 0 5px 0 0;
+    }
 
-  .data {
-    display: flex;
-    min-height: 45px;
-    justify-content: space-between;
-    align-items: center;
-    color: #2A3C63;
-    padding: 10px 20px;
-    border: 1px solid #E7E7E7;
-    border-radius: 5px;
-    background: #FAFAFA;
+    .data {
+      display: flex;
+      min-height: 45px;
+      justify-content: space-between;
+      align-items: center;
+      color: #2A3C63;
+      padding: 10px 20px;
+      border: 1px solid #E7E7E7;
+      border-radius: 5px;
+      background: #FAFAFA;
+    }
   }
 
   .subTitleForm {
@@ -2252,6 +2287,14 @@ export default {
 
 .failureCredit {
   width: 600px;
+
+  .q-field__control:after {
+    border-radius: 5px!important;
+  }
+
+  .q-field--square .q-field__control {
+    border-radius: 5px!important;
+  }
 
   .separate {
     width: auto;

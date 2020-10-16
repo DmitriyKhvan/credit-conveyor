@@ -199,7 +199,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
+                    : credit.taskName === 'Step: Решение о выдаче'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -958,6 +958,17 @@ export default {
       }
     }
 
+    // tbody {
+    //   tr {
+    //     &:hover {
+    //       &:hover{
+    //         background: rgba(0, 0, 0, 0.1) !important;
+    //         border-radius: 5px;
+    //       }
+    //     }
+    //   }
+    // }
+
     tr {
       background: #FFFFFF;
       border: 2px solid #FFFFFF;
@@ -988,15 +999,18 @@ export default {
     white-space: pre-wrap;
     &:before {
       background: rgba(0, 0, 0, 0.15) !important;
+      // background: none;
     }
   }
 
   .time {
-    background: rgba(255, 129, 129, 0.5) !important;
+    // background: rgba(255, 129, 129, 0.5) !important;
+    background: rgba(255, 74, 74, 0.5) !important;
   }
 
   .creditCompleate {
-    background: rgba(99, 195, 148, 0.5) !important;
+    // background: rgba(99, 195, 148, 0.5) !important;
+    background: rgba(71, 184, 129, 0.5) !important;
   }
 
   .number {

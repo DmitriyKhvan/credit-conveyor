@@ -19,20 +19,22 @@
         <tr v-for="(deposit, index) of data" :key="deposit.req_date + index">
           <td>{{ deposit.name }}</td>
           <td>{{ deposit.currency }}</td>
-          <td>{{ deposit.amount }}</td>
-          <td>{{ deposit.min_payment }}</td>
+          <td>{{ deposit.amount | formatNumber }}</td>
+          <td>{{ deposit.min_payment | formatNumber }}</td>
           <td>{{ deposit.percent }}</td>
           <td>{{ deposit.number }}</td>
           <td>{{ deposit.mfo }}</td>
           <td>{{ deposit.req_date }}</td>
           <td>{{ deposit.curr_rate }}</td>
-          <td>{{ deposit.uzs_amount }}</td>
+          <td>{{ deposit.uzs_amount | formatNumber }}</td>
         </tr>
       </tbody>
     </q-markup-table>
   </div>
 </template>
 <script>
+import formatNumber from "../filters/format_number"
+
 export default {
   props: {
     data: {
@@ -42,7 +44,10 @@ export default {
   },
   created() {
     console.log('deposits', this.data)
-  }
+  },
+  filters: {
+    formatNumber,
+  },
 }
 </script>
 
