@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-md taskBlock">
     <div class="loaderForm" v-if="loaderForm">
       <appLoader />
     </div>
@@ -8,7 +8,7 @@
       <div class="row infoBlock">
         <div class="infoBlockItem">
           <h6 class="titleCredit">Дата</h6>
-          <span class="creditInfo">{{ date | formatDate('datetime') }}</span>
+          <span class="creditInfo">{{ date | formatDate("datetime") }}</span>
         </div>
 
         <div class="infoBlockItem">
@@ -105,7 +105,6 @@
               </div>
             </div>
 
-
             <div class="row rowForm">
               <div class="col-3 field">Вид документа</div>
               <div class="col-9 data">
@@ -115,7 +114,7 @@
                       i => i.value == Customer.Document.documentType
                     )
                   "
-                > 
+                >
                   {{
                     dictionaries.DocumentType.items.find(
                       i => i.value == Customer.Document.documentType
@@ -125,7 +124,7 @@
               </div>
             </div>
 
-            <div class="row rowForm" v-if="Customer.Document.documentType == 7"> 
+            <div class="row rowForm" v-if="Customer.Document.documentType == 7">
               <div class="col-3 field">Наименование документа</div>
               <div class="col-9 data">
                 {{ Customer.Document.DocumentName }}
@@ -171,9 +170,22 @@
               <div class="col-3 field">Кем выдан документ</div>
               <div class="col-9 data">
                 {{
-                  getDistrict(Customer.Document.Region, Customer.Document.GivenPlace)
+                  getDistrict(
+                    Customer.Document.Region,
+                    Customer.Document.GivenPlace
+                  )
                 }}
               </div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-3 field">Номер карты</div>
+              <div class="col-9 data">{{ Customer.CardNumber }}</div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-3 field">Номер карты поручителя</div>
+              <div class="col-9 data">{{ Customer.BankInps }}</div>
             </div>
 
             <div class="row rowForm">
@@ -256,9 +268,7 @@
               <div class="row rowForm">
                 <div class="col-4 field">Район</div>
                 <div class="col-8 data" colspan="6">
-                  {{
-                    getDistrict(address.Region, address.District)
-                  }}
+                  {{ getDistrict(address.Region, address.District) }}
                 </div>
               </div>
 
@@ -372,11 +382,13 @@
               <div class="row rowForm">
                 <div class="col-3 field">Вид документа</div>
                 <div class="col-9 data">
-                  <template v-if="
-                    dictionaries.DocumentType.items.find(
-                      i => i.value == relative.Document.documentType
-                    )
-                  ">
+                  <template
+                    v-if="
+                      dictionaries.DocumentType.items.find(
+                        i => i.value == relative.Document.documentType
+                      )
+                    "
+                  >
                     {{
                       dictionaries.DocumentType.items.find(
                         i => i.value == relative.Document.documentType
@@ -386,7 +398,7 @@
                 </div>
               </div>
 
-              <template  v-if="relative.Document.documentType == 7"> 
+              <template v-if="relative.Document.documentType == 7">
                 <div class="row rowForm">
                   <div class="col-3 field">Наименование документа</div>
                   <div class="col-9 data">
@@ -420,10 +432,10 @@
                 <div class="col-3 field">Регион / область выдачи документа</div>
                 <div class="col-9 data">
                   {{
-                      dictionaries.Region.items.find(
-                        i => i.value == relative.Document.Region
-                      ).label
-                    }}
+                    dictionaries.Region.items.find(
+                      i => i.value == relative.Document.Region
+                    ).label
+                  }}
                 </div>
               </div>
 
@@ -431,10 +443,35 @@
                 <div class="col-3 field">Кем выдан документ</div>
                 <div class="col-9 data">
                   {{
-                    getDistrict(relative.Document.Region, relative.Document.GivenPlace)
+                    getDistrict(
+                      relative.Document.Region,
+                      relative.Document.GivenPlace
+                    )
                   }}
                 </div>
-              </div>  
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-12 field">
+                  <q-checkbox
+                    disable
+                    left-label
+                    v-model="relative.LSBO"
+                    label="ЛСБО"
+                  />
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Номер филиала</div>
+                <div class="col-3 data">
+                  {{ relative.filial }}
+                </div>
+                <div class="col-3 field">Должность</div>
+                <div class="col-3 data">
+                  {{ relative.role }}
+                </div>
+              </div>
 
               <!-- <div class="row rowForm">
             <div class="col-2 field">ИНН</div>
@@ -577,14 +614,14 @@
             <div class="row rowForm">
               <div class="col-6 field">Подвержденный ежемесячный доход</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyIncome.confirmMonthlyIncome }}
+                {{ Customer.MonthlyIncome.confirmMonthlyIncome | formatNumber }}
               </div>
             </div>
 
             <div class="row rowForm">
               <div class="col-6 field">Периодические расходы</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyExpenses.recurringExpenses }}
+                {{ Customer.MonthlyExpenses.recurringExpenses | formatNumber }}
               </div>
             </div>
 
@@ -612,14 +649,14 @@
                 Плата за обслуживание других обязательств
               </div>
               <div class="col-6 data">
-                {{ Customer.MonthlyExpenses.obligations }}
+                {{ Customer.MonthlyExpenses.obligations | formatNumber }}
               </div>
             </div>
 
             <div class="row rowForm">
               <div class="col-6 field">Размер дополнительного дохода</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyIncome.additionalIncome.sum }}
+                {{ Customer.MonthlyIncome.additionalIncome.sum | formatNumber }}
               </div>
             </div>
 
@@ -645,23 +682,21 @@
                 </template>
               </div>
             </div>
-            <div 
-              v-if="userRole === 'CCM'"
-              class="row rowForm"
-            >
-              
+            <div v-if="userRole === 'ROLE_CC'" class="row rowForm">
               <div class="col-12 field">
-                <q-btn
-                  :loading="bankLoading"
-                  color="primary"
-                  label="Посмотреть заработные поступления"
-                  @click="getDataINPS"
-                  class="addItem"
-                >
-                  <template v-slot:loading>
-                    <q-spinner-facebook />
-                  </template>
-                </q-btn>
+                <div class="btnBlock">
+                  <q-btn
+                    :loading="bankLoading"
+                    color="primary"
+                    label="Посмотреть заработные поступления"
+                    @click="getDataINPS"
+                    class="btnGet"
+                  >
+                    <template v-slot:loading>
+                      <q-spinner-facebook />
+                    </template>
+                  </q-btn>
+                </div>
               </div>
             </div>
           </div>
@@ -831,7 +866,7 @@
                 <div class="row rowForm">
                   <div class="col-6 field">Резиденство</div>
                   <div class="col-6 data">
-                    <template 
+                    <template
                       v-if="
                         credits.options.confirmation.find(
                           i => i.value == guarantee.Resident
@@ -859,7 +894,7 @@
                           i => i.value == guarantee.Document.documentType
                         )
                       "
-                    > 
+                    >
                       {{
                         dictionaries.DocumentType.items.find(
                           i => i.value == guarantee.Document.documentType
@@ -869,7 +904,10 @@
                   </div>
                 </div>
 
-                <div class="row rowForm" v-if="guarantee.Document.documentType == 7"> 
+                <div
+                  class="row rowForm"
+                  v-if="guarantee.Document.documentType == 7"
+                >
                   <div class="col-6 field">Наименование документа</div>
                   <div class="col-6 data">
                     {{ guarantee.Document.DocumentName }}
@@ -899,13 +937,15 @@
                 </div>
 
                 <div class="row rowForm">
-                  <div class="col-6 field">Регион / область выдачи документа</div>
+                  <div class="col-6 field">
+                    Регион / область выдачи документа
+                  </div>
                   <div class="col-6 data">
                     {{
-                        dictionaries.Region.items.find(
-                          i => i.value == guarantee.Document.Region
-                        ).label
-                      }}
+                      dictionaries.Region.items.find(
+                        i => i.value == guarantee.Document.Region
+                      ).label
+                    }}
                   </div>
                 </div>
 
@@ -913,10 +953,27 @@
                   <div class="col-6 field">Кем выдан документ</div>
                   <div class="col-6 data">
                     {{
-                      getDistrict(guarantee.Document.Region, guarantee.Document.GivenPlace)
+                      getDistrict(
+                        guarantee.Document.Region,
+                        guarantee.Document.GivenPlace
+                      )
                     }}
                   </div>
-                </div>                    
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер карты</div>
+                  <div class="col-6 data">
+                    {{ guarantee.CardNumber }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер карты поручителя</div>
+                  <div class="col-6 data">
+                    {{ guarantee.BankInps }}
+                  </div>
+                </div>
 
                 <div class="row rowForm">
                   <div class="col-12 field">Адрес:</div>
@@ -947,7 +1004,10 @@
                   <div class="col-6 field">Район</div>
                   <div class="col-6 data">
                     {{
-                      getDistrict(guarantee.Address.Region, guarantee.Address.District)
+                      getDistrict(
+                        guarantee.Address.Region,
+                        guarantee.Address.District
+                      )
                     }}
                   </div>
                 </div>
@@ -968,7 +1028,7 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма поручительства</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
                 <div class="row rowForm">
@@ -1053,7 +1113,7 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма поручительства</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
                 <div class="row rowForm">
@@ -1100,7 +1160,22 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма страхового полиса</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер страхового договора</div>
+                  <div class="col-6 data">{{ guarantee.ContractNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Дата начала действия договора</div>
+                  <div class="col-6 data">{{ guarantee.StartDate }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Дата истечения действия договора</div>
+                  <div class="col-6 data">{{ guarantee.ExpDate }}</div>
                 </div>
               </div>
             </template>
@@ -1129,7 +1204,7 @@
 
             <div class="row rowForm">
               <div class="col-6 field">Запрашиваемая сумма кредита</div>
-              <div class="col-6 data">{{ fullProfile.LoanInfo.Sum }}</div>
+              <div class="col-6 data">{{ fullProfile.LoanInfo.Sum | formatNumber }}</div>
             </div>
 
             <div class="row rowForm">
@@ -1137,7 +1212,12 @@
               <div class="col-6 data">{{ fullProfile.LoanInfo.Currency }}</div>
             </div>
 
-            <template v-if="!!fullProfile.LoanInfo.LoanProduct && fullProfile.LoanInfo.LoanProduct !== 3">
+            <template
+              v-if="
+                !!fullProfile.LoanInfo.LoanProduct &&
+                  fullProfile.LoanInfo.LoanProduct !== 3
+              "
+            >
               <div class="row rowForm">
                 <div class="col-6 field">Тип пошагового кредита</div>
                 <div class="col-6 data">
@@ -1273,7 +1353,7 @@
               </div>
             </div>
 
-            <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Наименование продавца/производителя товара/работы/услуги
@@ -1327,14 +1407,13 @@
               </div>
             </template>
 
-            <!-- кредитный комитет -->
-            <template v-if="userRole === 'CCM'">
+            <template v-if="userRole === 'ROLE_CC'">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Среднемесячная заработная плата(сум)
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.avgSalary }}
                 </div>
               </div>
 
@@ -1343,7 +1422,7 @@
                   Профит
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.profit }}
                 </div>
               </div>
 
@@ -1352,7 +1431,7 @@
                   Класс кредитоспособности
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.loanAbilityClass }}
                 </div>
               </div>
 
@@ -1361,11 +1440,10 @@
                   Расчет максимально возможной суммы кредита (скоринг)
                 </div>
                 <div class="col-6 data">
-                  {{ }}
+                  {{ profile.LoanMax | formatNumber }}
                 </div>
               </div>
             </template>
-
           </div>
 
           <h4 class="titleForm">Документы</h4>
@@ -1376,21 +1454,19 @@
                 :key="document.id"
               >
                 <div class="row rowForm">
-                  <div class="col-3 field">
+                  <div class="col-4 field">
                     Наименование документа {{ index + 1 }}
                   </div>
-                  <div class="col-5 data">
-                    {{ document.DocumentName }}
-                  </div>
-                  <div class="col-4 field">
+                  <div class="col-8 data">
+                    <p>{{ document.DocumentName }}</p>
                     <q-btn
                       class="showFile"
                       color="primary"
                       label="Просмотреть"
                       @click="
-                        loaderFullScreen = true
-                        showFile(document.id)
-                        loaderFullScreen = false
+                        loaderFullScreen = true;
+                        showFile(document.id);
+                        loaderFullScreen = false;
                       "
                     />
                   </div>
@@ -1427,22 +1503,47 @@
             </template>
           </div>
         </div>
+
+        <div class="col-12" v-if="userRole !== 'ROLE_UrWr'">
+          <div class="clientInfo tab">
+            <h4 class="titleForm">
+              Информация о клиенте
+            </h4>
+            <div class="formBlock">
+              <appClientInfo
+                v-if="clientInfo"
+                :data="clientInfo"
+                :scoring="fullProfile"
+              />
+
+              <q-btn
+                :loading="clientInfoLoading"
+                color="primary"
+                label="Получить данные клиента"
+                @click="getClientInfo"
+                class="btnGet"
+              >
+                <template v-slot:loading>
+                  <q-spinner-facebook />
+                </template>
+              </q-btn>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="row q-col-gutter-md btn-decision">
-        <div class="col-3">
-          <q-btn
-            color="green"
+        <div class="col-12">
+          <div class="btnBlock">
+            <q-btn
             label="Одобрить"
-            class="q-ml-md full-width"
+            class="q-ml-md btnSucces"
             @click="creditSuccess"
           />
-        </div>
-        <div class="col-3">
+        
           <q-btn
-            color="red"
             label="Отклонить"
-            class="q-ml-md full-width"
+            class="q-ml-md btnFailure"
             @click="
               () => {
                 confirm = true;
@@ -1450,13 +1551,11 @@
               }
             "
           />
-        </div>
-
-        <div v-if="userRole === 'CCM'" class="col-3">
+        
           <q-btn
-            color="blue"
+            v-if="userRole === 'ROLE_CC'"
             label="На доработку"
-            class="q-ml-md full-width"
+            class="q-ml-md btnRework"
             @click="
               () => {
                 confirm = true;
@@ -1464,6 +1563,7 @@
               }
             "
           />
+          </div>
         </div>
       </div>
 
@@ -1475,6 +1575,7 @@
           <q-card-section class="row titleFailureCredit">
             <span class="q-ml-sm">Введите причину отказа</span>
           </q-card-section>
+          <div class="separate"></div>
           <form
             class="failureCreditForm row q-col-gutter-md"
             @submit.prevent.stop="submitHandler"
@@ -1494,7 +1595,10 @@
             /> -->
 
               <!-- <div v-if="reason === options.reason[3]" style="max-width: 100%"> -->
-              <div v-if="userRole == 'BO'" style="max-width: 100%">
+              <div
+                v-if="userRole == 'ROLE_CCC' || this.userRole == 'ROLE_UrWr'"
+                style="max-width: 100%"
+              >
                 <q-input
                   ref="comment"
                   square
@@ -1525,9 +1629,9 @@
               </div>
             </div>
 
-            <div class="col-6">
+            <div class="btnBlock">
               <q-btn
-                class="btnFailureCredit full-width"
+                class="btnCancel"
                 label="Отмена"
                 color="red"
                 v-close-popup
@@ -1538,10 +1642,9 @@
                   }
                 "
               />
-            </div>
-            <div class="col-6">
+            
               <q-btn
-                class="btnFailureCredit full-width"
+                class="btnOk"
                 type="submit"
                 label="Отправить"
                 color="green"
@@ -1569,15 +1672,14 @@
     <q-dialog v-model="INPSBar" persistent>
       <q-card class="INPSblock">
         <q-card-section>
-          <appGetDataINPS 
+          <appGetDataINPS
             v-if="dataINPS"
             :salaries="dataINPS"
-            @closeBar="($event) => INPSBar=$event"
+            @closeBar="$event => (INPSBar = $event)"
           />
         </q-card-section>
       </q-card>
     </q-dialog>
-
   </div>
 </template>
 <script>
@@ -1589,12 +1691,16 @@ import Loader from "@/components/Loader";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 import GetDataINPS from "../../Components/INPS/GetData";
 
-import formatDate from "../../filters/formatDate"
+import formatDate from "../../filters/formatDate";
+import formatNumber from "../../filters/format_number.js";
 import { validItems, validFilter } from "../../filters/valid_filter";
+import ClientInfo from "../../Components/ClientInfo";
 
 export default {
   data() {
     return {
+      clientInfo: null,
+      clientInfoLoading: false,
       creditTitles: null,
       loader: false,
       bankLoading: false,
@@ -1644,10 +1750,10 @@ export default {
         sessionStorage.getItem("csrf_token")
       );
     }
-    
+
     try {
       const res = await this.$store.dispatch("profile/getFullForm");
-      this.loaderForm = false
+      this.loaderForm = false;
       console.log("res", res);
     } catch (error) {}
   },
@@ -1657,7 +1763,7 @@ export default {
       for (let title of this.creditTitles) {
         title.addEventListener("click", () => this.toggleCreditBlock(title));
       }
-    }, 500)
+    }, 500);
   },
   destroyed() {
     for (let title of this.creditTitles) {
@@ -1666,12 +1772,12 @@ export default {
   },
   computed: {
     ...mapState({
-        fullProfile: state => state.profile.fullFormProfile,
-        profile: state => state.profile,
-        Customer: state => state.profile.fullFormProfile.Customer,
-        dictionaries: state => state.profile.dictionaries,
-        credits: state => state.credits
-      }),
+      fullProfile: state => state.profile.fullFormProfile,
+      profile: state => state.profile,
+      Customer: state => state.profile.fullFormProfile.Customer,
+      dictionaries: state => state.profile.dictionaries,
+      credits: state => state.credits
+    }),
 
     date() {
       return this.$route.query.date;
@@ -1684,22 +1790,51 @@ export default {
     },
     filialName() {
       return this.$route.query.filialName;
+    },
+    messageApprove() {
+      return this.userRole == "ROLE_CCC"
+              ? 'Form approve'
+              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+                ? 'Credit success'
+                : null
+    },
+    messageReject() {
+      return this.userRole == "ROLE_CCC"
+              ? 'Form reject'
+              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+                ? 'Credit failure'
+                : null
     }
+
   },
   methods: {
+    async getClientInfo() {
+      this.clientInfoLoading = true;
+      try {
+        this.clientInfo = await this.$store.dispatch("profile/clientInfo");
+        this.clientInfoLoading = false;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.clientInfoLoading = false;
+      }
+    },
+
     creditSuccess() {
       console.log("userRole", this.userRole);
       console.log("fulForm", this.fullProfile);
 
-      if (this.userRole == "BO") {
+      if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
         this.BODecision = true; // кредит одобрен
-      } else if (this.userRole == "CCM") {
+      } else if (this.userRole == "ROLE_CC") {
         this.$store.commit("profile/addComment", {
           commentBlock: "CreditCommiteeDecisions",
           comment: this.commentCC
         });
       }
-      this.sentData("Credit success");
+      this.sentData(this.messageApprove);
     },
 
     submitHandler(event) {
@@ -1719,13 +1854,13 @@ export default {
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
-        if (this.userRole == "BO") {
+        if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
           this.BODecision = false; // кредит отклонен
           this.$store.commit("profile/addComment", {
             commentBlock: "ApplicationComment",
             comment: this.commentBO
           });
-        } else if (this.userRole == "CCM") {
+        } else if (this.userRole == "ROLE_CC") {
           this.$store.commit("profile/addComment", {
             commentBlock: "CreditCommiteeDecisions",
             comment: this.commentCC
@@ -1734,15 +1869,14 @@ export default {
           this.$store.commit("profile/addComment", {
             commentBlock: "ApplicationComment",
             comment: {
-                Comment: this.commentCC.Comment,
-                CommentPerson: this.$store.getters["auth/username"],
-                Type: this.$store.getters["credits/userRole"]
-              }
+              Comment: this.commentCC.Comment,
+              CommentPerson: this.$store.getters["auth/username"],
+              Type: this.$store.getters["credits/userRole"]
+            }
           });
-          
         }
 
-        this.sentData("Credit failure");
+        this.sentData(this.messageReject);
 
         this.confirm = false;
       }
@@ -1751,7 +1885,7 @@ export default {
     async sentData(message) {
       this.loader = true;
       let data = {};
-      if (this.userRole == "BO") {
+      if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
         data = {
           output: [
             {
@@ -1768,7 +1902,7 @@ export default {
             }
           ]
         };
-      } else if (this.userRole == "CCM") {
+      } else if (this.userRole == "ROLE_CC") {
         // const fullNameArr = this.$store.getters["auth/fullName"].split(' ')
         // const fullName = `${fullNameArr[1]} ${fullNameArr[0]} ${fullNameArr[2]}`
 
@@ -1804,14 +1938,17 @@ export default {
 
         if (response) {
           this.$store.commit("credits/setMessage", message);
-          this.$store.commit("credits/removeTask", this.$route.query.taskId)
+          this.$store.commit("credits/removeTask", this.$route.query.taskId);
           this.$router.go(-1);
         }
 
         this.loader = false;
       } catch (error) {
         this.loader = false;
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
         this.$router.go(-1);
       }
     },
@@ -1837,7 +1974,10 @@ export default {
           window.URL.revokeObjectURL(file);
         }
       } catch (error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
       }
     },
 
@@ -1851,43 +1991,43 @@ export default {
       if (district) {
         const regionId = this.dictionaries.Region.items.find(
           i => i.value == region
-        ).region_id
+        ).region_id;
 
         return this.dictionaries.Districts.items[0][regionId].items.find(
           i => i.value == district
-        ).label
+        ).label;
       }
     },
 
     async getDataINPS() {
-      this.bankLoading = true
+      this.bankLoading = true;
       let data = {
-          input: [
-            {
-              name: "passSerial",
-              data: this.Customer.Document.Series
-            },
-            {
-              name: "passNumber",
-              data: this.Customer.Document.Number
-            },
-            {
-              name: "pin",
-              data: this.Customer.PINPP
-            },
-            {
-              name: "application_id",
-              data: this.profile.preapprove_num
-            },
-            {
-              name: "from",
-              data: "getData"
-            }
-          ]
-        };
+        input: [
+          {
+            name: "passSerial",
+            data: this.Customer.Document.Series
+          },
+          {
+            name: "passNumber",
+            data: this.Customer.Document.Number
+          },
+          {
+            name: "pin",
+            data: this.Customer.PINPP
+          },
+          {
+            name: "application_id",
+            data: this.profile.preapprove_num
+          },
+          {
+            name: "from",
+            data: "getData"
+          }
+        ]
+      };
 
       try {
-        this.dataINPS = await this.$store.dispatch("profile/dataINPS", data)
+        this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
         if (this.dataINPS) {
           const INPSItems = this.dataINPS.wages.items.map(i => {
             return {
@@ -1895,20 +2035,19 @@ export default {
               send_date: i.send_date,
               inn: i.inn,
               total_invoices: {
-                  balance: i.total_invoices.balance,
-                  percent: i.total_invoices.percent,
-                  full: i.total_invoices.full
+                balance: i.total_invoices.balance,
+                percent: i.total_invoices.percent,
+                full: i.total_invoices.full
               },
               org_addres: i.org_addres,
               org_name: i.org_name
-            }
-          })
+            };
+          });
 
-          this.dataINPS.wages.items = INPSItems
+          this.dataINPS.wages.items = INPSItems;
 
           // this.dateTransformINPS()
-        } 
-        else {
+        } else {
           data = {
             input: [
               {
@@ -1922,17 +2061,20 @@ export default {
               }
             ]
           };
-          this.dataINPS = await this.$store.dispatch("profile/dataINPS", data)
+          this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
         }
-        
-        this.bankLoading = false
-        this.INPSBar = true
-      } catch(error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+
+        this.bankLoading = false;
+        this.INPSBar = true;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
         this.loader = false;
-        this.bankLoading = false
+        this.bankLoading = false;
       }
-    },
+    }
 
     // dateTransformINPS() {
     //   const INPSItems = this.dataINPS.wages.items.map(i => {
@@ -1956,149 +2098,234 @@ export default {
   components: {
     appLoader: Loader,
     appLoaderFullScreen: LoaderFullScreen,
-    appGetDataINPS: GetDataINPS
+    appGetDataINPS: GetDataINPS,
+    appClientInfo: ClientInfo
   },
   filters: {
-    formatDate
+    formatDate,
+    formatNumber
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.infoBlock {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0 10px 0;
-  padding: 10px 0;
-  border-top: 1px solid #0054a6;
-  border-bottom: 1px solid #0054a6;
-}
+<style lang="scss">
+.taskBlock {
+  background: #ffffff;
+  padding-bottom: 170px;
+  .infoBlock {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0 10px 0;
+    padding: 10px 0;
+    // border-top: 1px solid #0054a6;
+    // border-bottom: 1px solid #0054a6;
+  }
 
-.titleCredit {
-  margin: 0px;
-}
+  .creditInfo {
+    font-size: 20px;
+    color: #2A3C63;
+  }
 
-.titleForm {
-  cursor: pointer;
-  margin: 10px 0 0 0;
-  padding-left: 20px;
-  font-size: 16px;
-  color: #0054a6;
-  background: #ededed;
-  overflow: hidden;
+  .titleCredit {
+    margin: 0px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333333;
+  }
 
-  &:after {
-    content: "";
-    float: right;
-    border: 1px solid #0054a6;
-    border-width: 0 3px 3px 0;
-    margin: 13px 20px 13px;
-    padding: 4px;
-    transform: rotate(45deg);
+  .titleForm {
+    cursor: pointer;
+    margin: 10px 0 0 0;
+    padding: 5px 0 5px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #2A3C63;
+    overflow: hidden;
+    border-radius: 5px;
+
+    &:after {
+      content: "";
+      float: right;
+      border: 1px solid #ffffff;
+      border-width: 0 3px 3px 0;
+      margin: 13px 20px 13px;
+      padding: 4px;
+      transform: rotate(45deg);
+      border-radius: 2px;
+    }
+  }
+
+  .closeBlock {
+    &:after {
+      content: "";
+      float: right;
+      border: 1px solid #ffffff;
+      border-width: 0 3px 3px 0;
+      margin: 13px 20px 13px;
+      padding: 4px;
+      transform: rotate(-135deg);
+      border-radius: 2px;
+    }
+  }
+
+  .formBlock {
+    font-size: 16px;
+    padding: 30px;
+    margin-top: -5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .rowForm {
+    display: flex;
+    align-items: center;
+    margin: 8px 0 4px 0;
+
+    .field {
+      color: #A0A5BA;
+      padding: 0 5px 0 0;
+    }
+
+    .data {
+      display: flex;
+      min-height: 45px;
+      justify-content: space-between;
+      align-items: center;
+      color: #2A3C63;
+      padding: 10px 20px;
+      border: 1px solid #E7E7E7;
+      border-radius: 5px;
+      background: #FAFAFA;
+    }
+  }
+
+  .subTitleForm {
+    height: 20px;
+    margin: 20px 0;
+  }
+
+  .titleValue {
+    padding: 6px 8px;
+    color: #000000;
+    background: #F5F6FA;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  .q-btn--rectangle {
+    margin-top: 20px;
+    padding: 2px 0;
+    border-radius: 0;
+  }
+
+  .showFile {
+    margin: 0;
+    padding: 0;
+    background: #ffffff !important;
+    color: #333333 !important;
+    border: 1px solid #C4C4C4;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+  }
+
+  .close {
+    display: none;
+  }
+
+  .btn-decision {
+    justify-content: center;
+  }
+
+  .modalView {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    // overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+
+    button {
+      float: right;
+    }
+  }
+
+  .btnBlock {
+    display: flex;
+    justify-content: center;
+  }
+  .btnGet {
+      background: #4AB8FF !important;
+      border-radius: 2px;
+      font-weight: bold;
+    }
+
+  .btnSucces, .btnFailure, .btnRework {
+    min-width: 222px;
+    padding: 6px 14px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+  }
+
+  .btnSucces {
+    background: #47B881;   
+  }
+
+  .btnFailure{
+    background: #FF4A4A;
+  }
+
+  .btnRework {
+    background: #4AB8FF;
   }
 }
 
-.closeBlock {
-  &:after {
-    content: "";
-    float: right;
-    border: 1px solid #0054a6;
-    border-width: 0 3px 3px 0;
-    margin: 13px 20px 13px;
-    padding: 4px;
-    transform: rotate(-135deg);
-  }
-}
 
-.formBlock {
-  font-size: 16px;
-}
-
-.rowForm {
-  margin: 8px 0 4px 0;
-}
-
-.field {
-  color: #817878;
-  padding: 0 5px;
-}
-
-.data {
-  display: flex;
-  align-items: center;
-  color: #0054a6;
-  padding: 5px 20px;
-  border: 1px solid #acacac;
-  background: #f8f8f8;
-}
-
-.subTitleForm {
-  position: relative;
-  height: 20px;
-  margin: 20px 0;
-  font-size: 16px;
-  color: #0054a6;
-  border-bottom: 1px solid #0054a6;
-}
-
-.titleValue {
-  position: absolute;
-  padding-right: 5px;
-  background: #fff;
-  z-index: 1;
-}
-
-.q-btn--rectangle {
-  margin-top: 20px;
-  padding: 2px 0;
-  border-radius: 0;
-}
-
-.showFile {
-  margin: 0
-}
-
-.titleFailureCredit {
-  font-size: 16px;
-  color: #868686;
-  background: #ebebeb;
-  padding: 15px 20px;
-  margin-bottom: 20px;
-}
 
 .failureCredit {
   width: 600px;
-}
 
-.failureCreditForm {
-  padding: 0 40px 20px 40px;
-}
+  .q-field__control:after {
+    border-radius: 5px!important;
+  }
 
-.btnFailureCredit {
-  margin: 0;
-}
+  .q-field--square .q-field__control {
+    border-radius: 5px!important;
+  }
 
-.close {
-  display: none;
-}
+  .separate {
+    width: auto;
+    height: 1px;
+    background: #F2F2F2;
+    margin: 0 30px 20px 30px;
+  }
 
-.btn-decision {
-  justify-content: center;
-}
+  .titleFailureCredit {
+    font-size: 24px;
+    font-weight: 600;
+    color: #384966;
+    padding: 15px 48px;
+  }
 
-.modalView {
-  display: none;
-  position: fixed;
-  top: 48px;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  // overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  .failureCreditForm {
+    padding: 0 30px 40px 30px;
+  }
 
-  button {
-    float: right;
+  .btnBlock {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .btnCancel, .btnOk {
+      min-width: 186px;
+      min-height: 50px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      margin: 0 10px;
+    }
   }
 }
 </style>

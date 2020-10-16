@@ -111,7 +111,7 @@ const AuthService = {
   },
 
   logout: async function () {
-
+    sessionStorage.clear();
     LoadingService.showLoadingDots();
     try {
       ApiService.unmount401Interceptor();

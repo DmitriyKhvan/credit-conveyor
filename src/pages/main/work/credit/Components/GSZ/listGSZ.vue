@@ -22,18 +22,25 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td :colspan="0 !== 1 ? 6 : null"></td>
+        <tr v-for="(GRCInfo, index) of data" :key="'GRCInfo' + index">
+          <td>{{ GRCInfo.creditContract.info.items[0].name }}</td>
+          <td>{{ GRCInfo.client.passportSerial }}{{ GRCInfo.client.passportNumber }}</td>
+          <td>{{ GRCInfo.client.INN }}</td>
+          <td>{{ GRCInfo.creditContract.info.items[0].number }}</td>
+          <td>{{ GRCInfo.creditContract.info.items[0].mfo }}</td>
+          <td>{{ GRCInfo.creditContract.info.items[0].amount | formatNumber}} {{ GRCInfo.creditContract.info.items[index].currency }}</td>
+          <td>{{ GRCInfo.creditContract.info.items[0].pamentDetail.pr_amount }}</td>
+          <td>{{ GRCInfo.creditContract.info.items[0].pamentDetail.in_amount }}</td>
+          <td>{{ GRCInfo.creditContract.info.items[0].pamentDetail.ps_amount }}</td>
+
+          <!-- <td :colspan="0 !== 1 ? 6 : null">{{ GRCInfo.creditContract.info.items[index].number }}</td>
           <template v-if="0 === 1">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </template>  
+            <td>{{ GRCInfo.mfo }}</td>
+            <td>{{ GRCInfo.amount }} {{ GRCInfo.currency }}</td>
+            <td>{{ GRCInfo.paymentDetail.pr_amount }}</td>
+            <td>{{ GRCInfo.paymentDetail.in_amount }}</td>
+            <td>{{ GRCInfo.paymentDetail.ps_amount }}</td>
+          </template>   -->
           <td></td>
         </tr>
       </tbody>
@@ -41,8 +48,22 @@
   </div>
 </template>
 <script>
+import formatNumber from "../../filters/format_number";
+
 export default {
-  
+  props: {
+    data: {
+      type: Array,
+      default: []
+    }
+  }, 
+  created() {
+    console.log("GSZ", this.data)
+    // console.log("client", this.client)
+  },
+  filters: {
+    formatNumber,
+  },
 }
 </script>
 

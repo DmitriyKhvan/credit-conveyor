@@ -12,21 +12,31 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+        <tr v-for="claim of data" :key="claim.claim_date_number">
+          <td>{{ claim.claim_date_number }}</td>
+          <td>{{ claim.org_name }}</td>
+          <td>{{ claim.credit_quality }}</td>
+          <td>{{ claim.credit_date_number }}</td>
+          <td>{{ claim.credit_end_date }}</td>
+          <td>{{ claim.credit_debt | formatNumber}}</td>
         </tr>
       </tbody>
     </q-markup-table>
   </div>
 </template>
 <script>
+import formatNumber from "../../filters/format_number";
+
 export default {
-  
+  props: {
+    data: {
+      type: Array,
+      default: []
+    }
+  }, 
+  filters: {
+    formatNumber,
+  },
 }
 </script>
 

@@ -4,7 +4,13 @@ export default {
     'Data is null': 'Данные не пришли',
     'Next task id is undefined': 'Следующий таск неопределен',
     'Credit complete': 'Кредит оформлен',
-    'Credit success': 'Кредит одобрен',
-    'Credit failure': 'Кредит отклонен',
-    'Credit signed' : 'Кредит подписан'
+    'Credit success': 'Выдача кредита одобрена',
+    'Credit failure': 'Выдача кредита отклонена',
+    'Credit signed' : 'Кредит подписан',
+
+    'Form complete': 'Анкета оформлена',
+    'Form approve': 'Анкета одобрена',
+    'Form reject' : 'Анкета отклонена',
+    'Deal complete': 'Сделка оформлена',
+    'Payment complete': 'Платежка оформлена'
 }

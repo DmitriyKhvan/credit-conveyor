@@ -5,7 +5,25 @@ export const profile = {
   namespaced: true,
   state: {
     bpmService: new BpmService(),
+    payOrder: {
+      doc_type: {
+        items: []
+      },
+      pay_code: {
+        items: []
+      }
+    },
+    BPMInput: null,
     preapprove_num: "",
+    applicationNumber: "", // номер заявки для печатной формы
+    userrole: "",
+    percent: 25,
+
+    avgSalary: null,
+    loanAbilityClass: null,
+    profit: null,
+    LoanMax: null,
+
     confirmCredit: false,
     fileList: [],
     loadings: [], // для лоадинга печатных форм
@@ -98,16 +116,18 @@ export const profile = {
 
     fullFormProfile: {
       Status: "",
-      // ApplicationID: "",
+      ApplicationID: "",
       // ProtocolNumber: "",
-      // Number: "",
-      // Branch: "",
-      BODecision: false,
-      // FinalDecision: "",
+      Number: "",
+      Branch: "",
+      BranchName: "",
+      BODecision: null,
+      FinalDecision: "", // отказ кредитного менеджера
       // Date: "",
       BOLogin: "", // логин авторизованного пользователя
       // Department: "",
       ClientManagerLogin: "", // при авторизации
+      ClientManagerName: null,
       CreditCommiteeDecisions: {
         items: [
           // {
@@ -120,6 +140,7 @@ export const profile = {
       },
 
       Customer: {
+        CustomerId: 0,
         DigID: false,
         Email: "",
         FirstName: "",
@@ -133,6 +154,12 @@ export const profile = {
         PINPP: "",
         ResidentFlag: true,
         Gender: null,
+        CardNumber: null, // номер карты
+        BankInps: null, // инпс банка
+        LSBO : false,
+        role: "",
+        filial: "",
+        personal_id: "",
 
         Document: {
           documentType: 8,
@@ -207,6 +234,10 @@ export const profile = {
               LastName: "",
               MiddleName: "",
               BirthDate: "",
+              LSBO: false,
+              role: "",
+              filial: "",
+              personal_id: "",
               Document: {
                 documentType: null,
                 Series: "",
@@ -317,9 +348,13 @@ export const profile = {
           billProd: "", // Расчетный счет продавца
           agreementNumber: "", // Номер договора
           idBankProd: 0
-        }
+        },
         //InitialPaymentPercent: 0
+        ProductMaxSum: null, // максимальная сумма по кредитному продукту
+        max_loan_sum_preapprove: null // максимальная сумма кредита
       },
+
+      max_loan_sum: null,
 
       ApplicationComment: {
         items: [
@@ -338,32 +373,143 @@ export const profile = {
           //   "DocumentName": "1"
           // }
         ]
-      },
-
-      max_loan_sum_preapprove: null // максимальная сумма кредита
+      }
     }
   },
   actions: {
     async dataINPS({ state, commit }, data) {
-      console.log(JSON.stringify(data, null, 2))
+      console.log(JSON.stringify(data, null, 2));
       try {
         const response = await state.bpmService.getDataINPS(data);
-        console.log("getDataINPS", response.userTaskCreditDetailed.input);
-        const dataINPS = response.userTaskCreditDetailed.input.find(
-          i => i.label === 'clientWagesData'
-        ).data
+        console.log("getDataINPS", response.input);
+        const dataINPS = response.input.find(i => i.label === "clientWagesData")
+          .data;
         if (dataINPS.wages.items.length) {
-          const scoring = response.userTaskCreditDetailed.input.find(
-            i => i.label === 'preApprovalData'
-          ).data
-          
+          const scoring = response.input.find(
+            i => i.label === "preApprovalData"
+          ).data;
+
           commit("setScoring", scoring);
+          commit("setINNandNameOrg", dataINPS.wages.items.slice().pop());
 
-          return dataINPS
+          return dataINPS;
         } else {
-          return null
+          return null;
         }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", errorMessage, { root: true });
+        throw error;
+      }
+    },
 
+    async dataLSBO({ state, commit }) {
+      let users = [];
+      users.push({
+        // pin: state.fullFormProfile.Customer.PINPP, //ИНПС
+        pin: "", //ИНПС
+        passNumber: state.fullFormProfile.Customer.Document.Number,
+        passSerial: state.fullFormProfile.Customer.Document.Series
+      });
+
+      state.fullFormProfile.Customer.Relatives.items.forEach(relative => {
+        relative.role = "";
+        relative.LSBO = false;
+        relative.filial = "";
+
+        if (!relative.Document.Number || !relative.Document.Series) {
+          throw "Заполните все данные родственников!";
+        }
+        users.push({
+          pin: "",
+          passNumber: relative.Document.Number,
+          passSerial: relative.Document.Series
+        });
+      });
+
+      const data = {
+        input: [
+          {
+            name: "persons",
+            data: users
+          },
+          {
+            data: state.preapprove_num,
+            name: "application_id"
+          }
+        ]
+      };
+
+      console.log("lsbo", data);
+
+      try {
+        const response = await state.bpmService.getDataLSBO(data);
+
+        response.input
+          .find(i => i.label === "response")
+          .data.items.forEach(user => {
+            // console.log("user", user)
+            if (user.lsbo) {
+              if (state.fullFormProfile.Customer.Document.Number == user.passNumber) {
+                state.fullFormProfile.Customer.LSBO = user.lsbo
+                state.fullFormProfile.Customer.role = user.role
+                state.fullFormProfile.Customer.filial = user.filial
+              }
+
+              let relative = state.fullFormProfile.Customer.Relatives.items.find(
+                rel => rel.Document.Number == user.passNumber
+              );
+              // console.log('relative', relative)
+              if (relative) {
+                relative.role = user.role;
+                relative.LSBO = user.lsbo;
+                relative.filial = user.filial;
+              }
+            }
+          });
+
+        const lsbo = response.input
+          .find(user => user.label === "response")
+          .data.items.findIndex(lsbo => lsbo.lsbo);
+
+        console.log("lsboFlag", lsbo);
+        if (lsbo !== -1) {
+          state.percent = 30;
+        } else {
+          state.percent = 25;
+        }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", errorMessage, { root: true });
+        throw error;
+      }
+    },
+
+    async clientInfo({ state, commit }) {
+      const data = {
+        input: [
+          {
+            // data: "589196899",
+            data: state.fullFormProfile.Customer.INN,
+            name: "clientInn"
+          },
+          {
+            // data: "0",
+            data: state.fullFormProfile.Customer.CustomerId,
+            name: "customerId"
+          },
+          {
+            // data: "12345",
+            // data: state.fullFormProfile.ApplicationID,
+            data: state.fullFormProfile.Number,
+            name: "appId"
+          }
+        ]
+      };
+
+      try {
+        const response = await state.bpmService.getClientInfo(data);
+        return response
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
@@ -399,8 +545,12 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
-      state.preapprove_num = ""
-      
+      // state.preapprove_num = ""
+      // state.fileList = [] // очистка файлов на печать
+      // state.disableField = false
+      // state.FinalDecision = ""
+      commit("resetDataFullFormProfile");
+
       let response;
       try {
         if (taskId) {
@@ -412,9 +562,20 @@ export const profile = {
           );
         }
 
+        if (response.data.input && response.data.input.length) {
+          commit("setInput", response.data.input)
+        }
+
         console.log("response", response);
 
-        if (response.data.input && response.data.input.length) {
+        if (response.data.name === "Get PayOrder data from front") {
+          const payOrder = response.data.input.find(
+            i => i.label === "payOrder"
+          );
+
+          commit("setPayOrder", payOrder.data);
+        }
+        else if (response.data.input && response.data.input.length) {
           const data = response.data.input.find(i => i.label === "application")
             .data;
           const dictionaries = response.data.input.find(
@@ -423,38 +584,57 @@ export const profile = {
 
           commit("setDictionaries", dictionaries);
 
-          // if (response.data.name == "Full Application Filling") { // кредит не оформлен
-          //   commit("setPreapprovData", data);
-          // }
-          if (data.BODecision == null) { // кредит не оформлен
-            
+          if (response.data.name == "Full Application Filling") {
             // для получения информации от халк банка
             const preapprove_num = response.data.input.find(
               i => i.label === "preapprove_num"
-            ).data
-            
-            commit("setPreapproveNum", preapprove_num)
-            commit("resetDataFullFormProfile");
+            ).data;
+
+            // номер заявки печатная форма
+            const applicationNumber = response.data.input.find(
+              i => i.label === "process_info_fullApp"
+            ).data.applicationNumber;
+
+            // должность
+            const userrole = response.data.input.find(
+              i => i.label === "userrole"
+            ).data;
+
+            commit("setApplicationNumber", applicationNumber);
+            commit("setUserrole", userrole);
+
+            commit("setPreapproveNum", preapprove_num);
+          }
+
+          // кредит не оформлен
+          if (
+            response.data.name == "Full Application Filling" &&
+            data.BODecision == null
+          ) {
+            // commit("resetDataFullFormProfile");
             commit("setPreapprovData", data);
-
           } else if (response.data.name == "Работа с документами") {
-
             commit("setFileList", response);
             commit("setFullForm", data);
-            
-          } else if (data.BODecision == true) {
-
+          } else if (
+            // response.data.name != "Full Application Filling" &&
+            // response.data.name != "Проверка документов" &&
+            // data.BODecision == true
+            response.data.name == "Голосование КК"
+          ) {
             // для получения информации от халк банка для кредитного секретаря
             const preApplicationNum = response.data.input.find(
               i => i.label === "preApplicationNum"
-            ) 
+            );
 
-            if (preApplicationNum) {
-              commit("setPreapproveNum", preApplicationNum.data)
-            } 
+            const processInfo = response.data.input.find(
+              i => i.label === "processInfo"
+            );
+
+            commit("setPreapproveNum", preApplicationNum.data);
+            commit("setProcessInfo", processInfo.data);
 
             commit("setFullForm", data);
-
           } else {
             commit("setFullForm", data);
           }
@@ -474,15 +654,41 @@ export const profile = {
     }
   },
   mutations: {
+    setInput(state, input) {
+      state.BPMInput = input
+    },
+
     setPreapproveNum(state, preapprove_num) {
-      state.preapprove_num = preapprove_num
+      state.preapprove_num = preapprove_num;
+    },
+
+    setPayOrder(state, payOrder) {
+      state.payOrder = payOrder
+    },
+
+    setProcessInfo(state, processInfo) {
+      state.avgSalary = processInfo.avgSalary
+      state.loanAbilityClass = processInfo.loanAbilityClass
+      state.profit = processInfo.profit
+      state.LoanMax = processInfo.LoanMax
     },
 
     setScoring(state, payload) {
-      state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome = payload.incoming
-      state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses = payload.expenses
+      state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
+        payload.incoming;
+      state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+        payload.expenses;
       // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum = payload.payment
-      state.fullFormProfile.max_loan_sum_preapprove = payload.sum
+      state.fullFormProfile.LoanInfo.max_loan_sum_preapprove = payload.sum;
+      
+      // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
+    },
+
+    setINNandNameOrg(state, payload) {
+      if (state.fullFormProfile.Customer.JobInfo.type == 1) {
+        state.fullFormProfile.Customer.JobInfo.employerName = payload.org_name;
+        state.fullFormProfile.Customer.JobInfo.INN = payload.inn;
+      }
     },
 
     setFullForm(state, payload) {
@@ -498,9 +704,20 @@ export const profile = {
       state.fileList = [];
 
       // Для корректной валидации
+      state.fullFormProfile.ApplicationID = payload.ApplicationID;
+      state.fullFormProfile.BODecision = payload.BODecision;
+      state.fullFormProfile.Number = payload.Number;
+      state.fullFormProfile.Branch = payload.Branch;
+      state.fullFormProfile.BranchName = payload.BranchName;
+      state.fullFormProfile.ClientManagerName = payload.ClientManagerName;
       state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
       state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
+
+      state.fullFormProfile.Customer.FullName = payload.Customer.FullName;
+      state.fullFormProfile.Customer.BirthDate = payload.Customer.BirthDate;
+      state.fullFormProfile.Customer.Gender = payload.Customer.Gender;
+
       state.fullFormProfile.Customer.INN = payload.Customer.INN;
       state.fullFormProfile.Customer.PhoneList.items[0].Number =
         payload.Customer.PhoneList.items[0].Number;
@@ -509,6 +726,12 @@ export const profile = {
         payload.Customer.Document.Series;
       state.fullFormProfile.Customer.Document.Number =
         payload.Customer.Document.Number;
+      
+      state.fullFormProfile.Customer.Document.GivenDate =
+        payload.Customer.Document.GivenDate;
+
+      state.fullFormProfile.Customer.Document.ExpirationDate =
+        payload.Customer.Document.ExpirationDate;
 
       state.fullFormProfile.Customer.MaritalStatus =
         payload.Customer.MaritalStatus;
@@ -519,8 +742,10 @@ export const profile = {
 
       state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
         payload.Customer.MonthlyIncome.confirmMonthlyIncome;
+      // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+      //   payload.Customer.MonthlyExpenses.recurringExpenses;
       state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-        payload.Customer.MonthlyExpenses.recurringExpenses;
+        payload.Customer.MonthlyExpenses.allExpensesSum;
       state.fullFormProfile.Customer.MonthlyExpenses.obligations =
         payload.Customer.MonthlyExpenses.obligations;
       state.fullFormProfile.Customer.MonthlyIncome.hasAdditionalIncome =
@@ -536,8 +761,13 @@ export const profile = {
       state.fullFormProfile.LoanInfo.TermInMonth = payload.LoanInfo.TermInMonth;
       state.fullFormProfile.LoanInfo.LoanPurpose = payload.LoanInfo.LoanPurpose;
 
-      state.fullFormProfile.max_loan_sum_preapprove =
+      state.fullFormProfile.LoanInfo.max_loan_sum_preapprove =
         payload.LoanInfo.max_loan_sum_preapprove;
+
+      state.fullFormProfile.LoanInfo.ProductMaxSum =
+        payload.LoanInfo.ProductMaxSum;
+
+      // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
     setFileList(state, response) {
@@ -575,14 +805,14 @@ export const profile = {
             number: index
           };
           fileList.push(doc);
-        })
+        });
       }
 
       console.log("fileList", fileList);
 
       fileList.forEach((item, index) => {
-        state.loadings[index] = false
-      })
+        state.loadings[index] = false;
+      });
 
       state.fileList = fileList;
     },
@@ -625,7 +855,10 @@ export const profile = {
       state.fullFormProfile.Guarantee.Insurance.items.push({
         INN: "",
         OrgName: "",
-        Sum: 0
+        Sum: 0,
+        ContractNumber: "", // Номер Страхового договора
+        StartDate: "", // Дата начала действия договора
+        ExpDate: "" //Дата истечения действия договора
       });
     },
 
@@ -686,6 +919,8 @@ export const profile = {
         INN: "",
         Sum: 0,
         MiddleName: "",
+        CardNumber: null, // номер карты
+        BankInps: null, // инпс банка
         Document: {
           documentType: null,
           Series: "",
@@ -785,6 +1020,10 @@ export const profile = {
         LastName: "",
         MiddleName: "",
         BirthDate: "",
+        LSBO: false,
+        role: "",
+        filial: "",
+        personal_id: "",
         Document: {
           documentType: null,
           Series: "",
@@ -900,21 +1139,32 @@ export const profile = {
       state.dictionaries = objectTransform(dictionaries);
     },
 
+    setApplicationNumber(state, applicationNumber) {
+      state.applicationNumber = applicationNumber;
+    },
+
+    setUserrole(state, userrole) {
+      state.userrole = userrole;
+    },
+
     resetDataFullFormProfile(state) {
-      state.fileList = []; // очистка файлов на печать
-      state.disableField = false;
+      state.fileList = [] // очистка файлов на печать
+      state.disableField = false
+      state.FinalDecision = ""
       state.fullFormProfile = {
         Status: "",
-        // ApplicationID: "",
+        ApplicationID: "",
         // ProtocolNumber: "",
-        // Number: "",
-        // Branch: "",
-        BODecision: false,
-        // FinalDecision: "",
+        Number: "",
+        Branch: "",
+        BranchName: "",
+        BODecision: null,
+        FinalDecision: "", // отказ кредитного менеджера
         // Date: "",
         BOLogin: "", // логин авторизованного пользователя
         // Department: "",
         ClientManagerLogin: "", // при авторизации
+        ClientManagerName: null,
         CreditCommiteeDecisions: {
           items: [
             // {
@@ -927,6 +1177,7 @@ export const profile = {
         },
 
         Customer: {
+          CustomerId: 0,
           DigID: false,
           Email: "",
           FirstName: "",
@@ -940,6 +1191,12 @@ export const profile = {
           PINPP: "",
           ResidentFlag: true,
           Gender: null,
+          CardNumber: null, // номер карты
+          BankInps: null, // инпс банка
+          LSBO : false,
+          role: "",
+          filial: "",
+          personal_id: "",
 
           Document: {
             documentType: 8,
@@ -1014,6 +1271,10 @@ export const profile = {
                 LastName: "",
                 MiddleName: "",
                 BirthDate: "",
+                LSBO: false,
+                role: "",
+                filial: "",
+                personal_id: "",
                 Document: {
                   documentType: null,
                   Series: "",
@@ -1124,9 +1385,13 @@ export const profile = {
             billProd: "", // Расчетный счет продавца
             agreementNumber: "", // Номер договора
             idBankProd: 0
-          }
+          },
           //InitialPaymentPercent: 0
+          ProductMaxSum: null, // максимальная сумма по кредитному продукту
+          max_loan_sum_preapprove: null // максимальная сумма кредита
         },
+
+        max_loan_sum: null,
 
         ApplicationComment: {
           items: [
@@ -1145,9 +1410,7 @@ export const profile = {
             //   "DocumentName": "1"
             // }
           ]
-        },
-
-        max_loan_sum_preapprove: null // максимальная сумма кредита
+        }
       };
     }
   },

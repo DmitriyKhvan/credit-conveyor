@@ -13,10 +13,15 @@ export const credits = {
     },
     roles: {
       //Admin: "CRM",
-      CreditManager: "CRM",
-      BackOfficee: "BO",
-      CreditCommitteeMember: "CCM",
-      CreditSecretary: "CS"
+      // CreditManager: "CRM",
+      CreditManager: "ROLE_KM",
+      BackOfficee: "ROLE_BO",
+      CreditCommitteeMember: "ROLE_CC",
+      CreditSecretary: "ROLE_CCS",
+      UnderWriter: "ROLE_UrWr",
+      CreditCommitteeChief: "ROLE_CCC",
+      ProcessManager: "ROLE_PM",
+
     },
     
     messageBar: false,
@@ -35,11 +40,16 @@ export const credits = {
       pinpp: null,
       passport: "",
       personPhoto: "",
+      birthDate: "",
+      gender: null,
+      givenDate: "", // дата выдачи паспорта
+      expDate: "",  // дата окончания паспорта
 
       typeCredit: null,
       typeStepCredit: null,
       periodCredit: 0,
       loanRate: 0, //ставка по кредиту
+      ProductMaxSum: 0, // маск. сумма по кредитному продукту
       spouseCost: 0,
       childCost: 0,
 
@@ -395,10 +405,14 @@ export const credits = {
       state.personalData.name = payload.Person.NameL;
       state.personalData.surname = payload.Person.SurnameL;
       state.personalData.mname = payload.Person.PatronymL;
+      state.personalData.gender = payload.Person.Sex;
       state.personalData.passport = payload.Person.DocumentSerialNumber;
       state.personalData.pinpp = payload.Person.Pinpp;
       state.personalData.inn = payload.Person.Inn ? payload.Person.Inn : payload.Additional.Inn;
       state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
+      state.personalData.birthDate = payload.Person.BirthDate
+      state.personalData.givenDate = payload.Person.DocumentDateIssue
+      state.personalData.expDate = payload.Person.DocumentDateValid
       state.DigID = true
     },
     resetPersonData(state) {
@@ -411,11 +425,16 @@ export const credits = {
         pinpp: "",
         passport: "",
         personPhoto: "",
+        birthDate: "",
+        gender: "",
+        givenDate: "", // дата выдачи паспорта
+        expDate: "",  // дата окончания паспорта
 
         typeCredit: null,
         typeStepCredit: null,
         periodCredit: 0,
         loanRate: 0, //ставка по кредиту
+        ProductMaxSum: 0, // маск. сумма по кредитному продукту
         spouseCost: 0,
         childCost: 0,
 
@@ -423,12 +442,13 @@ export const credits = {
         familyStatus: null,
         children: false,
         childrenCount: 0,
+
         // MONEY //
         income: 0, //подтвержденный ежемесячный доход
         loan_purpose: null, // цель кредитования
         expense: 0, //периодические расходы
         otherExpenses: 0, //плата за облуживание других обязательств
-        externalIncome: "", //наличие дополнительного дохода
+        externalIncome: false, //наличие дополнительного дохода
         externalIncomeSize: 0, //размер дополнительного дохода
         additionalIncomeSource: "" //источник дополнительного дохода
       };
@@ -467,7 +487,27 @@ export const credits = {
         state.loadings[i] = false
       }
 
-      state.creditTasks = payload.response.infoList
+      // state.creditTasks = payload.response.infoList
+
+      state.creditTasks = payload.response.infoList.map(credit => {
+        // let creditCompleate = credit.taskName == "Step: Решение о выдаче" 
+        let creditCompleate = credit.taskName == "Step: Заполнить ПП" 
+                ? true
+                : false
+        let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1 ||
+              credit.taskName == "ERROR: Ошибка создание Контракта в iABS" ||
+              credit.taskName == "ERROR: Отправка в НИКИ - Ошибка" ||
+              credit.taskName == "ERROR: Ошибка создание ПП в iABS"
+                ? true
+                : false
+
+        return {
+          ...credit,
+          time,
+          creditCompleate
+        }
+      })
+
       // state.creditTasks = payload.response.infoList.sort((a, b) => {
       //     if (b.date < a.date) {
       //       return -1
@@ -494,6 +534,18 @@ export const credits = {
     messageId: state => state.messageBlock.id,
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
-    userRole: state => state.userRole
+    userRole: state => state.userRole,
+    // creditTasks: state => {
+    //   return state.creditTasks.map(credit => {
+    //     let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
+    //             ? true
+    //             : false
+
+    //     return {
+    //       ...credit,
+    //       time
+    //     }
+    //   })
+    // }
   }
 };

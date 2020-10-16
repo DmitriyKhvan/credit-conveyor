@@ -4,9 +4,9 @@ export default class BpmService {
   // _baseUrlLocal = "http://10.8.7.71:8070/bpm"
   _personalUrl = "http://10.8.8.70:4000";
   _digIdUrl = "http://localhost:50000/api/Identification";
-  // _baseUrl = "http://10.8.8.90:8070" //dev
+  _baseUrl = "http://10.8.8.90:8070" //dev
   // _baseUrl = "http://10.1.4.10:8070" //local
-  _baseUrl = "http://10.8.8.86:8070"; //prod
+  // _baseUrl = "http://10.8.8.86:8070"; //prod
 
   getBPMToken = async () => {
     const responce = await axios({
@@ -70,7 +70,6 @@ export default class BpmService {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/confirmation/${taskId}`,
-      //url: `${this._baseUrl}/bpm/credit/confirmation/2078.10062`,
       data,
     });
 
@@ -135,6 +134,26 @@ export default class BpmService {
     return responce.data;
   }
 
+  getDataLSBO = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/startLsbo`,
+      data
+    })
+
+    return responce.data;
+  }
+
+  getClientInfo = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/startInteg`,
+      data
+    })
+
+    return responce.data;
+  }
+
   uploadFiles = async (data) => {
     //const fileName = "file full form profile"
     const responce = await axios({
@@ -160,8 +179,7 @@ export default class BpmService {
   creatFile = async (data) => {
     const responce = await axios({
       method: "post",
-      // url: `${this._baseUrl}/document/edocument`, // на dev
-      url: `${this._baseUrl}/file/edocument`,   // на prod
+      url: `${this._baseUrl}/document/edocument`,
       data,
     });
 
