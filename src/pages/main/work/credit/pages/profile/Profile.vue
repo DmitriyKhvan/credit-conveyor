@@ -3662,7 +3662,7 @@
                   <div ref="dragover"></div>
                   <q-field
                     ref="uploadFile"
-                    :value="filesAll.filter(file => file.id != null).length == countFile"
+                    :value="filesAll.filter(file => file.id != null).length >= countFile"
                     :rules="[val => !!val || 'Загрузите файлы']"
                   >
                     <div class="uploadFile">
@@ -4294,6 +4294,12 @@ export default {
       return this.status === 'Step: Работа с документами'
               ? 2
               : 1
+    },
+
+    scoring_results() {
+      // console.log('this.profile.BPMInput', this.profile.BPMInput)
+      const scoring_resutlts = this.profile.BPMInput.find(input => input.label == 'scoring_results')
+      return scoring_resutlts ? scoring_resutlts : null
     }
   },
   watch: {
@@ -4902,7 +4908,7 @@ export default {
           this.profile.confirmCredit = false;
         } else if (submitForm) {
 
-          if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями' ) {
+          if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями' && !failureCredit) {
             this.$store.commit(
                 "credits/setMessage",
                 "Получите данные клиента"
@@ -4922,6 +4928,7 @@ export default {
           else {
             if (failureCredit) {
               this.fullProfile.FinalDecision = "Отказ"
+              this.printFailureCredit(this.scoring_results)
             }
 
             this.loader = true;
@@ -6104,6 +6111,24 @@ export default {
         );
         this.disable = false;
         this.loadings.splice(idx, 1, false);
+      }
+    },
+
+    async printFailureCredit(fileData) {
+      this.fileData.type = fileData.label;
+      this.fileData.data = fileData.data;
+
+      try {
+        const file = await this.$store.dispatch("credits/getFile", this.fileData);
+        if (file) {
+          printJS(file.url);
+          window.URL.revokeObjectURL(file.url);
+        }
+      } catch(error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
       }
     },
 

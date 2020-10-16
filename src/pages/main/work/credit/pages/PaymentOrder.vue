@@ -9,7 +9,7 @@
                 ref="documentType"
                 square
                 outlined
-                v-model="documentType"
+                v-model="payOrder.doc_type_selected"
                 :options="payOrder.doc_type.items"
                 dense
                 label="Тип документа"
@@ -258,7 +258,7 @@
                 square
                 dense
                 label="Дата"
-                v-model="date"
+                v-model="payOrder.pay_date"
                 mask="##.##.####"
                 :rules="[
                   val => (val && val.length === 10) || 'Введите дату'
@@ -273,7 +273,7 @@
                     >
                       <q-date
                         mask="DD.MM.YYYY"
-                        v-model="date"
+                        v-model="payOrder.pay_date"
                         @input="() => $refs.qDate.hide()"
                       />
                     </q-popup-proxy>
@@ -298,43 +298,43 @@ import formatDate from "../filters/formatDate"
 export default {
   data() {
     return {
-      documentType: "",
-      numberPP: "",
-      MFO: "00887",
-      codeCredit: "132",
-      codePayment: "",
-      numberCredit: "",
-      amountCredit: "",
-      UIDClient: "10945828",
-      INNClient: "500439371",
-      recipientAccount: "",
-      MFOBank: "00887",
-      BankName: "НБУ Бош филлиали",
-      detailsPayment: "",
-      date: formatDate(new Date()),
-      options: {
-        documentType: [
-          {
-            label: "PayOrder",
-            value: 1
-          },
-          // {
-          //   label: "Тип документа 2",
-          //   value: 2
-          // }
-        ],
+    //   documentType: "",
+    //   numberPP: "",
+    //   MFO: "00887",
+    //   codeCredit: "132",
+    //   codePayment: "",
+    //   numberCredit: "",
+    //   amountCredit: "",
+    //   UIDClient: "10945828",
+    //   INNClient: "500439371",
+    //   recipientAccount: "",
+    //   MFOBank: "00887",
+    //   BankName: "НБУ Бош филлиали",
+    //   detailsPayment: "",
+    //   date: formatDate(new Date()),
+    //   options: {
+    //     documentType: [
+    //       {
+    //         label: "PayOrder",
+    //         value: 1
+    //       },
+    //       // {
+    //       //   label: "Тип документа 2",
+    //       //   value: 2
+    //       // }
+    //     ],
 
-        codePayment: [
-          {
-            label: "Код 1",
-            value: 1
-          },
-          {
-            label: "Код 2",
-            value: 2
-          }
-        ]
-      }
+    //     codePayment: [
+    //       {
+    //         label: "Код 1",
+    //         value: 1
+    //       },
+    //       {
+    //         label: "Код 2",
+    //         value: 2
+    //       }
+    //     ]
+    //   }
     };
   },
   async created() {
@@ -364,9 +364,9 @@ export default {
     "payOrder.pay_code_selected"(val) {
        this.payOrder.pay_detail = ""
       if (val == "09510") {
-        this.payOrder.pay_detail = `${val}-${this.payOrder.client_acc}-${this.payOrder.client_inn}-${this.payOrder.pay_purpose}`
+        this.payOrder.pay_detail = `${val}~${this.payOrder.client_acc}~${this.payOrder.client_inn}~${this.payOrder.pay_purpose}`
       } else {
-        this.payOrder.pay_detail = `${val}-${this.payOrder.pay_purpose}-`
+        this.payOrder.pay_detail = `${val}~${this.payOrder.pay_purpose}~`
       }
     }
   },
@@ -419,7 +419,9 @@ export default {
           pay_detail,
           po_number,
           product_code,
-          summ
+          summ,
+          doc_type_selected,
+          pay_code_selected
         } = this.payOrder
 
         const data = {
@@ -441,7 +443,9 @@ export default {
                 pay_detail,
                 po_number,
                 product_code,
-                summ
+                summ,
+                doc_type_selected,
+                pay_code_selected
               }
             }
           ]

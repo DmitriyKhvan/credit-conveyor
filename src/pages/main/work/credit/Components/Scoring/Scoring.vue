@@ -56,7 +56,7 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                Соответствует
+                <!-- Соответствует -->
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                Соответствует
+                <!-- Соответствует -->
               </p>
             </div>
           </div>
@@ -100,7 +100,7 @@
 
             <div class="col-5">
               <p class="scoringList__value">
-                2
+                
               </p>
             </div>  
           </div>
@@ -111,7 +111,7 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                20 000 000 сум
+                
               </p>
             </div>
           </div>
@@ -122,7 +122,7 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                20 000 000 сум
+                
               </p>
             </div>
           </div>

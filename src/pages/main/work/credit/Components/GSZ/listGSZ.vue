@@ -28,7 +28,7 @@
           <td>{{ GRCInfo.client.INN }}</td>
           <td>{{ GRCInfo.creditContract.info.items[0].number }}</td>
           <td>{{ GRCInfo.creditContract.info.items[0].mfo }}</td>
-          <td>{{ GRCInfo.creditContract.info.items[0].amount }} {{ GRCInfo.creditContract.info.items[index].currency }}</td>
+          <td>{{ GRCInfo.creditContract.info.items[0].amount | formatNumber}} {{ GRCInfo.creditContract.info.items[index].currency }}</td>
           <td>{{ GRCInfo.creditContract.info.items[0].pamentDetail.pr_amount }}</td>
           <td>{{ GRCInfo.creditContract.info.items[0].pamentDetail.in_amount }}</td>
           <td>{{ GRCInfo.creditContract.info.items[0].pamentDetail.ps_amount }}</td>
@@ -48,6 +48,8 @@
   </div>
 </template>
 <script>
+import formatNumber from "../../filters/format_number";
+
 export default {
   props: {
     data: {
@@ -58,7 +60,10 @@ export default {
   created() {
     console.log("GSZ", this.data)
     // console.log("client", this.client)
-  }
+  },
+  filters: {
+    formatNumber,
+  },
 }
 </script>
 

@@ -5,7 +5,15 @@ export const profile = {
   namespaced: true,
   state: {
     bpmService: new BpmService(),
-    payOrder: null,
+    payOrder: {
+      doc_type: {
+        items: []
+      },
+      pay_code: {
+        items: []
+      }
+    },
+    BPMInput: null,
     preapprove_num: "",
     applicationNumber: "", // номер заявки для печатной формы
     userrole: "",
@@ -554,6 +562,10 @@ export const profile = {
           );
         }
 
+        if (response.data.input && response.data.input.length) {
+          commit("setInput", response.data.input)
+        }
+
         console.log("response", response);
 
         if (response.data.name === "Get PayOrder data from front") {
@@ -642,6 +654,10 @@ export const profile = {
     }
   },
   mutations: {
+    setInput(state, input) {
+      state.BPMInput = input
+    },
+
     setPreapproveNum(state, preapprove_num) {
       state.preapprove_num = preapprove_num;
     },
