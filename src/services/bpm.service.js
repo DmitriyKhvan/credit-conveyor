@@ -7,6 +7,8 @@ export default class BpmService {
   // _baseUrl = "http://10.8.8.90:8070" //dev
   // _baseUrl = "http://10.1.4.10:8070" //local
   _baseUrl = "http://10.8.8.86:8070"; //prod
+  // _baseUrl = "http://10.8.7.76:8070" //local
+  // _baseUrl = "http://10.8.8.86:8070"; //prod
 
   getBPMToken = async () => {
     const responce = await axios({

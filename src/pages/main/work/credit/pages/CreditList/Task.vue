@@ -1791,6 +1791,11 @@ export default {
     filialName() {
       return this.$route.query.filialName;
     },
+    
+
+  },
+  methods: {
+
     messageApprove() {
       return this.userRole == "ROLE_CCC"
               ? 'Form approve'
@@ -1798,16 +1803,17 @@ export default {
                 ? 'Credit success'
                 : null
     },
-    messageReject() {
+    messageReject(Decision) {
+      console.log('Decision', Decision)
       return this.userRole == "ROLE_CCC"
               ? 'Form reject'
-              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+              : this.userRole == "ROLE_CC" && Decision == 'N' || this.userRole == "ROLE_UrWr"
                 ? 'Credit failure'
-                : null
-    }
+                : this.userRole == "ROLE_CC" && Decision == 'R'
+                  ? 'Credit rework'
+                  : null
+    },
 
-  },
-  methods: {
     async getClientInfo() {
       this.clientInfoLoading = true;
       try {
@@ -1834,7 +1840,7 @@ export default {
           comment: this.commentCC
         });
       }
-      this.sentData(this.messageApprove);
+      this.sentData(this.messageApprove());
     },
 
     submitHandler(event) {
@@ -1876,7 +1882,7 @@ export default {
           });
         }
 
-        this.sentData(this.messageReject);
+        this.sentData(this.messageReject(this.commentCC.Decision));
 
         this.confirm = false;
       }
