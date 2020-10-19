@@ -5,6 +5,15 @@ export const profile = {
   namespaced: true,
   state: {
     bpmService: new BpmService(),
+    payOrder: {
+      doc_type: {
+        items: []
+      },
+      pay_code: {
+        items: []
+      }
+    },
+    BPMInput: null,
     preapprove_num: "",
     applicationNumber: "", // номер заявки для печатной формы
     userrole: "",
@@ -109,11 +118,11 @@ export const profile = {
       Status: "",
       ApplicationID: "",
       // ProtocolNumber: "",
-      // Number: "",
+      Number: "",
       Branch: "",
       BranchName: "",
       BODecision: null,
-      // FinalDecision: "",
+      FinalDecision: "", // отказ кредитного менеджера
       // Date: "",
       BOLogin: "", // логин авторизованного пользователя
       // Department: "",
@@ -147,6 +156,10 @@ export const profile = {
         Gender: null,
         CardNumber: null, // номер карты
         BankInps: null, // инпс банка
+        LSBO : false,
+        role: "",
+        filial: "",
+        personal_id: "",
 
         Document: {
           documentType: 8,
@@ -437,6 +450,12 @@ export const profile = {
           .data.items.forEach(user => {
             // console.log("user", user)
             if (user.lsbo) {
+              if (state.fullFormProfile.Customer.Document.Number == user.passNumber) {
+                state.fullFormProfile.Customer.LSBO = user.lsbo
+                state.fullFormProfile.Customer.role = user.role
+                state.fullFormProfile.Customer.filial = user.filial
+              }
+
               let relative = state.fullFormProfile.Customer.Relatives.items.find(
                 rel => rel.Document.Number == user.passNumber
               );
@@ -481,7 +500,8 @@ export const profile = {
           },
           {
             // data: "12345",
-            data: state.fullFormProfile.ApplicationID,
+            // data: state.fullFormProfile.ApplicationID,
+            data: state.fullFormProfile.Number,
             name: "appId"
           }
         ]
@@ -525,7 +545,11 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
-      state.preapprove_num = "";
+      // state.preapprove_num = ""
+      // state.fileList = [] // очистка файлов на печать
+      // state.disableField = false
+      // state.FinalDecision = ""
+      commit("resetDataFullFormProfile");
 
       let response;
       try {
@@ -538,9 +562,20 @@ export const profile = {
           );
         }
 
+        if (response.data.input && response.data.input.length) {
+          commit("setInput", response.data.input)
+        }
+
         console.log("response", response);
 
-        if (response.data.input && response.data.input.length) {
+        if (response.data.name === "Get PayOrder data from front") {
+          const payOrder = response.data.input.find(
+            i => i.label === "payOrder"
+          );
+
+          commit("setPayOrder", payOrder.data);
+        }
+        else if (response.data.input && response.data.input.length) {
           const data = response.data.input.find(i => i.label === "application")
             .data;
           const dictionaries = response.data.input.find(
@@ -576,7 +611,7 @@ export const profile = {
             response.data.name == "Full Application Filling" &&
             data.BODecision == null
           ) {
-            commit("resetDataFullFormProfile");
+            // commit("resetDataFullFormProfile");
             commit("setPreapprovData", data);
           } else if (response.data.name == "Работа с документами") {
             commit("setFileList", response);
@@ -619,8 +654,16 @@ export const profile = {
     }
   },
   mutations: {
+    setInput(state, input) {
+      state.BPMInput = input
+    },
+
     setPreapproveNum(state, preapprove_num) {
       state.preapprove_num = preapprove_num;
+    },
+
+    setPayOrder(state, payOrder) {
+      state.payOrder = payOrder
     },
 
     setProcessInfo(state, processInfo) {
@@ -638,7 +681,7 @@ export const profile = {
       // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum = payload.payment
       state.fullFormProfile.LoanInfo.max_loan_sum_preapprove = payload.sum;
       
-      state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
+      // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
     setINNandNameOrg(state, payload) {
@@ -662,6 +705,7 @@ export const profile = {
 
       // Для корректной валидации
       state.fullFormProfile.ApplicationID = payload.ApplicationID;
+      state.fullFormProfile.BODecision = payload.BODecision;
       state.fullFormProfile.Number = payload.Number;
       state.fullFormProfile.Branch = payload.Branch;
       state.fullFormProfile.BranchName = payload.BranchName;
@@ -669,6 +713,11 @@ export const profile = {
       state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
       state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
+
+      state.fullFormProfile.Customer.FullName = payload.Customer.FullName;
+      state.fullFormProfile.Customer.BirthDate = payload.Customer.BirthDate;
+      state.fullFormProfile.Customer.Gender = payload.Customer.Gender;
+
       state.fullFormProfile.Customer.INN = payload.Customer.INN;
       state.fullFormProfile.Customer.PhoneList.items[0].Number =
         payload.Customer.PhoneList.items[0].Number;
@@ -677,6 +726,12 @@ export const profile = {
         payload.Customer.Document.Series;
       state.fullFormProfile.Customer.Document.Number =
         payload.Customer.Document.Number;
+      
+      state.fullFormProfile.Customer.Document.GivenDate =
+        payload.Customer.Document.GivenDate;
+
+      state.fullFormProfile.Customer.Document.ExpirationDate =
+        payload.Customer.Document.ExpirationDate;
 
       state.fullFormProfile.Customer.MaritalStatus =
         payload.Customer.MaritalStatus;
@@ -712,7 +767,7 @@ export const profile = {
       state.fullFormProfile.LoanInfo.ProductMaxSum =
         payload.LoanInfo.ProductMaxSum;
 
-      state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
+      // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
     setFileList(state, response) {
@@ -800,7 +855,10 @@ export const profile = {
       state.fullFormProfile.Guarantee.Insurance.items.push({
         INN: "",
         OrgName: "",
-        Sum: 0
+        Sum: 0,
+        ContractNumber: "", // Номер Страхового договора
+        StartDate: "", // Дата начала действия договора
+        ExpDate: "" //Дата истечения действия договора
       });
     },
 
@@ -1090,8 +1148,9 @@ export const profile = {
     },
 
     resetDataFullFormProfile(state) {
-      state.fileList = []; // очистка файлов на печать
-      state.disableField = false;
+      state.fileList = [] // очистка файлов на печать
+      state.disableField = false
+      state.FinalDecision = ""
       state.fullFormProfile = {
         Status: "",
         ApplicationID: "",
@@ -1100,7 +1159,7 @@ export const profile = {
         Branch: "",
         BranchName: "",
         BODecision: null,
-        // FinalDecision: "",
+        FinalDecision: "", // отказ кредитного менеджера
         // Date: "",
         BOLogin: "", // логин авторизованного пользователя
         // Department: "",
@@ -1134,6 +1193,10 @@ export const profile = {
           Gender: null,
           CardNumber: null, // номер карты
           BankInps: null, // инпс банка
+          LSBO : false,
+          role: "",
+          filial: "",
+          personal_id: "",
 
           Document: {
             documentType: 8,
