@@ -6,6 +6,7 @@ export default {
     'Credit complete': 'Кредит оформлен',
     'Credit success': 'Выдача кредита одобрена',
     'Credit failure': 'Выдача кредита отклонена',
+    'Credit rework': 'Отправлено на доработку',
     'Credit signed' : 'Кредит подписан',
 
     'Form complete': 'Анкета оформлена',
