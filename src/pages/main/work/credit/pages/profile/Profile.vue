@@ -3199,7 +3199,7 @@
                         ref="kindOfActivityGuarantees"
                         outlined
                         v-model="guarantee.Activity"
-                        :options="dictionaries.MainWorkType.items"
+                        :options="dictionaries.BusinessType.items"
                         dense
                         label="Вид деятельности"
                         emit-value
