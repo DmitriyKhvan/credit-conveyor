@@ -3506,9 +3506,7 @@
                         v-model="guarantee.ContractNumber"
                         dense
                         label="Номер страхового договора"
-                        :rules="[
-                          val => val.match(/^\d+$/) || 'Неверные данные'
-                        ]"
+                        :rules="[val => !!val || 'Введите номер страхового договора']"
                       />
                     </div>
 
