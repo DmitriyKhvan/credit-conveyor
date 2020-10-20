@@ -3795,8 +3795,8 @@
               <template v-if="fullProfile.ApplicationComment">
                 <div
                   class="comments"
-                  v-for="comment of fullProfile.ApplicationComment.items"
-                  :key="comment.id"
+                  v-for="(comment, index) of fullProfile.ApplicationComment.items"
+                  :key="'comment' + index"
                 >
                   <h6 class="tab-content_title">{{ comment.CommentPerson }}</h6>
                   <!-- <span>{{comment.CommentDate}}</span> -->
@@ -4765,23 +4765,18 @@ export default {
 
       this.$refs.uploadFile.validate();
 
-      // if (!this.fullProfile.AttachedDocuments.items.length) {
-      //   debugger
-      //   this.$refs.uploadFile.validate();
-      // } else {
-      //   debugger
-      //   validItems(this.$refs, "uploadFile");
-      // }
+      this.guaranteesValid();
 
-      if (
-        !this.fullProfile.Guarantee.Insurance.items.length ||
-        !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
-        !this.fullProfile.Guarantee.RelatedPerson.items.length
-      ) {
-        this.guaranteesValid();
-      } else {
-        validItems(this.$refs, "guaranteesValid");
-      }
+      // if (
+      //   !this.fullProfile.Guarantee.Insurance.items.length ||
+      //   !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
+      //   !this.fullProfile.Guarantee.RelatedPerson.items.length
+      // ) {
+      //   this.guaranteesValid();
+      // } 
+      // else {
+      //   validItems(this.$refs, "guaranteesValid");
+      // }
 
       console.log("files", this.$refs.files);
 
@@ -6037,6 +6032,7 @@ export default {
       console.log("totalGuaranteesSum", this.totalGuaranteesSum);
       this.$refs.guaranteesValid.validate();
       this.$refs.priceCredit.validate();
+      // debugger
     },
 
     givenPlaceValid(val) {
