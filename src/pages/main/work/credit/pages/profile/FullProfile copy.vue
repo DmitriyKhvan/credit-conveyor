@@ -490,7 +490,7 @@
                   <div class="col-3">Год выпуска</div>
                   <div class="col-9">{{ vehicle.yearOfRelease }}</div>
                   <div class="col-3">Рыночная стоимость</div>
-                  <div class="col-9">{{ vehicle.marketValue }}</div>
+                  <div class="col-9">{{ vehicle.MarketValue }}</div>
                 </div>
               </div>
 
