@@ -800,7 +800,7 @@
 
               <div class="row rowForm">
                 <div class="col-4 field">Рыночная стоимость</div>
-                <div class="col-8 data">{{ vehicle.marketValue }}</div>
+                <div class="col-8 data">{{ vehicle.MarketValue }}</div>
               </div>
             </div>
           </div>

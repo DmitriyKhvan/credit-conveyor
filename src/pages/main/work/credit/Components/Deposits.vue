@@ -1,6 +1,14 @@
 <template>
   <div>
-    <q-markup-table separator="cell" flat bordered>
+    <div v-if="!data.length && status == 'FAILED'"> 
+      <h2 class="messageTitle">Ошибка в заросе АСОКИ</h2>
+    </div>
+
+    <div v-else-if="!data.length && status == 'SUCCESS'"> 
+      <h2 class="messageTitle">Данные не найдены</h2>
+    </div>
+
+    <q-markup-table v-else separator="cell" flat bordered>
       <thead>
         <tr>
           <th>Название депозита</th>
@@ -40,6 +48,10 @@ export default {
     data: {
       type: Array,
       default: []
+    },
+    status: {
+      type: String,
+      default: ""
     }
   },
   created() {

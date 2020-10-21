@@ -49,15 +49,15 @@
                 transition-next="slide-up"
               >
                 <q-tab-panel name="innerContract">
-                  <appContract :data="contracts" />
+                  <appContract :data="contracts" :status="StatusASOKI" />
                 </q-tab-panel>
 
                 <q-tab-panel name="innerApplication">
-                  <appApplication :data="claims"/>
+                  <appApplication :data="claims" :status="StatusASOKI" />
                 </q-tab-panel>
 
                 <q-tab-panel name="innerExpiration">
-                  <appExpiration :data="overdue_payments" />
+                  <appExpiration :data="overdue_payments" :status="StatusASOKI" />
                 </q-tab-panel>
               </q-tab-panels>
             </template>
@@ -66,7 +66,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="gsz">
-          <appGSZ :data="GRCInfo" />
+          <appGSZ :data="GRCInfo" :status="StatusGSZ" />
         </q-tab-panel>
 
         <q-tab-panel name="scoring">
@@ -125,16 +125,22 @@ export default {
       if (this.ASOKI) {
         return this.ASOKI.claims_information.claims.items
       }
+
+      return []
     },
     contracts() {
       if (this.ASOKI) {
         return this.ASOKI.contracts.contract.items
-      }
+      } 
+
+      return []
     },
     overdue_payments() {
       if (this.ASOKI) {
         return this.ASOKI.overdue_payments.overdue_contract.items
       }
+
+      return []
     },
 
     // client() {
@@ -147,12 +153,40 @@ export default {
       if (this.data.output.find(i => i.name === 'GRCInfo')) {
         return this.data.output.find(i => i.name === 'GRCInfo').data.items
       }
+
+      return []
     },
 
     deposits() {
       if (this.data.output.find(i => i.name === 'deposits')) {
         return this.data.output.find(i => i.name === 'deposits').data.items
       }
+
+      return []
+    },
+
+    exceptions() {
+      if (this.data.output.find(i => i.name === 'exceptions')) {
+        return this.data.output.find(i => i.name === 'exceptions').data
+      }
+
+      return null
+    },
+
+    StatusASOKI() {
+      if (this.exceptions) {
+        return this.exceptions.items.find(i => i.name === 'ASOKI').value.split(' ')[0]
+      } 
+
+      return ''
+    },
+
+    StatusGSZ() {
+      if (this.exceptions) {
+        return this.exceptions.items.find(i => i.name === 'GSZ').value.split(' ')[0]
+      } 
+
+      return ''
     }
   }, 
   components: {
@@ -177,6 +211,10 @@ export default {
 
     .q-splitter--vertical > .q-splitter__panel {
       width: 130px !important;
+    }
+
+    .messageTitle {
+      text-align: center;
     }
   }
 </style>
