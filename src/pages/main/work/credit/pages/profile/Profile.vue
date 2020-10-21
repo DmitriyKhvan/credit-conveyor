@@ -5002,8 +5002,8 @@ export default {
               );
           } 
           else if (!this.printForm && 
-                  this.status !== 'Работа с документами' &&
-                  this.fullProfile.BODecision == null) {
+                  this.status == 'Step: Ввод данных с интеграциями'
+                  ) {
             this.$store.commit(
                 "credits/setMessage",
                 "Распечатайте анкету"
@@ -5046,16 +5046,7 @@ export default {
 
             Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
 
-            // for (let property of Customer.PropertyInformation.Realty_new.items) {
-            //   property.MarketValue = +String(property.MarketValue).replace(/[^0-9]/gim, "");
-            // }
-
-            // for (let property of Customer.PropertyInformation.Transport_new.items) {
-            //   property.MarketValue = +String(property.MarketValue).replace(/[^0-9]/gim, "");
-            // }
-
             for (let property in Customer.PropertyInformation) {
-
               for (let i of Customer.PropertyInformation[property].items) {
                 i.MarketValue = +String(i.MarketValue).replace(/[^0-9]/gim, "");
               }

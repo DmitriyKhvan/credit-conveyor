@@ -15,8 +15,6 @@ export const profile = {
     },
     BPMInput: null,
     preapprove_num: "",
-    applicationNumber: "", // номер заявки для печатной формы
-    userrole: "",
     percent: 25,
 
     avgSalary: null,
@@ -589,19 +587,6 @@ export const profile = {
               i => i.label === "preapprove_num"
             ).data;
 
-            // номер заявки печатная форма
-            const applicationNumber = response.data.input.find(
-              i => i.label === "process_info_fullApp"
-            ).data.applicationNumber;
-
-            // должность
-            const userrole = response.data.input.find(
-              i => i.label === "userrole"
-            ).data;
-
-            commit("setApplicationNumber", applicationNumber);
-            commit("setUserrole", userrole);
-
             commit("setPreapproveNum", preapprove_num);
           }
 
@@ -1136,14 +1121,6 @@ export const profile = {
       //   JSON.stringify(dicTransform)
       // );
       state.dictionaries = objectTransform(dictionaries);
-    },
-
-    setApplicationNumber(state, applicationNumber) {
-      state.applicationNumber = applicationNumber;
-    },
-
-    setUserrole(state, userrole) {
-      state.userrole = userrole;
     },
 
     resetDataFullFormProfile(state) {

@@ -7,7 +7,7 @@
             <h4 class="fullFormTitle">Анкета-заявления</h4>
             <div class="row">
               <div class="col-3">Номер анкеты</div>
-              <div class="col-9">{{ profile.applicationNumber }}</div>
+              <div class="col-9">{{ applicationNumber }}</div>
               <div class="col-12 profileTitle">1. Персональные данные</div>
               <div class="col-2 fieldData">Фамилия</div>
               <div class="col-2">{{ Customer.LastName }}</div>
@@ -973,7 +973,7 @@
               <div class="col-6">
                 Должность кредитного специалиста
               </div>
-              <div class="col-6">{{ profile.userrole }}</div>
+              <div class="col-6">{{ userrole }}</div>
               <div class="col-6">
                 Подпись работника банка
               </div>
@@ -1036,7 +1036,25 @@ export default {
         Customer: state => state.profile.fullFormProfile.Customer,
         dictionaries: state => state.profile.dictionaries,
         credits: state => state.credits
-      })
+      }),
+
+    // номер заявки печатная форма
+    applicationNumber() {
+      const applicationNumber = this.profile.BPMInput.find(
+              i => i.label === "process_info_fullApp"
+            )
+      
+      return applicationNumber ? applicationNumber.data.applicationNumber : null
+    },
+    
+    // должность
+    userrole() {
+      const userrole = this.profile.BPMInput.find(
+              i => i.label === "userrole"
+            );
+    
+      return userrole ? userrole.data : null
+    }
   },
   methods: {
     callPrint(strid) {
