@@ -6,7 +6,7 @@
           <q-btn
             color="blue-14"
             size="lg"
-            :label="'Отправить выбранное: ( '+selectedDocs.length+' )'"
+            :label="selectedDocs.length !== 0 ? 'Отправить выбранное: ( '+selectedDocs.length+' )':'Отправить выбранное'"
             @click="showMultiDocPopup()"
             :disable="selectedDocs.length === 0"
           />
@@ -26,13 +26,13 @@
           @input="selectPagesNum()"
         />
       </div>
-      <div>{{ pageStartNum }} - {{ pageEndNum }} из {{ totalPages }}</div>
+      <div>{{ pageStartNum }} - {{ pageEndNum }} из {{ totalRows }}</div>
       <div class="arrows">
-        <div>
-          <q-icon name="keyboard_arrow_left" size="sm" />
+        <div :class="isPrevActive">
+          <q-icon name="keyboard_arrow_left" size="sm" @click="onPrev" />
         </div>
-        <div class="active">
-          <q-icon name="keyboard_arrow_right" size="sm" />
+        <div :class="isNextActive">
+          <q-icon name="keyboard_arrow_right" size="sm" @click="onNext" />
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       rowNum: 5, // default
-      rowsPerPageOptions: [1, 3, 5, 10, 50] //selectRowsPerPage, rowsPerPage, page,
+      rowsPerPageOptions: [1, 3, 5, 10, 50], //selectRowsPerPage, rowsPerPage, page,
     };
   },
   created() {
@@ -53,56 +53,76 @@ export default {
   },
   computed: {
     ...mapState({
-      selectedDocs: state => state.assistant.selectedDocs
+      selectedDocs: (state) => state.assistant.selectedDocs,
     }),
 
     ...mapGetters({
-      totalPages: "totalPages",
-      page: "page",
-      rowsPerPage: "rowsPerPage",
-      totalRows: "totalRows",
-      menuNo: "menuNo"
+      totalPages: "assistant/totalPages",
+      page: "assistant/page",
+      rowsPerPage: "assistant/rowsPerPage",
+      totalRows: "assistant/totalRows",
+      menuNo: "assistant/menuNo",
     }),
     isNewDocsSection() {
       return this.menuNo == 1 ? true : false;
     },
     pageStartNum() {
-      return (this.page - 1) * this.rowsPerPage + 1;
+      if (this.totalRows == 0) return 0;
+      else return (this.page - 1) * this.rowsPerPage + 1;
     },
     pageEndNum() {
       return this.rowsPerPage * this.page > this.totalRows
         ? this.totalRows
         : this.rowsPerPage * this.page;
     },
-    pageNext() {
-      console.log({});
-    }
+    isPrevActive() {
+      if (this.page == 1) {
+        return "";
+      } else return "active";
+    },
+    isNextActive() {
+      if (this.page == this.totalPages) {
+        return "";
+      } else return "active";
+    },
   },
   methods: {
     selectPagesNum() {
-      this.$store.dispatch("getADocs", { rows: this.rowNum });
+      this.$store.dispatch("assistant/getADocs", { rows: this.rowNum });
     },
     showMultiDocPopup() {
       console.log("multi popup");
       this.$q
         .dialog({
           component: MultiPopup,
-          parent: this
+          parent: this,
           // doc: this.doc
         })
-        .onOk(res => {
+        .onOk((res) => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
-            this.$store.dispatch("getADocs", { num: this.menuNo });
-            this.$store.dispatch("resetSelectedDocs");
+            this.$store.dispatch("assistant/getADocs", { num: this.menuNo });
+            this.$store.dispatch("assistant/resetSelectedDocs");
           }
         })
         .onCancel(() => {
           console.log("Cancel");
         });
-    }
-  }
+    },
+    onNext() {
+      console.log("next...");
+      if (this.isNextActive) {
+        this.$store.dispatch("assistant/getADocs", { page: this.page + 1 });
+      }
+    },
+    onPrev() {
+      if (this.isPrevActive) {
+        console.log("prev...");
+        this.$store.dispatch("assistant/getADocs", { page: this.page - 1 });
+      }
+    },
+  },
 };
 </script>
 <style scoped>

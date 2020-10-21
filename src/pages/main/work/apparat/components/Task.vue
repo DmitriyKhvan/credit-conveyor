@@ -19,7 +19,7 @@
           <div class="pad-3">
             <img src="@/assets/icons/Time-Limit.svg" />
           </div>
-          <div class="q-px-sm">Срок сдачи:</div>
+          <div class="q-px-sm">Срок задачи:</div>
           <div v-if="doc.deadline">
             <strong>{{formatDate(doc.deadline)}}</strong>
             <br />
@@ -37,7 +37,7 @@
           </div>
           <div class="q-px-sm">От:</div>
           <div>
-            <strong>{{doc.signed_by}}</strong>
+            <strong>{{ doc['signed_by'] !== null ? doc['signed_by'] : 'Неизвестный' }}</strong>
           </div>
         </div>
         <div class="buttonFilter buttonTask text-center">
@@ -100,27 +100,46 @@
           <div class="desp q-pr-sm">
             <div>
               <img src="@/assets/icons/List-active.svg" />
+              <q-tooltip
+                anchor="top middle"
+                self="bottom middle"
+                :offset="[10, 10]"
+                content-class="bg-green"
+              >{{doc.paper_count}} листов бумаги</q-tooltip>
             </div>
             <div class="desp q-px-sm">{{doc.paper_count}}</div>
           </div>
           <div class="desp q-pr-sm">
             <div>
-              <img
-                v-if="doc.tasks && doc.tasks[0].comments"
-                src="@/assets/icons/Comments-active.svg"
-              />
+              <img v-if="doc.comments" src="@/assets/icons/Comments-active.svg" />
               <img v-else src="@/assets/icons/Comments.svg" />
+              <q-tooltip
+                anchor="top middle"
+                self="bottom middle"
+                :offset="[10, 10]"
+                content-class="bg-light-blue"
+              >{{doc.comments ? doc.comments.length : 0 }} комментариев</q-tooltip>
             </div>
-            <div
-              v-if="doc.tasks && doc.tasks[0].comments"
-              class="desp q-px-sm"
-            >{{doc.tasks[0].comments.length}}</div>
+            <div v-if="doc.comments" class="desp q-px-sm">{{doc.comments.length}}</div>
             <div v-else class="desp q-px-sm">0</div>
           </div>
           <div class="desp q-pr-sm">
             <div>
               <img v-if="doc.start_emps_id" src="@/assets/icons/User-Account-active.svg" />
               <img v-else src="@/assets/icons/User-Account.svg" />
+              <q-tooltip
+                anchor="top middle"
+                self="bottom middle"
+                :offset="[10, 10]"
+                content-class="bg-deep-purple text-center"
+              >
+                <b>Ответственные:</b>
+                <br />
+                <label
+                  v-for="(emp, i) in doc.start_emps_id"
+                  :key="i"
+                >{{ emp['first_name'] }} {{emp['last_name'][0]}}.{{emp['middle_name'][0]}}&nbsp;</label>
+              </q-tooltip>
             </div>
             <div v-if="doc.start_emps_id" class="desp q-px-sm">{{doc.start_emps_id.length}}</div>
             <div v-else class="desp q-px-sm">0</div>
@@ -132,6 +151,7 @@
 </template>
 <script>
 import { mapState, mapGetters } from "vuex";
+import { intDateFormat } from "@/shared/utils/date";
 import Popup from "./Popup";
 export default {
   props: ["doc"],
@@ -140,21 +160,21 @@ export default {
   },
   data() {
     return {
-      val: false
+      val: false,
     };
   },
   computed: {
     ...mapState({
-      statuses: state => state.apparat.aFilters.statuses,
-      checkeds: state => state.apparat.aChecked
+      statuses: (state) => state.apparat.aFilters.statuses,
+      checkeds: (state) => state.apparat.aChecked,
     }),
-    ...mapGetters(["getNameStatus"]),
+    ...mapGetters({ getNameStatus: "apparat/getNameStatus" }),
     getStatus() {
       return this.getNameStatus(this.doc.doc_status);
-    }
+    },
   },
   created() {
-    if (this.checkeds.find(el => el === this.doc.doc_id)) {
+    if (this.checkeds.find((el) => el === this.doc.doc_id)) {
       this.val = true;
     } else {
       this.val = false;
@@ -166,9 +186,9 @@ export default {
         .dialog({
           component: Popup,
           parent: this,
-          doc: this.doc
+          doc: this.doc,
         })
-        .onOk(res => {
+        .onOk((res) => {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
@@ -182,27 +202,28 @@ export default {
     },
 
     formatDate(data) {
-      const d = new Date(data);
-      const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
-      const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
-      const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
-      return `${ye}/${mo}/${da}`;
+      return intDateFormat(data);
+      // const d = new Date(data);
+      // const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+      // const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
+      // const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
+      // return `${ye}/${mo}/${da}`;
     },
     eventCheck() {
       let arr = [];
       if (this.val) {
         if (
-          this.checkeds.find(el => el !== this.doc.doc_id) ||
+          this.checkeds.find((el) => el !== this.doc.doc_id) ||
           this.checkeds.length === 0
         ) {
           arr = this.checkeds;
           arr.push(this.doc.doc_id);
         }
       } else {
-        arr = this.checkeds.filter(el => el !== this.doc.doc_id);
+        arr = this.checkeds.filter((el) => el !== this.doc.doc_id);
       }
 
-      this.$store.dispatch("docsCheked", arr);
+      this.$store.dispatch("apparat/docsCheked", arr);
     },
     daysLeft(num) {
       let today = new Date();
@@ -223,8 +244,8 @@ export default {
       } else {
         return "Осталось " + daysLeft + dayname;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

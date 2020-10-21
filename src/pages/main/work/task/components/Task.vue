@@ -67,10 +67,11 @@
                 <img src="@/assets/icons/Time-Limit.svg" />
               </div>
               <div class="q-py-sm">
-                <b>Срок сдачи:</b>
+                <b>Срок задачи:</b>
                 <br />
-                <span class="subGreen">
-                  <b>{{formatDate(task.f_task_data.deadline)}}</b>
+                <span>
+                  <b v-if="task.f_task_data.deadline == null" class="subYellow">нет срока</b>
+                  <b v-else class="subGreen">{{formatDate(task.f_task_data.deadline)}}</b>
                   <!-- TODO left 2 days-->
                 </span>
               </div>
@@ -99,10 +100,10 @@
                   self="bottom middle"
                   :offset="[10, 10]"
                   content-class="bg-light-blue"
-                >25 комментариев</q-tooltip>
+                >{{commentsCount}} комментариев</q-tooltip>
                 <!-- TODO-->
               </div>
-              <div class="desp q-px-sm">25</div>
+              <div class="desp q-px-sm">{{commentsCount}}</div>
             </div>
             <div class="flexBlock q-pr-sm q-py-sm">
               <div>
@@ -114,11 +115,14 @@
                   content-class="bg-deep-purple text-center"
                 >
                   <b>Ответственные:</b>
-                  <br />Баратов С. У. Абдуллаев И. А. Драгунов А. С.
-                  <!-- TODO-->
+                  <br />
+                  <label
+                    v-for="(emp, i) in task.f_task_data.h_emps"
+                    :key="i"
+                  >{{emp.FIRST_NAME}} {{emp.LAST_NAME[0]}}.{{emp.MIDDLE_NAME[0]}}&nbsp;</label>
                 </q-tooltip>
               </div>
-              <div class="desp q-px-sm">25</div>
+              <div class="desp q-px-sm">{{empsCount}}</div>
             </div>
           </div>
           <div class="row q-pt-sm">
@@ -150,16 +154,6 @@
     </div>
     <div class="flexBlock q-px-md q-mb-md">
       <div class="q-pr-sm">
-        <img src="@/assets/icons/Send.svg" />
-      </div>
-      <div>
-        <b>От:</b>
-        <br />
-        {{task.h_first_name}} {{ task.h_last_name}}
-      </div>
-    </div>
-    <div class="flexBlock q-px-md q-mb-md">
-      <div class="q-pr-sm">
         <img src="@/assets/icons/Enter.svg" />
       </div>
       <div>
@@ -168,22 +162,31 @@
         {{task.f_task_data.in_number}}
       </div>
     </div>
-    <div class="flexBlock q-px-md q-mb-lg">
+    <div class="flexBlock q-px-md q-mb-md">
       <div class="q-pr-sm">
-        <img src="@/assets/icons/Time-Limit.svg" />
+        <img src="@/assets/icons/Calendar.svg" />
       </div>
-      <div>
-        <b>Срок сдачи:</b>
+      <div class="q-py-sm">
+        <b>Входящая дата:</b>
         <br />
-        <span class="subGreen">
-          <!-- TODO -->
-          <b>{{formatDate(task.f_task_data.deadline)}}</b>
-        </span>
+        {{task.f_task_data.in_date}}
       </div>
     </div>
+    <div class="flexBlock q-px-md q-mb-md">
+      <div class="q-pr-sm">
+        <img src="@/assets/icons/Calendar.svg" />
+      </div>
+      <div class="q-py-sm">
+        <b>Срок сдачи::</b>
+        <br />
+        {{formatDate(task.f_task_data.deadline)}}
+      </div>
+    </div>
+    
     <div class="footerBlock">
-      <div class="row q-my-sm">
-        <div class="col flexBlock q-pr-sm q-py-sm justify-center">
+      <div class="row q-my-sm justify-center">
+        <q-btn color="indigo-14" label="Просмотреть" @click="showDialogView()" />
+        <!-- <div class="col flexBlock q-pr-sm q-py-sm justify-center">
           <div>
             <img src="@/assets/icons/List-active.svg" />
             <q-tooltip
@@ -193,7 +196,7 @@
               content-class="bg-green"
             >{{task.f_task_data.paper_count}} листов бумаги</q-tooltip>
           </div>
-          <div class="flexBlock q-px-sm">7</div>
+          <div class="flexBlock q-px-sm">{{task.f_task_data.paper_count}}</div>
         </div>
         <div class="col flexBlock twoBorders q-pr-sm q-py-sm justify-center">
           <div>
@@ -203,9 +206,9 @@
               self="bottom middle"
               :offset="[10, 10]"
               content-class="bg-light-blue"
-            >25 комментариев</q-tooltip>
+            >{{commentsCount}} комментариев</q-tooltip>
           </div>
-          <div class="desp q-px-sm">25</div>
+          <div class="desp q-px-sm">{{commentsCount}}</div>
         </div>
         <div class="col flexBlock q-pr-sm q-py-sm justify-center">
           <div>
@@ -217,11 +220,15 @@
               content-class="bg-deep-purple text-center"
             >
               <b>Ответственные:</b>
-              <br />Баратов С. У. Абдуллаев И. А. Драгунов А. С.
+              <br />
+              <label
+                v-for="(emp, i) in task.f_task_data.h_emps"
+                :key="i"
+              >{{emp.FIRST_NAME}} {{emp.LAST_NAME[0]}}.{{emp.MIDDLE_NAME[0]}}&nbsp;</label>
             </q-tooltip>
           </div>
           <div class="desp q-px-sm">25</div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -253,7 +260,17 @@ export default {
   computed: {
     ...mapGetters({
       isListView: "getListView"
-    })
+    }),
+    commentsCount() {
+      ///console.log({ count: this.task.comments.length });
+      if (!!this.task.comments) return this.task.comments.length;
+      else return 0;
+    },
+    empsCount() {
+      if (!!this.task.f_task_data.h_emps) {
+        return this.task.f_task_data.h_emps.length;
+      } else return 0;
+    }
   },
   methods: {
     download() {
@@ -286,7 +303,7 @@ export default {
       return simpleDateFormat(date);
     },
     formatString(text) {
-      return stringTruncate(text, 50);
+      return stringTruncate(text, 60);
     }
   }
 };
@@ -326,7 +343,8 @@ export default {
   color: #ff4a4a;
 }
 .footerBlock {
-  border-top: 1px #e3e4e8 solid;
+  border: none;
+  /* border-top: 1px #e3e4e8 solid; */
 }
 .twoBorders {
   border-left: 1px #e3e4e8 solid;

@@ -4,16 +4,16 @@ export default class BpmService {
   // _baseUrlLocal = "http://10.8.7.71:8070/bpm"
   _personalUrl = "http://10.8.8.70:4000";
   _digIdUrl = "http://localhost:50000/api/Identification";
-  // _baseUrl = "http://10.8.8.90:8070" //dev
+  // _baseUrl = "http://10.8.8.90:8070"; //dev
   // _baseUrl = "http://10.1.4.10:8070" //local
   // _baseUrl = "http://10.8.7.76:8070" //local
   _baseUrl = "http://10.8.8.86:8070"; //prod
-
+  
   getBPMToken = async () => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/system/login`,
-      timeout: 60000,
+      timeout: 60000
     });
     return responce.data;
   };
@@ -21,7 +21,7 @@ export default class BpmService {
   startProcess = async () => {
     const responce = await axios({
       method: "post",
-      url: `${this._baseUrl}/bpm/credit/start`,
+      url: `${this._baseUrl}/bpm/credit/start`
     });
     return responce.data;
   };
@@ -31,7 +31,7 @@ export default class BpmService {
 
     const responce = await axios({
       method: "get",
-      url: `${this._digIdUrl}/DataSerial`,
+      url: `${this._digIdUrl}/DataSerial`
     });
 
     return responce.data;
@@ -41,7 +41,7 @@ export default class BpmService {
     const responce = await axios({
       method: "get",
       url: `${this._digIdUrl}/DataFromReader`,
-      timeout: 30000,
+      timeout: 30000
     });
 
     return responce.data;
@@ -51,7 +51,7 @@ export default class BpmService {
     const responce = await axios({
       method: "get",
       url: `${this._digIdUrl}/DataFromService`,
-      timeout: 30000,
+      timeout: 30000
     });
 
     return responce.data;
@@ -61,7 +61,7 @@ export default class BpmService {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/calculation/${taskId}`,
-      data,
+      data
     });
 
     return responce.data;
@@ -77,38 +77,38 @@ export default class BpmService {
     return responce.data;
   };
 
-  getRoleTasks = async ({page, count}) => {
+  getRoleTasks = async ({ page, count }) => {
     const responce = await axios({
       method: "get",
-      url: `${this._baseUrl}/bpm/credit/roletasks?page=${page}&count=${count}`,
+      url: `${this._baseUrl}/bpm/credit/roletasks?page=${page}&count=${count}`
     });
 
     return responce.data;
   };
 
-  getUserTasks = async ({page, count}) => {
+  getUserTasks = async ({ page, count }) => {
     const responce = await axios({
       method: "get",
-      url: `${this._baseUrl}/bpm/credit/usertasks?page=${page}&count=${count}`,
+      url: `${this._baseUrl}/bpm/credit/usertasks?page=${page}&count=${count}`
     });
 
     return responce.data;
   };
 
-  getUserRole = async (userId) => {
+  getUserRole = async userId => {
     const responce = await axios({
       method: "get",
-      url: `${this._personalUrl}/roles/user?id=${userId}`,
+      url: `${this._personalUrl}/roles/user?id=${userId}`
     });
 
     return responce.data;
   };
 
-  getFullForm = async (taskId) => {
+  getFullForm = async taskId => {
     //console.log(taskId)
     const responce = await axios({
       method: "get",
-      url: `${this._baseUrl}/bpm/credit/fullform/${taskId}`,
+      url: `${this._baseUrl}/bpm/credit/fullform/${taskId}`
     });
     return responce;
   };
@@ -130,10 +130,10 @@ export default class BpmService {
       method: "post",
       url: `${this._baseUrl}/bpm/credit/startInps`,
       data
-    })
+    });
 
     return responce.data;
-  }
+  };
 
   getDataLSBO = async (data) => {
     const responce = await axios({
@@ -162,22 +162,22 @@ export default class BpmService {
       //url: `${this._baseUrl}/file/singlefileupload?documentType=${fileName}`,
       url: `${this._baseUrl}/file/multiplefileupload`,
       data,
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: { "Content-Type": "multipart/form-data" }
     });
 
     return responce.data;
   };
 
-  removeFiles = async (id) => {
+  removeFiles = async id => {
     const responce = await axios({
       method: "delete",
       url: `${this._baseUrl}/file/edocument/${id}`
     });
 
-    return responce.data
+    return responce.data;
   };
 
-  creatFile = async (data) => {
+  creatFile = async data => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/document/edocument`,
@@ -187,11 +187,11 @@ export default class BpmService {
     return responce.data;
   };
 
-  getFile = async (id) => {
+  getFile = async id => {
     const responce = await axios({
       method: "get",
       url: `${this._baseUrl}/file/edocument/${id}`,
-      responseType: "arraybuffer",
+      responseType: "arraybuffer"
     });
 
     return responce.data;

@@ -1,7 +1,8 @@
 <template>
+<div>
   <div class="bg">
     <div class="wrap">
-      <div class="leftBlock">
+      <div class="leftBlock items-center">
         <div class="loginBlock">
           <div class="title">ВОЙДИТЕ В АККАУНТ</div>
 
@@ -78,6 +79,10 @@
           </q-form>
 
         </div>
+        <div class="col row items-center justify-center q-mt-md">
+          <img src="./assets/welicon/GooPlay.png" width="175px" />
+          <img src="./assets/welicon/AppSotre.png" width="150px" />
+        </div>
       </div>
       <!-- правый блок -->
       <div class="rightBlock">
@@ -96,6 +101,20 @@
       </div>
     </div>
   </div>
+  <div class="btm_panel">
+    <q-item 
+      v-for="(val, i) in m_icons" :key="i"
+      flat bordered clickable 
+      to="#" 
+      class="mmy-card"
+      v-ripple
+      >
+      <q-icon :name="val.name" class="card_icon" :style="val.st" />
+      <label :key="val.text">{{val.text}}</label>
+    </q-item>
+  </div>
+  <c-popup popup></c-popup>
+</div>
 </template>
 <script>
 import { AuthService } from "@/services/auth.service";
@@ -103,17 +122,20 @@ import { required, minLength, between } from "vuelidate/lib/validators";
 import NotifyService from "@/services/notify.service";
 import TokenService from "@/services/storage.service";
 import LoadingService from "@/services/loading.service";
+import CPopup from './component/Popup.vue'
 
 export default {
   name: "names",
   data() {
     return {
+      popup: false,    // if true Shows popup dialog, otherwise
       showPass: false,
       credentials: {
         username: null,
         password: null,
         lang: { text: "Ру", value: "ru" }
       },
+      test: "simple test message",
       teal: true,
       message: "",
       langsList: [
@@ -122,9 +144,23 @@ export default {
         { text: "O’zb", value: "uz" },
         { text: "Eng", value: "en" },
       ],
+      m_icons: [
+        {name: "contact_phone", text: "Contact"},
+        {name: "attach_money", text: "Exchange"},
+        {name: "bar_chart", text: "Chart"},
+        {name: "calendar_today", text: "Calendar"},
+        {name: "description", text: "Documents"},
+        {name: "functions", text: "Calculate"},
+        {name: "wb_sunny", text: "Web"},
+        {name: "info", text: "Info"},
+        {name: "help_center", text: "Help", st: "letter-spacing: -0.875em;"}
+      ],
       loginError: false,
 
     };
+  },
+  components: {
+    CPopup,
   },
   validations: {
     credentials: {
@@ -142,7 +178,6 @@ export default {
     }
   },
   methods: {
-
     handleSubmit() {
       this.loginError = false
       //Perform a simple validation that email and password have been typed in
@@ -192,8 +227,10 @@ export default {
 
   .bg {
     width: 100%;
-    height: 100vh;
+    height: 85vh;
+    overflow-y: auto;
     background: url('./assets/bg.png') 100% 100% no-repeat;
+    background-attachment: fixed;
     background-size: cover;
     font-family: 'OpenSans';
     font-style: normal;
@@ -215,8 +252,8 @@ export default {
   .loginBlock {
     width: 412px;
     margin: 0 auto;
-    padding: 40px;
-    background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1), rgba(255,255,255,0.8));
+    padding: 35px;
+    background: rgba(255,255,255,1);
     border-radius: 5px;
     box-shadow: 0 0 10px #888888;
   }
@@ -225,9 +262,6 @@ export default {
     padding-bottom: 35px;
     font-size: 20px;
     text-transform: uppercase;
-  }
-  .input {
-
   }
   .checksBlock {
     display: flex;
@@ -267,7 +301,7 @@ export default {
     display: flex;
   }
   .press {
-    background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1), rgba(255,255,255,0.8));
+    background: rgba(255,255,255,1);
     border-radius: 5px;
     box-shadow: 0 0 10px #888888;
     margin-right: 50px;
@@ -324,5 +358,43 @@ export default {
   }
   .input .q-field--outlined .q-field__control {
     background: #F2F2F2;
+  }
+</style>
+<style>
+  .btm_panel {
+    display: flex;
+    flex: auto;
+    flex-direction: row;
+    -ms-flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+    background-color: #fcfcfc;
+  }
+  .mmy-card {
+    background-color: #ffffff;
+    margin: 15px;
+    padding: 10px;;
+    min-width: 90px;
+    max-width: 90px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    box-shadow: #e9e9e9 0px 0px 10px;
+  }
+  .card_icon {
+    font-size: 1.8em;
+    color: #3877DC;
+  }
+  .mmy-card:hover .card_icon, .card_text {
+    color: black;
+  }
+  .card_text {
+    font-size: .5em;
+    color: grey;
   }
 </style>

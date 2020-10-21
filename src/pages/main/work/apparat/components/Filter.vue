@@ -5,10 +5,11 @@
         <q-select
           filled
           clearable
-          v-model="selectedSeniors"
+          v-model="selectedSenior"
           :options="seniors"
           label="Все руководства"
           bg-color="white"
+          @input="onSelectSenior"
           @clear="clearInput"
         />
       </div>
@@ -16,10 +17,11 @@
         <q-select
           filled
           clearable
-          v-model="selectedRegions"
+          v-model="selectedRegion"
           :options="regions"
           label="Все регионы"
           bg-color="white"
+          @input="onSelectRegion"
           @clear="clearInput"
         />
       </div>
@@ -27,22 +29,24 @@
         <q-select
           filled
           clearable
-          v-model="selectedOrgans"
+          v-model="selectedOrgan"
           :options="organs"
           label="Все органы"
           bg-color="white"
+          @input="onSelectOrgan"
           @clear="clearInput"
         />
       </div>
       <div class="col-3 offset-md-1">
         <q-input
           filled
-          clearable
           bottom-slots
-          v-model="text"
+          clearable
+          v-model="searchText"
           label="Поиск"
           bg-color="white"
           @input="search()"
+          @clear="onClearSearch()"
         >
           <template v-slot:append>
             <q-icon name="search" />
@@ -56,10 +60,11 @@
         <q-select
           filled
           clearable
-          v-model="selectedDepartments"
+          v-model="selectedDepartment"
           :options="departments"
           label="Все управление"
           bg-color="white"
+          @input="onSelectDepartment"
           @clear="clearInput"
         />
       </div>
@@ -71,6 +76,7 @@
           :options="statuses"
           label="Любой статус"
           bg-color="white"
+          @input="onSelectedStatus"
           @clear="clearInput"
         />
       </div>
@@ -78,15 +84,21 @@
         <q-select
           filled
           clearable
-          v-model="model"
-          :options="options"
+          v-model="type"
+          :options="typeOptions"
           label="Любой тип"
           bg-color="white"
           @clear="clearInput"
         />
       </div>
       <div class="col-3 text-right buttonFilter">
-        <q-btn color="blue-14" size="lg" label="Применить фильтр" @click="filter" />
+        <q-btn
+          color="blue-14"
+          size="lg"
+          label="Применить фильтр"
+          :disable="!isFilterButtonActive"
+          @click="onFilter"
+        />
       </div>
     </div>
   </div>
@@ -96,67 +108,88 @@ import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      selectedSeniors: "",
-      selectedRegions: "",
-      selectedOrgans: "",
-      selectedDepartments: "",
-      selectedStatus: "",
-      text: "",
-      model: "",
-      options: []
+      selectedSenior: null,
+      selectedRegion: null,
+      selectedOrgan: null,
+      selectedDepartment: null,
+      selectedStatus: null,
+
+      searchText: "",
+      type: "",
+      typeOptions: [],
     };
   },
   computed: {
     ...mapState({
-      seniors: state => state.apparat.aFilters.seniors,
-      regions: state => state.apparat.aFilters.regions,
-      organs: state => state.apparat.aFilters.organs,
-      departments: state => state.apparat.aFilters.departments,
-      statuses: state => state.apparat.aFilters.statuses,
-      docks: state => state.apparat.aDocks,
-
-      fperPage: state => state.apparat.aPerPage,
-      faPage: state => state.apparat.aPage
-    })
+      seniors: (state) => state.apparat.filters.seniors,
+      regions: (state) => state.apparat.filters.regions,
+      organs: (state) => state.apparat.filters.organs,
+      departments: (state) => state.apparat.filters.departments,
+      statuses: (state) => state.apparat.filters.statuses,
+      //docks: (state) => state.apparat.aDocks,
+    }),
+    isFilterButtonActive() {
+      return !!this.selectedSenior ||
+        !!this.selectedRegion ||
+        !!this.selectedOrgan ||
+        !!this.selectedDepartment ||
+        !!this.selectedStatus
+        ? true
+        : false;
+    },
   },
   methods: {
-    filter() {
-      const arr = {
-        perPage: this.fperPage,
-        page: this.faPage,
-        filters: {
-          superiors:
-            this.selectedSeniors !== "" && this.selectedSeniors !== null
-              ? this.selectedSeniors.value
-              : null,
-          region:
-            this.selectedRegions !== "" && this.selectedRegions !== null
-              ? this.selectedRegions.value
-              : null,
-          organ:
-            this.selectedOrgans !== "" && this.selectedOrgans !== null
-              ? this.selectedOrgans.value
-              : null,
-          departments:
-            this.selectedDepartments !== "" && this.selectedDepartments !== null
-              ? this.selectedDepartments.value
-              : null,
-          status:
-            this.selectedStatus !== "" && this.selectedStatus !== null
-              ? this.selectedStatus.value
-              : null
-        }
-      };
-      this.$store.dispatch("aPageSelect", arr);
+    onFilter() {
+      this.searchText = "";
+      this.$store.dispatch("apparat/loadAllDocs", { page: 1 });
     },
+    // select filters
+    onSelectSenior() {
+      let val = null;
+      if (this.selectedSenior) val = this.selectedSenior.value;
+      this.$store.commit("apparat/setSenior", val);
+    },
+    onSelectRegion() {
+      let val = null;
+      if (this.selectedRegion) val = this.selectedRegion.value;
+      this.$store.commit("apparat/setRegion", val);
+    },
+    onSelectOrgan() {
+      let val = null;
+      if (this.selectedOrgan) val = this.selectedOrgan.value;
+      this.$store.commit("apparat/setOrgan", val);
+    },
+    onSelectDepartment() {
+      let val = null;
+      if (this.selectedDepartment) val = this.selectedDepartment.value;
+      this.$store.commit("apparat/setOrgan", val);
+    },
+    onSelectedStatus() {
+      let val = null;
+      if (this.selectedStatus) val = this.selectedStatus.value;
+      this.$store.commit("apparat/setStatus", val);
+    },
+
     search() {
-      if (this.text !== "") this.$store.dispatch("aSearchDocs", this.text);
+      console.log({ tex: this.searchText });
+      this.$store.dispatch("apparat/aSearchDocs", this.searchText);
+    },
+    onClearSearch() {
+      //console.log("....");
+      this.searchText = "";
+      this.$store.dispatch("apparat/aSearchDocs", this.searchText);
     },
     clearInput() {
-      this.filter();
-    }
+      this.onSelectSenior();
+      this.onSelectRegion();
+      this.onSelectOrgan();
+      this.onSelectDepartment();
+      this.onSelectedStatus();
+
+      this.$store.dispatch("apparat/loadAllDocs");
+    },
   },
-  created() {}
+  created() {},
 };
 </script>
 <style scoped>
