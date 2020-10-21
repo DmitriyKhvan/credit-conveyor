@@ -1,11 +1,11 @@
 <template>
   <div>
     <div v-if="!data.length && status == 'FAILED'"> 
-      <h2>Ошибка в заросе АСОКИ</h2>
+      <h2 class="messageTitle">Ошибка в заросе АСОКИ</h2>
     </div>
 
     <div v-else-if="!data.length && status == 'SUCCESS'"> 
-      <h2>Данные не найдены</h2>
+      <h2 class="messageTitle">Данные не найдены</h2>
     </div>
 
     <q-markup-table v-else separator="cell" flat bordered>

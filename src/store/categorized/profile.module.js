@@ -351,7 +351,13 @@ export const profile = {
         },
         //InitialPaymentPercent: 0
         ProductMaxSum: null, // максимальная сумма по кредитному продукту
-        max_loan_sum_preapprove: null // максимальная сумма кредита
+        max_loan_sum_preapprove: null, // максимальная сумма кредита
+
+        microloan_details: {
+          mfo: "",
+          bank_name: "",
+          customer_bill: ""
+        }
       },
 
       max_loan_sum: null,
@@ -545,10 +551,6 @@ export const profile = {
     },
 
     async getFullForm({ state, commit, getters, rootGetters }, taskId) {
-      // state.preapprove_num = ""
-      // state.fileList = [] // очистка файлов на печать
-      // state.disableField = false
-      // state.FinalDecision = ""
       commit("resetDataFullFormProfile");
 
       let response;
@@ -560,10 +562,6 @@ export const profile = {
           response = await state.bpmService.getFullForm(
             rootGetters["credits/taskId"]
           );
-        }
-
-        if (response.data.input && response.data.input.length) {
-          commit("setInput", response.data.input)
         }
 
         console.log("response", response);
@@ -583,6 +581,7 @@ export const profile = {
           ).data;
 
           commit("setDictionaries", dictionaries);
+          commit("setInput", response.data.input);  // all input from BPM
 
           if (response.data.name == "Full Application Filling") {
             // для получения информации от халк банка
@@ -846,7 +845,7 @@ export const profile = {
           transportBrand: "",
           yearOfRelease: null,
           VehicleType: null,
-          marketValue: null
+          MarketValue: null
         }
       );
     },
@@ -1388,7 +1387,13 @@ export const profile = {
           },
           //InitialPaymentPercent: 0
           ProductMaxSum: null, // максимальная сумма по кредитному продукту
-          max_loan_sum_preapprove: null // максимальная сумма кредита
+          max_loan_sum_preapprove: null, // максимальная сумма кредита
+
+          microloan_details: {
+            mfo: "",
+            bank_name: "",
+            customer_bill: ""
+          }
         },
 
         max_loan_sum: null,

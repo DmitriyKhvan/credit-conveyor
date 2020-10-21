@@ -126,21 +126,21 @@ export default {
         return this.ASOKI.claims_information.claims.items
       }
 
-      return null
+      return []
     },
     contracts() {
       if (this.ASOKI) {
         return this.ASOKI.contracts.contract.items
       } 
 
-      return null
+      return []
     },
     overdue_payments() {
       if (this.ASOKI) {
         return this.ASOKI.overdue_payments.overdue_contract.items
       }
 
-      return null
+      return []
     },
 
     // client() {
@@ -154,7 +154,7 @@ export default {
         return this.data.output.find(i => i.name === 'GRCInfo').data.items
       }
 
-      return null
+      return []
     },
 
     deposits() {
@@ -162,7 +162,7 @@ export default {
         return this.data.output.find(i => i.name === 'deposits').data.items
       }
 
-      return null
+      return []
     },
 
     exceptions() {
@@ -178,7 +178,7 @@ export default {
         return this.exceptions.items.find(i => i.name === 'ASOKI').value.split(' ')[0]
       } 
 
-      return null
+      return ''
     },
 
     StatusGSZ() {
@@ -186,7 +186,7 @@ export default {
         return this.exceptions.items.find(i => i.name === 'GSZ').value.split(' ')[0]
       } 
 
-      return null
+      return ''
     }
   }, 
   components: {
