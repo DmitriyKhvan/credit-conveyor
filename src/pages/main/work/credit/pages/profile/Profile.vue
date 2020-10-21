@@ -420,16 +420,32 @@
               </div>
 
               <div class="row q-col-gutter-md">
+                <!-- <div class="col-4">
+                  <q-input
+                    :disable="disableField"
+                    outlined
+                    v-model="fullProfile.Customer.CardNumber"
+                    @input="cardNumber($event)"
+                    dense
+                    label="Номер карты НБУ"
+                    error-message="Неверные данные"
+                    :error="!this.isValidNumCard"
+                  />
+                </div> -->
+
                 <div class="col-4">
                   <q-input
                     :disable="disableField"
-                    ref="CardNumber"
                     outlined
                     v-model="fullProfile.Customer.CardNumber"
                     dense
-                    label="Номер карты"
+                    label="Номер карты НБУ"
                     mask="################"
-                    :rules="[]"
+                      :rules="[
+                        val =>
+                          (val && val.length === 16) ||
+                          'Количество символов должно быт ровно 16'
+                      ]"
                   />
                 </div>
 
@@ -1787,13 +1803,13 @@
                       :disable="disableField"
                       ref="pricesProperties"
                       outlined
-                      v-model.number="property.MarketValue"
-                      type="number"
+                      v-model="property.MarketValue"
+                      @input="formatNumberItems('Realty_new', 'MarketValue', index)"
                       dense
                       label="Рыночная стоимость"
                       :rules="[
                         val => !!val || 'Поле должно быть заполнено',
-                        val => val > 0 || 'Некорректные данные'
+                        val => val != 0 || 'Некорректные данные'
                       ]"
                     />
                   </div>
@@ -1888,13 +1904,13 @@
                       :disable="disableField"
                       ref="priceVehicles"
                       outlined
-                      v-model.number="vehicle.marketValue"
-                      type="number"
+                      v-model="vehicle.MarketValue"
+                      @input="formatNumberItems('Transport_new', 'MarketValue', index)"
                       dense
                       label="Рыночная стоимость"
                       :rules="[
                         val => !!val || 'Введите рыночную стоимость',
-                        val => val > 0 || 'Некорректные данные'
+                        val => val != 0 || 'Некорректные данные'
                       ]"
                     />
                   </div>
@@ -2008,7 +2024,7 @@
                 <div
                   v-if="
                     !!fullProfile.LoanInfo.LoanProduct &&
-                      fullProfile.LoanInfo.LoanProduct !== 3
+                      fullProfile.LoanInfo.LoanProduct !== 1
                   "
                   class="col-4"
                 >
@@ -2286,11 +2302,63 @@
                 </div>
               </div>
 
+              <!-- для микрозайма -->
+              <template v-if="fullProfile.LoanInfo.LoanProduct == 132 && !fullProfile.Customer.CardNumber"> 
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="mircoloanBankName"
+                      outlined
+                      v-model="fullProfile.LoanInfo.microloan_details.bank_name"
+                      dense
+                      label="Наименование банка"
+                      :rules="[
+                        val =>
+                          !!val ||
+                          'Введите наименование банка'
+                      ]"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="mircoloanBankMFO"
+                      outlined
+                      v-model="fullProfile.LoanInfo.microloan_details.mfo"
+                      dense
+                      label="МФО банка"
+                      :rules="[
+                        val =>
+                          !!val ||
+                          'Введите МФО банка'
+                      ]"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="mircoloanCustomerBill"
+                      outlined
+                      v-model="fullProfile.LoanInfo.microloan_details.customer_bill"
+                      dense
+                      label="Расчетный счет клиента"
+                      mask="################"
+                      :rules="[
+                        val =>
+                          (val && val.length === 16) ||
+                          'Количество символов должно быт ровно 16'
+                      ]"
+                    />
+                  </div>
+                </div>
+              </template>
+
+              <!-- для потребительского кредита -->
               <template
-                v-if="
-                  fullProfile.LoanInfo.LoanProduct == 1 ||
-                    fullProfile.LoanInfo.LoanProduct == 2
-                "
+                v-if="fullProfile.LoanInfo.LoanProduct == 133"
               >
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -3795,8 +3863,8 @@
               <template v-if="fullProfile.ApplicationComment">
                 <div
                   class="comments"
-                  v-for="comment of fullProfile.ApplicationComment.items"
-                  :key="comment.id"
+                  v-for="(comment, index) of fullProfile.ApplicationComment.items"
+                  :key="'comment' + index"
                 >
                   <h6 class="tab-content_title">{{ comment.CommentPerson }}</h6>
                   <!-- <span>{{comment.CommentDate}}</span> -->
@@ -4070,6 +4138,8 @@ export default {
   name: "profile",
   data() {
     return {
+      isValidNumCard: true,
+      failureCredit: false,
       clientInfoData: false,
       printForm: false,
       bankLoading: false,
@@ -4283,9 +4353,11 @@ export default {
     },
 
     message() {
-      return this.status === 'Step: Работа с документами' 
+      return this.status === 'Step: Работа с документами' && !this.failureCredit 
               ? 'Deal complete'
-              : 'Form complete'
+                : this.failureCredit
+                  ? 'Credit failure'
+                  : 'Form complete'
     },
 
     countFile() {
@@ -4301,10 +4373,10 @@ export default {
     }
   },
   watch: {
-    "Customer.Email"() {
+    "Customer.Email"(val) {
       if (
-        this.Customer.Email !== "" &&
-        !this.Customer.Email.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
+        val !== "" &&
+        !val.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
       ) {
         this.isValid = false;
       } else {
@@ -4346,7 +4418,13 @@ export default {
       return formatNumber(number);
     },
 
+    formatNumberItems(item, key, idx) {
+      console.log(this.Customer.PropertyInformation.Realty_new.items)
+      this.Customer.PropertyInformation[item].items[idx][key] = formatNumber(this.Customer.PropertyInformation[item].items[idx][key])
+    },
+
     async onSubmit(submitForm = true, failureCredit = false) {
+      this.failureCredit = failureCredit;
       this.countRelativeDocumentName = -1;
       this.countGuaranteeDocumentName = -1;
 
@@ -4731,10 +4809,9 @@ export default {
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
-      //если потребительский или микрозайм кредит
+      //если потребительский
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 1 ||
-        this.fullProfile.LoanInfo.LoanProduct == 2
+        this.fullProfile.LoanInfo.LoanProduct == 133
       ) {
         this.$refs.nameProduction.validate();
         this.$refs.productName.validate();
@@ -4752,38 +4829,45 @@ export default {
       }
 
       //если не овердрафт
-      if (
-        !!this.fullProfile.LoanInfo.LoanProduct &&
-        this.fullProfile.LoanInfo.LoanProduct !== 3
-      ) {
-        this.$refs.typeRepayment.validate();
-        // this.$refs.initialFee.validate();
-      } else {
-        validItems(this.$refs, "typeRepayment");
-        // validItems(this.$refs, "initialFee");
-      }
+      // if (
+      //   !!this.fullProfile.LoanInfo.LoanProduct &&
+      //   this.fullProfile.LoanInfo.LoanProduct !== 1
+      // ) {
+      //   this.$refs.typeRepayment.validate();
+      // } else {
+      //   validItems(this.$refs, "typeRepayment");
+      // }
 
       this.$refs.uploadFile.validate();
 
-      // if (!this.fullProfile.AttachedDocuments.items.length) {
-      //   debugger
-      //   this.$refs.uploadFile.validate();
-      // } else {
-      //   debugger
-      //   validItems(this.$refs, "uploadFile");
+      this.guaranteesValid();
+
+      // if (
+      //   !this.fullProfile.Guarantee.Insurance.items.length ||
+      //   !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
+      //   !this.fullProfile.Guarantee.RelatedPerson.items.length
+      // ) {
+      //   this.guaranteesValid();
+      // } 
+      // else {
+      //   validItems(this.$refs, "guaranteesValid");
       // }
 
-      if (
-        !this.fullProfile.Guarantee.Insurance.items.length ||
-        !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
-        !this.fullProfile.Guarantee.RelatedPerson.items.length
-      ) {
-        this.guaranteesValid();
-      } else {
-        validItems(this.$refs, "guaranteesValid");
-      }
-
       console.log("files", this.$refs.files);
+
+      if (
+        this.fullProfile.LoanInfo.LoanProduct == 132 && 
+        !this.fullProfile.Customer.CardNumber
+      ) {
+        this.$refs.mircoloanBankName.validate();
+        this.$refs.mircoloanBankMFO.validate();
+        this.$refs.mircoloanCustomerBill.validate();
+      } else {
+        validItems(this.$refs, "mircoloanBankName");
+        validItems(this.$refs, "mircoloanBankMFO");
+        validItems(this.$refs, "mircoloanCustomerBill");
+      }
+      
 
       if (
         this.$refs.surname.hasError ||
@@ -4897,7 +4981,12 @@ export default {
         this.$refs.agreementDate.hasError ||
         this.$refs.sourceFinancs.hasError ||
         this.$refs.uploadFile.hasError ||
-        this.$refs.guaranteesValid.hasError
+        this.$refs.guaranteesValid.hasError ||
+        
+        this.$refs.mircoloanBankName.hasError ||
+        this.$refs.mircoloanBankMFO.hasError ||
+        this.$refs.mircoloanCustomerBill.hasError
+
       ) {
         this.formHasError = true;
         this.bar = true;
@@ -4957,6 +5046,22 @@ export default {
 
             Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
 
+            // for (let property of Customer.PropertyInformation.Realty_new.items) {
+            //   property.MarketValue = +String(property.MarketValue).replace(/[^0-9]/gim, "");
+            // }
+
+            // for (let property of Customer.PropertyInformation.Transport_new.items) {
+            //   property.MarketValue = +String(property.MarketValue).replace(/[^0-9]/gim, "");
+            // }
+
+            for (let property in Customer.PropertyInformation) {
+
+              for (let i of Customer.PropertyInformation[property].items) {
+                i.MarketValue = +String(i.MarketValue).replace(/[^0-9]/gim, "");
+              }
+            }
+
+
             for (let guarantee in Guarantee) {
               for (let i of Guarantee[guarantee].items) {
                 if (i.Sum) {
@@ -4997,6 +5102,7 @@ export default {
             };
 
             console.log(JSON.stringify(data, null, 2));
+            // this.$store.commit("credits/setMessage", this.message);
 
             try {
               const response = await this.$store.dispatch(
@@ -6037,6 +6143,7 @@ export default {
       console.log("totalGuaranteesSum", this.totalGuaranteesSum);
       this.$refs.guaranteesValid.validate();
       this.$refs.priceCredit.validate();
+      // debugger
     },
 
     givenPlaceValid(val) {
@@ -6072,6 +6179,19 @@ export default {
     pinppValid(val) {
       return !val.match(/(?=(.))\1{14,}/) || "Неверные данные";
     },
+
+    // cardNumber(val) {
+    //   console.log(val)
+    //   if (
+    //     val !== "" &&
+    //     val.length != 16  &&
+    //     !val.match(/(?=(.))\1{16,}/)
+    //   ) {
+    //     this.isValidNumCard = false;
+    //   } else {
+    //     this.isValidNumCard = true;
+    //   }
+    // },
 
     async printFile(fileData, idx) {
       this.disable = true;

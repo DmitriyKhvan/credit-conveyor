@@ -57,6 +57,7 @@
             <div class="col-5">
               <p class="scoringList__value">
                 <!-- Соответствует -->
+                Не найден
               </p>
             </div>
           </div>
@@ -71,6 +72,7 @@
             <div class="col-5">
               <p class="scoringList__value">
                 <!-- Соответствует -->
+                Не найден
               </p>
             </div>
           </div>

@@ -211,7 +211,7 @@
                       <q-select
                         v-if="
                           !!personalData.typeCredit &&
-                            personalData.typeCredit != 3
+                            personalData.typeCredit != 1
                         "
                         ref="typeStepCredit"
                         outlined
