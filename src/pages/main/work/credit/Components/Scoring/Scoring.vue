@@ -2,10 +2,9 @@
   <div class="scoring">
     <h2 class="scoring__title">Название филиала: {{ data.BranchName }}</h2>
     <h2 class="scoring__title">Результаты скоринга:</h2>
-    
+
     <div class="row scoringList q-col-gutter-xl">
       <div class="col-6">
-
         <div class="scoringList__block">
           <h3 class="scoringList__title">1. Минимальные требования:</h3>
           <div class="row subList">
@@ -15,19 +14,24 @@
 
             <div class="col-5">
               <p class="scoringList__value">
-                {{data.Customer.BirthDate ? "Соответствует" : "Не соответствует"}}
-                
+                {{
+                  data.Customer.BirthDate ? "Соответствует" : "Не соответствует"
+                }}
               </p>
-            </div>  
+            </div>
           </div>
-          
+
           <div class="row subList">
             <div class="col-7">
               <p class="scoringList__field">1.2 Гражданство</p>
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                {{data.Customer.ResidentFlag ? "Соответствует" : "Не соответствует"}}
+                {{
+                  data.Customer.ResidentFlag
+                    ? "Соответствует"
+                    : "Не соответствует"
+                }}
               </p>
             </div>
           </div>
@@ -39,11 +43,12 @@
             <div class="col-5">
               <p class="scoringList__value">
                 {{
-                  data.Customer.JobInfo.lastJobExperienceMonths 
-                  ? "Соответствует"
-                    : data.Customer.JobInfo.activeYears 
-                      ? "Соответствует"
-                      : "Не соответствует"}}
+                  data.Customer.JobInfo.lastJobExperienceMonths
+                    ? "Соответствует"
+                    : data.Customer.JobInfo.activeYears
+                    ? "Соответствует"
+                    : "Не соответствует"
+                }}
               </p>
             </div>
           </div>
@@ -57,10 +62,10 @@
             <div class="col-5">
               <p class="scoringList__value">
                 <!-- Соответствует -->
+                Не найден
               </p>
             </div>
           </div>
-          
         </div>
 
         <div class="scoringList__block">
@@ -71,10 +76,10 @@
             <div class="col-5">
               <p class="scoringList__value">
                 <!-- Соответствует -->
+                Не найден
               </p>
             </div>
           </div>
-          
         </div>
       </div>
 
@@ -85,10 +90,9 @@
               <h3 class="scoringList__title">4. ЛСБО:</h3>
             </div>
             <div class="col-5">
-              <q-checkbox v-model="data.Customer.LSBO" disable/>
+              <q-checkbox v-model="data.Customer.LSBO" disable />
             </div>
           </div>
-          
         </div>
 
         <div class="scoringList__block">
@@ -99,31 +103,29 @@
             </div>
 
             <div class="col-5">
-              <p class="scoringList__value">
-                
-              </p>
-            </div>  
-          </div>
-          
-          <div class="row subList">
-            <div class="col-7">
-              <p class="scoringList__field">5.2 Общая сумма кредитов (неоплаченный остаток)</p>
-            </div>
-            <div class="col-5">
-              <p class="scoringList__value">
-                
-              </p>
+              <p class="scoringList__value"></p>
             </div>
           </div>
 
           <div class="row subList">
             <div class="col-7">
-              <p class="scoringList__field">5.3 Общая сумма ежемесячных платежей по кредитам</p>
+              <p class="scoringList__field">
+                5.2 Общая сумма кредитов (неоплаченный остаток)
+              </p>
             </div>
             <div class="col-5">
-              <p class="scoringList__value">
-                
+              <p class="scoringList__value"></p>
+            </div>
+          </div>
+
+          <div class="row subList">
+            <div class="col-7">
+              <p class="scoringList__field">
+                5.3 Общая сумма ежемесячных платежей по кредитам
               </p>
+            </div>
+            <div class="col-5">
+              <p class="scoringList__value"></p>
             </div>
           </div>
         </div>
@@ -197,7 +199,7 @@
     <div class="maxSum">
       <h3 class="scoringList__title">Расчетная сумма кредита</h3>
       <p class="scoringList__value">
-        {{ data.LoanInfo.max_loan_sum_preapprove | formatNumber}} сум
+        {{ data.LoanInfo.max_loan_sum_preapprove | formatNumber }} сум
       </p>
     </div>
   </div>
@@ -214,7 +216,7 @@ export default {
   },
   data() {
     return {
-      val: false,
+      val: false
       // birthday: null,
     };
   },
@@ -262,8 +264,8 @@ export default {
     }
 
     &__value {
-      background: #F8F8F8;
-      border: 1px solid #DADADA;
+      background: #f8f8f8;
+      border: 1px solid #dadada;
       padding: 7px 11px;
     }
 
