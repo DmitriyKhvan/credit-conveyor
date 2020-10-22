@@ -601,9 +601,6 @@ export const profile = {
             commit("setFileList", response);
             commit("setFullForm", data);
           } else if (
-            // response.data.name != "Full Application Filling" &&
-            // response.data.name != "Проверка документов" &&
-            // data.BODecision == true
             response.data.name == "Голосование КК"
           ) {
             // для получения информации от халк банка для кредитного секретаря

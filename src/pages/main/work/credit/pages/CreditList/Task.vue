@@ -1920,7 +1920,14 @@ export default {
             },
             {
               name: "application_comments",
-              data: this.fullProfile.ApplicationComment.items
+              //data: this.fullProfile.ApplicationComment.items
+              data: [
+                      {
+                        Comment: this.commentCC.Comment,
+                        CommentPerson: this.$store.getters["auth/username"],
+                        Type: this.$store.getters["credits/userRole"]
+                      }
+                    ]
             },
             {
               name: "username",
