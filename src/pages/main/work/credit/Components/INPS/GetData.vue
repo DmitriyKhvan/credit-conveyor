@@ -46,7 +46,7 @@
             <p>{{ salary.org_name }}</p>
           </td>
           <td>
-            <p>{{ salary.period }}</p>
+            <p>{{ salary.period | formatDate }}</p>
           </td>
           <td>
             <p>{{ salary.total_invoices.full | formatNumber }}</p>
@@ -185,6 +185,7 @@
 
 <script>
 import formatNumber from "../../filters/format_number"
+import formatDate from "../../filters/formatDate"
 
 export default {
   props: ["salaries"],
@@ -199,7 +200,8 @@ export default {
   },
 
   filters: {
-    formatNumber
+    formatNumber,
+    formatDate
   }
 };
 </script>
