@@ -439,13 +439,15 @@
                     outlined
                     v-model="fullProfile.Customer.CardNumber"
                     dense
-                    label="Номер карты НБУ"
+                    label="Номер карты"
                     mask="################"
-                      :rules="[
-                        val =>
+                    :rules="[
+                      val =>
                           (val && val.length === 16) ||
-                          'Количество символов должно быт ровно 16'
-                      ]"
+                          'Количество символов должно быт ровно 16',
+                        val =>
+                          !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                    ]"
                   />
                 </div>
 
@@ -2345,11 +2347,12 @@
                       v-model="fullProfile.LoanInfo.microloan_details.customer_bill"
                       dense
                       label="Расчетный счет клиента"
-                      mask="################"
+                      mask="####################"
                       :rules="[
                         val =>
-                          (val && val.length === 16) ||
-                          'Количество символов должно быт ровно 16'
+                          (val && val.length === 20) ||
+                          'Количество символов должно быт ровно 20',
+                        val => !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
                       ]"
                     />
                   </div>
@@ -5002,8 +5005,8 @@ export default {
               );
           } 
           else if (!this.printForm && 
-                  this.status !== 'Работа с документами' &&
-                  this.fullProfile.BODecision == null) {
+                  this.status == 'Step: Ввод данных с интеграциями'
+                  ) {
             this.$store.commit(
                 "credits/setMessage",
                 "Распечатайте анкету"
@@ -5046,18 +5049,11 @@ export default {
 
             Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
 
-            // for (let property of Customer.PropertyInformation.Realty_new.items) {
-            //   property.MarketValue = +String(property.MarketValue).replace(/[^0-9]/gim, "");
-            // }
-
-            // for (let property of Customer.PropertyInformation.Transport_new.items) {
-            //   property.MarketValue = +String(property.MarketValue).replace(/[^0-9]/gim, "");
-            // }
-
             for (let property in Customer.PropertyInformation) {
-
-              for (let i of Customer.PropertyInformation[property].items) {
-                i.MarketValue = +String(i.MarketValue).replace(/[^0-9]/gim, "");
+              if(typeof Customer.PropertyInformation[property] == 'object') {
+                for (let i of Customer.PropertyInformation[property].items) {
+                  i.MarketValue = +String(i.MarketValue).replace(/[^0-9]/gim, "");
+                }
               }
             }
 
