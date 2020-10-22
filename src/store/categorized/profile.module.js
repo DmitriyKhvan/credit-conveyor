@@ -387,19 +387,20 @@ export const profile = {
         const response = await state.bpmService.getDataINPS(data);
         console.log("getDataINPS", response.input);
         const dataINPS = response.input.find(i => i.label === "clientWagesData")
-          .data;
-        if (dataINPS.wages.items.length) {
+        
+        if (dataINPS) {
           const scoring = response.input.find(
             i => i.label === "preApprovalData"
           ).data;
 
           commit("setScoring", scoring);
-          commit("setINNandNameOrg", dataINPS.wages.items.slice().pop());
+          commit("setINNandNameOrg", dataINPS.data.wages.items.slice().pop());
 
-          return dataINPS;
+          return dataINPS.data;
         } else {
-          return null;
+          throw "Сервер не отвечает!"
         }
+
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });

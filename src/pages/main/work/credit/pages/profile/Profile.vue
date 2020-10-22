@@ -4107,12 +4107,16 @@
       <q-card class="INPSblock">
         <q-card-section>
           <appGetDataINPS
-            v-if="dataINPS"
+            v-if="dataINPS.code == '0'"
             :salaries="dataINPS"
             @closeBar="$event => (INPSBar = $event)"
           />
 
-          <appSetDataINPS v-else @closeBar="$event => (INPSBar = $event)" />
+          <appSetDataINPS 
+            v-else 
+            @closeBar="$event => (INPSBar = $event)" 
+            :msg="dataINPS.msg"
+          />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -4150,7 +4154,10 @@ export default {
       clientInfoLoading: false,
       // infoList: false,
       INPSBar: false,
-      dataINPS: null,
+      dataINPS: {
+        code: null,
+        msg: ""
+      },
       clientInfo: null,
       countRelativeDocumentName: -1,
       countGuaranteeDocumentName: -1,
@@ -5581,25 +5588,25 @@ export default {
 
       try {
         this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        if (this.dataINPS) {
-          const INPSItems = this.dataINPS.wages.items.map(i => {
-            return {
-              period: CommonUtils.dateFilter(i.period),
-              send_date: i.send_date,
-              inn: i.inn,
-              total_invoices: {
-                balance: i.total_invoices.balance,
-                percent: i.total_invoices.percent,
-                full: i.total_invoices.full
-              },
-              org_addres: i.org_addres,
-              org_name: i.org_name
-            };
-          });
+        // if (this.dataINPS.code == "0") {
+        //   const INPSItems = this.dataINPS.wages.items.map(i => {
+        //     return {
+        //       period: CommonUtils.dateFilter(i.period),
+        //       send_date: i.send_date,
+        //       inn: i.inn,
+        //       total_invoices: {
+        //         balance: i.total_invoices.balance,
+        //         percent: i.total_invoices.percent,
+        //         full: i.total_invoices.full
+        //       },
+        //       org_addres: i.org_addres,
+        //       org_name: i.org_name
+        //     };
+        //   });
 
-          this.dataINPS.wages.items = INPSItems;
-          console.log("dataINPS", this.dataINPS);
-        }
+        //   this.dataINPS.wages.items = INPSItems;
+        //   console.log("dataINPS", this.dataINPS);
+        // }
 
         this.bankLoading = false;
         this.INPSBar = true;
