@@ -2041,23 +2041,23 @@ export default {
 
       try {
         this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        if (this.dataINPS) {
-          const INPSItems = this.dataINPS.wages.items.map(i => {
-            return {
-              period: CommonUtils.dateFilter(i.period),
-              send_date: i.send_date,
-              inn: i.inn,
-              total_invoices: {
-                balance: i.total_invoices.balance,
-                percent: i.total_invoices.percent,
-                full: i.total_invoices.full
-              },
-              org_addres: i.org_addres,
-              org_name: i.org_name
-            };
-          });
+        if (this.dataINPS.code == "0") {
+          // const INPSItems = this.dataINPS.wages.items.map(i => {
+          //   return {
+          //     period: CommonUtils.dateFilter(i.period),
+          //     send_date: i.send_date,
+          //     inn: i.inn,
+          //     total_invoices: {
+          //       balance: i.total_invoices.balance,
+          //       percent: i.total_invoices.percent,
+          //       full: i.total_invoices.full
+          //     },
+          //     org_addres: i.org_addres,
+          //     org_name: i.org_name
+          //   };
+          // });
 
-          this.dataINPS.wages.items = INPSItems;
+          // this.dataINPS.wages.items = INPSItems;
 
           // this.dateTransformINPS()
         } else {
