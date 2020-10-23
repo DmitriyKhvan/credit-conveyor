@@ -211,7 +211,7 @@
                       <q-select
                         v-if="
                           !!personalData.typeCredit &&
-                            personalData.typeCredit != 1
+                            personalData.typeCredit != 1095
                         "
                         ref="typeStepCredit"
                         outlined
@@ -583,7 +583,7 @@ export default {
 
       this.$refs.typeCredit.validate();
 
-      if (!!this.personalData.typeCredit && this.personalData.typeCredit != 3) {
+      if (!!this.personalData.typeCredit && this.personalData.typeCredit != 1095) {
         this.$refs.typeStepCredit.validate();
         this.$refs.periodCredit.validate();
       } else {

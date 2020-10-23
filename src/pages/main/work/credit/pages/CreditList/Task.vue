@@ -2012,71 +2012,103 @@ export default {
       }
     },
 
+    // async getDataINPS() {
+    //   this.bankLoading = true;
+    //   let data = {
+    //     input: [
+    //       {
+    //         name: "passSerial",
+    //         data: this.Customer.Document.Series
+    //       },
+    //       {
+    //         name: "passNumber",
+    //         data: this.Customer.Document.Number
+    //       },
+    //       {
+    //         name: "pin",
+    //         data: this.Customer.PINPP
+    //       },
+    //       {
+    //         name: "application_id",
+    //         data: this.profile.preapprove_num
+    //       },
+    //       {
+    //         name: "from",
+    //         data: "getData"
+    //       }
+    //     ]
+    //   };
+
+    //   try {
+    //     this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
+    //     if (this.dataINPS.code == "0") {
+              // const INPSItems = this.dataINPS.wages.items.map(i => {
+              //   return {
+              //     period: CommonUtils.dateFilter(i.period),
+              //     send_date: i.send_date,
+              //     inn: i.inn,
+              //     total_invoices: {
+              //       balance: i.total_invoices.balance,
+              //       percent: i.total_invoices.percent,
+              //       full: i.total_invoices.full
+              //     },
+              //     org_addres: i.org_addres,
+              //     org_name: i.org_name
+              //   };
+              // });
+
+              // this.dataINPS.wages.items = INPSItems;
+
+              // this.dateTransformINPS()
+    //     } else {
+    //       data = {
+    //         input: [
+    //           {
+    //             name: "application_id",
+    //             data: this.profile.preapprove_num
+    //             // data: '00450.null.1.2020.124'
+    //           },
+    //           {
+    //             name: "from",
+    //             data: "viewData"
+    //           }
+    //         ]
+    //       };
+    //       this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
+    //     }
+
+    //     this.bankLoading = false;
+    //     this.INPSBar = true;
+    //   } catch (error) {
+    //     this.$store.commit(
+    //       "credits/setMessage",
+    //       CommonUtils.filterServerError(error)
+    //     );
+    //     this.loader = false;
+    //     this.bankLoading = false;
+    //   }
+    // },
+
     async getDataINPS() {
       this.bankLoading = true;
-      let data = {
+      const data = {
         input: [
-          {
-            name: "passSerial",
-            data: this.Customer.Document.Series
-          },
-          {
-            name: "passNumber",
-            data: this.Customer.Document.Number
-          },
-          {
-            name: "pin",
-            data: this.Customer.PINPP
-          },
           {
             name: "application_id",
             data: this.profile.preapprove_num
+            // data: '00450.null.1.2020.124'
           },
           {
             name: "from",
-            data: "getData"
+            data: "viewData"
           }
         ]
       };
 
       try {
+        
         this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        if (this.dataINPS.code == "0") {
-          // const INPSItems = this.dataINPS.wages.items.map(i => {
-          //   return {
-          //     period: CommonUtils.dateFilter(i.period),
-          //     send_date: i.send_date,
-          //     inn: i.inn,
-          //     total_invoices: {
-          //       balance: i.total_invoices.balance,
-          //       percent: i.total_invoices.percent,
-          //       full: i.total_invoices.full
-          //     },
-          //     org_addres: i.org_addres,
-          //     org_name: i.org_name
-          //   };
-          // });
-
-          // this.dataINPS.wages.items = INPSItems;
-
-          // this.dateTransformINPS()
-        } else {
-          data = {
-            input: [
-              {
-                name: "application_id",
-                data: this.profile.preapprove_num
-                // data: '00450.null.1.2020.124'
-              },
-              {
-                name: "from",
-                data: "viewData"
-              }
-            ]
-          };
-          this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        }
-
+        
         this.bankLoading = false;
         this.INPSBar = true;
       } catch (error) {
@@ -2089,24 +2121,7 @@ export default {
       }
     }
 
-    // dateTransformINPS() {
-    //   const INPSItems = this.dataINPS.wages.items.map(i => {
-    //     return {
-    //       period: CommonUtils.dateFilter(i.period),
-    //       send_date: i.send_date,
-    //       inn: i.inn,
-    //       total_invoices: {
-    //           balance: i.total_invoices.balance,
-    //           percent: i.total_invoices.percent,
-    //           full: i.total_invoices.full
-    //       },
-    //       org_addres: i.org_addres,
-    //       org_name: i.org_name
-    //     }
-    //   })
-
-    //   this.dataINPS.wages.items = INPSItems
-    // }
+  
   },
   components: {
     appLoader: Loader,
