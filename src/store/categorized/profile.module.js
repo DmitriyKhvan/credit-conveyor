@@ -449,40 +449,13 @@ export const profile = {
 
       try {
         const response = await state.bpmService.getDataLSBO(data);
+        
+        const dataLSBO = response.input.find(i => i.label === "response")
 
-        response.input
-          .find(i => i.label === "response")
-          .data.items.forEach(user => {
-            // console.log("user", user)
-            if (user.lsbo) {
-              if (state.fullFormProfile.Customer.Document.Number == user.passNumber) {
-                state.fullFormProfile.Customer.LSBO = user.lsbo
-                state.fullFormProfile.Customer.role = user.role
-                state.fullFormProfile.Customer.filial = user.filial
-              }
-
-              let relative = state.fullFormProfile.Customer.Relatives.items.find(
-                rel => rel.Document.Number == user.passNumber
-              );
-              // console.log('relative', relative)
-              if (relative) {
-                relative.role = user.role;
-                relative.LSBO = user.lsbo;
-                relative.filial = user.filial;
-              }
-            }
-          });
-
-        const lsbo = response.input
-          .find(user => user.label === "response")
-          .data.items.findIndex(lsbo => lsbo.lsbo);
-
-        console.log("lsboFlag", lsbo);
-        if (lsbo !== -1) {
-          state.percent = 30;
-        } else {
-          state.percent = 25;
+        if (dataLSBO) {
+          commit('setLSBO', dataLSBO)
         }
+
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
@@ -636,6 +609,38 @@ export const profile = {
     }
   },
   mutations: {
+    setLSBO(state, dataLSBO) {
+      dataLSBO.data.items.forEach(user => {
+            // console.log("user", user)
+            if (user.lsbo) {
+              if (state.fullFormProfile.Customer.Document.Number == user.passNumber) {
+                state.fullFormProfile.Customer.LSBO = user.lsbo
+                state.fullFormProfile.Customer.role = user.role
+                state.fullFormProfile.Customer.filial = user.filial
+              }
+
+              let relative = state.fullFormProfile.Customer.Relatives.items.find(
+                rel => rel.Document.Number == user.passNumber
+              );
+              // console.log('relative', relative)
+              if (relative) {
+                relative.role = user.role;
+                relative.LSBO = user.lsbo;
+                relative.filial = user.filial;
+              }
+            }
+          });
+
+        const lsbo = dataLSBO.data.items.findIndex(lsbo => lsbo.lsbo);
+
+        console.log("lsboFlag", lsbo);
+        if (lsbo !== -1) {
+          state.percent = 30;
+        } else {
+          state.percent = 25;
+        }
+    },
+
     setInput(state, input) {
       state.BPMInput = input
     },
