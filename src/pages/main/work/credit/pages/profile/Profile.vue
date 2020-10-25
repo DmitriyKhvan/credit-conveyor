@@ -58,7 +58,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    :disable="disableField"
+                    disable
                     ref="birthday"
                     outlined
                     dense
@@ -1245,7 +1245,7 @@
               ></q-btn>
 
               <q-btn
-                v-if="profile.preapprove_num"
+                v-if="preapprove_num"
                 :loading="LSBOLoading"
                 label="Получить данные ЛСБО"
                 @click="getLSBO"
@@ -1732,7 +1732,7 @@
               > -->
 
               <q-btn
-                v-if="profile.preapprove_num"
+                v-if="preapprove_num"
                 :loading="bankLoading"
                 label="Получить данные с Халк банка"
                 @click="getDataINPS"
@@ -4125,7 +4125,7 @@
 
 <script>
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import printJS from "print-js";
 
 // import InfoList from "../registration/PreApproval";
@@ -4344,6 +4344,10 @@ export default {
       loadings: state => state.profile.loadings
     }),
 
+    ...mapGetters({
+      preapprove_num: "profile/preapprove_num"
+    }),
+
     taskId() {
       return this.$route.query.taskId;
     },
@@ -4377,7 +4381,6 @@ export default {
     },
 
     scoring_results() {
-      // console.log('this.profile.BPMInput', this.profile.BPMInput)
       const scoring_resutlts = this.profile.BPMInput.find(input => input.label == 'scoring_results')
       return scoring_resutlts ? scoring_resutlts : null
     }
@@ -5138,426 +5141,6 @@ export default {
       }
     },
 
-    // async onSubmit() {
-    //   const data = {
-    //     output: [
-    //       {
-    //         name: "application",
-    //         data: {
-    //           Status: "",
-    //           BODecision: null,
-    //           BOLogin: "",
-    //           ClientManagerLogin: "man",
-    //           CreditCommiteeDecisions: {
-    //             items: []
-    //           },
-    //           Customer: {
-    //             DigID: false,
-    //             Email: "",
-    //             FirstName: "DFGDG",
-    //             LastName: "SDF",
-    //             MiddleName: "DFGDFG",
-    //             FullName: "SDF DFGDG DFGDFG",
-    //             BirthDate: "07.08.1969",
-    //             Country: 0,
-    //             BirthCity: "DSF",
-    //             INN: "234243242",
-    //             PINPP: "23423444444233",
-    //             ResidentFlag: true,
-    //             Gender: 1,
-    //             Document: {
-    //               documentType: 8,
-    //               Series: "DS",
-    //               Number: "3242333",
-    //               ExpirationDate: "14.09.2022",
-    //               GivenDate: "11.09.1969",
-    //               GUID: "",
-    //               Country: "Uzbekistan",
-    //               DocLink: "",
-    //               DocumentName: "",
-    //               Region: 1,
-    //               Districts: {
-    //                 items: [
-    //                   {
-    //                     label: "АНДИЖОН ШАХРИ",
-    //                     value: 1
-    //                   },
-    //                   {
-    //                     label: "АСАКА ШАХРИ",
-    //                     value: 2
-    //                   },
-    //                   {
-    //                     label: "ХОНОБОД ШАХРИ",
-    //                     value: 3
-    //                   },
-    //                   {
-    //                     label: "КОРАСУВ ШАХРИ",
-    //                     value: 4
-    //                   },
-    //                   {
-    //                     label: "Г.ШАХРИХАН",
-    //                     value: 5
-    //                   },
-    //                   {
-    //                     label: "АНДИЖОН ТУМАНИ",
-    //                     value: 6
-    //                   },
-    //                   {
-    //                     label: "АСАКА ТУМАНИ",
-    //                     value: 7
-    //                   },
-    //                   {
-    //                     label: "БАЛИКЧИ ТУМАНИ",
-    //                     value: 8
-    //                   },
-    //                   {
-    //                     label: "БУЗ ТУМАНИ",
-    //                     value: 9
-    //                   },
-    //                   {
-    //                     label: "БУЛОКБОШИ ТУМАНИ",
-    //                     value: 10
-    //                   },
-    //                   {
-    //                     label: "ЖАЛОЛКУДУК ТУМАНИ",
-    //                     value: 11
-    //                   },
-    //                   {
-    //                     label: "ИЗБОСКАН ТУМАНИ",
-    //                     value: 12
-    //                   },
-    //                   {
-    //                     label: "КОМСОМОЛАБАДСКИЙ",
-    //                     value: 13
-    //                   },
-    //                   {
-    //                     label: "КУРГОНТЕПА ТУМАНИ",
-    //                     value: 14
-    //                   },
-    //                   {
-    //                     label: "МАРХАМАТ ТУМАНИ",
-    //                     value: 15
-    //                   },
-    //                   {
-    //                     label: "ОЛТИНКУЛ ТУМАНИ",
-    //                     value: 16
-    //                   },
-    //                   {
-    //                     label: "ПАХТАОБОД ТУМАНИ",
-    //                     value: 17
-    //                   },
-    //                   {
-    //                     label: "ХУЖАОБОД ТУМАНИ",
-    //                     value: 18
-    //                   },
-    //                   {
-    //                     label: "УЛУГНОР ТУМАНИ",
-    //                     value: 210
-    //                   },
-    //                   {
-    //                     label: "ШАХРИХОН ТУМАНИ",
-    //                     value: 214
-    //                   }
-    //                 ]
-    //               },
-    //               GivenPlace: 1
-    //             },
-    //             Education: 3,
-    //             PhoneList: {
-    //               items: [
-    //                 {
-    //                   Number: "+998234234234"
-    //                 }
-    //               ]
-    //             },
-    //             AddressList: {
-    //               items: [
-    //                 {
-    //                   Building: "",
-    //                   OwnershipType: null,
-    //                   HouseType: "",
-    //                   PostalCode: "",
-    //                   Region: 6,
-    //                   District: 75,
-    //                   Street: "SDF",
-    //                   Block: "",
-    //                   House: "12",
-    //                   City: "",
-    //                   Apartment: "",
-    //                   AddressType: "Адрес постоянной регистрации",
-    //                   Districts: {
-    //                     items: [
-    //                       {
-    //                         label: "НАМАНГАН ШАХРИ",
-    //                         value: 68
-    //                       },
-    //                       {
-    //                         label: "МИНГБУЛОК ТУМАНИ",
-    //                         value: 69
-    //                       },
-    //                       {
-    //                         label: "КОСОНСОЙ ТУМАНИ",
-    //                         value: 70
-    //                       },
-    //                       {
-    //                         label: "НОРИН ТУМАНИ",
-    //                         value: 71
-    //                       },
-    //                       {
-    //                         label: "ПОП ТУМАНИ",
-    //                         value: 72
-    //                       },
-    //                       {
-    //                         label: "ТУРАКУРГОН ТУМАНИ",
-    //                         value: 73
-    //                       },
-    //                       {
-    //                         label: "УЙЧИ ТУМАНИ",
-    //                         value: 74
-    //                       },
-    //                       {
-    //                         label: "УЧКУРГОН ТУМАНИ",
-    //                         value: 75
-    //                       },
-    //                       {
-    //                         label: "ЧУСТ ТУМАНИ",
-    //                         value: 76
-    //                       },
-    //                       {
-    //                         label: "ЯНГИКУРГОН ТУМАНИ",
-    //                         value: 77
-    //                       },
-    //                       {
-    //                         label: "НАМАНГАН ТУМАНИ",
-    //                         value: 78
-    //                       },
-    //                       {
-    //                         label: "ЧОРТОК ТУМАНИ",
-    //                         value: 79
-    //                       }
-    //                     ]
-    //                   }
-    //                 }
-    //               ]
-    //             },
-    //             MaritalStatus: 2,
-    //             hasChildren: true,
-    //             UnderAgeChildrenNum: 1,
-    //             Relatives: {
-    //               items: [
-    //                 {
-    //                   FirstName: "GFHGF",
-    //                   FamilyConnectionType: 2,
-    //                   LastName: "DFG",
-    //                   MiddleName: "DSG",
-    //                   BirthDate: "24.08.1989",
-    //                   LSBO: false,
-    //                   role: "",
-    //                   filial: "",
-    //                   personal_id: "",
-    //                   Document: {
-    //                     documentType: 1,
-    //                     Series: "SD",
-    //                     Number: "3422342",
-    //                     ExpirationDate: "06.09.2022",
-    //                     GivenDate: "01.09.2020",
-    //                     GUID: "",
-    //                     Country: "",
-    //                     DocLink: "",
-    //                     DocumentName: "",
-    //                     Region: 8,
-    //                     Districts: {
-    //                       items: [
-    //                         {
-    //                           label: "ТЕРМИЗ ШАХРИ",
-    //                           value: 98
-    //                         },
-    //                         {
-    //                           label: "БОЙСУН ТУМАНИ",
-    //                           value: 99
-    //                         },
-    //                         {
-    //                           label: "ДЕНОВ ТУМАНИ",
-    //                           value: 100
-    //                         },
-    //                         {
-    //                           label: "ЖАРКУРГОН ТУМАНИ",
-    //                           value: 101
-    //                         },
-    //                         {
-    //                           label: "МУЗРАБОТ ТУМАНИ",
-    //                           value: 102
-    //                         },
-    //                         {
-    //                           label: "ШЕРОБОД ТУМАНИ",
-    //                           value: 103
-    //                         },
-    //                         {
-    //                           label: "ШУРЧИ ТУМАНИ",
-    //                           value: 104
-    //                         },
-    //                         {
-    //                           label: "УЗУН ТУМАНИ",
-    //                           value: 105
-    //                         },
-    //                         {
-    //                           label: "САРИОСИЁ ТУМАНИ",
-    //                           value: 106
-    //                         },
-    //                         {
-    //                           label: "АНГОР ТУМАНИ",
-    //                           value: 107
-    //                         },
-    //                         {
-    //                           label: "КИЗИРИК ТУМАНИ",
-    //                           value: 108
-    //                         },
-    //                         {
-    //                           label: "КУМКУРГОН ТУМАНИ",
-    //                           value: 109
-    //                         },
-    //                         {
-    //                           label: "ТЕРМИЗ ТУМАНИ",
-    //                           value: 110
-    //                         },
-    //                         {
-    //                           label: "ОЛТИНСОЙ ТУМАНИ",
-    //                           value: 111
-    //                         },
-    //                         {
-    //                           label: "БАНДИХОН ТУМАНИ",
-    //                           value: 112
-    //                         }
-    //                       ]
-    //                     },
-    //                     GivenPlace: 105
-    //                   }
-    //                 }
-    //               ]
-    //             },
-    //             JobInfo: {
-    //               employerActivityType: null,
-    //               positionType: null,
-    //               INN: "",
-    //               employeesNum: 0,
-    //               employerName: "",
-    //               totalJobExperienceMonths: 0,
-    //               activeYears: 0,
-    //               position: "",
-    //               type: 4,
-    //               lastJobExperienceMonths: 0
-    //             },
-    //             MonthlyExpenses: {
-    //               recurringExpenses: 2500000,
-    //               obligations: 0
-    //             },
-    //             MonthlyIncome: {
-    //               confirmMonthlyIncome: 10000000,
-    //               hasAdditionalIncome: false,
-    //               additionalIncome: {
-    //                 incomeType: null,
-    //                 sum: 0
-    //               }
-    //             },
-    //             PropertyInformation: {
-    //               Realty_new: {
-    //                 items: []
-    //               },
-    //               Transport_new: {
-    //                 items: []
-    //               }
-    //             }
-    //           },
-    //           Guarantee: {
-    //             Insurance: {
-    //               items: [
-    //                 {
-    //                   INN: "207002342",
-    //                   OrgName: '"СК OOO ""MY-INSURANCE"""',
-    //                   Sum: 1000000000
-    //                 }
-    //               ]
-    //             },
-    //             RelatedLegalPerson: {
-    //               items: []
-    //             },
-    //             RelatedPerson: {
-    //               items: []
-    //             }
-    //           },
-    //           LoanInfo: {
-    //             LoanProduct: 1,
-    //             Sum: 10000000,
-    //             Currency: "СУМ",
-    //             RepaymentType: 1,
-    //             LoanType: null,
-    //             MinInterestRate: 24,
-    //             MaxInterestRate: 24,
-    //             MaxDefferalRepaymentPeriod: 0,
-    //             ConvenientRepaymentTerm: 3,
-    //             TermInMonth: 9,
-    //             MaxTermInMonths: 12,
-    //             MinTermInMonths: 1,
-    //             InitialPayment: 0,
-    //             MaxInitialPaymentPercent: 0,
-    //             MinInitialPaymentPercent: 0,
-    //             LoanPurpose: 261,
-    //             FundingSource: 1,
-    //             FacilitiesForRepaymentDate: false,
-    //             consumerLoan: {
-    //               nameBankProd: "",
-    //               nameService: "",
-    //               agreementDate: "",
-    //               nameProduction: "",
-    //               billProd: "",
-    //               agreementNumber: "",
-    //               idBankProd: 0
-    //             }
-    //           },
-    //           ApplicationComment: {
-    //             items: []
-    //           },
-    //           AttachedDocuments: {
-    //             items: [
-    //               {
-    //                 id: 1727,
-    //                 DocLink: "",
-    //                 DocumentName: "SDF"
-    //               }
-    //             ]
-    //           }
-    //         }
-    //       }
-    //     ]
-    //   };
-
-    //   console.log(JSON.stringify(data, null, 2));
-
-    //   try {
-    //     const response = await this.$store.dispatch(
-    //       "credits/confirmationCredit",
-    //       data
-    //     );
-    //     console.log("response", JSON.stringify(response, null, 2));
-    //     //console.log('nextTaskId', response.nextTask.id)
-
-    //     if (response) {
-    //       this.$store.commit("credits/setMessage", "Credit complete");
-    //       this.$store.commit("credits/removeTask", this.taskId);
-    //       this.$router.push("/work/credit");
-    //       //this.$router.go(-1);
-    //     }
-
-    //     this.loader = false;
-    //   } catch (error) {
-    //     this.$store.commit(
-    //       "credits/setMessage",
-    //       CommonUtils.filterServerError(error)
-    //     );
-    //     this.loader = false;
-    //   }
-    // },
-
     async getDataINPS() {
       this.bankLoading = true;
 
@@ -5577,7 +5160,7 @@ export default {
           },
           {
             name: "application_id",
-            data: this.profile.preapprove_num
+            data: this.preapprove_num
           },
           {
             name: "from",

@@ -1684,7 +1684,7 @@
 </template>
 <script>
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
@@ -1778,6 +1778,10 @@ export default {
       dictionaries: state => state.profile.dictionaries,
       credits: state => state.credits
     }),
+
+    ...mapGetters({
+        preapprove_num: "profile/preapprove_num"
+    }), 
 
     date() {
       return this.$route.query.date;
@@ -2095,7 +2099,7 @@ export default {
         input: [
           {
             name: "application_id",
-            data: this.profile.preapprove_num
+            data: this.preapprove_num
             // data: '00450.null.1.2020.124'
           },
           {

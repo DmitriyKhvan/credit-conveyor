@@ -232,36 +232,13 @@ export default {
               (i) => i.label === "inputDictionaries"
             ).data;
 
-            //ИНПС
-            const preapprove_num = response.nextTask.input.find(
-              (i) => i.label === "preapprove_num"
-            ).data;
-
-            // Номер заявки печатная форма
-            // const applicationNumber = response.nextTask.input.find(
-            //   (i) => i.label === "process_info_fullApp"
-            // ).data.applicationNumber;
-
-            // Должность
-            // const userrole = response.nextTask.input.find(
-            //   (i) => i.label === "userrole"
-            // ).data;
-
             console.log("dic", JSON.stringify(dictionaries, null, 2));
 
-            this.$store.commit("profile/setPreapproveNum", preapprove_num);
             this.$store.commit("profile/resetDataFullFormProfile");
             this.$store.commit("profile/setPreapprovData", data);
             this.$store.commit("profile/setDictionaries", dictionaries);
 
             this.$store.commit("profile/setInput", response.nextTask.input);  // all input from BPM
-
-            // this.$store.commit("profile/setApplicationNumber", applicationNumber);
-            // this.$store.commit("profile/setUserrole", userrole);
-
-            // sessionStorage.setItem("preapprove_num", preapprove_num);
-            // sessionStorage.setItem("preapprovData", JSON.stringify(data));
-            // sessionStorage.setItem("dictionaries", JSON.stringify(dictionaries));
 
             this.$router.push("profile");
             setTimeout(() => {
