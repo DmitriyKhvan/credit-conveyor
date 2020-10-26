@@ -4107,8 +4107,8 @@
       <q-card class="INPSblock">
         <q-card-section>
           <appGetDataINPS
-            v-if="dataINPS.code == '0'"
-            :salaries="dataINPS"
+            v-if="dataINPS.code == 0"
+            :salaries="dataINPS.salaries"
             @closeBar="$event => (INPSBar = $event)"
           />
 

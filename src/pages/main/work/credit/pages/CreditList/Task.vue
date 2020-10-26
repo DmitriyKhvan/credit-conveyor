@@ -1413,7 +1413,7 @@
                   Среднемесячная заработная плата(сум)
                 </div>
                 <div class="col-6 data">
-                  {{ profile.avgSalary }}
+                  {{ processInfo.avgSalary }}
                 </div>
               </div>
 
@@ -1422,7 +1422,7 @@
                   Профит
                 </div>
                 <div class="col-6 data">
-                  {{ profile.profit }}
+                  {{ processInfo.profit }}
                 </div>
               </div>
 
@@ -1431,7 +1431,7 @@
                   Класс кредитоспособности
                 </div>
                 <div class="col-6 data">
-                  {{ profile.loanAbilityClass }}
+                  {{ processInfo.loanAbilityClass }}
                 </div>
               </div>
 
@@ -1440,7 +1440,7 @@
                   Расчет максимально возможной суммы кредита (скоринг)
                 </div>
                 <div class="col-6 data">
-                  {{ profile.LoanMax | formatNumber }}
+                  {{ processInfo.LoanMax | formatNumber }}
                 </div>
               </div>
             </template>
@@ -1797,7 +1797,27 @@ export default {
       return this.$route.query.filialName;
     },
     
+    processInfo() {
+      const processInfo = this.profile.BPMInput.find(
+        i => i.label === "processInfo"
+      );
 
+      if (processInfo) {
+        return {
+          avgSalary: processInfo.data.avgSalary,
+          loanAbilityClass: processInfo.data.loanAbilityClass,
+          profit: processInfo.data.profit,
+          LoanMax: processInfo.data.LoanMax,
+        }
+      } else {
+        return {
+          avgSalary: null,
+          loanAbilityClass: null,
+          profit: null,
+          LoanMax: null,
+        }
+      }
+    }
   },
   methods: {
 
@@ -2113,7 +2133,7 @@ export default {
 
       try {
         
-        this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
+        this.dataINPS = await this.$store.dispatch("profile/viewDataINPS", data);
         
         this.bankLoading = false;
         this.INPSBar = true;

@@ -1,7 +1,10 @@
 export default function formatNumber(value, power) {
+  
   let number = value
   if (typeof value === 'string') {
     number = Number(value.replace(/[^0-9]/gim,''));
+  } else if (value === null || value === undefined) {
+    number = 0
   }
   
   if (power) {

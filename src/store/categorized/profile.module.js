@@ -17,10 +17,10 @@ export const profile = {
     // preapprove_num: "",
     percent: 25,
 
-    avgSalary: null,
-    loanAbilityClass: null,
-    profit: null,
-    LoanMax: null,
+    // avgSalary: null,
+    // loanAbilityClass: null,
+    // profit: null,
+    // LoanMax: null,
 
     confirmCredit: false,
     fileList: [],
@@ -387,11 +387,15 @@ export const profile = {
       try {
         const response = await state.bpmService.getDataINPS(data);
         console.log("getDataINPS", response.input);
-        const dataINPS = response.input.find(
-          i => i.label === "clientWagesData"
+        const code = response.input.find(
+          i => i.label === "code"
         );
 
-        if (dataINPS) {
+        if (code) {
+
+          const dataINPS = response.input.find(
+            i => i.label === "clientWagesData"
+          );
           const scoring = response.input.find(
             i => i.label === "preApprovalData"
           ).data;
@@ -399,9 +403,32 @@ export const profile = {
           commit("setScoring", scoring);
           commit("setINNandNameOrg", dataINPS.data.wages.items.slice().pop());
 
-          return dataINPS.data;
+          return {
+            salaries: dataINPS.data,
+            code: code.data,
+            msg: response.input.find(i => i.label === "msg").data
+          }
         } else {
           throw "Сервер не отвечает!";
+        }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", errorMessage, { root: true });
+        throw error;
+      }
+    },
+
+    async viewDataINPS({ state, commit }, data) {
+      try {
+        const response = await state.bpmService.getDataINPS(data);
+        const dataINPS = response.input.find(
+          i => i.label === "clientWagesData"
+        );
+
+        if (dataINPS) {
+          return dataINPS.data
+        } else {
+          throw "Нет данных";
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -566,15 +593,6 @@ export const profile = {
           } else if (response.data.name == "Работа с документами") {
             commit("setFileList", response);
             commit("setFullForm", data);
-          } else if (response.data.name == "Голосование КК") {
-
-            const processInfo = response.data.input.find(
-              i => i.label === "processInfo"
-            );
-
-            commit("setProcessInfo", processInfo.data);
-
-            commit("setFullForm", data);
           } else {
             commit("setFullForm", data);
           }
@@ -640,12 +658,12 @@ export const profile = {
       state.payOrder = payOrder;
     },
 
-    setProcessInfo(state, processInfo) {
-      state.avgSalary = processInfo.avgSalary;
-      state.loanAbilityClass = processInfo.loanAbilityClass;
-      state.profit = processInfo.profit;
-      state.LoanMax = processInfo.LoanMax;
-    },
+    // setProcessInfo(state, processInfo) {
+    //   state.avgSalary = processInfo.avgSalary;
+    //   state.loanAbilityClass = processInfo.loanAbilityClass;
+    //   state.profit = processInfo.profit;
+    //   state.LoanMax = processInfo.LoanMax;
+    // },
 
     setScoring(state, payload) {
       state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
@@ -1400,7 +1418,52 @@ export const profile = {
 
       return preapprove_num
               ? preapprove_num.data
-              : preApplicationNum.data
-    }
+                : preApplicationNum
+                  ? preApplicationNum.data
+                  : null
+    },
+
+    fileList: state => {
+      const fileList = state.BPMInput.filter(i => {
+        return (
+          i.label === "overdraft" ||
+          i.label === "consumer_credit" ||
+          i.label === "microloan" ||
+          i.label === "payment_schedule"
+        );
+      });
+
+      state.BPMInput
+        .filter(i => {
+          return (
+            i.label === "overdraft_guarantor_physical" ||
+            i.label === "overdraft_guarantor_legal" ||
+            i.label === "microloan_guarantor_physical" ||
+            i.label === "microloan_guarantor_legal" ||
+            i.label === "consumer_guarantor_physical" ||
+            i.label === "consumer_guarantor_legal"
+          );
+        })
+        .forEach(guarantee => guaranteeDoc(guarantee));
+
+      function guaranteeDoc(guarantee) {
+        guarantee.data.items.forEach((item, index) => {
+          const doc = {
+            data: item,
+            label: guarantee.label,
+            number: index
+          };
+          fileList.push(doc);
+        });
+      }
+
+      console.log("fileList", fileList);
+
+      fileList.forEach((item, index) => {
+        state.loadings[index] = false;
+      });
+
+      state.fileList = fileList;
+    },
   }
 };
