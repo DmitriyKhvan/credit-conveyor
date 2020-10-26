@@ -1714,7 +1714,8 @@ export default {
       commentBO: {
         Comment: "",
         Type: this.$store.getters["credits/userRole"],
-        CommentPerson: this.$store.getters["auth/username"]
+        CommentPerson: this.$store.getters["auth/username"],
+        CommentPersonFIO: this.$store.getters["auth/fullName"]
         //id: 0,
         //CommentDate: ""
       },
@@ -1881,7 +1882,8 @@ export default {
             comment: {
               Comment: this.commentCC.Comment,
               CommentPerson: this.$store.getters["auth/username"],
-              Type: this.$store.getters["credits/userRole"]
+              Type: this.$store.getters["credits/userRole"],
+              CommentPersonFIO: this.$store.getters["auth/fullName"]
             }
           });
         }

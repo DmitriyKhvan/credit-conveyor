@@ -366,6 +366,7 @@ export const profile = {
           //   Comment: "",
           //   Type: "",
           //   CommentPerson: "",
+          //   CommentPersonFIO: "",
           // }
         ]
       },
@@ -1370,6 +1371,7 @@ export const profile = {
             //   Comment: "",
             //   Type: "",
             //   CommentPerson: "",
+            //   CommentPersonFIO: "",
             // }
           ]
         },

@@ -5678,7 +5678,8 @@ export default {
       const comment = {
         Comment: this.creditManagerComment,
         Type: "",
-        CommentPerson: this.$store.getters["auth/username"]
+        CommentPerson: this.$store.getters["auth/username"],
+        CommentPersonFIO: this.$store.getters["auth/fullName"]
         //id: 0,
         //CommentDate: ""
       };
