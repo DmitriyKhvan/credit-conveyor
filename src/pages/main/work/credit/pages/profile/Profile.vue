@@ -3933,8 +3933,8 @@
           </div>
 
           <!-- file list -->
-          <template v-if="profile.fileList.length">
-            <!-- Comment -->
+          <template v-if="fileList.length">
+            
             <div class="fileList tab">
               <h4
                 class="tab-title"
@@ -3947,7 +3947,7 @@
                 <ul class="fileBlock">
                   <li
                     class="fileLi"
-                    v-for="(fileData, index) of profile.fileList"
+                    v-for="(fileData, index) of fileList"
                     :key="index"
                   >
                     <p>
@@ -3963,7 +3963,7 @@
                       icon="print"
                       label="Печать"
                       @click="printFile(fileData, index)"
-                      :loading="loadings[index]"
+                      :loading="fileData.loading"
 
                     >
                       <template v-slot:loading>
@@ -4334,7 +4334,6 @@ export default {
   },
   computed: {
     ...mapState({
-      disableField: state => state.profile.disableField,
       fullProfile: state => state.profile.fullFormProfile,
       Customer: state => state.profile.fullFormProfile.Customer,
       dictionaries: state => state.profile.dictionaries,
@@ -4383,6 +4382,16 @@ export default {
     scoring_results() {
       const scoring_resutlts = this.profile.BPMInput.find(input => input.label == 'scoring_results')
       return scoring_resutlts ? scoring_resutlts : null
+    },
+
+    disableField() {
+      return this.status === 'Step: Работа с документами'
+              ? true
+              : false
+    },
+
+    fileList() {
+      return this.$store.getters['profile/fileList']
     }
   },
   watch: {
@@ -5782,22 +5791,22 @@ export default {
 
     async printFile(fileData, idx) {
       this.disable = true;
-      this.loadings.splice(idx, 1, true); // для ререндеринга (особенность vue)
+      fileData.loading = true
       let file = null;
       this.fileData.type = fileData.label;
       this.fileData.data = dataTransform(fileData.data);
       try {
         console.log(JSON.stringify(this.fileData, null, 2));
 
-        if (this.profile.fileList[idx].idFile) {
+        if (this.fileList[idx].idFile) {
           file = await this.$store.dispatch(
             "credits/getFile",
-            this.profile.fileList[idx].idFile
+            this.fileList[idx].idFile
           );
         } else {
           file = await this.$store.dispatch("credits/getFile", this.fileData);
 
-          this.profile.fileList[idx].idFile = file.id;
+          this.fileList[idx].idFile = file.id;
         }
 
         console.log("file", file);
@@ -5808,14 +5817,14 @@ export default {
         }
 
         this.disable = false;
-        this.loadings.splice(idx, 1, false);
+        fileData.loading = false
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
           CommonUtils.filterServerError(error)
         );
         this.disable = false;
-        this.loadings.splice(idx, 1, false);
+        fileData.loading = false;
       }
     },
 
@@ -6035,6 +6044,10 @@ export default {
 
     .comments {
       margin-bottom: 20px;
+
+      .tab-content_title {
+        margin: 0;
+      }
     }
 
     &_title {
