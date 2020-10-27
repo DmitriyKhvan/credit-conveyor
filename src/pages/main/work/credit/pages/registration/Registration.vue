@@ -88,6 +88,36 @@
                         val => !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
                       ]"
                     />
+
+                    <q-input
+                      ref="birthday"
+                      outlined
+                      dense
+                      label="Дата рождения"
+                      v-model="personalData.birthDate"
+                      mask="##.##.####"
+                      :rules="[
+                        val =>
+                          (val && val.length === 10) || 'Введите дату рождения',
+                        val => adulthoodValid(val) || 'Несовершеннолетний'
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            transition-show="scale"
+                            transition-hide="scale"
+                            ref="qDateBirthday"
+                          >
+                            <q-date
+                              mask="DD.MM.YYYY"
+                              v-model="personalData.birthDate"
+                              @input="() => $refs.qDateBirthday.hide()"
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
                   </div>
                   <div class="col-6">
                     <q-input
@@ -576,6 +606,7 @@ export default {
       this.$refs.surname.validate();
       this.$refs.name.validate();
       this.$refs.mname.validate();
+      this.$refs.birthday.validate();
       this.$refs.inn.validate();
       this.$refs.phone.validate();
       this.$refs.pinpp.validate();
@@ -621,6 +652,7 @@ export default {
         this.$refs.surname.hasError ||
         this.$refs.name.hasError ||
         this.$refs.mname.hasError ||
+        this.$refs.birthday.hasError ||
         this.$refs.inn.hasError ||
         this.$refs.phone.hasError ||
         this.$refs.pinpp.hasError ||
@@ -764,89 +796,6 @@ export default {
       }
     },
 
-    // async onSubmit() {
-    //   const data = {
-    //     output: [
-    //       {
-    //         name: "preApp",
-    //         data: {
-    //           maritalInfo: {
-    //             childrens: true,
-    //             status: "женат/замужем",
-    //             statusId: 2,
-    //             childrenCount: 1
-    //           },
-    //           loan_product_id: 1,
-    //           finance: {
-    //             loan_purpose: 261,
-    //             incomingOther: 0,
-    //             expensesOther: 0,
-    //             expensesPeriodic: 2000000,
-    //             incomingConfirm: 10000000,
-    //             incomeType: ""
-    //           },
-    //           customer: {
-    //             firstName: "DFGDG",
-    //             lastName: "SDF",
-    //             middleName: "DFGDFG",
-    //             passport: {
-    //               number: "3242333",
-    //               series: "DS"
-    //             },
-    //             mainPhone: "+998234234234",
-    //             tin: "234243242",
-    //             pinpp: "23423444444233"
-    //           }
-    //         }
-    //       },
-    //       {
-    //         name: "creditProduct",
-    //         data: {
-    //           repaymentType: 1,
-    //           spouseCost: 300000,
-    //           childCost: 200000,
-    //           creditTerm: 9,
-    //           loanRate: 24
-    //         }
-    //       }
-    //     ]
-    //   };
-
-    //   try {
-    //     const response = await this.$store.dispatch(
-    //       "credits/confirmationCredit",
-    //       data
-    //     );
-
-    //     console.log("response", response);
-    //     if (response) {
-    //       const preApproval = response.nextTask.input.find(
-    //         i => i.label == "preApproval"
-    //       ).data;
-    //       this.credits.infoList = response.nextTask.input.find(
-    //         i => i.label == "InfoList"
-    //       ).data; // печатные формы
-    //       this.credits.reasonsList = response.nextTask.input.find(
-    //         i => i.label == "reasons_list"
-    //       ).data.items;
-
-    //       this.confirm = true;
-    //       this.$store.commit("credits/creditConfirm", preApproval);
-    //     }
-
-    //     this.loaderFullScreen = false;
-    //   } catch (error) {
-    //     this.$store.commit(
-    //       "credits/setMessage",
-    //       CommonUtils.filterServerError(error)
-    //     );
-    //     this.loaderFullScreen = false;
-    //     setTimeout(() => {
-    //       localStorage.removeItem(this.taskIdPreapp);
-    //     }, 1000);
-    //   }
-    // },
-
     onChangeLoan(credit) {
       console.log("credit", credit);
       this.personalData.typeStepCredit = null;
@@ -948,7 +897,23 @@ export default {
         val.match(/^([A-Z'`]+\s)*[A-Z'`]+$/) ||
         "Введите на латинице заглавными буквами"
       ); // только латинские буквы
-    }
+    },
+
+    msecond(val) {
+      return new Date(val.slice(-4) + val.slice(2, 6) + val.slice(0, 2));
+    },
+
+    adulthoodValid(date) {
+      return (
+        (this.msecond( CommonUtils.dateFilter(new Date()) )- this.msecond(date) - 432000000) /
+          1000 /
+          60 /
+          60 /
+          24 /
+          365 >
+        18
+      ); // с учетом высокосных годов (4)
+    },
   },
   components: {
     appPreApproval: PreApproval,

@@ -1043,8 +1043,14 @@ export default {
       const applicationNumber = this.profile.BPMInput.find(
               i => i.label === "process_info_fullApp"
             )
+
+      const applicationNumberWorkDocs = this.profile.BPMInput.find(
+              i => i.label === "processInfo"
+            )
       
-      return applicationNumber ? applicationNumber.data.applicationNumber : null
+      return applicationNumber 
+              ? applicationNumber.data.applicationNumber 
+              : applicationNumberWorkDocs.data.applicationNumber 
     },
     
     // должность
