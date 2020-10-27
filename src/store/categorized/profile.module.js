@@ -14,13 +14,13 @@ export const profile = {
       }
     },
     BPMInput: null,
-    preapprove_num: "",
+    // preapprove_num: "",
     percent: 25,
 
-    avgSalary: null,
-    loanAbilityClass: null,
-    profit: null,
-    LoanMax: null,
+    // avgSalary: null,
+    // loanAbilityClass: null,
+    // profit: null,
+    // LoanMax: null,
 
     confirmCredit: false,
     fileList: [],
@@ -154,7 +154,7 @@ export const profile = {
         Gender: null,
         CardNumber: null, // номер карты
         BankInps: null, // инпс банка
-        LSBO : false,
+        LSBO: false,
         role: "",
         filial: "",
         personal_id: "",
@@ -366,6 +366,7 @@ export const profile = {
           //   Comment: "",
           //   Type: "",
           //   CommentPerson: "",
+          //   CommentPersonFIO: "",
           // }
         ]
       },
@@ -386,9 +387,15 @@ export const profile = {
       try {
         const response = await state.bpmService.getDataINPS(data);
         console.log("getDataINPS", response.input);
-        const dataINPS = response.input.find(i => i.label === "clientWagesData")
-        
-        if (dataINPS) {
+        const code = response.input.find(
+          i => i.label === "code"
+        );
+
+        if (code) {
+
+          const dataINPS = response.input.find(
+            i => i.label === "clientWagesData"
+          );
           const scoring = response.input.find(
             i => i.label === "preApprovalData"
           ).data;
@@ -396,11 +403,14 @@ export const profile = {
           commit("setScoring", scoring);
           commit("setINNandNameOrg", dataINPS.data.wages.items.slice().pop());
 
-          return dataINPS.data;
+          return {
+            salaries: dataINPS.data,
+            code: code.data,
+            msg: response.input.find(i => i.label === "msg").data
+          }
         } else {
-          throw "Сервер не отвечает!"
+          throw "Сервер не отвечает!";
         }
-
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
@@ -408,7 +418,26 @@ export const profile = {
       }
     },
 
-    async dataLSBO({ state, commit }) {
+    async viewDataINPS({ state, commit }, data) {
+      try {
+        const response = await state.bpmService.getDataINPS(data);
+        const dataINPS = response.input.find(
+          i => i.label === "clientWagesData"
+        );
+
+        if (dataINPS) {
+          return dataINPS.data
+        } else {
+          throw "Нет данных";
+        }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", errorMessage, { root: true });
+        throw error;
+      }
+    },
+
+    async dataLSBO({ state, commit, getters }) {
       let users = [];
       users.push({
         // pin: state.fullFormProfile.Customer.PINPP, //ИНПС
@@ -418,13 +447,13 @@ export const profile = {
       });
 
       state.fullFormProfile.Customer.Relatives.items.forEach(relative => {
+        if (!relative.Document.Number || !relative.Document.Series) {
+          throw "Заполните все данные родственников!";
+        }
         relative.role = "";
         relative.LSBO = false;
         relative.filial = "";
 
-        if (!relative.Document.Number || !relative.Document.Series) {
-          throw "Заполните все данные родственников!";
-        }
         users.push({
           pin: "",
           passNumber: relative.Document.Number,
@@ -439,7 +468,8 @@ export const profile = {
             data: users
           },
           {
-            data: state.preapprove_num,
+            // data: state.preapprove_num,
+            data: getters.preapprove_num,
             name: "application_id"
           }
         ]
@@ -450,38 +480,10 @@ export const profile = {
       try {
         const response = await state.bpmService.getDataLSBO(data);
 
-        response.input
-          .find(i => i.label === "response")
-          .data.items.forEach(user => {
-            // console.log("user", user)
-            if (user.lsbo) {
-              if (state.fullFormProfile.Customer.Document.Number == user.passNumber) {
-                state.fullFormProfile.Customer.LSBO = user.lsbo
-                state.fullFormProfile.Customer.role = user.role
-                state.fullFormProfile.Customer.filial = user.filial
-              }
+        const dataLSBO = response.input.find(i => i.label === "response");
 
-              let relative = state.fullFormProfile.Customer.Relatives.items.find(
-                rel => rel.Document.Number == user.passNumber
-              );
-              // console.log('relative', relative)
-              if (relative) {
-                relative.role = user.role;
-                relative.LSBO = user.lsbo;
-                relative.filial = user.filial;
-              }
-            }
-          });
-
-        const lsbo = response.input
-          .find(user => user.label === "response")
-          .data.items.findIndex(lsbo => lsbo.lsbo);
-
-        console.log("lsboFlag", lsbo);
-        if (lsbo !== -1) {
-          state.percent = 30;
-        } else {
-          state.percent = 25;
+        if (dataLSBO) {
+          commit("setLSBO", dataLSBO);
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -514,7 +516,7 @@ export const profile = {
 
       try {
         const response = await state.bpmService.getClientInfo(data);
-        return response
+        return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
@@ -571,8 +573,7 @@ export const profile = {
           );
 
           commit("setPayOrder", payOrder.data);
-        }
-        else if (response.data.input && response.data.input.length) {
+        } else if (response.data.input && response.data.input.length) {
           const data = response.data.input.find(i => i.label === "application")
             .data;
           const dictionaries = response.data.input.find(
@@ -580,42 +581,17 @@ export const profile = {
           ).data;
 
           commit("setDictionaries", dictionaries);
-          commit("setInput", response.data.input);  // all input from BPM
-
-          if (response.data.name == "Full Application Filling") {
-            // для получения информации от халк банка
-            const preapprove_num = response.data.input.find(
-              i => i.label === "preapprove_num"
-            ).data;
-
-            commit("setPreapproveNum", preapprove_num);
-          }
+          commit("setInput", response.data.input); // all input from BPM
 
           // кредит не оформлен
           if (
             response.data.name == "Full Application Filling" &&
             data.BODecision == null
           ) {
-            // commit("resetDataFullFormProfile");
+            
             commit("setPreapprovData", data);
           } else if (response.data.name == "Работа с документами") {
             commit("setFileList", response);
-            commit("setFullForm", data);
-          } else if (
-            response.data.name == "Голосование КК"
-          ) {
-            // для получения информации от халк банка для кредитного секретаря
-            const preApplicationNum = response.data.input.find(
-              i => i.label === "preApplicationNum"
-            );
-
-            const processInfo = response.data.input.find(
-              i => i.label === "processInfo"
-            );
-
-            commit("setPreapproveNum", preApplicationNum.data);
-            commit("setProcessInfo", processInfo.data);
-
             commit("setFullForm", data);
           } else {
             commit("setFullForm", data);
@@ -636,24 +612,58 @@ export const profile = {
     }
   },
   mutations: {
-    setInput(state, input) {
-      state.BPMInput = input
+    setLSBO(state, dataLSBO) {
+      dataLSBO.data.items.forEach(user => {
+        // console.log("user", user)
+        if (user.lsbo) {
+          if (
+            state.fullFormProfile.Customer.Document.Number == user.passNumber
+          ) {
+            state.fullFormProfile.Customer.LSBO = user.lsbo;
+            state.fullFormProfile.Customer.role = user.role;
+            state.fullFormProfile.Customer.filial = user.filial;
+          }
+
+          let relative = state.fullFormProfile.Customer.Relatives.items.find(
+            rel => rel.Document.Number == user.passNumber
+          );
+          // console.log('relative', relative)
+          if (relative) {
+            relative.role = user.role;
+            relative.LSBO = user.lsbo;
+            relative.filial = user.filial;
+          }
+        }
+      });
+
+      const lsbo = dataLSBO.data.items.findIndex(lsbo => lsbo.lsbo);
+
+      console.log("lsboFlag", lsbo);
+      if (lsbo !== -1) {
+        state.percent = 30;
+      } else {
+        state.percent = 25;
+      }
     },
 
-    setPreapproveNum(state, preapprove_num) {
-      state.preapprove_num = preapprove_num;
+    setInput(state, input) {
+      state.BPMInput = input;
     },
+
+    // setPreapproveNum(state, preapprove_num) {
+    //   state.preapprove_num = preapprove_num;
+    // },
 
     setPayOrder(state, payOrder) {
-      state.payOrder = payOrder
+      state.payOrder = payOrder;
     },
 
-    setProcessInfo(state, processInfo) {
-      state.avgSalary = processInfo.avgSalary
-      state.loanAbilityClass = processInfo.loanAbilityClass
-      state.profit = processInfo.profit
-      state.LoanMax = processInfo.LoanMax
-    },
+    // setProcessInfo(state, processInfo) {
+    //   state.avgSalary = processInfo.avgSalary;
+    //   state.loanAbilityClass = processInfo.loanAbilityClass;
+    //   state.profit = processInfo.profit;
+    //   state.LoanMax = processInfo.LoanMax;
+    // },
 
     setScoring(state, payload) {
       state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
@@ -662,7 +672,7 @@ export const profile = {
         payload.expenses;
       // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum = payload.payment
       state.fullFormProfile.LoanInfo.max_loan_sum_preapprove = payload.sum;
-      
+
       // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
@@ -708,7 +718,10 @@ export const profile = {
         payload.Customer.Document.Series;
       state.fullFormProfile.Customer.Document.Number =
         payload.Customer.Document.Number;
-      
+
+      // state.fullFormProfile.Customer.ResidentFlag =
+      //   payload.Customer.ResidentFlag;  
+
       state.fullFormProfile.Customer.Document.GivenDate =
         payload.Customer.Document.GivenDate;
 
@@ -1122,9 +1135,9 @@ export const profile = {
     },
 
     resetDataFullFormProfile(state) {
-      state.fileList = [] // очистка файлов на печать
-      state.disableField = false
-      state.FinalDecision = ""
+      state.fileList = []; // очистка файлов на печать
+      state.disableField = false;
+      state.FinalDecision = "";
       state.fullFormProfile = {
         Status: "",
         ApplicationID: "",
@@ -1167,7 +1180,7 @@ export const profile = {
           Gender: null,
           CardNumber: null, // номер карты
           BankInps: null, // инпс банка
-          LSBO : false,
+          LSBO: false,
           role: "",
           filial: "",
           personal_id: "",
@@ -1379,6 +1392,7 @@ export const profile = {
             //   Comment: "",
             //   Type: "",
             //   CommentPerson: "",
+            //   CommentPersonFIO: "",
             // }
           ]
         },
@@ -1395,6 +1409,64 @@ export const profile = {
     }
   },
   getters: {
-    dictionaries: state => state.dictionaries
+    dictionaries: state => state.dictionaries,
+    preapprove_num: state => {
+      const preapprove_num = state.BPMInput.find(
+        i => i.label === "preapprove_num"
+      );
+
+      const preApplicationNum = state.BPMInput.find(
+        i => i.label === "preApplicationNum"
+      );
+
+      return preapprove_num
+              ? preapprove_num.data
+                : preApplicationNum
+                  ? preApplicationNum.data
+                  : null
+    },
+
+    fileList: state => {
+      const fileList = state.BPMInput.filter(i => {
+        return (
+          i.label === "overdraft" ||
+          i.label === "consumer_credit" ||
+          i.label === "microloan" ||
+          i.label === "payment_schedule"
+        );
+      });
+
+      state.BPMInput
+        .filter(i => {
+          return (
+            i.label === "overdraft_guarantor_physical" ||
+            i.label === "overdraft_guarantor_legal" ||
+            i.label === "microloan_guarantor_physical" ||
+            i.label === "microloan_guarantor_legal" ||
+            i.label === "consumer_guarantor_physical" ||
+            i.label === "consumer_guarantor_legal"
+          );
+        })
+        .forEach(guarantee => guaranteeDoc(guarantee));
+
+      function guaranteeDoc(guarantee) {
+        guarantee.data.items.forEach((item, index) => {
+          const doc = {
+            data: item,
+            label: guarantee.label,
+            number: index
+          };
+          fileList.push(doc);
+        });
+      }
+
+      console.log("fileList", fileList);
+
+      fileList.forEach((item, index) => {
+        state.loadings[index] = false;
+      });
+
+      state.fileList = fileList;
+    },
   }
 };

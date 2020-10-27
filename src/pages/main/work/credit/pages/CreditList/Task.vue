@@ -1413,7 +1413,7 @@
                   Среднемесячная заработная плата(сум)
                 </div>
                 <div class="col-6 data">
-                  {{ profile.avgSalary }}
+                  {{ processInfo.avgSalary }}
                 </div>
               </div>
 
@@ -1422,7 +1422,7 @@
                   Профит
                 </div>
                 <div class="col-6 data">
-                  {{ profile.profit }}
+                  {{ processInfo.profit }}
                 </div>
               </div>
 
@@ -1431,7 +1431,7 @@
                   Класс кредитоспособности
                 </div>
                 <div class="col-6 data">
-                  {{ profile.loanAbilityClass }}
+                  {{ processInfo.loanAbilityClass }}
                 </div>
               </div>
 
@@ -1440,7 +1440,7 @@
                   Расчет максимально возможной суммы кредита (скоринг)
                 </div>
                 <div class="col-6 data">
-                  {{ profile.LoanMax | formatNumber }}
+                  {{ processInfo.LoanMax | formatNumber }}
                 </div>
               </div>
             </template>
@@ -1684,7 +1684,7 @@
 </template>
 <script>
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
@@ -1714,7 +1714,8 @@ export default {
       commentBO: {
         Comment: "",
         Type: this.$store.getters["credits/userRole"],
-        CommentPerson: this.$store.getters["auth/username"]
+        CommentPerson: this.$store.getters["auth/username"],
+        CommentPersonFIO: this.$store.getters["auth/fullName"]
         //id: 0,
         //CommentDate: ""
       },
@@ -1779,6 +1780,10 @@ export default {
       credits: state => state.credits
     }),
 
+    ...mapGetters({
+        preapprove_num: "profile/preapprove_num"
+    }), 
+
     date() {
       return this.$route.query.date;
     },
@@ -1792,7 +1797,27 @@ export default {
       return this.$route.query.filialName;
     },
     
+    processInfo() {
+      const processInfo = this.profile.BPMInput.find(
+        i => i.label === "processInfo"
+      );
 
+      if (processInfo) {
+        return {
+          avgSalary: processInfo.data.avgSalary,
+          loanAbilityClass: processInfo.data.loanAbilityClass,
+          profit: processInfo.data.profit,
+          LoanMax: processInfo.data.LoanMax,
+        }
+      } else {
+        return {
+          avgSalary: null,
+          loanAbilityClass: null,
+          profit: null,
+          LoanMax: null,
+        }
+      }
+    }
   },
   methods: {
 
@@ -1877,7 +1902,8 @@ export default {
             comment: {
               Comment: this.commentCC.Comment,
               CommentPerson: this.$store.getters["auth/username"],
-              Type: this.$store.getters["credits/userRole"]
+              Type: this.$store.getters["credits/userRole"],
+              CommentPersonFIO: this.$store.getters["auth/fullName"]
             }
           });
         }
@@ -2095,7 +2121,7 @@ export default {
         input: [
           {
             name: "application_id",
-            data: this.profile.preapprove_num
+            data: this.preapprove_num
             // data: '00450.null.1.2020.124'
           },
           {
@@ -2107,7 +2133,7 @@ export default {
 
       try {
         
-        this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
+        this.dataINPS = await this.$store.dispatch("profile/viewDataINPS", data);
         
         this.bankLoading = false;
         this.INPSBar = true;
