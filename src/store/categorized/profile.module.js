@@ -719,6 +719,9 @@ export const profile = {
       state.fullFormProfile.Customer.Document.Number =
         payload.Customer.Document.Number;
 
+      // state.fullFormProfile.Customer.ResidentFlag =
+      //   payload.Customer.ResidentFlag;  
+
       state.fullFormProfile.Customer.Document.GivenDate =
         payload.Customer.Document.GivenDate;
 
