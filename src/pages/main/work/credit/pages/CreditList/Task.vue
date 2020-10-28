@@ -215,6 +215,31 @@
                 </template>
               </div>
             </div>
+
+            <template v-if="Customer.LSBO">
+              <div class="row rowForm">
+                <div class="col-12 field">
+                  <q-checkbox
+                    disable
+                    left-label
+                    v-model="Customer.LSBO"
+                    label="ЛСБО"
+                  />
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Номер филиала</div>
+                <div class="col-3 data">
+                  {{ Customer.filial }}
+                </div>
+                <div class="col-3 field">Должность</div>
+                <div class="col-3 data">
+                  {{ Customer.role }}
+                </div>
+              </div>
+            </template>
+
           </div>
 
           <!-- Контакты -->
@@ -533,7 +558,11 @@
                   Количество работников в организации
                 </div>
                 <div class="col-6 data">
-                  {{ Customer.JobInfo.employeesNum }}
+                  {{ 
+                    dictionaries.employeesNum.items.find(
+                      i => i.value == Customer.JobInfo.employeesNum
+                    ).label
+                  }}
                 </div>
               </div>
 
@@ -652,53 +681,55 @@
                 {{ Customer.MonthlyExpenses.obligations | formatNumber }}
               </div>
             </div>
-
-            <div class="row rowForm">
-              <div class="col-6 field">Размер дополнительного дохода</div>
-              <div class="col-6 data">
-                {{ Customer.MonthlyIncome.additionalIncome.sum | formatNumber }}
-              </div>
-            </div>
-
-            <div class="row rowForm">
-              <div class="col-6 field">Источник дополнительного дохода</div>
-              <div class="col-6 data">
-                <template
-                  v-if="
-                    dictionaries.additionalIncomeSource.items.find(
-                      i =>
-                        i.value ==
-                        Customer.MonthlyIncome.additionalIncome.incomeType
-                    )
-                  "
-                >
-                  {{
-                    dictionaries.additionalIncomeSource.items.find(
-                      i =>
-                        i.value ==
-                        Customer.MonthlyIncome.additionalIncome.incomeType
-                    ).label
-                  }}
-                </template>
-              </div>
-            </div>
-            <div v-if="userRole === 'ROLE_CC'" class="row rowForm">
-              <div class="col-12 field">
-                <div class="btnBlock">
-                  <q-btn
-                    :loading="bankLoading"
-                    color="primary"
-                    label="Посмотреть заработные поступления"
-                    @click="getDataINPS"
-                    class="btnGet"
-                  >
-                    <template v-slot:loading>
-                      <q-spinner-facebook />
-                    </template>
-                  </q-btn>
+           
+            <template v-if="Customer.MonthlyIncome.hasAdditionalIncome">
+              <div class="row rowForm">
+                <div class="col-6 field">Размер дополнительного дохода</div>
+                <div class="col-6 data">
+                  {{ Customer.MonthlyIncome.additionalIncome.sum | formatNumber }}
                 </div>
               </div>
-            </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">Источник дополнительного дохода</div>
+                <div class="col-6 data">
+                  <template
+                    v-if="
+                      dictionaries.additionalIncomeSource.items.find(
+                        i =>
+                          i.value ==
+                          Customer.MonthlyIncome.additionalIncome.incomeType
+                      )
+                    "
+                  >
+                    {{
+                      dictionaries.additionalIncomeSource.items.find(
+                        i =>
+                          i.value ==
+                          Customer.MonthlyIncome.additionalIncome.incomeType
+                      ).label
+                    }}
+                  </template>
+                </div>
+              </div>
+              <div v-if="userRole === 'ROLE_CC'" class="row rowForm">
+                <div class="col-12 field">
+                  <div class="btnBlock">
+                    <q-btn
+                      :loading="bankLoading"
+                      color="primary"
+                      label="Посмотреть заработные поступления"
+                      @click="getDataINPS"
+                      class="btnGet"
+                    >
+                      <template v-slot:loading>
+                        <q-spinner-facebook />
+                      </template>
+                    </q-btn>
+                  </div>
+                </div>
+              </div>
+            </template>  
           </div>
 
           <h4 class="titleForm">Сведения об имуществе</h4>
@@ -752,7 +783,7 @@
 
               <div class="row rowForm">
                 <div class="col-4 field">Рыночная стоимость</div>
-                <div class="col-8 data">{{ property.MarketValue }}</div>
+                <div class="col-8 data">{{ property.MarketValue | formatNumber }}</div>
               </div>
             </div>
 
@@ -800,7 +831,7 @@
 
               <div class="row rowForm">
                 <div class="col-4 field">Рыночная стоимость</div>
-                <div class="col-8 data">{{ vehicle.MarketValue }}</div>
+                <div class="col-8 data">{{ vehicle.MarketValue | formatNumber }}</div>
               </div>
             </div>
           </div>
@@ -881,9 +912,10 @@
                     </template>
                   </div>
                 </div>
-                <div class="row rowForm">
+
+                <!-- <div class="row rowForm">
                   <div class="col-12 field">Данные документа:</div>
-                </div>
+                </div> -->
 
                 <div class="row rowForm">
                   <div class="col-6 field">Вид документа</div>
@@ -961,12 +993,12 @@
                   </div>
                 </div>
 
-                <div class="row rowForm">
+                <!-- <div class="row rowForm">
                   <div class="col-6 field">Номер карты</div>
                   <div class="col-6 data">
                     {{ guarantee.CardNumber }}
                   </div>
-                </div>
+                </div> -->
 
                 <div class="row rowForm">
                   <div class="col-6 field">Номер карты поручителя</div>
@@ -975,9 +1007,9 @@
                   </div>
                 </div>
 
-                <div class="row rowForm">
+                <!-- <div class="row rowForm">
                   <div class="col-12 field">Адрес:</div>
-                </div>
+                </div> -->
 
                 <!-- <div class="row rowForm">
                   <div class="col-6 field">Индекс</div>
@@ -1031,9 +1063,9 @@
                   <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
-                <div class="row rowForm">
+                <!-- <div class="row rowForm">
                   <div class="col-12 field">Контактная информация:</div>
-                </div>
+                </div> -->
 
                 <div
                   class="row rowForm"
@@ -1075,9 +1107,15 @@
                   <div class="col-6 field">Наименование организации</div>
                   <div class="col-6 data">{{ guarantee.Name }}</div>
                 </div>
+
                 <div class="row rowForm">
-                  <div class="col-12 field">Адрес:</div>
+                  <div class="col-6 field">ИНН</div>
+                  <div class="col-6 data">{{ guarantee.INN }}</div>
                 </div>
+
+                <!-- <div class="row rowForm">
+                  <div class="col-12 field">Адрес:</div>
+                </div> -->
 
                 <!-- <div class="row rowForm">
                   <div class="col-6 field">Индекс</div>
@@ -1101,7 +1139,9 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Район</div>
-                  <div class="col-6 data">{{ guarantee.Address.District }}</div>
+                  <div class="col-6 data">
+                    {{ getDistrict(guarantee.Address.Region, guarantee.Address.District) }}
+                  </div>
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Улица / мкр.</div>
@@ -1116,9 +1156,9 @@
                   <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
-                <div class="row rowForm">
+                <!-- <div class="row rowForm">
                   <div class="col-12 field">Контактная информация:</div>
-                </div>
+                </div> -->
 
                 <div
                   class="row rowForm"
@@ -1272,7 +1312,7 @@
               </div>
             </div>
 
-            <div class="row rowForm">
+            <!-- <div class="row rowForm">
               <div class="col-6 field">
                 Максимальное количество месяцев на кредит
               </div>
@@ -1313,7 +1353,7 @@
               <div class="col-6 data">
                 {{ fullProfile.LoanInfo.MinInitialPaymentPercent }}
               </div>
-            </div>
+            </div> -->
 
             <div class="row rowForm">
               <div class="col-6 field">Цель кредитования</div>
@@ -1568,7 +1608,7 @@
       </div>
 
       <q-dialog v-model="confirm" persistent>
-        <q-card class="failureCredit">
+        <q-card class="failureCreditForm">
           <!-- <q-card-section class="row titleFailureCredit">
           <span class="q-ml-sm">Выберите причину отказа</span>
         </q-card-section> -->
@@ -2339,7 +2379,7 @@ export default {
 
 
 
-.failureCredit {
+.failureCreditForm {
   width: 600px;
 
   .q-field__control:after {

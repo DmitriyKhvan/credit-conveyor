@@ -407,7 +407,11 @@ export const profile = {
             msg: response.input.find(i => i.label === "msg").data
           }
         } else {
-          throw "Network Error";
+          // throw "Network Error";
+          return {
+            code: null,
+            msg: "Не удалось получить данные от ИНПС сервиса"
+          }
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);

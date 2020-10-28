@@ -11,9 +11,24 @@
               class="print"
               icon="print"
               @click="printFile(credits.infoList)"
-              :loading="loading"
+              :loading="loading[0]"
             >
-              <div class="print__text">Печать</div>
+              <div class="print__text">Печать (рус.)</div>
+              <template v-slot:loading>
+                <q-spinner-facebook />
+              </template>
+              <!-- <q-tooltip>Распечатать</q-tooltip> -->
+            </q-btn>
+
+            <q-btn
+              v-if="!INPS"
+              flat
+              class="print"
+              icon="print"
+              @click="printFile(credits.infoList, 1)"
+              :loading="loading[1]"
+            >
+              <div class="print__text">Печать (узб.)</div>
               <template v-slot:loading>
                 <q-spinner-facebook />
               </template>
@@ -173,7 +188,7 @@ export default {
       confirm: true,
       selection: [],
       model: false,
-      loading: false,
+      loading: [false, false],
 
       confirmCreditData: {
         output: [
@@ -190,9 +205,12 @@ export default {
 
       fileData: {
         type: "info_list",
-        lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
+        // lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
+        lang: 0, //0 - рус, 1 - узб,
         data: {},
       },
+
+      docId: [false, false]
     };
   },
 
@@ -316,23 +334,25 @@ export default {
       this.$emit("failureCreditINPS", flag);
     },
 
-    async printFile(fileData) {
-      this.loading = true;
+    async printFile(fileData, language = 0) {
+      this.loading.splice(language, 1, true);
       let file = null;
+      this.fileData.lang = language;
       this.fileData.data = fileData;
+      const docId = this.docId[language] ? this.docId[language] : null
       try {
         console.log(JSON.stringify(this.fileData, null, 2));
 
-        if (this.fileData.idFile) {
+        if (docId) {
           file = await this.$store.dispatch(
             "credits/getFile",
-            this.fileData.idFile
+            docId
           );
         } else {
           file = await this.$store.dispatch("credits/getFile", this.fileData);
 
           if (file) {
-            this.fileData.idFile = file.id; // для кеширования id
+            this.docId[language] = file.id; // для кеширования id
           }
         }
 
@@ -343,13 +363,13 @@ export default {
           window.URL.revokeObjectURL(file.url);
         }
 
-        this.loading = false;
+        this.loading.splice(language, 1, false);
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
           CommonUtils.filterServerError(error)
         );
-        this.loading = false;
+        this.loading.splice(language, 1, false);
       }
     },
   },

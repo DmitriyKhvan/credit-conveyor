@@ -461,12 +461,12 @@
               <div class="btnBlock">
                 
                 <!-- <template v-if="userRole === 'ROLE_CCS'"> -->
-                  <q-btn
+                  <!-- <q-btn
                     :disable="disable"
                     class="btnCCS"
                     label="Подписать"
                     @click="creditSign(credit.taskId)"
-                  /> 
+                  />  -->
 
                   <q-btn 
                     :disable="disable"
@@ -479,7 +479,21 @@
                     <template v-slot:loading>
                       <q-spinner-facebook />
                     </template>
-                    <q-tooltip>Распечатать</q-tooltip>
+                    <q-tooltip>Распечатать (рус.)</q-tooltip>
+                  </q-btn>
+
+                  <q-btn 
+                    :disable="disable"
+                    class="btnPrint"
+                    icon="print" 
+                    @click="printFile(credit.taskId, index, 1)" 
+                    :loading="loadings[index]"
+                  >
+                  <!-- {{ credits[index] }} -->
+                    <template v-slot:loading>
+                      <q-spinner-facebook />
+                    </template>
+                    <q-tooltip>Распечатать (узб.)</q-tooltip>
                   </q-btn>
 
                   <!-- <q-btn 
@@ -569,7 +583,8 @@ export default {
       loaderFullScreen: false,
       fileData: {
         type: "protocol",
-        lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
+        // lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
+        lang: 0, //0 - рус, 1 - узб
         data: {}
       },
       // link: null,
@@ -822,22 +837,23 @@ export default {
       }
     },
 
-    async printFile(taskId, idx) {
+    async printFile(taskId, idx, lang = 0) {
       
       let task = this.credits.find(i => i.taskId == taskId)
       
       let file = null
+      const docId = task[lang] ? task[lang] : null
 
-      if (task.idFile) {
+      if (docId) {
         file = await this.$store.dispatch(
           "credits/getFile",
-          task.idFile
+          docId
         );
       } else {
         
-        file = await this.getUrlFile(taskId, idx)
+        file = await this.getUrlFile(taskId, idx, lang)
         
-        task.idFile = file.id  // кеширование id file
+        task[lang] = file.id  // кеширование id file
         
       }
       console.log('file', file)
@@ -866,7 +882,7 @@ export default {
         window.URL.revokeObjectURL(file);
     },
 
-    async getUrlFile(taskId, idx) {
+    async getUrlFile(taskId, idx, lang) {
       this.disable = true
       this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
       let file = null
@@ -874,7 +890,7 @@ export default {
           const response = await this.$store.dispatch("profile/getFullForm", taskId)
           
           if (response) {
-            // this.fileData.data = this.dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
+            this.fileData.lang = lang
             this.fileData.data = dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
           
             console.log(JSON.stringify(this.fileData, null, 2))
