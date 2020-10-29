@@ -23,9 +23,7 @@ export const profile = {
     // LoanMax: null,
 
     confirmCredit: false,
-    fileList: [],
-    loadings: [], // для лоадинга печатных форм
-    disableField: false,
+
     //dictionaries: {},
     dictionaries: {
       Graduation: {
@@ -391,7 +389,7 @@ export const profile = {
           i => i.label === "code"
         );
 
-        if (code) {
+        if (code && response.input) {
 
           const dataINPS = response.input.find(
             i => i.label === "clientWagesData"
@@ -409,7 +407,11 @@ export const profile = {
             msg: response.input.find(i => i.label === "msg").data
           }
         } else {
-          throw "Сервер не отвечает!";
+          // throw "Network Error";
+          return {
+            code: null,
+            msg: "Не удалось получить данные от ИНПС сервиса"
+          }
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -567,34 +569,34 @@ export const profile = {
 
         console.log("response", response);
 
-        if (response.data.name === "Get PayOrder data from front") {
-          const payOrder = response.data.input.find(
-            i => i.label === "payOrder"
-          );
+        if (response.data.input && response.data.input.length) {
 
-          commit("setPayOrder", payOrder.data);
-        } else if (response.data.input && response.data.input.length) {
-          const data = response.data.input.find(i => i.label === "application")
-            .data;
-          const dictionaries = response.data.input.find(
-            i => i.label === "inputDictionaries"
-          ).data;
+          if (response.data.name === "Get PayOrder data from front") {
+            const payOrder = response.data.input.find(
+              i => i.label === "payOrder"
+            );
+            commit("setPayOrder", payOrder.data);
 
-          commit("setDictionaries", dictionaries);
-          commit("setInput", response.data.input); // all input from BPM
-
-          // кредит не оформлен
-          if (
-            response.data.name == "Full Application Filling" &&
-            data.BODecision == null
-          ) {
-            
-            commit("setPreapprovData", data);
-          } else if (response.data.name == "Работа с документами") {
-            commit("setFileList", response);
-            commit("setFullForm", data);
           } else {
-            commit("setFullForm", data);
+            const data = response.data.input.find(i => i.label === "application")
+              .data;
+            const dictionaries = response.data.input.find(
+              i => i.label === "inputDictionaries"
+            ).data;
+
+            commit("setDictionaries", dictionaries);
+            commit("setInput", response.data.input); // all input from BPM
+
+            // кредит не оформлен
+            if (
+              response.data.name == "Full Application Filling" &&
+              data.BODecision == null
+            ) {
+              commit("setPreapprovData", data);
+            } else {
+              commit("setFullForm", data);
+            }
+
           }
         } else {
           throw "Data is null";
@@ -693,8 +695,6 @@ export const profile = {
     },
 
     setPreapprovData(state, payload) {
-      state.fileList = [];
-
       // Для корректной валидации
       state.fullFormProfile.ApplicationID = payload.ApplicationID;
       state.fullFormProfile.BODecision = payload.BODecision;
@@ -763,53 +763,6 @@ export const profile = {
         payload.LoanInfo.ProductMaxSum;
 
       // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
-    },
-
-    setFileList(state, response) {
-      state.disableField = true;
-      state.fileList = [];
-
-      console.log("res", response);
-      const fileList = response.data.input.filter(i => {
-        return (
-          i.label === "overdraft" ||
-          i.label === "consumer_credit" ||
-          i.label === "microloan" ||
-          i.label === "payment_schedule"
-        );
-      });
-
-      response.data.input
-        .filter(i => {
-          return (
-            i.label === "overdraft_guarantor_physical" ||
-            i.label === "overdraft_guarantor_legal" ||
-            i.label === "microloan_guarantor_physical" ||
-            i.label === "microloan_guarantor_legal" ||
-            i.label === "consumer_guarantor_physical" ||
-            i.label === "consumer_guarantor_legal"
-          );
-        })
-        .forEach(guarantee => guaranteeDoc(guarantee));
-
-      function guaranteeDoc(guarantee) {
-        guarantee.data.items.forEach((item, index) => {
-          const doc = {
-            data: item,
-            label: guarantee.label,
-            number: index
-          };
-          fileList.push(doc);
-        });
-      }
-
-      console.log("fileList", fileList);
-
-      fileList.forEach((item, index) => {
-        state.loadings[index] = false;
-      });
-
-      state.fileList = fileList;
     },
 
     addPhone(state) {
@@ -1135,8 +1088,6 @@ export const profile = {
     },
 
     resetDataFullFormProfile(state) {
-      state.fileList = []; // очистка файлов на печать
-      state.disableField = false;
       state.FinalDecision = "";
       state.fullFormProfile = {
         Status: "",
@@ -1420,10 +1371,10 @@ export const profile = {
       );
 
       return preapprove_num
-              ? preapprove_num.data
-                : preApplicationNum
-                  ? preApplicationNum.data
-                  : null
+        ? preapprove_num.data
+        : preApplicationNum
+          ? preApplicationNum.data
+          : null
     },
 
     fileList: state => {
@@ -1460,13 +1411,17 @@ export const profile = {
         });
       }
 
-      console.log("fileList", fileList);
+      const finalFileList = fileList.map(item => {
+        return {
+          ...item,
+          loading: false,
+          loadingUz: false
+        }
+      })
 
-      fileList.forEach((item, index) => {
-        state.loadings[index] = false;
-      });
+      console.log("fileList", finalFileList);
 
-      state.fileList = fileList;
+      return finalFileList;
     },
   }
 };

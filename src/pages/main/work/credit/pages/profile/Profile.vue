@@ -487,6 +487,36 @@
                   />
                 </div>
               </div>
+
+              <div v-if="Customer.LSBO" class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-checkbox
+                      disable
+                      left-label
+                      v-model="Customer.LSBO"
+                      label="ЛСБО"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      disable
+                      outlined
+                      v-model="Customer.filial"
+                      dense
+                      label="Номер филиала"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      disable
+                      outlined
+                      v-model="Customer.role"
+                      dense
+                      label="Должность"
+                    />
+                  </div>
+                </div>
             </div>
           </div>
 
@@ -2922,7 +2952,7 @@
                   </div>
 
                   <div class="row q-col-gutter-md">
-                    <div class="col-4">
+                    <!-- <div class="col-4">
                       <q-input
                         :disable="disableField"
                         ref="CardNumberGuarantees"
@@ -2939,7 +2969,7 @@
                             !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
                         ]"
                       />
-                    </div>
+                    </div> -->
 
                     <div class="col-4">
                       <q-input
@@ -3933,8 +3963,8 @@
           </div>
 
           <!-- file list -->
-          <template v-if="profile.fileList.length">
-            <!-- Comment -->
+          <template v-if="fileList.length">
+            
             <div class="fileList tab">
               <h4
                 class="tab-title"
@@ -3947,7 +3977,7 @@
                 <ul class="fileBlock">
                   <li
                     class="fileLi"
-                    v-for="(fileData, index) of profile.fileList"
+                    v-for="(fileData, index) of fileList"
                     :key="index"
                   >
                     <p>
@@ -3955,22 +3985,42 @@
                       <!-- {{ fileData.label }} -->
                       {{ fileData.number ? +fileData.number + 1 : null }}
                     </p>
-                    <q-btn
-                      :disable="disable"
-                      class="printDoc"
-                      flat 
-                      style="color: #74798C" 
-                      icon="print"
-                      label="Печать"
-                      @click="printFile(fileData, index)"
-                      :loading="loadings[index]"
 
-                    >
-                      <template v-slot:loading>
-                        <q-spinner-facebook />
-                      </template>
-                      <!-- <q-tooltip>Распечатать</q-tooltip> -->
-                    </q-btn>
+                    <div class="printWorkDoc">
+                      <q-btn
+                        :disable="disable"
+                        class="printDoc"
+                        flat 
+                        style="color: #74798C" 
+                        icon="print"
+                        label="(рус.)"
+                        @click="printFile(fileData, index)"
+                        :loading="fileData.loading"
+
+                      >
+                        <template v-slot:loading>
+                          <q-spinner-facebook />
+                        </template>
+                        <q-tooltip>Печать</q-tooltip>
+                      </q-btn>
+
+                      <q-btn
+                        :disable="disable"
+                        class="printDoc"
+                        flat 
+                        style="color: #74798C" 
+                        icon="print"
+                        label="(узб.)"
+                        @click="printFile(fileData, index + fileList.length, 1)"
+                        :loading="fileData.loadingUz"
+
+                      >
+                        <template v-slot:loading>
+                          <q-spinner-facebook />
+                        </template>
+                        <q-tooltip>Печать</q-tooltip>
+                      </q-btn>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -4145,7 +4195,9 @@ export default {
   name: "profile",
   data() {
     return {
-      isValidNumCard: true,
+      // isValidNumCard: true,
+      LSBOFlag: false,
+      INPSFlag: false,
       failureCredit: false,
       clientInfoData: false,
       printForm: false,
@@ -4299,26 +4351,8 @@ export default {
         );
         this.loaderForm = false;
       }
-
-      // this.$store.commit(
-      //   "profile/setPreapprovData",
-      //   JSON.parse(sessionStorage.getItem("preapprovData"))
-      // ); //синхронизация с preapprov
-      // this.$store.commit(
-      //   "profile/setDictionaries",
-      //   JSON.parse(sessionStorage.getItem("dictionaries"))
-      // );
-      // this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
-      // this.$store.commit(
-      //   "profile/setPreapproveNum",
-      //   sessionStorage.getItem("preapprove_num")
-      // );
     }
-    // else {
-    //     this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
-    //     //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    // }
-
+    
     this.setLoan(this.fullProfile.LoanInfo.LoanProduct);
     this.options.Countries = this.$store.getters[
       "profile/dictionaries"
@@ -4334,7 +4368,6 @@ export default {
   },
   computed: {
     ...mapState({
-      disableField: state => state.profile.disableField,
       fullProfile: state => state.profile.fullFormProfile,
       Customer: state => state.profile.fullFormProfile.Customer,
       dictionaries: state => state.profile.dictionaries,
@@ -4353,7 +4386,9 @@ export default {
     },
 
     status() {
-      return this.$route.query.status;
+      return this.$route.query.status 
+              ? this.$route.query.status
+              : 'Step: Full Application Filling'
     },
 
     reworkCC() {
@@ -4383,6 +4418,24 @@ export default {
     scoring_results() {
       const scoring_resutlts = this.profile.BPMInput.find(input => input.label == 'scoring_results')
       return scoring_resutlts ? scoring_resutlts : null
+    },
+
+    disableField() {
+      return this.status === 'Step: Работа с документами'
+              ? true
+              : false
+    },
+
+    fileList() {
+      return this.$store.getters['profile/fileList']
+    },
+
+    cacheDocId() {
+      const cacheDocIdArr = []
+      for (let i = 0; i < this.fileList.length * 2; i++) {
+        cacheDocIdArr.push(null)
+      } 
+      return cacheDocIdArr
     }
   },
   watch: {
@@ -4437,7 +4490,7 @@ export default {
     },
 
     async onSubmit(submitForm = true, failureCredit = false) {
-      this.failureCredit = failureCredit;
+      this.failureCredit = failureCredit; // КМ отклоняет кредит
       this.countRelativeDocumentName = -1;
       this.countGuaranteeDocumentName = -1;
 
@@ -4496,16 +4549,6 @@ export default {
         "relativesDocumentDocumentTypeValid",
         "relativesDocumentDocumentType"
       );
-
-      // this.Customer.Relatives.items.forEach(i => {
-      //   if (i.Document.documentType == 7) {
-      //     validFilter(this.$refs, "relativesDocumentDocumentNameValid" ,"relativesDocumentDocumentName");
-      //   } else {
-      //     validItems(this.$refs, "relativesDocumentDocumentNameValid");
-      //   }
-      // })
-
-      // validItems(this.$refs, "relativesDocumentDocumentNameValid");
 
       this.Customer.Relatives.items.forEach(i => {
         if (i.Document.documentType == 7) {
@@ -4690,11 +4733,11 @@ export default {
           "BankInpsGuaranteesValid",
           "BankInpsGuarantees"
         );
-        validFilter(
-          this.$refs,
-          "CardNumberGuaranteesValid",
-          "CardNumberGuarantees"
-        );
+        // validFilter(
+        //   this.$refs,
+        //   "CardNumberGuaranteesValid",
+        //   "CardNumberGuarantees"
+        // );
 
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
@@ -4727,7 +4770,7 @@ export default {
         validItems(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid");
         validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
         validItems(this.$refs, "BankInpsGuaranteesValid");
-        validItems(this.$refs, "CardNumberGuaranteesValid");
+        // validItems(this.$refs, "CardNumberGuaranteesValid");
         validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
@@ -4855,17 +4898,6 @@ export default {
 
       this.guaranteesValid();
 
-      // if (
-      //   !this.fullProfile.Guarantee.Insurance.items.length ||
-      //   !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
-      //   !this.fullProfile.Guarantee.RelatedPerson.items.length
-      // ) {
-      //   this.guaranteesValid();
-      // } 
-      // else {
-      //   validItems(this.$refs, "guaranteesValid");
-      // }
-
       console.log("files", this.$refs.files);
 
       if (
@@ -4969,7 +5001,7 @@ export default {
         this.$refs.guaranteesDocumentRegionsGivenPlaceValid.hasError ||
         this.$refs.guaranteesDocumentGivenPlaceValid.hasError ||
         this.$refs.BankInpsGuaranteesValid.hasError ||
-        this.$refs.CardNumberGuaranteesValid.hasError ||
+        // this.$refs.CardNumberGuaranteesValid.hasError ||
         this.$refs.regionGuaranteesValid.hasError ||
         this.$refs.districtGuaranteesValid.hasError ||
         this.$refs.streetGuaranteesValid.hasError ||
@@ -5013,19 +5045,24 @@ export default {
                 "credits/setMessage",
                 "Получите данные клиента"
               );
-          } 
-          else if (!this.printForm && 
+          } else if (!this.printForm && 
                   this.status == 'Step: Ввод данных с интеграциями'
                   ) {
             this.$store.commit(
                 "credits/setMessage",
                 "Распечатайте анкету"
               );
-          } 
-          // else if (status == 'Step: Ввод данных с интеграциями') {
-
-          // } 
-          else {
+          } else if (!this.LSBOFlag && this.status == 'Step: Full Application Filling') {
+            this.$store.commit(
+                "credits/setMessage",
+                "Получите данные с ЛСБО"
+              );
+          } else if (!this.INPSFlag && this.status == 'Step: Full Application Filling') {
+            this.$store.commit(
+                "credits/setMessage",
+                "Получите данные с Халк банка"
+              );
+          } else {
             if (failureCredit) {
               this.fullProfile.FinalDecision = "Отказ"
               this.printFailureCredit(this.scoring_results)
@@ -5171,28 +5208,9 @@ export default {
 
       try {
         this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        // if (this.dataINPS.code == "0") {
-        //   const INPSItems = this.dataINPS.wages.items.map(i => {
-        //     return {
-        //       period: CommonUtils.dateFilter(i.period),
-        //       send_date: i.send_date,
-        //       inn: i.inn,
-        //       total_invoices: {
-        //         balance: i.total_invoices.balance,
-        //         percent: i.total_invoices.percent,
-        //         full: i.total_invoices.full
-        //       },
-        //       org_addres: i.org_addres,
-        //       org_name: i.org_name
-        //     };
-        //   });
-
-        //   this.dataINPS.wages.items = INPSItems;
-        //   console.log("dataINPS", this.dataINPS);
-        // }
-
         this.bankLoading = false;
         this.INPSBar = true;
+        this.INPSFlag = true;
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
@@ -5207,6 +5225,11 @@ export default {
       try {
         await this.$store.dispatch("profile/dataLSBO");
         this.LSBOLoading = false;
+        this.LSBOFlag = true;
+        this.$store.commit(
+          "credits/setMessage",
+          "Данные получены"
+        );
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
@@ -5780,24 +5803,30 @@ export default {
     //   }
     // },
 
-    async printFile(fileData, idx) {
+    async printFile(fileData, idx, lang = 0) {
       this.disable = true;
-      this.loadings.splice(idx, 1, true); // для ререндеринга (особенность vue)
+      if (lang == 0) {
+        fileData.loading = true
+      } else {
+        fileData.loadingUz = true
+      }
+      
       let file = null;
+      this.fileData.lang = lang;
       this.fileData.type = fileData.label;
       this.fileData.data = dataTransform(fileData.data);
       try {
         console.log(JSON.stringify(this.fileData, null, 2));
 
-        if (this.profile.fileList[idx].idFile) {
+        if (this.cacheDocId[idx]) {
           file = await this.$store.dispatch(
             "credits/getFile",
-            this.profile.fileList[idx].idFile
+            this.cacheDocId[idx]
           );
         } else {
           file = await this.$store.dispatch("credits/getFile", this.fileData);
 
-          this.profile.fileList[idx].idFile = file.id;
+          this.cacheDocId[idx] = file.id;
         }
 
         console.log("file", file);
@@ -5808,14 +5837,22 @@ export default {
         }
 
         this.disable = false;
-        this.loadings.splice(idx, 1, false);
+        if (lang == 0) {
+          fileData.loading = false
+        } else {
+          fileData.loadingUz = false
+        }
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
           CommonUtils.filterServerError(error)
         );
         this.disable = false;
-        this.loadings.splice(idx, 1, false);
+        if (lang == 0) {
+          fileData.loading = false
+        } else {
+          fileData.loadingUz = false
+        }
       }
     },
 
@@ -6035,6 +6072,10 @@ export default {
 
     .comments {
       margin-bottom: 20px;
+
+      .tab-content_title {
+        margin: 0;
+      }
     }
 
     &_title {
@@ -6286,7 +6327,7 @@ export default {
   }
 
   .fileBlock {
-    padding: 14px 0 14px 20px;
+    padding: 14px 20px;
     margin: 0;
     background: #F5F6FA;
     border-radius: 5px;
@@ -6364,6 +6405,17 @@ export default {
   .badgePeriod {
     padding: 0;
     margin-bottom: 20px;
+  }
+
+  .printWorkDoc {
+
+    .q-btn__wrapper {
+      padding: 4px;
+    }
+
+    .on-left {
+      margin-right: 0;
+    }
   }
 }
 
