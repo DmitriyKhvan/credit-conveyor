@@ -389,7 +389,7 @@ export const profile = {
           i => i.label === "code"
         );
 
-        if (code) {
+        if (code && response.input) {
 
           const dataINPS = response.input.find(
             i => i.label === "clientWagesData"
@@ -1414,7 +1414,8 @@ export const profile = {
       const finalFileList = fileList.map(item => {
         return {
           ...item,
-          loading: false
+          loading: false,
+          loadingUz: false
         }
       })
 

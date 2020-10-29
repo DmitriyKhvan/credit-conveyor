@@ -471,7 +471,8 @@
                   <q-btn 
                     :disable="disable"
                     class="btnPrint"
-                    icon="print" 
+                    icon="print"
+                    label="(рус.)"
                     @click="printFile(credit.taskId, index)" 
                     :loading="loadings[index]"
                   >
@@ -479,21 +480,22 @@
                     <template v-slot:loading>
                       <q-spinner-facebook />
                     </template>
-                    <q-tooltip>Распечатать (рус.)</q-tooltip>
+                    <q-tooltip>Печать</q-tooltip>
                   </q-btn>
 
                   <q-btn 
                     :disable="disable"
                     class="btnPrint"
                     icon="print" 
-                    @click="printFile(credit.taskId, index, 1)" 
-                    :loading="loadings[index]"
+                    label="(узб.)"
+                    @click="printFile(credit.taskId, index + creditCount, 1)" 
+                    :loading="loadings[index + creditCount]"
                   >
                   <!-- {{ credits[index] }} -->
                     <template v-slot:loading>
                       <q-spinner-facebook />
                     </template>
-                    <q-tooltip>Распечатать (узб.)</q-tooltip>
+                    <q-tooltip>Печать</q-tooltip>
                   </q-btn>
 
                   <!-- <q-btn 
@@ -638,7 +640,8 @@ export default {
           countRowList: state => state.credits.countRowList,
           creditTasks: state => state.credits.creditTasks,
           loadings: state => state.credits.loadings,
-          userRole: state => state.credits.userRole
+          userRole: state => state.credits.userRole, 
+          creditCount: state => state.credits.creditCount
         }),
     
     // ...mapGetters({
@@ -1021,7 +1024,8 @@ export default {
 
   .time {
     // background: rgba(255, 129, 129, 0.5) !important;
-    background: rgba(255, 74, 74, 0.5) !important;
+    // background: rgba(255, 74, 74, 0.5) !important;
+    background: #FFE9E9 !important;
   }
 
   .creditCompleate {
@@ -1063,23 +1067,34 @@ export default {
 
     .btnBlock {
       display: flex;
-      padding-left: 20px;
     
-
       .btnPrint {
         margin: 0;
         background: transparent;
-        color: #000000;
+        color: #74798c;
+        width: 80px;
+
         .q-btn__wrapper:before {
           box-shadow: none;
+        }
+
+        .q-btn__wrapper {
+          padding: 4px;
+        }
+
+        .on-left {
+          margin-right: 2px;
         }
       }
     }
   }
 
-  .btnCCS {
-    background: #47B881;
-    color: #ffffff;
+  .protocol {
+    .btnCCS {
+      background: #47B881;
+      color: #ffffff;
+      margin: 0;
+    }
   }
 
   .filter {

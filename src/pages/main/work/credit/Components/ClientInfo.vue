@@ -32,11 +32,11 @@
                 class="text-teal"
               >
                 <q-tab name="innerContract" icon="mail" label="Договора" />
-                <q-tab 
+                <!-- <q-tab 
                   name="innerApplication" 
                   icon="alarm" 
                   label="Заявки" 
-                />
+                /> -->
                 <q-tab name="innerExpiration" icon="movie" label="Просрочки" />
               </q-tabs>
             </template>
@@ -52,9 +52,9 @@
                   <appContract :data="contracts" :status="StatusASOKI" />
                 </q-tab-panel>
 
-                <q-tab-panel name="innerApplication">
+                <!-- <q-tab-panel name="innerApplication">
                   <appApplication :data="claims" :status="StatusASOKI" />
-                </q-tab-panel>
+                </q-tab-panel> -->
 
                 <q-tab-panel name="innerExpiration">
                   <appExpiration :data="overdue_payments" :status="StatusASOKI" />
@@ -74,7 +74,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="deposits">
-          <appDeposits :data="deposits"/>
+          <appDeposits :data="deposits" :status="StatusDeposits" />
         </q-tab-panel>
 
       </q-tab-panels>
@@ -175,7 +175,9 @@ export default {
 
     StatusASOKI() {
       if (this.exceptions) {
-        return this.exceptions.items.find(i => i.name === 'ASOKI').value.split(' ')[0]
+        return this.exceptions.items.find(i => i.name === 'ASOKI') 
+                ? this.exceptions.items.find(i => i.name === 'ASOKI').value
+                : ''
       } 
 
       return ''
@@ -183,7 +185,19 @@ export default {
 
     StatusGSZ() {
       if (this.exceptions) {
-        return this.exceptions.items.find(i => i.name === 'GSZ').value.split(' ')[0]
+        return this.exceptions.items.find(i => i.name === 'GSZ')
+                ? this.exceptions.items.find(i => i.name === 'GSZ').value
+                : ''
+      } 
+
+      return ''
+    },
+
+    StatusDeposits() {
+      if (this.exceptions) {
+        return this.exceptions.items.find(i => i.name === 'DEPOSITS')
+                ? this.exceptions.items.find(i => i.name === 'DEPOSITS').value
+                : ''
       } 
 
       return ''

@@ -3985,22 +3985,42 @@
                       <!-- {{ fileData.label }} -->
                       {{ fileData.number ? +fileData.number + 1 : null }}
                     </p>
-                    <q-btn
-                      :disable="disable"
-                      class="printDoc"
-                      flat 
-                      style="color: #74798C" 
-                      icon="print"
-                      label="Печать"
-                      @click="printFile(fileData, index)"
-                      :loading="fileData.loading"
 
-                    >
-                      <template v-slot:loading>
-                        <q-spinner-facebook />
-                      </template>
-                      <!-- <q-tooltip>Распечатать</q-tooltip> -->
-                    </q-btn>
+                    <div class="printWorkDoc">
+                      <q-btn
+                        :disable="disable"
+                        class="printDoc"
+                        flat 
+                        style="color: #74798C" 
+                        icon="print"
+                        label="(рус.)"
+                        @click="printFile(fileData, index)"
+                        :loading="fileData.loading"
+
+                      >
+                        <template v-slot:loading>
+                          <q-spinner-facebook />
+                        </template>
+                        <q-tooltip>Печать</q-tooltip>
+                      </q-btn>
+
+                      <q-btn
+                        :disable="disable"
+                        class="printDoc"
+                        flat 
+                        style="color: #74798C" 
+                        icon="print"
+                        label="(узб.)"
+                        @click="printFile(fileData, index + fileList.length, 1)"
+                        :loading="fileData.loadingUz"
+
+                      >
+                        <template v-slot:loading>
+                          <q-spinner-facebook />
+                        </template>
+                        <q-tooltip>Печать</q-tooltip>
+                      </q-btn>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -4366,7 +4386,9 @@ export default {
     },
 
     status() {
-      return this.$route.query.status;
+      return this.$route.query.status 
+              ? this.$route.query.status
+              : 'Step: Full Application Filling'
     },
 
     reworkCC() {
@@ -4406,6 +4428,14 @@ export default {
 
     fileList() {
       return this.$store.getters['profile/fileList']
+    },
+
+    cacheDocId() {
+      const cacheDocIdArr = []
+      for (let i = 0; i < this.fileList.length * 2; i++) {
+        cacheDocIdArr.push(null)
+      } 
+      return cacheDocIdArr
     }
   },
   watch: {
@@ -5773,24 +5803,30 @@ export default {
     //   }
     // },
 
-    async printFile(fileData, idx) {
+    async printFile(fileData, idx, lang = 0) {
       this.disable = true;
-      fileData.loading = true
+      if (lang == 0) {
+        fileData.loading = true
+      } else {
+        fileData.loadingUz = true
+      }
+      
       let file = null;
+      this.fileData.lang = lang;
       this.fileData.type = fileData.label;
       this.fileData.data = dataTransform(fileData.data);
       try {
         console.log(JSON.stringify(this.fileData, null, 2));
 
-        if (this.fileList[idx].idFile) {
+        if (this.cacheDocId[idx]) {
           file = await this.$store.dispatch(
             "credits/getFile",
-            this.fileList[idx].idFile
+            this.cacheDocId[idx]
           );
         } else {
           file = await this.$store.dispatch("credits/getFile", this.fileData);
 
-          this.fileList[idx].idFile = file.id;
+          this.cacheDocId[idx] = file.id;
         }
 
         console.log("file", file);
@@ -5801,14 +5837,22 @@ export default {
         }
 
         this.disable = false;
-        fileData.loading = false
+        if (lang == 0) {
+          fileData.loading = false
+        } else {
+          fileData.loadingUz = false
+        }
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
           CommonUtils.filterServerError(error)
         );
         this.disable = false;
-        fileData.loading = false;
+        if (lang == 0) {
+          fileData.loading = false
+        } else {
+          fileData.loadingUz = false
+        }
       }
     },
 
@@ -6283,7 +6327,7 @@ export default {
   }
 
   .fileBlock {
-    padding: 14px 0 14px 20px;
+    padding: 14px 20px;
     margin: 0;
     background: #F5F6FA;
     border-radius: 5px;
@@ -6361,6 +6405,17 @@ export default {
   .badgePeriod {
     padding: 0;
     margin-bottom: 20px;
+  }
+
+  .printWorkDoc {
+
+    .q-btn__wrapper {
+      padding: 4px;
+    }
+
+    .on-left {
+      margin-right: 0;
+    }
   }
 }
 
