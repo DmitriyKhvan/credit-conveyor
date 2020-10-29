@@ -85,7 +85,7 @@
                         val =>
                           (val && val.length == 9) ||
                           'Количество символов должно быт ровно 9',
-                        val => !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
+                        val => INNFizValid(val) || 'Неверные данные'
                       ]"
                     />
 
@@ -914,6 +914,12 @@ export default {
         18
       ); // с учетом высокосных годов (4)
     },
+
+    INNFizValid(val) {
+      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
+        return true
+      }
+    }
   },
   components: {
     appPreApproval: PreApproval,
