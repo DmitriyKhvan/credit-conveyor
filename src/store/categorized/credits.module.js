@@ -4,6 +4,7 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 export const credits = {
   namespaced: true,
   state: {
+    creditCount: 0,
     taskId: "",
     userRole: "",
     // fileId: null, 
@@ -479,11 +480,16 @@ export const credits = {
 
     setCreditTasks(state, payload) {
       state.loadings = []
+      // количество заявок в списке
+      state.creditCount = payload.response.all < payload.count 
+                            ? payload.response.all
+                            : payload.count
+
       state.countRowList.find(i => i.label === 'Все').value = payload.response.all
 
       state.pages = Math.ceil(payload.response.all / payload.count)
 
-      for (let i = 0; i < payload.count; i++) {
+      for (let i = 0; i < state.creditCount * 2; i++) {
         state.loadings[i] = false
       }
 
