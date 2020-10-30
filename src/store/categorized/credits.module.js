@@ -386,36 +386,60 @@ export const credits = {
       }
     },
 
-    // async checkClient({ state, commit, dispatch }, clientData) {
-      
-    //   try {
-    //     const response = await state.bpmService.checkClient(clientData)
-    //     console.log('GCI', response)
-    //     if (response) {
-    //       commit("setClientDataGCI", response)
-    //     }
+    async checkClient({ state, commit, dispatch }, clientData) {
+      try {
+        const response = await state.bpmService.checkClient(clientData)
+        console.log('GCI', response.internal)
+        const code = response.output.find(i => i.name == 'code')
+        const msg = response.output.find(i => i.name == 'response')
 
-    //   } catch (error) {
-    //     const errorMessage = CommonUtils.filterServerError(error);
-    //     commit("setMessage", errorMessage);
-    //     throw error
-    //   }
-    // }
+        if (code.data == 0) {
+          const client_resp = response.internal.find(i => i.name == 'client_resp')
+          commit("setClientDataGCI", client_resp.data)
+        } else if(code.data == 4) {
+          // попробуйте снова
+          commit("resetClientDataGCI")
+          throw msg.data
+        } else {
+          // разблокируем поля
+          commit("resetClientDataGCI")
+          throw msg.data
+        } 
+
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+        throw error
+      }
+    }
   },
   mutations: {
-    // setClientDataGCI(state, payload) {
-    //   state.personalData.name = payload.first_name;
-    //   state.personalData.surname = payload.last_name;
-    //   state.personalData.mname = payload.patronym;
-    //   state.personalData.gender = payload.Person.Sex;
-    //   state.personalData.passport = payload.Person.DocumentSerialNumber;
-    //   state.personalData.pinpp = payload.Person.Pinpp;
-    //   state.personalData.inn = payload.Person.Inn ? payload.Person.Inn : payload.Additional.Inn;
-    //   state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
-    //   state.personalData.birthDate = payload.Person.BirthDate
-    //   state.personalData.givenDate = payload.Person.DocumentDateIssue
-    //   state.personalData.expDate = payload.Person.DocumentDateValid
-    // },
+    resetClientDataGCI(state) {
+      state.personalData.name = "";
+      state.personalData.surname = "";
+      state.personalData.mname = "";
+      state.personalData.gender = null;
+      state.personalData.passport = "";
+      state.personalData.pinpp = null;
+      state.personalData.inn = null;
+      state.personalData.birthDate = ""
+      state.personalData.givenDate = ""
+      state.personalData.expDate = ""
+    },
+
+
+    setClientDataGCI(state, payload) {
+        state.personalData.name = payload.responseBody.response.items[0].first_name;
+        state.personalData.surname = payload.responseBody.response.items[0].last_name;
+        state.personalData.mname = payload.responseBody.response.items[0].patronym;
+        state.personalData.gender = payload.responseBody.response.items[0].gender;
+        state.personalData.passport = payload.responseBody.response.items[0].series + payload.responseBody.response.items[0].number;
+        state.personalData.pinpp = payload.responseBody.response.items[0].pnfl;
+        state.personalData.inn = payload.responseBody.response.items[0].tin;
+        state.personalData.birthDate = payload.responseBody.response.items[0].birth_date
+        state.personalData.givenDate = payload.responseBody.response.items[0].doc_issue_date
+        state.personalData.expDate = payload.responseBody.response.items[0].doc_expire_date
+    },
 
     setPersonalData(state, payload) {
       state.personalData = payload
