@@ -712,6 +712,8 @@
                   </template>
                 </div>
               </div>
+            </template> 
+
               <div v-if="userRole === 'ROLE_CC'" class="row rowForm">
                 <div class="col-12 field">
                   <div class="btnBlock">
@@ -729,7 +731,7 @@
                   </div>
                 </div>
               </div>
-            </template>  
+             
           </div>
 
           <h4 class="titleForm">Сведения об имуществе</h4>
@@ -1582,6 +1584,7 @@
           />
         
           <q-btn
+            v-if="userRole != 'ROLE_UrWr'"
             label="Отклонить"
             class="q-ml-md btnFailure"
             @click="
@@ -1593,7 +1596,6 @@
           />
         
           <q-btn
-            v-if="userRole === 'ROLE_CC'"
             label="На доработку"
             class="q-ml-md btnRework"
             @click="
@@ -1748,6 +1750,7 @@ export default {
       loaderForm: true,
       confirm: false,
       BODecision: true,
+      FinalDecision: "",
       dataINPS: null,
       userRole: this.$store.getters["credits/userRole"],
 
@@ -1926,7 +1929,11 @@ export default {
         this.formHasError = true;
       } else {
         if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
-          this.BODecision = false; // кредит отклонен
+          this.BODecision = false; // кредит на доработку
+          this.FinalDecision = this.commentCC.Decision == 'N' 
+                                  ? "Отказ"
+                                  : ""
+
           this.$store.commit("profile/addComment", {
             commentBlock: "ApplicationComment",
             comment: this.commentBO
@@ -1957,9 +1964,13 @@ export default {
     async sentData(message) {
       this.loader = true;
       let data = {};
-      if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
+      if (this.userRole == "ROLE_CCC"  || this.userRole == "ROLE_UrWr") {
         data = {
           output: [
+             {
+              name: "FinalDecision",
+              data: this.FinalDecision
+            },
             {
               name: "BOLogin",
               data: this.$store.getters["auth/username"]
@@ -1975,9 +1986,7 @@ export default {
           ]
         };
       } else if (this.userRole == "ROLE_CC") {
-        // const fullNameArr = this.$store.getters["auth/fullName"].split(' ')
-        // const fullName = `${fullNameArr[1]} ${fullNameArr[0]} ${fullNameArr[2]}`
-
+        
         data = {
           output: [
             {
@@ -2007,8 +2016,8 @@ export default {
         };
       }
 
+      console.log("data", JSON.stringify(data, null, 2));
       try {
-        console.log("data", JSON.stringify(data, null, 2));
         const response = await this.$store.dispatch(
           "credits/confirmationCredit",
           data

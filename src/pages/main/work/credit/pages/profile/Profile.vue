@@ -1350,7 +1350,7 @@
                           val =>
                             (val && val.length == 9) ||
                             'Введите ИНН работодателя',
-                          val => innValid(val)
+                          val => INNYurValid(val)
                         ]"
                       />
                     </div>
@@ -2694,7 +2694,7 @@
                           val =>
                             (val && val.length === 9) ||
                             'Количество цифр должно быть 9',
-                          val => innValid(val)
+                          val => INNFizValid(val)
                         ]"
                       />
                     </div>
@@ -3288,7 +3288,7 @@
                           val =>
                             (val && val.length === 9) ||
                             'Количество цифр должно быть 9',
-                          val => innValid(val)
+                          val => INNYurValid(val)
                         ]"
                       />
                     </div>
@@ -4049,7 +4049,7 @@
 
             <q-btn
               v-if="status !== 'Step: Работа с документами'"
-               @click="onSubmit(true, true)"
+               @click="onFailureCredit()"
               label="Отклонить кредит"
               class="failureCredit"
             />
@@ -4489,8 +4489,8 @@ export default {
       this.Customer.PropertyInformation[item].items[idx][key] = formatNumber(this.Customer.PropertyInformation[item].items[idx][key])
     },
 
-    async onSubmit(submitForm = true, failureCredit = false) {
-      this.failureCredit = failureCredit; // КМ отклоняет кредит
+    async onSubmit(submitForm = true) {
+      
       this.countRelativeDocumentName = -1;
       this.countGuaranteeDocumentName = -1;
 
@@ -5040,7 +5040,7 @@ export default {
           this.profile.confirmCredit = false;
         } else if (submitForm) {
 
-          if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями' && !failureCredit) {
+          if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями') {
             this.$store.commit(
                 "credits/setMessage",
                 "Получите данные клиента"
@@ -5052,28 +5052,81 @@ export default {
                 "credits/setMessage",
                 "Распечатайте анкету"
               );
-          } else if (!this.LSBOFlag && this.status == 'Step: Full Application Filling') {
+          } else if (!this.LSBOFlag && this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
             this.$store.commit(
                 "credits/setMessage",
                 "Получите данные с ЛСБО"
               );
-          } else if (!this.INPSFlag && this.status == 'Step: Full Application Filling') {
+          } else if (!this.INPSFlag && this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
             this.$store.commit(
                 "credits/setMessage",
                 "Получите данные с Халк банка"
               );
           } else {
-            if (failureCredit) {
-              this.fullProfile.FinalDecision = "Отказ"
-              this.printFailureCredit(this.scoring_results)
-            }
+            this.sentDataForm()
+          }
 
-            this.loader = true;
-            this.fullProfile.ClientManagerLogin = this.$store.getters[
-              "auth/username"
-            ];
-            console.log("fullProfile", this.$store.state.profile.fullFormProfile);
-            const {
+        } else {
+          this.profile.confirmCredit = true;
+        }
+      }
+    },
+
+    async sentDataForm() {
+      this.loader = true;
+      this.fullProfile.ClientManagerLogin = this.$store.getters[
+        "auth/username"
+      ];
+      console.log("fullProfile", this.$store.state.profile.fullFormProfile);
+      const {
+        Status,
+        ApplicationID,
+        // ProtocolNumber,
+        Number,
+        Branch,
+        BranchName,
+        BODecision,
+        FinalDecision,
+        // Date,
+        BOLogin,
+        // Department,
+        ClientManagerLogin,
+        CreditCommiteeDecisions,
+        Customer,
+        Guarantee,
+        LoanInfo,
+        ApplicationComment,
+        AttachedDocuments
+      } = this.fullProfile;
+
+      Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
+
+      for (let property in Customer.PropertyInformation) {
+        if(typeof Customer.PropertyInformation[property] == 'object') {
+          for (let i of Customer.PropertyInformation[property].items) {
+            i.MarketValue = +String(i.MarketValue).replace(/[^0-9]/gim, "");
+          }
+        }
+      }
+
+
+      for (let guarantee in Guarantee) {
+        for (let i of Guarantee[guarantee].items) {
+          if (i.Sum) {
+            console.log("Sum", String(i.Sum).replace(/[^0-9]/gim, ""));
+            i.Sum = +String(i.Sum).replace(/[^0-9]/gim, "");
+          }
+        }
+      }
+
+      LoanInfo.Sum = +LoanInfo.Sum.replace(/[^0-9]/gim, "");
+
+      // удалил из объекта - Date!!!
+      const data = {
+        output: [
+          {
+            name: "application",
+            data: {
               Status,
               ApplicationID,
               // ProtocolNumber,
@@ -5082,7 +5135,6 @@ export default {
               BranchName,
               BODecision,
               FinalDecision,
-              // Date,
               BOLogin,
               // Department,
               ClientManagerLogin,
@@ -5092,90 +5144,47 @@ export default {
               LoanInfo,
               ApplicationComment,
               AttachedDocuments
-            } = this.fullProfile;
-
-            Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
-
-            for (let property in Customer.PropertyInformation) {
-              if(typeof Customer.PropertyInformation[property] == 'object') {
-                for (let i of Customer.PropertyInformation[property].items) {
-                  i.MarketValue = +String(i.MarketValue).replace(/[^0-9]/gim, "");
-                }
-              }
-            }
-
-
-            for (let guarantee in Guarantee) {
-              for (let i of Guarantee[guarantee].items) {
-                if (i.Sum) {
-                  console.log("Sum", String(i.Sum).replace(/[^0-9]/gim, ""));
-                  i.Sum = +String(i.Sum).replace(/[^0-9]/gim, "");
-                }
-              }
-            }
-
-            LoanInfo.Sum = +LoanInfo.Sum.replace(/[^0-9]/gim, "");
-
-            // удалил из объекта - Date!!!
-            const data = {
-              output: [
-                {
-                  name: "application",
-                  data: {
-                    Status,
-                    ApplicationID,
-                    // ProtocolNumber,
-                    Number,
-                    Branch,
-                    BranchName,
-                    BODecision,
-                    FinalDecision,
-                    BOLogin,
-                    // Department,
-                    ClientManagerLogin,
-                    CreditCommiteeDecisions,
-                    Customer,
-                    Guarantee,
-                    LoanInfo,
-                    ApplicationComment,
-                    AttachedDocuments
-                  }
-                }
-              ]
-            };
-
-            console.log(JSON.stringify(data, null, 2));
-            // this.$store.commit("credits/setMessage", this.message);
-
-            try {
-              const response = await this.$store.dispatch(
-                "credits/confirmationCredit",
-                data
-              );
-              console.log("response", JSON.stringify(response, null, 2));
-              //console.log('nextTaskId', response.nextTask.id)
-
-              if (response) {
-                this.$store.commit("credits/setMessage", this.message);
-                this.$store.commit("credits/removeTask", this.taskId);
-                this.$router.push("/work/credit");
-                //this.$router.go(-1);
-              }
-
-              this.loader = false;
-            } catch (error) {
-              this.$store.commit(
-                "credits/setMessage",
-                CommonUtils.filterServerError(error)
-              );
-              this.loader = false;
             }
           }
+        ]
+      };
 
-        } else {
-          this.profile.confirmCredit = true;
+      console.log(JSON.stringify(data, null, 2));
+      // this.$store.commit("credits/setMessage", this.message);
+
+      try {
+        const response = await this.$store.dispatch(
+          "credits/confirmationCredit",
+          data
+        );
+        console.log("response", JSON.stringify(response, null, 2));
+        //console.log('nextTaskId', response.nextTask.id)
+
+        if (response) {
+          this.$store.commit("credits/setMessage", this.message);
+          this.$store.commit("credits/removeTask", this.taskId);
+          this.$router.push("/work/credit");
+          //this.$router.go(-1);
         }
+
+        this.loader = false;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.loader = false;
       }
+    },
+
+    async onFailureCredit() {
+      this.failureCredit = true
+      this.fullProfile.FinalDecision = "Отказ"
+      if (this.scoring_results) {
+        this.printFailureCredit(this.scoring_results)
+      }
+      
+      this.sentDataForm()     
     },
 
     async getDataINPS() {
@@ -5784,6 +5793,18 @@ export default {
 
     innValid(val) {
       return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
+    },
+
+    INNFizValid(val) {
+      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
+        return true
+      }
+    },
+
+    INNYurValid(val) {
+      if (+val[0] > 1 && +val[0] < 4 && !val.match(/(?=(.))\1{8,}/)) {
+        return true
+      }
     },
 
     pinppValid(val) {
