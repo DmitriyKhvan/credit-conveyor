@@ -206,4 +206,14 @@ export default class BpmService {
     return responce.data;
   };
 
+  checkClient = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/startGci`,
+      data
+    });
+
+    return responce.data;
+  };
+
 }
