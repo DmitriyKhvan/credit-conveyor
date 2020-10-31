@@ -143,7 +143,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState, mapGetters } from "vuex"
 import LoaderFullScreen from "@/components/LoaderFullScreen"
 import { validItems, validFilter } from "../../filters/valid_filter"
 import formatNumber from "../../filters/format_number";
@@ -172,7 +172,11 @@ export default {
   computed: {
     ...mapState({
       profile: state => state.profile
-    })
+    }),
+
+    ...mapGetters({
+      preapprove_num: "profile/preapprove_num"
+    }),
   },
   methods: {
     formatNumberSalary(idx) {
@@ -237,7 +241,7 @@ export default {
             input: [
               {
                 name: "application_id",
-                data: this.profile.preapprove_num
+                data: this.preapprove_num
               },
               {
                 name: "from",
