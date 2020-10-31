@@ -36,7 +36,7 @@
                       v-model="personalData.surname"
                       dense
                       :hint="loadMessage"
-                      :disable="disableInput"
+                      :disable="credits.disableGCI"
                       label="Фамилия"
                       :rules="[
                         (val) => (val && val.length > 1) || 'Введите фамилию',
@@ -50,7 +50,7 @@
                       v-model="personalData.name"
                       dense
                       :hint="loadMessage"
-                      :disable="disableInput"
+                      :disable="credits.disableGCI"
                       label="Имя"
                       :rules="[
                         (val) => (val && val.length > 3) || 'Введите имя',
@@ -64,7 +64,7 @@
                       v-model="personalData.mname"
                       dense
                       :hint="loadMessage"
-                      :disable="disableInput"
+                      :disable="credits.disableGCI"
                       label="Отчество"
                       :rules="[
                         (val) => !!val || 'Введите отчество',

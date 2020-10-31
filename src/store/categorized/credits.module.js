@@ -30,6 +30,7 @@ export const credits = {
 
     scannerSerialNumber: null,
     disableInput: false,
+    disableGCI: true,
 
     loadMessage: "",
     personalData: {
@@ -394,6 +395,7 @@ export const credits = {
         const msg = response.output.find(i => i.name == 'response')
 
         if (code.data == 0) {
+          state.disableGCI = true
           const client_resp = response.internal.find(i => i.name == 'client_resp')
           commit("setClientDataGCI", client_resp.data)
         } else if(code.data == 4) {
@@ -402,6 +404,7 @@ export const credits = {
           throw msg.data
         } else {
           // разблокируем поля
+          state.disableGCI = false
           commit("resetClientDataGCI")
           throw msg.data
         } 
