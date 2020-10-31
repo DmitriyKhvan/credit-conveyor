@@ -36,7 +36,7 @@
                       v-model="personalData.surname"
                       dense
                       :hint="loadMessage"
-                      :disable="disableInput"
+                      :disable="credits.disableGCI"
                       label="Фамилия"
                       :rules="[
                         (val) => (val && val.length > 1) || 'Введите фамилию',
@@ -50,7 +50,7 @@
                       v-model="personalData.name"
                       dense
                       :hint="loadMessage"
-                      :disable="disableInput"
+                      :disable="credits.disableGCI"
                       label="Имя"
                       :rules="[
                         (val) => (val && val.length > 3) || 'Введите имя',
@@ -64,7 +64,7 @@
                       v-model="personalData.mname"
                       dense
                       :hint="loadMessage"
-                      :disable="disableInput"
+                      :disable="credits.disableGCI"
                       label="Отчество"
                       :rules="[
                         (val) => !!val || 'Введите отчество',
@@ -171,7 +171,7 @@
                     />
 
                     <!-- Проверить клиента -->
-                    <!-- <q-btn
+                    <q-btn
                       :loading="loadingGCI"
                       label="Проверить клиента"
                       @click="checkClient"
@@ -180,7 +180,7 @@
                       <template v-slot:loading>
                         <q-spinner-facebook />
                       </template>
-                    </q-btn> -->
+                    </q-btn>
 
                     <!-- Preloader auto compleate -->
                     <appLoader v-if="loader" />
@@ -826,47 +826,49 @@ export default {
       }
     },
 
-    // async checkClient() {
-    //   this.loadingGCI = true;
-    //   const data = {
-    //     input: [
-    //       {
-    //         name: "method",
-    //         data: "GetCustomer"
-    //       },
-    //       {
-    //         name: "client",
-    //         data: {
-    //           docType: "6",
-    //           series: this.personalData.passport.slice(0,2),
-    //           number: this.personalData.passport.slice(2),
-    //           tin: this.personalData.inn,
-    //           pnfl: this.personalData.pinpp,
-    //           birthDate: this.personalData.birthDate,
-    //           branch: ""
-    //         }
-    //       }
-    //     ]
-    //   }
-    //   try {
-    //     if (
-    //       !this.personalData.passport &&
-    //       !this.personalData.inn &&
-    //       !this.personalData.pinpp &&
-    //       !this.personalData.birthDate
-    //     ) {
-    //       throw "Заполните персональные данные клиента";
-    //     }
-    //     await this.$store.dispatch("credits/checkClient", data);
-    //     this.loadingGCI = false;
-    //   } catch (error) {
-    //     this.$store.commit(
-    //       "credits/setMessage",
-    //       CommonUtils.filterServerError(error)
-    //     );
-    //     this.loadingGCI = false;
-    //   }
-    // },
+    async checkClient() {
+      this.loadingGCI = true;
+      const data = {
+        input: [
+          {
+            name: "method",
+            data: "GetCustomer"
+          },
+          {
+            name: "client",
+            data: {
+              docType: "6",
+              series: this.personalData.passport.slice(0,2),
+              number: this.personalData.passport.slice(2),
+              tin: this.personalData.inn,
+              pnfl: this.personalData.pinpp,
+              birthDate: this.personalData.birthDate,
+              branch: ""
+            }
+          }
+        ]
+      }
+
+      console.log(JSON.stringify(data, null, 2))
+      try {
+        if (
+          !this.personalData.passport ||
+          !this.personalData.inn ||
+          !this.personalData.pinpp ||
+          !this.personalData.birthDate
+        ) {
+          throw "Заполните персональные данные клиента";
+        }
+        await this.$store.dispatch("credits/checkClient", data);
+        this.loadingGCI = false;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.loadingGCI = false;
+      }
+    },
 
     onChangeLoan(credit) {
       console.log("credit", credit);

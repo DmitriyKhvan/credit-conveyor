@@ -1030,7 +1030,8 @@ export default {
 
   .creditCompleate {
     // background: rgba(99, 195, 148, 0.5) !important;
-    background: rgba(71, 184, 129, 0.5) !important;
+    // background: rgba(71, 184, 129, 0.5) !important;
+    background:#E5F5ED !important;
   }
 
   .number {
