@@ -5,57 +5,21 @@
     </div>
     <div class="col">
       <div class="title q-py-sm">
-        <b>{{ doc.description }}</b>
+        <b>{{ doc.description ? doc.description : 'неизвестный' }}</b>
       </div>
-      <div class="row desp">
-        <div class="col-6">
-          <div class="row">
-            <div class="col flexBlock">
-              <div class="q-pr-sm">
-                <img src="@/assets/icons/Enter-1.svg" />
-              </div>
-              <div class="q-py-sm">
-                <b>Исходящий номер:</b>
-                <br />
-                {{ doc.out_number }}
-              </div>
+      <div class="col column desp">
+        <div class="row items-center q-mr-md q-mb-md">
+          <div class="col column">
+            <div class="row">
+              <span class="text-grey-6" style="min-width: 120px;">Организация:&nbsp;</span>
+              <span>{{doc.organ ? doc.organ : 'неизвестный'}}</span>
             </div>
-            <div class="col flexBlock">
-              <div class="q-pr-sm">
-                <img src="@/assets/icons/Enter.svg" />
-              </div>
-              <div class="q-py-sm">
-                <b>Входящий номер:</b>
-                <br />
-                {{ doc.in_number }}
-              </div>
+            <div class="row">
+              <span class="text-grey-6" style="min-width: 120px;">Откуда:&nbsp;</span>
+              <span>{{ doc.fio ? doc.fio : 'неизвестный'}}</span>
             </div>
           </div>
-          <div class="row">
-            <div class="col flexBlock">
-              <div class="q-pr-sm">
-                <img src="@/assets/icons/Calendar.svg" />
-              </div>
-              <div class="q-py-sm">
-                <b>Исходящая дата:</b>
-                <br />
-                {{ doc.out_date }}
-              </div>
-            </div>
-            <div class="col flexBlock">
-              <div class="q-pr-sm">
-                <img src="@/assets/icons/Calendar.svg" />
-              </div>
-              <div class="q-py-sm">
-                <b>Входящая дата:</b>
-                <br />
-                {{ doc.in_date }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="row q-pl-lg q-pt-xs">
+          <div class="row col-2 q-pl-lg q-pt-xs">
             <div class="flexBlock q-pr-sm q-py-sm">
               <div>
                 <img src="@/assets/icons/List-active.svg" />
@@ -64,53 +28,141 @@
                   self="bottom middle"
                   :offset="[10, 10]"
                   content-class="bg-green"
-                >{{ doc.paper_count }} листов бумаги</q-tooltip>
+                >{{ doc.paper_count ? doc.paper_count : 'неизвестный' }} листов бумаги</q-tooltip>
               </div>
-              <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
+              <div class="flexBlock q-px-sm">{{ doc.paper_count ? doc.paper_count : 'неизвестный' }}</div>
+            </div>
+            <div class="flexBlock q-pr-sm q-py-sm">
+              <div>
+                <q-icon name="receipt" size="24px" color="grey" />
+                <q-tooltip
+                  anchor="top middle"
+                  self="bottom middle"
+                  :offset="[10, 10]"
+                  content-class="bg-grey"
+                >формат: {{ doc.format ? doc.format : 'неизвестный' }}</q-tooltip>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-2 q-pr-md q-pa-md">
           <div class="row">
             <div class="col text-right q-pr-md cursor-pointer" @click="download()">
               <img src="@/assets/icons/Download-Cloud.svg" alt />
+              <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Скачать документ</q-tooltip>
             </div>
-            <div class="cursor-pointer">
-              <img src="@/assets/icons/Print.svg" alt />
-            </div>
-          </div>
-          <!-- posmotret button -->
-          <div class="row q-pt-md">
-            <div class="col text-right fontBtn">
-              <!-- <a-popup :doc="doc"></a-popup> -->
-              <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+            <div class="cursor-pointer" v-if="!isNewDocsSection">
+              <appPrintFile :doc="doc" />
+              <!-- <img src="@/assets/icons/Print.svg" alt />
+              <q-tooltip anchor="top middle" self="bottom middle" :offset="[5, 5]">Распечатать</q-tooltip>-->
             </div>
           </div>
-          <!-- -->
+        </div>
+
+        <div class="col row items-center q-mr-md">
+          <div class="col flexBlock">
+            <div class="q-pr-sm">
+              <img src="@/assets/icons/Enter-1.svg" />
+            </div>
+            <div class="q-py-sm">
+              <b>Исходящий номер:</b>
+              <br />
+              {{ doc.out_number ? doc.out_number : 'неизвестный' }}
+            </div>
+          </div>
+
+          <div class="col flexBlock">
+            <div class="q-pr-sm">
+              <img src="@/assets/icons/Calendar.svg" />
+            </div>
+            <div class="q-py-sm">
+              <b>Исходящая дата:</b>
+              <br />
+              {{ doc.out_date ? doc.out_date : 'неизвестный' }}
+            </div>
+          </div>
+
+          <div class="col flexBlock">
+            <div class="q-pr-sm">
+              <img src="@/assets/icons/Enter.svg" />
+            </div>
+            <div class="q-py-sm">
+              <b>Входящий номер:</b>
+              <br />
+              {{ doc.in_number ? doc.in_number : 'неизвестный'}}
+            </div>
+          </div>
+
+          <div class="col flexBlock">
+            <div class="q-pr-sm">
+              <img src="@/assets/icons/Calendar.svg" />
+            </div>
+            <div class="q-py-sm">
+              <b>Входящая дата:</b>
+              <br />
+              {{ doc.in_date }}
+            </div>
+          </div>
+
+          <div class="col text-right fontBtn">
+            <!-- <a-popup :doc="doc"></a-popup> -->
+            <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+          </div>
         </div>
       </div>
+      <!-- <div class="col">
+        <div class="row q-pl-lg q-pt-xs">
+          <div class="flexBlock q-pr-sm q-py-sm">
+            <div>
+              <img src="@/assets/icons/List-active.svg" />
+              <q-tooltip
+                anchor="top middle"
+                self="bottom middle"
+                :offset="[10, 10]"
+                content-class="bg-green"
+              >{{ doc.paper_count }} листов бумаги</q-tooltip>
+            </div>
+            <div class="flexBlock q-px-sm">{{ doc.paper_count }}</div>
+          </div>
+        </div>
+      </div>-->
+      <!-- <div class="col-2 q-pr-md q-pa-md">
+        <div class="row">
+          <div class="col text-right q-pr-md cursor-pointer" @click="download()">
+            <img src="@/assets/icons/Download-Cloud.svg" alt />
+          </div>
+          <div v-if="menuNo !== 1" class="cursor-pointer">
+              <img src="@/assets/icons/Print.svg" alt="" />
+          </div>
+          <appPrintFile :doc="doc" />
+        </div>
+        <div class="row q-pt-md">
+          <div class="col text-right fontBtn">
+            <a-popup :doc="doc"></a-popup>
+            <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
+          </div>
+        </div>
+      </div>-->
     </div>
   </div>
 
   <div v-else class="bg-white task q-py-sm">
     <div class="title q-pa-md">
       <div class="row">
-        <div class="col">
-          <b>{{ doc.description }}</b>
+        <div class="col ellipsis-3-lines">
+          <b>{{ doc.description ? doc.description : 'неизвестный'}}</b>
         </div>
-        <div>
+        <div class="q-ml-md" style="height: 75px">
           <img src="@/assets/icons/help.svg" />
         </div>
       </div>
     </div>
     <div class="flexBlock q-px-md q-mb-md">
       <div class="q-pr-sm">
-        <img src="@/assets/icons/Send.svg" />
+        <img src="@/assets/icons/Enter.svg" />
       </div>
       <div>
-        <b>От:</b>
+        <b>Входящий номер:</b>
         <br />
-        {{ doc.signed_by }}
+        {{ doc.in_number ? doc.in_number : 'неизвестный' }}
       </div>
     </div>
     <div class="flexBlock q-px-md q-mb-md">
@@ -120,20 +172,21 @@
       <div>
         <b>Входящая дата:</b>
         <br />
-        {{ doc.in_date }}
+        {{ doc.in_date ? doc.in_date : 'неизвестный' }}
       </div>
     </div>
 
     <div class="row q-pb-md">
       <div class="col text-center">
         <q-btn color="blue-14" size="lg" label="Просмотреть" @click="showDialogDetails()" />
-        <!-- <a-popup :doc="doc"></a-popup> -->
       </div>
     </div>
   </div>
 </template>
 <script>
+import printJS from "print-js";
 import { mapState, mapGetters } from "vuex";
+import PrintFile from "./PrintFile";
 import Popup from "./Popup";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import { downloadFile, getMimeType } from "@/shared/utils/file";
@@ -142,14 +195,16 @@ export default {
   props: ["doc"],
   components: {
     //APopup: Popup
+    appPrintFile: PrintFile
   },
   computed: {
     ...mapState({
       list: state => state.assistant.isListView,
-      selectedDocs: state => state.assistant.selectedDocs
+      selectedDocs: state => state.assistant.selectedDocs,
+      menuNo: state => state.assistant.menuNo
     }),
     ...mapGetters({
-      menuNo: "menuNo"
+      menuNo: "assistant/menuNo"
     }),
     isNewDocsSection() {
       return this.menuNo == 1 ? true : false;
@@ -158,7 +213,7 @@ export default {
   methods: {
     selectDoc() {
       console.log({ selectingDoc: this.doc });
-      this.$store.dispatch("selDoc", this.doc);
+      this.$store.dispatch("assistant/selDoc", this.doc);
     },
     download() {
       let extention = getMimeType(this.doc.file.extension);
@@ -175,7 +230,7 @@ export default {
           console.log({ res: res });
           //obnobvit dokumenti na tekushiy tab
           if (res.status == 1) {
-            this.$store.dispatch("getADocs", { num: this.menuNo });
+            this.$store.dispatch("assistant/getADocs", { num: this.menuNo });
           }
         })
         .onCancel(() => {

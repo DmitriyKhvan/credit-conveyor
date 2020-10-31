@@ -1,26 +1,14 @@
 <template>
-  <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
-      <q-scroll-area class="scrollBlock">
-
-        <div v-if="mydata" class="row table_border">
-          <div class="table_title"><q-icon name="account_box" size="sm" class="q-pr-sm" /> МОИ ДАННЫЕ</div>
-          <div class="col-12 q-pa-md table_bg">
-
-
-            <div
-              class="block_global"
-              v-for="(d, key, index) in mydata"
-              :key="index"
-            >
-              <div class="left_bg" v-html="titles[index]"></div>
-              <div class="right_bg" v-html="d"></div>
-            </div>
-
-
-          </div>
-        </div>
-      </q-scroll-area>
+  <div class="col-12">
+    <div
+      class="block_global OpenSansBold"
+      v-for="(d, key, index) in mydata"
+      :key="index"
+    >
+      <div class="left_bg" v-html="titles[index]"></div>
+      <div class="right_bg" v-html="d"></div>
     </div>
+  </div>
 </template>
 <script>
 import axios from "axios"
@@ -77,33 +65,24 @@ export default {
 }
 </script>
 <style scoped>
-  .scrollBlock {
-    height: calc(100vh - 130px);
+ @font-face {
+    font-family: 'Avant';
+    src: url('~assets/fonts/avant.ttf') format('truetype');
   }
-  .table_bg {
-    background: #EAF3FC;
-    border-radius: 5px;
+  @font-face {
+    font-family: 'OpenSansBold';
+    src: url('~assets/fonts/OpenSans-Bold.ttf') format('truetype');
   }
-  .table_border {
-    border: 1px #9FB7CF solid;
-    border-radius: 5px;
-    position: relative;
-    padding: 30px 10px 10px;
-    margin-top: 25px;
+  .OpenSansBold {
+    font-family: 'OpenSansBold';
+    font-weight: 500;
   }
-  .table_title {
-    text-transform: uppercase;
-    color: #fff;
-    background: #5B8AB7;
-    border-radius: 5px;
-    position: absolute;
-    top: -25px;
-    left: 10px;
-    padding: 10px 15px;
+  .Avant {
+    font-family: 'Avant';
   }
   .left_bg {
-    background: #9FB7CF;
-    color: #fff;
+    background: #F8FAFF;
+    color: #122E9C;
     padding: 3px 10px;
     float: left;
     border-radius: 15px;
@@ -112,6 +91,7 @@ export default {
   .right_bg {
     float: right;
     background: #fff;
+    color: #273959;
     padding: 3px 10px;
     border-radius: 15px;
     max-width: 49%;
@@ -119,7 +99,7 @@ export default {
   .block_global {
     float: left;
     width: 100%;
-    background: url('../../../../../assets/images/table_dot.png') repeat-x;
+    background: url('~assets/images/table_dot.svg') repeat-x;
     background-position: 0 12px;
     margin: 5px 0;
   }

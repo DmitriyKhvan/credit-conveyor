@@ -58,7 +58,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    :disable="disableField"
+                    disable
                     ref="birthday"
                     outlined
                     dense
@@ -420,16 +420,34 @@
               </div>
 
               <div class="row q-col-gutter-md">
+                <!-- <div class="col-4">
+                  <q-input
+                    :disable="disableField"
+                    outlined
+                    v-model="fullProfile.Customer.CardNumber"
+                    @input="cardNumber($event)"
+                    dense
+                    label="Номер карты НБУ"
+                    error-message="Неверные данные"
+                    :error="!this.isValidNumCard"
+                  />
+                </div> -->
+
                 <div class="col-4">
                   <q-input
                     :disable="disableField"
-                    ref="CardNumber"
                     outlined
                     v-model="fullProfile.Customer.CardNumber"
                     dense
                     label="Номер карты"
                     mask="################"
-                    :rules="[]"
+                    :rules="[
+                      val =>
+                          (val && val.length === 16) ||
+                          'Количество символов должно быт ровно 16',
+                        val =>
+                          !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                    ]"
                   />
                 </div>
 
@@ -469,6 +487,36 @@
                   />
                 </div>
               </div>
+
+              <div v-if="Customer.LSBO" class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-checkbox
+                      disable
+                      left-label
+                      v-model="Customer.LSBO"
+                      label="ЛСБО"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      disable
+                      outlined
+                      v-model="Customer.filial"
+                      dense
+                      label="Номер филиала"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      disable
+                      outlined
+                      v-model="Customer.role"
+                      dense
+                      label="Должность"
+                    />
+                  </div>
+                </div>
             </div>
           </div>
 
@@ -1227,7 +1275,7 @@
               ></q-btn>
 
               <q-btn
-                v-if="profile.preapprove_num"
+                v-if="preapprove_num"
                 :loading="LSBOLoading"
                 label="Получить данные ЛСБО"
                 @click="getLSBO"
@@ -1302,7 +1350,7 @@
                           val =>
                             (val && val.length == 9) ||
                             'Введите ИНН работодателя',
-                          val => innValid(val)
+                          val => INNYurValid(val)
                         ]"
                       />
                     </div>
@@ -1714,7 +1762,7 @@
               > -->
 
               <q-btn
-                v-if="profile.preapprove_num"
+                v-if="preapprove_num"
                 :loading="bankLoading"
                 label="Получить данные с Халк банка"
                 @click="getDataINPS"
@@ -1787,13 +1835,13 @@
                       :disable="disableField"
                       ref="pricesProperties"
                       outlined
-                      v-model.number="property.MarketValue"
-                      type="number"
+                      v-model="property.MarketValue"
+                      @input="formatNumberItems('Realty_new', 'MarketValue', index)"
                       dense
                       label="Рыночная стоимость"
                       :rules="[
                         val => !!val || 'Поле должно быть заполнено',
-                        val => val > 0 || 'Некорректные данные'
+                        val => val != 0 || 'Некорректные данные'
                       ]"
                     />
                   </div>
@@ -1888,13 +1936,13 @@
                       :disable="disableField"
                       ref="priceVehicles"
                       outlined
-                      v-model.number="vehicle.marketValue"
-                      type="number"
+                      v-model="vehicle.MarketValue"
+                      @input="formatNumberItems('Transport_new', 'MarketValue', index)"
                       dense
                       label="Рыночная стоимость"
                       :rules="[
                         val => !!val || 'Введите рыночную стоимость',
-                        val => val > 0 || 'Некорректные данные'
+                        val => val != 0 || 'Некорректные данные'
                       ]"
                     />
                   </div>
@@ -2008,7 +2056,7 @@
                 <div
                   v-if="
                     !!fullProfile.LoanInfo.LoanProduct &&
-                      fullProfile.LoanInfo.LoanProduct !== 3
+                      fullProfile.LoanInfo.LoanProduct !== 1
                   "
                   class="col-4"
                 >
@@ -2286,11 +2334,64 @@
                 </div>
               </div>
 
+              <!-- для микрозайма -->
+              <template v-if="fullProfile.LoanInfo.LoanProduct == 132 && !fullProfile.Customer.CardNumber"> 
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="mircoloanBankName"
+                      outlined
+                      v-model="fullProfile.LoanInfo.microloan_details.bank_name"
+                      dense
+                      label="Наименование банка"
+                      :rules="[
+                        val =>
+                          !!val ||
+                          'Введите наименование банка'
+                      ]"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="mircoloanBankMFO"
+                      outlined
+                      v-model="fullProfile.LoanInfo.microloan_details.mfo"
+                      dense
+                      label="МФО банка"
+                      :rules="[
+                        val =>
+                          !!val ||
+                          'Введите МФО банка'
+                      ]"
+                    />
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="mircoloanCustomerBill"
+                      outlined
+                      v-model="fullProfile.LoanInfo.microloan_details.customer_bill"
+                      dense
+                      label="Расчетный счет клиента"
+                      mask="####################"
+                      :rules="[
+                        val =>
+                          (val && val.length === 20) ||
+                          'Количество символов должно быт ровно 20',
+                        val => !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
+                      ]"
+                    />
+                  </div>
+                </div>
+              </template>
+
+              <!-- для потребительского кредита -->
               <template
-                v-if="
-                  fullProfile.LoanInfo.LoanProduct == 1 ||
-                    fullProfile.LoanInfo.LoanProduct == 2
-                "
+                v-if="fullProfile.LoanInfo.LoanProduct == 133"
               >
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -2593,7 +2694,7 @@
                           val =>
                             (val && val.length === 9) ||
                             'Количество цифр должно быть 9',
-                          val => innValid(val)
+                          val => INNFizValid(val)
                         ]"
                       />
                     </div>
@@ -2851,7 +2952,7 @@
                   </div>
 
                   <div class="row q-col-gutter-md">
-                    <div class="col-4">
+                    <!-- <div class="col-4">
                       <q-input
                         :disable="disableField"
                         ref="CardNumberGuarantees"
@@ -2868,7 +2969,7 @@
                             !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
                         ]"
                       />
-                    </div>
+                    </div> -->
 
                     <div class="col-4">
                       <q-input
@@ -3187,7 +3288,7 @@
                           val =>
                             (val && val.length === 9) ||
                             'Количество цифр должно быть 9',
-                          val => innValid(val)
+                          val => INNYurValid(val)
                         ]"
                       />
                     </div>
@@ -3795,8 +3896,8 @@
               <template v-if="fullProfile.ApplicationComment">
                 <div
                   class="comments"
-                  v-for="comment of fullProfile.ApplicationComment.items"
-                  :key="comment.id"
+                  v-for="(comment, index) of fullProfile.ApplicationComment.items"
+                  :key="'comment' + index"
                 >
                   <h6 class="tab-content_title">{{ comment.CommentPerson }}</h6>
                   <!-- <span>{{comment.CommentDate}}</span> -->
@@ -3862,8 +3963,8 @@
           </div>
 
           <!-- file list -->
-          <template v-if="profile.fileList.length">
-            <!-- Comment -->
+          <template v-if="fileList.length">
+            
             <div class="fileList tab">
               <h4
                 class="tab-title"
@@ -3876,7 +3977,7 @@
                 <ul class="fileBlock">
                   <li
                     class="fileLi"
-                    v-for="(fileData, index) of profile.fileList"
+                    v-for="(fileData, index) of fileList"
                     :key="index"
                   >
                     <p>
@@ -3884,22 +3985,42 @@
                       <!-- {{ fileData.label }} -->
                       {{ fileData.number ? +fileData.number + 1 : null }}
                     </p>
-                    <q-btn
-                      :disable="disable"
-                      class="printDoc"
-                      flat 
-                      style="color: #74798C" 
-                      icon="print"
-                      label="Печать"
-                      @click="printFile(fileData, index)"
-                      :loading="loadings[index]"
 
-                    >
-                      <template v-slot:loading>
-                        <q-spinner-facebook />
-                      </template>
-                      <!-- <q-tooltip>Распечатать</q-tooltip> -->
-                    </q-btn>
+                    <div class="printWorkDoc">
+                      <q-btn
+                        :disable="disable"
+                        class="printDoc"
+                        flat 
+                        style="color: #74798C" 
+                        icon="print"
+                        label="(рус.)"
+                        @click="printFile(fileData, index)"
+                        :loading="fileData.loading"
+
+                      >
+                        <template v-slot:loading>
+                          <q-spinner-facebook />
+                        </template>
+                        <q-tooltip>Печать</q-tooltip>
+                      </q-btn>
+
+                      <q-btn
+                        :disable="disable"
+                        class="printDoc"
+                        flat 
+                        style="color: #74798C" 
+                        icon="print"
+                        label="(узб.)"
+                        @click="printFile(fileData, index + fileList.length, 1)"
+                        :loading="fileData.loadingUz"
+
+                      >
+                        <template v-slot:loading>
+                          <q-spinner-facebook />
+                        </template>
+                        <q-tooltip>Печать</q-tooltip>
+                      </q-btn>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -3928,7 +4049,7 @@
 
             <q-btn
               v-if="status !== 'Step: Работа с документами'"
-               @click="onSubmit(true, true)"
+               @click="onFailureCredit()"
               label="Отклонить кредит"
               class="failureCredit"
             />
@@ -4036,12 +4157,16 @@
       <q-card class="INPSblock">
         <q-card-section>
           <appGetDataINPS
-            v-if="dataINPS"
-            :salaries="dataINPS"
+            v-if="dataINPS.code == 0"
+            :salaries="dataINPS.salaries"
             @closeBar="$event => (INPSBar = $event)"
           />
 
-          <appSetDataINPS v-else @closeBar="$event => (INPSBar = $event)" />
+          <appSetDataINPS 
+            v-else 
+            @closeBar="$event => (INPSBar = $event)" 
+            :msg="dataINPS.msg"
+          />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -4050,7 +4175,7 @@
 
 <script>
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import printJS from "print-js";
 
 // import InfoList from "../registration/PreApproval";
@@ -4070,6 +4195,10 @@ export default {
   name: "profile",
   data() {
     return {
+      // isValidNumCard: true,
+      LSBOFlag: false,
+      INPSFlag: false,
+      failureCredit: false,
       clientInfoData: false,
       printForm: false,
       bankLoading: false,
@@ -4077,7 +4206,10 @@ export default {
       clientInfoLoading: false,
       // infoList: false,
       INPSBar: false,
-      dataINPS: null,
+      dataINPS: {
+        code: null,
+        msg: ""
+      },
       clientInfo: null,
       countRelativeDocumentName: -1,
       countGuaranteeDocumentName: -1,
@@ -4219,26 +4351,8 @@ export default {
         );
         this.loaderForm = false;
       }
-
-      // this.$store.commit(
-      //   "profile/setPreapprovData",
-      //   JSON.parse(sessionStorage.getItem("preapprovData"))
-      // ); //синхронизация с preapprov
-      // this.$store.commit(
-      //   "profile/setDictionaries",
-      //   JSON.parse(sessionStorage.getItem("dictionaries"))
-      // );
-      // this.$store.commit("credits/setTaskId", sessionStorage.getItem("taskId"));
-      // this.$store.commit(
-      //   "profile/setPreapproveNum",
-      //   sessionStorage.getItem("preapprove_num")
-      // );
     }
-    // else {
-    //     this.$store.commit("profile/setPreapprovData", JSON.parse(sessionStorage.getItem("preapprovData")))
-    //     //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-    // }
-
+    
     this.setLoan(this.fullProfile.LoanInfo.LoanProduct);
     this.options.Countries = this.$store.getters[
       "profile/dictionaries"
@@ -4254,7 +4368,6 @@ export default {
   },
   computed: {
     ...mapState({
-      disableField: state => state.profile.disableField,
       fullProfile: state => state.profile.fullFormProfile,
       Customer: state => state.profile.fullFormProfile.Customer,
       dictionaries: state => state.profile.dictionaries,
@@ -4264,12 +4377,18 @@ export default {
       loadings: state => state.profile.loadings
     }),
 
+    ...mapGetters({
+      preapprove_num: "profile/preapprove_num"
+    }),
+
     taskId() {
       return this.$route.query.taskId;
     },
 
     status() {
-      return this.$route.query.status;
+      return this.$route.query.status 
+              ? this.$route.query.status
+              : 'Step: Full Application Filling'
     },
 
     reworkCC() {
@@ -4283,9 +4402,11 @@ export default {
     },
 
     message() {
-      return this.status === 'Step: Работа с документами' 
+      return this.status === 'Step: Работа с документами' && !this.failureCredit 
               ? 'Deal complete'
-              : 'Form complete'
+                : this.failureCredit
+                  ? 'Credit failure'
+                  : 'Form complete'
     },
 
     countFile() {
@@ -4295,16 +4416,33 @@ export default {
     },
 
     scoring_results() {
-      // console.log('this.profile.BPMInput', this.profile.BPMInput)
       const scoring_resutlts = this.profile.BPMInput.find(input => input.label == 'scoring_results')
       return scoring_resutlts ? scoring_resutlts : null
+    },
+
+    disableField() {
+      return this.status === 'Step: Работа с документами'
+              ? true
+              : false
+    },
+
+    fileList() {
+      return this.$store.getters['profile/fileList']
+    },
+
+    cacheDocId() {
+      const cacheDocIdArr = []
+      for (let i = 0; i < this.fileList.length * 2; i++) {
+        cacheDocIdArr.push(null)
+      } 
+      return cacheDocIdArr
     }
   },
   watch: {
-    "Customer.Email"() {
+    "Customer.Email"(val) {
       if (
-        this.Customer.Email !== "" &&
-        !this.Customer.Email.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
+        val !== "" &&
+        !val.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
       ) {
         this.isValid = false;
       } else {
@@ -4346,7 +4484,13 @@ export default {
       return formatNumber(number);
     },
 
-    async onSubmit(submitForm = true, failureCredit = false) {
+    formatNumberItems(item, key, idx) {
+      console.log(this.Customer.PropertyInformation.Realty_new.items)
+      this.Customer.PropertyInformation[item].items[idx][key] = formatNumber(this.Customer.PropertyInformation[item].items[idx][key])
+    },
+
+    async onSubmit(submitForm = true) {
+      
       this.countRelativeDocumentName = -1;
       this.countGuaranteeDocumentName = -1;
 
@@ -4405,16 +4549,6 @@ export default {
         "relativesDocumentDocumentTypeValid",
         "relativesDocumentDocumentType"
       );
-
-      // this.Customer.Relatives.items.forEach(i => {
-      //   if (i.Document.documentType == 7) {
-      //     validFilter(this.$refs, "relativesDocumentDocumentNameValid" ,"relativesDocumentDocumentName");
-      //   } else {
-      //     validItems(this.$refs, "relativesDocumentDocumentNameValid");
-      //   }
-      // })
-
-      // validItems(this.$refs, "relativesDocumentDocumentNameValid");
 
       this.Customer.Relatives.items.forEach(i => {
         if (i.Document.documentType == 7) {
@@ -4599,11 +4733,11 @@ export default {
           "BankInpsGuaranteesValid",
           "BankInpsGuarantees"
         );
-        validFilter(
-          this.$refs,
-          "CardNumberGuaranteesValid",
-          "CardNumberGuarantees"
-        );
+        // validFilter(
+        //   this.$refs,
+        //   "CardNumberGuaranteesValid",
+        //   "CardNumberGuarantees"
+        // );
 
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
@@ -4636,7 +4770,7 @@ export default {
         validItems(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid");
         validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
         validItems(this.$refs, "BankInpsGuaranteesValid");
-        validItems(this.$refs, "CardNumberGuaranteesValid");
+        // validItems(this.$refs, "CardNumberGuaranteesValid");
         validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
@@ -4731,10 +4865,9 @@ export default {
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
-      //если потребительский или микрозайм кредит
+      //если потребительский
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 1 ||
-        this.fullProfile.LoanInfo.LoanProduct == 2
+        this.fullProfile.LoanInfo.LoanProduct == 133
       ) {
         this.$refs.nameProduction.validate();
         this.$refs.productName.validate();
@@ -4752,38 +4885,34 @@ export default {
       }
 
       //если не овердрафт
-      if (
-        !!this.fullProfile.LoanInfo.LoanProduct &&
-        this.fullProfile.LoanInfo.LoanProduct !== 3
-      ) {
-        this.$refs.typeRepayment.validate();
-        // this.$refs.initialFee.validate();
-      } else {
-        validItems(this.$refs, "typeRepayment");
-        // validItems(this.$refs, "initialFee");
-      }
+      // if (
+      //   !!this.fullProfile.LoanInfo.LoanProduct &&
+      //   this.fullProfile.LoanInfo.LoanProduct !== 1
+      // ) {
+      //   this.$refs.typeRepayment.validate();
+      // } else {
+      //   validItems(this.$refs, "typeRepayment");
+      // }
 
       this.$refs.uploadFile.validate();
 
-      // if (!this.fullProfile.AttachedDocuments.items.length) {
-      //   debugger
-      //   this.$refs.uploadFile.validate();
-      // } else {
-      //   debugger
-      //   validItems(this.$refs, "uploadFile");
-      // }
-
-      if (
-        !this.fullProfile.Guarantee.Insurance.items.length ||
-        !this.fullProfile.Guarantee.RelatedLegalPerson.items.length ||
-        !this.fullProfile.Guarantee.RelatedPerson.items.length
-      ) {
-        this.guaranteesValid();
-      } else {
-        validItems(this.$refs, "guaranteesValid");
-      }
+      this.guaranteesValid();
 
       console.log("files", this.$refs.files);
+
+      if (
+        this.fullProfile.LoanInfo.LoanProduct == 132 && 
+        !this.fullProfile.Customer.CardNumber
+      ) {
+        this.$refs.mircoloanBankName.validate();
+        this.$refs.mircoloanBankMFO.validate();
+        this.$refs.mircoloanCustomerBill.validate();
+      } else {
+        validItems(this.$refs, "mircoloanBankName");
+        validItems(this.$refs, "mircoloanBankMFO");
+        validItems(this.$refs, "mircoloanCustomerBill");
+      }
+      
 
       if (
         this.$refs.surname.hasError ||
@@ -4872,7 +5001,7 @@ export default {
         this.$refs.guaranteesDocumentRegionsGivenPlaceValid.hasError ||
         this.$refs.guaranteesDocumentGivenPlaceValid.hasError ||
         this.$refs.BankInpsGuaranteesValid.hasError ||
-        this.$refs.CardNumberGuaranteesValid.hasError ||
+        // this.$refs.CardNumberGuaranteesValid.hasError ||
         this.$refs.regionGuaranteesValid.hasError ||
         this.$refs.districtGuaranteesValid.hasError ||
         this.$refs.streetGuaranteesValid.hasError ||
@@ -4897,7 +5026,12 @@ export default {
         this.$refs.agreementDate.hasError ||
         this.$refs.sourceFinancs.hasError ||
         this.$refs.uploadFile.hasError ||
-        this.$refs.guaranteesValid.hasError
+        this.$refs.guaranteesValid.hasError ||
+        
+        this.$refs.mircoloanBankName.hasError ||
+        this.$refs.mircoloanBankMFO.hasError ||
+        this.$refs.mircoloanCustomerBill.hasError
+
       ) {
         this.formHasError = true;
         this.bar = true;
@@ -4906,35 +5040,93 @@ export default {
           this.profile.confirmCredit = false;
         } else if (submitForm) {
 
-          if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями' && !failureCredit) {
+          if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями') {
             this.$store.commit(
                 "credits/setMessage",
                 "Получите данные клиента"
               );
-          } 
-          else if (!this.printForm && 
-                  this.status !== 'Работа с документами' &&
-                  this.fullProfile.BODecision == null) {
+          } else if (!this.printForm && 
+                  this.status == 'Step: Ввод данных с интеграциями'
+                  ) {
             this.$store.commit(
                 "credits/setMessage",
                 "Распечатайте анкету"
               );
-          } 
-          // else if (status == 'Step: Ввод данных с интеграциями') {
+          } else if (!this.LSBOFlag && this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
+            this.$store.commit(
+                "credits/setMessage",
+                "Получите данные с ЛСБО"
+              );
+          } else if (!this.INPSFlag && this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
+            this.$store.commit(
+                "credits/setMessage",
+                "Получите данные с Халк банка"
+              );
+          } else {
+            this.sentDataForm()
+          }
 
-          // } 
-          else {
-            if (failureCredit) {
-              this.fullProfile.FinalDecision = "Отказ"
-              this.printFailureCredit(this.scoring_results)
-            }
+        } else {
+          this.profile.confirmCredit = true;
+        }
+      }
+    },
 
-            this.loader = true;
-            this.fullProfile.ClientManagerLogin = this.$store.getters[
-              "auth/username"
-            ];
-            console.log("fullProfile", this.$store.state.profile.fullFormProfile);
-            const {
+    async sentDataForm() {
+      this.loader = true;
+      this.fullProfile.ClientManagerLogin = this.$store.getters[
+        "auth/username"
+      ];
+      console.log("fullProfile", this.$store.state.profile.fullFormProfile);
+      const {
+        Status,
+        ApplicationID,
+        // ProtocolNumber,
+        Number,
+        Branch,
+        BranchName,
+        BODecision,
+        FinalDecision,
+        // Date,
+        BOLogin,
+        // Department,
+        ClientManagerLogin,
+        CreditCommiteeDecisions,
+        Customer,
+        Guarantee,
+        LoanInfo,
+        ApplicationComment,
+        AttachedDocuments
+      } = this.fullProfile;
+
+      Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
+
+      for (let property in Customer.PropertyInformation) {
+        if(typeof Customer.PropertyInformation[property] == 'object') {
+          for (let i of Customer.PropertyInformation[property].items) {
+            i.MarketValue = +String(i.MarketValue).replace(/[^0-9]/gim, "");
+          }
+        }
+      }
+
+
+      for (let guarantee in Guarantee) {
+        for (let i of Guarantee[guarantee].items) {
+          if (i.Sum) {
+            console.log("Sum", String(i.Sum).replace(/[^0-9]/gim, ""));
+            i.Sum = +String(i.Sum).replace(/[^0-9]/gim, "");
+          }
+        }
+      }
+
+      LoanInfo.Sum = +LoanInfo.Sum.replace(/[^0-9]/gim, "");
+
+      // удалил из объекта - Date!!!
+      const data = {
+        output: [
+          {
+            name: "application",
+            data: {
               Status,
               ApplicationID,
               // ProtocolNumber,
@@ -4943,7 +5135,6 @@ export default {
               BranchName,
               BODecision,
               FinalDecision,
-              // Date,
               BOLogin,
               // Department,
               ClientManagerLogin,
@@ -4953,501 +5144,48 @@ export default {
               LoanInfo,
               ApplicationComment,
               AttachedDocuments
-            } = this.fullProfile;
-
-            Customer.FullName = `${Customer.LastName} ${Customer.FirstName} ${Customer.MiddleName}`;
-
-            for (let guarantee in Guarantee) {
-              for (let i of Guarantee[guarantee].items) {
-                if (i.Sum) {
-                  console.log("Sum", String(i.Sum).replace(/[^0-9]/gim, ""));
-                  i.Sum = +String(i.Sum).replace(/[^0-9]/gim, "");
-                }
-              }
-            }
-
-            LoanInfo.Sum = +LoanInfo.Sum.replace(/[^0-9]/gim, "");
-
-            // удалил из объекта - Date!!!
-            const data = {
-              output: [
-                {
-                  name: "application",
-                  data: {
-                    Status,
-                    ApplicationID,
-                    // ProtocolNumber,
-                    Number,
-                    Branch,
-                    BranchName,
-                    BODecision,
-                    FinalDecision,
-                    BOLogin,
-                    // Department,
-                    ClientManagerLogin,
-                    CreditCommiteeDecisions,
-                    Customer,
-                    Guarantee,
-                    LoanInfo,
-                    ApplicationComment,
-                    AttachedDocuments
-                  }
-                }
-              ]
-            };
-
-            console.log(JSON.stringify(data, null, 2));
-
-            try {
-              const response = await this.$store.dispatch(
-                "credits/confirmationCredit",
-                data
-              );
-              console.log("response", JSON.stringify(response, null, 2));
-              //console.log('nextTaskId', response.nextTask.id)
-
-              if (response) {
-                this.$store.commit("credits/setMessage", this.message);
-                this.$store.commit("credits/removeTask", this.taskId);
-                this.$router.push("/work/credit");
-                //this.$router.go(-1);
-              }
-
-              this.loader = false;
-            } catch (error) {
-              this.$store.commit(
-                "credits/setMessage",
-                CommonUtils.filterServerError(error)
-              );
-              this.loader = false;
             }
           }
+        ]
+      };
 
-        } else {
-          this.profile.confirmCredit = true;
+      console.log(JSON.stringify(data, null, 2));
+      // this.$store.commit("credits/setMessage", this.message);
+
+      try {
+        const response = await this.$store.dispatch(
+          "credits/confirmationCredit",
+          data
+        );
+        console.log("response", JSON.stringify(response, null, 2));
+        //console.log('nextTaskId', response.nextTask.id)
+
+        if (response) {
+          this.$store.commit("credits/setMessage", this.message);
+          this.$store.commit("credits/removeTask", this.taskId);
+          this.$router.push("/work/credit");
+          //this.$router.go(-1);
         }
+
+        this.loader = false;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.loader = false;
       }
     },
 
-    // async onSubmit() {
-    //   const data = {
-    //     output: [
-    //       {
-    //         name: "application",
-    //         data: {
-    //           Status: "",
-    //           BODecision: null,
-    //           BOLogin: "",
-    //           ClientManagerLogin: "man",
-    //           CreditCommiteeDecisions: {
-    //             items: []
-    //           },
-    //           Customer: {
-    //             DigID: false,
-    //             Email: "",
-    //             FirstName: "DFGDG",
-    //             LastName: "SDF",
-    //             MiddleName: "DFGDFG",
-    //             FullName: "SDF DFGDG DFGDFG",
-    //             BirthDate: "07.08.1969",
-    //             Country: 0,
-    //             BirthCity: "DSF",
-    //             INN: "234243242",
-    //             PINPP: "23423444444233",
-    //             ResidentFlag: true,
-    //             Gender: 1,
-    //             Document: {
-    //               documentType: 8,
-    //               Series: "DS",
-    //               Number: "3242333",
-    //               ExpirationDate: "14.09.2022",
-    //               GivenDate: "11.09.1969",
-    //               GUID: "",
-    //               Country: "Uzbekistan",
-    //               DocLink: "",
-    //               DocumentName: "",
-    //               Region: 1,
-    //               Districts: {
-    //                 items: [
-    //                   {
-    //                     label: "АНДИЖОН ШАХРИ",
-    //                     value: 1
-    //                   },
-    //                   {
-    //                     label: "АСАКА ШАХРИ",
-    //                     value: 2
-    //                   },
-    //                   {
-    //                     label: "ХОНОБОД ШАХРИ",
-    //                     value: 3
-    //                   },
-    //                   {
-    //                     label: "КОРАСУВ ШАХРИ",
-    //                     value: 4
-    //                   },
-    //                   {
-    //                     label: "Г.ШАХРИХАН",
-    //                     value: 5
-    //                   },
-    //                   {
-    //                     label: "АНДИЖОН ТУМАНИ",
-    //                     value: 6
-    //                   },
-    //                   {
-    //                     label: "АСАКА ТУМАНИ",
-    //                     value: 7
-    //                   },
-    //                   {
-    //                     label: "БАЛИКЧИ ТУМАНИ",
-    //                     value: 8
-    //                   },
-    //                   {
-    //                     label: "БУЗ ТУМАНИ",
-    //                     value: 9
-    //                   },
-    //                   {
-    //                     label: "БУЛОКБОШИ ТУМАНИ",
-    //                     value: 10
-    //                   },
-    //                   {
-    //                     label: "ЖАЛОЛКУДУК ТУМАНИ",
-    //                     value: 11
-    //                   },
-    //                   {
-    //                     label: "ИЗБОСКАН ТУМАНИ",
-    //                     value: 12
-    //                   },
-    //                   {
-    //                     label: "КОМСОМОЛАБАДСКИЙ",
-    //                     value: 13
-    //                   },
-    //                   {
-    //                     label: "КУРГОНТЕПА ТУМАНИ",
-    //                     value: 14
-    //                   },
-    //                   {
-    //                     label: "МАРХАМАТ ТУМАНИ",
-    //                     value: 15
-    //                   },
-    //                   {
-    //                     label: "ОЛТИНКУЛ ТУМАНИ",
-    //                     value: 16
-    //                   },
-    //                   {
-    //                     label: "ПАХТАОБОД ТУМАНИ",
-    //                     value: 17
-    //                   },
-    //                   {
-    //                     label: "ХУЖАОБОД ТУМАНИ",
-    //                     value: 18
-    //                   },
-    //                   {
-    //                     label: "УЛУГНОР ТУМАНИ",
-    //                     value: 210
-    //                   },
-    //                   {
-    //                     label: "ШАХРИХОН ТУМАНИ",
-    //                     value: 214
-    //                   }
-    //                 ]
-    //               },
-    //               GivenPlace: 1
-    //             },
-    //             Education: 3,
-    //             PhoneList: {
-    //               items: [
-    //                 {
-    //                   Number: "+998234234234"
-    //                 }
-    //               ]
-    //             },
-    //             AddressList: {
-    //               items: [
-    //                 {
-    //                   Building: "",
-    //                   OwnershipType: null,
-    //                   HouseType: "",
-    //                   PostalCode: "",
-    //                   Region: 6,
-    //                   District: 75,
-    //                   Street: "SDF",
-    //                   Block: "",
-    //                   House: "12",
-    //                   City: "",
-    //                   Apartment: "",
-    //                   AddressType: "Адрес постоянной регистрации",
-    //                   Districts: {
-    //                     items: [
-    //                       {
-    //                         label: "НАМАНГАН ШАХРИ",
-    //                         value: 68
-    //                       },
-    //                       {
-    //                         label: "МИНГБУЛОК ТУМАНИ",
-    //                         value: 69
-    //                       },
-    //                       {
-    //                         label: "КОСОНСОЙ ТУМАНИ",
-    //                         value: 70
-    //                       },
-    //                       {
-    //                         label: "НОРИН ТУМАНИ",
-    //                         value: 71
-    //                       },
-    //                       {
-    //                         label: "ПОП ТУМАНИ",
-    //                         value: 72
-    //                       },
-    //                       {
-    //                         label: "ТУРАКУРГОН ТУМАНИ",
-    //                         value: 73
-    //                       },
-    //                       {
-    //                         label: "УЙЧИ ТУМАНИ",
-    //                         value: 74
-    //                       },
-    //                       {
-    //                         label: "УЧКУРГОН ТУМАНИ",
-    //                         value: 75
-    //                       },
-    //                       {
-    //                         label: "ЧУСТ ТУМАНИ",
-    //                         value: 76
-    //                       },
-    //                       {
-    //                         label: "ЯНГИКУРГОН ТУМАНИ",
-    //                         value: 77
-    //                       },
-    //                       {
-    //                         label: "НАМАНГАН ТУМАНИ",
-    //                         value: 78
-    //                       },
-    //                       {
-    //                         label: "ЧОРТОК ТУМАНИ",
-    //                         value: 79
-    //                       }
-    //                     ]
-    //                   }
-    //                 }
-    //               ]
-    //             },
-    //             MaritalStatus: 2,
-    //             hasChildren: true,
-    //             UnderAgeChildrenNum: 1,
-    //             Relatives: {
-    //               items: [
-    //                 {
-    //                   FirstName: "GFHGF",
-    //                   FamilyConnectionType: 2,
-    //                   LastName: "DFG",
-    //                   MiddleName: "DSG",
-    //                   BirthDate: "24.08.1989",
-    //                   LSBO: false,
-    //                   role: "",
-    //                   filial: "",
-    //                   personal_id: "",
-    //                   Document: {
-    //                     documentType: 1,
-    //                     Series: "SD",
-    //                     Number: "3422342",
-    //                     ExpirationDate: "06.09.2022",
-    //                     GivenDate: "01.09.2020",
-    //                     GUID: "",
-    //                     Country: "",
-    //                     DocLink: "",
-    //                     DocumentName: "",
-    //                     Region: 8,
-    //                     Districts: {
-    //                       items: [
-    //                         {
-    //                           label: "ТЕРМИЗ ШАХРИ",
-    //                           value: 98
-    //                         },
-    //                         {
-    //                           label: "БОЙСУН ТУМАНИ",
-    //                           value: 99
-    //                         },
-    //                         {
-    //                           label: "ДЕНОВ ТУМАНИ",
-    //                           value: 100
-    //                         },
-    //                         {
-    //                           label: "ЖАРКУРГОН ТУМАНИ",
-    //                           value: 101
-    //                         },
-    //                         {
-    //                           label: "МУЗРАБОТ ТУМАНИ",
-    //                           value: 102
-    //                         },
-    //                         {
-    //                           label: "ШЕРОБОД ТУМАНИ",
-    //                           value: 103
-    //                         },
-    //                         {
-    //                           label: "ШУРЧИ ТУМАНИ",
-    //                           value: 104
-    //                         },
-    //                         {
-    //                           label: "УЗУН ТУМАНИ",
-    //                           value: 105
-    //                         },
-    //                         {
-    //                           label: "САРИОСИЁ ТУМАНИ",
-    //                           value: 106
-    //                         },
-    //                         {
-    //                           label: "АНГОР ТУМАНИ",
-    //                           value: 107
-    //                         },
-    //                         {
-    //                           label: "КИЗИРИК ТУМАНИ",
-    //                           value: 108
-    //                         },
-    //                         {
-    //                           label: "КУМКУРГОН ТУМАНИ",
-    //                           value: 109
-    //                         },
-    //                         {
-    //                           label: "ТЕРМИЗ ТУМАНИ",
-    //                           value: 110
-    //                         },
-    //                         {
-    //                           label: "ОЛТИНСОЙ ТУМАНИ",
-    //                           value: 111
-    //                         },
-    //                         {
-    //                           label: "БАНДИХОН ТУМАНИ",
-    //                           value: 112
-    //                         }
-    //                       ]
-    //                     },
-    //                     GivenPlace: 105
-    //                   }
-    //                 }
-    //               ]
-    //             },
-    //             JobInfo: {
-    //               employerActivityType: null,
-    //               positionType: null,
-    //               INN: "",
-    //               employeesNum: 0,
-    //               employerName: "",
-    //               totalJobExperienceMonths: 0,
-    //               activeYears: 0,
-    //               position: "",
-    //               type: 4,
-    //               lastJobExperienceMonths: 0
-    //             },
-    //             MonthlyExpenses: {
-    //               recurringExpenses: 2500000,
-    //               obligations: 0
-    //             },
-    //             MonthlyIncome: {
-    //               confirmMonthlyIncome: 10000000,
-    //               hasAdditionalIncome: false,
-    //               additionalIncome: {
-    //                 incomeType: null,
-    //                 sum: 0
-    //               }
-    //             },
-    //             PropertyInformation: {
-    //               Realty_new: {
-    //                 items: []
-    //               },
-    //               Transport_new: {
-    //                 items: []
-    //               }
-    //             }
-    //           },
-    //           Guarantee: {
-    //             Insurance: {
-    //               items: [
-    //                 {
-    //                   INN: "207002342",
-    //                   OrgName: '"СК OOO ""MY-INSURANCE"""',
-    //                   Sum: 1000000000
-    //                 }
-    //               ]
-    //             },
-    //             RelatedLegalPerson: {
-    //               items: []
-    //             },
-    //             RelatedPerson: {
-    //               items: []
-    //             }
-    //           },
-    //           LoanInfo: {
-    //             LoanProduct: 1,
-    //             Sum: 10000000,
-    //             Currency: "СУМ",
-    //             RepaymentType: 1,
-    //             LoanType: null,
-    //             MinInterestRate: 24,
-    //             MaxInterestRate: 24,
-    //             MaxDefferalRepaymentPeriod: 0,
-    //             ConvenientRepaymentTerm: 3,
-    //             TermInMonth: 9,
-    //             MaxTermInMonths: 12,
-    //             MinTermInMonths: 1,
-    //             InitialPayment: 0,
-    //             MaxInitialPaymentPercent: 0,
-    //             MinInitialPaymentPercent: 0,
-    //             LoanPurpose: 261,
-    //             FundingSource: 1,
-    //             FacilitiesForRepaymentDate: false,
-    //             consumerLoan: {
-    //               nameBankProd: "",
-    //               nameService: "",
-    //               agreementDate: "",
-    //               nameProduction: "",
-    //               billProd: "",
-    //               agreementNumber: "",
-    //               idBankProd: 0
-    //             }
-    //           },
-    //           ApplicationComment: {
-    //             items: []
-    //           },
-    //           AttachedDocuments: {
-    //             items: [
-    //               {
-    //                 id: 1727,
-    //                 DocLink: "",
-    //                 DocumentName: "SDF"
-    //               }
-    //             ]
-    //           }
-    //         }
-    //       }
-    //     ]
-    //   };
-
-    //   console.log(JSON.stringify(data, null, 2));
-
-    //   try {
-    //     const response = await this.$store.dispatch(
-    //       "credits/confirmationCredit",
-    //       data
-    //     );
-    //     console.log("response", JSON.stringify(response, null, 2));
-    //     //console.log('nextTaskId', response.nextTask.id)
-
-    //     if (response) {
-    //       this.$store.commit("credits/setMessage", "Credit complete");
-    //       this.$store.commit("credits/removeTask", this.taskId);
-    //       this.$router.push("/work/credit");
-    //       //this.$router.go(-1);
-    //     }
-
-    //     this.loader = false;
-    //   } catch (error) {
-    //     this.$store.commit(
-    //       "credits/setMessage",
-    //       CommonUtils.filterServerError(error)
-    //     );
-    //     this.loader = false;
-    //   }
-    // },
+    async onFailureCredit() {
+      this.failureCredit = true
+      this.fullProfile.FinalDecision = "Отказ"
+      if (this.scoring_results) {
+        this.printFailureCredit(this.scoring_results)
+      }
+      
+      this.sentDataForm()     
+    },
 
     async getDataINPS() {
       this.bankLoading = true;
@@ -5468,7 +5206,7 @@ export default {
           },
           {
             name: "application_id",
-            data: this.profile.preapprove_num
+            data: this.preapprove_num
           },
           {
             name: "from",
@@ -5479,28 +5217,9 @@ export default {
 
       try {
         this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        if (this.dataINPS) {
-          const INPSItems = this.dataINPS.wages.items.map(i => {
-            return {
-              period: CommonUtils.dateFilter(i.period),
-              send_date: i.send_date,
-              inn: i.inn,
-              total_invoices: {
-                balance: i.total_invoices.balance,
-                percent: i.total_invoices.percent,
-                full: i.total_invoices.full
-              },
-              org_addres: i.org_addres,
-              org_name: i.org_name
-            };
-          });
-
-          this.dataINPS.wages.items = INPSItems;
-          console.log("dataINPS", this.dataINPS);
-        }
-
         this.bankLoading = false;
         this.INPSBar = true;
+        this.INPSFlag = true;
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
@@ -5515,6 +5234,11 @@ export default {
       try {
         await this.$store.dispatch("profile/dataLSBO");
         this.LSBOLoading = false;
+        this.LSBOFlag = true;
+        this.$store.commit(
+          "credits/setMessage",
+          "Данные получены"
+        );
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
@@ -5986,7 +5710,8 @@ export default {
       const comment = {
         Comment: this.creditManagerComment,
         Type: "",
-        CommentPerson: this.$store.getters["auth/username"]
+        CommentPerson: this.$store.getters["auth/username"],
+        CommentPersonFIO: this.$store.getters["auth/fullName"]
         //id: 0,
         //CommentDate: ""
       };
@@ -6037,6 +5762,7 @@ export default {
       console.log("totalGuaranteesSum", this.totalGuaranteesSum);
       this.$refs.guaranteesValid.validate();
       this.$refs.priceCredit.validate();
+      // debugger
     },
 
     givenPlaceValid(val) {
@@ -6069,28 +5795,59 @@ export default {
       return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
     },
 
+    INNFizValid(val) {
+      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
+        return true
+      }
+    },
+
+    INNYurValid(val) {
+      if (+val[0] > 1 && +val[0] < 4 && !val.match(/(?=(.))\1{8,}/)) {
+        return true
+      }
+    },
+
     pinppValid(val) {
       return !val.match(/(?=(.))\1{14,}/) || "Неверные данные";
     },
 
-    async printFile(fileData, idx) {
+    // cardNumber(val) {
+    //   console.log(val)
+    //   if (
+    //     val !== "" &&
+    //     val.length != 16  &&
+    //     !val.match(/(?=(.))\1{16,}/)
+    //   ) {
+    //     this.isValidNumCard = false;
+    //   } else {
+    //     this.isValidNumCard = true;
+    //   }
+    // },
+
+    async printFile(fileData, idx, lang = 0) {
       this.disable = true;
-      this.loadings.splice(idx, 1, true); // для ререндеринга (особенность vue)
+      if (lang == 0) {
+        fileData.loading = true
+      } else {
+        fileData.loadingUz = true
+      }
+      
       let file = null;
+      this.fileData.lang = lang;
       this.fileData.type = fileData.label;
       this.fileData.data = dataTransform(fileData.data);
       try {
         console.log(JSON.stringify(this.fileData, null, 2));
 
-        if (this.profile.fileList[idx].idFile) {
+        if (this.cacheDocId[idx]) {
           file = await this.$store.dispatch(
             "credits/getFile",
-            this.profile.fileList[idx].idFile
+            this.cacheDocId[idx]
           );
         } else {
           file = await this.$store.dispatch("credits/getFile", this.fileData);
 
-          this.profile.fileList[idx].idFile = file.id;
+          this.cacheDocId[idx] = file.id;
         }
 
         console.log("file", file);
@@ -6101,14 +5858,22 @@ export default {
         }
 
         this.disable = false;
-        this.loadings.splice(idx, 1, false);
+        if (lang == 0) {
+          fileData.loading = false
+        } else {
+          fileData.loadingUz = false
+        }
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
           CommonUtils.filterServerError(error)
         );
         this.disable = false;
-        this.loadings.splice(idx, 1, false);
+        if (lang == 0) {
+          fileData.loading = false
+        } else {
+          fileData.loadingUz = false
+        }
       }
     },
 
@@ -6328,6 +6093,10 @@ export default {
 
     .comments {
       margin-bottom: 20px;
+
+      .tab-content_title {
+        margin: 0;
+      }
     }
 
     &_title {
@@ -6579,7 +6348,7 @@ export default {
   }
 
   .fileBlock {
-    padding: 14px 0 14px 20px;
+    padding: 14px 20px;
     margin: 0;
     background: #F5F6FA;
     border-radius: 5px;
@@ -6657,6 +6426,17 @@ export default {
   .badgePeriod {
     padding: 0;
     margin-bottom: 20px;
+  }
+
+  .printWorkDoc {
+
+    .q-btn__wrapper {
+      padding: 4px;
+    }
+
+    .on-left {
+      margin-right: 0;
+    }
   }
 }
 

@@ -7,7 +7,7 @@
             <h4 class="fullFormTitle">Анкета-заявления</h4>
             <div class="row">
               <div class="col-3">Номер анкеты</div>
-              <div class="col-9">{{ profile.applicationNumber }}</div>
+              <div class="col-9">{{ applicationNumber }}</div>
               <div class="col-12 profileTitle">1. Персональные данные</div>
               <div class="col-2 fieldData">Фамилия</div>
               <div class="col-2">{{ Customer.LastName }}</div>
@@ -106,7 +106,7 @@
                 {{ Customer.BankInps }}
               </div>
 
-              <div class="col-12 profileTitle fieldData">3. Контактная информация</div>
+              <div class="col-12 profileTitle">3. Контактная информация</div>
 
               <div class="col-12 dataList">
                 <div
@@ -190,7 +190,7 @@
                 </div>
               </div>
 
-              <div class="col-12 profileTitle">6 Семейное положение</div>
+              <div class="col-12 profileTitle">6. Семейное положение</div>
               <div class="col-3 fieldData">Семейное положение</div>
               <div class="col-3">
                 <template
@@ -211,7 +211,7 @@
               <div class="col-3">{{ Customer.UnderAgeChildrenNum }}</div>
 
               <div class="col-12 profileTitle">
-                7 Родственники (обязательно указать данные супруга/супруги)
+                7. Родственники (обязательно указать данные супруга/супруги)
               </div>
               <div class="col-12 dataList">
                 <div
@@ -289,7 +289,7 @@
               <!-- Поменять структуру -->
 
               <div class="col-12 profileTitle">
-                8 Сведения по основной работе
+                8. Сведения по основной работе
               </div>
               <!-- <div class="col-3">8.1 Вид деятельности</div>
             <div class="col-9"></div> -->
@@ -376,7 +376,7 @@
               </div>
 
               <div class="col-12 profileTitle">
-                9 Сведения о ежемесячных доходах/расходах
+                9. Сведения о ежемесячных доходах/расходах
               </div>
               <div class="col-9 fieldData">Подтвержденный ежемесячный доход</div>
               <div class="col-3">
@@ -440,7 +440,7 @@
                 </template>
               </div>
 
-              <div class="col-12 profileTitle">10 Сведения об имуществе</div>
+              <div class="col-12 profileTitle">10. Сведения об имуществе</div>
               <div class="col-12 profileSubTitle">10.1 Недвижимость</div>
 
               <div class="col-12 dataList">
@@ -501,12 +501,12 @@
                   <div class="col-3 fieldData">Год выпуска</div>
                   <div class="col-3">{{ vehicle.yearOfRelease }}</div>
                   <div class="col-3 fieldData">Рыночная стоимость</div>
-                  <div class="col-3">{{ vehicle.marketValue }}</div>
+                  <div class="col-3">{{ vehicle.MarketValue }}</div>
                 </div>
               </div> 
 
               <div class="col-12 profileTitle">
-                11 Поручительство и страхование
+                11. Поручительство и страхование
               </div>
               <!-- <div class="col-12 profileSubTitle">11.1 Поручительство</div>
             <div class="col-3">Вид поручителя</div>
@@ -566,7 +566,7 @@
                       
                     </div>
 
-                    <div class="col-12 dataBlock">Данные о документе:</div>
+                    <!-- <div class="col-12 dataBlock">Данные о документе:</div> -->
 
                     <div class="col-2 fieldData">Вид документа</div>
                     <div class="col-2">
@@ -611,17 +611,17 @@
                       }}
                     </div>
 
-                    <div class="col-3 fieldData">Номер карты</div>
+                    <!-- <div class="col-3 fieldData">Номер карты</div>
                     <div class="col-3">
                       {{ guarantee.CardNumber }}
-                    </div>
+                    </div> -->
 
                     <div class="col-3 fieldData">Номер карты поручителя</div>
                     <div class="col-3">
                       {{ guarantee.BankInps }}
                     </div>
 
-                    <div class="col-12 dataBlock">Адрес:</div>
+                    <!-- <div class="col-12 dataBlock">Адрес:</div> -->
                     <!-- <div class="col-3">Индекс</div>
                     <div class="col-9">{{ guarantee.Address.PostalCode }}</div> -->
                     <div class="col-2 fieldData">Регион/область</div>
@@ -648,7 +648,7 @@
                     <div class="col-2 fieldData">Сумма поручительства</div>
                     <div class="col-2">{{ guarantee.Sum }}</div>
 
-                    <div class="col-12 dataBlock">Контактная информация:</div>
+                    <!-- <d iv class="col-12 dataBlock">Контактная информация:</div> -->
                     <div class="col-12 dataList">
                       <div
                         class="row"
@@ -681,9 +681,14 @@
                     <div class="col-2 fieldData">Отчество</div>
                     <div class="col-2">{{ guarantee.CEOMiddleName }}</div>
 
-                    <div class="col-4 fieldData">Наименование организации</div>
-                    <div class="col-8">{{ guarantee.Name }}</div>
-                    <div class="col-12 dataBlock">Адрес:</div>
+                    <div class="col-3 fieldData">Наименование организации</div>
+                    <div class="col-5">{{ guarantee.Name }}</div>
+
+                    <div class="col-1 fieldData">ИНН</div>
+                    <div class="col-3">{{ guarantee.INN }}</div>
+
+                    <!-- <div class="col-12 dataBlock">Адрес:</div> -->
+
                     <!-- <div class="col-3">Индекс</div>
                     <div class="col-9">{{ guarantee.Address.PostalCode }}</div> -->
                     <div class="col-3 fieldData">Регион/ область</div>
@@ -707,7 +712,8 @@
                     <div class="col-3 fieldData">Сумма поручительства</div>
                     <div class="col-9">{{ guarantee.Sum }}</div>
 
-                    <div class="col-12 dataBlock">Контактная информация:</div>
+                    <!-- <div class="col-12 dataBlock">Контактная информация:</div> -->
+
                     <div class="col-12 dataList">
                       <div
                         class="row"
@@ -973,7 +979,7 @@
               <div class="col-6">
                 Должность кредитного специалиста
               </div>
-              <div class="col-6">{{ profile.userrole }}</div>
+              <div class="col-6">{{ userrole }}</div>
               <div class="col-6">
                 Подпись работника банка
               </div>
@@ -1036,7 +1042,31 @@ export default {
         Customer: state => state.profile.fullFormProfile.Customer,
         dictionaries: state => state.profile.dictionaries,
         credits: state => state.credits
-      })
+      }),
+
+    // номер заявки печатная форма
+    applicationNumber() {
+      const applicationNumber = this.profile.BPMInput.find(
+              i => i.label === "process_info_fullApp"
+            )
+
+      const applicationNumberWorkDocs = this.profile.BPMInput.find(
+              i => i.label === "processInfo"
+            )
+      
+      return applicationNumber 
+              ? applicationNumber.data.applicationNumber 
+              : applicationNumberWorkDocs.data.applicationNumber 
+    },
+    
+    // должность
+    userrole() {
+      const userrole = this.profile.BPMInput.find(
+              i => i.label === "userrole"
+            );
+    
+      return userrole ? userrole.data : null
+    }
   },
   methods: {
     callPrint(strid) {

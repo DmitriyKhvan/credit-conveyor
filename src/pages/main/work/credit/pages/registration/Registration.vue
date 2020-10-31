@@ -39,8 +39,8 @@
                       :disable="disableInput"
                       label="Фамилия"
                       :rules="[
-                        val => (val && val.length > 1) || 'Введите фамилию',
-                        val => fioValid(val)
+                        (val) => (val && val.length > 1) || 'Введите фамилию',
+                        (val) => fioValid(val),
                       ]"
                     />
 
@@ -53,8 +53,8 @@
                       :disable="disableInput"
                       label="Имя"
                       :rules="[
-                        val => (val && val.length > 3) || 'Введите имя',
-                        val => fioValid(val)
+                        (val) => (val && val.length > 3) || 'Введите имя',
+                        (val) => fioValid(val),
                       ]"
                     />
 
@@ -67,9 +67,9 @@
                       :disable="disableInput"
                       label="Отчество"
                       :rules="[
-                        val => !!val || 'Введите отчество',
+                        (val) => !!val || 'Введите отчество',
 
-                        val => mValid(val)
+                        (val) => mValid(val),
                       ]"
                     />
 
@@ -82,12 +82,42 @@
                       label="ИНН"
                       mask="#########"
                       :rules="[
-                        val =>
+                        (val) =>
                           (val && val.length == 9) ||
                           'Количество символов должно быт ровно 9',
-                        val => !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
+                        (val) => INNFizValid(val) || 'Неверные данные',
                       ]"
                     />
+
+                    <q-input
+                      ref="birthday"
+                      outlined
+                      dense
+                      label="Дата рождения"
+                      v-model="personalData.birthDate"
+                      mask="##.##.####"
+                      :rules="[
+                        (val) =>
+                          (val && val.length === 10) || 'Введите дату рождения',
+                        (val) => adulthoodValid(val) || 'Несовершеннолетний',
+                      ]"
+                    >
+                      <template v-slot:append>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy
+                            transition-show="scale"
+                            transition-hide="scale"
+                            ref="qDateBirthday"
+                          >
+                            <q-date
+                              mask="DD.MM.YYYY"
+                              v-model="personalData.birthDate"
+                              @input="() => $refs.qDateBirthday.hide()"
+                            />
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
                   </div>
                   <div class="col-6">
                     <q-input
@@ -98,11 +128,11 @@
                       label="Тел. номер"
                       mask="+############"
                       :rules="[
-                        val =>
+                        (val) =>
                           (val && val.length === 13) ||
                           'Введите номер телефона',
-                        val =>
-                          !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные'
+                        (val) =>
+                          !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные',
                       ]"
                     />
 
@@ -116,8 +146,9 @@
                       label="ПИНФЛ"
                       mask="##############"
                       :rules="[
-                        val => (val && val.length === 14) || 'Введите ПНФЛ',
-                        val => !val.match(/(?=(.))\1{14,}/) || 'Неверные данные'
+                        (val) => (val && val.length === 14) || 'Введите ПНФЛ',
+                        (val) =>
+                          !val.match(/(?=(.))\1{14,}/) || 'Неверные данные',
                       ]"
                     />
 
@@ -131,12 +162,25 @@
                       label="Серия номер паспорта"
                       mask="AA#######"
                       :rules="[
-                        val =>
+                        (val) =>
                           (val && val.length === 9) ||
                           'Введите Серию и номер паспорта',
-                        val => !val.match(/(?=(.))\1{7,}/) || 'Неверные данные'
+                        (val) =>
+                          !val.match(/(?=(.))\1{7,}/) || 'Неверные данные',
                       ]"
                     />
+
+                    <!-- Проверить клиента -->
+                    <!-- <q-btn
+                      :loading="loadingGCI"
+                      label="Проверить клиента"
+                      @click="checkClient"
+                      class="full-width digIdBtn"
+                    >
+                      <template v-slot:loading>
+                        <q-spinner-facebook />
+                      </template>
+                    </q-btn> -->
 
                     <!-- Preloader auto compleate -->
                     <appLoader v-if="loader" />
@@ -160,7 +204,7 @@
                       label="Семейное положения"
                       emit-value
                       map-options
-                      :rules="[val => !!val || 'Выберите семейное положение']"
+                      :rules="[(val) => !!val || 'Выберите семейное положение']"
                     />
                     <q-select
                       outlined
@@ -181,7 +225,7 @@
                       dense
                       label="Количество детей до 18 лет"
                       :rules="[
-                        val => (val && val > 0) || 'Введите количество детей'
+                        (val) => (val && val > 0) || 'Введите количество детей',
                       ]"
                     />
                   </div>
@@ -205,13 +249,15 @@
                         label="Кредитный продукт"
                         emit-value
                         map-options
-                        :rules="[val => !!val || 'Выберите кредитный продукт']"
+                        :rules="[
+                          (val) => !!val || 'Выберите кредитный продукт',
+                        ]"
                       />
 
                       <q-select
                         v-if="
                           !!personalData.typeCredit &&
-                            personalData.typeCredit != 3
+                          personalData.typeCredit != 1095
                         "
                         ref="typeStepCredit"
                         outlined
@@ -222,7 +268,7 @@
                         emit-value
                         map-options
                         :rules="[
-                          val => !!val || 'Выберите тип графика гашения'
+                          (val) => !!val || 'Выберите тип графика гашения',
                         ]"
                       />
 
@@ -236,11 +282,11 @@
                           dense
                           label="Срок кредита"
                           :rules="[
-                            val => !!val || 'Выберите срок кредита',
-                            val =>
+                            (val) => !!val || 'Выберите срок кредита',
+                            (val) =>
                               (val <= periodCreditMax &&
                                 val >= periodCreditMin) ||
-                              `Срок кредита между ${periodCreditMin} - ${periodCreditMax} мес.`
+                              `Срок кредита между ${periodCreditMin} - ${periodCreditMax} мес.`,
                           ]"
                         />
                         <div class="slider">
@@ -299,8 +345,8 @@
                         dense
                         label="Подтвержденный ежемесячный доход"
                         :rules="[
-                          val => !!val || 'Поле должно быть заполнено',
-                          val => val != 0 || 'Некорректные данные'
+                          (val) => !!val || 'Поле должно быть заполнено',
+                          (val) => val != 0 || 'Некорректные данные',
                         ]"
                       />
 
@@ -323,8 +369,8 @@
                         dense
                         label="Периодические расходы (коммунальные расходы, налоги и др.)"
                         :rules="[
-                          val => !!val || 'Поле должно быть заполнено',
-                          val => val != 0 || 'Некорректные данные'
+                          (val) => !!val || 'Поле должно быть заполнено',
+                          (val) => val != 0 || 'Некорректные данные',
                         ]"
                       />
                     </div>
@@ -353,7 +399,9 @@
                         label="Источник дополнительного дохода"
                         emit-value
                         map-options
-                        :rules="[val => !!val || 'Поле должно быть заполнено']"
+                        :rules="[
+                          (val) => !!val || 'Поле должно быть заполнено',
+                        ]"
                       />
                     </div>
                     <div class="col-6">
@@ -366,8 +414,8 @@
                         dense
                         label="Размер дополнительного дохода"
                         :rules="[
-                          val => !!val || 'Поле должно быть заполнено',
-                          val => val != 0 || 'Некорректные данные'
+                          (val) => !!val || 'Поле должно быть заполнено',
+                          (val) => val != 0 || 'Некорректные данные',
                         ]"
                       />
                     </div>
@@ -385,7 +433,9 @@
                         label="Цель кредитования"
                         emit-value
                         map-options
-                        :rules="[val => !!val || 'Выберите цель кредитования']"
+                        :rules="[
+                          (val) => !!val || 'Выберите цель кредитования',
+                        ]"
                       />
                     </div>
                   </div>
@@ -400,13 +450,13 @@
         </div>
       </form>
 
-      <appLoaderFullScreen v-if="loaderFullScreen"/>
+      <appLoaderFullScreen v-if="loaderFullScreen" />
       <!-- Pre-Approval -->
       <appPreApproval
         v-else-if="confirm"
         :confirm="confirm"
-        @toggleLoaderFullScreen="$event => (loaderFullScreen = $event)"
-        @toggleLoaderForm="$event => (loaderForm = $event)"
+        @toggleLoaderFullScreen="($event) => (loaderFullScreen = $event)"
+        @toggleLoaderForm="($event) => (loaderForm = $event)"
       />
     </div>
   </div>
@@ -427,6 +477,7 @@ import { validItems } from "../../filters/valid_filter";
 export default {
   data() {
     return {
+      loadingGCI: false,
       loan_product_dict: null,
       loanproduct_loancode: null, // цель кредитования
       periodCreditMin: null,
@@ -447,8 +498,8 @@ export default {
         typeStepCredits: [],
 
         // цель кредитования
-        loanPurpose: []
-      }
+        loanPurpose: [],
+      },
     };
   },
   async created() {
@@ -531,17 +582,17 @@ export default {
   },
   computed: {
     ...mapState({
-      loadMessage: state => state.credits.loadMessage,
-      disableInput: state => state.credits.disableInput,
-      scannerSerialNumber: state => state.credits.scannerSerialNumber,
-      personalData: state => state.credits.personalData,
-      taskIdPreapp: state => state.credits.taskId,
-      credits: state => state.credits
+      loadMessage: (state) => state.credits.loadMessage,
+      disableInput: (state) => state.credits.disableInput,
+      scannerSerialNumber: (state) => state.credits.scannerSerialNumber,
+      personalData: (state) => state.credits.personalData,
+      taskIdPreapp: (state) => state.credits.taskId,
+      credits: (state) => state.credits,
     }),
 
     taskId() {
       return this.$route.query.taskId;
-    }
+    },
   },
   watch: {
     "personalData.children"(status) {
@@ -568,14 +619,15 @@ export default {
       // this.personalData[item] = this.personalData[item].replace(/[^0-9]/gim,'')
       // console.log('number', number)
       // this.personalData[item] = formatNumber((this.personalData[item]).replace(/\s+/g, ''))
-      this.personalData[item] = formatNumber(this.personalData[item])
+      this.personalData[item] = formatNumber(this.personalData[item]);
     },
 
     async onSubmit() {
-      console.log("preapp", this.personalData)
+      console.log("preapp", this.personalData);
       this.$refs.surname.validate();
       this.$refs.name.validate();
       this.$refs.mname.validate();
+      this.$refs.birthday.validate();
       this.$refs.inn.validate();
       this.$refs.phone.validate();
       this.$refs.pinpp.validate();
@@ -583,7 +635,10 @@ export default {
 
       this.$refs.typeCredit.validate();
 
-      if (!!this.personalData.typeCredit && this.personalData.typeCredit != 3) {
+      if (
+        !!this.personalData.typeCredit &&
+        this.personalData.typeCredit != 1095
+      ) {
         this.$refs.typeStepCredit.validate();
         this.$refs.periodCredit.validate();
       } else {
@@ -621,6 +676,7 @@ export default {
         this.$refs.surname.hasError ||
         this.$refs.name.hasError ||
         this.$refs.mname.hasError ||
+        this.$refs.birthday.hasError ||
         this.$refs.inn.hasError ||
         this.$refs.phone.hasError ||
         this.$refs.pinpp.hasError ||
@@ -658,7 +714,7 @@ export default {
           passport,
           birthDate,
           gender,
-          givenDate, 
+          givenDate,
           expDate,
           phone,
           inn,
@@ -667,7 +723,7 @@ export default {
           loanRate,
           ProductMaxSum,
           spouseCost,
-          childCost
+          childCost,
         } = this.personalData;
 
         const data = {
@@ -677,22 +733,28 @@ export default {
               data: {
                 maritalInfo: {
                   childrens: children,
-                  status: this.options.family.find(i => i.value == familyStatus)
-                    ? this.options.family.find(i => i.value == familyStatus)
+                  status: this.options.family.find(
+                    (i) => i.value == familyStatus
+                  )
+                    ? this.options.family.find((i) => i.value == familyStatus)
                         .label
                     : "",
                   statusId: Number(familyStatus),
-                  childrenCount: Number(childrenCount)
+                  childrenCount: Number(childrenCount),
                 },
                 //payment_id: Number(typeStepCredit),
                 loan_product_id: Number(typeCredit),
                 finance: {
                   loan_purpose, // цель кредитования
-                  incomingOther: Number(String(externalIncomeSize).replace(/[^0-9]/gim,'')), //доп. доход
-                  expensesOther: Number(String(otherExpenses).replace(/[^0-9]/gim,'')), //др. переод. расходы
-                  expensesPeriodic: Number(expense.replace(/[^0-9]/gim,'')), //переод. расходы
-                  incomingConfirm: Number(income.replace(/[^0-9]/gim,'')), //ежем. доход
-                  incomeType: additionalIncomeSource //тип доп. дохода
+                  incomingOther: Number(
+                    String(externalIncomeSize).replace(/[^0-9]/gim, "")
+                  ), //доп. доход
+                  expensesOther: Number(
+                    String(otherExpenses).replace(/[^0-9]/gim, "")
+                  ), //др. переод. расходы
+                  expensesPeriodic: Number(expense.replace(/[^0-9]/gim, "")), //переод. расходы
+                  incomingConfirm: Number(income.replace(/[^0-9]/gim, "")), //ежем. доход
+                  incomeType: additionalIncomeSource, //тип доп. дохода
                 },
                 customer: {
                   firstName: name,
@@ -708,9 +770,9 @@ export default {
                   },
                   mainPhone: phone.replace(/[\s()]/g, ""),
                   tin: inn,
-                  pinpp
-                }
-              }
+                  pinpp,
+                },
+              },
             },
             {
               name: "creditProduct",
@@ -720,10 +782,10 @@ export default {
                 childCost: Number(childCost),
                 creditTerm: Number(periodCredit),
                 loanRate: Number(loanRate),
-                ProductMaxSum: Number(ProductMaxSum)
-              }
-            }
-          ]
+                ProductMaxSum: Number(ProductMaxSum),
+              },
+            },
+          ],
         };
 
         console.log(JSON.stringify(data, null, 2));
@@ -737,13 +799,13 @@ export default {
           console.log("response", response);
           if (response) {
             const preApproval = response.nextTask.input.find(
-              i => i.label == "preApproval"
+              (i) => i.label == "preApproval"
             ).data;
             this.credits.infoList = response.nextTask.input.find(
-              i => i.label == "InfoList"
+              (i) => i.label == "InfoList"
             ).data; // печатные формы
             this.credits.reasonsList = response.nextTask.input.find(
-              i => i.label == "reasons_list"
+              (i) => i.label == "reasons_list"
             ).data.items;
 
             this.confirm = true;
@@ -764,86 +826,45 @@ export default {
       }
     },
 
-    // async onSubmit() {
+    // async checkClient() {
+    //   this.loadingGCI = true;
     //   const data = {
-    //     output: [
+    //     input: [
     //       {
-    //         name: "preApp",
-    //         data: {
-    //           maritalInfo: {
-    //             childrens: true,
-    //             status: "женат/замужем",
-    //             statusId: 2,
-    //             childrenCount: 1
-    //           },
-    //           loan_product_id: 1,
-    //           finance: {
-    //             loan_purpose: 261,
-    //             incomingOther: 0,
-    //             expensesOther: 0,
-    //             expensesPeriodic: 2000000,
-    //             incomingConfirm: 10000000,
-    //             incomeType: ""
-    //           },
-    //           customer: {
-    //             firstName: "DFGDG",
-    //             lastName: "SDF",
-    //             middleName: "DFGDFG",
-    //             passport: {
-    //               number: "3242333",
-    //               series: "DS"
-    //             },
-    //             mainPhone: "+998234234234",
-    //             tin: "234243242",
-    //             pinpp: "23423444444233"
-    //           }
-    //         }
+    //         name: "method",
+    //         data: "GetCustomer"
     //       },
     //       {
-    //         name: "creditProduct",
+    //         name: "client",
     //         data: {
-    //           repaymentType: 1,
-    //           spouseCost: 300000,
-    //           childCost: 200000,
-    //           creditTerm: 9,
-    //           loanRate: 24
+    //           docType: "6",
+    //           series: this.personalData.passport.slice(0,2),
+    //           number: this.personalData.passport.slice(2),
+    //           tin: this.personalData.inn,
+    //           pnfl: this.personalData.pinpp,
+    //           birthDate: this.personalData.birthDate,
+    //           branch: ""
     //         }
     //       }
     //     ]
-    //   };
-
+    //   }
     //   try {
-    //     const response = await this.$store.dispatch(
-    //       "credits/confirmationCredit",
-    //       data
-    //     );
-
-    //     console.log("response", response);
-    //     if (response) {
-    //       const preApproval = response.nextTask.input.find(
-    //         i => i.label == "preApproval"
-    //       ).data;
-    //       this.credits.infoList = response.nextTask.input.find(
-    //         i => i.label == "InfoList"
-    //       ).data; // печатные формы
-    //       this.credits.reasonsList = response.nextTask.input.find(
-    //         i => i.label == "reasons_list"
-    //       ).data.items;
-
-    //       this.confirm = true;
-    //       this.$store.commit("credits/creditConfirm", preApproval);
+    //     if (
+    //       !this.personalData.passport &&
+    //       !this.personalData.inn &&
+    //       !this.personalData.pinpp &&
+    //       !this.personalData.birthDate
+    //     ) {
+    //       throw "Заполните персональные данные клиента";
     //     }
-
-    //     this.loaderFullScreen = false;
+    //     await this.$store.dispatch("credits/checkClient", data);
+    //     this.loadingGCI = false;
     //   } catch (error) {
     //     this.$store.commit(
     //       "credits/setMessage",
     //       CommonUtils.filterServerError(error)
     //     );
-    //     this.loaderFullScreen = false;
-    //     setTimeout(() => {
-    //       localStorage.removeItem(this.taskIdPreapp);
-    //     }, 1000);
+    //     this.loadingGCI = false;
     //   }
     // },
 
@@ -864,33 +885,33 @@ export default {
       console.log("creditIddd", creditId);
       if (creditId) {
         const { Loan_dict } = this.loan_product_dict.find(
-          i => i.id === creditId
+          (i) => i.id === creditId
         );
         this.options.loanPurpose = this.loanproduct_loancode[
           creditId
-        ].items.map(i => {
+        ].items.map((i) => {
           return {
             label: i.label,
-            value: Number(i.value)
+            value: Number(i.value),
           };
         });
 
         console.log(this.loanproduct_loancode[creditId]);
         this.personalData.loanRate = Loan_dict.loan_rate_base;
         this.personalData.ProductMaxSum = Loan_dict.productMaxSum;
-        this.options.typeStepCredits = Loan_dict.payment_type.items.map(i => {
+        this.options.typeStepCredits = Loan_dict.payment_type.items.map((i) => {
           return {
             label: i.label,
-            value: Number(i.value)
+            value: Number(i.value),
           };
         });
 
         this.periodCreditMin = Number(
-          Loan_dict.terms_list.items.find(i => i.label === "min").value
+          Loan_dict.terms_list.items.find((i) => i.label === "min").value
         );
 
         this.periodCreditMax = Number(
-          Loan_dict.terms_list.items.find(i => i.label === "max").value
+          Loan_dict.terms_list.items.find((i) => i.label === "max").value
         );
 
         this.personalData.periodCredit = this.periodCreditMin;
@@ -899,10 +920,10 @@ export default {
 
     getPreapprovData(preAppData) {
       this.personalData.spouseCost = preAppData.find(
-        i => i.label == "spouseCost"
+        (i) => i.label == "spouseCost"
       ).data;
       this.personalData.childCost = preAppData.find(
-        i => i.label == "childCost"
+        (i) => i.label == "childCost"
       ).data;
 
       this.options.family = this.transformData(preAppData, "maritalStatus");
@@ -920,27 +941,29 @@ export default {
       );
 
       this.loan_product_dict = preAppData.find(
-        i => i.label == "loan_product_dict"
+        (i) => i.label == "loan_product_dict"
       ).data.items;
 
       this.loanproduct_loancode = preAppData.find(
-        i => i.label == "loanproduct_loancode"
+        (i) => i.label == "loanproduct_loancode"
       ).data.items[0];
     },
 
     transformData(preAppData, labelData) {
       return preAppData
-        .find(i => i.label == labelData)
-        .data.items.map(i => {
+        .find((i) => i.label == labelData)
+        .data.items.map((i) => {
           return {
             label: i.label,
-            value: Number(i.value)
+            value: Number(i.value),
           };
         });
     },
 
     fioValid(val) {
-      return val.match(/^[A-Z'`]+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
+      return (
+        val.match(/^[A-Z'`]+$/) || "Введите на латинице заглавными буквами"
+      ); // только латинские буквы
     },
 
     mValid(val) {
@@ -948,14 +971,38 @@ export default {
         val.match(/^([A-Z'`]+\s)*[A-Z'`]+$/) ||
         "Введите на латинице заглавными буквами"
       ); // только латинские буквы
-    }
+    },
+
+    msecond(val) {
+      return new Date(val.slice(-4) + val.slice(2, 6) + val.slice(0, 2));
+    },
+
+    adulthoodValid(date) {
+      return (
+        (this.msecond(CommonUtils.dateFilter(new Date())) -
+          this.msecond(date) -
+          432000000) /
+          1000 /
+          60 /
+          60 /
+          24 /
+          365 >
+        18
+      ); // с учетом высокосных годов (4)
+    },
+
+    INNFizValid(val) {
+      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
+        return true;
+      }
+    },
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
     appLoader: Loader,
-    appLoaderFullScreen: LoaderFullScreen
-  }
+    appLoaderFullScreen: LoaderFullScreen,
+  },
 };
 </script>
 

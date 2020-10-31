@@ -7,22 +7,38 @@
       transition-show="scale"
       transition-hide="scale"
     >
-      <q-card class="cardBlock q-pa-md" style="width: 820px; max-width: 80vw;">
-        <q-card-section>
+      <q-card
+        class="cardBlock OpenSans q-pa-md"
+        style="width: 820px; max-width: 80vw; background: #f9f9f9"
+      >
+        <!-- <q-card-section>
           <div class="row justify-between">
-            <strong>{{ doc.description }}</strong>
+            <strong>{{ formatString(doc.description) }}</strong>
             <q-space />
             <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
           </div>
-        </q-card-section>
+        </q-card-section>-->
         <q-card-section>
           <div class="row">
             <div class="col title">
-              <!-- <div class="row q-pb-md">
+              <div class="row q-pb-md">
                 <div class="col">
-                  <strong>{{doc.description}}</strong>
+                  <strong>{{ doc.description }}</strong>
                 </div>
-              </div>-->
+              </div>
+              <div class="col column">
+                <div class="row">
+                  <span
+                    class="text-grey-6"
+                    style="min-width: 100px; font-size: 14px;"
+                  >Организация:&nbsp;</span>
+                  <i style="font-size: 14px;">{{doc.organ ? doc.organ : 'неизвестный'}}</i>
+                </div>
+                <div class="row">
+                  <span class="text-grey-6" style="min-width: 100px; font-size: 14px;">Откуда:&nbsp;</span>
+                  <i style="font-size: 14px;">{{ doc.fio ? doc.fio : 'неизвестный'}}</i>
+                </div>
+              </div>
               <div class="row q-py-md desp">
                 <div class="col">
                   <div class="row justify-center files">
@@ -36,10 +52,7 @@
                       <div class="q-px-sm">Скачать</div>
                     </div>
                     <div class="col flexBlock">
-                      <div class="pad-3">
-                        <img src="@/assets/icons/Print.svg" />
-                      </div>
-                      <div class="q-px-sm">Печать</div>
+                      <appPrintFile :doc="doc" label="Печать" />
                     </div>
                   </div>
                 </div>
@@ -58,14 +71,15 @@
                         {{ doc.out_number }}
                       </div>
                     </div>
+
                     <div class="col flexBlock">
                       <div class="self-center">
                         <img src="@/assets/icons/Calendar.svg" />
                       </div>
                       <div class="q-px-sm lineH">
-                        <b>Дата создания:</b>
+                        <b>Исходящий дата:</b>
                         <br />
-                        {{ dateFormat(doc.created_at) }}
+                        {{ doc.out_date }}
                       </div>
                     </div>
                   </div>
@@ -76,20 +90,6 @@
                 <div class="col">
                   <div class="row">
                     <div class="col flexBlock">
-                      <div class="self-center q-pl-xs">
-                        <img src="@/assets/icons/file.svg" />
-                      </div>
-                      <div class="col q-px-sm lineH">
-                        <b>Документ:</b>
-                        <div class="row">
-                          <div class="col">{{ doc.file.name }}</div>
-                          <div class="col q-px-sm">
-                            <i>{{ fileSize(doc.file.file_size) }}</i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col flexBlock">
                       <div class="self-center">
                         <img src="@/assets/icons/Enter.svg" />
                       </div>
@@ -97,6 +97,17 @@
                         <b>Входящий номер:</b>
                         <br />
                         {{ doc.in_number }}
+                      </div>
+                    </div>
+
+                    <div class="col flexBlock">
+                      <div class="self-center">
+                        <img src="@/assets/icons/Calendar.svg" />
+                      </div>
+                      <div class="q-px-sm lineH">
+                        <b>Входящий дата:</b>
+                        <br />
+                        {{ doc.in_date }}
                       </div>
                     </div>
                   </div>
@@ -116,11 +127,19 @@
             </div>
             <div class="col-6 q-pl-md rightBlock">
               <div class="row">
-                <div class="col q-pb-xs">Изменить статус:</div>
+                <div class="col q-pb-xs">Добавить исполнителя</div>
               </div>
               <div class="row">
                 <div class="col q-pb-md">
-                  <q-input standout v-model="searchUser" label="Исполнитель" @input="selUsers">
+                  <q-input
+                    borderless
+                    dense
+                    v-model="searchUser"
+                    style="border: .5px solid #e1e1e1; border-radius: 4px; background: #fff;"
+                    class="q-px-sm"
+                    label="Исполнитель"
+                    @input="selUsers"
+                  >
                     <template v-slot:append>
                       <q-icon name="search" />
                     </template>
@@ -132,8 +151,8 @@
                 <div class="col q-pb-md q-pt-sm q-px-md q-mb-sm users">
                   <div v-for="u in result" :key="u.EMP_ID" @click="selectedUser(u)">
                     <span>
-                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
-                      {{ u.MIDDLE_NAME[0] }}.
+                      {{ decode(u.LAST_NAME) }} {{ decode(u.FIRST_NAME[0]) }}.
+                      {{ decode(u.MIDDLE_NAME[0]) }}.
                     </span>
                   </div>
                 </div>
@@ -143,32 +162,38 @@
                 <div class="col q-pb-xs">Выберите главного исполнителя</div>
               </div>
 
-              <div class="row" v-if="workers.length !== 0">
-                <div class="col q-pb-md q-pt-sm q-px-md users">
+              <div class="row">
+                <div v-if="workers.length !== 0" class="col q-mb-md q-pb-md q-pt-xs q-px-sm users">
                   <div
                     v-for="u in workers"
                     :key="u.EMP_ID"
                     :class="activeWorker === u.EMP_ID ? 'active' : ''"
                   >
                     <span @click="selectActiveWorker(u.EMP_ID)">
-                      {{ u.LAST_NAME }} {{ u.FIRST_NAME[0] }}.
-                      {{ u.MIDDLE_NAME[0] }}.
+                      {{ decode(u.LAST_NAME) }} {{ decode(u.FIRST_NAME[0]) }}.
+                      {{ decode(u.MIDDLE_NAME[0]) }}.
                     </span>
                     <q-icon name="close" size="xs" class="icon_btn" @click="removeUser(u.EMP_ID)" />
                   </div>
                 </div>
+                <div v-else class="col q-mb-md q-pb-md q-pt-xs q-px-sm users">
+                  <p class="text-grey-7 q-pt-sm">Главный исполнитель</p>
+                </div>
               </div>
 
               <div class="row">
-                <div class="col q-pb-xs q-pt-md">Выберите руководителя</div>
+                <div class="col q-pb-xs q-pt-xs">Выберите руководителя</div>
               </div>
               <div class="row">
-                <div class="col q-pb-md">
+                <div class="col q-mb-md bg-white">
                   <q-select
-                    filled
+                    borderless
+                    dense
                     v-model="superior"
                     :options="superiorsList"
                     label="Руководитель"
+                    class="rounded-borders q-px-sm"
+                    style="border: 0.5px solid #e1e1e1"
                   />
                 </div>
               </div>
@@ -177,8 +202,16 @@
                 <div class="col q-pb-xs">Выберите шаблон</div>
               </div>
               <div class="row">
-                <div class="col q-pb-md">
-                  <q-select filled v-model="shablon" :options="shablons" label="Шаблон" />
+                <div class="col q-mb-md bg-white">
+                  <q-select
+                    borderless
+                    v-model="shablon"
+                    :options="shablons"
+                    dense
+                    label="Шаблон"
+                    class="rounded-borders q-px-sm"
+                    style="border: 0.5px solid #e1e1e1"
+                  />
                 </div>
               </div>
             </div>
@@ -206,7 +239,10 @@
 import { mapState, mapGetters } from "vuex";
 import NotifyService from "@/services/notify.service";
 import { required, minLength } from "vuelidate/lib/validators";
+import PrintFile from "./PrintFile";
 import { formatFileSize, downloadFile, getMimeType } from "@/shared/utils/file";
+import CommonUtils from "@/shared/utils/CommonUtils";
+import { stringTruncate } from "@/shared/utils/common";
 
 export default {
   props: {
@@ -290,6 +326,9 @@ export default {
     }
   },
   methods: {
+    decode(param) {
+      return CommonUtils.decoder(param);
+    },
     saveForm() {
       const arr = [];
       this.workers.forEach(user => {
@@ -376,7 +415,9 @@ export default {
       let extention = getMimeType(this.doc.file.extension);
       downloadFile(this.doc.file.id, this.doc.file.name, extention);
     },
-
+    formatString(text) {
+      return stringTruncate(text, 60);
+    },
     // !!! Don't change
     show() {
       this.$refs.dialog.show();
@@ -395,7 +436,7 @@ export default {
     onCancelClick() {
       this.$q
         .dialog({
-          title: "Confirm",
+          title: "Подтвердить",
           message: this.$t("messages.confirm_exit"),
           cancel: true,
           persistent: true
@@ -407,13 +448,17 @@ export default {
           // console.log('>>>> Cancel')
         });
     }
+  },
+  components: {
+    appPrintFile: PrintFile
   }
 };
 </script>
 <style scoped>
 .users {
-  background: #f8f8f8;
+  background: #ffffff;
   border-radius: 5px;
+  border: 0.5px solid #e1e1e1;
 }
 
 .files {
@@ -504,5 +549,13 @@ export default {
 <style>
 .custom_btn div {
   text-transform: none;
+}
+@font-face {
+  font-family: "OpenSans";
+  src: url("~assets/fonts/OpenSans-Regular.ttf") format(truetype);
+}
+.OpenSans {
+  font-family: "OpenSans";
+  font-weight: 500;
 }
 </style>

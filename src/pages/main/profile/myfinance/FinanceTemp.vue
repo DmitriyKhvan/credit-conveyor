@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md fontb greyf">
+  <div class="q-ma-lg OpenSans greyf">
     <div class="row justify-between">
       <div class="text-h4 blackf text-weight-bolder">Поступления</div>
       <div class="raw bg-white shadow-4" style="border-radius: 5px;">
@@ -52,7 +52,7 @@
                     anchor="top middle"
                     self="bottom middle"
                     :offset="[10, 10]"
-                  >сумма: {{formatNum(b)}}</q-tooltip>
+                  >сумма: {{formatNum(b ? b : 0)}}</q-tooltip>
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@
           >{{allMonthData.sections[0].title}}</q-item-label>
           <q-item-label class="text-h5 q-pt-sm q-pb-md">{{formatNum(allMonthData.sections[0].summ)}}</q-item-label>
           <div class="raw">
-            <q-avatar size="20px" color="green" text-color="white" icon="arrow_upward" />
+            <q-avatar size="20px" color="green" text-color="white" icon="arrow_upward" class="rotate-45" />
             <q-item-label class="text-green q-ml-sm">0.22%</q-item-label>
           </div>
         </q-item>
@@ -111,7 +111,7 @@
                     anchor="top middle"
                     self="bottom middle"
                     :offset="[10, 10]"
-                  >сумма: {{formatNum(b)}}</q-tooltip>
+                  >сумма: {{formatNum(b ? b : 0)}}</q-tooltip>
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@
             class="text-h5 q-pt-sm q-pb-md"
           >{{ formatNum(allMonthData.sections[1].summ) }}</q-item-label>
           <div class="raw">
-            <q-avatar size="20px" color="green" text-color="white" icon="arrow_upward" />
+            <q-avatar size="20px" color="green" text-color="white" icon="arrow_upward" class="rotate-45" />
             <q-item-label class="text-green q-ml-sm">5.16%</q-item-label>
           </div>
         </q-item>
@@ -172,7 +172,7 @@
                     anchor="top middle"
                     self="bottom middle"
                     :offset="[10, 10]"
-                  >сумма: {{formatNum(b)}}</q-tooltip>
+                  >сумма: {{formatNum(b ? b : 0)}}</q-tooltip>
                 </div>
               </div>
             </div>
@@ -186,7 +186,7 @@
             class="text-h5 q-pt-sm q-pb-md"
           >{{ formatNum(allMonthData.sections[2].summ) }}</q-item-label>
           <div class="raw">
-            <q-avatar size="20px" color="red" text-color="white" icon="arrow_downward" />
+            <q-avatar size="20px" color="red" text-color="white" icon="arrow_downward" class="rotate-45" />
             <q-item-label class="text-red q-ml-sm">0.74%</q-item-label>
           </div>
         </q-item>
@@ -208,8 +208,6 @@
         class="col items-center q-mr-none q-my-md q-ml-md topBlock"
         :active="active"
         active-class="act"
-        clickable
-        @click="shiftTab(3)"
       >
         <q-icon size="255px" style="position:absolute;top:0;left:0;right:0;bottom:0;">
           <svg
@@ -271,7 +269,7 @@
             style="padding: 4px 0;"
           >Должностной оклад</q-item-label>
           <q-item-label class="text-h5 q-pt-sm q-pb-md">
-            {{formatNum(allMonthData.staff_salary)}}
+            {{formatNum(allMonthData.staff_salary ? allMonthData.staff_salary : 0)}}
             <span class="text-caption">СУМ</span>
           </q-item-label>
         </q-item>
@@ -288,6 +286,7 @@
     <!-- Card Section End -->
 
     <div class="row">
+      <div class="col bg-white" style="min-height: 300px">
       <q-tab-panels v-model="tab" style="display: flex; flex: auto;" v-if="allMonthData">
         <!-- Tabs start -->
         <q-tab-panel
@@ -296,43 +295,49 @@
           v-for="(data, j) in allMonthData.sections"
           :key="j"
         >
-          <q-item-section class="raw q-my-md" style="justify-content: space-between">
+          <q-item-section class="raw q-my-md" style="justify-content: space-between; min-height: 100vh - 10vh">
             <q-item class="cal1">
               <q-item-label class="text-weight-bold text-h5">{{data.title}}</q-item-label>
-              <q-item-label class="text-weight-bold text-h5">{{data.summ}}</q-item-label>
+              <q-item-label class="text-weight-bold text-h5">{{formatNum(data.summ)}}</q-item-label>
             </q-item>
             <q-item class="cal2">
               <q-item-label class="tex-h6 text-weight-bolder">
                 ВЫ РАБОТАЛИ:
                 <span style="color:orange">
-                  <strong class="text-h5">{{allMonthData.worked_days}}</strong>
+                  <strong class="text-h5">{{allMonthData.work_days ? allMonthData.work_days : 0}}</strong>
                   дня
                 </span>
                 <span style="color:grey">
-                  <strong class="text-h5">{{allMonthData.worked_hours}}</strong>
+                  <strong class="text-h5">{{allMonthData.worked_hours ? allMonthData.worked_hours : 0}}</strong>
                   ЧАСОВ
                 </span>
               </q-item-label>
               <q-item-label class="text-wight-bolder" style="color:grey">
-                Рабочих дней в Июне месяце -
-                <strong>{{allMonthData.work_days}}</strong>дня; Выходных -
-                <strong>{{allMonthData.day_offs}}</strong>
+                Рабочих дней в {{ selectedMonth ? selectedMonth.label.split(' ')[0] : '' }} месяце -
+                <strong>{{allMonthData.work_days ? allMonthData.work_days : 0}}</strong>дня; Выходных -
+                <strong>{{allMonthData.day_offs ? allMonthData.day_offs : 0}}</strong>
               </q-item-label>
             </q-item>
           </q-item-section>
           <q-separator class="q-mb-md" />
           <q-item class="lined-content" v-for="(detail, k) in data.details" :key="k">
-            <q-item-label class="lined-text text-weight-bold">{{detail.PAY_NAME}}</q-item-label>
-            <q-item-label class="lined-value text-light-green-14 text-weight-bold">{{detail.SUMM}}</q-item-label>
+            <q-item-label
+              class="lined-text text-weight-bold"
+            v-html="detail.PAY_NAME ? detail.PAY_NAME : ''"></q-item-label>
+            <q-item-label
+              class="lined-value text-weight-bold"
+              style="color:#61C9A9"
+            >{{detail.SUMM ? formatNum(detail.SUMM) : 0}}</q-item-label>
           </q-item>
         </q-tab-panel>
 
         <!-- Tabs end -->
       </q-tab-panels>
+      </div>
 
       <div class="right_pane">
         <!-- kurs valyuta -->
-        <q-item class="card1 cal1">
+        <q-item class="card1 cal1" v-if="exchangeRate.length > 0">
           <q-item-label>Курс валют</q-item-label>
           <q-item
             class="rowline text-caption q-gutter-sm vertical-top"
@@ -340,12 +345,29 @@
             :key="j"
           >
             <q-item-label class="text-h6 text-wight-bold">{{note.code}}</q-item-label>
-            <q-avatar size="25px" color="green" text-color="white" icon="arrow_upward" />
+            <q-avatar
+              size="25px"
+              color="green"
+              text-color="white"
+              icon="arrow_upward"
+              class="rotate-45"
+            />
             <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_buy_price)}}</q-item-label>
-            <q-avatar size="25px" color="red" text-color="white" icon="arrow_downward" />
+            <q-avatar
+              size="25px"
+              color="red"
+              text-color="white"
+              icon="arrow_downward"
+              class="rotate-45"
+            />
             <q-item-label class="text-body1 text-wight-bold">{{formatNum(note.nbu_cell_price)}}</q-item-label>
           </q-item>
         </q-item>
+        <div class="card1 cal2" v-else>
+          <q-skeleton type="text" class="full-width q-mb-sm" />
+          <q-skeleton type="QToggle" class="full-width q-mb-sm" />
+          <q-skeleton type="QToggle" class="full-width " />
+        </div>
         <!-- kurs valyuta end-->
 
         <q-item class="q-pa-lg bg-white text-grey-7 cal1" style="border-radius: 5px;">
@@ -377,41 +399,41 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
 
 export default {
-  data() {
+  data () {
     return {
       active: false,
       tab: 0,
       graf: [[10, 8, 13, 19, 18, 11.5]],
       grafb: [[11, 8, 14, 10, 15, 12]],
       grafc: [[9, 8, 16, 13, 12, 17]],
-      //months: null,
-      //names: null,
+      // months: null,
+      // names: null,
       colora: [
-        "#EEF6FD",
-        "#EEF6FD",
-        "#EEF6FD",
-        "#EEF6FD",
-        "#EEF6FD",
-        "#61A4E4"
+        '#EEF6FD',
+        '#EEF6FD',
+        '#EEF6FD',
+        '#EEF6FD',
+        '#EEF6FD',
+        '#61A4E4'
       ],
       colorb: [
-        "#FEF4F4",
-        "#FEF4F4",
-        "#FEF4F4",
-        "#FEF4F4",
-        "#FEF4F4",
-        "#FFC5C5"
+        '#FEF4F4',
+        '#FEF4F4',
+        '#FEF4F4',
+        '#FEF4F4',
+        '#FEF4F4',
+        '#FFC5C5'
       ],
       colorc: [
-        "#FEF3E7",
-        "#FEF3E7",
-        "#FEF3E7",
-        "#FEF3E7",
-        "#FEF3E7",
-        "#FFA958"
+        '#FEF3E7',
+        '#FEF3E7',
+        '#FEF3E7',
+        '#FEF3E7',
+        '#FEF3E7',
+        '#FFA958'
       ],
       heightGlobalBlock: 90,
 
@@ -419,52 +441,54 @@ export default {
       dateSelectOptions: [],
       allMonthData: null,
       exchangeRate: []
-    };
+    }
   },
-  created() {
+  created () {
     this.$axios
-      .get("/emps/kvitok/dates?uid=" + this.emp_id)
+      .get('/emps/kvitok/dates?uid=' + this.emp_id)
       .then(
-        response => {
-          response.data.data.forEach(el => {
+        (response) => {
+          response.data.data.forEach((el) => {
             let arr = {
               label: el.text,
               value: el.date
-            };
-            this.dateSelectOptions.push(arr);
-          });
-          this.selectedMonth = this.dateSelectOptions[0];
+            }
+            this.dateSelectOptions.push(arr)
+          })
+          console.log('Month: ', this.dateSelectOptions.sort((a, b) => b.value - a.value))
+          this.selectedMonth = this.dateSelectOptions[0]
           this.monthData({
             uid: this.emp_id,
             date: this.selectedMonth.value
-          });
+          })
+          // console.log(this.selectedMonth);
         },
-        error => {
-          console.log({ error });
+        (error) => {
+          console.log({ error })
         }
       )
-      .catch(error => {
-        console.log({ error });
-      });
+      .catch((error) => {
+        console.log({ error })
+      })
     this.$axios
       .get(
-        "https://cors-anywhere.herokuapp.com/https://nbu.uz/exchange-rates/json/"
+        'https://cors-anywhere.herokuapp.com/https://nbu.uz/exchange-rates/json/'
       )
       .then(
-        res => {
-          this.exchangeRate = res.data.filter(el => {
-            return el.code == "EUR" || el.code == "USD";
-          });
+        (res) => {
+          this.exchangeRate = res.data.filter((el) => {
+            return el.code === 'EUR' || el.code === 'USD'
+          })
         },
-        err => {
-          console.error({ err });
+        (err) => {
+          console.error({ err })
         }
       )
-      .catch(error => {
-        console.error({ error });
-      });
+      .catch((error) => {
+        console.error({ error })
+      })
   },
-  mounted() {
+  mounted () {
     // this.graf = this.tables.graf;
     // if (this.tables.months) this.months = this.tables.months;
     // if (this.tables.heightGlobalBlock)
@@ -473,142 +497,138 @@ export default {
   },
   computed: {
     ...mapGetters({
-      emp_id: "auth/empId"
+      emp_id: 'auth/empId'
     })
   },
   methods: {
-    monthData(params) {
+    monthData (params) {
       this.$axios({
-        url: "/emps/kvitok/month",
-        method: "post",
+        url: '/emps/kvitok/month',
+        method: 'post',
         data: params
       })
-        .then(response => {
-          this.allMonthData = response.data;
+        .then((response) => {
+          this.allMonthData = response.data
+          console.log(this.allMonthData)
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch((err) => {
+          console.log(err)
+        })
     },
-    shiftTab(tabNo) {
-      this.tab = tabNo;
+    shiftTab (tabNo) {
+      this.tab = tabNo
     },
-    selected() {
+    selected () {
       let arr = {
         uid: this.emp_id,
         date: this.selectedMonth.value
-      };
-      this.monthData(arr);
+      }
+      this.monthData(arr)
     },
-    aColor(num) {
-      return this.colora[num];
+    aColor (num) {
+      return this.colora[num]
     },
-    bColor(num) {
-      return this.colorb[num];
+    bColor (num) {
+      return this.colorb[num]
     },
-    cColor(num) {
-      return this.colorc[num];
+    cColor (num) {
+      return this.colorc[num]
     },
-    widthBlock() {
-      const width = 100 / this.graf.length - 4 + "%";
-      return `width: ${width}`;
+    widthBlock () {
+      const width = 100 / this.graf.length - 4 + '%'
+      return `width: ${width}`
     },
-    widthMinBlock() {
-      const width = 100 / this.graf.length + "%";
-      return width;
+    widthMinBlock () {
+      const width = 100 / this.graf.length + '%'
+      return width
     },
-    maxNum() {
-      let arr = [];
+    maxNum () {
+      let arr = []
       for (let i = 0; i < this.graf.length; i++) {
         for (let e = 0; e < this.graf[i].length; e++) {
-          arr.push(this.graf[i][e]);
+          arr.push(this.graf[i][e])
         }
       }
-      return Math.max.apply(null, arr);
+      return Math.max.apply(null, arr)
     },
-    grid() {
-      let maxNum = this.maxNum();
+    grid () {
+      let maxNum = this.maxNum()
 
-      let numMin = ["1"];
+      let numMin = ['1']
       for (let i = 1; i < String(maxNum).length; i++) {
-        numMin.push("0");
+        numMin.push('0')
       }
 
-      let resMaxNum = maxNum / Number(numMin.join(""));
+      let resMaxNum = maxNum / Number(numMin.join(''))
 
       if (String(resMaxNum)[2] >= 5) {
-        resMaxNum = Number(String(resMaxNum)[0]) + 1;
+        resMaxNum = Number(String(resMaxNum)[0]) + 1
       } else if (String(resMaxNum)[2] > 0) {
-        resMaxNum = Number(String(resMaxNum)[0] + "." + "5");
+        resMaxNum = Number(String(resMaxNum)[0] + '.' + '5')
       } else {
-        resMaxNum = Number(String(resMaxNum)[0]);
+        resMaxNum = Number(String(resMaxNum)[0])
       }
 
-      if (String(maxNum).length == 1) {
+      if (String(maxNum).length === 1) {
         if (resMaxNum >= 5) {
-          resMaxNum = 10;
+          resMaxNum = 10
         } else {
-          resMaxNum = 5;
+          resMaxNum = 5
         }
       } else {
         if (resMaxNum >= 3 && resMaxNum < 5) {
-          resMaxNum = 5;
+          resMaxNum = 5
         } else if (resMaxNum > 5 && resMaxNum < 10) {
-          resMaxNum = 10;
-        } else if (resMaxNum == 1) {
-          resMaxNum = resMaxNum + 0.5;
+          resMaxNum = 10
+        } else if (resMaxNum === 1) {
+          resMaxNum = resMaxNum + 0.5
         }
       }
 
-      let del = resMaxNum < 10 ? (resMaxNum * 10) / 5 : resMaxNum / 5;
-      if (del > 4) del = 5;
+      let del = resMaxNum < 10 ? (resMaxNum * 10) / 5 : resMaxNum / 5
+      if (del > 4) del = 5
 
-      if (numMin.length > 1) resMaxNum *= Number(numMin.join(""));
+      if (numMin.length > 1) resMaxNum *= Number(numMin.join(''))
 
-      let delArr = [0];
+      let delArr = [0]
       for (let i = 0; i < del; i++) {
-        delArr.push(delArr[i] + resMaxNum / del);
+        delArr.push(delArr[i] + resMaxNum / del)
       }
-      return delArr;
+      return delArr
     },
-    grafBlockHight(num) {
-      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock;
-      return num / proc + "px";
+    grafBlockHight (num) {
+      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock
+      return num / proc + 'px'
     },
-    gridTableHeight(num) {
-      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock;
-      return num / proc + "px";
+    gridTableHeight (num) {
+      const proc = Math.max.apply(null, this.grid()) / this.heightGlobalBlock
+      return num / proc + 'px'
     },
-    leftWidth() {
-      const num = String(this.maxNum()).length;
-      return Number(num) * 5 + "px";
+    leftWidth () {
+      const num = String(this.maxNum()).length
+      return Number(num) * 5 + 'px'
     },
-    formatNum(str) {
-      str = Math.round(str);
-      str = String(str);
-      // str = str.replace(/(\.(.*))/g, '');
-      var arr = str.split("");
-      var str_temp = "";
+    formatNum (str) {
+      str = Math.round(str)
+      str = String(str)
       if (str.length > 3) {
-        for (var i = arr.length - 1, j = 1; i >= 0; i--, j++) {
-          str_temp = arr[i] + str_temp;
-          if (j % 3 == 0) {
-            str_temp = "," + str_temp;
-          }
-        }
-        return str_temp;
+        let temp = str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+        return temp
       } else {
-        return str;
+        return str
       }
     }
   }
-};
+}
 // Avenir Next;
 </script>
 <style lang="sass" scoped>
 @font-face
-  font-family: 'Avant'
-  src: url('~assets/fonts/avant.ttf') format('truetype')
+  font-family: 'OpenSans'
+  src: url('~assets/fonts/OpenSans-Regular.ttf') format('truetype')
+
+.OpenSans
+  font-family: 'OpenSans'
 
 .right_pane
   width: 300px
@@ -616,7 +636,7 @@ export default {
   margin-left: 20px
   justify-items: center
 
-.topBlock 
+.topBlock
   background: #fff
   display: flex
   border-radius: 5px
@@ -639,10 +659,7 @@ export default {
   border-radius: 5px
 
 .q-tabs__content--align-center
-  justify-content: space-between  
-
-.fontb
-  font-family: 'Avant'
+  justify-content: space-between
 
 .blackf
   color: #000000
@@ -686,12 +703,12 @@ export default {
     outline: 2px solid #0000ff
   &:hover + .topcard
     -moz-outline-radius: 4px
-    
+
 .lined-box
   display: flex
   flex-direction: column
   flex-grow: 1
-  
+
 .lined-content
   display: flex
   flex-direction: row
@@ -715,7 +732,7 @@ export default {
     height: 1px
     background: rgba(0,0,0,0.12)
     z-index: 1
-      
+
 .raw
   display: flex
   flex-direction: row
@@ -731,14 +748,13 @@ export default {
 .row
   display: flex
   flex-direction: row
-  align-items: flex-start 
+  align-items: flex-start
   justify-content: space-between
   flex-wrap: nowrap
 
 .cal1
   display: flex
   flex-direction: column
-  
 
 .cal2
   display: flex
@@ -756,7 +772,7 @@ export default {
 .font
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
 
-.tooltip .tooltiptext 
+.tooltip .tooltiptext
   visibility: hidden
   width: 120px
   background-color: #555
@@ -772,9 +788,8 @@ export default {
   opacity: 0
   transition: opacity 0.3s
 
-
 .tooltip .tooltiptext
-  &::after 
+  &::after
     content: ""
     position: absolute
     bottom: 100%
@@ -784,9 +799,8 @@ export default {
     border-style: solid
     border-color: transparent transparent #555 transparent
 
-
 .tooltip
-  &:hover .tooltiptext 
+  &:hover .tooltiptext
     visibility: visible
     opacity: 1
 

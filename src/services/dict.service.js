@@ -37,6 +37,9 @@ const DictService = {
         let dictList = await this.dictsList();
         store.dispatch("dicts/setDictsList", dictList);
 
+        let data = await this.getTimeout();
+        store.dispatch("auth/setLogoutTime", data.settings.timeout);
+
         store.dispatch("dicts/setIsAllSet", true);
         resolve(true);
       } else {
@@ -205,6 +208,18 @@ const DictService = {
   dictsList() {
     return new Promise((resolve, reject) => {
       ApiService.get(`dicts`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  getTimeout() {
+    return new Promise((resolve, reject) => {
+      ApiService.get(`settings/timeout`)
         .then(res => {
           resolve(res.data);
         })

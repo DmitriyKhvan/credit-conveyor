@@ -1,61 +1,32 @@
 <template>
-  <div class="col-lg-10 col-md-9 col-sm-8 q-pa-lg">
-    <q-scroll-area class="scrollBlock">
-      <div
-        v-for="(n, i) in datas"
-        :key="n.title"
-      >
-
+  <div class="col-12">
+      <div  v-for="(n) in datas"
+            :key="n.title">
         <template v-if="!n.data.header">
-          <div class="row table_border">
-            <div class="table_title"><q-icon :name="icons[i]" size="sm" class="q-pr-sm" /> {{n.title}}</div>
-            <div class="col-12 q-pa-md table_bg">
-
-              <div
-                class="block_global"
-                v-for="(d, key, index) in n.data"
-                :key="index"
-              >
-                <div class="left_bg" v-html="titles[key]"></div>
-                <div class="right_bg" v-html="d"></div>
-              </div>
-
+          <q-card class="row OpenSansBold q-my-md">
+            <div  class="q-pa-md text-h5" v-if="n.data.data !== null">
+              {{n.title}}
             </div>
-          </div>
+            <div class="col-12 q-pa-md">
+              <div  class="block_global" v-for="(d, key, index) in n.data" :key="index">
+                <div  class="left_bg" v-html="titles[key]"></div>
+                <div  class="right_bg" v-html="d"></div>
+              </div>
+            </div>
+          </q-card>
         </template>
-
-
-
         <template v-else>
-
-          <div class="row table_border">
-            <div class="table_title"><q-icon :name="icons[i]" size="sm" class="q-pr-sm" /> {{n.title}}</div>
-
-              <table style="width:100%">
-                <tr>
-                  <th
-                    v-for="(h, i) in n.data.header"
-                    :key="i"
-                    v-html="h"
-                  ></th>
-                </tr>
-                <tr
-                  v-for="(t, index) in n.data.data"
-                  :key="index"
-                >
-                  <td
-                    v-for="(b, e) in n.data.data[index]"
-                    :key="e"
-                    v-html="b"
-                  ></td>
-                </tr>
-              </table>
-
-          </div>
+          <q-card class="row OpenSansBold q-my-md">
+            <div class="q-pa-md text-h5"  v-if="n.data.data !== null">{{n.title}}</div>
+              <div class="col-12 q-pa-md" v-for="(b, i) in n.data.data" :key="i">
+                <div class="block_global" v-for="(h, index) in b" :key="index">
+                  <div  class="left_bg" v-html="n.data.header[index]"></div>
+                  <div  class="right_bg" v-html="b[index]" ></div>
+                </div>
+              </div>
+          </q-card>
         </template>
-
       </div>
-    </q-scroll-area>
     </div>
 </template>
 <script>
@@ -82,47 +53,41 @@ export default {
 
   },
   created () {
-      axios
-        .get("/emps/data/education?uid=" + this.emp_id)
-        .then(response => {
-          this.datas = response.data
-        })
-        .catch(error => {
-            console.log('error')
-        });
-  }
-
+    axios
+      .get("/emps/data/education?uid=" + this.emp_id)
+      .then(response => {
+        this.datas = response.data
+      })
+      .catch(error => {
+          console.log('error')
+      });
+  },
+  methods: {
+    detail(i) {
+      console.log(i);
+    }
+  } 
 }
 </script>
 <style scoped>
-  .scrollBlock {
-    height: calc(100vh - 130px);
+@font-face {
+    font-family: 'Avant';
+    src: url('~assets/fonts/avant.ttf') format('truetype');
   }
-  .table_bg {
-    background: #EAF3FC;
-    border-radius: 5px;
+  @font-face {
+    font-family: 'OpenSansBold';
+    src: url('~assets/fonts/OpenSans-Bold.ttf') format('truetype');
   }
-  .table_border {
-    border: 1px #9FB7CF solid;
-    border-radius: 5px;
-    position: relative;
-    padding: 30px 10px 10px;
-    margin-top: 25px;
-    margin-bottom: 40px;
+  .OpenSansBold {
+    font-family: 'OpenSansBold';
+    font-weight: 500;
   }
-  .table_title {
-    text-transform: uppercase;
-    color: #fff;
-    background: #5B8AB7;
-    border-radius: 5px;
-    position: absolute;
-    top: -25px;
-    left: 10px;
-    padding: 10px 15px;
+  .Avant {
+    font-family: 'Avant';
   }
   .left_bg {
-    background: #9FB7CF;
-    color: #fff;
+    background: #F8FAFF;
+    color: #122E9C;
     padding: 3px 10px;
     float: left;
     border-radius: 15px;
@@ -131,6 +96,7 @@ export default {
   .right_bg {
     float: right;
     background: #fff;
+    color: #273959;
     padding: 3px 10px;
     border-radius: 15px;
     max-width: 49%;
@@ -138,38 +104,9 @@ export default {
   .block_global {
     float: left;
     width: 100%;
-    background: url('../../../../../assets/images/table_dot.png') repeat-x;
+    background: url('~assets/images/table_dot.svg') repeat-x;
     background-position: 0 12px;
     margin: 5px 0;
   }
 
-  .table_bg {
-    background: #EAF3FC;
-    border-radius: 5px;
-  }
-  .table_border {
-    border: 1px #9FB7CF solid;
-    border-radius: 5px;
-    position: relative;
-    padding: 30px 10px 10px;
-    margin-top: 25px;
-  }
-  .table_title {
-    text-transform: uppercase;
-    color: #fff;
-    background: #5B8AB7;
-    border-radius: 5px;
-    position: absolute;
-    top: -25px;
-    left: 10px;
-    padding: 10px 15px;
-  }
-  table, th, td {
-  border: 1px solid #9FB7CF;
-  border-collapse: collapse;
-  }
-  th, td {padding: 10px;}
-  th {
-    background: #EAF3FC;
-  }
 </style>

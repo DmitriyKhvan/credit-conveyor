@@ -227,7 +227,7 @@
                 emit-value
                 map-options
                 label="Группа кредитного комитета"
-                @input="$v.details.groups.$touch()"
+                
                 lazy-rules
                 options-selected-class="text-deep-orange"
               />
