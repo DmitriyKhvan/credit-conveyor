@@ -399,7 +399,9 @@ export const profile = {
           ).data;
 
           commit("setScoring", scoring);
-          commit("setINNandNameOrg", dataINPS.data.wages.items.slice().pop());
+          if (code == 0) {
+            commit("setINNandNameOrg", dataINPS.data.wages.items.slice().pop());
+          }
 
           return {
             salaries: dataINPS.data,
