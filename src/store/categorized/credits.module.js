@@ -46,6 +46,8 @@ export const credits = {
       gender: null,
       givenDate: "", // дата выдачи паспорта
       expDate: "",  // дата окончания паспорта
+      client_code: "",
+      client_uid: "",
 
       typeCredit: null,
       typeStepCredit: null,
@@ -428,6 +430,11 @@ export const credits = {
       state.personalData.birthDate = ""
       state.personalData.givenDate = ""
       state.personalData.expDate = ""
+      state.personalData.expDate = ""
+      state.personalData.client_code = ""
+      state.personalData.client_uid = ""
+      state.personalData.phone = 998 
+      state.personalData.familyStatus = null 
     },
 
 
@@ -442,6 +449,18 @@ export const credits = {
         state.personalData.birthDate = payload.responseBody.response.items[0].birth_date
         state.personalData.givenDate = payload.responseBody.response.items[0].doc_issue_date
         state.personalData.expDate = payload.responseBody.response.items[0].doc_expire_date
+        state.personalData.client_code = payload.responseBody.response.items[0].client_code
+        state.personalData.client_uid = payload.responseBody.response.items[0].client_Uid
+        state.personalData.phone = payload.responseBody.response.items[0].mobile_phone
+                                    .replace(/[^0-9]/gim, "")
+                                    .slice(-9).length == 9 
+                                      ? "998" + payload.responseBody.response.items[0].mobile_phone
+                                          .replace(/[^0-9]/gim, "")
+                                          .slice(-9)
+                                      : 998
+        state.personalData.familyStatus = payload.responseBody.response.items[0].marital_status 
+                                           ? +payload.responseBody.response.items[0].marital_status + 1
+                                           : null
     },
 
     setPersonalData(state, payload) {
@@ -487,6 +506,8 @@ export const credits = {
         gender: "",
         givenDate: "", // дата выдачи паспорта
         expDate: "",  // дата окончания паспорта
+        client_code: "",
+        client_uid: "",
 
         typeCredit: null,
         typeStepCredit: null,

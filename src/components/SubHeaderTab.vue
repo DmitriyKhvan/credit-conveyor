@@ -1,5 +1,5 @@
 <template>
-  <div class="subMenu">
+  <div class="subMenuCont">
     <q-tabs align="left">
       <q-route-tab
         :to="menu.url"
@@ -57,7 +57,7 @@ export default {
 </script>
 
 <style lang="scss">
-  .subMenu {
+  .subMenuCont {
     background: #ffffff;
     margin: 30px 10px;
     border-radius: 5px;

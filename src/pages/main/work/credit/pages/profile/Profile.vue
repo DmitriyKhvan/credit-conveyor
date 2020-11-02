@@ -1305,6 +1305,7 @@
                     ref="kindOfActivity"
                     outlined
                     v-model="Customer.JobInfo.type"
+                    @input="resetJobInfo()"
                     :options="dictionaries.MainWorkType.items"
                     dense
                     label="Вид деятельности"
@@ -4480,6 +4481,19 @@ export default {
     }
   },
   methods: {
+    resetJobInfo() {
+      this.Customer.JobInfo.employerActivityType = null, //вид деятельности организации
+      this.Customer.JobInfo.positionType = null, // Категория занимаемой должности
+      this.Customer.JobInfo.INN = "",
+      this.Customer.JobInfo.employeesNum = 0, // количество работников
+      this.Customer.JobInfo.employerName = "", // Наименование работадателя
+      this.Customer.JobInfo.totalJobExperienceMonths = 0, // общий трудовой стаж
+      this.Customer.JobInfo.activeYears = 0, // срок деятельности
+      this.Customer.JobInfo.position = "", // должность
+      // this.Customer.JobInfo.type = "", // вид деятельности
+      this.Customer.JobInfo.lastJobExperienceMonths = 0 // стаж на последнем месте работы
+    },
+
     formatNum(number) {
       return formatNumber(number);
     },
@@ -5082,6 +5096,8 @@ export default {
         Status,
         ApplicationID,
         // ProtocolNumber,
+        client_code,
+        client_uid,
         Number,
         Branch,
         BranchName,
@@ -5130,6 +5146,8 @@ export default {
               Status,
               ApplicationID,
               // ProtocolNumber,
+              client_code,
+              client_uid,
               Number,
               Branch,
               BranchName,

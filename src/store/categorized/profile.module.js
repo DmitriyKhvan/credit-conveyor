@@ -114,6 +114,8 @@ export const profile = {
       Status: "",
       ApplicationID: "",
       // ProtocolNumber: "",
+      client_code: "",
+      client_uid: "",
       Number: "",
       Branch: "",
       BranchName: "",
@@ -399,7 +401,7 @@ export const profile = {
           ).data;
 
           commit("setScoring", scoring);
-          if (code == 0) {
+          if (code.data == 0) {
             commit("setINNandNameOrg", dataINPS.data.wages.items.slice().pop());
           }
 
@@ -700,6 +702,8 @@ export const profile = {
       // Для корректной валидации
       state.fullFormProfile.ApplicationID = payload.ApplicationID;
       state.fullFormProfile.BODecision = payload.BODecision;
+      state.fullFormProfile.client_code = payload.client_code;
+      state.fullFormProfile.client_uid = payload.client_uid;
       state.fullFormProfile.Number = payload.Number;
       state.fullFormProfile.Branch = payload.Branch;
       state.fullFormProfile.BranchName = payload.BranchName;
@@ -1095,6 +1099,8 @@ export const profile = {
         Status: "",
         ApplicationID: "",
         // ProtocolNumber: "",
+        client_code: "",
+        client_uid: "",
         Number: "",
         Branch: "",
         BranchName: "",

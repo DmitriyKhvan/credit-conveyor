@@ -133,6 +133,8 @@
                           'Введите номер телефона',
                         (val) =>
                           !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные',
+                        (val) =>
+                          val.match(/(?:\+[9]{2}[8]([0-9]){9})/) || 'Неверные данные',
                       ]"
                     />
 
@@ -175,7 +177,7 @@
                       :loading="loadingGCI"
                       label="Проверить клиента"
                       @click="checkClient"
-                      class="full-width digIdBtn"
+                      class="full-width getInfoBtn"
                     >
                       <template v-slot:loading>
                         <q-spinner-facebook />
@@ -724,6 +726,8 @@ export default {
           ProductMaxSum,
           spouseCost,
           childCost,
+          client_code,
+          client_uid
         } = this.personalData;
 
         const data = {
@@ -771,6 +775,8 @@ export default {
                   mainPhone: phone.replace(/[\s()]/g, ""),
                   tin: inn,
                   pinpp,
+                  client_code,
+                  client_uid
                 },
               },
             },
@@ -1121,6 +1127,16 @@ export default {
     .q-btn__content {
       font-size: 14px;
     }
+  }
+
+  .getInfoBtn {
+    margin-bottom: 24px;
+    background: #4AB8FF !important;
+    font-weight: bold;
+
+    .q-btn__content {
+        font-size: 14px;
+      }
   }
 }
 </style>
