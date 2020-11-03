@@ -18,7 +18,7 @@
       </q-header> -->
       
 
-      <q-page-container v-if="path !== '/work/task/list'">
+      <q-page-container v-if="path === '/work/credit/profile' || path === '/work/credit/applications'">
         <q-layout
           view="hHh lpR fFf"
           container
@@ -26,7 +26,7 @@
           class="shadow-2"
           id="eee"
         >
-          <sub-header-tab :path="path" />
+          <!-- <sub-header-tab :path="path" /> -->
         <router-view />
         </q-layout>
       </q-page-container>

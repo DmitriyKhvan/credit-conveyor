@@ -345,7 +345,7 @@ export const credits = {
           file = await dispatch('creatFile', fileData)
 
           console.log('createFile', file)
-
+          
           if (file.infos[0].id) {
             response = await state.bpmService.getFile(file.infos[0].id)
             // commit("setFileId", file.infos[0].id)
