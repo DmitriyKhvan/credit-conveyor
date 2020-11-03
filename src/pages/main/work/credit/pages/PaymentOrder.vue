@@ -9,8 +9,8 @@
                 ref="documentType"
                 square
                 outlined
-                v-model="documentType"
-                :options="options.documentType"
+                v-model="payOrder.doc_type_selected"
+                :options="payOrder.doc_type.items"
                 dense
                 label="Тип документа"
                 :rules="[val => !!val || 'Выберите тип документа']"
@@ -24,7 +24,7 @@
                 ref="numberPP"
                 square
                 outlined
-                v-model="numberPP"
+                v-model="payOrder.po_number"
                 dense
                 label="Номер ПП"
                 :rules="[val => !!val || 'Введите номер ПП']"
@@ -36,7 +36,7 @@
                 disable
                 square
                 outlined
-                v-model="MFO"
+                v-model="payOrder.filial"
                 dense
                 label="МФО филиала"
                 :rules="[]"
@@ -48,7 +48,7 @@
                 disable
                 square
                 outlined
-                v-model="codeCredit"
+                v-model="payOrder.product_code"
                 dense
                 label="Код кредитного продукта"
                 :rules="[]"
@@ -56,7 +56,7 @@
             </div>
 
             <div class="col-12">
-              <q-input
+              <!-- <q-input
                 disable
                 square
                 outlined
@@ -64,15 +64,34 @@
                 dense
                 label="Номер кредитного договора"
                 :rules="[]"
-              />
-            </div>
-
-            <div class="col-12">
+              /> -->
               <q-input
                 disable
                 square
                 outlined
+                v-model="payOrder.contract_number"
+                dense
+                label="Номер кредитного договора"
+                :rules="[]"
+              />
+            </div>
+
+            <div class="col-12">
+              <!-- <q-input
+                disable
+                square
+                outlined
                 v-model="amountCredit"
+                dense
+                label="Сумма кредита"
+                :rules="[]"
+              /> -->
+
+              <q-input
+                disable
+                square
+                outlined
+                v-model="payOrder.summ"
                 dense
                 label="Сумма кредита"
                 :rules="[]"
@@ -88,7 +107,7 @@
                 disable
                 square
                 outlined
-                v-model="UIDClient"
+                v-model="payOrder.client_uid"
                 dense
                 label="UID клиента"
                 :rules="[]"
@@ -100,7 +119,7 @@
                 disable
                 square
                 outlined
-                v-model="INNClient"
+                v-model="payOrder.client_inn"
                 dense
                 label="ИНН клиента"
                 :rules="[]"
@@ -112,9 +131,9 @@
                 ref="recipientAccount"
                 square
                 outlined
-                v-model="recipientAccount"
+                v-model="payOrder.client_acc"
                 dense
-                label="Счет получателя"
+                label="Счет клиента"
                 :rules="[val => !!val || 'Введите счет получателя']"
               />
             </div>
@@ -123,9 +142,9 @@
                 ref="MFOBank"
                 square
                 outlined
-                v-model="MFOBank"
+                v-model="payOrder.client_bank_mfo"
                 dense
-                label="МФО банка получателя"
+                label="МФО банка клиента"
                 :rules="[val => !!val || 'Введите МФО банка получателя']"
               />
             </div>
@@ -134,9 +153,9 @@
                 ref="BankName"
                 square
                 outlined
-                v-model="BankName"
+                v-model="payOrder.client_bank_name"
                 dense
-                label="Наименование банка получателя"
+                label="Наименование банка клиента"
                 :rules="[
                   val => !!val || 'Введите наименование банка получателя'
                 ]"
@@ -152,8 +171,8 @@
                 ref="codePayment"
                 square
                 outlined
-                v-model="codePayment"
-                :options="options.codePayment"
+                v-model="payOrder.pay_code_selected"
+                :options="payOrder.pay_code.items"
                 dense
                 label="Код назначения платежа"
                 :rules="[val => !!val || 'Выберите код платежа']"
@@ -161,12 +180,72 @@
                 map-options
               />
             </div>
+
+            <div class="col-12">
+              <q-input
+                square
+                outlined
+                v-model="payOrder.pay_purpose"
+                dense
+                label="Назначение платежа"
+                :rules="[]"
+              />
+            </div>
+
+            <template v-if="payOrder.pay_code_selected == '09510'">
+              <div class="col-12">
+                <q-input
+                  square
+                  outlined
+                  v-model="payOrder.budgetRecipient_acc"
+                  dense
+                  label="Счет бюджетополучителя"
+                  :rules="[]"
+                />
+              </div>
+
+              <div class="col-12">
+                <q-input
+                  disable
+                  square
+                  outlined
+                  v-model="payOrder.budgetRecipient_name"
+                  dense
+                  label="Назначение бюджетополучителя"
+                  :rules="[]"
+                />
+              </div>
+              
+              <div class="col-12">
+                <q-input
+                  disable
+                  square
+                  outlined
+                  v-model="payOrder.budgetRecipient_bank"
+                  dense
+                  label="Банк бюджетополучителя"
+                  :rules="[]"
+                />
+              </div>
+              <div class="col-12">
+                <q-input
+                  disable
+                  square
+                  outlined
+                  v-model="payOrder.budgetRecipient_inn"
+                  dense
+                  label="ИНН бюджетополучителя"
+                  :rules="[]"
+                />
+              </div>
+            </template>
+
             <div class="col-12">
               <q-input
                 ref="detailsPayment"
                 square
                 outlined
-                v-model="detailsPayment"
+                v-model="payOrder.pay_detail"
                 dense
                 label="Детали платежа"
                 :rules="[val => !!val || 'Выберите детали платежа']"
@@ -179,7 +258,7 @@
                 square
                 dense
                 label="Дата"
-                v-model="date"
+                v-model="payOrder.pay_date"
                 mask="##.##.####"
                 :rules="[
                   val => (val && val.length === 10) || 'Введите дату'
@@ -194,7 +273,7 @@
                     >
                       <q-date
                         mask="DD.MM.YYYY"
-                        v-model="date"
+                        v-model="payOrder.pay_date"
                         @input="() => $refs.qDate.hide()"
                       />
                     </q-popup-proxy>
@@ -206,54 +285,100 @@
         </div>
       </div>
 
-      <q-btn type="submit" color="primary" label="Отправить" class="paymentBtn" />
+      <q-btn type="submit" color="primary" label="Сформировать платёжку" class="paymentBtn" />
     </form>
+
   </div>
 </template>
 <script>
+import axios from "axios";
+import { mapState } from "vuex";
 import formatDate from "../filters/formatDate"
 
 export default {
   data() {
     return {
-      documentType: "",
-      numberPP: "",
-      MFO: "",
-      codeCredit: "",
-      codePayment: "",
-      numberCredit: "",
-      amountCredit: "",
-      UIDClient: "",
-      INNClient: "",
-      recipientAccount: "",
-      MFOBank: "",
-      BankName: "",
-      detailsPayment: "",
-      date: formatDate(new Date()),
-      options: {
-        documentType: [
-          {
-            label: "Тип документа 1",
-            value: 1
-          },
-          {
-            label: "Тип документа 2",
-            value: 2
-          }
-        ],
+    //   documentType: "",
+    //   numberPP: "",
+    //   MFO: "00887",
+    //   codeCredit: "132",
+    //   codePayment: "",
+    //   numberCredit: "",
+    //   amountCredit: "",
+    //   UIDClient: "10945828",
+    //   INNClient: "500439371",
+    //   recipientAccount: "",
+    //   MFOBank: "00887",
+    //   BankName: "НБУ Бош филлиали",
+    //   detailsPayment: "",
+    //   date: formatDate(new Date()),
+    //   options: {
+    //     documentType: [
+    //       {
+    //         label: "PayOrder",
+    //         value: 1
+    //       },
+    //       // {
+    //       //   label: "Тип документа 2",
+    //       //   value: 2
+    //       // }
+    //     ],
 
-        codePayment: [
-          {
-            label: "Код 1",
-            value: 1
-          },
-          {
-            label: "Код 2",
-            value: 2
-          }
-        ]
-      }
+    //     codePayment: [
+    //       {
+    //         label: "Код 1",
+    //         value: 1
+    //       },
+    //       {
+    //         label: "Код 2",
+    //         value: 2
+    //       }
+    //     ]
+    //   }
     };
+  },
+  async created() {
+    this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+
+    // если перезагрузили страницу
+    if (!axios.defaults.headers.common["BPMCSRFToken"]) {
+      this.userRole = sessionStorage.getItem("userRole");
+      await this.$store.dispatch(
+        "credits/setHeaderRole",
+        sessionStorage.getItem("userRole")
+      );
+      await this.$store.dispatch(
+        "credits/setHeaderBPM",
+        sessionStorage.getItem("csrf_token")
+      );
+    }
+
+    try {
+      const res = await this.$store.dispatch("profile/getFullForm");
+      this.loaderForm = false;
+      console.log("res", res);
+    } catch (error) {}
+  },
+
+  watch: {
+    "payOrder.pay_code_selected"(val) {
+       this.payOrder.pay_detail = ""
+      if (val == "09510") {
+        this.payOrder.pay_detail = `${val}~${this.payOrder.client_acc}~${this.payOrder.client_inn}~${this.payOrder.pay_purpose}`
+      } else {
+        this.payOrder.pay_detail = `${val}~${this.payOrder.pay_purpose}~`
+      }
+    }
+  },
+
+  computed: {
+    ...mapState({
+      // fullProfile: state => state.profile.fullFormProfile,
+      payOrder: state => state.profile.payOrder,
+      // Customer: state => state.profile.fullFormProfile.Customer,
+      // dictionaries: state => state.profile.dictionaries,
+      // credits: state => state.credits
+    })
   },
   methods: {
     async onSubmit() {
@@ -279,7 +404,55 @@ export default {
         this.formHasError = true
       } else {
         console.log('Success')
+        const {
+          budgetRecipient_acc,
+          budgetRecipient_bank,
+          budgetRecipient_name,
+          client_acc,
+          client_bank_mfo,
+          client_bank_name,
+          client_inn,
+          client_uid,
+          contract_number,
+          filial,
+          pay_date,
+          pay_detail,
+          po_number,
+          product_code,
+          summ,
+          doc_type_selected,
+          pay_code_selected
+        } = this.payOrder
 
+        const data = {
+          output: [
+            {
+              name: "payOrder",
+              data: {
+                budgetRecipient_acc,
+                budgetRecipient_bank,
+                budgetRecipient_name,
+                client_acc,
+                client_bank_mfo,
+                client_bank_name,
+                client_inn,
+                client_uid,
+                contract_number,
+                filial,
+                pay_date,
+                pay_detail,
+                po_number,
+                product_code,
+                summ,
+                doc_type_selected,
+                pay_code_selected
+              }
+            }
+          ]
+        };
+
+        console.log(data)
+        this.$router.push("/work/credit/applications");
         try{
 
         } catch (error) {

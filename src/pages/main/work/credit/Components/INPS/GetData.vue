@@ -3,22 +3,22 @@
     <div class="salaryBlock">
       <div class="salaryItem">
         <h6>Минимальное поступление</h6>
-        <span>{{ salaries.min }}</span>
+        <span>{{ salaries.min | formatNumber }}</span>
       </div>
 
       <div class="salaryItem">
         <h6>Максимальное поступление</h6>
-        <span>{{ salaries.max }}</span>
+        <span>{{ salaries.max | formatNumber }}</span>
       </div>
 
       <div class="salaryItem">
         <h6>Среднее значение</h6>
-        <span>{{ salaries.average }}</span>
+        <span>{{ salaries.average | formatNumber }}</span>
       </div>
 
       <div class="salaryItem">
         <h6>Поступлений за период 12 месяцев</h6>
-        <span>{{ salaries.yearWages }}</span>
+        <span>{{ salaries.yearWages | formatNumber }}</span>
       </div>
     </div>
     <q-markup-table separator="cell" flat bordered>
@@ -46,16 +46,16 @@
             <p>{{ salary.org_name }}</p>
           </td>
           <td>
-            <p>{{ salary.period }}</p>
+            <p>{{ salary.period | formatDate }}</p>
           </td>
           <td>
-            <p>{{ salary.total_invoices.full }}</p>
+            <p>{{ salary.total_invoices.full | formatNumber }}</p>
           </td>
           <td>
-            <p>{{ salary.total_invoices.percent }}</p>
+            <p>{{ salary.total_invoices.percent | formatNumber }}</p>
           </td>
           <td>
-            <p>{{ salary.total_invoices.balance }}</p>
+            <p>{{ salary.total_invoices.balance | formatNumber }}</p>
           </td>
         </tr>
       </tbody>
@@ -184,6 +184,9 @@
 </template>
 
 <script>
+import formatNumber from "../../filters/format_number"
+import formatDate from "../../filters/formatDate"
+
 export default {
   props: ["salaries"],
   data() {
@@ -194,6 +197,11 @@ export default {
     closeDataINPS() {
       this.$emit("closeBar", false);
     }
+  },
+
+  filters: {
+    formatNumber,
+    formatDate
   }
 };
 </script>

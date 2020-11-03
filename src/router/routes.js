@@ -196,10 +196,10 @@ const routes = [{
         beforeEnter: ifAuthenticated
       },
       {
-        path: "payment",
+        path: "payment/:id",
         name: "Payment",
         component: CreditPayment,
-        // beforeEnter: ifAuthenticatedCM
+         // beforeEnter: ifAuthenticatedCM
       }
       ]
     }
@@ -392,6 +392,7 @@ const routes = [{
   }
 }
 ];
+
 
 // Always leave this as last one
 if (process.env.MODE !== "ssr") {

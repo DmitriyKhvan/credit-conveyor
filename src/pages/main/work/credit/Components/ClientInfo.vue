@@ -1,5 +1,5 @@
 <template>
-  <div class="" style="max-width: auto">
+  <div class="clientInfo">
     <q-card>
       <q-tabs
         v-model="tab"
@@ -32,11 +32,11 @@
                 class="text-teal"
               >
                 <q-tab name="innerContract" icon="mail" label="Договора" />
-                <q-tab 
+                <!-- <q-tab 
                   name="innerApplication" 
                   icon="alarm" 
                   label="Заявки" 
-                />
+                /> -->
                 <q-tab name="innerExpiration" icon="movie" label="Просрочки" />
               </q-tabs>
             </template>
@@ -49,15 +49,15 @@
                 transition-next="slide-up"
               >
                 <q-tab-panel name="innerContract">
-                  <appContract :data="contracts" />
+                  <appContract :data="contracts" :status="StatusASOKI" />
                 </q-tab-panel>
 
-                <q-tab-panel name="innerApplication">
-                  <appApplication :data="claims"/>
-                </q-tab-panel>
+                <!-- <q-tab-panel name="innerApplication">
+                  <appApplication :data="claims" :status="StatusASOKI" />
+                </q-tab-panel> -->
 
                 <q-tab-panel name="innerExpiration">
-                  <appExpiration :data="overdue_payments" />
+                  <appExpiration :data="overdue_payments" :status="StatusASOKI" />
                 </q-tab-panel>
               </q-tab-panels>
             </template>
@@ -66,7 +66,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="gsz">
-          <appGSZ :data="GRCInfo" />
+          <appGSZ :data="GRCInfo" :status="StatusGSZ" />
         </q-tab-panel>
 
         <q-tab-panel name="scoring">
@@ -74,7 +74,7 @@
         </q-tab-panel>
 
         <q-tab-panel name="deposits">
-          <appDeposits :data="deposits"/>
+          <appDeposits :data="deposits" :status="StatusDeposits" />
         </q-tab-panel>
 
       </q-tab-panels>
@@ -125,16 +125,22 @@ export default {
       if (this.ASOKI) {
         return this.ASOKI.claims_information.claims.items
       }
+
+      return []
     },
     contracts() {
       if (this.ASOKI) {
         return this.ASOKI.contracts.contract.items
-      }
+      } 
+
+      return []
     },
     overdue_payments() {
       if (this.ASOKI) {
         return this.ASOKI.overdue_payments.overdue_contract.items
       }
+
+      return []
     },
 
     // client() {
@@ -147,12 +153,54 @@ export default {
       if (this.data.output.find(i => i.name === 'GRCInfo')) {
         return this.data.output.find(i => i.name === 'GRCInfo').data.items
       }
+
+      return []
     },
 
     deposits() {
       if (this.data.output.find(i => i.name === 'deposits')) {
         return this.data.output.find(i => i.name === 'deposits').data.items
       }
+
+      return []
+    },
+
+    exceptions() {
+      if (this.data.output.find(i => i.name === 'exceptions')) {
+        return this.data.output.find(i => i.name === 'exceptions').data
+      }
+
+      return null
+    },
+
+    StatusASOKI() {
+      if (this.exceptions) {
+        return this.exceptions.items.find(i => i.name === 'ASOKI') 
+                ? this.exceptions.items.find(i => i.name === 'ASOKI').value
+                : ''
+      } 
+
+      return ''
+    },
+
+    StatusGSZ() {
+      if (this.exceptions) {
+        return this.exceptions.items.find(i => i.name === 'GSZ')
+                ? this.exceptions.items.find(i => i.name === 'GSZ').value
+                : ''
+      } 
+
+      return ''
+    },
+
+    StatusDeposits() {
+      if (this.exceptions) {
+        return this.exceptions.items.find(i => i.name === 'DEPOSITS')
+                ? this.exceptions.items.find(i => i.name === 'DEPOSITS').value
+                : ''
+      } 
+
+      return ''
     }
   }, 
   components: {
@@ -165,3 +213,22 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .clientInfo {
+    max-width: auto;
+    margin-bottom: 16px;
+
+    .q-table--no-wrap th, .q-table--no-wrap td {
+      white-space: normal;
+    }
+
+    .q-splitter--vertical > .q-splitter__panel {
+      width: 130px !important;
+    }
+
+    .messageTitle {
+      text-align: center;
+    }
+  }
+</style>

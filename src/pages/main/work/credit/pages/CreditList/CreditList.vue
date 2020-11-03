@@ -188,7 +188,12 @@
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ index + 1 }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ index + 1 }}</template>
               <router-link
                 v-else
                 :to="{
@@ -204,7 +209,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ index + 1 }}</router-link
@@ -212,13 +218,18 @@
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.applicationNumber }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.applicationNumber }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -228,7 +239,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.applicationNumber }}</router-link
@@ -236,13 +248,18 @@
             </td>
 
             <td class="text-left client applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.client }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.client }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -252,7 +269,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.client }}</router-link
@@ -260,13 +278,18 @@
             </td>
 
             <td class="text-left manager applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.kmfio }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.kmfio }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -276,7 +299,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.kmfio }}</router-link
@@ -284,13 +308,18 @@
             </td>
 
             <td class="text-left MFO applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.filial }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.filial }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -300,7 +329,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.filial }}</router-link
@@ -308,13 +338,18 @@
             </td>
 
             <td class="text-left filialName applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.filialName }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.filialName }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -324,7 +359,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.filialName }}</router-link
@@ -332,13 +368,18 @@
             </td>
 
             <td class="text-left taskName applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.taskName }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.taskName }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -348,7 +389,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.taskName }}</router-link
@@ -356,13 +398,18 @@
             </td>
 
             <td class="text-left taskStatus applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.taskStatus }}</template>
+              <template 
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.taskStatus }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -372,7 +419,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName 
                   }
                 }"
                 >{{ credit.taskStatus }}</router-link
@@ -380,13 +428,18 @@
             </td>
 
             <td class="text-left date applicationRow">
-              <template v-if="userRole === 'ROLE_CCS' || userRole === 'ROLE_PM'">{{ credit.date | formatDate('datetime') }}</template>
+              <template
+                v-if="userRole === 'ROLE_CCS' || 
+                userRole === 'ROLE_PM' ||
+                credit.taskName === 'Создание Контракта в iABS' ||
+                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
+              >{{ credit.date | formatDate('datetime') }}</template>
               <router-link
                 v-else
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'
@@ -396,7 +449,8 @@
                     taskId: credit.taskId,
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName
+                    filialName: credit.filialName,
+                    status: credit.taskName
                   }
                 }"
                 >{{ credit.date | formatDate('datetime')}}</router-link
@@ -407,17 +461,18 @@
               <div class="btnBlock">
                 
                 <!-- <template v-if="userRole === 'ROLE_CCS'"> -->
-                  <q-btn
+                  <!-- <q-btn
                     :disable="disable"
                     class="btnCCS"
                     label="Подписать"
                     @click="creditSign(credit.taskId)"
-                  /> 
+                  />  -->
 
                   <q-btn 
                     :disable="disable"
                     class="btnPrint"
-                    icon="print" 
+                    icon="print"
+                    label="(рус.)"
                     @click="printFile(credit.taskId, index)" 
                     :loading="loadings[index]"
                   >
@@ -425,7 +480,22 @@
                     <template v-slot:loading>
                       <q-spinner-facebook />
                     </template>
-                    <q-tooltip>Распечатать</q-tooltip>
+                    <q-tooltip>Печать</q-tooltip>
+                  </q-btn>
+
+                  <q-btn 
+                    :disable="disable"
+                    class="btnPrint"
+                    icon="print" 
+                    label="(узб.)"
+                    @click="printFile(credit.taskId, index + creditCount, 1)" 
+                    :loading="loadings[index + creditCount]"
+                  >
+                  <!-- {{ credits[index] }} -->
+                    <template v-slot:loading>
+                      <q-spinner-facebook />
+                    </template>
+                    <q-tooltip>Печать</q-tooltip>
                   </q-btn>
 
                   <!-- <q-btn 
@@ -460,7 +530,7 @@
       <!-- <iframe id="pdf" name="pdf" :src="link"></iframe> -->
     </div>
 
-    <div v-if="loaderList" class="q-pa-lg flex justify-end items-center pagination">
+    <div class="q-pa-lg flex justify-end items-center pagination">
       <span class="pagination__title">Строк на странице: </span>
       <q-select 
         class="pagination__count"
@@ -515,7 +585,8 @@ export default {
       loaderFullScreen: false,
       fileData: {
         type: "protocol",
-        lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
+        // lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
+        lang: 0, //0 - рус, 1 - узб
         data: {}
       },
       // link: null,
@@ -569,7 +640,8 @@ export default {
           countRowList: state => state.credits.countRowList,
           creditTasks: state => state.credits.creditTasks,
           loadings: state => state.credits.loadings,
-          userRole: state => state.credits.userRole
+          userRole: state => state.credits.userRole, 
+          creditCount: state => state.credits.creditCount
         }),
     
     // ...mapGetters({
@@ -768,22 +840,23 @@ export default {
       }
     },
 
-    async printFile(taskId, idx) {
+    async printFile(taskId, idx, lang = 0) {
       
       let task = this.credits.find(i => i.taskId == taskId)
       
       let file = null
+      const docId = task[lang] ? task[lang] : null
 
-      if (task.idFile) {
+      if (docId) {
         file = await this.$store.dispatch(
           "credits/getFile",
-          task.idFile
+          docId
         );
       } else {
         
-        file = await this.getUrlFile(taskId, idx)
+        file = await this.getUrlFile(taskId, idx, lang)
         
-        task.idFile = file.id  // кеширование id file
+        task[lang] = file.id  // кеширование id file
         
       }
       console.log('file', file)
@@ -812,7 +885,7 @@ export default {
         window.URL.revokeObjectURL(file);
     },
 
-    async getUrlFile(taskId, idx) {
+    async getUrlFile(taskId, idx, lang) {
       this.disable = true
       this.loadings.splice(idx, 1, true) // для ререндеринга (особенность vue)
       let file = null
@@ -820,7 +893,7 @@ export default {
           const response = await this.$store.dispatch("profile/getFullForm", taskId)
           
           if (response) {
-            // this.fileData.data = this.dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
+            this.fileData.lang = lang
             this.fileData.data = dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
           
             console.log(JSON.stringify(this.fileData, null, 2))
@@ -898,9 +971,22 @@ export default {
   //   background: #e8edff;
   // }
   .q-table {
-    thead tr {
-      background: transparent;
+    thead {
+      tr {
+        background: transparent;
+      }
     }
+
+    // tbody {
+    //   tr {
+    //     &:hover {
+    //       &:hover{
+    //         background: rgba(0, 0, 0, 0.1) !important;
+    //         border-radius: 5px;
+    //       }
+    //     }
+    //   }
+    // }
 
     tr {
       background: #FFFFFF;
@@ -929,23 +1015,23 @@ export default {
 
   td {
     padding: 0;
+    white-space: pre-wrap;
     &:before {
       background: rgba(0, 0, 0, 0.15) !important;
+      // background: none;
     }
   }
 
-  td {
-    /* word-break: break-all; */
-    white-space: pre-wrap;
-    padding-right: 20px;
-  }
-
   .time {
-    background: rgba(255, 129, 129, 0.5) !important;
+    // background: rgba(255, 129, 129, 0.5) !important;
+    // background: rgba(255, 74, 74, 0.5) !important;
+    background: #FFE9E9 !important;
   }
 
   .creditCompleate {
-    background: rgba(99, 195, 148, 0.5) !important;
+    // background: rgba(99, 195, 148, 0.5) !important;
+    // background: rgba(71, 184, 129, 0.5) !important;
+    background:#E5F5ED !important;
   }
 
   .number {
@@ -954,6 +1040,7 @@ export default {
 
     a {
       justify-content: center;
+      padding-right: 0 !important;
     }
 
     span {
@@ -981,23 +1068,34 @@ export default {
 
     .btnBlock {
       display: flex;
-      padding-left: 20px;
     
-
       .btnPrint {
         margin: 0;
         background: transparent;
-        color: #000000;
+        color: #74798c;
+        width: 80px;
+
         .q-btn__wrapper:before {
           box-shadow: none;
+        }
+
+        .q-btn__wrapper {
+          padding: 4px;
+        }
+
+        .on-left {
+          margin-right: 2px;
         }
       }
     }
   }
 
-  .btnCCS {
-    background: #47B881;
-    color: #ffffff;
+  .protocol {
+    .btnCCS {
+      background: #47B881;
+      color: #ffffff;
+      margin: 0;
+    }
   }
 
   .filter {
@@ -1061,7 +1159,7 @@ export default {
       width: 100%;
       height: 100%;
       align-items: center;
-      padding: 0 5px;
+      padding-right: 20px;
     }
   }
 
@@ -1076,6 +1174,8 @@ export default {
 
     &__count {
       margin: 0 20px 0 0;
+      background: transparent;
+      border: none;
     }
   }
 }

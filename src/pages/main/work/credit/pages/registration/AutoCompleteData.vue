@@ -4,7 +4,7 @@
       :loading="submitting"
       label="Получить данные автоматически"
       @click="autoCompleate"
-      class="full-width digIdBtn"
+      class="full-width getInfoBtn"
     >
       <template v-slot:loading>
         <q-spinner-facebook />
@@ -33,18 +33,5 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-  // .q-btn--rectangle {
-  //   border-radius: 0;
-  // }
-
-  // .full-width {
-  //   // margin-bottom: 16px;
-  // }
-
-  .digIdBtn {
-    background: #4AB8FF;
-    font-size: 14px;
-    font-weight: bold;
-  }
+<style lang="scss">
 </style>

@@ -6,6 +6,7 @@ export default class BpmService {
   _digIdUrl = "http://localhost:50000/api/Identification";
   _baseUrl = "http://10.8.8.90:8070" //dev
   // _baseUrl = "http://10.1.4.10:8070" //local
+  // _baseUrl = "http://10.8.7.76:8070" //local Zafar
   // _baseUrl = "http://10.8.8.86:8070"; //prod
 
   getBPMToken = async () => {
@@ -200,6 +201,16 @@ export default class BpmService {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/document/edocument/protocol_form`
+    });
+
+    return responce.data;
+  };
+
+  checkClient = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/startGci`,
+      data
     });
 
     return responce.data;

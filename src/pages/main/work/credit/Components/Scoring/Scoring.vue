@@ -56,7 +56,8 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                Соответствует
+                <!-- Соответствует -->
+                Не найден
               </p>
             </div>
           </div>
@@ -70,7 +71,8 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                Соответствует
+                <!-- Соответствует -->
+                Не найден
               </p>
             </div>
           </div>
@@ -85,7 +87,7 @@
               <h3 class="scoringList__title">4. ЛСБО:</h3>
             </div>
             <div class="col-5">
-              <q-checkbox v-model="val" disable/>
+              <q-checkbox v-model="data.Customer.LSBO" disable/>
             </div>
           </div>
           
@@ -100,7 +102,7 @@
 
             <div class="col-5">
               <p class="scoringList__value">
-                2
+                
               </p>
             </div>  
           </div>
@@ -111,7 +113,7 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                20 000 000 сум
+                
               </p>
             </div>
           </div>
@@ -122,7 +124,7 @@
             </div>
             <div class="col-5">
               <p class="scoringList__value">
-                20 000 000 сум
+                
               </p>
             </div>
           </div>
@@ -195,14 +197,16 @@
     </div>
 
     <div class="maxSum">
-      <h3 class="scoringList__title">Максимальная возможная сумма кредита</h3>
+      <h3 class="scoringList__title">Расчетная сумма кредита</h3>
       <p class="scoringList__value">
-        {{ data.LoanInfo.max_loan_sum_preapprove }} сум
+        {{ data.LoanInfo.max_loan_sum_preapprove | formatNumber}} сум
       </p>
     </div>
   </div>
 </template>
 <script>
+import formatNumber from "../../filters/format_number";
+
 export default {
   props: {
     data: {
@@ -221,6 +225,9 @@ export default {
     //   return (new Date() - new Date(data.Customer.BirthDate)).getYear()
     // }
   },
+  filters: {
+    formatNumber
+  }
 };
 </script>
 

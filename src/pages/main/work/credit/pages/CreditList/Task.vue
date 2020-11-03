@@ -179,6 +179,16 @@
             </div>
 
             <div class="row rowForm">
+              <div class="col-3 field">Номер карты</div>
+              <div class="col-9 data">{{ Customer.CardNumber }}</div>
+            </div>
+
+            <div class="row rowForm">
+              <div class="col-3 field">Номер карты поручителя</div>
+              <div class="col-9 data">{{ Customer.BankInps }}</div>
+            </div>
+
+            <div class="row rowForm">
               <div class="col-3 field">ИНН</div>
               <div class="col-9 data">{{ Customer.INN }}</div>
             </div>
@@ -205,6 +215,31 @@
                 </template>
               </div>
             </div>
+
+            <template v-if="Customer.LSBO">
+              <div class="row rowForm">
+                <div class="col-12 field">
+                  <q-checkbox
+                    disable
+                    left-label
+                    v-model="Customer.LSBO"
+                    label="ЛСБО"
+                  />
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-3 field">Номер филиала</div>
+                <div class="col-3 data">
+                  {{ Customer.filial }}
+                </div>
+                <div class="col-3 field">Должность</div>
+                <div class="col-3 data">
+                  {{ Customer.role }}
+                </div>
+              </div>
+            </template>
+
           </div>
 
           <!-- Контакты -->
@@ -523,7 +558,11 @@
                   Количество работников в организации
                 </div>
                 <div class="col-6 data">
-                  {{ Customer.JobInfo.employeesNum }}
+                  {{ 
+                    dictionaries.employeesNum.items.find(
+                      i => i.value == Customer.JobInfo.employeesNum
+                    ).label
+                  }}
                 </div>
               </div>
 
@@ -604,14 +643,14 @@
             <div class="row rowForm">
               <div class="col-6 field">Подвержденный ежемесячный доход</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyIncome.confirmMonthlyIncome }}
+                {{ Customer.MonthlyIncome.confirmMonthlyIncome | formatNumber }}
               </div>
             </div>
 
             <div class="row rowForm">
               <div class="col-6 field">Периодические расходы</div>
               <div class="col-6 data">
-                {{ Customer.MonthlyExpenses.recurringExpenses }}
+                {{ Customer.MonthlyExpenses.recurringExpenses | formatNumber }}
               </div>
             </div>
 
@@ -639,56 +678,60 @@
                 Плата за обслуживание других обязательств
               </div>
               <div class="col-6 data">
-                {{ Customer.MonthlyExpenses.obligations }}
+                {{ Customer.MonthlyExpenses.obligations | formatNumber }}
               </div>
             </div>
-
-            <div class="row rowForm">
-              <div class="col-6 field">Размер дополнительного дохода</div>
-              <div class="col-6 data">
-                {{ Customer.MonthlyIncome.additionalIncome.sum }}
-              </div>
-            </div>
-
-            <div class="row rowForm">
-              <div class="col-6 field">Источник дополнительного дохода</div>
-              <div class="col-6 data">
-                <template
-                  v-if="
-                    dictionaries.additionalIncomeSource.items.find(
-                      i =>
-                        i.value ==
-                        Customer.MonthlyIncome.additionalIncome.incomeType
-                    )
-                  "
-                >
-                  {{
-                    dictionaries.additionalIncomeSource.items.find(
-                      i =>
-                        i.value ==
-                        Customer.MonthlyIncome.additionalIncome.incomeType
-                    ).label
-                  }}
-                </template>
-              </div>
-            </div>
-            <div v-if="userRole === 'ROLE_CC'" class="row rowForm">
-              <div class="col-12 field">
-                <div class="btnBlock">
-                  <q-btn
-                    :loading="bankLoading"
-                    color="primary"
-                    label="Посмотреть заработные поступления"
-                    @click="getDataINPS"
-                    class="btnGet"
-                  >
-                    <template v-slot:loading>
-                      <q-spinner-facebook />
-                    </template>
-                  </q-btn>
+           
+            <template v-if="Customer.MonthlyIncome.hasAdditionalIncome">
+              <div class="row rowForm">
+                <div class="col-6 field">Размер дополнительного дохода</div>
+                <div class="col-6 data">
+                  {{ Customer.MonthlyIncome.additionalIncome.sum | formatNumber }}
                 </div>
               </div>
-            </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">Источник дополнительного дохода</div>
+                <div class="col-6 data">
+                  <template
+                    v-if="
+                      dictionaries.additionalIncomeSource.items.find(
+                        i =>
+                          i.value ==
+                          Customer.MonthlyIncome.additionalIncome.incomeType
+                      )
+                    "
+                  >
+                    {{
+                      dictionaries.additionalIncomeSource.items.find(
+                        i =>
+                          i.value ==
+                          Customer.MonthlyIncome.additionalIncome.incomeType
+                      ).label
+                    }}
+                  </template>
+                </div>
+              </div>
+            </template> 
+
+              <div v-if="userRole === 'ROLE_CC'" class="row rowForm">
+                <div class="col-12 field">
+                  <div class="btnBlock">
+                    <q-btn
+                      :loading="bankLoading"
+                      color="primary"
+                      label="Посмотреть заработные поступления"
+                      @click="getDataINPS"
+                      class="btnGet"
+                    >
+                      <template v-slot:loading>
+                        <q-spinner-facebook />
+                      </template>
+                    </q-btn>
+                  </div>
+                </div>
+              </div>
+             
           </div>
 
           <h4 class="titleForm">Сведения об имуществе</h4>
@@ -742,7 +785,7 @@
 
               <div class="row rowForm">
                 <div class="col-4 field">Рыночная стоимость</div>
-                <div class="col-8 data">{{ property.MarketValue }}</div>
+                <div class="col-8 data">{{ property.MarketValue | formatNumber }}</div>
               </div>
             </div>
 
@@ -790,7 +833,7 @@
 
               <div class="row rowForm">
                 <div class="col-4 field">Рыночная стоимость</div>
-                <div class="col-8 data">{{ vehicle.marketValue }}</div>
+                <div class="col-8 data">{{ vehicle.MarketValue | formatNumber }}</div>
               </div>
             </div>
           </div>
@@ -871,9 +914,10 @@
                     </template>
                   </div>
                 </div>
-                <div class="row rowForm">
+
+                <!-- <div class="row rowForm">
                   <div class="col-12 field">Данные документа:</div>
-                </div>
+                </div> -->
 
                 <div class="row rowForm">
                   <div class="col-6 field">Вид документа</div>
@@ -951,9 +995,23 @@
                   </div>
                 </div>
 
+                <!-- <div class="row rowForm">
+                  <div class="col-6 field">Номер карты</div>
+                  <div class="col-6 data">
+                    {{ guarantee.CardNumber }}
+                  </div>
+                </div> -->
+
                 <div class="row rowForm">
-                  <div class="col-12 field">Адрес:</div>
+                  <div class="col-6 field">Номер карты поручителя</div>
+                  <div class="col-6 data">
+                    {{ guarantee.BankInps }}
+                  </div>
                 </div>
+
+                <!-- <div class="row rowForm">
+                  <div class="col-12 field">Адрес:</div>
+                </div> -->
 
                 <!-- <div class="row rowForm">
                   <div class="col-6 field">Индекс</div>
@@ -1004,12 +1062,12 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма поручительства</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
-                <div class="row rowForm">
+                <!-- <div class="row rowForm">
                   <div class="col-12 field">Контактная информация:</div>
-                </div>
+                </div> -->
 
                 <div
                   class="row rowForm"
@@ -1051,9 +1109,15 @@
                   <div class="col-6 field">Наименование организации</div>
                   <div class="col-6 data">{{ guarantee.Name }}</div>
                 </div>
+
                 <div class="row rowForm">
-                  <div class="col-12 field">Адрес:</div>
+                  <div class="col-6 field">ИНН</div>
+                  <div class="col-6 data">{{ guarantee.INN }}</div>
                 </div>
+
+                <!-- <div class="row rowForm">
+                  <div class="col-12 field">Адрес:</div>
+                </div> -->
 
                 <!-- <div class="row rowForm">
                   <div class="col-6 field">Индекс</div>
@@ -1077,7 +1141,9 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Район</div>
-                  <div class="col-6 data">{{ guarantee.Address.District }}</div>
+                  <div class="col-6 data">
+                    {{ getDistrict(guarantee.Address.Region, guarantee.Address.District) }}
+                  </div>
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Улица / мкр.</div>
@@ -1089,12 +1155,12 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма поручительства</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
 
-                <div class="row rowForm">
+                <!-- <div class="row rowForm">
                   <div class="col-12 field">Контактная информация:</div>
-                </div>
+                </div> -->
 
                 <div
                   class="row rowForm"
@@ -1136,7 +1202,22 @@
                 </div>
                 <div class="row rowForm">
                   <div class="col-6 field">Сумма страхового полиса</div>
-                  <div class="col-6 data">{{ guarantee.Sum }}</div>
+                  <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер страхового договора</div>
+                  <div class="col-6 data">{{ guarantee.ContractNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Дата начала действия договора</div>
+                  <div class="col-6 data">{{ guarantee.StartDate }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Дата истечения действия договора</div>
+                  <div class="col-6 data">{{ guarantee.ExpDate }}</div>
                 </div>
               </div>
             </template>
@@ -1165,7 +1246,7 @@
 
             <div class="row rowForm">
               <div class="col-6 field">Запрашиваемая сумма кредита</div>
-              <div class="col-6 data">{{ fullProfile.LoanInfo.Sum }}</div>
+              <div class="col-6 data">{{ fullProfile.LoanInfo.Sum | formatNumber }}</div>
             </div>
 
             <div class="row rowForm">
@@ -1233,7 +1314,7 @@
               </div>
             </div>
 
-            <div class="row rowForm">
+            <!-- <div class="row rowForm">
               <div class="col-6 field">
                 Максимальное количество месяцев на кредит
               </div>
@@ -1274,7 +1355,7 @@
               <div class="col-6 data">
                 {{ fullProfile.LoanInfo.MinInitialPaymentPercent }}
               </div>
-            </div>
+            </div> -->
 
             <div class="row rowForm">
               <div class="col-6 field">Цель кредитования</div>
@@ -1314,7 +1395,7 @@
               </div>
             </div>
 
-            <template v-if="fullProfile.LoanInfo.LoanProduct == 2">
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Наименование продавца/производителя товара/работы/услуги
@@ -1374,7 +1455,7 @@
                   Среднемесячная заработная плата(сум)
                 </div>
                 <div class="col-6 data">
-                  {{ profile.avgSalary }}
+                  {{ processInfo.avgSalary }}
                 </div>
               </div>
 
@@ -1383,7 +1464,7 @@
                   Профит
                 </div>
                 <div class="col-6 data">
-                  {{ profile.profit }}
+                  {{ processInfo.profit }}
                 </div>
               </div>
 
@@ -1392,7 +1473,7 @@
                   Класс кредитоспособности
                 </div>
                 <div class="col-6 data">
-                  {{ profile.loanAbilityClass }}
+                  {{ processInfo.loanAbilityClass }}
                 </div>
               </div>
 
@@ -1401,7 +1482,7 @@
                   Расчет максимально возможной суммы кредита (скоринг)
                 </div>
                 <div class="col-6 data">
-                  {{ profile.LoanMax }}
+                  {{ processInfo.LoanMax | formatNumber }}
                 </div>
               </div>
             </template>
@@ -1503,6 +1584,7 @@
           />
         
           <q-btn
+            v-if="userRole != 'ROLE_UrWr'"
             label="Отклонить"
             class="q-ml-md btnFailure"
             @click="
@@ -1514,7 +1596,6 @@
           />
         
           <q-btn
-            v-if="userRole === 'ROLE_CC'"
             label="На доработку"
             class="q-ml-md btnRework"
             @click="
@@ -1529,13 +1610,14 @@
       </div>
 
       <q-dialog v-model="confirm" persistent>
-        <q-card class="failureCredit">
+        <q-card class="failureCreditForm">
           <!-- <q-card-section class="row titleFailureCredit">
           <span class="q-ml-sm">Выберите причину отказа</span>
         </q-card-section> -->
           <q-card-section class="row titleFailureCredit">
             <span class="q-ml-sm">Введите причину отказа</span>
           </q-card-section>
+          <div class="separate"></div>
           <form
             class="failureCreditForm row q-col-gutter-md"
             @submit.prevent.stop="submitHandler"
@@ -1589,9 +1671,9 @@
               </div>
             </div>
 
-            <div class="col-6">
+            <div class="btnBlock">
               <q-btn
-                class="btnFailureCredit full-width"
+                class="btnCancel"
                 label="Отмена"
                 color="red"
                 v-close-popup
@@ -1602,10 +1684,9 @@
                   }
                 "
               />
-            </div>
-            <div class="col-6">
+            
               <q-btn
-                class="btnFailureCredit full-width"
+                class="btnOk"
                 type="submit"
                 label="Отправить"
                 color="green"
@@ -1645,7 +1726,7 @@
 </template>
 <script>
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
@@ -1653,6 +1734,7 @@ import LoaderFullScreen from "@/components/LoaderFullScreen";
 import GetDataINPS from "../../Components/INPS/GetData";
 
 import formatDate from "../../filters/formatDate";
+import formatNumber from "../../filters/format_number.js";
 import { validItems, validFilter } from "../../filters/valid_filter";
 import ClientInfo from "../../Components/ClientInfo";
 
@@ -1668,13 +1750,15 @@ export default {
       loaderForm: true,
       confirm: false,
       BODecision: true,
+      FinalDecision: "",
       dataINPS: null,
       userRole: this.$store.getters["credits/userRole"],
 
       commentBO: {
         Comment: "",
         Type: this.$store.getters["credits/userRole"],
-        CommentPerson: this.$store.getters["auth/username"]
+        CommentPerson: this.$store.getters["auth/username"],
+        CommentPersonFIO: this.$store.getters["auth/fullName"]
         //id: 0,
         //CommentDate: ""
       },
@@ -1739,6 +1823,10 @@ export default {
       credits: state => state.credits
     }),
 
+    ...mapGetters({
+        preapprove_num: "profile/preapprove_num"
+    }), 
+
     date() {
       return this.$route.query.date;
     },
@@ -1750,9 +1838,50 @@ export default {
     },
     filialName() {
       return this.$route.query.filialName;
+    },
+    
+    processInfo() {
+      const processInfo = this.profile.BPMInput.find(
+        i => i.label === "processInfo"
+      );
+
+      if (processInfo) {
+        return {
+          avgSalary: processInfo.data.avgSalary,
+          loanAbilityClass: processInfo.data.loanAbilityClass,
+          profit: processInfo.data.profit,
+          LoanMax: processInfo.data.LoanMax,
+        }
+      } else {
+        return {
+          avgSalary: null,
+          loanAbilityClass: null,
+          profit: null,
+          LoanMax: null,
+        }
+      }
     }
   },
   methods: {
+
+    messageApprove() {
+      return this.userRole == "ROLE_CCC"
+              ? 'Form approve'
+              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+                ? 'Credit success'
+                : null
+    },
+    messageReject(Decision) {
+      console.log('Decision', Decision)
+      return this.userRole == "ROLE_CCC"
+              ? 'Form reject'
+              : this.userRole == "ROLE_CC" && Decision == 'N' || this.userRole == "ROLE_UrWr"
+                ? 'Credit failure'
+                : this.userRole == "ROLE_CC" && Decision == 'R'
+                  ? 'Credit rework'
+                  : null
+    },
+
     async getClientInfo() {
       this.clientInfoLoading = true;
       try {
@@ -1779,7 +1908,7 @@ export default {
           comment: this.commentCC
         });
       }
-      this.sentData("Credit success");
+      this.sentData(this.messageApprove());
     },
 
     submitHandler(event) {
@@ -1800,7 +1929,11 @@ export default {
         this.formHasError = true;
       } else {
         if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
-          this.BODecision = false; // кредит отклонен
+          this.BODecision = false; // кредит на доработку
+          this.FinalDecision = this.commentCC.Decision == 'N' 
+                                  ? "Отказ"
+                                  : ""
+
           this.$store.commit("profile/addComment", {
             commentBlock: "ApplicationComment",
             comment: this.commentBO
@@ -1816,12 +1949,13 @@ export default {
             comment: {
               Comment: this.commentCC.Comment,
               CommentPerson: this.$store.getters["auth/username"],
-              Type: this.$store.getters["credits/userRole"]
+              Type: this.$store.getters["credits/userRole"],
+              CommentPersonFIO: this.$store.getters["auth/fullName"]
             }
           });
         }
 
-        this.sentData("Credit failure");
+        this.sentData(this.messageReject(this.commentCC.Decision));
 
         this.confirm = false;
       }
@@ -1830,9 +1964,13 @@ export default {
     async sentData(message) {
       this.loader = true;
       let data = {};
-      if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
+      if (this.userRole == "ROLE_CCC"  || this.userRole == "ROLE_UrWr") {
         data = {
           output: [
+             {
+              name: "FinalDecision",
+              data: this.FinalDecision
+            },
             {
               name: "BOLogin",
               data: this.$store.getters["auth/username"]
@@ -1848,9 +1986,7 @@ export default {
           ]
         };
       } else if (this.userRole == "ROLE_CC") {
-        // const fullNameArr = this.$store.getters["auth/fullName"].split(' ')
-        // const fullName = `${fullNameArr[1]} ${fullNameArr[0]} ${fullNameArr[2]}`
-
+        
         data = {
           output: [
             {
@@ -1859,7 +1995,14 @@ export default {
             },
             {
               name: "application_comments",
-              data: this.fullProfile.ApplicationComment.items
+              //data: this.fullProfile.ApplicationComment.items
+              data: [
+                      {
+                        Comment: this.commentCC.Comment,
+                        CommentPerson: this.$store.getters["auth/username"],
+                        Type: this.$store.getters["credits/userRole"]
+                      }
+                    ]
             },
             {
               name: "username",
@@ -1873,8 +2016,8 @@ export default {
         };
       }
 
+      console.log("data", JSON.stringify(data, null, 2));
       try {
-        console.log("data", JSON.stringify(data, null, 2));
         const response = await this.$store.dispatch(
           "credits/confirmationCredit",
           data
@@ -1944,71 +2087,103 @@ export default {
       }
     },
 
+    // async getDataINPS() {
+    //   this.bankLoading = true;
+    //   let data = {
+    //     input: [
+    //       {
+    //         name: "passSerial",
+    //         data: this.Customer.Document.Series
+    //       },
+    //       {
+    //         name: "passNumber",
+    //         data: this.Customer.Document.Number
+    //       },
+    //       {
+    //         name: "pin",
+    //         data: this.Customer.PINPP
+    //       },
+    //       {
+    //         name: "application_id",
+    //         data: this.profile.preapprove_num
+    //       },
+    //       {
+    //         name: "from",
+    //         data: "getData"
+    //       }
+    //     ]
+    //   };
+
+    //   try {
+    //     this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
+    //     if (this.dataINPS.code == "0") {
+              // const INPSItems = this.dataINPS.wages.items.map(i => {
+              //   return {
+              //     period: CommonUtils.dateFilter(i.period),
+              //     send_date: i.send_date,
+              //     inn: i.inn,
+              //     total_invoices: {
+              //       balance: i.total_invoices.balance,
+              //       percent: i.total_invoices.percent,
+              //       full: i.total_invoices.full
+              //     },
+              //     org_addres: i.org_addres,
+              //     org_name: i.org_name
+              //   };
+              // });
+
+              // this.dataINPS.wages.items = INPSItems;
+
+              // this.dateTransformINPS()
+    //     } else {
+    //       data = {
+    //         input: [
+    //           {
+    //             name: "application_id",
+    //             data: this.profile.preapprove_num
+    //             // data: '00450.null.1.2020.124'
+    //           },
+    //           {
+    //             name: "from",
+    //             data: "viewData"
+    //           }
+    //         ]
+    //       };
+    //       this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
+    //     }
+
+    //     this.bankLoading = false;
+    //     this.INPSBar = true;
+    //   } catch (error) {
+    //     this.$store.commit(
+    //       "credits/setMessage",
+    //       CommonUtils.filterServerError(error)
+    //     );
+    //     this.loader = false;
+    //     this.bankLoading = false;
+    //   }
+    // },
+
     async getDataINPS() {
       this.bankLoading = true;
-      let data = {
+      const data = {
         input: [
           {
-            name: "passSerial",
-            data: this.Customer.Document.Series
-          },
-          {
-            name: "passNumber",
-            data: this.Customer.Document.Number
-          },
-          {
-            name: "pin",
-            data: this.Customer.PINPP
-          },
-          {
             name: "application_id",
-            data: this.profile.preapprove_num
+            data: this.preapprove_num
+            // data: '00450.null.1.2020.124'
           },
           {
             name: "from",
-            data: "getData"
+            data: "viewData"
           }
         ]
       };
 
       try {
-        this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        if (this.dataINPS) {
-          const INPSItems = this.dataINPS.wages.items.map(i => {
-            return {
-              period: CommonUtils.dateFilter(i.period),
-              send_date: i.send_date,
-              inn: i.inn,
-              total_invoices: {
-                balance: i.total_invoices.balance,
-                percent: i.total_invoices.percent,
-                full: i.total_invoices.full
-              },
-              org_addres: i.org_addres,
-              org_name: i.org_name
-            };
-          });
-
-          this.dataINPS.wages.items = INPSItems;
-
-          // this.dateTransformINPS()
-        } else {
-          data = {
-            input: [
-              {
-                name: "application_id",
-                data: this.profile.preapprove_num
-                // data: '00450.null.1.2020.124'
-              },
-              {
-                name: "from",
-                data: "viewData"
-              }
-            ]
-          };
-          this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        }
-
+        
+        this.dataINPS = await this.$store.dispatch("profile/viewDataINPS", data);
+        
         this.bankLoading = false;
         this.INPSBar = true;
       } catch (error) {
@@ -2021,24 +2196,7 @@ export default {
       }
     }
 
-    // dateTransformINPS() {
-    //   const INPSItems = this.dataINPS.wages.items.map(i => {
-    //     return {
-    //       period: CommonUtils.dateFilter(i.period),
-    //       send_date: i.send_date,
-    //       inn: i.inn,
-    //       total_invoices: {
-    //           balance: i.total_invoices.balance,
-    //           percent: i.total_invoices.percent,
-    //           full: i.total_invoices.full
-    //       },
-    //       org_addres: i.org_addres,
-    //       org_name: i.org_name
-    //     }
-    //   })
-
-    //   this.dataINPS.wages.items = INPSItems
-    // }
+  
   },
   components: {
     appLoader: Loader,
@@ -2047,13 +2205,15 @@ export default {
     appClientInfo: ClientInfo
   },
   filters: {
-    formatDate
+    formatDate,
+    formatNumber
   }
 };
 </script>
 
 <style lang="scss">
 .taskBlock {
+  background: #ffffff;
   padding-bottom: 170px;
   .infoBlock {
     display: flex;
@@ -2114,29 +2274,32 @@ export default {
 
   .formBlock {
     font-size: 16px;
+    padding: 30px;
+    margin-top: -5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .rowForm {
     display: flex;
     align-items: center;
     margin: 8px 0 4px 0;
-  }
 
-  .field {
-    color: #A0A5BA;
-    padding: 0 5px 0 30px;
-  }
+    .field {
+      color: #A0A5BA;
+      padding: 0 5px 0 0;
+    }
 
-  .data {
-    display: flex;
-    min-height: 45px;
-    justify-content: space-between;
-    align-items: center;
-    color: #2A3C63;
-    padding: 10px 20px;
-    border: 1px solid #E7E7E7;
-    border-radius: 5px;
-    background: #FAFAFA;
+    .data {
+      display: flex;
+      min-height: 45px;
+      justify-content: space-between;
+      align-items: center;
+      color: #2A3C63;
+      padding: 10px 20px;
+      border: 1px solid #E7E7E7;
+      border-radius: 5px;
+      background: #FAFAFA;
+    }
   }
 
   .subTitleForm {
@@ -2167,26 +2330,6 @@ export default {
     box-sizing: border-box;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
     border-radius: 2px;
-  }
-
-  .titleFailureCredit {
-    font-size: 16px;
-    color: #868686;
-    background: #ebebeb;
-    padding: 15px 20px;
-    margin-bottom: 20px;
-  }
-
-  .failureCredit {
-    width: 600px;
-  }
-
-  .failureCreditForm {
-    padding: 0 40px 20px 40px;
-  }
-
-  .btnFailureCredit {
-    margin: 0;
   }
 
   .close {
@@ -2240,6 +2383,52 @@ export default {
 
   .btnRework {
     background: #4AB8FF;
+  }
+}
+
+
+
+.failureCreditForm {
+  width: 600px;
+
+  .q-field__control:after {
+    border-radius: 5px!important;
+  }
+
+  .q-field--square .q-field__control {
+    border-radius: 5px!important;
+  }
+
+  .separate {
+    width: auto;
+    height: 1px;
+    background: #F2F2F2;
+    margin: 0 30px 20px 30px;
+  }
+
+  .titleFailureCredit {
+    font-size: 24px;
+    font-weight: 600;
+    color: #384966;
+    padding: 15px 48px;
+  }
+
+  .failureCreditForm {
+    padding: 0 30px 40px 30px;
+  }
+
+  .btnBlock {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .btnCancel, .btnOk {
+      min-width: 186px;
+      min-height: 50px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+      border-radius: 2px;
+      margin: 0 10px;
+    }
   }
 }
 </style>

@@ -4,6 +4,7 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 export const credits = {
   namespaced: true,
   state: {
+    creditCount: 0,
     taskId: "",
     userRole: "",
     // fileId: null, 
@@ -23,13 +24,14 @@ export const credits = {
       ProcessManager: "ROLE_PM",
 
     },
-    
+
     messageBar: false,
     bpmService: new BpmService(),
-    
+
     scannerSerialNumber: null,
     disableInput: false,
-    
+    disableGCI: true,
+
     loadMessage: "",
     personalData: {
       surname: "",
@@ -40,6 +42,12 @@ export const credits = {
       pinpp: null,
       passport: "",
       personPhoto: "",
+      birthDate: "",
+      gender: null,
+      givenDate: "", // дата выдачи паспорта
+      expDate: "",  // дата окончания паспорта
+      client_code: "",
+      client_uid: "",
 
       typeCredit: null,
       typeStepCredit: null,
@@ -76,7 +84,7 @@ export const credits = {
     pages: 0,
     // allPages: 0,
     loadings: [],
-    
+
     countRowList: [
       {
         label: 10,
@@ -108,11 +116,11 @@ export const credits = {
         }
       ]
     }
-   
+
   },
   actions: {
     async authBpm({ state, dispatch, commit, getters, rootGetters }) {
-      
+
       try {
 
         const empId = rootGetters["auth/empId"];
@@ -201,7 +209,7 @@ export const credits = {
       }
     },
 
-    async getUserDataFromService({ state, commit}) {
+    async getUserDataFromService({ state, commit }) {
       try {
         state.disableInput = true
         state.loadMessage = "Данные загружаются"
@@ -247,7 +255,7 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        
+
         sessionStorage.clear()
         this.$router.push("/work/credit");
       }
@@ -274,7 +282,7 @@ export const credits = {
 
         commit("setTaskId", response.nextTask.id);
         sessionStorage.setItem("taskId", response.nextTask.id)
-        
+
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -285,12 +293,12 @@ export const credits = {
       }
     },
 
-    async getRoleTasks({ state, commit }, {page, count}) {
+    async getRoleTasks({ state, commit }, { page, count }) {
       try {
-        const response = await state.bpmService.getRoleTasks({page, count});
+        const response = await state.bpmService.getRoleTasks({ page, count });
         console.log("creditList", response);
         if (response.infoList.length) {
-          commit("setCreditTasks", {response, count});
+          commit("setCreditTasks", { response, count });
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -301,12 +309,12 @@ export const credits = {
       }
     },
 
-    async getUserTasks({ state, commit }, {page, count}) {
+    async getUserTasks({ state, commit }, { page, count }) {
       try {
-        const response = await state.bpmService.getUserTasks({page, count});
+        const response = await state.bpmService.getUserTasks({ page, count });
         console.log('res', response)
         if (response.infoList.length) {
-          commit("setCreditTasks",  {response, count});
+          commit("setCreditTasks", { response, count });
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -317,19 +325,19 @@ export const credits = {
       }
     },
 
-    async creatFile({state}, fileData) {
+    async creatFile({ state }, fileData) {
       try {
         const response = await state.bpmService.creatFile(fileData)
         console.log('cccccc', response)
         return response
-      } catch(error) {
+      } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
         throw error
       }
     },
 
-    async getFile({state, commit, dispatch}, fileData) {
+    async getFile({ state, commit, dispatch }, fileData) {
       try {
         let response = null;
         let file = null;
@@ -347,7 +355,7 @@ export const credits = {
           response = await state.bpmService.getFile(fileData)
           console.log('responsessssss', response)
         }
-        
+
         const blob = new Blob([response], { type: "application/pdf" })
         // const blob = new Blob([response], { type: "application/octet-stream" })
         console.log('infos')
@@ -356,15 +364,15 @@ export const credits = {
           id: file ? file.infos[0].id : fileData
           // fileName: file.infos[0].filename
         }
-    
-      } catch(error) {
+
+      } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
         throw error
       }
     },
 
-    async getProtocol({state, commit, dispatch}) {
+    async getProtocol({ state, commit, dispatch }) {
       try {
         const file = await state.bpmService.getProtocol()
         const response = await state.bpmService.getFile(file.infos[0].id)
@@ -374,7 +382,36 @@ export const credits = {
           id: file ? file.infos[0].id : fileData
           // fileName: file.infos[0].filename
         }
-      } catch(error) {
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+        throw error
+      }
+    },
+
+    async checkClient({ state, commit, dispatch }, clientData) {
+      try {
+        const response = await state.bpmService.checkClient(clientData)
+        console.log('GCI', response.internal)
+        const code = response.output.find(i => i.name == 'code')
+        const msg = response.output.find(i => i.name == 'response')
+
+        if (code.data == 0) {
+          state.disableGCI = true
+          const client_resp = response.internal.find(i => i.name == 'client_resp')
+          commit("setClientDataGCI", client_resp.data)
+        } else if(code.data == 4) {
+          // попробуйте снова
+          commit("resetClientDataGCI")
+          throw msg.data
+        } else {
+          // разблокируем поля
+          state.disableGCI = false
+          commit("resetClientDataGCI")
+          throw msg.data
+        } 
+
+      } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
         throw error
@@ -382,6 +419,50 @@ export const credits = {
     }
   },
   mutations: {
+    resetClientDataGCI(state) {
+      state.personalData.name = "";
+      state.personalData.surname = "";
+      state.personalData.mname = "";
+      state.personalData.gender = null;
+      state.personalData.passport = "";
+      state.personalData.pinpp = null;
+      state.personalData.inn = null;
+      state.personalData.birthDate = ""
+      state.personalData.givenDate = ""
+      state.personalData.expDate = ""
+      state.personalData.expDate = ""
+      state.personalData.client_code = ""
+      state.personalData.client_uid = ""
+      state.personalData.phone = 998 
+      state.personalData.familyStatus = null 
+    },
+
+
+    setClientDataGCI(state, payload) {
+        state.personalData.name = payload.responseBody.response.items[0].first_name;
+        state.personalData.surname = payload.responseBody.response.items[0].last_name;
+        state.personalData.mname = payload.responseBody.response.items[0].patronym;
+        state.personalData.gender = payload.responseBody.response.items[0].gender;
+        state.personalData.passport = payload.responseBody.response.items[0].series + payload.responseBody.response.items[0].number;
+        state.personalData.pinpp = payload.responseBody.response.items[0].pnfl;
+        state.personalData.inn = payload.responseBody.response.items[0].tin;
+        state.personalData.birthDate = payload.responseBody.response.items[0].birth_date
+        state.personalData.givenDate = payload.responseBody.response.items[0].doc_issue_date
+        state.personalData.expDate = payload.responseBody.response.items[0].doc_expire_date
+        state.personalData.client_code = payload.responseBody.response.items[0].client_code
+        state.personalData.client_uid = payload.responseBody.response.items[0].client_Uid
+        state.personalData.phone = payload.responseBody.response.items[0].mobile_phone
+                                    .replace(/[^0-9]/gim, "")
+                                    .slice(-9).length == 9 
+                                      ? "998" + payload.responseBody.response.items[0].mobile_phone
+                                          .replace(/[^0-9]/gim, "")
+                                          .slice(-9)
+                                      : 998
+        state.personalData.familyStatus = payload.responseBody.response.items[0].marital_status 
+                                           ? +payload.responseBody.response.items[0].marital_status + 1
+                                           : null
+    },
+
     setPersonalData(state, payload) {
       state.personalData = payload
     },
@@ -401,10 +482,14 @@ export const credits = {
       state.personalData.name = payload.Person.NameL;
       state.personalData.surname = payload.Person.SurnameL;
       state.personalData.mname = payload.Person.PatronymL;
+      state.personalData.gender = payload.Person.Sex;
       state.personalData.passport = payload.Person.DocumentSerialNumber;
       state.personalData.pinpp = payload.Person.Pinpp;
       state.personalData.inn = payload.Person.Inn ? payload.Person.Inn : payload.Additional.Inn;
       state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
+      state.personalData.birthDate = payload.Person.BirthDate
+      state.personalData.givenDate = payload.Person.DocumentDateIssue
+      state.personalData.expDate = payload.Person.DocumentDateValid
       state.DigID = true
     },
     resetPersonData(state) {
@@ -417,6 +502,12 @@ export const credits = {
         pinpp: "",
         passport: "",
         personPhoto: "",
+        birthDate: "",
+        gender: "",
+        givenDate: "", // дата выдачи паспорта
+        expDate: "",  // дата окончания паспорта
+        client_code: "",
+        client_uid: "",
 
         typeCredit: null,
         typeStepCredit: null,
@@ -430,12 +521,13 @@ export const credits = {
         familyStatus: null,
         children: false,
         childrenCount: 0,
+
         // MONEY //
         income: 0, //подтвержденный ежемесячный доход
         loan_purpose: null, // цель кредитования
         expense: 0, //периодические расходы
         otherExpenses: 0, //плата за облуживание других обязательств
-        externalIncome: "", //наличие дополнительного дохода
+        externalIncome: false, //наличие дополнительного дохода
         externalIncomeSize: 0, //размер дополнительного дохода
         additionalIncomeSource: "" //источник дополнительного дохода
       };
@@ -466,23 +558,32 @@ export const credits = {
 
     setCreditTasks(state, payload) {
       state.loadings = []
+      // количество заявок в списке
+      state.creditCount = payload.response.all < payload.count
+        ? payload.response.all
+        : payload.count
+
       state.countRowList.find(i => i.label === 'Все').value = payload.response.all
 
       state.pages = Math.ceil(payload.response.all / payload.count)
 
-      for (let i = 0; i < payload.count; i++) {
+      for (let i = 0; i < state.creditCount * 2; i++) {
         state.loadings[i] = false
       }
 
       // state.creditTasks = payload.response.infoList
 
       state.creditTasks = payload.response.infoList.map(credit => {
-        let creditCompleate = credit.taskName == "Step: Решение о выдаче"
-                ? true
-                : false
-        let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
-                ? true
-                : false
+        // let creditCompleate = credit.taskName == "Step: Решение о выдаче" 
+        let creditCompleate = credit.taskName == "Step: Заполнить ПП"
+          ? true
+          : false
+        let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1 ||
+          credit.taskName == "ERROR: Ошибка создание Контракта в iABS" ||
+          credit.taskName == "ERROR: Отправка в НИКИ - Ошибка" ||
+          credit.taskName == "ERROR: Ошибка создание ПП в iABS"
+          ? true
+          : false
 
         return {
           ...credit,
@@ -509,7 +610,7 @@ export const credits = {
       const idx = state.creditTasks.findIndex(i => i.taskId == taskId)
       state.creditTasks.splice(idx, 1)
     }
-   
+
   },
   getters: {
     // credits: state => state,

@@ -2,15 +2,15 @@
   <div class="addSalary">
     <!-- <q-btn @click="closeModal" icon="close" round /> -->
     <div class="salaryMessage">
-      <p>Данные по клиенту в базе данных Халк Банка отсутствуют. Необходимо ввести данные вручную со справки о заработной плате с места работы клиента.</p>
-      
+      <!-- <p>Данные по клиенту в базе данных Халк Банка отсутствуют. Необходимо ввести данные вручную со справки о заработной плате с места работы клиента.</p> -->
+      <p>{{ msg }}</p>
     </div>
     <form @submit.prevent.stop="onSubmit">
-      <q-field
+      <!-- <q-field
         ref="salaries"
         :value="salaries.length >= 1"
         :rules="[val => val || 'Заполните минимум 12 месяцев']"
-      >
+      > -->
         <q-markup-table separator="cell" flat bordered>
           <thead>
             <tr>
@@ -88,12 +88,12 @@
                   ref="salary"
                   square
                   outlined
-                  v-model.number="salary.sum"
-                  type="number"
+                  v-model="salary.sum"
+                  @input="formatNumberSalary(index)"
                   dense
                   :rules="[
                     val => !!val || 'Введите сумму',
-                    val => val > 0 || 'Некорректные данные'
+                    val => val != 0 || 'Некорректные данные'
                   ]"
                 />
               </td>
@@ -135,7 +135,7 @@
             class="q-ml-sm"
           />
         </div>
-      </q-field>
+      <!-- </q-field> -->
     </form>
 
     <appLoaderFullScreen v-if="loader" />
@@ -143,11 +143,18 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState, mapGetters } from "vuex"
 import LoaderFullScreen from "@/components/LoaderFullScreen"
 import { validItems, validFilter } from "../../filters/valid_filter"
+import formatNumber from "../../filters/format_number";
 
 export default {
+  props: {
+    msg: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
       dataINPS: null,
@@ -165,14 +172,23 @@ export default {
   computed: {
     ...mapState({
       profile: state => state.profile
-    })
+    }),
+    ...mapGetters({
+      preapprove_num: "profile/preapprove_num"
+    }),
   },
   methods: {
+    formatNumberSalary(idx) {
+      this.salaries[idx].sum = formatNumber(this.salaries[idx].sum)
+    }, 
+
     innValid(val) {
       return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
     },
 
     addSalary() {
+      console.log('salaries', this.salaries)
+
       validFilter(this.$refs, "INNValid", "INN");
       validFilter(this.$refs, "org_nameValid", "org_name");
       validFilter(this.$refs, "periodValid", "period");
@@ -200,30 +216,31 @@ export default {
     },
 
     async onSubmit() {
-      console.log(this.$refs.salaries)
       validFilter(this.$refs, "INNValid", "INN");
       validFilter(this.$refs, "org_nameValid", "org_name");
       validFilter(this.$refs, "periodValid", "period");
       validFilter(this.$refs, "salaryValid", "salary");
-      this.$refs.salaries.validate();
-      console.log(this.$refs.salaries.validate())
+      //this.$refs.salaries.validate();
+      
 
       if (
         this.$refs.INNValid.hasError ||
         this.$refs.org_nameValid.hasError ||
         this.$refs.periodValid.hasError ||
-        this.$refs.salaryValid.hasError ||
-        this.$refs.salaries.hasError
+        this.$refs.salaryValid.hasError 
+        // this.$refs.salaries.hasError
       ) {
         this.formHasError = true;
       } else {
         this.loader = true;
 
+        this.salaries.forEach(salary => salary.sum = +salary.sum.replace(/[^0-9]/gim, ""))
+
          const data = {
             input: [
               {
                 name: "application_id",
-                data: this.profile.preapprove_num
+                data: this.preapprove_num
               },
               {
                 name: "from",
@@ -234,7 +251,9 @@ export default {
                 data: this.salaries
               }
             ]
-          }           
+          }   
+          
+        console.log('dataSaler', data)
 
         try {
           this.dataINPS = await this.$store.dispatch("profile/dataINPS", data)
