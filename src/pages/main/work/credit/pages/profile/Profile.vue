@@ -1521,6 +1521,39 @@
                       />
                     </div>
                   </div>
+
+                  <div class="row q-col-gutter-md">
+                      <div class="col-4">
+                        <q-input
+                          :disable="disableField"
+                          ref="nameOfEmployer2"
+                          outlined
+                          v-model="Customer.JobInfo.employerName"
+                          dense
+                          label="Наименование организации"
+                          :rules="[
+                            val => !!val || 'Введите наименование работодателя'
+                          ]"
+                        />
+                      </div>
+                      <div class="col-4">
+                        <q-input
+                          :disable="disableField"
+                          ref="innOfEmployer2"
+                          outlined
+                          v-model="Customer.JobInfo.INN"
+                          dense
+                          label="ИНН организации"
+                          mask="#########"
+                          :rules="[
+                            val =>
+                              (val && val.length == 9) ||
+                              'Введите ИНН работодателя',
+                            val => INNYurValid(val)
+                          ]"
+                        />
+                      </div>
+                    </div>
                 </template>
               </template>
             </div>
@@ -4644,9 +4677,13 @@ export default {
       ) {
         this.$refs.activityPeriod.validate();
         this.$refs.typeOrganization2.validate();
+        this.$refs.nameOfEmployer2.validate();
+        this.$refs.innOfEmployer2.validate();
       } else {
         validItems(this.$refs, "activityPeriod");
         validItems(this.$refs, "typeOrganization2");
+        validItems(this.$refs, "nameOfEmployer2");
+        validItems(this.$refs, "innOfEmployer2");
       }
 
       // this.$refs.income.validate();
@@ -4981,6 +5018,8 @@ export default {
         this.$refs.totalWorkExperience.hasError ||
         this.$refs.activityPeriod.hasError ||
         this.$refs.typeOrganization2.hasError ||
+        this.$refs.nameOfEmployer2.hasError ||
+        this.$refs.innOfEmployer2.hasError ||
         // this.$refs.income.hasError ||
         //properties
         this.$refs.typePropertiesValid.hasError ||

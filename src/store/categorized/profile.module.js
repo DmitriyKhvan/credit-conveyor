@@ -683,10 +683,10 @@ export const profile = {
     },
 
     setINNandNameOrg(state, payload) {
-      if (state.fullFormProfile.Customer.JobInfo.type == 1) {
+      // if (state.fullFormProfile.Customer.JobInfo.type == 1) {
         state.fullFormProfile.Customer.JobInfo.employerName = payload.org_name;
         state.fullFormProfile.Customer.JobInfo.INN = payload.inn;
-      }
+      // }
     },
 
     setFullForm(state, payload) {

@@ -1,5 +1,69 @@
 <template>
   <div>
+    <div v-if="userRole === 'ROLE_CCS'" class="pullDocs">
+      <!-- <q-input
+        outlined
+        dense
+        label="Выберите дату"
+        v-model="dateDoc"
+        mask="##.##.####"
+      >
+        <template v-slot:append>
+          <q-icon name="event" class="cursor-pointer">
+            <q-popup-proxy
+              transition-show="scale"
+              transition-hide="scale"
+              ref="qDateDoc"
+            >
+              <q-date
+                mask="DD.MM.YYYY"
+                v-model="dateDoc"
+                @input="() => $refs.qDateDoc.hide()"
+              />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input> -->
+
+      <!-- <q-select
+        class="langDoc"
+        outlined
+        v-model="langDoc"
+        :options="options.langDoc"
+        dense
+        label="Выберите язык"
+        emit-value
+        map-options
+      /> -->
+
+      <div class="protocol">
+        <q-btn
+          :loading="protocol"
+          label="Протокол"
+          class="btnCCS"
+          @click="getProtocol"
+        >
+          <template v-slot:loading>
+            <q-spinner-facebook />
+          </template>
+        </q-btn>
+      </div>
+
+      <!-- <div class="discharge">
+        <q-btn
+          :loading="protocol"
+          label="Выписка"
+          class="btnCCS"
+          @click="getProtocol"
+        >
+          <template v-slot:loading>
+            <q-spinner-facebook />
+          </template>
+        </q-btn>
+      </div> -->
+    </div>
+  
+
   <!-- <div 
     v-if="creditTasks.length"
     class="creditList"
@@ -82,7 +146,7 @@
                 label="Статус"
               />
             </th>
-            <th class="text-left date">
+            <th class="text-left date" colspan="2">
               <q-input
                 outlined
                 square
@@ -108,7 +172,7 @@
                 </template>
               </q-input>
             </th>
-            <th v-if="userRole === 'ROLE_CCS'" class="text-left">
+            <!-- <th v-if="userRole === 'ROLE_CCS'" class="text-left">
               <div class="protocol">
                 <q-btn
                   :loading="protocol"
@@ -121,7 +185,7 @@
                   </template>
                 </q-btn>
               </div>
-            </th>
+            </th> -->
           </tr>
 
           <tr class="titleApplication">
@@ -580,6 +644,8 @@ export default {
       loading: false,
       protocol: false,
       protocolId: null,
+      dateDoc: "",
+      langDoc: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб
       
       disable: false,
       loaderFullScreen: false,
@@ -612,6 +678,17 @@ export default {
           "Голосование КК",
           "Формирование выписки"
         ],
+        
+        langDoc: [
+          {
+            label: "рус.",
+            value: 0
+          },
+          {
+            label: "узб.",
+            value: 1
+          }
+        ]
         //sort: ["По убыванию", "По возрастанию"]
       }
     };
@@ -855,6 +932,7 @@ export default {
       } else {
         
         file = await this.getUrlFile(taskId, idx, lang)
+        console.log('file', file)
         
         task[lang] = file.id  // кеширование id file
         
@@ -1090,13 +1168,16 @@ export default {
     }
   }
 
-  .protocol {
-    .btnCCS {
-      background: #47B881;
-      color: #ffffff;
-      margin: 0;
-    }
-  }
+  // .protocol {
+  //   display: flex;
+  //   justify-content: flex-end;
+
+  //   .btnCCS {
+  //     background: #47B881;
+  //     color: #ffffff;
+  //     margin: 0;
+  //   }
+  // }
 
   .filter {
     width: 100%;
@@ -1180,8 +1261,24 @@ export default {
   }
 }
 
-.protocol {
-  display: flex;
-  justify-content: flex-end;
-}
+.pullDocs {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    // width: 100%;
+
+    .items-start {
+      margin-right: 15px;
+      background: #ffffff;
+    }
+
+    .q-btn--rectangle {
+      background: #47B881;
+    }
+
+    .langDoc {
+      width: 140px;
+    }
+  }
+
 </style>

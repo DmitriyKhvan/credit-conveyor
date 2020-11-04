@@ -627,6 +627,20 @@
                   }}
                 </div>
               </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">Наименование организации</div>
+                <div class="col-6 data">
+                  {{Customer.JobInfo.employerName}}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">ИНН организации</div>
+                <div class="col-6 data">
+                  {{Customer.JobInfo.INN}}
+                </div>
+              </div>
             </div>
 
             <div v-else>
