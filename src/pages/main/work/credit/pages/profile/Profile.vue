@@ -2616,7 +2616,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="priceGuarantees"
+                        ref="priceGuarantees1"
                         outlined
                         v-model="guarantee.Sum"
                         dense
@@ -2648,7 +2648,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="nameGuarantees"
+                        ref="nameGuarantees1"
                         outlined
                         v-model="guarantee.FirstName"
                         dense
@@ -2718,7 +2718,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="innGuarantees"
+                        ref="innGuarantees1"
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -2989,7 +2989,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="CardNumberGuarantees"
+                        ref="CardNumberGuarantees1"
                         outlined
                         v-model="guarantee.CardNumber"
                         dense
@@ -3121,7 +3121,7 @@
                     <div class="col-4">
                       <q-select
                         :disable="disableField"
-                        ref="districtGuarantees"
+                        ref="districtGuarantees1"
                         outlined
                         v-model="guarantee.Address.District"
                         :options="guarantee.Address.Districts.items"
@@ -3152,7 +3152,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="houseNumberGuarantees"
+                        ref="houseNumberGuarantees1"
                         outlined
                         v-model="guarantee.Address.House"
                         dense
@@ -3285,7 +3285,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="priceGuarantees"
+                        ref="priceGuarantees2"
                         outlined
                         v-model="guarantee.Sum"
                         dense
@@ -3350,7 +3350,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="nameGuarantees"
+                        ref="nameGuarantees2"
                         outlined
                         v-model="guarantee.Name"
                         dense
@@ -3362,7 +3362,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="innGuarantees"
+                        ref="innGuarantees2"
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -3399,7 +3399,7 @@
                      <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="CardNumberGuarantees"
+                        ref="CardNumberGuarantees2"
                         outlined
                         v-model="guarantee.cardNumber"
                         dense
@@ -3526,7 +3526,7 @@
 
                       <q-select
                         :disable="disableField"
-                        ref="districtGuarantees"
+                        ref="districtGuarantees2"
                         outlined
                         v-model="guarantee.Address.District"
                         :options="guarantee.Address.Districts.items"
@@ -3557,7 +3557,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="houseNumberGuarantees"
+                        ref="houseNumberGuarantees2"
                         outlined
                         v-model="guarantee.Address.House"
                         dense
@@ -3706,7 +3706,7 @@
 
                       <q-select
                         :disable="disableField"
-                        ref="nameGuarantees"
+                        ref="nameGuarantees3"
                         outlined
                         v-model="guarantee.OrgName"
                         :options="dictionaries.Insurance_company.items"
@@ -3722,7 +3722,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="innGuarantees"
+                        ref="innGuarantees3"
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -3739,7 +3739,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="priceGuarantees"
+                        ref="priceGuarantees3"
                         outlined
                         v-model="guarantee.Sum"
                         @input="guaranteesValid('Insurance', index)"
@@ -4839,16 +4839,16 @@ export default {
       // Guarantees
       if (this.fullProfile.Guarantee.RelatedPerson.items.length) {
         validFilter(this.$refs, "customersAttitudeValid", "customersAttitude");
-        validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
+        validFilter(this.$refs, "priceGuaranteesValid1", "priceGuarantees1");
         validFilter(this.$refs, "surnameGuaranteesValid", "surnameGuarantees");
-        validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
+        validFilter(this.$refs, "nameGuaranteesValid1", "nameGuarantees1");
         validFilter(this.$refs, "mnameGuaranteesValid", "mnameGuarantees");
         validFilter(
           this.$refs,
           "birthdayGuaranteesValid",
           "birthdayGuarantees"
         );
-        validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
+        validFilter(this.$refs, "innGuaranteesValid1", "innGuarantees1");
         validFilter(this.$refs, "pinppGuaranteesValid", "pinppGuarantees");
 
         validFilter(
@@ -4910,31 +4910,31 @@ export default {
         // );
         validFilter(
           this.$refs,
-          "CardNumberGuaranteesValid",
-          "CardNumberGuarantees"
+          "CardNumberGuaranteesValid1",
+          "CardNumberGuarantees1"
         );
 
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
           this.$refs,
           "districtGuaranteesValid",
-          "districtGuarantees"
+          "districtGuarantees1"
         );
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(
           this.$refs,
           "houseNumberGuaranteesValid",
-          "houseNumberGuarantees"
+          "houseNumberGuarantees1"
         );
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
       } else {
         validItems(this.$refs, "customersAttitudeValid");
-        validItems(this.$refs, "priceGuaranteesValid");
+        validItems(this.$refs, "priceGuaranteesValid1");
         validItems(this.$refs, "surnameGuaranteesValid");
-        validItems(this.$refs, "nameGuaranteesValid");
+        validItems(this.$refs, "nameGuaranteesValid1");
         validItems(this.$refs, "mnameGuaranteesValid");
         validItems(this.$refs, "birthdayGuaranteesValid");
-        validItems(this.$refs, "innGuaranteesValid");
+        validItems(this.$refs, "innGuaranteesValid1");
         validItems(this.$refs, "pinppGuaranteesValid");
         validItems(this.$refs, "guaranteesDocumentDocumentTypeValid");
         validItems(this.$refs, "guaranteesDocumentDocumentNameValid");
@@ -4945,7 +4945,7 @@ export default {
         validItems(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid");
         validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
         // validItems(this.$refs, "BankInpsGuaranteesValid");
-        validItems(this.$refs, "CardNumberGuaranteesValid");
+        validItems(this.$refs, "CardNumberGuaranteesValid1");
         validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
@@ -4954,7 +4954,7 @@ export default {
       }
 
       if (this.fullProfile.Guarantee.RelatedLegalPerson.items.length) {
-        validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
+        validFilter(this.$refs, "priceGuaranteesValid2", "priceGuarantees2");
         validFilter(this.$refs, "CEOLastNameGuaranteesValid", "CEOLastName");
         validFilter(this.$refs, "CEOFirstNameGuaranteesValid", "CEOFirstName");
         validFilter(
@@ -4962,15 +4962,15 @@ export default {
           "CEOMiddleNameGuaranteesValid",
           "CEOMiddleName"
         );
-        validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
-        validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
+        validFilter(this.$refs, "nameGuaranteesValid2", "nameGuarantees2");
+        validFilter(this.$refs, "innGuaranteesValid2", "innGuarantees2");
         validFilter(
           this.$refs,
           "kindOfActivityGuaranteesValid",
           "kindOfActivityGuarantees"
         );
 
-        validFilter(this.$refs, "CardNumberGuaranteesValid", "CardNumberGuarantees");
+        validFilter(this.$refs, "CardNumberGuaranteesValid2", "CardNumberGuarantees2");
         validFilter(this.$refs, "bank_nameGuaranteesValid", "bank_nameGuarantees");
         validFilter(this.$refs, "mfoGuaranteesValid", "mfoGuarantees");
         validFilter(this.$refs, "relatedLegalPersonBillGuaranteesValid", "relatedLegalPersonBillGuarantees");
@@ -4979,24 +4979,24 @@ export default {
         validFilter(
           this.$refs,
           "districtGuaranteesValid",
-          "districtGuarantees"
+          "districtGuarantees2"
         );
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(
           this.$refs,
           "houseNumberGuaranteesValid",
-          "houseNumberGuarantees"
+          "houseNumberGuarantees2"
         );
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
       } else {
-        validItems(this.$refs, "priceGuaranteesValid");
+        validItems(this.$refs, "priceGuaranteesValid2");
         validItems(this.$refs, "CEOLastNameGuaranteesValid");
         validItems(this.$refs, "CEOFirstNameGuaranteesValid");
         validItems(this.$refs, "CEOMiddleNameGuaranteesValid");
-        validItems(this.$refs, "nameGuaranteesValid");
-        validItems(this.$refs, "innGuaranteesValid");
+        validItems(this.$refs, "nameGuaranteesValid2");
+        validItems(this.$refs, "innGuaranteesValid2");
         validItems(this.$refs, "kindOfActivityGuaranteesValid");
-        validItems(this.$refs, "CardNumberGuaranteesValid");
+        validItems(this.$refs, "CardNumberGuaranteesValid2");
         validItems(this.$refs, "bank_nameGuaranteesValid");
         validItems(this.$refs, "mfoGuaranteesValid");
         validItems(this.$refs, "relatedLegalPersonBillGuaranteesValid");
@@ -5008,14 +5008,14 @@ export default {
       }
 
       if (this.fullProfile.Guarantee.Insurance.items.length) {
-        validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
-        validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
-        validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
+        validFilter(this.$refs, "nameGuaranteesValid3", "nameGuarantees3");
+        validFilter(this.$refs, "innGuaranteesValid3", "innGuarantees3");
+        validFilter(this.$refs, "priceGuaranteesValid3", "priceGuarantees3");
         
       } else {
-        validItems(this.$refs, "priceGuaranteesValid");
-        validItems(this.$refs, "nameGuaranteesValid");
-        validItems(this.$refs, "innGuaranteesValid");
+        validItems(this.$refs, "priceGuaranteesValid3");
+        validItems(this.$refs, "nameGuaranteesValid3");
+        validItems(this.$refs, "innGuaranteesValid3");
       }
 
       if (this.status === 'Step: Работа с документами') {
@@ -5168,12 +5168,18 @@ export default {
         //this.$refs.guarantees.hasError ||
         // this.$refs.typeGuaranteesValid.hasError ||
         this.$refs.customersAttitudeValid.hasError ||
-        this.$refs.priceGuaranteesValid.hasError ||
+        this.$refs.priceGuaranteesValid1.hasError ||
+        this.$refs.priceGuaranteesValid2.hasError ||
+        this.$refs.priceGuaranteesValid3.hasError ||
         this.$refs.surnameGuaranteesValid.hasError ||
-        this.$refs.nameGuaranteesValid.hasError ||
+        this.$refs.nameGuaranteesValid1.hasError ||
+        this.$refs.nameGuaranteesValid2.hasError ||
+        this.$refs.nameGuaranteesValid3.hasError ||
         this.$refs.mnameGuaranteesValid.hasError ||
         this.$refs.birthdayGuaranteesValid.hasError ||
-        this.$refs.innGuaranteesValid.hasError ||
+        this.$refs.innGuaranteesValid1.hasError ||
+        this.$refs.innGuaranteesValid2.hasError ||
+        this.$refs.innGuaranteesValid3.hasError ||
         this.$refs.kindOfActivityGuaranteesValid.hasError ||
         this.$refs.pinppGuaranteesValid.hasError ||
         this.$refs.guaranteesDocumentDocumentTypeValid.hasError ||
@@ -5188,7 +5194,8 @@ export default {
         this.$refs.guaranteesDocumentRegionsGivenPlaceValid.hasError ||
         this.$refs.guaranteesDocumentGivenPlaceValid.hasError ||
         // this.$refs.BankInpsGuaranteesValid.hasError ||
-        this.$refs.CardNumberGuaranteesValid.hasError ||
+        this.$refs.CardNumberGuaranteesValid1.hasError ||
+        this.$refs.CardNumberGuaranteesValid2.hasError ||
 
         this.$refs.bank_nameGuaranteesValid.hasError ||
         this.$refs.mfoGuaranteesValid.hasError ||
@@ -5992,15 +5999,11 @@ export default {
     },
 
     INNFizValid(val) {
-      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
-        return true
-      }
+      return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || 'Неверные данные'
     },
 
     INNYurValid(val) {
-      if (+val[0] > 1 && +val[0] < 4 && !val.match(/(?=(.))\1{8,}/)) {
-        return true
-      }
+      return (+val[0] > 1 && +val[0] < 4 && !val.match(/(?=(.))\1{8,}/)) || 'Неверные данные'
     },
 
     pinppValid(val) {

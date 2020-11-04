@@ -42,7 +42,7 @@
                         (val) =>
                           (val && val.length == 9) ||
                           'Количество символов должно быт ровно 9',
-                        (val) => INNFizValid(val) || 'Неверные данные',
+                        (val) => INNFizValid(val),
                       ]"
                     />
 
@@ -119,13 +119,6 @@
 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
-                    <!-- Preloader auto compleate -->
-                    <appLoader v-if="loader" />
-
-                    <!-- Button auto complete person data -->
-                    <app-auto-complete-data v-else-if="scannerSerialNumber" />
-                  </div>
-                  <div class="col-4">
                     <!-- Проверить клиента -->
                     <q-btn
                       :loading="loadingGCI"
@@ -137,6 +130,14 @@
                         <q-spinner-facebook />
                       </template>
                     </q-btn>
+                  </div>
+                  <div class="col-4">
+                     <!-- Preloader auto compleate -->
+                    <appLoader v-if="loader" />
+
+                    <!-- Button auto complete person data -->
+                    <app-auto-complete-data v-else-if="scannerSerialNumber" />
+                    
                   </div>
                 </div>
 
@@ -1025,9 +1026,7 @@ export default {
     },
 
     INNFizValid(val) {
-      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
-        return true;
-      }
+      return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || "Неверные данные";
     },
   },
   components: {
