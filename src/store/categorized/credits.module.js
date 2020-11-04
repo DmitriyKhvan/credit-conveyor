@@ -372,9 +372,9 @@ export const credits = {
       }
     },
 
-    async getProtocol({ state, commit, dispatch }) {
+    async getProtocol({ state, commit, dispatch }, data) {
       try {
-        const file = await state.bpmService.getProtocol()
+        const file = await state.bpmService.getProtocol(data)
         const response = await state.bpmService.getFile(file.infos[0].id)
         const blob = new Blob([response], { type: "application/pdf" })
         return {

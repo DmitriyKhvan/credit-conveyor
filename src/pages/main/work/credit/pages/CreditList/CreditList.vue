@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="userRole === 'ROLE_CCS'" class="pullDocs">
-      <!-- <q-input
+      <q-input
         outlined
         dense
         label="Выберите дату"
@@ -23,9 +23,9 @@
             </q-popup-proxy>
           </q-icon>
         </template>
-      </q-input> -->
+      </q-input>
 
-      <!-- <q-select
+      <q-select
         class="langDoc"
         outlined
         v-model="langDoc"
@@ -34,7 +34,7 @@
         label="Выберите язык"
         emit-value
         map-options
-      /> -->
+      />
 
       <div class="protocol">
         <q-btn
@@ -49,7 +49,7 @@
         </q-btn>
       </div>
 
-      <!-- <div class="discharge">
+      <div class="discharge">
         <q-btn
           :loading="protocol"
           label="Выписка"
@@ -60,7 +60,7 @@
             <q-spinner-facebook />
           </template>
         </q-btn>
-      </div> -->
+      </div>
     </div>
   
 
@@ -709,6 +709,13 @@ export default {
       console.log(val)
       this.current = 1
       this.pagination()
+    }, 
+    // Сброс кэширование id протокола
+    dateDoc() {
+      this.protocolId = null
+    },
+    langDoc() {
+      this.protocolId = null
     }
   },
   computed: {
@@ -861,16 +868,21 @@ export default {
 
     async getProtocol() {
       this.protocol = true
+      const data = {
+        date: this.dateDoc,
+        lang: this.langDoc
+      }
       try {
         let file = null
 
         if (this.protocolId) {
+          debugger
           file = await this.$store.dispatch(
             "credits/getFile",
             this.protocolId
           );
         } else {
-          file = await this.$store.dispatch("credits/getProtocol")
+          file = await this.$store.dispatch("credits/getProtocol", data)
           this.protocolId = file.id  // кеширование id file
         }
         console.log('file', file)
@@ -1273,7 +1285,7 @@ export default {
     }
 
     .q-btn--rectangle {
-      background: #47B881;
+      background: #47B881 !important;
     }
 
     .langDoc {
