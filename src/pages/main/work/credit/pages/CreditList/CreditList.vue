@@ -25,7 +25,7 @@
         </template>
       </q-input> -->
 
-      <!-- <q-select
+      <q-select
         class="langDoc"
         outlined
         v-model="langDoc"
@@ -34,7 +34,7 @@
         label="Выберите язык"
         emit-value
         map-options
-      /> -->
+      />
 
       <div class="protocol">
         <q-btn
@@ -49,7 +49,7 @@
         </q-btn>
       </div>
 
-      <!-- <div class="discharge">
+      <div class="discharge">
         <q-btn
           :loading="protocol"
           label="Выписка"
@@ -60,7 +60,7 @@
             <q-spinner-facebook />
           </template>
         </q-btn>
-      </div> -->
+      </div>
     </div>
   
 
