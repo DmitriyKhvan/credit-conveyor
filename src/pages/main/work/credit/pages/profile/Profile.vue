@@ -433,7 +433,7 @@
                   />
                 </div> -->
 
-                <div class="col-4">
+                <!-- <div class="col-4">
                   <q-input
                     :disable="disableField"
                     outlined
@@ -449,7 +449,7 @@
                           !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
                     ]"
                   />
-                </div>
+                </div> -->
 
                 <div class="col-4">
                     <q-input
@@ -2986,14 +2986,14 @@
                   </div>
 
                   <div class="row q-col-gutter-md">
-                    <!-- <div class="col-4">
+                    <div class="col-4">
                       <q-input
                         :disable="disableField"
                         ref="CardNumberGuarantees"
                         outlined
                         v-model="guarantee.CardNumber"
                         dense
-                        label="Номер карты"
+                        label="Номер карты поручителя"
                         mask="################"
                         :rules="[
                           val =>
@@ -3003,9 +3003,39 @@
                             !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
                         ]"
                       />
-                    </div> -->
+                    </div>
 
                     <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        outlined
+                        v-model="guarantee.bank_name"
+                        dense
+                        label="Наименование банка"
+                        :rules="[
+                          val =>
+                            !!val ||
+                            'Введите наименование банка'
+                        ]"
+                      />
+                    </div>
+
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        outlined
+                        v-model="guarantee.mfo"
+                        dense
+                        label="МФО банка"
+                        :rules="[
+                          val =>
+                            !!val ||
+                            'Введите МФО банка'
+                        ]"
+                      />
+                    </div>
+
+                    <!-- <div class="col-4">
                       <q-input
                         :disable="disableField"
                         ref="BankInpsGuarantees"
@@ -3020,6 +3050,26 @@
                             'Количество символов должно быт ровно 16',
                           val =>
                             !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                        ]"
+                      />
+                    </div> -->
+                  </div>
+
+                  <div class="row q-col-gutter-md">
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        outlined
+                        v-model="guarantee.relatedPersonBill"
+                        dense
+                        label="Расчетный счет"
+                        mask="####################"
+                        :rules="[
+                          val =>
+                            (val && val.length === 20) ||
+                            'Количество символов должно быт ровно 20',
+                          val =>
+                            !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
                         ]"
                       />
                     </div>
@@ -3344,6 +3394,80 @@
                       />
                     </div>
                   </div>
+
+                   <div class="row q-col-gutter-md">
+                     <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="CardNumberGuarantees"
+                        outlined
+                        v-model="guarantee.cardNumber"
+                        dense
+                        label="Номер карты"
+                        mask="################"
+                        :rules="[
+                          val =>
+                            (val && val.length === 16) ||
+                            'Количество символов должно быт ровно 16',
+                          val =>
+                            !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                        ]"
+                      />
+                    </div>
+
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="bank_nameGuarantees"
+                        outlined
+                        v-model="guarantee.bank_name"
+                        dense
+                        label="Наименование банка"
+                        :rules="[
+                          val =>
+                            !!val ||
+                            'Введите наименование банка'
+                        ]"
+                      />
+                    </div>
+
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="mfoGuarantees"
+                        outlined
+                        v-model="guarantee.mfo"
+                        dense
+                        label="МФО банка"
+                        :rules="[
+                          val =>
+                            !!val ||
+                            'Введите МФО банка'
+                        ]"
+                      />
+                    </div>
+                   </div>
+
+                   <div class="row q-col-gutter-md">
+                     <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="relatedLegalPersonBillGuarantees"
+                        outlined
+                        v-model="guarantee.relatedLegalPersonBill"
+                        dense
+                        label="Расчетный счет"
+                        mask="####################"
+                        :rules="[
+                          val =>
+                            (val && val.length === 20) ||
+                            'Количество символов должно быт ровно 20',
+                          val =>
+                            !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
+                        ]"
+                      />
+                    </div>
+                   </div>
 
                   <div class="row q-col-gutter-md">
                     <!-- <div class="col-4">
@@ -4779,16 +4903,16 @@ export default {
           "guaranteesDocumentGivenPlace"
         );
 
-        validFilter(
-          this.$refs,
-          "BankInpsGuaranteesValid",
-          "BankInpsGuarantees"
-        );
         // validFilter(
         //   this.$refs,
-        //   "CardNumberGuaranteesValid",
-        //   "CardNumberGuarantees"
+        //   "BankInpsGuaranteesValid",
+        //   "BankInpsGuarantees"
         // );
+        validFilter(
+          this.$refs,
+          "CardNumberGuaranteesValid",
+          "CardNumberGuarantees"
+        );
 
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
@@ -4820,8 +4944,8 @@ export default {
         validItems(this.$refs, "guaranteesDocumentExpirationDateValid");
         validItems(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid");
         validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
-        validItems(this.$refs, "BankInpsGuaranteesValid");
-        // validItems(this.$refs, "CardNumberGuaranteesValid");
+        // validItems(this.$refs, "BankInpsGuaranteesValid");
+        validItems(this.$refs, "CardNumberGuaranteesValid");
         validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
@@ -4845,6 +4969,12 @@ export default {
           "kindOfActivityGuaranteesValid",
           "kindOfActivityGuarantees"
         );
+
+        validFilter(this.$refs, "CardNumberGuaranteesValid", "CardNumberGuarantees");
+        validFilter(this.$refs, "bank_nameGuaranteesValid", "bank_nameGuarantees");
+        validFilter(this.$refs, "mfoGuaranteesValid", "mfoGuarantees");
+        validFilter(this.$refs, "relatedLegalPersonBillGuaranteesValid", "relatedLegalPersonBillGuarantees");
+
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
           this.$refs,
@@ -4866,6 +4996,10 @@ export default {
         validItems(this.$refs, "nameGuaranteesValid");
         validItems(this.$refs, "innGuaranteesValid");
         validItems(this.$refs, "kindOfActivityGuaranteesValid");
+        validItems(this.$refs, "CardNumberGuaranteesValid");
+        validItems(this.$refs, "bank_nameGuaranteesValid");
+        validItems(this.$refs, "mfoGuaranteesValid");
+        validItems(this.$refs, "relatedLegalPersonBillGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
@@ -5053,8 +5187,13 @@ export default {
         this.$refs.guaranteesContractExpirationDateValid.hasError ||
         this.$refs.guaranteesDocumentRegionsGivenPlaceValid.hasError ||
         this.$refs.guaranteesDocumentGivenPlaceValid.hasError ||
-        this.$refs.BankInpsGuaranteesValid.hasError ||
-        // this.$refs.CardNumberGuaranteesValid.hasError ||
+        // this.$refs.BankInpsGuaranteesValid.hasError ||
+        this.$refs.CardNumberGuaranteesValid.hasError ||
+
+        this.$refs.bank_nameGuaranteesValid.hasError ||
+        this.$refs.mfoGuaranteesValid.hasError ||
+        this.$refs.relatedLegalPersonBillGuaranteesValid.hasError ||
+
         this.$refs.regionGuaranteesValid.hasError ||
         this.$refs.districtGuaranteesValid.hasError ||
         this.$refs.streetGuaranteesValid.hasError ||
@@ -5937,6 +6076,8 @@ export default {
     async printFailureCredit(fileData) {
       this.fileData.type = fileData.label;
       this.fileData.data = fileData.data;
+
+      // console.log('failureCredit', JSON.stringify(this.fileData, null, 2))
 
       try {
         const file = await this.$store.dispatch("credits/getFile", this.fileData);

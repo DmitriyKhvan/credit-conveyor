@@ -847,7 +847,12 @@ export const profile = {
         CEOLastName: "",
         CEOMiddleName: "",
         Sum: 0,
-        Activity: ""
+        Activity: "",
+        
+        cardNumber: "",
+        bank_name: "",
+        mfo: "",
+        relatedLegalPersonBill: ""
       });
     },
 
@@ -874,6 +879,10 @@ export const profile = {
         Sum: 0,
         MiddleName: "",
         CardNumber: null, // номер карты
+        bank_name: "",
+        mfo: "",
+        relatedPersonBill: "", // расчетный счет
+
         BankInps: null, // инпс банка
         Document: {
           documentType: null,

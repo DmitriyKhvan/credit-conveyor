@@ -49,7 +49,7 @@
         </q-btn>
       </div>
 
-      <div class="discharge">
+      <!-- <div class="discharge">
         <q-btn
           :loading="protocol"
           label="Выписка"
@@ -60,7 +60,7 @@
             <q-spinner-facebook />
           </template>
         </q-btn>
-      </div>
+      </div> -->
     </div>
   
 
@@ -69,7 +69,10 @@
     class="creditList"
   > -->
 
-  <div class="creditList">
+  <div 
+    v-if="creditTasks.length"
+    class="creditList"
+  >
     <div class="q-px-md">
       <!-- <h4>Очередь задач</h4> -->
       <q-markup-table separator="none">
