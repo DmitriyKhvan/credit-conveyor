@@ -91,13 +91,16 @@ export default {
     }
   },
   filterServerError(error) {
-    if (error.response.data.message) {
-      return error.response.data.message
-    } else if(error.response.data) {
-      return error.response.data
-    } else if (error.message) {
-      return error.message
+    if (error.response) {
+      if (error.response.data.message) {
+        return error.response.data.message
+      } else if(error.response.data) {
+        return error.response.data
+      } else if (error.message) {
+        return error.message
+      }
     }
+    
     return error
   },
 
