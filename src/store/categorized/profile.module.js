@@ -114,6 +114,8 @@ export const profile = {
       Status: "",
       ApplicationID: "",
       // ProtocolNumber: "",
+      client_code: "",
+      client_uid: "",
       Number: "",
       Branch: "",
       BranchName: "",
@@ -399,7 +401,9 @@ export const profile = {
           ).data;
 
           commit("setScoring", scoring);
-          commit("setINNandNameOrg", dataINPS.data.wages.items.slice().pop());
+          if (code.data == 0) {
+            commit("setINNandNameOrg", dataINPS.data.wages.items.slice().pop());
+          }
 
           return {
             salaries: dataINPS.data,
@@ -575,6 +579,10 @@ export const profile = {
             const payOrder = response.data.input.find(
               i => i.label === "payOrder"
             );
+
+            console.log(JSON.stringify(payOrder.data, null, 2))
+
+
             commit("setPayOrder", payOrder.data);
 
           } else {
@@ -679,10 +687,10 @@ export const profile = {
     },
 
     setINNandNameOrg(state, payload) {
-      if (state.fullFormProfile.Customer.JobInfo.type == 1) {
+      // if (state.fullFormProfile.Customer.JobInfo.type == 1) {
         state.fullFormProfile.Customer.JobInfo.employerName = payload.org_name;
         state.fullFormProfile.Customer.JobInfo.INN = payload.inn;
-      }
+      // }
     },
 
     setFullForm(state, payload) {
@@ -698,6 +706,8 @@ export const profile = {
       // Для корректной валидации
       state.fullFormProfile.ApplicationID = payload.ApplicationID;
       state.fullFormProfile.BODecision = payload.BODecision;
+      state.fullFormProfile.client_code = payload.client_code;
+      state.fullFormProfile.client_uid = payload.client_uid;
       state.fullFormProfile.Number = payload.Number;
       state.fullFormProfile.Branch = payload.Branch;
       state.fullFormProfile.BranchName = payload.BranchName;
@@ -841,7 +851,12 @@ export const profile = {
         CEOLastName: "",
         CEOMiddleName: "",
         Sum: 0,
-        Activity: ""
+        Activity: "",
+        
+        cardNumber: "",
+        bank_name: "",
+        mfo: "",
+        relatedLegalPersonBill: ""
       });
     },
 
@@ -868,6 +883,10 @@ export const profile = {
         Sum: 0,
         MiddleName: "",
         CardNumber: null, // номер карты
+        bank_name: "",
+        mfo: "",
+        relatedPersonBill: "", // расчетный счет
+
         BankInps: null, // инпс банка
         Document: {
           documentType: null,
@@ -1093,6 +1112,8 @@ export const profile = {
         Status: "",
         ApplicationID: "",
         // ProtocolNumber: "",
+        client_code: "",
+        client_uid: "",
         Number: "",
         Branch: "",
         BranchName: "",

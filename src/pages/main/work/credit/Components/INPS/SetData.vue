@@ -173,7 +173,6 @@ export default {
     ...mapState({
       profile: state => state.profile
     }),
-
     ...mapGetters({
       preapprove_num: "profile/preapprove_num"
     }),

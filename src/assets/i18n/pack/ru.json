@@ -461,7 +461,7 @@
   "printForms" : {
     "overdraft": "Овердрафт",
     "consumer_credit": "Потребительский кредит",
-    "microloan": "Микрокредит",
+    "microloan": "Кредитный договор",
     "payment_schedule": "График платажей",
     "overdraft_guarantor_physical": "Договор о поручитесльстве для физ. лиц",
     "overdraft_guarantor_legal": "Договор о поручительстве для юр лиц",
