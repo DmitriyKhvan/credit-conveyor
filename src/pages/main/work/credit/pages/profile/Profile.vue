@@ -2425,7 +2425,7 @@
 
               <!-- для потребительского кредита -->
               <template
-                v-if="fullProfile.LoanInfo.LoanProduct == 133"
+                v-if="fullProfile.LoanInfo.LoanProduct == 136"
               >
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -4918,7 +4918,7 @@ export default {
 
       //если потребительский
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 133
+        this.fullProfile.LoanInfo.LoanProduct == 136
       ) {
         this.$refs.nameProduction.validate();
         this.$refs.productName.validate();
