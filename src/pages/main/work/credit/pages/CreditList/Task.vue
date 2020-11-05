@@ -23,7 +23,7 @@
 
         <div class="infoBlockItem">
           <h6 class="titleCredit">Филиал / Подразделение</h6>
-          <span class="creditInfo">{{ filialName }}</span>
+          <span class="creditInfo">{{ filial }} {{ filialName }}</span>
         </div>
       </div>
 
@@ -1717,6 +1717,7 @@
           class="pdfviewer"
           src=""
           type="application/pdf"
+          style="width: 100%; height: calc(100vh - 110px)"
           width="100%"
         >
         </iframe>
@@ -1852,6 +1853,9 @@ export default {
     },
     filialName() {
       return this.$route.query.filialName;
+    },
+    filial() {
+      return this.$route.query.filial;
     },
     
     processInfo() {
@@ -2357,7 +2361,7 @@ export default {
   .modalView {
     display: none;
     position: fixed;
-    top: 0;
+    top: 70px;
     left: 0;
     width: 100%;
     z-index: 1000;

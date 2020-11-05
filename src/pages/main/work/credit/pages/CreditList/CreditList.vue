@@ -277,6 +277,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName
                   }
                 }"
@@ -307,6 +308,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName
                   }
                 }"
@@ -337,6 +339,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName
                   }
                 }"
@@ -367,6 +370,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName
                   }
                 }"
@@ -397,6 +401,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName
                   }
                 }"
@@ -427,6 +432,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName
                   }
                 }"
@@ -457,6 +463,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName
                   }
                 }"
@@ -487,6 +494,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName 
                   }
                 }"
@@ -517,6 +525,7 @@
                     date: credit.date,
                     applicationNumber: credit.applicationNumber,
                     filialName: credit.filialName,
+                    filial: credit.filial,
                     status: credit.taskName
                   }
                 }"

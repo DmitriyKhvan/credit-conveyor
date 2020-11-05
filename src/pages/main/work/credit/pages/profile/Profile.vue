@@ -2368,8 +2368,49 @@
                 </div>
               </div>
 
+              <div class="row q-col-gutter-md">
+                <div v-if="status == 'Step: Full Application Filling'" class="col-4">
+                  <q-select
+                    :disable="disableField"
+                    ref="typeOfCharge"
+                    outlined
+                    v-model="typeOfCharge"
+                    @input="resetTypeOfCharge"
+                    :options="options.typeOfCharge"
+                    dense
+                    label="Выдать на"
+                    :rules="[
+                      val => !!val || 'Выберите тип начисления'
+                    ]"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
+                  />
+                </div>
+                
+                <div v-else class="col-4"></div>
+
+                <div v-if="typeOfCharge == 1 || fullProfile.Customer.CardNumber" class="col-4">
+                  <q-select
+                    :disable="disableField"
+                    ref="CardNumber"
+                    outlined
+                    v-model="fullProfile.Customer.CardNumber"
+                    :options="options.CardNumber"
+                    dense
+                    label="Список карт"
+                    :rules="[
+                      val => !!val || 'Выберите карту'
+                    ]"
+                    class="q-pb-sm"
+                  />
+                </div>
+              </div>
+
+
+
               <!-- для микрозайма -->
-              <template v-if="fullProfile.LoanInfo.LoanProduct == 132 && !fullProfile.Customer.CardNumber"> 
+              <template v-if="typeOfCharge == 2 || fullProfile.LoanInfo.microloan_details.bank_name"> 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
@@ -2425,7 +2466,7 @@
 
               <!-- для потребительского кредита -->
               <template
-                v-if="fullProfile.LoanInfo.LoanProduct == 133"
+                v-if="fullProfile.LoanInfo.LoanProduct == 136"
               >
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -4388,6 +4429,8 @@ export default {
       GracePeriodMax: null,
       creditManagerComment: "",
 
+      typeOfCharge: null, // тип выдачи (пластик. карта, расчетный счет)
+
       options: {
         //Countries: this.$store.getters["profile/dictionaries"].Countries.items,
         Countries: [],
@@ -4396,7 +4439,25 @@ export default {
 
         yearsOfIssueVehicle: [],
 
-        FinancialSources: [] // источник финансирования
+        FinancialSources: [], // источник финансирования
+
+        typeOfCharge: [
+          {
+            label: 'Пластиковая карта',
+            value: 1
+          },
+          {
+            label: 'Расчетный счет',
+            value: 2
+          }
+        ],
+
+        CardNumber: [
+          '123',
+          '456',
+          '789'
+        ]
+
       },
 
       guaranteeCount: [],
@@ -4517,10 +4578,11 @@ export default {
     ].Countries.items;
   },
   mounted() {
-    document
+    setTimeout(() => {
+      document
       .querySelectorAll(".scroll")[1]
       .addEventListener("scroll", this.handleScroll);
-    setTimeout(() => {
+
       this.onSubmit("start");
     }, 1000);
   },
@@ -4638,16 +4700,23 @@ export default {
     }
   },
   methods: {
+    resetTypeOfCharge() {
+      this.fullProfile.Customer.CardNumber = ""
+      this.fullProfile.LoanInfo.microloan_details.bank_name = ""
+      this.fullProfile.LoanInfo.microloan_details.mfo = ""
+      this.fullProfile.LoanInfo.microloan_details.customer_bill = ""
+    },
+
     resetJobInfo() {
-      this.Customer.JobInfo.employerActivityType = null, //вид деятельности организации
-      this.Customer.JobInfo.positionType = null, // Категория занимаемой должности
-      this.Customer.JobInfo.INN = "",
-      this.Customer.JobInfo.employeesNum = 0, // количество работников
-      this.Customer.JobInfo.employerName = "", // Наименование работадателя
-      this.Customer.JobInfo.totalJobExperienceMonths = 0, // общий трудовой стаж
-      this.Customer.JobInfo.activeYears = 0, // срок деятельности
-      this.Customer.JobInfo.position = "", // должность
-      // this.Customer.JobInfo.type = "", // вид деятельности
+      this.Customer.JobInfo.employerActivityType = null //вид деятельности организации
+      this.Customer.JobInfo.positionType = null // Категория занимаемой должности
+      this.Customer.JobInfo.INN = ""
+      this.Customer.JobInfo.employeesNum = 0 // количество работников
+      this.Customer.JobInfo.employerName = "",// Наименование работадателя
+      this.Customer.JobInfo.totalJobExperienceMonths = 0 // общий трудовой стаж
+      this.Customer.JobInfo.activeYears = 0 // срок деятельности
+      this.Customer.JobInfo.position = "" // должность
+      // this.Customer.JobInfo.type = "" // вид деятельности
       this.Customer.JobInfo.lastJobExperienceMonths = 0 // стаж на последнем месте работы
     },
 
@@ -5050,9 +5119,15 @@ export default {
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
+      if (this.status == 'Step: Full Application Filling') {
+        this.$refs.typeOfCharge.validate();
+      } else {
+        validItems(this.$refs, "typeOfCharge");
+      }
+
       //если потребительский
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 133
+        this.fullProfile.LoanInfo.LoanProduct == 136
       ) {
         this.$refs.nameProduction.validate();
         this.$refs.productName.validate();
@@ -5085,9 +5160,9 @@ export default {
 
       console.log("files", this.$refs.files);
 
+      // Если выбран расчетный счет!!!
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 132 && 
-        !this.fullProfile.Customer.CardNumber
+        this.typeOfCharge == 2
       ) {
         this.$refs.mircoloanBankName.validate();
         this.$refs.mircoloanBankMFO.validate();
@@ -5097,7 +5172,16 @@ export default {
         validItems(this.$refs, "mircoloanBankMFO");
         validItems(this.$refs, "mircoloanCustomerBill");
       }
-      
+
+      // Если выбрана пластиковая карта
+      if (
+        this.typeOfCharge == 1
+      ) {
+        this.$refs.CardNumber.validate();
+      } else {
+        validItems(this.$refs, "CardNumber");
+        
+      }
 
       if (
         this.$refs.surname.hasError ||
@@ -5224,9 +5308,11 @@ export default {
         this.$refs.agreementNumber.hasError ||
         this.$refs.agreementDate.hasError ||
         this.$refs.sourceFinancs.hasError ||
+        this.$refs.typeOfCharge.hasError ||
         this.$refs.uploadFile.hasError ||
         this.$refs.guaranteesValid.hasError ||
         
+        this.$refs.CardNumber.hasError ||
         this.$refs.mircoloanBankName.hasError ||
         this.$refs.mircoloanBankMFO.hasError ||
         this.$refs.mircoloanCustomerBill.hasError
@@ -6167,9 +6253,11 @@ export default {
   },
   beforeDestroy() {
     console.log('beforeDestroy')
-    document
-      .querySelectorAll(".scroll")[1]
-      .removeEventListener("scroll", this.handleScroll);
+    if(!!document.querySelectorAll(".scroll")[1]) {
+      document
+        .querySelectorAll(".scroll")[1]
+        .removeEventListener("scroll", this.handleScroll);
+    }
   },
   components: {
     appLoader: Loader,
