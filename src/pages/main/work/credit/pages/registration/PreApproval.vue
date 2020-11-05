@@ -401,6 +401,7 @@ export default {
   // }
 
   .print {
+    margin-left: 10px;
     .q-btn__content {
       font-size: 12px;
       color: #74798c;
@@ -411,7 +412,7 @@ export default {
     }
 
     &__text {
-      margin-left: 5px;
+      margin-left: 2px;
     }
 
     .q-btn__wrapper::before {

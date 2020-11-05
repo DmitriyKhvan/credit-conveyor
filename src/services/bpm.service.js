@@ -197,10 +197,11 @@ export default class BpmService {
     return responce.data;
   };
 
-  getProtocol = async () => {
+  getProtocol = async (data) => {
     const responce = await axios({
       method: "post",
-      url: `${this._baseUrl}/document/edocument/protocol_form`
+      url: `${this._baseUrl}/document/edocument/protocol_form`,
+      data
     });
 
     return responce.data;

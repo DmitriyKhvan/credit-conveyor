@@ -1,6 +1,6 @@
 <template>
 <div class="creditConveyor">
-  
+  <appSubHeader :path="path" />
   <router-view></router-view>
 
   <!-- Server error message -->
@@ -9,6 +9,7 @@
 </div>
 </template>
 <script>
+import SubHeader from '@/components/SubHeaderTab'
 import ErrorMessage from './Components/ErrorMessage'
 import Scoring from './Components/ClientInfo'
 
@@ -20,6 +21,10 @@ export default {
   computed: {
     error() {
       return this.$store.getters["credits/messageId"]
+    },
+    path() {
+      //console.log(this.$route.path);
+      return this.$route.path;
     }
   },
   watch: {
@@ -30,6 +35,7 @@ export default {
   },
 
   components: {
+    appSubHeader: SubHeader,
     errorMessage: ErrorMessage,
     appScoring: Scoring
   }

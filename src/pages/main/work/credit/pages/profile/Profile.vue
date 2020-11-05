@@ -433,7 +433,7 @@
                   />
                 </div> -->
 
-                <div class="col-4">
+                <!-- <div class="col-4">
                   <q-input
                     :disable="disableField"
                     outlined
@@ -449,7 +449,7 @@
                           !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
                     ]"
                   />
-                </div>
+                </div> -->
 
                 <div class="col-4">
                     <q-input
@@ -1305,6 +1305,7 @@
                     ref="kindOfActivity"
                     outlined
                     v-model="Customer.JobInfo.type"
+                    @input="resetJobInfo()"
                     :options="dictionaries.MainWorkType.items"
                     dense
                     label="Вид деятельности"
@@ -1520,6 +1521,39 @@
                       />
                     </div>
                   </div>
+
+                  <div class="row q-col-gutter-md">
+                      <div class="col-4">
+                        <q-input
+                          :disable="disableField"
+                          ref="nameOfEmployer2"
+                          outlined
+                          v-model="Customer.JobInfo.employerName"
+                          dense
+                          label="Наименование организации"
+                          :rules="[
+                            val => !!val || 'Введите наименование работодателя'
+                          ]"
+                        />
+                      </div>
+                      <div class="col-4">
+                        <q-input
+                          :disable="disableField"
+                          ref="innOfEmployer2"
+                          outlined
+                          v-model="Customer.JobInfo.INN"
+                          dense
+                          label="ИНН организации"
+                          mask="#########"
+                          :rules="[
+                            val =>
+                              (val && val.length == 9) ||
+                              'Введите ИНН работодателя',
+                            val => INNYurValid(val)
+                          ]"
+                        />
+                      </div>
+                    </div>
                 </template>
               </template>
             </div>
@@ -2334,8 +2368,66 @@
                 </div>
               </div>
 
+              <div class="row q-col-gutter-md">
+                <div v-if="status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null" class="col-4">
+                  <q-select
+                    :disable="disableField"
+                    ref="typeOfCharge"
+                    outlined
+                    v-model="typeOfCharge"
+                    @input="resetTypeOfCharge"
+                    :options="options.typeOfCharge"
+                    dense
+                    label="Выдать на"
+                    :rules="[
+                      val => !!val || 'Выберите тип начисления'
+                    ]"
+                    emit-value
+                    map-options
+                    class="q-pb-sm"
+                  />
+                </div>
+                
+                <div v-else class="col-4"></div>
+
+                <div v-if="typeOfCharge == 1 || fullProfile.Customer.CardNumber" class="col-4">
+                  <!-- <q-select
+                    :disable="disableField"
+                    ref="CardNumber"
+                    outlined
+                    v-model="fullProfile.Customer.CardNumber"
+                    :options="options.CardNumber"
+                    dense
+                    label="Список карт"
+                    :rules="[
+                      val => !!val || 'Выберите карту'
+                    ]"
+                    class="q-pb-sm"
+                  /> -->
+
+                  <q-input
+                    :disable="disableField"
+                    ref="CardNumber"
+                    outlined
+                    v-model="fullProfile.Customer.CardNumber"
+                    dense
+                    label="Номер карты"
+                    mask="################"
+                    :rules="[
+                      val =>
+                          (val && val.length === 16) ||
+                          'Количество символов должно быт ровно 16',
+                        val =>
+                          !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                    ]"
+                  />
+                </div>
+              </div>
+
+
+
               <!-- для микрозайма -->
-              <template v-if="fullProfile.LoanInfo.LoanProduct == 132 && !fullProfile.Customer.CardNumber"> 
+              <template v-if="typeOfCharge == 2 || fullProfile.LoanInfo.microloan_details.bank_name"> 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
@@ -2391,7 +2483,7 @@
 
               <!-- для потребительского кредита -->
               <template
-                v-if="fullProfile.LoanInfo.LoanProduct == 133"
+                v-if="fullProfile.LoanInfo.LoanProduct == 136"
               >
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -2582,7 +2674,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="priceGuarantees"
+                        ref="priceGuarantees1"
                         outlined
                         v-model="guarantee.Sum"
                         dense
@@ -2614,7 +2706,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="nameGuarantees"
+                        ref="nameGuarantees1"
                         outlined
                         v-model="guarantee.FirstName"
                         dense
@@ -2684,7 +2776,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="innGuarantees"
+                        ref="innGuarantees1"
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -2952,14 +3044,14 @@
                   </div>
 
                   <div class="row q-col-gutter-md">
-                    <!-- <div class="col-4">
+                    <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="CardNumberGuarantees"
+                        ref="CardNumberGuarantees1"
                         outlined
                         v-model="guarantee.CardNumber"
                         dense
-                        label="Номер карты"
+                        label="Номер карты поручителя"
                         mask="################"
                         :rules="[
                           val =>
@@ -2969,9 +3061,39 @@
                             !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
                         ]"
                       />
-                    </div> -->
+                    </div>
 
                     <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        outlined
+                        v-model="guarantee.bank_name"
+                        dense
+                        label="Наименование банка"
+                        :rules="[
+                          val =>
+                            !!val ||
+                            'Введите наименование банка'
+                        ]"
+                      />
+                    </div>
+
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        outlined
+                        v-model="guarantee.mfo"
+                        dense
+                        label="МФО банка"
+                        :rules="[
+                          val =>
+                            !!val ||
+                            'Введите МФО банка'
+                        ]"
+                      />
+                    </div>
+
+                    <!-- <div class="col-4">
                       <q-input
                         :disable="disableField"
                         ref="BankInpsGuarantees"
@@ -2986,6 +3108,26 @@
                             'Количество символов должно быт ровно 16',
                           val =>
                             !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                        ]"
+                      />
+                    </div> -->
+                  </div>
+
+                  <div class="row q-col-gutter-md">
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        outlined
+                        v-model="guarantee.relatedPersonBill"
+                        dense
+                        label="Расчетный счет"
+                        mask="####################"
+                        :rules="[
+                          val =>
+                            (val && val.length === 20) ||
+                            'Количество символов должно быт ровно 20',
+                          val =>
+                            !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
                         ]"
                       />
                     </div>
@@ -3037,7 +3179,7 @@
                     <div class="col-4">
                       <q-select
                         :disable="disableField"
-                        ref="districtGuarantees"
+                        ref="districtGuarantees1"
                         outlined
                         v-model="guarantee.Address.District"
                         :options="guarantee.Address.Districts.items"
@@ -3068,7 +3210,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="houseNumberGuarantees"
+                        ref="houseNumberGuarantees1"
                         outlined
                         v-model="guarantee.Address.House"
                         dense
@@ -3201,7 +3343,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="priceGuarantees"
+                        ref="priceGuarantees2"
                         outlined
                         v-model="guarantee.Sum"
                         dense
@@ -3266,7 +3408,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="nameGuarantees"
+                        ref="nameGuarantees2"
                         outlined
                         v-model="guarantee.Name"
                         dense
@@ -3278,7 +3420,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="innGuarantees"
+                        ref="innGuarantees2"
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -3310,6 +3452,80 @@
                       />
                     </div>
                   </div>
+
+                   <div class="row q-col-gutter-md">
+                     <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="CardNumberGuarantees2"
+                        outlined
+                        v-model="guarantee.cardNumber"
+                        dense
+                        label="Номер карты"
+                        mask="################"
+                        :rules="[
+                          val =>
+                            (val && val.length === 16) ||
+                            'Количество символов должно быт ровно 16',
+                          val =>
+                            !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                        ]"
+                      />
+                    </div>
+
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="bank_nameGuarantees"
+                        outlined
+                        v-model="guarantee.bank_name"
+                        dense
+                        label="Наименование банка"
+                        :rules="[
+                          val =>
+                            !!val ||
+                            'Введите наименование банка'
+                        ]"
+                      />
+                    </div>
+
+                    <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="mfoGuarantees"
+                        outlined
+                        v-model="guarantee.mfo"
+                        dense
+                        label="МФО банка"
+                        :rules="[
+                          val =>
+                            !!val ||
+                            'Введите МФО банка'
+                        ]"
+                      />
+                    </div>
+                   </div>
+
+                   <div class="row q-col-gutter-md">
+                     <div class="col-4">
+                      <q-input
+                        :disable="disableField"
+                        ref="relatedLegalPersonBillGuarantees"
+                        outlined
+                        v-model="guarantee.relatedLegalPersonBill"
+                        dense
+                        label="Расчетный счет"
+                        mask="####################"
+                        :rules="[
+                          val =>
+                            (val && val.length === 20) ||
+                            'Количество символов должно быт ровно 20',
+                          val =>
+                            !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
+                        ]"
+                      />
+                    </div>
+                   </div>
 
                   <div class="row q-col-gutter-md">
                     <!-- <div class="col-4">
@@ -3368,7 +3584,7 @@
 
                       <q-select
                         :disable="disableField"
-                        ref="districtGuarantees"
+                        ref="districtGuarantees2"
                         outlined
                         v-model="guarantee.Address.District"
                         :options="guarantee.Address.Districts.items"
@@ -3399,7 +3615,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="houseNumberGuarantees"
+                        ref="houseNumberGuarantees2"
                         outlined
                         v-model="guarantee.Address.House"
                         dense
@@ -3548,7 +3764,7 @@
 
                       <q-select
                         :disable="disableField"
-                        ref="nameGuarantees"
+                        ref="nameGuarantees3"
                         outlined
                         v-model="guarantee.OrgName"
                         :options="dictionaries.Insurance_company.items"
@@ -3564,7 +3780,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="innGuarantees"
+                        ref="innGuarantees3"
                         outlined
                         v-model="guarantee.INN"
                         dense
@@ -3581,7 +3797,7 @@
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
-                        ref="priceGuarantees"
+                        ref="priceGuarantees3"
                         outlined
                         v-model="guarantee.Sum"
                         @input="guaranteesValid('Insurance', index)"
@@ -4230,6 +4446,8 @@ export default {
       GracePeriodMax: null,
       creditManagerComment: "",
 
+      typeOfCharge: null, // тип выдачи (пластик. карта, расчетный счет)
+
       options: {
         //Countries: this.$store.getters["profile/dictionaries"].Countries.items,
         Countries: [],
@@ -4238,7 +4456,25 @@ export default {
 
         yearsOfIssueVehicle: [],
 
-        FinancialSources: [] // источник финансирования
+        FinancialSources: [], // источник финансирования
+
+        typeOfCharge: [
+          {
+            label: 'Пластиковая карта',
+            value: 1
+          },
+          {
+            label: 'Расчетный счет',
+            value: 2
+          }
+        ],
+
+        CardNumber: [
+          '123',
+          '456',
+          '789'
+        ]
+
       },
 
       guaranteeCount: [],
@@ -4359,10 +4595,11 @@ export default {
     ].Countries.items;
   },
   mounted() {
-    document
+    setTimeout(() => {
+      document
       .querySelectorAll(".scroll")[1]
       .addEventListener("scroll", this.handleScroll);
-    setTimeout(() => {
+
       this.onSubmit("start");
     }, 1000);
   },
@@ -4480,6 +4717,26 @@ export default {
     }
   },
   methods: {
+    resetTypeOfCharge() {
+      this.fullProfile.Customer.CardNumber = ""
+      this.fullProfile.LoanInfo.microloan_details.bank_name = ""
+      this.fullProfile.LoanInfo.microloan_details.mfo = ""
+      this.fullProfile.LoanInfo.microloan_details.customer_bill = ""
+    },
+
+    resetJobInfo() {
+      this.Customer.JobInfo.employerActivityType = null //вид деятельности организации
+      this.Customer.JobInfo.positionType = null // Категория занимаемой должности
+      this.Customer.JobInfo.INN = ""
+      this.Customer.JobInfo.employeesNum = 0 // количество работников
+      this.Customer.JobInfo.employerName = "",// Наименование работадателя
+      this.Customer.JobInfo.totalJobExperienceMonths = 0 // общий трудовой стаж
+      this.Customer.JobInfo.activeYears = 0 // срок деятельности
+      this.Customer.JobInfo.position = "" // должность
+      // this.Customer.JobInfo.type = "" // вид деятельности
+      this.Customer.JobInfo.lastJobExperienceMonths = 0 // стаж на последнем месте работы
+    },
+
     formatNum(number) {
       return formatNumber(number);
     },
@@ -4630,9 +4887,13 @@ export default {
       ) {
         this.$refs.activityPeriod.validate();
         this.$refs.typeOrganization2.validate();
+        this.$refs.nameOfEmployer2.validate();
+        this.$refs.innOfEmployer2.validate();
       } else {
         validItems(this.$refs, "activityPeriod");
         validItems(this.$refs, "typeOrganization2");
+        validItems(this.$refs, "nameOfEmployer2");
+        validItems(this.$refs, "innOfEmployer2");
       }
 
       // this.$refs.income.validate();
@@ -4664,16 +4925,16 @@ export default {
       // Guarantees
       if (this.fullProfile.Guarantee.RelatedPerson.items.length) {
         validFilter(this.$refs, "customersAttitudeValid", "customersAttitude");
-        validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
+        validFilter(this.$refs, "priceGuaranteesValid1", "priceGuarantees1");
         validFilter(this.$refs, "surnameGuaranteesValid", "surnameGuarantees");
-        validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
+        validFilter(this.$refs, "nameGuaranteesValid1", "nameGuarantees1");
         validFilter(this.$refs, "mnameGuaranteesValid", "mnameGuarantees");
         validFilter(
           this.$refs,
           "birthdayGuaranteesValid",
           "birthdayGuarantees"
         );
-        validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
+        validFilter(this.$refs, "innGuaranteesValid1", "innGuarantees1");
         validFilter(this.$refs, "pinppGuaranteesValid", "pinppGuarantees");
 
         validFilter(
@@ -4728,38 +4989,38 @@ export default {
           "guaranteesDocumentGivenPlace"
         );
 
-        validFilter(
-          this.$refs,
-          "BankInpsGuaranteesValid",
-          "BankInpsGuarantees"
-        );
         // validFilter(
         //   this.$refs,
-        //   "CardNumberGuaranteesValid",
-        //   "CardNumberGuarantees"
+        //   "BankInpsGuaranteesValid",
+        //   "BankInpsGuarantees"
         // );
+        validFilter(
+          this.$refs,
+          "CardNumberGuaranteesValid1",
+          "CardNumberGuarantees1"
+        );
 
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
           this.$refs,
           "districtGuaranteesValid",
-          "districtGuarantees"
+          "districtGuarantees1"
         );
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(
           this.$refs,
           "houseNumberGuaranteesValid",
-          "houseNumberGuarantees"
+          "houseNumberGuarantees1"
         );
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
       } else {
         validItems(this.$refs, "customersAttitudeValid");
-        validItems(this.$refs, "priceGuaranteesValid");
+        validItems(this.$refs, "priceGuaranteesValid1");
         validItems(this.$refs, "surnameGuaranteesValid");
-        validItems(this.$refs, "nameGuaranteesValid");
+        validItems(this.$refs, "nameGuaranteesValid1");
         validItems(this.$refs, "mnameGuaranteesValid");
         validItems(this.$refs, "birthdayGuaranteesValid");
-        validItems(this.$refs, "innGuaranteesValid");
+        validItems(this.$refs, "innGuaranteesValid1");
         validItems(this.$refs, "pinppGuaranteesValid");
         validItems(this.$refs, "guaranteesDocumentDocumentTypeValid");
         validItems(this.$refs, "guaranteesDocumentDocumentNameValid");
@@ -4769,8 +5030,8 @@ export default {
         validItems(this.$refs, "guaranteesDocumentExpirationDateValid");
         validItems(this.$refs, "guaranteesDocumentRegionsGivenPlaceValid");
         validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
-        validItems(this.$refs, "BankInpsGuaranteesValid");
-        // validItems(this.$refs, "CardNumberGuaranteesValid");
+        // validItems(this.$refs, "BankInpsGuaranteesValid");
+        validItems(this.$refs, "CardNumberGuaranteesValid1");
         validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
@@ -4779,7 +5040,7 @@ export default {
       }
 
       if (this.fullProfile.Guarantee.RelatedLegalPerson.items.length) {
-        validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
+        validFilter(this.$refs, "priceGuaranteesValid2", "priceGuarantees2");
         validFilter(this.$refs, "CEOLastNameGuaranteesValid", "CEOLastName");
         validFilter(this.$refs, "CEOFirstNameGuaranteesValid", "CEOFirstName");
         validFilter(
@@ -4787,34 +5048,44 @@ export default {
           "CEOMiddleNameGuaranteesValid",
           "CEOMiddleName"
         );
-        validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
-        validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
+        validFilter(this.$refs, "nameGuaranteesValid2", "nameGuarantees2");
+        validFilter(this.$refs, "innGuaranteesValid2", "innGuarantees2");
         validFilter(
           this.$refs,
           "kindOfActivityGuaranteesValid",
           "kindOfActivityGuarantees"
         );
+
+        validFilter(this.$refs, "CardNumberGuaranteesValid2", "CardNumberGuarantees2");
+        validFilter(this.$refs, "bank_nameGuaranteesValid", "bank_nameGuarantees");
+        validFilter(this.$refs, "mfoGuaranteesValid", "mfoGuarantees");
+        validFilter(this.$refs, "relatedLegalPersonBillGuaranteesValid", "relatedLegalPersonBillGuarantees");
+
         validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
         validFilter(
           this.$refs,
           "districtGuaranteesValid",
-          "districtGuarantees"
+          "districtGuarantees2"
         );
         validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
         validFilter(
           this.$refs,
           "houseNumberGuaranteesValid",
-          "houseNumberGuarantees"
+          "houseNumberGuarantees2"
         );
         validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
       } else {
-        validItems(this.$refs, "priceGuaranteesValid");
+        validItems(this.$refs, "priceGuaranteesValid2");
         validItems(this.$refs, "CEOLastNameGuaranteesValid");
         validItems(this.$refs, "CEOFirstNameGuaranteesValid");
         validItems(this.$refs, "CEOMiddleNameGuaranteesValid");
-        validItems(this.$refs, "nameGuaranteesValid");
-        validItems(this.$refs, "innGuaranteesValid");
+        validItems(this.$refs, "nameGuaranteesValid2");
+        validItems(this.$refs, "innGuaranteesValid2");
         validItems(this.$refs, "kindOfActivityGuaranteesValid");
+        validItems(this.$refs, "CardNumberGuaranteesValid2");
+        validItems(this.$refs, "bank_nameGuaranteesValid");
+        validItems(this.$refs, "mfoGuaranteesValid");
+        validItems(this.$refs, "relatedLegalPersonBillGuaranteesValid");
         validItems(this.$refs, "regionGuaranteesValid");
         validItems(this.$refs, "districtGuaranteesValid");
         validItems(this.$refs, "streetGuaranteesValid");
@@ -4823,14 +5094,14 @@ export default {
       }
 
       if (this.fullProfile.Guarantee.Insurance.items.length) {
-        validFilter(this.$refs, "nameGuaranteesValid", "nameGuarantees");
-        validFilter(this.$refs, "innGuaranteesValid", "innGuarantees");
-        validFilter(this.$refs, "priceGuaranteesValid", "priceGuarantees");
+        validFilter(this.$refs, "nameGuaranteesValid3", "nameGuarantees3");
+        validFilter(this.$refs, "innGuaranteesValid3", "innGuarantees3");
+        validFilter(this.$refs, "priceGuaranteesValid3", "priceGuarantees3");
         
       } else {
-        validItems(this.$refs, "priceGuaranteesValid");
-        validItems(this.$refs, "nameGuaranteesValid");
-        validItems(this.$refs, "innGuaranteesValid");
+        validItems(this.$refs, "priceGuaranteesValid3");
+        validItems(this.$refs, "nameGuaranteesValid3");
+        validItems(this.$refs, "innGuaranteesValid3");
       }
 
       if (this.status === 'Step: Работа с документами') {
@@ -4865,9 +5136,15 @@ export default {
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
+      if (this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
+        this.$refs.typeOfCharge.validate();
+      } else {
+        validItems(this.$refs, "typeOfCharge");
+      }
+
       //если потребительский
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 133
+        this.fullProfile.LoanInfo.LoanProduct == 136
       ) {
         this.$refs.nameProduction.validate();
         this.$refs.productName.validate();
@@ -4900,9 +5177,9 @@ export default {
 
       console.log("files", this.$refs.files);
 
+      // Если выбран расчетный счет!!!
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 132 && 
-        !this.fullProfile.Customer.CardNumber
+        this.typeOfCharge == 2
       ) {
         this.$refs.mircoloanBankName.validate();
         this.$refs.mircoloanBankMFO.validate();
@@ -4912,7 +5189,16 @@ export default {
         validItems(this.$refs, "mircoloanBankMFO");
         validItems(this.$refs, "mircoloanCustomerBill");
       }
-      
+
+      // Если выбрана пластиковая карта
+      if (
+        this.typeOfCharge == 1
+      ) {
+        this.$refs.CardNumber.validate();
+      } else {
+        validItems(this.$refs, "CardNumber");
+        
+      }
 
       if (
         this.$refs.surname.hasError ||
@@ -4967,6 +5253,8 @@ export default {
         this.$refs.totalWorkExperience.hasError ||
         this.$refs.activityPeriod.hasError ||
         this.$refs.typeOrganization2.hasError ||
+        this.$refs.nameOfEmployer2.hasError ||
+        this.$refs.innOfEmployer2.hasError ||
         // this.$refs.income.hasError ||
         //properties
         this.$refs.typePropertiesValid.hasError ||
@@ -4981,12 +5269,18 @@ export default {
         //this.$refs.guarantees.hasError ||
         // this.$refs.typeGuaranteesValid.hasError ||
         this.$refs.customersAttitudeValid.hasError ||
-        this.$refs.priceGuaranteesValid.hasError ||
+        this.$refs.priceGuaranteesValid1.hasError ||
+        this.$refs.priceGuaranteesValid2.hasError ||
+        this.$refs.priceGuaranteesValid3.hasError ||
         this.$refs.surnameGuaranteesValid.hasError ||
-        this.$refs.nameGuaranteesValid.hasError ||
+        this.$refs.nameGuaranteesValid1.hasError ||
+        this.$refs.nameGuaranteesValid2.hasError ||
+        this.$refs.nameGuaranteesValid3.hasError ||
         this.$refs.mnameGuaranteesValid.hasError ||
         this.$refs.birthdayGuaranteesValid.hasError ||
-        this.$refs.innGuaranteesValid.hasError ||
+        this.$refs.innGuaranteesValid1.hasError ||
+        this.$refs.innGuaranteesValid2.hasError ||
+        this.$refs.innGuaranteesValid3.hasError ||
         this.$refs.kindOfActivityGuaranteesValid.hasError ||
         this.$refs.pinppGuaranteesValid.hasError ||
         this.$refs.guaranteesDocumentDocumentTypeValid.hasError ||
@@ -5000,8 +5294,14 @@ export default {
         this.$refs.guaranteesContractExpirationDateValid.hasError ||
         this.$refs.guaranteesDocumentRegionsGivenPlaceValid.hasError ||
         this.$refs.guaranteesDocumentGivenPlaceValid.hasError ||
-        this.$refs.BankInpsGuaranteesValid.hasError ||
-        // this.$refs.CardNumberGuaranteesValid.hasError ||
+        // this.$refs.BankInpsGuaranteesValid.hasError ||
+        this.$refs.CardNumberGuaranteesValid1.hasError ||
+        this.$refs.CardNumberGuaranteesValid2.hasError ||
+
+        this.$refs.bank_nameGuaranteesValid.hasError ||
+        this.$refs.mfoGuaranteesValid.hasError ||
+        this.$refs.relatedLegalPersonBillGuaranteesValid.hasError ||
+
         this.$refs.regionGuaranteesValid.hasError ||
         this.$refs.districtGuaranteesValid.hasError ||
         this.$refs.streetGuaranteesValid.hasError ||
@@ -5025,9 +5325,11 @@ export default {
         this.$refs.agreementNumber.hasError ||
         this.$refs.agreementDate.hasError ||
         this.$refs.sourceFinancs.hasError ||
+        this.$refs.typeOfCharge.hasError ||
         this.$refs.uploadFile.hasError ||
         this.$refs.guaranteesValid.hasError ||
         
+        this.$refs.CardNumber.hasError ||
         this.$refs.mircoloanBankName.hasError ||
         this.$refs.mircoloanBankMFO.hasError ||
         this.$refs.mircoloanCustomerBill.hasError
@@ -5082,6 +5384,8 @@ export default {
         Status,
         ApplicationID,
         // ProtocolNumber,
+        client_code,
+        client_uid,
         Number,
         Branch,
         BranchName,
@@ -5130,6 +5434,8 @@ export default {
               Status,
               ApplicationID,
               // ProtocolNumber,
+              client_code,
+              client_uid,
               Number,
               Branch,
               BranchName,
@@ -5796,15 +6102,11 @@ export default {
     },
 
     INNFizValid(val) {
-      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
-        return true
-      }
+      return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || 'Неверные данные'
     },
 
     INNYurValid(val) {
-      if (+val[0] > 1 && +val[0] < 4 && !val.match(/(?=(.))\1{8,}/)) {
-        return true
-      }
+      return (+val[0] > 1 && +val[0] < 4 && !val.match(/(?=(.))\1{8,}/)) || 'Неверные данные'
     },
 
     pinppValid(val) {
@@ -5880,6 +6182,8 @@ export default {
     async printFailureCredit(fileData) {
       this.fileData.type = fileData.label;
       this.fileData.data = fileData.data;
+
+      // console.log('failureCredit', JSON.stringify(this.fileData, null, 2))
 
       try {
         const file = await this.$store.dispatch("credits/getFile", this.fileData);
@@ -5966,9 +6270,11 @@ export default {
   },
   beforeDestroy() {
     console.log('beforeDestroy')
-    document
-      .querySelectorAll(".scroll")[1]
-      .removeEventListener("scroll", this.handleScroll);
+    if(!!document.querySelectorAll(".scroll")[1]) {
+      document
+        .querySelectorAll(".scroll")[1]
+        .removeEventListener("scroll", this.handleScroll);
+    }
   },
   components: {
     appLoader: Loader,
