@@ -2369,7 +2369,7 @@
               </div>
 
               <div class="row q-col-gutter-md">
-                <div v-if="status == 'Step: Full Application Filling'" class="col-4">
+                <div v-if="status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null" class="col-4">
                   <q-select
                     :disable="disableField"
                     ref="typeOfCharge"
@@ -5119,7 +5119,7 @@ export default {
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
-      if (this.status == 'Step: Full Application Filling') {
+      if (this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
         this.$refs.typeOfCharge.validate();
       } else {
         validItems(this.$refs, "typeOfCharge");
