@@ -2044,7 +2044,10 @@ export default {
         console.log("response", JSON.stringify(response, null, 2));
 
         if (response) {
-          this.$store.commit("credits/setMessage", message);
+          setTimeout(() => {
+            this.$store.commit("credits/setMessage", message);
+          }, 500)
+          
           this.$store.commit("credits/removeTask", this.$route.query.taskId);
           
           this.$router.go(-1);
@@ -2054,11 +2057,13 @@ export default {
         this.loader = false;
       } catch (error) {
         this.loader = false;
+        setTimeout(() => {
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
+        }, 500)
         
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
         this.$router.go(-1);
         // this.$router.push("/work/credit");
       }
