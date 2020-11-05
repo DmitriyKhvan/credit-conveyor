@@ -1890,12 +1890,12 @@ export default {
                 : null
     },
     messageReject(Decision) {
-      console.log('Decision', Decision)
-      return this.userRole == "ROLE_CCC"
+      console.log('Decision', this.userRole, Decision)
+      return this.userRole == "ROLE_CCC" && Decision == 'N'
               ? 'Form reject'
-              : this.userRole == "ROLE_CC" && Decision == 'N' || this.userRole == "ROLE_UrWr"
+              : Decision == 'N'
                 ? 'Credit failure'
-                : this.userRole == "ROLE_CC" && Decision == 'R'
+                : Decision == 'R'
                   ? 'Credit rework'
                   : null
     },
@@ -2033,6 +2033,7 @@ export default {
           ]
         };
       }
+      // this.$store.commit("credits/setMessage", message);
 
       console.log("data", JSON.stringify(data, null, 2));
       try {
@@ -2045,17 +2046,21 @@ export default {
         if (response) {
           this.$store.commit("credits/setMessage", message);
           this.$store.commit("credits/removeTask", this.$route.query.taskId);
+          
           this.$router.go(-1);
+          // this.$router.push("/work/credit");
         }
 
         this.loader = false;
       } catch (error) {
         this.loader = false;
+        
         this.$store.commit(
           "credits/setMessage",
           CommonUtils.filterServerError(error)
         );
         this.$router.go(-1);
+        // this.$router.push("/work/credit");
       }
     },
 
@@ -2197,6 +2202,7 @@ export default {
           }
         ]
       };
+      console.log(JSON.stringify(data, null, 2))
 
       try {
         

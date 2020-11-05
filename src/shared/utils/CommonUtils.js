@@ -92,6 +92,7 @@ export default {
   },
   filterServerError(error) {
     if (error.response){
+      // debugger
       if (error.response.data.message) {
         return error.response.data.message
       } else if(error.response.data) {
@@ -100,7 +101,7 @@ export default {
         return error.message
       }
     } 
-    
+    // debugger
     return error
   },
 

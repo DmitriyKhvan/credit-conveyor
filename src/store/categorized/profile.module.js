@@ -579,6 +579,10 @@ export const profile = {
             const payOrder = response.data.input.find(
               i => i.label === "payOrder"
             );
+
+            console.log(JSON.stringify(payOrder.data, null, 2))
+
+
             commit("setPayOrder", payOrder.data);
 
           } else {

@@ -2391,7 +2391,7 @@
                 <div v-else class="col-4"></div>
 
                 <div v-if="typeOfCharge == 1 || fullProfile.Customer.CardNumber" class="col-4">
-                  <q-select
+                  <!-- <q-select
                     :disable="disableField"
                     ref="CardNumber"
                     outlined
@@ -2403,6 +2403,23 @@
                       val => !!val || 'Выберите карту'
                     ]"
                     class="q-pb-sm"
+                  /> -->
+
+                  <q-input
+                    :disable="disableField"
+                    ref="CardNumber"
+                    outlined
+                    v-model="fullProfile.Customer.CardNumber"
+                    dense
+                    label="Номер карты"
+                    mask="################"
+                    :rules="[
+                      val =>
+                          (val && val.length === 16) ||
+                          'Количество символов должно быт ровно 16',
+                        val =>
+                          !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                    ]"
                   />
                 </div>
               </div>
