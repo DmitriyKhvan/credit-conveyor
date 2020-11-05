@@ -5467,7 +5467,10 @@ export default {
         //console.log('nextTaskId', response.nextTask.id)
 
         if (response) {
-          this.$store.commit("credits/setMessage", this.message);
+          setTimeout(() => {
+             this.$store.commit("credits/setMessage", this.message);
+          }, 500)
+         
           this.$store.commit("credits/removeTask", this.taskId);
           this.$router.push("/work/credit");
           //this.$router.go(-1);
