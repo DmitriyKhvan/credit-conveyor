@@ -266,7 +266,7 @@
                 :to="{
                   name: credit.taskName === 'PreApprove'
                     ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
+                    : credit.taskName === 'Step: Заполнить ПП'
                       ? 'Payment'
                       : userRole === 'ROLE_KM'
                         ? 'Profile'

@@ -18,7 +18,7 @@
       </q-header> -->
       
 
-      <q-page-container v-if="path === '/work/credit/profile' || path === '/work/credit/applications'">
+      <q-page-container v-if="path === '/work/credit/sub/profile' || path === '/work/credit/applications'">
         <q-layout
           view="hHh lpR fFf"
           container
