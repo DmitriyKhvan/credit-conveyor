@@ -3,7 +3,7 @@
     <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">{{$t('tables.devices.add_edit_devices')}}</div>
+          <div class="text-h6">{{ $t("tables.devices.add_edit_devices") }}</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
@@ -22,12 +22,11 @@
               @dblclick="selectDeviceType()"
               readonly="readonly"
               :rules="[
-                val =>
-                  $v.details.type_id.required || 'Type is required'
+                val => $v.details.type_id.required || 'Type is required'
               ]"
               lazy-rules
             >
-              <template v-slot:hint>{{$t('common.double_click')}}</template>
+              <template v-slot:hint>{{ $t("common.double_click") }}</template>
             </q-input>
             <!--  -->
             <!-- select mark of device -->
@@ -39,12 +38,11 @@
               @dblclick="selectDeviceMark()"
               readonly="readonly"
               :rules="[
-                val =>
-                  $v.details.mark_id.required || 'Mark is required'
+                val => $v.details.mark_id.required || 'Mark is required'
               ]"
               lazy-rules
             >
-              <template v-slot:hint>{{$t('common.double_click')}}</template>
+              <template v-slot:hint>{{ $t("common.double_click") }}</template>
             </q-input>
             <!--  -->
           </div>
@@ -58,12 +56,11 @@
               @dblclick="selectDeviceModel()"
               readonly="readonly"
               :rules="[
-                val =>
-                  $v.details.model_id.required || 'Model is required'
+                val => $v.details.model_id.required || 'Model is required'
               ]"
               lazy-rules
             >
-              <template v-slot:hint>{{$t('common.double_click')}}</template>
+              <template v-slot:hint>{{ $t("common.double_click") }}</template>
             </q-input>
             <!--  -->
             <q-input
@@ -74,8 +71,7 @@
               v-model="details.serial"
               :label="$t('tables.devices.device_serial_number')"
               :rules="[
-                val =>
-                  $v.details.serial.required || 'Serial is required'
+                val => $v.details.serial.required || 'Serial is required'
               ]"
               lazy-rules
             ></q-input>
@@ -94,6 +90,7 @@
               emit-value
               map-options
               :label="$t('tables.devices.branch')"
+              :disable="isBranchIdRestricted"
               @input="selected"
               :rules="[
                 val => $v.details.branch_id.required || 'Branch is required'
@@ -111,6 +108,7 @@
               option-label="text"
               emit-value
               map-options
+              :disable="isFilialIdResticted"
               :label="$t('tables.devices.filial')"
               :rules="[
                 val => $v.details.filial_id.required || 'Filial is required'
@@ -135,8 +133,7 @@
               outlined
               class="col-xs-12 col-sm-12 col-md-6"
               :label="$t('tables.devices.inventory')"
-              :rules="[
-              ]"
+              :rules="[]"
               lazy-rules
             />
             <q-select
@@ -169,8 +166,15 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy ref="madeDate" transition-show="scale" transition-hide="scale">
-                    <q-date v-model="details.made_date" @input="() => $refs.madeDate.hide()" />
+                  <q-popup-proxy
+                    ref="madeDate"
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="details.made_date"
+                      @input="() => $refs.madeDate.hide()"
+                    />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -187,8 +191,15 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy ref="boughtDate" transition-show="scale" transition-hide="scale">
-                    <q-date v-model="details.bought_date" @input="() => $refs.boughtDate.hide()" />
+                  <q-popup-proxy
+                    ref="boughtDate"
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="details.bought_date"
+                      @input="() => $refs.boughtDate.hide()"
+                    />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -198,7 +209,12 @@
       </q-card-section>
       <!-- buttons example -->
       <q-card-actions align="right">
-        <q-btn color="primary" :disable="$v.details.$invalid" label="Submit" @click="submitForm">
+        <q-btn
+          color="primary"
+          :disable="$v.details.$invalid"
+          label="Submit"
+          @click="submitForm"
+        >
           <q-spinner color="white" size="1em" v-show="isLoading" />
         </q-btn>
         <q-btn color="primary" label="Cancel" @click="onCancelClick" />
@@ -212,6 +228,7 @@ import NotifyService from "@/services/notify.service";
 import dialogMix from "@/shared/mixins/dialogMix";
 import GridDialog from "@/components/GridDialog";
 import ApiService from "@/services/api.service";
+import { mapGetters } from "vuex";
 
 import {
   required,
@@ -236,6 +253,8 @@ export default {
       deviceBranches: [],
       deviceFilials: [],
       branchList: [],
+      isBranchIdRestricted: false,
+      isFilialIdResticted: false,
       // !!! Dont change. Functions in dialogMixin depends on name "details"
       details: {
         id: null,
@@ -374,38 +393,66 @@ export default {
   },
   mixins: [dialogMix],
   created() {
-    Promise.all([this.selectBranch()])
-      .then(x => {
-        this.deviceBranches = x[0].data[0].children.map(val => {
-          return {
-            text: val.DEPARTMENT_NAME1,
-            value: val.CODE
-          };
-        });
-        this.branchList = x[0].data[0].children;
-        if (this.details.branch_id) {
-          // when edit case initializes deviceFilials array
-          this.branchList.forEach(element => {
-            if (element.CODE == this.details.branch_id) {
-              this.deviceFilials = element.children.map(val => {
+    if (!!this.branchCode) {
+      Promise.all([this.selectBranch()])
+        .then(x => {
+          // all access
+          if (this.branchCode == 0) {
+            this.deviceBranches = x[0].data[0].children.map(val => {
+              return {
+                text: val.DEPARTMENT_NAME1,
+                value: val.CODE
+              };
+            });
+          } // access to specific branch
+          else {
+            if (this.isEdit) {
+              this.isBranchIdRestricted = true; // disable branch field to edit
+              if (this.filialCode != null) {
+                this.isFilialIdResticted = true;
+              }
+            }
+
+            this.deviceBranches = x[0].data[0].children
+              .filter(val => this.branchCode == val.CODE)
+              .map(val => {
                 return {
                   text: val.DEPARTMENT_NAME1,
                   value: val.CODE
                 };
               });
-            }
-          });
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+          }
+
+          this.branchList = x[0].data[0].children;
+
+          if (!!this.details.branch_id) {
+            // when edit case initializes deviceFilials array
+            this.branchList.forEach(element => {
+              if (element.CODE == this.details.branch_id) {
+                this.deviceFilials = element.children.map(val => {
+                  return {
+                    text: val.DEPARTMENT_NAME1,
+                    value: val.CODE
+                  };
+                });
+              }
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      branchCode: "auth/branchCode",
+      filialCode: "auth/filialCode"
+    })
+  },
   methods: {
     initializeData() {
       if (!!this.data.selectedRow) {
-        console.log;
         this.details = this.data.selectedRow[0];
         this.deviceTypeName = this.data.selectedRow[0].type_name;
         this.deviceMarkName = this.data.selectedRow[0].mark_name;
@@ -470,16 +517,32 @@ export default {
     selectBranch() {
       return ApiService.get("structure/branches");
     },
+
     selected(parentCode) {
       this.details.filial_id = null;
+      // if selected branch
       this.branchList.forEach(element => {
         if (element.CODE == parentCode) {
-          this.deviceFilials = element.children.map(val => {
-            return {
-              text: val.DEPARTMENT_NAME1,
-              value: val.CODE
-            };
-          });
+          if (!!this.filialCode) {
+            // if filial restriction is set, filter that filial only
+            this.deviceFilials = element.children
+              .filter(val => val.CODE == this.filialCode)
+              .map(val => {
+                return {
+                  text: val.DEPARTMENT_NAME1,
+                  value: val.CODE
+                };
+              });
+          }
+          // ifnot take all filial list
+          else {
+            this.deviceFilials = element.children.map(val => {
+              return {
+                text: val.DEPARTMENT_NAME1,
+                value: val.CODE
+              };
+            });
+          }
         }
       });
     }

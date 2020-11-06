@@ -4318,7 +4318,7 @@
         </ul>
       </div>
 
-      <!-- confirm -->
+      <!-- confirm  -->
       <q-dialog v-model="confirm" persistent>
         <q-card>
           <q-card-section class="row items-center">

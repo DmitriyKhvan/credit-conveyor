@@ -1,38 +1,22 @@
 import Vue from "vue";
 import Vuex from "vuex";
-
-import {
-  auth
-} from "./categorized/auth.module";
-import {
-  dicts
-} from "./categorized/dicts.module";
-import {
-  socket
-} from "./categorized/socket.module";
-import {
-  common
-} from "./categorized/common.module";
-
-import { task } from './categorized/task.module'
-
-import { credits } from './categorized/credits.module';
-
-import { creditsAdmin } from './categorized/creditsAdmin.module';
-
-import { profile } from './categorized/profile.module';
-
-import { education } from './categorized/education.module';
-
-import { themes } from './categorized/themes.module';
-
-import birthdays from './birthdays'
-import chats from './chat'
-import my_personal from './my_personal'
-import apparat from './apparat'
-import tasks from './tasks'
-import assistant from './assistant'
-
+import { auth } from "./categorized/auth.module";
+import { dicts } from "./categorized/dicts.module";
+import { socket } from "./categorized/socket.module";
+import { common } from "./categorized/common.module";
+import { task } from "./categorized/task.module";
+import { credits } from "./categorized/credits.module";
+import { creditsAdmin } from "./categorized/creditsAdmin.module";
+import { profile } from "./categorized/profile.module";
+import { education } from "./categorized/education.module";
+import { themes } from "./categorized/themes.module";
+import birthdays from "./birthdays";
+import chats from "./chat/chat";
+import my_personal from "./my_personal";
+import { apparat } from "./work/apparat";
+import tasks from "./work/tasks";
+import { assistant } from "./work/assistant";
+import { instruction } from './development/instruction'
 
 Vue.use(Vuex);
 
@@ -54,9 +38,9 @@ const store = new Vuex.Store({
     my_personal,
     apparat,
     tasks,
-    assistant
-  },
-
+    assistant,
+    instruction
+  }
   // enable strict mode (adds overhead!)
   // for dev mode only
   //strict: process.env.DEV

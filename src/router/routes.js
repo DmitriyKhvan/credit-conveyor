@@ -28,7 +28,7 @@ const ThemesAdmin = () => import("pages/main/profile/settings/ThemesAdmin.vue");
 const ThemesUser = () => import("pages/main/profile/settings/ThemesUser.vue");
 
 const MyData = () => import("pages/main/profile/mydata/MyData.vue");
-const MyFinance = () => import("pages/main/profile/myfinance/MyFinance.vue");
+const MyFinance = () => import("pages/main/profile/myfinance/FinanceTemp.vue");
 // chancellary
 const RegistrationChancellary = () =>
   import("pages/main/work/kanselariya/Registration.vue");
@@ -199,7 +199,7 @@ const routes = [{
         path: "payment/:id",
         name: "Payment",
         component: CreditPayment,
-         // beforeEnter: ifAuthenticatedCM
+        // beforeEnter: ifAuthenticatedCM
       }
       ]
     }
@@ -392,7 +392,6 @@ const routes = [{
   }
 }
 ];
-
 
 // Always leave this as last one
 if (process.env.MODE !== "ssr") {

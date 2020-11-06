@@ -1,11 +1,11 @@
 <template>
-<div class="header">
-  <!-- <q-header elevated style="background:linear-gradient(145deg,#FDFEFE 20%,#014a88 75%);"> -->
-  <q-header elevated :style="'background:' + themes.headerColor">
-    <q-toolbar>
-      <div class="header__parts">
-      <bread-crumb :list="list()" />
-      <!-- <q-space />
+  <div class="header">
+    <!-- <q-header elevated style="background:linear-gradient(145deg,#FDFEFE 20%,#014a88 75%);"> -->
+    <q-header elevated :style="'background:' + themes.headerColor">
+      <q-toolbar>
+        <div class="header__parts">
+          <bread-crumb :list="list()" />
+          <!-- <q-space />
       <q-input
         color="purple-12"
         class="col-1"
@@ -14,56 +14,55 @@
         label="uid"
       />
 
-      <q-space /> -->
-      <!-- <span id="time" class="text-h4">00:00:00</span> -->
-      <div id="clock">
-        
-        <p class="time">{{ time }},&nbsp;</p>
-        <p class="date"> {{ date }}</p>
-      </div>
+          <q-space />-->
+          <!-- <span id="time" class="text-h4">00:00:00</span> -->
+          <div id="clock">
+            <p class="time">{{ time }},&nbsp;</p>
+            <p class="date">{{ date }}</p>
+          </div>
 
-      <div class="avatar__block">
-        <q-avatar class="avatar1">
-          <img :src="getPhotoUrl(empId)" />
-        </q-avatar>
-        <span class="titleName">{{ fullName}}</span>
+          <div class="avatar__block">
+            <q-avatar class="avatar1">
+              <img :src="getPhotoUrl(empId)" />
+            </q-avatar>
+            <span class="titleName" v-html="fullName"></span>
 
-        <q-btn
-          class="icon-color"
-          flat
-          dense
-          icon="o_notifications"
-          size="16px"
-          @click="showNotification()"
-        >
-          <q-badge v-if="count>0" color="red" floating transparent>{{count}}</q-badge>
-          <q-menu>
-            <q-list>
-              <div v-for="(msg, index) in inbox" :key="index">
-                <q-item>
-                  <q-item-section>
-                    <q-item-label>{{ msg.title }}</q-item-label>
-                    <q-item-label caption>{{ msg.body }}</q-item-label>
-                  </q-item-section>
-                  <q-item-section side top>
-                    <q-item-label caption>{{formattedDate(msg.sent_at)}}</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-separator spaced inset />
-              </div>
-            </q-list>
-          </q-menu>
-        </q-btn>
+            <q-btn
+              class="icon-color"
+              flat
+              dense
+              icon="o_notifications"
+              size="16px"
+              @click="showNotification()"
+            >
+              <q-badge v-if="count>0" color="red" floating transparent>{{count}}</q-badge>
+              <q-menu>
+                <q-list>
+                  <div v-for="(msg, index) in inbox" :key="index">
+                    <q-item>
+                      <q-item-section>
+                        <q-item-label>{{ msg.title }}</q-item-label>
+                        <q-item-label caption>{{ msg.body }}</q-item-label>
+                      </q-item-section>
+                      <q-item-section side top>
+                        <q-item-label caption>{{formattedDate(msg.sent_at)}}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator spaced inset />
+                  </div>
+                </q-list>
+              </q-menu>
+            </q-btn>
 
-        <q-btn class="icon-color" flat dense icon="o_email" size="16px">
-          <q-badge color="red" floating transparent>12</q-badge>
-        </q-btn>
+            <q-btn class="icon-color" flat dense icon="o_email" size="16px">
+              <q-badge color="red" floating transparent>{{count}}</q-badge>
+            </q-btn>
 
-        <q-btn flat class="icon-color" dense icon="exit_to_app" size="16px" @click="logout()" />
-      </div>
-      </div>
-    </q-toolbar>
-  </q-header>
+            <q-btn flat class="icon-color" dense icon="exit_to_app" size="16px" @click="logout()" />
+          </div>
+        </div>
+      </q-toolbar>
+    </q-header>
   </div>
 </template>
 
@@ -91,7 +90,20 @@ export default {
       // get current time
       // let week = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
       let week = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
-      let month = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь",];
+      let month = [
+        "Январь",
+        "Февраль",
+        "Март",
+        "Апрель",
+        "Май",
+        "Июнь",
+        "Июль",
+        "Август",
+        "Сентябрь",
+        "Октябрь",
+        "Ноябрь",
+        "Декабрь"
+      ];
       // get time
       this.time =
         this.zeroPadding(cd.getHours(), 2) +
@@ -110,14 +122,14 @@ export default {
       //   week[cd.getDay()];
 
       this.date =
-        week[cd.getDay()] + 
+        week[cd.getDay()] +
         " " +
         this.zeroPadding(cd.getDate(), 2) +
-        " " + 
-        month[cd.getMonth()] 
-        // +
-        // " " +
-        // this.zeroPadding(cd.getFullYear(), 4);
+        " " +
+        month[cd.getMonth()];
+      // +
+      // " " +
+      // this.zeroPadding(cd.getFullYear(), 4);
     }, 1000);
   },
   computed: {
@@ -190,7 +202,7 @@ export default {
       }
     },
     list() {
-      //console.log('route', this.$route);
+      //console.log("route", this.$route);
       return this.$route.matched.filter(
         route => route.name || route.meta.label
       );
@@ -233,15 +245,14 @@ export default {
     top: 5px;
   }
   .avatar1 {
-    
   }
   .titleName {
-    color: #282D30;;
+    color: #282d30;
     font-weight: bold;
     margin: 0 40px 0 8px;
   }
   .icon-color {
-    color: #A0A5BA;
+    color: #a0a5ba;
   }
 
   #clock {
@@ -250,11 +261,10 @@ export default {
     align-items: center;
     // flex-grow: 1;
     font-weight: bold;
-    color: #A0A5BA;;
+    color: #a0a5ba;
     .time {
     }
     .date {
-     
     }
   }
 }
