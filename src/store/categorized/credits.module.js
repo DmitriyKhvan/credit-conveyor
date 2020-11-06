@@ -30,6 +30,7 @@ export const credits = {
 
     scannerSerialNumber: null,
     disableInput: false,
+    disableGCI: true,
 
     loadMessage: "",
     personalData: {
@@ -45,6 +46,8 @@ export const credits = {
       gender: null,
       givenDate: "", // дата выдачи паспорта
       expDate: "",  // дата окончания паспорта
+      client_code: "",
+      client_uid: "",
 
       typeCredit: null,
       typeStepCredit: null,
@@ -342,7 +345,7 @@ export const credits = {
           file = await dispatch('creatFile', fileData)
 
           console.log('createFile', file)
-
+          
           if (file.infos[0].id) {
             response = await state.bpmService.getFile(file.infos[0].id)
             // commit("setFileId", file.infos[0].id)
@@ -369,9 +372,9 @@ export const credits = {
       }
     },
 
-    async getProtocol({ state, commit, dispatch }) {
+    async getProtocol({ state, commit, dispatch }, data) {
       try {
-        const file = await state.bpmService.getProtocol()
+        const file = await state.bpmService.getProtocol(data)
         const response = await state.bpmService.getFile(file.infos[0].id)
         const blob = new Blob([response], { type: "application/pdf" })
         return {
@@ -386,36 +389,79 @@ export const credits = {
       }
     },
 
-    // async checkClient({ state, commit, dispatch }, clientData) {
-      
-    //   try {
-    //     const response = await state.bpmService.checkClient(clientData)
-    //     console.log('GCI', response)
-    //     if (response) {
-    //       commit("setClientDataGCI", response)
-    //     }
+    async checkClient({ state, commit, dispatch }, clientData) {
+      try {
+        const response = await state.bpmService.checkClient(clientData)
+        console.log('GCI', response.internal)
+        const code = response.output.find(i => i.name == 'code')
+        const msg = response.output.find(i => i.name == 'response')
 
-    //   } catch (error) {
-    //     const errorMessage = CommonUtils.filterServerError(error);
-    //     commit("setMessage", errorMessage);
-    //     throw error
-    //   }
-    // }
+        if (code.data == 0) {
+          state.disableGCI = true
+          const client_resp = response.internal.find(i => i.name == 'client_resp')
+          commit("setClientDataGCI", client_resp.data)
+        } else if(code.data == 4) {
+          // попробуйте снова
+          commit("resetClientDataGCI")
+          throw msg.data
+        } else {
+          // разблокируем поля
+          state.disableGCI = false
+          commit("resetClientDataGCI")
+          throw msg.data
+        } 
+
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+        throw error
+      }
+    }
   },
   mutations: {
-    // setClientDataGCI(state, payload) {
-    //   state.personalData.name = payload.first_name;
-    //   state.personalData.surname = payload.last_name;
-    //   state.personalData.mname = payload.patronym;
-    //   state.personalData.gender = payload.Person.Sex;
-    //   state.personalData.passport = payload.Person.DocumentSerialNumber;
-    //   state.personalData.pinpp = payload.Person.Pinpp;
-    //   state.personalData.inn = payload.Person.Inn ? payload.Person.Inn : payload.Additional.Inn;
-    //   state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
-    //   state.personalData.birthDate = payload.Person.BirthDate
-    //   state.personalData.givenDate = payload.Person.DocumentDateIssue
-    //   state.personalData.expDate = payload.Person.DocumentDateValid
-    // },
+    resetClientDataGCI(state) {
+      state.personalData.name = "";
+      state.personalData.surname = "";
+      state.personalData.mname = "";
+      state.personalData.gender = null;
+      state.personalData.passport = "";
+      state.personalData.pinpp = null;
+      state.personalData.inn = null;
+      state.personalData.birthDate = ""
+      state.personalData.givenDate = ""
+      state.personalData.expDate = ""
+      state.personalData.expDate = ""
+      state.personalData.client_code = ""
+      state.personalData.client_uid = ""
+      state.personalData.phone = 998 
+      state.personalData.familyStatus = null 
+    },
+
+
+    setClientDataGCI(state, payload) {
+        state.personalData.name = payload.responseBody.response.items[0].first_name;
+        state.personalData.surname = payload.responseBody.response.items[0].last_name;
+        state.personalData.mname = payload.responseBody.response.items[0].patronym;
+        state.personalData.gender = payload.responseBody.response.items[0].gender;
+        state.personalData.passport = payload.responseBody.response.items[0].series + payload.responseBody.response.items[0].number;
+        state.personalData.pinpp = payload.responseBody.response.items[0].pnfl;
+        state.personalData.inn = payload.responseBody.response.items[0].tin;
+        state.personalData.birthDate = payload.responseBody.response.items[0].birth_date
+        state.personalData.givenDate = payload.responseBody.response.items[0].doc_issue_date
+        state.personalData.expDate = payload.responseBody.response.items[0].doc_expire_date
+        state.personalData.client_code = payload.responseBody.response.items[0].client_code
+        state.personalData.client_uid = payload.responseBody.response.items[0].client_Uid
+        state.personalData.phone = payload.responseBody.response.items[0].mobile_phone
+                                    .replace(/[^0-9]/gim, "")
+                                    .slice(-9).length == 9 
+                                      ? "998" + payload.responseBody.response.items[0].mobile_phone
+                                          .replace(/[^0-9]/gim, "")
+                                          .slice(-9)
+                                      : 998
+        state.personalData.familyStatus = payload.responseBody.response.items[0].marital_status 
+                                           ? +payload.responseBody.response.items[0].marital_status + 1
+                                           : null
+    },
 
     setPersonalData(state, payload) {
       state.personalData = payload
@@ -460,6 +506,8 @@ export const credits = {
         gender: "",
         givenDate: "", // дата выдачи паспорта
         expDate: "",  // дата окончания паспорта
+        client_code: "",
+        client_uid: "",
 
         typeCredit: null,
         typeStepCredit: null,

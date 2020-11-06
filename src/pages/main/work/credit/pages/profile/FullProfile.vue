@@ -369,6 +369,16 @@
                     ).label
                   }}
                 </div>
+
+                <div class="col-3 fieldData">Наименование организации</div>
+                <div class="col-3">
+                  {{Customer.JobInfo.employerName}}
+                </div>
+
+                <div class="col-3 fieldData">ИНН организации</div>
+                <div class="col-3">
+                  {{Customer.JobInfo.INN}}
+                </div>
               </template>
 
               <div v-else class="col-12 profileSubTitle">

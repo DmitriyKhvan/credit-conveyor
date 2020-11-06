@@ -23,7 +23,7 @@
 
         <div class="infoBlockItem">
           <h6 class="titleCredit">Филиал / Подразделение</h6>
-          <span class="creditInfo">{{ filialName }}</span>
+          <span class="creditInfo">{{ filial }} {{ filialName }}</span>
         </div>
       </div>
 
@@ -625,6 +625,20 @@
                       i => i.value == Customer.JobInfo.activeYears
                     ).label
                   }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">Наименование организации</div>
+                <div class="col-6 data">
+                  {{Customer.JobInfo.employerName}}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">ИНН организации</div>
+                <div class="col-6 data">
+                  {{Customer.JobInfo.INN}}
                 </div>
               </div>
             </div>
@@ -1703,6 +1717,7 @@
           class="pdfviewer"
           src=""
           type="application/pdf"
+          style="width: 100%; height: calc(100vh - 110px)"
           width="100%"
         >
         </iframe>
@@ -1839,6 +1854,9 @@ export default {
     filialName() {
       return this.$route.query.filialName;
     },
+    filial() {
+      return this.$route.query.filial;
+    },
     
     processInfo() {
       const processInfo = this.profile.BPMInput.find(
@@ -1872,12 +1890,12 @@ export default {
                 : null
     },
     messageReject(Decision) {
-      console.log('Decision', Decision)
-      return this.userRole == "ROLE_CCC"
+      console.log('Decision', this.userRole, Decision)
+      return this.userRole == "ROLE_CCC" && Decision == 'N'
               ? 'Form reject'
-              : this.userRole == "ROLE_CC" && Decision == 'N' || this.userRole == "ROLE_UrWr"
+              : Decision == 'N'
                 ? 'Credit failure'
-                : this.userRole == "ROLE_CC" && Decision == 'R'
+                : Decision == 'R'
                   ? 'Credit rework'
                   : null
     },
@@ -2015,6 +2033,7 @@ export default {
           ]
         };
       }
+      // this.$store.commit("credits/setMessage", message);
 
       console.log("data", JSON.stringify(data, null, 2));
       try {
@@ -2025,19 +2044,28 @@ export default {
         console.log("response", JSON.stringify(response, null, 2));
 
         if (response) {
-          this.$store.commit("credits/setMessage", message);
+          setTimeout(() => {
+            this.$store.commit("credits/setMessage", message);
+          }, 500)
+          
           this.$store.commit("credits/removeTask", this.$route.query.taskId);
+          
           this.$router.go(-1);
+          // this.$router.push("/work/credit");
         }
 
         this.loader = false;
       } catch (error) {
         this.loader = false;
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
+        setTimeout(() => {
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
+        }, 500)
+        
         this.$router.go(-1);
+        // this.$router.push("/work/credit");
       }
     },
 
@@ -2179,6 +2207,7 @@ export default {
           }
         ]
       };
+      console.log(JSON.stringify(data, null, 2))
 
       try {
         
@@ -2343,7 +2372,7 @@ export default {
   .modalView {
     display: none;
     position: fixed;
-    top: 0;
+    top: 70px;
     left: 0;
     width: 100%;
     z-index: 1000;

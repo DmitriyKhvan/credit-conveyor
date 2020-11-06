@@ -99,12 +99,18 @@ export default {
     }
   },
   filterServerError(error) {
-    if (error.response) {
-      return error.response.data.message;
-    } else if (error.message) {
-      return error.message;
-    }
-    return error;
+    if (error.response){
+      // debugger
+      if (error.response.data.message) {
+        return error.response.data.message
+      } else if(error.response.data) {
+        return error.response.data
+      } else if (error.message) {
+        return error.message
+      }
+    } 
+    // debugger
+    return error
   },
 
   // format date (DD.MM.YYYY, h:mm:ss)

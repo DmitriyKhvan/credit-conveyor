@@ -26,53 +26,10 @@
 
           <div class="col-10">
             <div class="row preappBlock">
-              <div class="col-8 privatData">
+              <div class="col-12 privatData">
                 <h4 class="tab-title" ref="privatData">Персональные данные</h4>
                 <div class="row q-col-gutter-md">
-                  <div class="col-6">
-                    <q-input
-                      ref="surname"
-                      outlined
-                      v-model="personalData.surname"
-                      dense
-                      :hint="loadMessage"
-                      :disable="disableInput"
-                      label="Фамилия"
-                      :rules="[
-                        (val) => (val && val.length > 1) || 'Введите фамилию',
-                        (val) => fioValid(val),
-                      ]"
-                    />
-
-                    <q-input
-                      ref="name"
-                      outlined
-                      v-model="personalData.name"
-                      dense
-                      :hint="loadMessage"
-                      :disable="disableInput"
-                      label="Имя"
-                      :rules="[
-                        (val) => (val && val.length > 3) || 'Введите имя',
-                        (val) => fioValid(val),
-                      ]"
-                    />
-
-                    <q-input
-                      ref="mname"
-                      outlined
-                      v-model="personalData.mname"
-                      dense
-                      :hint="loadMessage"
-                      :disable="disableInput"
-                      label="Отчество"
-                      :rules="[
-                        (val) => !!val || 'Введите отчество',
-
-                        (val) => mValid(val),
-                      ]"
-                    />
-
+                  <div class="col-4">
                     <q-input
                       ref="inn"
                       outlined
@@ -85,7 +42,7 @@
                         (val) =>
                           (val && val.length == 9) ||
                           'Количество символов должно быт ровно 9',
-                        (val) => INNFizValid(val) || 'Неверные данные',
+                        (val) => INNFizValid(val),
                       ]"
                     />
 
@@ -118,24 +75,9 @@
                         </q-icon>
                       </template>
                     </q-input>
-                  </div>
-                  <div class="col-6">
-                    <q-input
-                      ref="phone"
-                      outlined
-                      v-model="personalData.phone"
-                      dense
-                      label="Тел. номер"
-                      mask="+############"
-                      :rules="[
-                        (val) =>
-                          (val && val.length === 13) ||
-                          'Введите номер телефона',
-                        (val) =>
-                          !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные',
-                      ]"
-                    />
 
+                  </div>
+                  <div class="col-4">
                     <q-input
                       ref="pinpp"
                       outlined
@@ -152,6 +94,9 @@
                       ]"
                     />
 
+                  </div>
+
+                  <div class="col-4">
                     <q-input
                       ref="pasport"
                       outlined
@@ -169,32 +114,109 @@
                           !val.match(/(?=(.))\1{7,}/) || 'Неверные данные',
                       ]"
                     />
+                  </div>
+                </div>
 
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
                     <!-- Проверить клиента -->
-                    <!-- <q-btn
+                    <q-btn
                       :loading="loadingGCI"
                       label="Проверить клиента"
                       @click="checkClient"
-                      class="full-width digIdBtn"
+                      class="full-width getInfoBtn"
                     >
                       <template v-slot:loading>
                         <q-spinner-facebook />
                       </template>
-                    </q-btn> -->
-
-                    <!-- Preloader auto compleate -->
+                    </q-btn>
+                  </div>
+                  <div class="col-4">
+                     <!-- Preloader auto compleate -->
                     <appLoader v-if="loader" />
 
                     <!-- Button auto complete person data -->
                     <app-auto-complete-data v-else-if="scannerSerialNumber" />
+                    
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="surname"
+                      outlined
+                      v-model="personalData.surname"
+                      dense
+                      :hint="loadMessage"
+                      :disable="credits.disableGCI"
+                      label="Фамилия"
+                      :rules="[
+                        (val) => (val && val.length > 1) || 'Введите фамилию',
+                        (val) => fioValid(val),
+                      ]"
+                    />
+
+                    <q-input
+                      ref="phone"
+                      outlined
+                      v-model="personalData.phone"
+                      dense
+                      label="Тел. номер"
+                      mask="+############"
+                      :rules="[
+                        (val) =>
+                          (val && val.length === 13) ||
+                          'Введите номер телефона',
+                        (val) =>
+                          !val.match(/(?=([^1-9]))\1{7,}/) || 'Неверные данные',
+                        (val) =>
+                          val.match(/(?:\+[9]{2}[8]([0-9]){9})/) || 'Неверные данные',
+                      ]"
+                    />
+
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="name"
+                      outlined
+                      v-model="personalData.name"
+                      dense
+                      :hint="loadMessage"
+                      :disable="credits.disableGCI"
+                      label="Имя"
+                      :rules="[
+                        (val) => (val && val.length > 3) || 'Введите имя',
+                        (val) => fioValid(val),
+                      ]"
+                    />
+
+                  </div>
+                  <div class="col-4">
+                    <q-input
+                      ref="mname"
+                      outlined
+                      v-model="personalData.mname"
+                      dense
+                      :hint="loadMessage"
+                      :disable="credits.disableGCI"
+                      label="Отчество"
+                      :rules="[
+                        (val) => !!val || 'Введите отчество',
+
+                        (val) => mValid(val),
+                      ]"
+                    />
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div class="col-4">
+            <div class="row preappBlock">
+              <div class="col-12">
                 <h4 class="tab-title">Семейное положение</h4>
                 <div class="row q-col-gutter-md">
-                  <div class="col-12">
+                  <div class="col-4">
                     <q-select
                       ref="familyStatus"
                       outlined
@@ -206,6 +228,9 @@
                       map-options
                       :rules="[(val) => !!val || 'Выберите семейное положение']"
                     />
+                    
+                  </div>
+                  <div class="col-4">
                     <q-select
                       outlined
                       v-model="personalData.children"
@@ -216,6 +241,9 @@
                       map-options
                       :rules="[]"
                     />
+                  </div>
+
+                  <div class="col-4">
                     <q-input
                       ref="childrenCount"
                       v-if="personalData.children"
@@ -724,6 +752,8 @@ export default {
           ProductMaxSum,
           spouseCost,
           childCost,
+          client_code,
+          client_uid
         } = this.personalData;
 
         const data = {
@@ -771,6 +801,8 @@ export default {
                   mainPhone: phone.replace(/[\s()]/g, ""),
                   tin: inn,
                   pinpp,
+                  client_code,
+                  client_uid
                 },
               },
             },
@@ -826,47 +858,49 @@ export default {
       }
     },
 
-    // async checkClient() {
-    //   this.loadingGCI = true;
-    //   const data = {
-    //     input: [
-    //       {
-    //         name: "method",
-    //         data: "GetCustomer"
-    //       },
-    //       {
-    //         name: "client",
-    //         data: {
-    //           docType: "6",
-    //           series: this.personalData.passport.slice(0,2),
-    //           number: this.personalData.passport.slice(2),
-    //           tin: this.personalData.inn,
-    //           pnfl: this.personalData.pinpp,
-    //           birthDate: this.personalData.birthDate,
-    //           branch: ""
-    //         }
-    //       }
-    //     ]
-    //   }
-    //   try {
-    //     if (
-    //       !this.personalData.passport &&
-    //       !this.personalData.inn &&
-    //       !this.personalData.pinpp &&
-    //       !this.personalData.birthDate
-    //     ) {
-    //       throw "Заполните персональные данные клиента";
-    //     }
-    //     await this.$store.dispatch("credits/checkClient", data);
-    //     this.loadingGCI = false;
-    //   } catch (error) {
-    //     this.$store.commit(
-    //       "credits/setMessage",
-    //       CommonUtils.filterServerError(error)
-    //     );
-    //     this.loadingGCI = false;
-    //   }
-    // },
+    async checkClient() {
+      this.loadingGCI = true;
+      const data = {
+        input: [
+          {
+            name: "method",
+            data: "GetCustomer"
+          },
+          {
+            name: "client",
+            data: {
+              docType: "6",
+              series: this.personalData.passport.slice(0,2),
+              number: this.personalData.passport.slice(2),
+              tin: this.personalData.inn,
+              pnfl: this.personalData.pinpp,
+              birthDate: this.personalData.birthDate,
+              branch: ""
+            }
+          }
+        ]
+      }
+
+      console.log(JSON.stringify(data, null, 2))
+      try {
+        if (
+          !this.personalData.passport ||
+          !this.personalData.inn ||
+          !this.personalData.pinpp ||
+          !this.personalData.birthDate
+        ) {
+          throw "Заполните персональные данные клиента";
+        }
+        await this.$store.dispatch("credits/checkClient", data);
+        this.loadingGCI = false;
+      } catch (error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.loadingGCI = false;
+      }
+    },
 
     onChangeLoan(credit) {
       console.log("credit", credit);
@@ -992,9 +1026,7 @@ export default {
     },
 
     INNFizValid(val) {
-      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
-        return true;
-      }
+      return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || "Неверные данные";
     },
   },
   components: {
@@ -1119,6 +1151,16 @@ export default {
     .q-btn__content {
       font-size: 14px;
     }
+  }
+
+  .getInfoBtn {
+    margin-bottom: 24px;
+    background: #4AB8FF !important;
+    font-weight: bold;
+
+    .q-btn__content {
+        font-size: 14px;
+      }
   }
 }
 </style>
