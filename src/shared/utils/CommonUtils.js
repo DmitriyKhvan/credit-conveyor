@@ -44,17 +44,17 @@ export default {
       searchVal = value;
     }
 
-    if (arr !== null) {
+    if (!!arr && Array.isArray(arr)) {
       for (let k = 0; k < arr.length; k++) {
+        //console.log({ searchVal, cur: arr[k][key] });
         if (arr[k][key] == searchVal) {
           // set branchcode, filialcode
           this.setRoleLevel(arr[k]["menu_id"]);
           return true;
         } else {
           if (arr[k]["children"] != null) {
-            if (this.isValueExistInObject(arr[k]["children"], key, searchVal)) {
+            if (this.isValueExistInObject(arr[k]["children"], key, searchVal))
               return true;
-            }
           } else continue;
         }
       }
@@ -89,7 +89,7 @@ export default {
     store.dispatch("auth/setBranchCode", null);
     store.dispatch("auth/setFilialCode", null);
     let modList = store.getters["auth/moderatorsList"];
-    if (modList) {
+    if (!!modList) {
       modList.forEach(element => {
         if (element.menu_id == menu_id) {
           store.dispatch("auth/setBranchCode", element.branch_code);

@@ -153,7 +153,7 @@ export const profile = {
         ResidentFlag: true,
         Gender: null,
         CardNumber: null, // номер карты
-        BankInps: null, // инпс банка
+        BankInps: "09006", // инпс банка
         LSBO: false,
         role: "",
         filial: "",
@@ -1151,7 +1151,7 @@ export const profile = {
           ResidentFlag: true,
           Gender: null,
           CardNumber: null, // номер карты
-          BankInps: null, // инпс банка
+          BankInps: "09006", // инпс банка
           LSBO: false,
           role: "",
           filial: "",

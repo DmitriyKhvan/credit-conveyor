@@ -262,7 +262,7 @@ export default {
 
             this.$store.commit("profile/setInput", response.nextTask.input);  // all input from BPM
 
-            this.$router.push("profile");
+            this.$router.push("sub/profile");
             setTimeout(() => {
               localStorage.removeItem(this.taskIdPreapp);
             }, 1000);
