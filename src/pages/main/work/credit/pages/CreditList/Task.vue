@@ -1019,7 +1019,28 @@
                 <div class="row rowForm">
                   <div class="col-6 field">Номер карты поручителя</div>
                   <div class="col-6 data">
-                    {{ guarantee.BankInps }}
+                    {{ guarantee.CardNumber }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Наименование банка</div>
+                  <div class="col-6 data">
+                    {{ guarantee.bank_name }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">МФО банка</div>
+                  <div class="col-6 data">
+                    {{ guarantee.mfo }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Расчетный счет</div>
+                  <div class="col-6 data">
+                    {{ guarantee.relatedPersonBill }}
                   </div>
                 </div>
 
@@ -1127,6 +1148,26 @@
                 <div class="row rowForm">
                   <div class="col-6 field">ИНН</div>
                   <div class="col-6 data">{{ guarantee.INN }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер карты</div>
+                  <div class="col-6 data">{{ guarantee.cardNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Наименование банка</div>
+                  <div class="col-6 data">{{ guarantee.bank_name }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">МФО банка</div>
+                  <div class="col-6 data">{{ guarantee.mfo }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Расчетный счет</div>
+                  <div class="col-6 data">{{ guarantee.relatedLegalPersonBill }}</div>
                 </div>
 
                 <!-- <div class="row rowForm">

@@ -628,7 +628,22 @@
 
                     <div class="col-3 fieldData">Номер карты поручителя</div>
                     <div class="col-3">
-                      {{ guarantee.BankInps }}
+                      {{ guarantee.CardNumber }}
+                    </div>
+
+                    <div class="col-3 fieldData">Наименование банка</div>
+                    <div class="col-3">
+                      {{ guarantee.bank_name }}
+                    </div>
+
+                    <div class="col-3 fieldData">МФО банка</div>
+                    <div class="col-3">
+                      {{ guarantee.mfo }}
+                    </div>
+
+                    <div class="col-3 fieldData">Расчетный счет</div>
+                    <div class="col-3">
+                      {{ guarantee.relatedPersonBill }}
                     </div>
 
                     <!-- <div class="col-12 dataBlock">Адрес:</div> -->
@@ -696,6 +711,18 @@
 
                     <div class="col-1 fieldData">ИНН</div>
                     <div class="col-3">{{ guarantee.INN }}</div>
+
+                    <div class="col-3 fieldData">Номер карты</div>
+                    <div class="col-3">{{ guarantee.cardNumber }}</div>
+
+                    <div class="col-3 fieldData">Наименование банка</div>
+                    <div class="col-3">{{ guarantee.bank_name }}</div>
+
+                    <div class="col-3 fieldData">МФО банка</div>
+                    <div class="col-3">{{ guarantee.mfo }}</div>
+
+                    <div class="col-3 fieldData">Расчетный счет</div>
+                    <div class="col-3">{{ guarantee.relatedLegalPersonBill }}</div>
 
                     <!-- <div class="col-12 dataBlock">Адрес:</div> -->
 
