@@ -2369,7 +2369,12 @@
               </div>
 
               <div class="row q-col-gutter-md">
-                <div v-if="status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null" class="col-4">
+                <div 
+                  v-if="status == 'Step: Full Application Filling' && 
+                                    this.fullProfile.BODecision == null &&
+                                    this.fullProfile.LoanInfo.LoanProduct != 136" 
+                  class="col-4"
+                >
                   <q-select
                     :disable="disableField"
                     ref="typeOfCharge"
@@ -2425,9 +2430,12 @@
               </div>
 
 
-
-              <!-- для микрозайма -->
-              <template v-if="typeOfCharge == 2 || fullProfile.LoanInfo.microloan_details.bank_name"> 
+              <!-- для микрозайма и потребительского кредита -->
+              <template 
+                v-if="typeOfCharge == 2 || 
+                fullProfile.LoanInfo.microloan_details.bank_name ||
+                fullProfile.LoanInfo.LoanProduct == 136"
+              > 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
@@ -5136,7 +5144,11 @@ export default {
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
-      if (this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
+      if (
+        this.status == 'Step: Full Application Filling' && 
+        this.fullProfile.BODecision == null &&
+        this.fullProfile.LoanInfo.LoanProduct != 136
+      ) {
         this.$refs.typeOfCharge.validate();
       } else {
         validItems(this.$refs, "typeOfCharge");
@@ -5179,7 +5191,8 @@ export default {
 
       // Если выбран расчетный счет!!!
       if (
-        this.typeOfCharge == 2
+        this.typeOfCharge == 2 ||
+        this.fullProfile.LoanInfo.LoanProduct == 136
       ) {
         this.$refs.mircoloanBankName.validate();
         this.$refs.mircoloanBankMFO.validate();

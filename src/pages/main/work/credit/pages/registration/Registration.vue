@@ -620,7 +620,7 @@ export default {
 
     taskId() {
       return this.$route.query.taskId;
-    },
+    }
   },
   watch: {
     "personalData.children"(status) {

@@ -255,282 +255,75 @@
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <template 
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ index + 1 }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Решение о выдаче'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName
-                  }
-                }"
-                >{{ index + 1 }}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="index + 1"
+              />
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <template 
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ credit.applicationNumber }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName
-                  }
-                }"
-                >{{ credit.applicationNumber }}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="credit.applicationNumber"
+              />
             </td>
 
             <td class="text-left client applicationRow">
-              <template 
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ credit.client }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName
-                  }
-                }"
-                >{{ credit.client }}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="credit.client"
+              />
             </td>
 
             <td class="text-left manager applicationRow">
-              <template 
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ credit.kmfio }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName
-                  }
-                }"
-                >{{ credit.kmfio }}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="credit.kmfio"
+              />
             </td>
 
             <td class="text-left MFO applicationRow">
-              <template 
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ credit.filial }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName
-                  }
-                }"
-                >{{ credit.filial }}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="credit.filial"
+              />
             </td>
 
             <td class="text-left filialName applicationRow">
-              <template 
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ credit.filialName }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName
-                  }
-                }"
-                >{{ credit.filialName }}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="credit.filialName"
+              />
             </td>
 
             <td class="text-left taskName applicationRow">
-              <template 
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ credit.taskName }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName
-                  }
-                }"
-                >{{ credit.taskName }}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="credit.taskName"
+              />
             </td>
 
             <td class="text-left taskStatus applicationRow">
-              <template 
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ credit.taskStatus }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName 
-                  }
-                }"
-                >{{ credit.taskStatus }}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="credit.taskStatus"
+              />
             </td>
 
             <td class="text-left date applicationRow">
-              <template
-                v-if="userRole === 'ROLE_CCS' || 
-                userRole === 'ROLE_PM' ||
-                credit.taskName === 'Создание Контракта в iABS' ||
-                credit.taskName === 'Ожидание отправки контракта в НИКИ'"
-              >{{ credit.date | formatDate('datetime') }}</template>
-              <router-link
-                v-else
-                :to="{
-                  name: credit.taskName === 'PreApprove'
-                    ?  'Registration'
-                    : credit.taskName === 'Step: Заполнить ПП'
-                      ? 'Payment'
-                      : userRole === 'ROLE_KM'
-                        ? 'Profile'
-                        : 'CreditTask',
-                  params: { id: credit.id },
-                  query: {
-                    taskId: credit.taskId,
-                    date: credit.date,
-                    applicationNumber: credit.applicationNumber,
-                    filialName: credit.filialName,
-                    filial: credit.filial,
-                    status: credit.taskName
-                  }
-                }"
-                >{{ credit.date | formatDate('datetime')}}</router-link
-              >
+              <appCreditListItem 
+                :userRole="userRole"
+                :credit="credit"
+                :linkName="credit.date | formatDate('datetime')"
+              />
             </td>
 
             <td v-if="userRole === 'ROLE_CCS'" class="print">
@@ -640,6 +433,9 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import printJS from "print-js";
+
+import CreditListItem from "./Components/CreditListItem"
+
 import CommonUtils from "@/shared/utils/CommonUtils";
 import formatDate from "../../filters/formatDate"
 import dataTransform from "../../filters/dataTransform"
@@ -1040,7 +836,8 @@ export default {
   },
   components: {
     appLoader: Loader,
-    appLoaderFullScreen: LoaderFullScreen
+    appLoaderFullScreen: LoaderFullScreen,
+    appCreditListItem: CreditListItem
   },
   filters: {
     formatDate
