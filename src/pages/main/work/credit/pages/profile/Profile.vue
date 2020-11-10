@@ -3960,7 +3960,10 @@
           </div>
 
           <!-- loadDocuments -->
-          <div class="loadDocuments tab">
+          <div 
+            v-if="status != 'Step: Full Application Filling' || this.fullProfile.BODecision != null" 
+            class="loadDocuments tab"
+          >
             <h4
               class="tab-title"
               ref="loadDocuments"
@@ -4284,8 +4287,7 @@
         <ul class="navMenu">
           <li>
             <a class="active" href=".privatData" @click="goToBlock"
-              >Личные данные клиента</a
-            >
+              >Личные данные клиента</a>
           </li>
           <li>
             <a href=".contactData" @click="goToBlock">Контактные данные</a>
@@ -4294,34 +4296,31 @@
           <li><a href=".family-status" @click="goToBlock">Родственники</a></li>
           <li>
             <a href=".infoWork" @click="goToBlock"
-              >Сведения по основной работе</a
-            >
+              >Сведения по основной работе</a>
           </li>
           <li>
             <a href=".expense-income" @click="goToBlock"
-              >Ежемесячные расходы/доходы</a
-            >
+              >Ежемесячные расходы/доходы</a>
           </li>
           <li>
             <a href=".properties" @click="goToBlock">Сведения об имуществе</a>
           </li>
           <li>
             <a href=".infoCredit" @click="goToBlock"
-              >Сведения о запрашиваемом кредите</a
-            >
+              >Сведения о запрашиваемом кредите</a>
           </li>
           <li>
             <a href=".guarantees" @click="goToBlock"
-              >Гарантии и поручительство</a
-            >
+              >Гарантии и поручительство</a>
           </li>
-          <li>
+          <li 
+            v-if="this.status != 'Step: Full Application Filling' ||
+                  this.fullProfile.BODecision != null">
             <a href=".loadDocuments" @click="goToBlock">Загрузить документ</a>
           </li>
           <li>
             <a href=".commentCredit" @click="goToBlock"
-              >Комментарии по кредиту</a
-            >
+              >Комментарии по кредиту</a>
           </li>
         </ul>
       </div>
@@ -5183,7 +5182,14 @@ export default {
       //   validItems(this.$refs, "typeRepayment");
       // }
 
-      this.$refs.uploadFile.validate();
+      if(
+        this.status != 'Step: Full Application Filling' || 
+        this.fullProfile.BODecision != null
+      ) {
+        this.$refs.uploadFile.validate();
+      } else {
+        validItems(this.$refs, "uploadFile");
+      }
 
       this.guaranteesValid();
 
