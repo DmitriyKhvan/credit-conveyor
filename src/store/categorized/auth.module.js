@@ -1,5 +1,5 @@
 import { decode } from "jsonwebtoken";
-
+import axios from "axios";
 /**
  *  States
  */
@@ -18,10 +18,11 @@ const state = {
   moderatorsList: [],
   branchCode: null,
   filialCode: null,
+  depCode: null,
   activeUsers: [],
   onlineUsers: [],
   isUserLogged: false,
-  logoutTime: 600000 // 10min
+  logoutTime: 600 // 10min
 };
 
 /**
@@ -30,7 +31,7 @@ const state = {
 
 const getters = {
   logoutTime: state => {
-    return state.logoutTime;
+    return state.logoutTime * 1000;
   },
   loggedIn: state => {
     return state.isUserLogged;
@@ -78,6 +79,9 @@ const getters = {
   filialCode: state => {
     return state.filialCode;
   },
+  depCode: state => {
+    return state.depCode;
+  },
   activeUsers: state => {
     return state.activeUsers;
   },
@@ -122,6 +126,16 @@ const actions = {
       fullName: decodedToken.full_name,
       empId: decodedToken.emp_id
     };
+    axios
+      .get(`emps/info?id=${decodedToken.emp_id}`)
+      .then(resp => {
+        let user = resp.data;
+        commit("setDepCode", user.DEP_CODE);
+      })
+      .catch(error => {
+        console.error({ error });
+      });
+
     commit("setUsername", details.username);
     commit("setUserFullname", details.fullName);
     commit("setEmpId", details.empId);
@@ -141,10 +155,12 @@ const actions = {
   setActiveUsers({ commit }, users) {
     commit("setActiveUsers", users);
   },
-
   setOnlineUsers({ commit }, users) {
     commit("setOnlineUsers", users);
   },
+  setLogoutTime({ commit }, timeout) {
+    commit("setLogoutTime", timeout);
+  }
 };
 
 /**
@@ -201,14 +217,21 @@ const mutations = {
   setFilialCode(state, filialCode) {
     state.filialCode = filialCode;
   },
+  setDepCode(state, depCode) {
+    state.depCode = depCode;
+  },
   setActiveUsers(state, users) {
     users.forEach((element, index) => {
       element.index = index + 1;
-    })
+    });
     state.activeUsers = users;
   },
   setOnlineUsers(state, users) {
     state.onlineUsers = users;
+  },
+  setLogoutTime(state, timeout) {
+    //console.log({ logoutTime: data });
+    state.logoutTime = timeout;
   }
 };
 

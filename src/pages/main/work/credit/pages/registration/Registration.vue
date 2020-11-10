@@ -26,53 +26,10 @@
 
           <div class="col-10">
             <div class="row preappBlock">
-              <div class="col-8 privatData">
+              <div class="col-12 privatData">
                 <h4 class="tab-title" ref="privatData">Персональные данные</h4>
                 <div class="row q-col-gutter-md">
-                  <div class="col-6">
-                    <q-input
-                      ref="surname"
-                      outlined
-                      v-model="personalData.surname"
-                      dense
-                      :hint="loadMessage"
-                      :disable="credits.disableGCI"
-                      label="Фамилия"
-                      :rules="[
-                        (val) => (val && val.length > 1) || 'Введите фамилию',
-                        (val) => fioValid(val),
-                      ]"
-                    />
-
-                    <q-input
-                      ref="name"
-                      outlined
-                      v-model="personalData.name"
-                      dense
-                      :hint="loadMessage"
-                      :disable="credits.disableGCI"
-                      label="Имя"
-                      :rules="[
-                        (val) => (val && val.length > 3) || 'Введите имя',
-                        (val) => fioValid(val),
-                      ]"
-                    />
-
-                    <q-input
-                      ref="mname"
-                      outlined
-                      v-model="personalData.mname"
-                      dense
-                      :hint="loadMessage"
-                      :disable="credits.disableGCI"
-                      label="Отчество"
-                      :rules="[
-                        (val) => !!val || 'Введите отчество',
-
-                        (val) => mValid(val),
-                      ]"
-                    />
-
+                  <div class="col-4">
                     <q-input
                       ref="inn"
                       outlined
@@ -85,7 +42,7 @@
                         (val) =>
                           (val && val.length == 9) ||
                           'Количество символов должно быт ровно 9',
-                        (val) => INNFizValid(val) || 'Неверные данные',
+                        (val) => INNFizValid(val),
                       ]"
                     />
 
@@ -118,8 +75,88 @@
                         </q-icon>
                       </template>
                     </q-input>
+
                   </div>
-                  <div class="col-6">
+                  <div class="col-4">
+                    <q-input
+                      ref="pinpp"
+                      outlined
+                      v-model.lazy="personalData.pinpp"
+                      dense
+                      :hint="loadMessage"
+                      :disable="disableInput"
+                      label="ПИНФЛ"
+                      mask="##############"
+                      :rules="[
+                        (val) => (val && val.length === 14) || 'Введите ПНФЛ',
+                        (val) =>
+                          !val.match(/(?=(.))\1{14,}/) || 'Неверные данные',
+                      ]"
+                    />
+
+                  </div>
+
+                  <div class="col-4">
+                    <q-input
+                      ref="pasport"
+                      outlined
+                      v-model="personalData.passport"
+                      dense
+                      :hint="loadMessage"
+                      :disable="disableInput"
+                      label="Серия номер паспорта"
+                      mask="AA#######"
+                      :rules="[
+                        (val) =>
+                          (val && val.length === 9) ||
+                          'Введите Серию и номер паспорта',
+                        (val) =>
+                          !val.match(/(?=(.))\1{7,}/) || 'Неверные данные',
+                      ]"
+                    />
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <!-- Проверить клиента -->
+                    <q-btn
+                      :loading="loadingGCI"
+                      label="Проверить клиента"
+                      @click="checkClient"
+                      class="full-width getInfoBtn"
+                    >
+                      <template v-slot:loading>
+                        <q-spinner-facebook />
+                      </template>
+                    </q-btn>
+                  </div>
+                  <div class="col-4">
+                     <!-- Preloader auto compleate -->
+                    <appLoader v-if="loader" />
+
+                    <!-- Button auto complete person data -->
+                    <app-auto-complete-data v-else-if="scannerSerialNumber" />
+                    
+                  </div>
+                </div>
+
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      ref="surname"
+                      outlined
+                      v-model="personalData.surname"
+                      dense
+                      :hint="loadMessage"
+                      :disable="credits.disableGCI"
+                      label="Фамилия"
+                      :rules="[
+                        (val) => (val && val.length > 1) || 'Введите фамилию',
+                        (val) => fioValid(val),
+                      ]"
+                    />
+
                     <q-input
                       ref="phone"
                       outlined
@@ -138,65 +175,48 @@
                       ]"
                     />
 
+                  </div>
+                  <div class="col-4">
                     <q-input
-                      ref="pinpp"
+                      ref="name"
                       outlined
-                      v-model.lazy="personalData.pinpp"
+                      v-model="personalData.name"
                       dense
                       :hint="loadMessage"
-                      :disable="disableInput"
-                      label="ПИНФЛ"
-                      mask="##############"
+                      :disable="credits.disableGCI"
+                      label="Имя"
                       :rules="[
-                        (val) => (val && val.length === 14) || 'Введите ПНФЛ',
-                        (val) =>
-                          !val.match(/(?=(.))\1{14,}/) || 'Неверные данные',
+                        (val) => (val && val.length > 3) || 'Введите имя',
+                        (val) => fioValid(val),
                       ]"
                     />
 
+                  </div>
+                  <div class="col-4">
                     <q-input
-                      ref="pasport"
+                      ref="mname"
                       outlined
-                      v-model="personalData.passport"
+                      v-model="personalData.mname"
                       dense
                       :hint="loadMessage"
-                      :disable="disableInput"
-                      label="Серия номер паспорта"
-                      mask="AA#######"
+                      :disable="credits.disableGCI"
+                      label="Отчество"
                       :rules="[
-                        (val) =>
-                          (val && val.length === 9) ||
-                          'Введите Серию и номер паспорта',
-                        (val) =>
-                          !val.match(/(?=(.))\1{7,}/) || 'Неверные данные',
+                        (val) => !!val || 'Введите отчество',
+
+                        (val) => mValid(val),
                       ]"
                     />
-
-                    <!-- Проверить клиента -->
-                    <q-btn
-                      :loading="loadingGCI"
-                      label="Проверить клиента"
-                      @click="checkClient"
-                      class="full-width getInfoBtn"
-                    >
-                      <template v-slot:loading>
-                        <q-spinner-facebook />
-                      </template>
-                    </q-btn>
-
-                    <!-- Preloader auto compleate -->
-                    <appLoader v-if="loader" />
-
-                    <!-- Button auto complete person data -->
-                    <app-auto-complete-data v-else-if="scannerSerialNumber" />
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div class="col-4">
+            <div class="row preappBlock">
+              <div class="col-12">
                 <h4 class="tab-title">Семейное положение</h4>
                 <div class="row q-col-gutter-md">
-                  <div class="col-12">
+                  <div class="col-4">
                     <q-select
                       ref="familyStatus"
                       outlined
@@ -208,6 +228,9 @@
                       map-options
                       :rules="[(val) => !!val || 'Выберите семейное положение']"
                     />
+                    
+                  </div>
+                  <div class="col-4">
                     <q-select
                       outlined
                       v-model="personalData.children"
@@ -218,6 +241,9 @@
                       map-options
                       :rules="[]"
                     />
+                  </div>
+
+                  <div class="col-4">
                     <q-input
                       ref="childrenCount"
                       v-if="personalData.children"
@@ -594,7 +620,7 @@ export default {
 
     taskId() {
       return this.$route.query.taskId;
-    },
+    }
   },
   watch: {
     "personalData.children"(status) {
@@ -1000,9 +1026,7 @@ export default {
     },
 
     INNFizValid(val) {
-      if (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) {
-        return true;
-      }
+      return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || "Неверные данные";
     },
   },
   components: {

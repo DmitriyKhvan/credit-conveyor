@@ -1019,7 +1019,28 @@
                 <div class="row rowForm">
                   <div class="col-6 field">Номер карты поручителя</div>
                   <div class="col-6 data">
-                    {{ guarantee.BankInps }}
+                    {{ guarantee.CardNumber }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Наименование банка</div>
+                  <div class="col-6 data">
+                    {{ guarantee.bank_name }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">МФО банка</div>
+                  <div class="col-6 data">
+                    {{ guarantee.mfo }}
+                  </div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Расчетный счет</div>
+                  <div class="col-6 data">
+                    {{ guarantee.relatedPersonBill }}
                   </div>
                 </div>
 
@@ -1127,6 +1148,26 @@
                 <div class="row rowForm">
                   <div class="col-6 field">ИНН</div>
                   <div class="col-6 data">{{ guarantee.INN }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Номер карты</div>
+                  <div class="col-6 data">{{ guarantee.cardNumber }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Наименование банка</div>
+                  <div class="col-6 data">{{ guarantee.bank_name }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">МФО банка</div>
+                  <div class="col-6 data">{{ guarantee.mfo }}</div>
+                </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Расчетный счет</div>
+                  <div class="col-6 data">{{ guarantee.relatedLegalPersonBill }}</div>
                 </div>
 
                 <!-- <div class="row rowForm">
@@ -1854,7 +1895,7 @@ export default {
     filialName() {
       return this.$route.query.filialName;
     },
-     filial() {
+    filial() {
       return this.$route.query.filial;
     },
     
@@ -1890,12 +1931,12 @@ export default {
                 : null
     },
     messageReject(Decision) {
-      console.log('Decision', Decision)
-      return this.userRole == "ROLE_CCC"
+      console.log('Decision', this.userRole, Decision)
+      return this.userRole == "ROLE_CCC" && Decision == 'N'
               ? 'Form reject'
-              : this.userRole == "ROLE_CC" && Decision == 'N' || this.userRole == "ROLE_UrWr"
+              : Decision == 'N'
                 ? 'Credit failure'
-                : this.userRole == "ROLE_CC" && Decision == 'R'
+                : Decision == 'R'
                   ? 'Credit rework'
                   : null
     },
@@ -2033,6 +2074,7 @@ export default {
           ]
         };
       }
+      // this.$store.commit("credits/setMessage", message);
 
       console.log("data", JSON.stringify(data, null, 2));
       try {
@@ -2043,19 +2085,28 @@ export default {
         console.log("response", JSON.stringify(response, null, 2));
 
         if (response) {
-          this.$store.commit("credits/setMessage", message);
+          setTimeout(() => {
+            this.$store.commit("credits/setMessage", message);
+          }, 500)
+          
           this.$store.commit("credits/removeTask", this.$route.query.taskId);
+          
           this.$router.go(-1);
+          // this.$router.push("/work/credit");
         }
 
         this.loader = false;
       } catch (error) {
         this.loader = false;
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
+        setTimeout(() => {
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
+        }, 500)
+        
         this.$router.go(-1);
+        // this.$router.push("/work/credit");
       }
     },
 
@@ -2197,6 +2248,7 @@ export default {
           }
         ]
       };
+      console.log(JSON.stringify(data, null, 2))
 
       try {
         

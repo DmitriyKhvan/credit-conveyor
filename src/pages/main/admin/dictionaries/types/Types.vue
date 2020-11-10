@@ -22,7 +22,7 @@ export default {
         addEdit: "dicts/type", // url
         delete: "dicts/type", //
         defaultSort: [],
-        excludedColumns: ["id"],
+        excludedColumns: [],
         excludeSortingColoumns: [],
         enableAddEdit: true,
         enableDelete: true,

@@ -1,24 +1,24 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide" persistent>
-    <q-card class="q-dialog-plugin" style="width:60vw; max-width: 80vw;">
+  <q-dialog  ref="dialog" @hide="onDialogHide" persistent full-width>
+    <q-card class="q-dialog-plugin full-width" style="width:60vw; max-width: 80vw;">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h6">Select User</div>
+          <div class="text-h6">Выберите пользователя</div>
           <q-btn flat :icon="'clear'" @click="onCancelClick"></q-btn>
         </div>
       </q-card-section>
 
       <q-separator inset />
       <q-card-section>
-        <div class="row">
-          <div class="col-9">
-            <structure-bank v-bind:view="'dialog'" @selectUser="selectUser" />
+        <div class="column no-wrap">
+          <div class="column">
+            <structure-bank v-bind:view="'dialog'" @selectUser="selectUser"  />
           </div>
-          <div class="col-3">
-            <div style="height: 50vh; width: 100%;">
+          <!-- <div class="full-width">
+            <div class="col row">
               <user-card v-bind:itemData="item" />
             </div>
-          </div>
+          </div> -->
         </div>
       </q-card-section>
 
@@ -79,7 +79,7 @@ export default {
     onCancelClick() {
       this.$q
         .dialog({
-          title: "Confirm",
+          title: "Подтверждать",
           message: this.$t("messages.confirm_exit"),
           cancel: true,
           persistent: true

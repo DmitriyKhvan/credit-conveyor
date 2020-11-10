@@ -153,7 +153,7 @@ export const profile = {
         ResidentFlag: true,
         Gender: null,
         CardNumber: null, // номер карты
-        BankInps: null, // инпс банка
+        BankInps: "09006", // инпс банка
         LSBO: false,
         role: "",
         filial: "",
@@ -579,6 +579,10 @@ export const profile = {
             const payOrder = response.data.input.find(
               i => i.label === "payOrder"
             );
+
+            console.log(JSON.stringify(payOrder.data, null, 2))
+
+
             commit("setPayOrder", payOrder.data);
 
           } else {
@@ -847,7 +851,12 @@ export const profile = {
         CEOLastName: "",
         CEOMiddleName: "",
         Sum: 0,
-        Activity: ""
+        Activity: "",
+        
+        cardNumber: "",
+        bank_name: "",
+        mfo: "",
+        relatedLegalPersonBill: ""
       });
     },
 
@@ -874,6 +883,10 @@ export const profile = {
         Sum: 0,
         MiddleName: "",
         CardNumber: null, // номер карты
+        bank_name: "",
+        mfo: "",
+        relatedPersonBill: "", // расчетный счет
+
         BankInps: null, // инпс банка
         Document: {
           documentType: null,
@@ -1138,7 +1151,7 @@ export const profile = {
           ResidentFlag: true,
           Gender: null,
           CardNumber: null, // номер карты
-          BankInps: null, // инпс банка
+          BankInps: "09006", // инпс банка
           LSBO: false,
           role: "",
           filial: "",

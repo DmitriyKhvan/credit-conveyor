@@ -1,22 +1,14 @@
 import ApiService from "./api.service";
-import store from '@/store/index';
+import store from "@/store/index";
 
 const DictService = {
-
-  loadAll: async function () {
-
+  loadAll: async function() {
     return new Promise(async (resolve, reject) => {
-
       if (!store.getters["dicts/isAllSet"]) {
-
         let allroles = await this.allRoles();
         store.dispatch("dicts/setRolesDict", allroles);
         let menuItems = await DictService.menuList();
         store.dispatch("dicts/setMenuList", menuItems.items);
-        //let iconTypes = await this.iconTypes();
-        //store.dispatch("dicts/setIconTypes", iconTypes);
-        //let icons = await this.icons();
-        //store.dispatch("dicts/setIconsDict", icons);
         let parentMenus = await this.parentMenus();
         store.dispatch("dicts/setParentMenus", parentMenus);
         //let userList = await this.userList();
@@ -32,16 +24,24 @@ const DictService = {
 
         let formats = await this.formats();
         store.dispatch("dicts/setFormat", formats);
+
         let journals = await this.journals();
         store.dispatch("dicts/setJournal", journals);
+
         let organs = await this.organs();
         store.dispatch("dicts/setOrgan", organs);
+
         let regions = await this.regions();
         store.dispatch("dicts/setRegion", regions);
 
-        store.dispatch("dicts/setIsAllSet", true);
-        resolve(true)
+        let dictList = await this.dictsList();
+        store.dispatch("dicts/setDictsList", dictList);
 
+        let data = await this.getTimeout();
+        store.dispatch("auth/setLogoutTime", data.settings.timeout);
+
+        store.dispatch("dicts/setIsAllSet", true);
+        resolve(true);
       } else {
         // leave it as is
         resolve(true);
@@ -61,33 +61,6 @@ const DictService = {
         });
     });
   },
-  /*
-    iconTypes() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("dicts/icontype")
-          .then(res => {
-            resolve(res.data);
-          })
-          .catch(err => {
-            console.error(err);
-            reject(err);
-          });
-      });
-    },
-  
-    icons() {
-      return new Promise((resolve, reject) => {
-        ApiService.get("dicts/icons")
-          .then(res => {
-            resolve(res.data);
-          })
-          .catch(err => {
-            console.error(err);
-            reject(err);
-          });
-      });
-    },
-  */
   parentMenus() {
     return new Promise((resolve, reject) => {
       ApiService.get("dicts/menus")
@@ -223,6 +196,30 @@ const DictService = {
   regions() {
     return new Promise((resolve, reject) => {
       ApiService.get(`dicts/regions`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  dictsList() {
+    return new Promise((resolve, reject) => {
+      ApiService.get(`dicts`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          console.error(err);
+          reject(err);
+        });
+    });
+  },
+  getTimeout() {
+    return new Promise((resolve, reject) => {
+      ApiService.get(`settings/timeout`)
         .then(res => {
           resolve(res.data);
         })
