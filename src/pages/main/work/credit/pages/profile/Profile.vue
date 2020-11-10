@@ -521,7 +521,7 @@
           </div>
 
           <!-- Contacts info -->
-          <div class="contactData">
+          <!-- <div class="contactData">
             <h4
               class="tab-title"
               ref="contactData"
@@ -603,7 +603,15 @@
 
               
             </div>
-          </div>
+          </div> -->
+
+          <!-- Как же передавать рефку? -->
+          <appContactData 
+            :Customer="Customer"
+            :disableField="disableField"
+            @add-phone="addPhone"
+            
+          />
 
           <!-- Address -->
           <div class="address">
@@ -4405,6 +4413,9 @@ import printJS from "print-js";
 import SetDataINPS from "../../Components/INPS/SetData";
 import GetDataINPS from "../../Components/INPS/GetData";
 import ClientInfo from "../../Components/ClientInfo";
+
+import ContactData from "./Components/ContactData";
+
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
@@ -6304,7 +6315,8 @@ export default {
     appLoaderFullScreen: LoaderFullScreen,
     appSetDataINPS: SetDataINPS,
     appGetDataINPS: GetDataINPS,
-    appClientInfo: ClientInfo
+    appClientInfo: ClientInfo,
+    appContactData: ContactData
     // appInfoList: InfoList
   },
   filters: {

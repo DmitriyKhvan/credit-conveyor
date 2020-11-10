@@ -51,7 +51,7 @@
           <q-btn
             :disable="disableField"
             label="Добавить номер телефона"
-            @click="addPhone"
+            @click="$emit('add-phone')"
             class="addItem"
           ></q-btn>
         </div>
@@ -76,3 +76,9 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: ['Customer', 'disableField']
+}
+</script>
