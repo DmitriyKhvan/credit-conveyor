@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <template
+  <div class="creditListItem">
+    <span
+      class="noLinkItem"
       v-if="
         userRole === 'ROLE_CCS' ||
         userRole === 'ROLE_PM' ||
@@ -9,7 +10,7 @@
         credit.taskName === 'Step: Создание заявки в iABS' ||
 				credit.taskId === null
       "
-      >{{ linkName }}</template>
+      >{{ linkName }}</span>
     <router-link
       v-else
       :to="{
@@ -61,4 +62,13 @@ export default {
 };
 </script>
 <style lang="scss">
+  .creditListItem {
+    width: 100%;
+    height: 100%;
+
+    .noLinkItem {
+      display: flex;
+      padding-right: 20px;
+    }
+  }
 </style>
