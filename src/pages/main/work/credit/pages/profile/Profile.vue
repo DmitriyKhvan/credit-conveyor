@@ -4548,38 +4548,31 @@ export default {
       }
 
       try {
-        const response = await this.$store.dispatch("profile/getFullForm");
+        await this.$store.dispatch("profile/getFullForm");
 
         //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-        console.log("response", response);
+        
+        if (this.status === 'Step: Работа с документами' || 
+            this.status === 'Step: Ввод данных с интеграциями' ||
+            this.fullProfile.BODecision != null) {
+          
+          const uploadedFiles = this.fullProfile.AttachedDocuments.items;
+          const guarantees = this.fullProfile.Guarantee;
 
-        if (response) {
-          const { data } = response.data.input.find(
-            i => i.label == "application"
-          );
+          for (let file of uploadedFiles) {
+            this.filesAll.push({
+              name: "",
+              DocumentName: file.DocumentName,
+              id: file.id,
+              upload: true
+            });
+          }
 
-          if (this.status === 'Step: Работа с документами' || 
-              this.status === 'Step: Ввод данных с интеграциями' ||
-              this.fullProfile.BODecision != null) {
-            
-            const uploadedFiles = data.AttachedDocuments.items;
-            const guarantees = data.Guarantee;
+          for (let guarantee in guarantees) {
+            for (let i of guarantees[guarantee].items) {
+              this.guaranteeCount.push("guarantee");
 
-            for (let file of uploadedFiles) {
-              this.filesAll.push({
-                name: "",
-                DocumentName: file.DocumentName,
-                id: file.id,
-                upload: true
-              });
-            }
-
-            for (let guarantee in guarantees) {
-              for (let i of guarantees[guarantee].items) {
-                this.guaranteeCount.push("guarantee");
-
-                i.Sum = formatNumber(i.Sum);
-              }
+              i.Sum = formatNumber(i.Sum);
             }
           }
         }
