@@ -1,9 +1,4 @@
 export default function dateFilter(value, format = 'date') {
-
-  if(typeof value == 'string') {
-    return value
-  }
-
   //console.log(format);
   const options = {}; 
 

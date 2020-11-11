@@ -3969,7 +3969,7 @@
           </div>
 
           <!-- loadDocuments -->
-          <div 
+          <!-- <div 
             v-if="status != 'Step: Full Application Filling' || this.fullProfile.BODecision != null" 
             class="loadDocuments tab"
           >
@@ -3993,7 +3993,6 @@
                   @drop.prevent.stop
                   @drop="dropFile($event)"
                 >
-                <!-- :value="!!filesAll.find(file => file.id != null)" -->
                   <div ref="dragover"></div>
                   <q-field
                     ref="uploadFile"
@@ -4117,7 +4116,18 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
+          <appLoadDocuments 
+            v-if="
+              status != 'Step: Full Application Filling' ||
+              this.fullProfile.BODecision != null
+            "
+            :fullProfile="fullProfile"
+            :countFile="countFile"
+            :filesAll="filesAll"
+            @confirm-delete-item="confirmDeleteItem"
+            @set-refs="setRefs"
+          />
 
           <!-- Comment -->
           <div class="commentCredit tab">
@@ -4416,6 +4426,7 @@ import GetDataINPS from "../../Components/INPS/GetData";
 import ClientInfo from "../../Components/ClientInfo";
 
 import ContactData from "./Components/ContactData";
+import LoadDocuments from "./Components/LoadDocuments";
 
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
@@ -4450,7 +4461,7 @@ export default {
       countGuaranteeDocumentName: -1,
       currentDate: CommonUtils.dateFilter(new Date()),
       loaderForm: false,
-      loaderFile: false,
+      // loaderFile: false,
       disable: false,
       loader: false, // прелодер
       isValid: true, //валидация Email
@@ -4498,7 +4509,7 @@ export default {
 
       guaranteeCount: [],
       totalGuaranteesSum: 0, // сумма всех гарантий и поручительств
-      files: [], // для сервера, чтоб не дублировать отправку файла
+      // files: [], // для сервера, чтоб не дублировать отправку файла
       filesAll: [], // для фильтрации какие файлы загружены на сервер
 
       fileData: {
@@ -5871,41 +5882,41 @@ export default {
       // }
     },
 
-    dropFile(event) {
-      this.$refs.dragover.classList.remove("dragover");
-      let uploadedFiles = event.dataTransfer.files;
-      console.log("uploadFile", uploadedFiles);
-      // e.dataTransfer.files
-      this.uploadFile(uploadedFiles);
-    },
+    // dropFile(event) {
+    //   this.$refs.dragover.classList.remove("dragover");
+    //   let uploadedFiles = event.dataTransfer.files;
+    //   console.log("uploadFile", uploadedFiles);
+    //   // e.dataTransfer.files
+    //   this.uploadFile(uploadedFiles);
+    // },
 
-    dragoverFile() {
-      this.$refs.dragover.classList.add("dragover");
-    },
+    // dragoverFile() {
+    //   this.$refs.dragover.classList.add("dragover");
+    // },
 
-    dragenterFile() {
-      this.$refs.dragover.classList.add("dragover");
-    },
+    // dragenterFile() {
+    //   this.$refs.dragover.classList.add("dragover");
+    // },
 
-    dragleaveFile(event) {
-      let fileBlock = this.$refs.dragover.getBoundingClientRect();
+    // dragleaveFile(event) {
+    //   let fileBlock = this.$refs.dragover.getBoundingClientRect();
 
-      if (
-        event.pageX < fileBlock.left ||
-        event.pageX > fileBlock.right ||
-        event.pageY < fileBlock.top ||
-        event.pageY > fileBlock.bottom
-      ) {
-        this.$refs.dragover.classList.remove("dragover");
-      }
-    },
+    //   if (
+    //     event.pageX < fileBlock.left ||
+    //     event.pageX > fileBlock.right ||
+    //     event.pageY < fileBlock.top ||
+    //     event.pageY > fileBlock.bottom
+    //   ) {
+    //     this.$refs.dragover.classList.remove("dragover");
+    //   }
+    // },
 
-    handleFilesUpload() {
-      this.loaderFile = false;
-      let uploadedFiles = this.$refs.files.files;
-      console.log("uploadFile", uploadedFiles);
-      this.uploadFile(uploadedFiles);
-    },
+    // handleFilesUpload() {
+    //   this.loaderFile = false;
+    //   let uploadedFiles = this.$refs.files.files;
+    //   console.log("uploadFile", uploadedFiles);
+    //   this.uploadFile(uploadedFiles);
+    // },
 
     // uploadFile(uploadedFiles) {
     //   let result = []
@@ -5931,127 +5942,127 @@ export default {
     //   console.log("filesAll", this.filesAll);
     // },
 
-    uploadFile(uploadedFiles) {
-      for (let i = 0; i < uploadedFiles.length; i++) {
-        this.files.push(uploadedFiles[i]);
-        this.filesAll.push({
-          name: uploadedFiles[i].name,
-          DocumentName: "",
-          id: null,
-          upload: false
-        });
-      }
+    // uploadFile(uploadedFiles) {
+    //   for (let i = 0; i < uploadedFiles.length; i++) {
+    //     this.files.push(uploadedFiles[i]);
+    //     this.filesAll.push({
+    //       name: uploadedFiles[i].name,
+    //       DocumentName: "",
+    //       id: null,
+    //       upload: false
+    //     });
+    //   }
 
-      console.log("files", this.files);
-      console.log("filesAll", this.filesAll);
-    },
+    //   console.log("files", this.files);
+    //   console.log("filesAll", this.filesAll);
+    // },
 
-    async submitFiles() {
-      validFilter(this.$refs, "fileNameValid", "fileName");
-      if (this.$refs.fileNameValid.hasError) {
-        this.formHasError = true;
-        this.bar = true;
-      } else {
-        this.loaderFile = true;
+    // async submitFiles() {
+    //   validFilter(this.$refs, "fileNameValid", "fileName");
+    //   if (this.$refs.fileNameValid.hasError) {
+    //     this.formHasError = true;
+    //     this.bar = true;
+    //   } else {
+    //     this.loaderFile = true;
 
-        let formData = new FormData();
-        let onlyNullId = this.filesAll.filter(i => i.id === null);
+    //     let formData = new FormData();
+    //     let onlyNullId = this.filesAll.filter(i => i.id === null);
 
-        for (let i = 0; i < this.files.length; i++) {
-          let file = this.files[i];
-          let documentTypes = onlyNullId[i].DocumentName;
-          formData.append("files", file);
-          formData.append("documentTypes", documentTypes);
-        }
+    //     for (let i = 0; i < this.files.length; i++) {
+    //       let file = this.files[i];
+    //       let documentTypes = onlyNullId[i].DocumentName;
+    //       formData.append("files", file);
+    //       formData.append("documentTypes", documentTypes);
+    //     }
 
-        console.log("formData", formData.getAll("files"));
+    //     console.log("formData", formData.getAll("files"));
 
-        try {
-          const response = await this.$store.dispatch(
-            "profile/uploadFiles",
-            formData
-          );
-          console.log("resFile", response);
-          if (response) {
-            this.files = []; // удалить все файлы после загрузки на сервер
-            this.loaderFile = false;
-            for (let el of response.infos) {
-              const item = this.filesAll.find(i => i.id === null);
-              item.id = Number(el.id);
-            }
-          } else {
-            this.loaderFile = false;
+    //     try {
+    //       const response = await this.$store.dispatch(
+    //         "profile/uploadFiles",
+    //         formData
+    //       );
+    //       console.log("resFile", response);
+    //       if (response) {
+    //         this.files = []; // удалить все файлы после загрузки на сервер
+    //         this.loaderFile = false;
+    //         for (let el of response.infos) {
+    //           const item = this.filesAll.find(i => i.id === null);
+    //           item.id = Number(el.id);
+    //         }
+    //       } else {
+    //         this.loaderFile = false;
 
-            // el.upload = true; // загрузка была, но прошла не удачна
-            this.filesAll
-              .filter(i => i.id === null)
-              .map(i => (i.upload = true));
-          }
-        } catch (error) {
-          this.$store.commit(
-            "credits/setMessage",
-            CommonUtils.filterServerError(error)
-          );
-        }
-      }
+    //         // el.upload = true; // загрузка была, но прошла не удачна
+    //         this.filesAll
+    //           .filter(i => i.id === null)
+    //           .map(i => (i.upload = true));
+    //       }
+    //     } catch (error) {
+    //       this.$store.commit(
+    //         "credits/setMessage",
+    //         CommonUtils.filterServerError(error)
+    //       );
+    //     }
+    //   }
 
-      // удалить все не загруженные файлы перед отправкой на сервер!!!!
-      this.fullProfile.AttachedDocuments.items = this.filesAll
-        .filter(i => i.id !== null)
-        .map(
-          i =>
-            (i = {
-              id: i.id,
-              DocLink: "",
-              DocumentName: i.DocumentName
-            })
-        );
-      console.log("document", this.fullProfile.AttachedDocuments);
-    },
+    //   // удалить все не загруженные файлы перед отправкой на сервер!!!!
+    //   this.fullProfile.AttachedDocuments.items = this.filesAll
+    //     .filter(i => i.id !== null)
+    //     .map(
+    //       i =>
+    //         (i = {
+    //           id: i.id,
+    //           DocLink: "",
+    //           DocumentName: i.DocumentName
+    //         })
+    //     );
+    //   console.log("document", this.fullProfile.AttachedDocuments);
+    // },
 
-    removeAllFile() {
-      this.files = [];
-      const uploadFiles = this.filesAll.filter(i => i.id !== null);
-      this.filesAll = uploadFiles;
-    },
+    // removeAllFile() {
+    //   this.files = [];
+    //   const uploadFiles = this.filesAll.filter(i => i.id !== null);
+    //   this.filesAll = uploadFiles;
+    // },
 
-    removeFile(idx) {
-      this.files.splice(idx - (this.filesAll.length - this.files.length), 1); // index для не загруженных файлов
-      this.filesAll.splice(idx, 1);
-    },
+    // removeFile(idx) {
+    //   this.files.splice(idx - (this.filesAll.length - this.files.length), 1); // index для не загруженных файлов
+    //   this.filesAll.splice(idx, 1);
+    // },
 
-    async removeUploadFile(payload) {
-      try {
-        console.log("idFile", this.filesAll[payload.index].id);
-        const idFile = this.filesAll[payload.index].id;
-        const response = await this.$store.dispatch(
-          "profile/removeFiles",
-          idFile
-        );
+    // async removeUploadFile(payload) {
+    //   try {
+    //     console.log("idFile", this.filesAll[payload.index].id);
+    //     const idFile = this.filesAll[payload.index].id;
+    //     const response = await this.$store.dispatch(
+    //       "profile/removeFiles",
+    //       idFile
+    //     );
 
-        console.log("delFile", response);
-        if (response == "OK") {
-          this.filesAll.splice([payload.index], 1);
-          const idx = this.fullProfile.AttachedDocuments.items.findIndex(
-            i => i.id == idFile
-          );
-          if (idx != -1) {
-            this.fullProfile.AttachedDocuments.items.splice(idx, 1);
-          }
+    //     console.log("delFile", response);
+    //     if (response == "OK") {
+    //       this.filesAll.splice([payload.index], 1);
+    //       const idx = this.fullProfile.AttachedDocuments.items.findIndex(
+    //         i => i.id == idFile
+    //       );
+    //       if (idx != -1) {
+    //         this.fullProfile.AttachedDocuments.items.splice(idx, 1);
+    //       }
 
-          console.log('this.filesAll', this.filesAll)
-        }
-      } catch (error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
-      }
-    },
+    //       console.log('this.filesAll', this.filesAll)
+    //     }
+    //   } catch (error) {
+    //     this.$store.commit(
+    //       "credits/setMessage",
+    //       CommonUtils.filterServerError(error)
+    //     );
+    //   }
+    // },
 
-    addFiles() {
-      this.$refs.files.click();
-    },
+    // addFiles() {
+    //   this.$refs.files.click();
+    // },
 
     addComment() {
       const comment = {
@@ -6324,7 +6335,9 @@ export default {
     appSetDataINPS: SetDataINPS,
     appGetDataINPS: GetDataINPS,
     appClientInfo: ClientInfo,
-    appContactData: ContactData
+
+    appContactData: ContactData,
+    appLoadDocuments: LoadDocuments,
     // appInfoList: InfoList
   },
   filters: {
