@@ -937,7 +937,7 @@ export default {
     width: 5%;
     padding: 0;
 
-    a {
+    a, span {
       justify-content: center;
       padding-right: 0 !important;
     }
@@ -1054,7 +1054,7 @@ export default {
   .applicationRow {
     cursor: pointer;
 
-    a {
+    a,span {
       display: flex;
       text-decoration: none;
       color: inherit;
