@@ -609,7 +609,8 @@
           <appContactData 
             :Customer="Customer"
             :disableField="disableField"
-            @add-phone="addPhone"
+            @confirm-delete-item="confirmDeleteItem"
+            @set-refs="setRefs"
             
           />
 
@@ -4611,6 +4612,7 @@ export default {
     this.options.Countries = this.$store.getters[
       "profile/dictionaries"
     ].Countries.items;
+
   },
   mounted() {
     setTimeout(() => {
@@ -4694,16 +4696,16 @@ export default {
     }
   },
   watch: {
-    "Customer.Email"(val) {
-      if (
-        val !== "" &&
-        !val.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
-      ) {
-        this.isValid = false;
-      } else {
-        this.isValid = true;
-      }
-    },
+    // "Customer.Email"(val) {
+    //   if (
+    //     val !== "" &&
+    //     !val.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
+    //   ) {
+    //     this.isValid = false;
+    //   } else {
+    //     this.isValid = true;
+    //   }
+    // },
 
     // "Customer.JobInfo.lastJobExperienceMonths"() {
     //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
@@ -5771,8 +5773,14 @@ export default {
       return this.dictionaries.Districts.items[0][region_id];
     },
 
-    addPhone() {
-      this.$store.commit("profile/addPhone");
+    // addPhone() {
+    //   this.$store.commit("profile/addPhone");
+    // },
+
+    setRefs(refs) {
+      this.$refs = {...this.$refs, ...refs}
+      console.log('refffffs', refs)
+      console.log('AllRes', this.$refs)
     },
 
     addPhoneGuarantee(index) {
@@ -5806,9 +5814,9 @@ export default {
       this.$store.commit("profile/addRelatedPerson");
     },
 
-    removeItem(payload) {
-      this.$store.commit("profile/removeItem", payload);
-    },
+    // removeItem(payload) {
+    //   this.$store.commit("profile/removeItem", payload);
+    // },
 
     removeGuarantee(payload) {
       this.guaranteeCount.pop();
@@ -6122,9 +6130,9 @@ export default {
       ); // только латинские буквы
     },
 
-    phoneValid(val) {
-      return !val.match(/(?=([^1-9]))\1{7,}/) || "Неверные данные";
-    },
+    // phoneValid(val) {
+    //   return !val.match(/(?=([^1-9]))\1{7,}/) || "Неверные данные";
+    // },
 
     docNumberValid(val) {
       return !val.match(/(?=(.))\1{7,}/) || "Неверные данные";
