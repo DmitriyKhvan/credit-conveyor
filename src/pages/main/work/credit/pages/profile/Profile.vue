@@ -11,7 +11,6 @@
             <h4
               class="tab-title"
               ref="privatData"
-              @click="toggleForm('privatData')"
             >
               Личные данные клиента
             </h4>
@@ -531,7 +530,7 @@
 
           <!-- Address -->
           <div class="address">
-            <h4 class="tab-title" ref="address" @click="toggleForm('address')">
+            <h4 class="tab-title" ref="address">
               Адреса клиента
             </h4>
             <div class="tab-content" ref="tabContent">
@@ -778,7 +777,6 @@
             <h4
               class="tab-title"
               ref="familyStatus"
-              @click="toggleForm('familyStatus')"
             >
               Родственники
             </h4>
@@ -1217,7 +1215,6 @@
             <h4
               class="tab-title"
               ref="infoWork"
-              @click="toggleForm('infoWork')"
             >
               Сведения по основной работе
             </h4>
@@ -1488,7 +1485,6 @@
             <h4
               class="tab-title"
               ref="expenseIncome"
-              @click="toggleForm('expenseIncome')"
             >
               Ежемесячные расходы/доходы
             </h4>
@@ -1738,7 +1734,6 @@
             <h4
               class="tab-title"
               ref="properties"
-              @click="toggleForm('properties')"
             >
               Сведения об имуществе
             </h4>
@@ -1935,7 +1930,6 @@
             <h4
               class="tab-title"
               ref="infoCredit"
-              @click="toggleForm('infoCredit')"
             >
               Сведения о запрашиваемом кредите
             </h4>
@@ -2547,7 +2541,6 @@
             <h4
               class="tab-title"
               ref="guarantees"
-              @click="toggleForm('guarantees')"
             >
               Гарантии и поручительство
             </h4>
@@ -3900,7 +3893,6 @@
             <h4
               class="tab-title"
               ref="commentCredit"
-              @click="toggleForm('commentCredit')"
             >
               Комментарии по кредиту
             </h4>
@@ -3948,7 +3940,6 @@
             <h4
               class="tab-title"
               ref="clientInfo"
-              @click="toggleForm('clientInfo')"
             >
               Информация о клиенте
             </h4>
@@ -3975,69 +3966,7 @@
           </div>
 
           <!-- file list -->
-          <template v-if="fileList.length">
-            
-            <div class="fileList tab">
-              <h4
-                class="tab-title"
-                ref="fileList"
-                @click="toggleForm('fileList')"
-              >
-                Список документов
-              </h4>
-              <div class="tab-content" ref="tabContent">
-                <ul class="fileBlock">
-                  <li
-                    class="fileLi"
-                    v-for="(fileData, index) of fileList"
-                    :key="index"
-                  >
-                    <p>
-                      {{ $t(`printForms.${fileData.label}`) }}
-                      <!-- {{ fileData.label }} -->
-                      {{ fileData.number ? +fileData.number + 1 : null }}
-                    </p>
-
-                    <div class="printWorkDoc">
-                      <q-btn
-                        :disable="disable"
-                        class="printDoc"
-                        flat 
-                        style="color: #74798C" 
-                        icon="print"
-                        label="(рус.)"
-                        @click="printFile(fileData, index)"
-                        :loading="fileData.loading"
-
-                      >
-                        <template v-slot:loading>
-                          <q-spinner-facebook />
-                        </template>
-                        <q-tooltip>Печать</q-tooltip>
-                      </q-btn>
-
-                      <q-btn
-                        :disable="disable"
-                        class="printDoc"
-                        flat 
-                        style="color: #74798C" 
-                        icon="print"
-                        label="(узб.)"
-                        @click="printFile(fileData, index + fileList.length, 1)"
-                        :loading="fileData.loadingUz"
-
-                      >
-                        <template v-slot:loading>
-                          <q-spinner-facebook />
-                        </template>
-                        <q-tooltip>Печать</q-tooltip>
-                      </q-btn>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </template>
+          <appFileList />
 
           <div class="submitBlock">
             <!-- Print version button-->
@@ -4186,20 +4115,20 @@ import axios from "axios";
 import { mapState, mapGetters } from "vuex";
 import printJS from "print-js";
 
-// import InfoList from "../registration/PreApproval";
 import SetDataINPS from "../../Components/INPS/SetData";
 import GetDataINPS from "../../Components/INPS/GetData";
 import ClientInfo from "../../Components/ClientInfo";
 
 import ContactData from "./Components/ContactData";
 import LoadDocuments from "./Components/LoadDocuments";
+import FileList from "./Components/FileList";
 
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 import CommonUtils from "@/shared/utils/CommonUtils";
-import dataTransform from "../../filters/dataTransform";
+// import dataTransform from "../../filters/dataTransform";
 import { validItems, validFilter } from "../../filters/valid_filter";
 import formatNumber from "../../filters/format_number.js";
 
@@ -4216,7 +4145,6 @@ export default {
       bankLoading: false,
       LSBOLoading: false,
       clientInfoLoading: false,
-      // infoList: false,
       INPSBar: false,
       dataINPS: {
         code: null,
@@ -4227,8 +4155,6 @@ export default {
       countGuaranteeDocumentName: -1,
       currentDate: CommonUtils.dateFilter(new Date()),
       loaderForm: false,
-      // loaderFile: false,
-      disable: false,
       loader: false, // прелодер
       isValid: true, //валидация Email
       sameRegistration: null,
@@ -4374,13 +4300,28 @@ export default {
   },
   mounted() {
     setTimeout(() => {
+      document.querySelectorAll(".tab-title")
+          .forEach(el => el.addEventListener("click", () => this.toggleForm(el)))
+
       document
-      .querySelectorAll(".scroll")[1]
-      .addEventListener("scroll", this.handleScroll);
+          .querySelectorAll(".scroll")[1]
+          .addEventListener("scroll", this.handleScroll);
 
       this.onSubmit("start");
     }, 1000);
   },
+
+  beforeDestroy() {
+    document.querySelectorAll(".tab-title")
+        .forEach(el => el.removeEventListener("click", () => this.toggleForm(el)))
+
+    if(!!document.querySelectorAll(".scroll")[1]) {
+      document
+        .querySelectorAll(".scroll")[1]
+        .removeEventListener("scroll", this.handleScroll);
+    }
+  },
+
   computed: {
     ...mapState({
       fullProfile: state => state.profile.fullFormProfile,
@@ -4424,12 +4365,6 @@ export default {
                   : 'Form complete'
     },
 
-    countFile() {
-      return this.status === 'Step: Работа с документами'
-              ? 2
-              : 1
-    },
-
     scoring_results() {
       const scoring_resutlts = this.profile.BPMInput.find(input => input.label == 'scoring_results')
       return scoring_resutlts ? scoring_resutlts : null
@@ -4440,31 +4375,8 @@ export default {
               ? true
               : false
     },
-
-    fileList() {
-      return this.$store.getters['profile/fileList']
-    },
-
-    cacheDocId() {
-      const cacheDocIdArr = []
-      for (let i = 0; i < this.fileList.length * 2; i++) {
-        cacheDocIdArr.push(null)
-      } 
-      return cacheDocIdArr
-    }
   },
   watch: {
-    // "Customer.Email"(val) {
-    //   if (
-    //     val !== "" &&
-    //     !val.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
-    //   ) {
-    //     this.isValid = false;
-    //   } else {
-    //     this.isValid = true;
-    //   }
-    // },
-
     // "Customer.JobInfo.lastJobExperienceMonths"() {
     //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
     //     this.$refs.workExperience.validate()
@@ -5619,11 +5531,11 @@ export default {
       this.$store.commit("profile/removeProperty", payload);
     },
 
-    toggleForm(val) {
+    toggleForm(el) {
       //console.log(val);
-      this.$refs[val].classList.toggle("active");
+      el.classList.toggle("active");
 
-      const tab_content = this.$refs[val].nextSibling;
+      const tab_content = el.nextSibling;
       tab_content.classList.toggle("active2");
       // if (tab_content.style.maxHeight) {
       //   tab_content.style.maxHeight = null;
@@ -5746,59 +5658,6 @@ export default {
     //   }
     // },
 
-    async printFile(fileData, idx, lang = 0) {
-      this.disable = true;
-      if (lang == 0) {
-        fileData.loading = true
-      } else {
-        fileData.loadingUz = true
-      }
-      
-      let file = null;
-      this.fileData.lang = lang;
-      this.fileData.type = fileData.label;
-      this.fileData.data = dataTransform(fileData.data);
-      try {
-        console.log(JSON.stringify(this.fileData, null, 2));
-
-        if (this.cacheDocId[idx]) {
-          file = await this.$store.dispatch(
-            "credits/getFile",
-            this.cacheDocId[idx]
-          );
-        } else {
-          file = await this.$store.dispatch("credits/getFile", this.fileData);
-
-          this.cacheDocId[idx] = file.id;
-        }
-
-        console.log("file", file);
-
-        if (file) {
-          printJS(file.url);
-          window.URL.revokeObjectURL(file.url);
-        }
-
-        this.disable = false;
-        if (lang == 0) {
-          fileData.loading = false
-        } else {
-          fileData.loadingUz = false
-        }
-      } catch (error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
-        this.disable = false;
-        if (lang == 0) {
-          fileData.loading = false
-        } else {
-          fileData.loadingUz = false
-        }
-      }
-    },
-
     async printFailureCredit(fileData) {
       this.fileData.type = fileData.label;
       this.fileData.data = fileData.data;
@@ -5818,19 +5677,6 @@ export default {
         );
       }
     },
-
-    // dataTransform(data) {
-
-    //   for (let i in data) {
-    //     if (data[i] != null) {
-    //       if (data[i].items) {
-    //         data[i] = data[i].items
-    //         this.dataTransform(data[i])
-    //       }
-    //     }
-    //   }
-    //   return data
-    // },
 
     filterFn(val, update) {
       console.log("filterFn", val);
@@ -5888,14 +5734,6 @@ export default {
         .scrollIntoView({ behavior: "smooth", block: "start" });
     }
   },
-  beforeDestroy() {
-    console.log('beforeDestroy')
-    if(!!document.querySelectorAll(".scroll")[1]) {
-      document
-        .querySelectorAll(".scroll")[1]
-        .removeEventListener("scroll", this.handleScroll);
-    }
-  },
   components: {
     appLoader: Loader,
     appFullProfile: FullProfile,
@@ -5906,7 +5744,7 @@ export default {
 
     appContactData: ContactData,
     appLoadDocuments: LoadDocuments,
-    // appInfoList: InfoList
+    appFileList: FileList,
   },
   filters: {
     formatNumber
