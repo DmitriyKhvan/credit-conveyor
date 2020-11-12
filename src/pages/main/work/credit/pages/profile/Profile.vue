@@ -11,7 +11,6 @@
             <h4
               class="tab-title"
               ref="privatData"
-              @click="toggleForm('privatData')"
             >
               Личные данные клиента
             </h4>
@@ -521,93 +520,17 @@
           </div>
 
           <!-- Contacts info -->
-          <div class="contactData">
-            <h4
-              class="tab-title"
-              ref="contactData"
-              @click="toggleForm('contactData')"
-            >
-              Контактные данные
-            </h4>
-            <div class="tab-content" ref="tabContent">
-
-              <div class="row q-col-gutter-md">
-                <div class="col-6">
-                  <div
-                    class="fieldset_block"
-                    v-for="(phone, index) of Customer.PhoneList.items"
-                    :key="'PhoneList' + index"
-                  >
-                    <h6 class="legend_title">Телефон {{ index + 1 }}</h6>
-                    <div class="row q-col-gutter-md">
-                      <div class="col-12">
-                        <q-input
-                          :disable="(index === 0 ? true : false) || disableField"
-                          ref="phones"
-                          outlined
-                          v-model="phone.Number"
-                          dense
-                          label="Тел. номер"
-                          mask="+############"
-                          :rules="[
-                            val =>
-                              (val && val.length === 13) ||
-                              'Введите номер телефона',
-                            val => phoneValid(val)
-                          ]"
-                        />
-                      </div>
-                    </div>
-
-                    <q-btn
-                      :disable="disableField"
-                      v-if="index > 0"
-                      label="Удалить"
-                      @click="
-                        confirmDeleteItem(
-                          'Телефон ' + (index + 1),
-                          removeItem,
-                          'PhoneList',
-                          index
-                        )
-                      "
-                      class="removeItem"
-                    ></q-btn>
-                  </div>
-
-                  <q-btn
-                    :disable="disableField"
-                    label="Добавить номер телефона"
-                    @click="addPhone"
-                    class="addItem"
-                  ></q-btn>
-                </div>
-
-                <div class="col-6">
-                  <h6 class="legend_title">Электронная почта</h6>
-                  <div class="row q-col-gutter-md">
-                    <div class="col-12">
-                      <q-input
-                        :disable="disableField"
-                        outlined
-                        v-model.lazy="Customer.Email"
-                        dense
-                        label="Email"
-                        error-message="Ведите корректный Email"
-                        :error="!isValid"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              
-            </div>
-          </div>
+          <appContactData 
+            :Customer="Customer"
+            :disableField="disableField"
+            @confirm-delete-item="confirmDeleteItem"
+            @set-refs="setRefs"
+            
+          />
 
           <!-- Address -->
           <div class="address">
-            <h4 class="tab-title" ref="address" @click="toggleForm('address')">
+            <h4 class="tab-title" ref="address">
               Адреса клиента
             </h4>
             <div class="tab-content" ref="tabContent">
@@ -854,7 +777,6 @@
             <h4
               class="tab-title"
               ref="familyStatus"
-              @click="toggleForm('familyStatus')"
             >
               Родственники
             </h4>
@@ -1293,7 +1215,6 @@
             <h4
               class="tab-title"
               ref="infoWork"
-              @click="toggleForm('infoWork')"
             >
               Сведения по основной работе
             </h4>
@@ -1564,7 +1485,6 @@
             <h4
               class="tab-title"
               ref="expenseIncome"
-              @click="toggleForm('expenseIncome')"
             >
               Ежемесячные расходы/доходы
             </h4>
@@ -1814,7 +1734,6 @@
             <h4
               class="tab-title"
               ref="properties"
-              @click="toggleForm('properties')"
             >
               Сведения об имуществе
             </h4>
@@ -2011,7 +1930,6 @@
             <h4
               class="tab-title"
               ref="infoCredit"
-              @click="toggleForm('infoCredit')"
             >
               Сведения о запрашиваемом кредите
             </h4>
@@ -2623,7 +2541,6 @@
             <h4
               class="tab-title"
               ref="guarantees"
-              @click="toggleForm('guarantees')"
             >
               Гарантии и поручительство
             </h4>
@@ -3960,162 +3877,22 @@
           </div>
 
           <!-- loadDocuments -->
-          <div 
-            v-if="status != 'Step: Full Application Filling' || this.fullProfile.BODecision != null" 
-            class="loadDocuments tab"
-          >
-            <h4
-              class="tab-title"
-              ref="loadDocuments"
-              @click="toggleForm('loadDocuments')"
-            >
-              Загрузить документ
-            </h4>
-            <div class="tab-content" ref="tabContent">
-              <div class="row">
-                <div
-                  class="col-12 uploadFileBlock"
-                  @drag.prevent.stop
-                  @dragstart.prevent.stop
-                  @dragend.prevent.stop
-                  @dragover.prevent.stop="dragoverFile"
-                  @dragenter.prevent.stop="dragenterFile"
-                  @dragleave="dragleaveFile($event)"
-                  @drop.prevent.stop
-                  @drop="dropFile($event)"
-                >
-                <!-- :value="!!filesAll.find(file => file.id != null)" -->
-                  <div ref="dragover"></div>
-                  <q-field
-                    ref="uploadFile"
-                    :value="filesAll.filter(file => file.id != null).length >= countFile"
-                    :rules="[val => !!val || 'Загрузите файлы']"
-                  >
-                    <div class="uploadFile">
-                      <div class="row items-center">
-                        <div class="loaderFile" v-if="loaderFile">
-                          <appLoader v-if="loaderFile" />
-                        </div>
-                        <q-btn
-                          v-if="files.length && !loaderFile"
-                          flat
-                          round
-                          color="#0054a6"
-                          icon="delete_sweep"
-                          @click.prevent="removeAllFile()"
-                        >
-                          <q-tooltip>Удалить все файлы</q-tooltip>
-                        </q-btn>
-                        <q-icon class="clip" name="attach_file" />
-                        <span>Загрузка файлов</span>
-                        <input
-                          type="file"
-                          id="files"
-                          ref="files"
-                          multiple
-                          @change="handleFilesUpload()"
-                        />
-                      </div>
-
-                      <div>
-                        <q-btn
-                          class="addFileBtn"
-                          label="Добавить"
-                          @click.prevent="addFiles()"
-                        />
-
-                        <q-btn
-                          v-if="files.length"
-                          class="uploadFileBtn"
-                          label="Загрузить"
-                          @click.prevent="submitFiles()"
-                        />
-                      </div>
-                    </div>
-                  </q-field>
-                  <div class="fileList">
-                    <div
-                      v-for="(file, index) in filesAll"
-                      :key="'file' + index"
-                      class="file-listing"
-                    >
-                      <div class="fileNameBlock">
-                        <span
-                          class="material-icons fileDownload"
-                          v-if="file.id"
-                        >
-                          description
-                          <q-tooltip>Файл загружен</q-tooltip>
-                        </span>
-
-                        <span
-                          class="material-icons fileNotDownload"
-                          v-else-if="file.upload"
-                        >
-                          warning
-                          <q-tooltip>Файл не загружен</q-tooltip>
-                        </span>
-
-                        <q-input
-                          :disable="!!file.id || file.upload"
-                          class="fileNameInput"
-                          ref="fileName"
-                          outlined
-                          v-model="file.DocumentName"
-                          dense
-                          label="Название файла"
-                          :rules="[val => !!val || 'Введите название файла']"
-                        />
-                        <span class="fileName">{{ file.name }}</span>
-                      </div>
-
-                      <div class="loaderFile" v-if="loaderFile && !file.id">
-                        <appLoader />
-                      </div>
-
-                      <q-btn
-                        v-else-if="!loaderFile && !file.id"
-                        flat
-                        round
-                        color="grey"
-                        icon="cancel"
-                        class="cancel"
-                        @click.prevent="removeFile(index)"
-                      >
-                        <q-tooltip>Удалить файл</q-tooltip>
-                      </q-btn>
-
-                      <q-btn
-                        v-else
-                        flat
-                        round
-                        color="grey"
-                        icon="cancel"
-                        class="cancel"
-                        @click.prevent="
-                          confirmDeleteItem(
-                            file.DocumentName,
-                            removeUploadFile,
-                            (item = null),
-                            index
-                          )
-                        "
-                      >
-                        <q-tooltip>Удалить загруженный файл</q-tooltip>
-                      </q-btn>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <appLoadDocuments 
+            v-if="
+              status != 'Step: Full Application Filling' ||
+              this.fullProfile.BODecision != null
+            "
+            :fullProfile="fullProfile"
+            :status="status"
+            @confirm-delete-item="confirmDeleteItem"
+            @set-refs="setRefs"
+          />
 
           <!-- Comment -->
           <div class="commentCredit tab">
             <h4
               class="tab-title"
               ref="commentCredit"
-              @click="toggleForm('commentCredit')"
             >
               Комментарии по кредиту
             </h4>
@@ -4163,7 +3940,6 @@
             <h4
               class="tab-title"
               ref="clientInfo"
-              @click="toggleForm('clientInfo')"
             >
               Информация о клиенте
             </h4>
@@ -4190,69 +3966,7 @@
           </div>
 
           <!-- file list -->
-          <template v-if="fileList.length">
-            
-            <div class="fileList tab">
-              <h4
-                class="tab-title"
-                ref="fileList"
-                @click="toggleForm('fileList')"
-              >
-                Список документов
-              </h4>
-              <div class="tab-content" ref="tabContent">
-                <ul class="fileBlock">
-                  <li
-                    class="fileLi"
-                    v-for="(fileData, index) of fileList"
-                    :key="index"
-                  >
-                    <p>
-                      {{ $t(`printForms.${fileData.label}`) }}
-                      <!-- {{ fileData.label }} -->
-                      {{ fileData.number ? +fileData.number + 1 : null }}
-                    </p>
-
-                    <div class="printWorkDoc">
-                      <q-btn
-                        :disable="disable"
-                        class="printDoc"
-                        flat 
-                        style="color: #74798C" 
-                        icon="print"
-                        label="(рус.)"
-                        @click="printFile(fileData, index)"
-                        :loading="fileData.loading"
-
-                      >
-                        <template v-slot:loading>
-                          <q-spinner-facebook />
-                        </template>
-                        <q-tooltip>Печать</q-tooltip>
-                      </q-btn>
-
-                      <q-btn
-                        :disable="disable"
-                        class="printDoc"
-                        flat 
-                        style="color: #74798C" 
-                        icon="print"
-                        label="(узб.)"
-                        @click="printFile(fileData, index + fileList.length, 1)"
-                        :loading="fileData.loadingUz"
-
-                      >
-                        <template v-slot:loading>
-                          <q-spinner-facebook />
-                        </template>
-                        <q-tooltip>Печать</q-tooltip>
-                      </q-btn>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </template>
+          <appFileList />
 
           <div class="submitBlock">
             <!-- Print version button-->
@@ -4401,16 +4115,20 @@ import axios from "axios";
 import { mapState, mapGetters } from "vuex";
 import printJS from "print-js";
 
-// import InfoList from "../registration/PreApproval";
 import SetDataINPS from "../../Components/INPS/SetData";
 import GetDataINPS from "../../Components/INPS/GetData";
 import ClientInfo from "../../Components/ClientInfo";
+
+import ContactData from "./Components/ContactData";
+import LoadDocuments from "./Components/LoadDocuments";
+import FileList from "./Components/FileList";
+
 import Loader from "@/components/Loader";
 import FullProfile from "./FullProfile";
 import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 import CommonUtils from "@/shared/utils/CommonUtils";
-import dataTransform from "../../filters/dataTransform";
+// import dataTransform from "../../filters/dataTransform";
 import { validItems, validFilter } from "../../filters/valid_filter";
 import formatNumber from "../../filters/format_number.js";
 
@@ -4427,7 +4145,6 @@ export default {
       bankLoading: false,
       LSBOLoading: false,
       clientInfoLoading: false,
-      // infoList: false,
       INPSBar: false,
       dataINPS: {
         code: null,
@@ -4438,8 +4155,6 @@ export default {
       countGuaranteeDocumentName: -1,
       currentDate: CommonUtils.dateFilter(new Date()),
       loaderForm: false,
-      loaderFile: false,
-      disable: false,
       loader: false, // прелодер
       isValid: true, //валидация Email
       sameRegistration: null,
@@ -4486,9 +4201,7 @@ export default {
 
       guaranteeCount: [],
       totalGuaranteesSum: 0, // сумма всех гарантий и поручительств
-      files: [], // для сервера, чтоб не дублировать отправку файла
-      filesAll: [], // для фильтрации какие файлы загружены на сервер
-
+      
       fileData: {
         type: "",
         lang: this.$store.getters["common/getLangNum"] - 1, //0 - рус, 1 - узб,
@@ -4525,38 +4238,21 @@ export default {
       }
 
       try {
-        const response = await this.$store.dispatch("profile/getFullForm");
+        await this.$store.dispatch("profile/getFullForm");
 
         //this.setLoan(this.fullProfile.LoanInfo.LoanProduct)
-        console.log("response", response);
+        
+        if (this.status === 'Step: Работа с документами' || 
+            this.status === 'Step: Ввод данных с интеграциями' ||
+            this.fullProfile.BODecision != null) {
+          
+          const guarantees = this.fullProfile.Guarantee;
 
-        if (response) {
-          const { data } = response.data.input.find(
-            i => i.label == "application"
-          );
+          for (let guarantee in guarantees) {
+            for (let i of guarantees[guarantee].items) {
+              this.guaranteeCount.push("guarantee");
 
-          if (this.status === 'Step: Работа с документами' || 
-              this.status === 'Step: Ввод данных с интеграциями' ||
-              this.fullProfile.BODecision != null) {
-            
-            const uploadedFiles = data.AttachedDocuments.items;
-            const guarantees = data.Guarantee;
-
-            for (let file of uploadedFiles) {
-              this.filesAll.push({
-                name: "",
-                DocumentName: file.DocumentName,
-                id: file.id,
-                upload: true
-              });
-            }
-
-            for (let guarantee in guarantees) {
-              for (let i of guarantees[guarantee].items) {
-                this.guaranteeCount.push("guarantee");
-
-                i.Sum = formatNumber(i.Sum);
-              }
+              i.Sum = formatNumber(i.Sum);
             }
           }
         }
@@ -4600,16 +4296,32 @@ export default {
     this.options.Countries = this.$store.getters[
       "profile/dictionaries"
     ].Countries.items;
+
   },
   mounted() {
     setTimeout(() => {
+      document.querySelectorAll(".tab-title")
+          .forEach(el => el.addEventListener("click", () => this.toggleForm(el)))
+
       document
-      .querySelectorAll(".scroll")[1]
-      .addEventListener("scroll", this.handleScroll);
+          .querySelectorAll(".scroll")[1]
+          .addEventListener("scroll", this.handleScroll);
 
       this.onSubmit("start");
     }, 1000);
   },
+
+  beforeDestroy() {
+    document.querySelectorAll(".tab-title")
+        .forEach(el => el.removeEventListener("click", () => this.toggleForm(el)))
+
+    if(!!document.querySelectorAll(".scroll")[1]) {
+      document
+        .querySelectorAll(".scroll")[1]
+        .removeEventListener("scroll", this.handleScroll);
+    }
+  },
+
   computed: {
     ...mapState({
       fullProfile: state => state.profile.fullFormProfile,
@@ -4653,12 +4365,6 @@ export default {
                   : 'Form complete'
     },
 
-    countFile() {
-      return this.status === 'Step: Работа с документами'
-              ? 2
-              : 1
-    },
-
     scoring_results() {
       const scoring_resutlts = this.profile.BPMInput.find(input => input.label == 'scoring_results')
       return scoring_resutlts ? scoring_resutlts : null
@@ -4669,31 +4375,8 @@ export default {
               ? true
               : false
     },
-
-    fileList() {
-      return this.$store.getters['profile/fileList']
-    },
-
-    cacheDocId() {
-      const cacheDocIdArr = []
-      for (let i = 0; i < this.fileList.length * 2; i++) {
-        cacheDocIdArr.push(null)
-      } 
-      return cacheDocIdArr
-    }
   },
   watch: {
-    "Customer.Email"(val) {
-      if (
-        val !== "" &&
-        !val.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
-      ) {
-        this.isValid = false;
-      } else {
-        this.isValid = true;
-      }
-    },
-
     // "Customer.JobInfo.lastJobExperienceMonths"() {
     //   if (this.Customer.JobInfo.totalJobExperienceMonths) {
     //     this.$refs.workExperience.validate()
@@ -5112,7 +4795,7 @@ export default {
       }
 
       if (
-        this.status === 'Step: Работа с документами' &&
+        this.status === 'Step: Работа с документами' && 
         this.fullProfile.Guarantee.Insurance.items.length
       ) {
         validFilter(
@@ -5763,8 +5446,14 @@ export default {
       return this.dictionaries.Districts.items[0][region_id];
     },
 
-    addPhone() {
-      this.$store.commit("profile/addPhone");
+    // addPhone() {
+    //   this.$store.commit("profile/addPhone");
+    // },
+
+    setRefs(refs) {
+      this.$refs = {...this.$refs, ...refs}
+      console.log('refffffs', refs)
+      console.log('AllRes', this.$refs)
     },
 
     addPhoneGuarantee(index) {
@@ -5842,199 +5531,17 @@ export default {
       this.$store.commit("profile/removeProperty", payload);
     },
 
-    toggleForm(val) {
+    toggleForm(el) {
       //console.log(val);
-      this.$refs[val].classList.toggle("active");
+      el.classList.toggle("active");
 
-      const tab_content = this.$refs[val].nextSibling;
+      const tab_content = el.nextSibling;
       tab_content.classList.toggle("active2");
       // if (tab_content.style.maxHeight) {
       //   tab_content.style.maxHeight = null;
       // } else {
       //   tab_content.style.maxHeight = tab_content.scrollHeight + "px";
       // }
-    },
-
-    dropFile(event) {
-      this.$refs.dragover.classList.remove("dragover");
-      let uploadedFiles = event.dataTransfer.files;
-      console.log("uploadFile", uploadedFiles);
-      // e.dataTransfer.files
-      this.uploadFile(uploadedFiles);
-    },
-
-    dragoverFile() {
-      this.$refs.dragover.classList.add("dragover");
-    },
-
-    dragenterFile() {
-      this.$refs.dragover.classList.add("dragover");
-    },
-
-    dragleaveFile(event) {
-      let fileBlock = this.$refs.dragover.getBoundingClientRect();
-
-      if (
-        event.pageX < fileBlock.left ||
-        event.pageX > fileBlock.right ||
-        event.pageY < fileBlock.top ||
-        event.pageY > fileBlock.bottom
-      ) {
-        this.$refs.dragover.classList.remove("dragover");
-      }
-    },
-
-    handleFilesUpload() {
-      this.loaderFile = false;
-      let uploadedFiles = this.$refs.files.files;
-      console.log("uploadFile", uploadedFiles);
-      this.uploadFile(uploadedFiles);
-    },
-
-    // uploadFile(uploadedFiles) {
-    //   let result = []
-    //   let idx = -1
-    //   for (let file of uploadedFiles) {
-    //     if (this.files.length) {
-    //       let idx = this.files.findIndex(i => i.lastModified == file.lastModified)
-    //     }
-    //     if (idx == -1) {
-    //       this.files.push(file);
-    //     }
-
-    //     this.filesAll.push({
-    //       name: file.name,
-    //       DocumentName: "",
-    //       id: null,
-    //       upload: false
-    //     });
-    //   }
-
-    //   // console.log("result", result);
-    //   console.log("files", this.files);
-    //   console.log("filesAll", this.filesAll);
-    // },
-
-    uploadFile(uploadedFiles) {
-      for (let i = 0; i < uploadedFiles.length; i++) {
-        this.files.push(uploadedFiles[i]);
-        this.filesAll.push({
-          name: uploadedFiles[i].name,
-          DocumentName: "",
-          id: null,
-          upload: false
-        });
-      }
-
-      console.log("files", this.files);
-      console.log("filesAll", this.filesAll);
-    },
-
-    async submitFiles() {
-      validFilter(this.$refs, "fileNameValid", "fileName");
-      if (this.$refs.fileNameValid.hasError) {
-        this.formHasError = true;
-        this.bar = true;
-      } else {
-        this.loaderFile = true;
-
-        let formData = new FormData();
-        let onlyNullId = this.filesAll.filter(i => i.id === null);
-
-        for (let i = 0; i < this.files.length; i++) {
-          let file = this.files[i];
-          let documentTypes = onlyNullId[i].DocumentName;
-          formData.append("files", file);
-          formData.append("documentTypes", documentTypes);
-        }
-
-        console.log("formData", formData.getAll("files"));
-
-        try {
-          const response = await this.$store.dispatch(
-            "profile/uploadFiles",
-            formData
-          );
-          console.log("resFile", response);
-          if (response) {
-            this.files = []; // удалить все файлы после загрузки на сервер
-            this.loaderFile = false;
-            for (let el of response.infos) {
-              const item = this.filesAll.find(i => i.id === null);
-              item.id = Number(el.id);
-            }
-          } else {
-            this.loaderFile = false;
-
-            // el.upload = true; // загрузка была, но прошла не удачна
-            this.filesAll
-              .filter(i => i.id === null)
-              .map(i => (i.upload = true));
-          }
-        } catch (error) {
-          this.$store.commit(
-            "credits/setMessage",
-            CommonUtils.filterServerError(error)
-          );
-        }
-      }
-
-      // удалить все не загруженные файлы перед отправкой на сервер!!!!
-      this.fullProfile.AttachedDocuments.items = this.filesAll
-        .filter(i => i.id !== null)
-        .map(
-          i =>
-            (i = {
-              id: i.id,
-              DocLink: "",
-              DocumentName: i.DocumentName
-            })
-        );
-      console.log("document", this.fullProfile.AttachedDocuments);
-    },
-
-    removeAllFile() {
-      this.files = [];
-      const uploadFiles = this.filesAll.filter(i => i.id !== null);
-      this.filesAll = uploadFiles;
-    },
-
-    removeFile(idx) {
-      this.files.splice(idx - (this.filesAll.length - this.files.length), 1); // index для не загруженных файлов
-      this.filesAll.splice(idx, 1);
-    },
-
-    async removeUploadFile(payload) {
-      try {
-        console.log("idFile", this.filesAll[payload.index].id);
-        const idFile = this.filesAll[payload.index].id;
-        const response = await this.$store.dispatch(
-          "profile/removeFiles",
-          idFile
-        );
-
-        console.log("delFile", response);
-        if (response == "OK") {
-          this.filesAll.splice([payload.index], 1);
-          const idx = this.fullProfile.AttachedDocuments.items.findIndex(
-            i => i.id == idFile
-          );
-          if (idx != -1) {
-            this.fullProfile.AttachedDocuments.items.splice(idx, 1);
-          }
-
-          console.log('this.filesAll', this.filesAll)
-        }
-      } catch (error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
-      }
-    },
-
-    addFiles() {
-      this.$refs.files.click();
     },
 
     addComment() {
@@ -6151,59 +5658,6 @@ export default {
     //   }
     // },
 
-    async printFile(fileData, idx, lang = 0) {
-      this.disable = true;
-      if (lang == 0) {
-        fileData.loading = true
-      } else {
-        fileData.loadingUz = true
-      }
-      
-      let file = null;
-      this.fileData.lang = lang;
-      this.fileData.type = fileData.label;
-      this.fileData.data = dataTransform(fileData.data);
-      try {
-        console.log(JSON.stringify(this.fileData, null, 2));
-
-        if (this.cacheDocId[idx]) {
-          file = await this.$store.dispatch(
-            "credits/getFile",
-            this.cacheDocId[idx]
-          );
-        } else {
-          file = await this.$store.dispatch("credits/getFile", this.fileData);
-
-          this.cacheDocId[idx] = file.id;
-        }
-
-        console.log("file", file);
-
-        if (file) {
-          printJS(file.url);
-          window.URL.revokeObjectURL(file.url);
-        }
-
-        this.disable = false;
-        if (lang == 0) {
-          fileData.loading = false
-        } else {
-          fileData.loadingUz = false
-        }
-      } catch (error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
-        this.disable = false;
-        if (lang == 0) {
-          fileData.loading = false
-        } else {
-          fileData.loadingUz = false
-        }
-      }
-    },
-
     async printFailureCredit(fileData) {
       this.fileData.type = fileData.label;
       this.fileData.data = fileData.data;
@@ -6223,19 +5677,6 @@ export default {
         );
       }
     },
-
-    // dataTransform(data) {
-
-    //   for (let i in data) {
-    //     if (data[i] != null) {
-    //       if (data[i].items) {
-    //         data[i] = data[i].items
-    //         this.dataTransform(data[i])
-    //       }
-    //     }
-    //   }
-    //   return data
-    // },
 
     filterFn(val, update) {
       console.log("filterFn", val);
@@ -6293,22 +5734,17 @@ export default {
         .scrollIntoView({ behavior: "smooth", block: "start" });
     }
   },
-  beforeDestroy() {
-    console.log('beforeDestroy')
-    if(!!document.querySelectorAll(".scroll")[1]) {
-      document
-        .querySelectorAll(".scroll")[1]
-        .removeEventListener("scroll", this.handleScroll);
-    }
-  },
   components: {
     appLoader: Loader,
     appFullProfile: FullProfile,
     appLoaderFullScreen: LoaderFullScreen,
     appSetDataINPS: SetDataINPS,
     appGetDataINPS: GetDataINPS,
-    appClientInfo: ClientInfo
-    // appInfoList: InfoList
+    appClientInfo: ClientInfo,
+
+    appContactData: ContactData,
+    appLoadDocuments: LoadDocuments,
+    appFileList: FileList,
   },
   filters: {
     formatNumber
