@@ -5575,9 +5575,9 @@ export default {
       this.$store.commit("profile/addRelatedPerson");
     },
 
-    // removeItem(payload) {
-    //   this.$store.commit("profile/removeItem", payload);
-    // },
+    removeItem(payload) {
+      this.$store.commit("profile/removeItem", payload);
+    },
 
     removeGuarantee(payload) {
       this.guaranteeCount.pop();
