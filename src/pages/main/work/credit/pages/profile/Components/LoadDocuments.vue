@@ -154,17 +154,17 @@ export default {
   props: ["fullProfile", "status"],
   data() {
     return {
-      files: [],
+      files: [], // для сервера, чтоб не дублировать отправку файла
       filesAll: [], // для фильтрации какие файлы загружены на сервер
       loaderFile: false
     };
   },
   created() {
-    if (
-      this.status === "Step: Работа с документами" ||
-      this.status === "Step: Ввод данных с интеграциями" ||
-      this.fullProfile.BODecision != null
-    ) {
+    // if (
+    //   this.status === "Step: Работа с документами" ||
+    //   this.status === "Step: Ввод данных с интеграциями" ||
+    //   this.fullProfile.BODecision != null
+    // ) {
       const uploadedFiles = this.fullProfile.AttachedDocuments.items;
 
       for (let file of uploadedFiles) {
@@ -176,7 +176,7 @@ export default {
         });
       }
 
-    }
+    // }
   },
   computed: {
     countFile() {
