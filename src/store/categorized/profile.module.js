@@ -712,6 +712,20 @@ export const profile = {
       state.fullFormProfile.Branch = payload.Branch;
       state.fullFormProfile.BranchName = payload.BranchName;
       state.fullFormProfile.ClientManagerName = payload.ClientManagerName;
+
+      // state.fullFormProfile.Customer = payload.Customer
+
+      // state.fullFormProfile.Customer.Document.Districts = state.dictionaries.Districts
+
+      
+      // state.fullFormProfile.Customer.Relatives.items.forEach(i => {
+      //   i.Document.Districts = state.dictionaries.Districts
+      // })
+
+      // state.fullFormProfile.Customer.AddressList.items.forEach(i => {
+      //   i.Districts = state.dictionaries.Districts
+      // })
+      
       state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
       state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
@@ -729,8 +743,8 @@ export const profile = {
       state.fullFormProfile.Customer.Document.Number =
         payload.Customer.Document.Number;
 
-      // state.fullFormProfile.Customer.ResidentFlag =
-      //   payload.Customer.ResidentFlag;  
+          // state.fullFormProfile.Customer.ResidentFlag =
+          //   payload.Customer.ResidentFlag;  
 
       state.fullFormProfile.Customer.Document.GivenDate =
         payload.Customer.Document.GivenDate;
@@ -747,8 +761,8 @@ export const profile = {
 
       state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
         payload.Customer.MonthlyIncome.confirmMonthlyIncome;
-      // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-      //   payload.Customer.MonthlyExpenses.recurringExpenses;
+          // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+          //   payload.Customer.MonthlyExpenses.recurringExpenses;
       state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
         payload.Customer.MonthlyExpenses.allExpensesSum;
       state.fullFormProfile.Customer.MonthlyExpenses.obligations =
@@ -759,6 +773,7 @@ export const profile = {
         payload.Customer.MonthlyIncome.additionalIncome.sum;
       state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.incomeType =
         payload.Customer.MonthlyIncome.additionalIncome.incomeType;
+        
 
       state.fullFormProfile.LoanInfo.LoanProduct = payload.LoanInfo.LoanProduct;
       state.fullFormProfile.LoanInfo.RepaymentType =
