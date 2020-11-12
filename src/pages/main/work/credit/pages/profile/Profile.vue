@@ -4123,8 +4123,7 @@
               this.fullProfile.BODecision != null
             "
             :fullProfile="fullProfile"
-            :countFile="countFile"
-            :filesAll="filesAll"
+            :status="status"
             @confirm-delete-item="confirmDeleteItem"
             @set-refs="setRefs"
           />
@@ -4556,17 +4555,7 @@ export default {
             this.status === 'Step: Ввод данных с интеграциями' ||
             this.fullProfile.BODecision != null) {
           
-          const uploadedFiles = this.fullProfile.AttachedDocuments.items;
           const guarantees = this.fullProfile.Guarantee;
-
-          for (let file of uploadedFiles) {
-            this.filesAll.push({
-              name: "",
-              DocumentName: file.DocumentName,
-              id: file.id,
-              upload: true
-            });
-          }
 
           for (let guarantee in guarantees) {
             for (let i of guarantees[guarantee].items) {
@@ -5128,7 +5117,10 @@ export default {
         validItems(this.$refs, "innGuaranteesValid3");
       }
 
-      if (this.status === 'Step: Работа с документами') {
+      if (
+        this.status === 'Step: Работа с документами' && 
+        this.fullProfile.Guarantee.Insurance.items.length
+      ) {
         validFilter(
           this.$refs,
           "ContractNumberGuaranteesValid",

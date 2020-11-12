@@ -127,7 +127,8 @@
                 icon="cancel"
                 class="cancel"
                 @click.prevent="
-                  $emit('confirm-delete-item',
+                  $emit(
+                    'confirm-delete-item',
                     file.DocumentName,
                     removeUploadFile,
                     (item = null),
@@ -150,19 +151,38 @@ import { validItems, validFilter } from "../../../filters/valid_filter";
 import Loader from "@/components/Loader";
 
 export default {
-  props: ['fullProfile', 'filesAll', 'countFile'],
+  props: ["fullProfile", "status"],
   data() {
     return {
       files: [],
-      loaderFile: false,
-      //filesAll: [], // для фильтрации какие файлы загружены на сервер
+      filesAll: [], // для фильтрации какие файлы загружены на сервер
+      loaderFile: false
     };
   },
-  // computed: {
-  //    files() {
-  //      return 
-  //    }
-  // },
+  created() {
+    if (
+      this.status === "Step: Работа с документами" ||
+      this.status === "Step: Ввод данных с интеграциями" ||
+      this.fullProfile.BODecision != null
+    ) {
+      const uploadedFiles = this.fullProfile.AttachedDocuments.items;
+
+      for (let file of uploadedFiles) {
+        this.filesAll.push({
+          name: "",
+          DocumentName: file.DocumentName,
+          id: file.id,
+          upload: true,
+        });
+      }
+
+    }
+  },
+  computed: {
+    countFile() {
+      return this.status === "Step: Работа с документами" ? 2 : 1;
+    },
+  },
   methods: {
     async submitFiles() {
       validFilter(this.$refs, "fileNameValid", "fileName");
@@ -173,7 +193,7 @@ export default {
         this.loaderFile = true;
 
         let formData = new FormData();
-        let onlyNullId = this.filesAll.filter(i => i.id === null);
+        let onlyNullId = this.filesAll.filter((i) => i.id === null);
 
         for (let i = 0; i < this.files.length; i++) {
           let file = this.files[i];
@@ -194,7 +214,7 @@ export default {
             this.files = []; // удалить все файлы после загрузки на сервер
             this.loaderFile = false;
             for (let el of response.infos) {
-              const item = this.filesAll.find(i => i.id === null);
+              const item = this.filesAll.find((i) => i.id === null);
               item.id = Number(el.id);
             }
           } else {
@@ -202,8 +222,8 @@ export default {
 
             // el.upload = true; // загрузка была, но прошла не удачна
             this.filesAll
-              .filter(i => i.id === null)
-              .map(i => (i.upload = true));
+              .filter((i) => i.id === null)
+              .map((i) => (i.upload = true));
           }
         } catch (error) {
           this.$store.commit(
@@ -215,13 +235,13 @@ export default {
 
       // удалить все не загруженные файлы перед отправкой на сервер!!!!
       this.fullProfile.AttachedDocuments.items = this.filesAll
-        .filter(i => i.id !== null)
+        .filter((i) => i.id !== null)
         .map(
-          i =>
+          (i) =>
             (i = {
               id: i.id,
               DocLink: "",
-              DocumentName: i.DocumentName
+              DocumentName: i.DocumentName,
             })
         );
       console.log("document", this.fullProfile.AttachedDocuments);
@@ -240,13 +260,13 @@ export default {
         if (response == "OK") {
           this.filesAll.splice([payload.index], 1);
           const idx = this.fullProfile.AttachedDocuments.items.findIndex(
-            i => i.id == idFile
+            (i) => i.id == idFile
           );
           if (idx != -1) {
             this.fullProfile.AttachedDocuments.items.splice(idx, 1);
           }
 
-          console.log('this.filesAll', this.filesAll)
+          console.log("this.filesAll", this.filesAll);
         }
       } catch (error) {
         this.$store.commit(
@@ -299,7 +319,7 @@ export default {
           name: uploadedFiles[i].name,
           DocumentName: "",
           id: null,
-          upload: false
+          upload: false,
         });
       }
 
@@ -309,7 +329,7 @@ export default {
 
     removeAllFile() {
       this.files = [];
-      const uploadFiles = this.filesAll.filter(i => i.id !== null);
+      const uploadFiles = this.filesAll.filter((i) => i.id !== null);
       this.filesAll = uploadFiles;
     },
 
@@ -324,10 +344,10 @@ export default {
   },
   mounted() {
     // console.log('refs', this.$refs)
-    this.$emit('set-refs', this.$refs)
+    this.$emit("set-refs", this.$refs);
   },
   components: {
     appLoader: Loader,
-  }
+  },
 };
 </script>
