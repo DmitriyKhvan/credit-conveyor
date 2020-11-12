@@ -36,14 +36,11 @@
               :disable="disableField"
               v-if="index > 0"
               label="Удалить"
-              @click="
-                confirmDeleteItem(
-                  'Телефон ' + (index + 1),
-                  removeItem,
-                  'PhoneList',
-                  index
-                )
-              "
+              @click="$emit('confirm-delete-item', 
+                            'Телефон ' + (index + 1),
+                            removeItem,
+                            'PhoneList',
+                              index)"
               class="removeItem"
             ></q-btn>
           </div>
@@ -76,3 +73,43 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: ['Customer', 'disableField'],
+  data() {
+    return {
+      isValid: true, //валидация Email
+    }
+  },
+  watch: {
+    "Customer.Email"(val) {
+      if (
+        val !== "" &&
+        !val.match(/^[0-9a-z-.]+@[0-9a-z-]{2,}\.[a-z]{2,}$/i)
+      ) {
+        this.isValid = false;
+      } else {
+        this.isValid = true;
+      }
+    },
+  },
+  methods: {
+    phoneValid(val) {
+      return !val.match(/(?=([^1-9]))\1{7,}/) || "Неверные данные";
+    },
+
+    addPhone() {
+      this.$store.commit("profile/addPhone");
+    },
+
+    removeItem(payload) {
+      this.$store.commit("profile/removeItem", payload);
+    },
+  },
+  mounted() {
+    // console.log('refs', this.$refs)
+    this.$emit('set-refs', this.$refs)
+  }
+}
+</script>
