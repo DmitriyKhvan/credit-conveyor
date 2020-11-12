@@ -5111,7 +5111,10 @@ export default {
         validItems(this.$refs, "innGuaranteesValid3");
       }
 
-      if (this.status === 'Step: Работа с документами') {
+      if (
+        this.status === 'Step: Работа с документами' &&
+        this.fullProfile.Guarantee.Insurance.items.length
+      ) {
         validFilter(
           this.$refs,
           "ContractNumberGuaranteesValid",
