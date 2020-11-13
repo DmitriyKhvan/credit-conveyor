@@ -5369,9 +5369,12 @@ export default {
     // },
 
     setRefs(refs) {
-      this.$refs = {...this.$refs, ...refs}
+      // this.$refs = {...this.$refs, ...refs}
+      this.$refs = Object.assign({}, this.$refs, refs)
+      let obj = Object.assign({}, this.$refs, refs)
       console.log('refffffs', refs)
       console.log('AllRes', this.$refs)
+      console.log('Allobj', obj)
     },
 
     addPhoneGuarantee(index) {
