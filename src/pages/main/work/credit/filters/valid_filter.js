@@ -28,7 +28,7 @@ function validItems(refs, itemsValid, itemValid = true) {
 
 function validFilter(refs, itemsValid, items, itemValid = true, idx = -1) {
   // console.log(idx, items)
-
+  console.log('refs[items]', items, refs[items])
   if (idx == -1) {
     for (let item of refs[items]) {
       if (!item.validate()) {

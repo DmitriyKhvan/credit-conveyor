@@ -4784,11 +4784,13 @@ export default {
       }
 
       if (this.fullProfile.Guarantee.Insurance.items.length) {
+        console.log('this.$refs', this.$refs)
         validFilter(this.$refs, "nameGuaranteesValid3", "nameGuarantees3");
         validFilter(this.$refs, "innGuaranteesValid3", "innGuarantees3");
         validFilter(this.$refs, "priceGuaranteesValid3", "priceGuarantees3");
         
       } else {
+        console.log('this.$refs2', this.$refs)
         validItems(this.$refs, "priceGuaranteesValid3");
         validItems(this.$refs, "nameGuaranteesValid3");
         validItems(this.$refs, "innGuaranteesValid3");
