@@ -1311,16 +1311,19 @@ export default {
 		addInsurance(guarantee) {
       this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addInsurance");
+      this.$emit("set-refs", this.$refs);
     },
 
     addRelatedLegalPerson(guarantee) {
       this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addRelatedLegalPerson");
+      this.$emit("set-refs", this.$refs);
     },
 
     addRelatedPerson(guarantee) {
       this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addRelatedPerson");
+      this.$emit("set-refs", this.$refs);
 		},
 
 		removeGuarantee(payload) {
