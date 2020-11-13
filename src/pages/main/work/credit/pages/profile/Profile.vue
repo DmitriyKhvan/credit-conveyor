@@ -2537,7 +2537,7 @@
           </div>
 
           <!-- Guarantees -->
-          <div class="guarantees">
+          <!-- <div class="guarantees">
             <h4
               class="tab-title"
               ref="guarantees"
@@ -2936,20 +2936,6 @@
                     </div>
 
                     <div class="col-4">
-                      <!-- <q-input
-                      :disable="disableField"
-                      ref="guaranteesDocumentGivenPlace"
-                      
-                      outlined
-                      v-model="guarantee.Document.GivenPlace"
-                      dense
-                      label="Кем выдан документ"
-                      :rules="[
-                        val => !!val || 'Введите кем выдан документ',
-                        val => givenPlaceValid(val)
-                      ]"
-                    /> -->
-
                       <q-select
                         :disable="disableField"
                         ref="guaranteesDocumentGivenPlace"
@@ -3016,27 +3002,27 @@
                             'Введите МФО банка'
                         ]"
                       />
-                    </div>
-
-                    <!-- <div class="col-4">
-                      <q-input
-                        :disable="disableField"
-                        ref="BankInpsGuarantees"
-                        outlined
-                        v-model="guarantee.BankInps"
-                        dense
-                        label="Номер карты поручителя"
-                        mask="################"
-                        :rules="[
-                          val =>
-                            (val && val.length === 16) ||
-                            'Количество символов должно быт ровно 16',
-                          val =>
-                            !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
-                        ]"
-                      />
                     </div> -->
-                  </div>
+
+                            <!-- <div class="col-4">
+                              <q-input
+                                :disable="disableField"
+                                ref="BankInpsGuarantees"
+                                outlined
+                                v-model="guarantee.BankInps"
+                                dense
+                                label="Номер карты поручителя"
+                                mask="################"
+                                :rules="[
+                                  val =>
+                                    (val && val.length === 16) ||
+                                    'Количество символов должно быт ровно 16',
+                                  val =>
+                                    !val.match(/(?=(.))\1{16,}/) || 'Неверные данные'
+                                ]"
+                              />
+                            </div> -->
+                  <!-- </div>
 
                   <div class="row q-col-gutter-md">
                     <div class="col-4">
@@ -3059,18 +3045,6 @@
                   </div>
 
                   <div class="row q-col-gutter-md">
-                    <!-- <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      ref="indexGuarantees"
-                      
-                      outlined
-                      v-model="guarantee.Address.PostalCode"
-                      dense
-                      label="Индекс"
-                      mask="######"
-                    />
-                  </div> -->
                     <div class="col-4">
                       <q-select
                         :disable="disableField"
@@ -3143,29 +3117,10 @@
                         :rules="[val => !!val || 'Введите номер дома']"
                       />
                     </div>
-                    <!-- <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      
-                      outlined
-                      v-model="guarantee.Address.Block"
-                      dense
-                      label="Корпус"
-                    />
-                  </div> -->
+                    
                   </div>
 
                   <div class="row q-col-gutter-md">
-                    <!-- <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      
-                      outlined
-                      v-model="guarantee.Address.Building"
-                      dense
-                      label="Строение"
-                    />
-                  </div> -->
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
@@ -3175,10 +3130,10 @@
                         label="Номер квартиры"
                       />
                     </div>
-                  </div>
+                  </div> -->
 
                   <!-- phone -->
-                  <div
+                  <!-- <div
                     class="fieldset_block"
                     v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
                     :key="'RelatedPerson' + phoneIndex"
@@ -3358,10 +3313,10 @@
                           val => INNYurValid(val)
                         ]"
                       />
-                    </div>
+                    </div> -->
 
                     <!-- Надо добавить в BPM -->
-                    <div class="col-4">
+                    <!-- <div class="col-4">
                       <q-select
                         :disable="disableField"
                         ref="kindOfActivityGuarantees"
@@ -3453,17 +3408,6 @@
                    </div>
 
                   <div class="row q-col-gutter-md">
-                    <!-- <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      
-                      outlined
-                      v-model="guarantee.Address.PostalCode"
-                      dense
-                      label="Индекс"
-                      mask="######"
-                    />
-                  </div> -->
                     <div class="col-4">
                       <q-select
                         :disable="disableField"
@@ -3499,14 +3443,6 @@
 
                   <div class="row q-col-gutter-md">
                     <div class="col-4">
-                      <!-- <q-input
-                      
-                      outlined
-                      v-model="guarantee.Address.District"
-                      dense
-                      label="Район"
-                    />  -->
-
                       <q-select
                         :disable="disableField"
                         ref="districtGuarantees2"
@@ -3548,29 +3484,9 @@
                         :rules="[val => !!val || 'Введите номер дома']"
                       />
                     </div>
-                    <!-- <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      
-                      outlined
-                      v-model="guarantee.Address.Block"
-                      dense
-                      label="Корпус"
-                    />
-                  </div> -->
                   </div>
 
                   <div class="row q-col-gutter-md">
-                    <!-- <div class="col-4">
-                    <q-input
-                      :disable="disableField"
-                      
-                      outlined
-                      v-model="guarantee.Address.Building"
-                      dense
-                      label="Строение"
-                    />
-                  </div> -->
                     <div class="col-4">
                       <q-input
                         :disable="disableField"
@@ -3580,10 +3496,10 @@
                         label="Номер офиса"
                       />
                     </div>
-                  </div>
+                  </div> -->
 
                   <!-- phone -->
-                  <div
+                  <!-- <div
                     class="fieldset_block"
                     v-for="(phone, phoneIndex) of guarantee.PhoneList.items"
                     :key="'RelatedLegalPersonPhone' + phoneIndex"
@@ -3674,19 +3590,6 @@
 
                   <div class="row q-col-gutter-md">
                     <div class="col-4">
-                      <!-- <q-input
-                      :disable="disableField"
-                      ref="nameGuarantees"
-                      
-                      outlined
-                      v-model="guarantee.OrgName"
-                      dense
-                      label="Наименование страховой компании"
-                      :rules="[
-                        val => !!val || 'Введите наименование страховой компании'
-                      ]"
-                    /> -->
-
                       <q-select
                         :disable="disableField"
                         ref="nameGuarantees3"
@@ -3874,7 +3777,16 @@
                 ></q-btn>
               </q-field>
             </div>
-          </div>
+          </div> -->
+
+          <appGuarantees 
+            :fullProfile="fullProfile"
+            :dictionaries="dictionaries"
+            :disableField="disableField"
+            :status="status"
+            @confirm-delete-item="confirmDeleteItem"
+            @set-refs="setRefs"
+          />
 
           <!-- loadDocuments -->
           <appLoadDocuments 
@@ -4120,6 +4032,7 @@ import GetDataINPS from "../../Components/INPS/GetData";
 import ClientInfo from "../../Components/ClientInfo";
 
 import ContactData from "./Components/ContactData";
+import Guarantees from "./Components/Guarantees";
 import LoadDocuments from "./Components/LoadDocuments";
 import FileList from "./Components/FileList";
 
@@ -4199,7 +4112,7 @@ export default {
 
       },
 
-      guaranteeCount: [],
+      // guaranteeCount: [],
       totalGuaranteesSum: 0, // сумма всех гарантий и поручительств
       
       fileData: {
@@ -4246,15 +4159,15 @@ export default {
             this.status === 'Step: Ввод данных с интеграциями' ||
             this.fullProfile.BODecision != null) {
           
-          const guarantees = this.fullProfile.Guarantee;
+          // const guarantees = this.fullProfile.Guarantee;
 
-          for (let guarantee in guarantees) {
-            for (let i of guarantees[guarantee].items) {
-              this.guaranteeCount.push("guarantee");
+          // for (let guarantee in guarantees) {
+          //   for (let i of guarantees[guarantee].items) {
+          //     this.guaranteeCount.push("guarantee");
 
-              i.Sum = formatNumber(i.Sum);
-            }
-          }
+          //     i.Sum = formatNumber(i.Sum);
+          //   }
+          // }
         }
 
         this.loaderForm = false;
@@ -5473,20 +5386,20 @@ export default {
       this.$store.commit("profile/addVehicle");
     },
 
-    addInsurance(guarantee) {
-      this.guaranteeCount.push(guarantee);
-      this.$store.commit("profile/addInsurance");
-    },
+    // addInsurance(guarantee) {
+    //   this.guaranteeCount.push(guarantee);
+    //   this.$store.commit("profile/addInsurance");
+    // },
 
-    addRelatedLegalPerson(guarantee) {
-      this.guaranteeCount.push(guarantee);
-      this.$store.commit("profile/addRelatedLegalPerson");
-    },
+    // addRelatedLegalPerson(guarantee) {
+    //   this.guaranteeCount.push(guarantee);
+    //   this.$store.commit("profile/addRelatedLegalPerson");
+    // },
 
-    addRelatedPerson(guarantee) {
-      this.guaranteeCount.push(guarantee);
-      this.$store.commit("profile/addRelatedPerson");
-    },
+    // addRelatedPerson(guarantee) {
+    //   this.guaranteeCount.push(guarantee);
+    //   this.$store.commit("profile/addRelatedPerson");
+    // },
 
     removeItem(payload) {
       this.$store.commit("profile/removeItem", payload);
@@ -5744,6 +5657,7 @@ export default {
     appClientInfo: ClientInfo,
 
     appContactData: ContactData,
+    appGuarantees: Guarantees,
     appLoadDocuments: LoadDocuments,
     appFileList: FileList,
   },
