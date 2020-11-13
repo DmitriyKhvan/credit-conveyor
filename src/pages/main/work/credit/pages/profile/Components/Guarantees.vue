@@ -55,7 +55,11 @@
                 v-model="guarantee.Sum"
                 dense
                 label="Сумма поручительства"
-                @input="guaranteesValid('RelatedPerson', index)"
+                @input="$emit(
+									'guarantees-valid',
+									'RelatedPerson', 
+									index
+									)"
                 :rules="[
                   (val) => !!val || 'Введите сумму',
                   (val) => val != 0 || 'Некорректные данные',
@@ -626,14 +630,14 @@
               :disable="disableField"
               v-if="phoneIndex > 0"
               label="Удалить"
-              @click="
-                confirmDeleteItem(
-                  'Телефон ' + (phoneIndex + 1),
-                  removePhoneGuarantee,
-                  'RelatedPerson',
-                  index,
-                  phoneIndex
-                )
+							@click="$emit(
+								'confirm-delete-item',
+								'Телефон ' + (phoneIndex + 1),
+								removePhoneGuarantee,
+								'RelatedPerson',
+								index,
+								phoneIndex
+							)
               "
               class="removeItem"
             ></q-btn>
@@ -649,14 +653,13 @@
           <q-btn
             :disable="disableField"
             label="Удалить"
-            @click="
-              confirmDeleteItem(
-                'Физ. лицо ' + (index + 1),
-                removeGuarantee,
-                'RelatedPerson',
-                index
-              )
-            "
+            @click="$emit(
+							'confirm-delete-item',
+							'Физ. лицо ' + (index + 1),
+							removeGuarantee,
+							'RelatedPerson',
+							index
+						)"
             class="removeItem"
           ></q-btn>
         </div>
@@ -691,7 +694,11 @@
                 v-model="guarantee.Sum"
                 dense
                 label="Сумма поручительства"
-                @input="guaranteesValid('RelatedLegalPerson', index)"
+								@input="$emit(
+									'guarantees-valid',
+									'RelatedLegalPerson', 
+									index
+									)"
                 :rules="[
                   (val) => !!val || 'Введите сумму',
                   (val) => val != 0 || 'Некорректные данные',
@@ -1014,14 +1021,14 @@
               :disable="disableField"
               v-if="phoneIndex > 0"
               label="Удалить"
-              @click="
-                confirmDeleteItem(
-                  'Телефон ' + (phoneIndex + 1),
-                  removePhoneGuarantee,
-                  'RelatedLegalPerson',
-                  index,
-                  phoneIndex
-                )
+              @click="$emit(
+								'confirm-delete-item',
+								'Телефон ' + (phoneIndex + 1),
+								removePhoneGuarantee,
+								'RelatedLegalPerson',
+								index,
+								phoneIndex
+							)
               "
               class="removeItem"
             ></q-btn>
@@ -1038,14 +1045,13 @@
           <q-btn
             :disable="disableField"
             label="Удалить"
-            @click="
-              confirmDeleteItem(
-                'Юр. лицо ' + (index + 1),
-                removeGuarantee,
-                'RelatedLegalPerson',
-                index
-              )
-            "
+						@click="$emit(
+							'confirm-delete-item',
+							'Юр. лицо ' + (index + 1),
+							removeGuarantee,
+							'RelatedLegalPerson',
+							index
+						)"
             class="removeItem"
           ></q-btn>
         </div>
@@ -1123,7 +1129,11 @@
                 ref="priceGuarantees3"
                 outlined
                 v-model="guarantee.Sum"
-                @input="guaranteesValid('Insurance', index)"
+								@input="$emit(
+									'guarantees-valid',
+									'Insurance', 
+									index
+									)"
                 dense
                 label="Сумма страхового полиса"
                 :rules="[
@@ -1250,14 +1260,13 @@
           <q-btn
             :disable="disableField"
             label="Удалить"
-            @click="
-              confirmDeleteItem(
-                'Страхование ' + (index + 1),
-                removeGuarantee,
-                'Insurance',
-                index
-              )
-            "
+						@click="$emit(
+							'confirm-delete-item',
+							'Страхование ' + (index + 1),
+							removeGuarantee,
+							'Insurance',
+							index
+						)"
             class="removeItem"
           ></q-btn>
         </div>
@@ -1275,7 +1284,7 @@
 
 <script>
 export default {
-	props: ["fullProfile", "dictionaries", "status", "disableField"],
+	props: ["fullProfile", "profile", "dictionaries", "status", "totalGuaranteesSum", "disableField"],
   data() {
     return {
 			guaranteeCount: [],
@@ -1312,6 +1321,29 @@ export default {
     addRelatedPerson(guarantee) {
       this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addRelatedPerson");
+		},
+
+		removeGuarantee(payload) {
+      this.guaranteeCount.pop();
+      this.$store.commit("profile/removeGuarantee", payload);
+		},
+		
+		removePhoneGuarantee(payload) {
+      this.$store.commit("profile/removePhoneGuarantee", payload);
+    },
+		
+		setINNCompany(companyName, idx) {
+      console.log(companyName, idx);
+      const company = this.dictionaries.Insurance_company.items.find(
+        i => i.label == companyName
+      );
+      if (company) {
+        this.fullProfile.Guarantee.Insurance.items[idx].INN = company.INN;
+      }
+		},
+		
+		innValid(val) {
+      return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
     },
 	}
 };

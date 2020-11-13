@@ -3781,9 +3781,12 @@
 
           <appGuarantees 
             :fullProfile="fullProfile"
+            :profile="profile"
             :dictionaries="dictionaries"
+            :totalGuaranteesSum="totalGuaranteesSum"
             :disableField="disableField"
             :status="status"
+            @guarantees-valid="guaranteesValid"
             @confirm-delete-item="confirmDeleteItem"
             @set-refs="setRefs"
           />
@@ -4697,6 +4700,7 @@ export default {
       }
 
       if (this.fullProfile.Guarantee.Insurance.items.length) {
+        console.log('this.$refs', this.$refs)
         validFilter(this.$refs, "nameGuaranteesValid3", "nameGuarantees3");
         validFilter(this.$refs, "innGuaranteesValid3", "innGuarantees3");
         validFilter(this.$refs, "priceGuaranteesValid3", "priceGuarantees3");
@@ -5191,15 +5195,15 @@ export default {
       }
     },
 
-    setINNCompany(companyName, idx) {
-      console.log(companyName, idx);
-      const company = this.dictionaries.Insurance_company.items.find(
-        i => i.label == companyName
-      );
-      if (company) {
-        this.fullProfile.Guarantee.Insurance.items[idx].INN = company.INN;
-      }
-    },
+    // setINNCompany(companyName, idx) {
+    //   console.log(companyName, idx);
+    //   const company = this.dictionaries.Insurance_company.items.find(
+    //     i => i.label == companyName
+    //   );
+    //   if (company) {
+    //     this.fullProfile.Guarantee.Insurance.items[idx].INN = company.INN;
+    //   }
+    // },
 
     validDatePerson(date) {
       if (this.Customer.Document.ExpirationDate) {
@@ -5405,10 +5409,10 @@ export default {
       this.$store.commit("profile/removeItem", payload);
     },
 
-    removeGuarantee(payload) {
-      this.guaranteeCount.pop();
-      this.$store.commit("profile/removeGuarantee", payload);
-    },
+    // removeGuarantee(payload) {
+    //   this.guaranteeCount.pop();
+    //   this.$store.commit("profile/removeGuarantee", payload);
+    // },
 
     confirmDeleteItem(name, func, item, index, index2) {
       this.confirm = true;
@@ -5421,9 +5425,9 @@ export default {
       };
     },
 
-    removePhoneGuarantee(payload) {
-      this.$store.commit("profile/removePhoneGuarantee", payload);
-    },
+    // removePhoneGuarantee(payload) {
+    //   this.$store.commit("profile/removePhoneGuarantee", payload);
+    // },
 
     addRegistration(AddressType) {
       this.$store.commit("profile/addRegistration", AddressType);
@@ -5543,9 +5547,9 @@ export default {
       return !val.match(/(?=(.))\1{7,}/) || "Неверные данные";
     },
 
-    innValid(val) {
-      return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
-    },
+    // innValid(val) {
+    //   return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
+    // },
 
     INNFizValid(val) {
       return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || 'Неверные данные'
