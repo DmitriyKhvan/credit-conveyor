@@ -3,7 +3,6 @@
     <h4
       class="tab-title"
       ref="loadDocuments"
-      @click="toggleForm('loadDocuments')"
     >
       Загрузить документ
     </h4>

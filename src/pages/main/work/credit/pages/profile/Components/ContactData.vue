@@ -1,7 +1,6 @@
 <template>
-  <!-- Contacts info -->
   <div class="contactData">
-    <h4 class="tab-title" ref="contactData" @click="toggleForm('contactData')">
+    <h4 class="tab-title" ref="contactData">
       Контактные данные
     </h4>
     <div class="tab-content" ref="tabContent">

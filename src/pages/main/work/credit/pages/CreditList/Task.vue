@@ -1799,7 +1799,6 @@ export default {
     return {
       clientInfo: null,
       clientInfoLoading: false,
-      creditTitles: null,
       loader: false,
       bankLoading: false,
       INPSBar: false,
@@ -1859,16 +1858,13 @@ export default {
   },
   async mounted() {
     setTimeout(() => {
-      this.creditTitles = document.querySelectorAll(".titleForm");
-      for (let title of this.creditTitles) {
-        title.addEventListener("click", () => this.toggleCreditBlock(title));
-      }
+      document.querySelectorAll(".titleForm")
+          .forEach(el => el.addEventListener("click", () => this.toggleCreditBlock(el)))   
     }, 500);
   },
-  destroyed() {
-    for (let title of this.creditTitles) {
-      title.removeEventListener("click", () => this.toggleCreditBlock(title));
-    }
+  beforeDestroy() {
+    document.querySelectorAll(".titleForm")
+        .forEach(el => el.removeEventListener("click", () => this.toggleCreditBlock(el)))
   },
   computed: {
     ...mapState({
