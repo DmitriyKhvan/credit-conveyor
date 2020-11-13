@@ -713,7 +713,7 @@ export const profile = {
       state.fullFormProfile.BranchName = payload.BranchName;
       state.fullFormProfile.ClientManagerName = payload.ClientManagerName;
 
-      // state.fullFormProfile.Customer = payload.Customer
+      state.fullFormProfile.Customer = payload.Customer
 
       // state.fullFormProfile.Customer.Document.Districts = state.dictionaries.Districts
 

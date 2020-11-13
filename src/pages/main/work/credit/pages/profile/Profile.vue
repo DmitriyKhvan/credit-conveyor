@@ -4897,7 +4897,8 @@ export default {
 
       // Если выбрана пластиковая карта
       if (
-        this.typeOfCharge == 1
+        this.typeOfCharge == 1 ||
+        this.fullProfile.Customer.CardNumber
       ) {
         this.$refs.CardNumber.validate();
       } else {
