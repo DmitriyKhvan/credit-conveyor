@@ -9,8 +9,8 @@
           (val) => !!val || 'Добавьте гарантию или поручительство',
           (val) =>
             totalGuaranteesSum -
-              Number(fullProfile.LoanInfo.Sum.replace(/[^0-9]/gim, '')) >=
-              Number(fullProfile.LoanInfo.Sum.replace(/[^0-9]/gim, '')) *
+              Number(String(fullProfile.LoanInfo.Sum).replace(/[^0-9]/gim, '')) >=
+              Number(String(fullProfile.LoanInfo.Sum).replace(/[^0-9]/gim, '')) *
                 (profile.percent / 100) ||
             `Сумма всех гарантий должна быть больше запрашиваемой суммы кредита на ${profile.percent}%`,
         ]"
@@ -205,6 +205,7 @@
                 ref="guaranteesDocumentDocumentType"
                 outlined
                 v-model="guarantee.Document.documentType"
+                @input="setRefs"
                 :options="dictionaries.DocumentType.items"
                 dense
                 label="Вид документа"
@@ -1283,8 +1284,31 @@
 </template>
 
 <script>
+import  {
+  fioValid,
+  mValid,
+  phoneValid,
+  docNumberValid,
+  INNFizValid,
+  INNYurValid,
+  pinppValid,
+  msecond,
+  adulthoodValid
+} from '../../../filters/validations'
+
+import formatNumber from '../../../filters/format_number'
+
 export default {
-	props: ["fullProfile", "profile", "dictionaries", "status", "totalGuaranteesSum", "disableField"],
+  props: [
+    "fullProfile", 
+    "profile", 
+    "credits",
+    "dictionaries", 
+    "status", 
+    'currentDate',
+    "totalGuaranteesSum", 
+    "disableField"
+  ],
   data() {
     return {
 			guaranteeCount: [],
@@ -1300,12 +1324,47 @@ export default {
         i.Sum = formatNumber(i.Sum);
       }
     }
+    console.log('this.guaranteeCount', this.guaranteeCount)
 	},
 	
 	mounted() {
     // console.log('refs', this.$refs)
+    // setTimeout(() => {
+    //   this.$emit("set-refs", this.$refs);
+    // })
+
     this.$emit("set-refs", this.$refs);
-	},
+  },
+  
+  computed: {
+    fioValid() {
+      return fioValid
+    },
+    mValid() {
+      return mValid
+    },
+    phoneValid() {
+      return phoneValid
+    },
+    docNumberValid() {
+      return docNumberValid
+    },
+    INNFizValid() {
+      return INNFizValid
+    },
+    INNYurValid() {
+      return INNYurValid
+    },
+    pinppValid() {
+      return pinppValid
+    },
+    msecond() {
+      return msecond
+    },
+    adulthoodValid() {
+      return adulthoodValid
+    }
+  },
 	
 	methods: {
 		addInsurance(guarantee) {
@@ -1331,7 +1390,45 @@ export default {
       setTimeout(() => {
         this.$emit("set-refs", this.$refs);
       })
-		},
+    },
+
+    addPhoneGuarantee(index) {
+      this.$store.commit("profile/addPhoneGuarantee", index);
+    },
+    
+    setRefs() {
+      setTimeout(() => {
+        this.$emit("set-refs", this.$refs);
+      })
+    },
+
+    setGivenPlaceGuarantee(event, idx, guarantee) {
+      //console.log('event', event, idx, guarantee)
+      const districts = this.getDistricts(event)
+      console.log('districts', districts)
+      this.$store.commit("profile/setGivenPlaceGuarantee", {
+        idx,
+        guarantee,
+        districts
+      });
+    },
+
+    setDistrictsGuarantee(event, idx, guarantee) {
+      //console.log('event', event, idx, guarantee)
+      const districts = this.getDistricts(event)
+      this.$store.commit("profile/setDistrictsGuarantee", {
+        idx,
+        guarantee,
+        districts
+      });
+    },
+
+    getDistricts(id) {
+      const { region_id } = this.dictionaries.Region.items.find(
+        i => i.value == id
+      );
+      return this.dictionaries.Districts.items[0][region_id];
+    },
 
 		removeGuarantee(payload) {
       this.guaranteeCount.pop();
@@ -1350,7 +1447,32 @@ export default {
       if (company) {
         this.fullProfile.Guarantee.Insurance.items[idx].INN = company.INN;
       }
-		},
+    },
+    
+    validDateGuarantees(date, idx) {
+      console.log(date);
+      if (
+        this.fullProfile.Guarantee.RelatedPerson.items[idx].Document
+          .ExpirationDate
+      ) {
+        this.$refs.guaranteesDocumentExpirationDate[idx].validate();
+      }
+      if (
+        this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.GivenDate
+      ) {
+        this.$refs.guaranteesDocumentGivenDate[idx].validate();
+      }
+    },
+
+    validDateGuaranteesContract(date, idx) {
+      console.log(date);
+      if (this.fullProfile.Guarantee.Insurance.items[idx].ExpDate) {
+        this.$refs.guaranteesContractExpirationDate[idx].validate();
+      }
+      if (this.fullProfile.Guarantee.Insurance.items[idx].StartDate) {
+        this.$refs.guaranteesContractGivenDate[idx].validate();
+      }
+    },
 		
 		innValid(val) {
       return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
