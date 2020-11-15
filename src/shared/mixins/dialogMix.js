@@ -3,16 +3,16 @@ import NotifyService from "./../../services/notify.service";
 
 export default {
   data() {
-    return {
-
-    }
+    return {};
   },
   props: {},
   created() {
     this.initializeData();
   },
   computed: {
-
+    isEdit() {
+      return !!this.data.selectedRow;
+    }
   },
   methods: {
     //!!! Don't change
@@ -38,7 +38,7 @@ export default {
     },
     submitForm() {
       this.$store.dispatch("common/setLoading", true);
-      console.log('details', this.details)
+      console.log("details", this.details);
       ApiService.post(this.data.props.addEdit, this.details)
         .then(
           response => {
@@ -75,7 +75,5 @@ export default {
         });
     }
   },
-  watch: {
-
-  }
+  watch: {}
 };

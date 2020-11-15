@@ -178,7 +178,7 @@ const routes = [{
         component: CreditTasks
       },
       {
-        path: "task/:id",
+        path: "sub/task/:id",
         name: "CreditTask",
         component: CreditTask,
         beforeEnter: ifAuthenticated,
@@ -188,9 +188,18 @@ const routes = [{
         name: "Registration",
         component: CreditReg,
         // beforeEnter: ifAuthenticatedCM
+
+        // children: [
+        //   {
+        //     path: "sub/profile",
+        //     name: "Profile",
+        //     component: CreditProfile,
+        //     beforeEnter: ifAuthenticated
+        //   }
+        // ]
       },
       {
-        path: "profile",
+        path: "sub/profile",
         name: "Profile",
         component: CreditProfile,
         beforeEnter: ifAuthenticated
