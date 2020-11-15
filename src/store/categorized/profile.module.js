@@ -726,53 +726,53 @@ export const profile = {
       //   i.Districts = state.dictionaries.Districts
       // })
       
-      // state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
-      // state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
-      // state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
+      state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
+      state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
+      state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
 
-      // state.fullFormProfile.Customer.FullName = payload.Customer.FullName;
-      // state.fullFormProfile.Customer.BirthDate = payload.Customer.BirthDate;
-      // state.fullFormProfile.Customer.Gender = payload.Customer.Gender;
+      state.fullFormProfile.Customer.FullName = payload.Customer.FullName;
+      state.fullFormProfile.Customer.BirthDate = payload.Customer.BirthDate;
+      state.fullFormProfile.Customer.Gender = payload.Customer.Gender;
 
-      // state.fullFormProfile.Customer.INN = payload.Customer.INN;
-      // state.fullFormProfile.Customer.PhoneList.items[0].Number =
-      //   payload.Customer.PhoneList.items[0].Number;
-      // state.fullFormProfile.Customer.PINPP = payload.Customer.PINPP;
-      // state.fullFormProfile.Customer.Document.Series =
-      //   payload.Customer.Document.Series;
-      // state.fullFormProfile.Customer.Document.Number =
-      //   payload.Customer.Document.Number;
+      state.fullFormProfile.Customer.INN = payload.Customer.INN;
+      state.fullFormProfile.Customer.PhoneList.items[0].Number =
+        payload.Customer.PhoneList.items[0].Number;
+      state.fullFormProfile.Customer.PINPP = payload.Customer.PINPP;
+      state.fullFormProfile.Customer.Document.Series =
+        payload.Customer.Document.Series;
+      state.fullFormProfile.Customer.Document.Number =
+        payload.Customer.Document.Number;
 
-      //     // state.fullFormProfile.Customer.ResidentFlag =
-      //     //   payload.Customer.ResidentFlag;  
+          // state.fullFormProfile.Customer.ResidentFlag =
+          //   payload.Customer.ResidentFlag;  
 
-      // state.fullFormProfile.Customer.Document.GivenDate =
-      //   payload.Customer.Document.GivenDate;
+      state.fullFormProfile.Customer.Document.GivenDate =
+        payload.Customer.Document.GivenDate;
 
-      // state.fullFormProfile.Customer.Document.ExpirationDate =
-      //   payload.Customer.Document.ExpirationDate;
+      state.fullFormProfile.Customer.Document.ExpirationDate =
+        payload.Customer.Document.ExpirationDate;
 
-      // state.fullFormProfile.Customer.MaritalStatus =
-      //   payload.Customer.MaritalStatus;
+      state.fullFormProfile.Customer.MaritalStatus =
+        payload.Customer.MaritalStatus;
 
-      // state.fullFormProfile.Customer.hasChildren = payload.Customer.hasChildren;
-      // state.fullFormProfile.Customer.UnderAgeChildrenNum =
-      //   payload.Customer.ChildrenNum;
+      state.fullFormProfile.Customer.hasChildren = payload.Customer.hasChildren;
+      state.fullFormProfile.Customer.UnderAgeChildrenNum =
+        payload.Customer.ChildrenNum;
 
-      // state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
-      //   payload.Customer.MonthlyIncome.confirmMonthlyIncome;
-      //     // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-      //     //   payload.Customer.MonthlyExpenses.recurringExpenses;
-      // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-      //   payload.Customer.MonthlyExpenses.allExpensesSum;
-      // state.fullFormProfile.Customer.MonthlyExpenses.obligations =
-      //   payload.Customer.MonthlyExpenses.obligations;
-      // state.fullFormProfile.Customer.MonthlyIncome.hasAdditionalIncome =
-      //   payload.Customer.MonthlyIncome.hasAdditionalIncome;
-      // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum =
-      //   payload.Customer.MonthlyIncome.additionalIncome.sum;
-      // state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.incomeType =
-      //   payload.Customer.MonthlyIncome.additionalIncome.incomeType;
+      state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
+        payload.Customer.MonthlyIncome.confirmMonthlyIncome;
+          // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+          //   payload.Customer.MonthlyExpenses.recurringExpenses;
+      state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+        payload.Customer.MonthlyExpenses.allExpensesSum;
+      state.fullFormProfile.Customer.MonthlyExpenses.obligations =
+        payload.Customer.MonthlyExpenses.obligations;
+      state.fullFormProfile.Customer.MonthlyIncome.hasAdditionalIncome =
+        payload.Customer.MonthlyIncome.hasAdditionalIncome;
+      state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.sum =
+        payload.Customer.MonthlyIncome.additionalIncome.sum;
+      state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.incomeType =
+        payload.Customer.MonthlyIncome.additionalIncome.incomeType;
         
 
       state.fullFormProfile.LoanInfo.LoanProduct = payload.LoanInfo.LoanProduct;
