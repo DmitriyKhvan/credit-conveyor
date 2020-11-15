@@ -615,7 +615,7 @@
                     </div>
 
                     <div class="col-2 fieldData">Кем выдан документ (ИИБ)</div>
-                    <div class="col-10">
+                    <div class="col-6">
                       {{
                         getDistrict(guarantee.Document.Region, guarantee.Document.GivenPlace)
                       }}

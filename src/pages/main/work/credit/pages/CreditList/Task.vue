@@ -1365,7 +1365,7 @@
             <div class="row rowForm">
               <div class="col-6 field">Срок кредита в мес</div>
               <div class="col-6 data">
-                {{ fullProfile.LoanInfo.ConvenientRepaymentTerm }}
+                {{ fullProfile.LoanInfo.TermInMonth }}
               </div>
             </div>
 
