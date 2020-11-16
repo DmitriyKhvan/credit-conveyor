@@ -31,7 +31,8 @@ export default class BpmService {
 
     const responce = await axios({
       method: "get",
-      url: `${this._digIdUrl}/DataSerial`
+      // url: `${this._digIdUrl}/DataSerial`
+      url: `http://localhost:50000//DataSerial`
     });
 
     return responce.data;
@@ -50,7 +51,8 @@ export default class BpmService {
   getUserDataFromService = async () => {
     const responce = await axios({
       method: "get",
-      url: `${this._digIdUrl}/DataFromService`,
+      // url: `${this._digIdUrl}/DataFromService`,
+      url: `http://localhost:50000/DataFromService`,
       timeout: 30000
     });
 
