@@ -3,7 +3,8 @@ import axios from "axios";
 export default class BpmService {
   // _baseUrlLocal = "http://10.8.7.71:8070/bpm"
   _personalUrl = "http://10.8.8.70:4000";
-  _digIdUrl = "http://localhost:50000/api/Identification";
+  // _digIdUrl = "http://localhost:50000/api/Identification";
+  _digIdUrl = "http://localhost:50000";
   _baseUrl = "http://10.8.8.90:8070"; //dev
   // _baseUrl = "http://10.1.4.10:8070" //local
   // _baseUrl = "http://10.8.7.76:8070" //local
@@ -32,7 +33,7 @@ export default class BpmService {
     const responce = await axios({
       method: "get",
       // url: `${this._digIdUrl}/DataSerial`
-      url: `http://localhost:50000/DataSerial`
+      url: `${this._digIdUrl}/DataSerial`
     });
 
     return responce.data;
@@ -52,7 +53,7 @@ export default class BpmService {
     const responce = await axios({
       method: "get",
       // url: `${this._digIdUrl}/DataFromService`,
-      url: `http://localhost:50000/DataFromService`,
+      url: `${this._digIdUrl}/DataFromService`,
       timeout: 30000
     });
 
