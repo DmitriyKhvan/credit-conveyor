@@ -198,7 +198,8 @@ export const credits = {
         const response = await state.bpmService.getDigIdNumber();
         console.log(response.Answere.AnswereComment)
         if (response.Answere.AnswereComment == "OK") {
-          commit("sentScannerSerialNumber", response.ServiceInfo.ScannerSerial);
+          // commit("sentScannerSerialNumber", response.ServiceInfo.ScannerSerial);
+          commit("sentScannerSerialNumber", 1);
         } else {
           throw "Сканер не определен"
         }
