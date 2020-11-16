@@ -1206,7 +1206,7 @@
               </q-input>
             </div>
 
-            <div class="col-4">
+            <!-- <div class="col-4">
               <q-input
                 ref="guaranteesContractExpirationDate"
                 outlined
@@ -1230,6 +1230,50 @@
                           fullProfile.LoanInfo.TermInMonth
                       ) ||
                     'Дата не должна быть меньше даты окончания срока кредита',
+                ]"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      transition-show="scale"
+                      transition-hide="scale"
+                      ref="qDateGuaranteeContractExpirationDate"
+                    >
+                      <q-date
+                        mask="DD.MM.YYYY"
+                        v-model="guarantee.ExpDate"
+                        @input="
+                          ($event) => {
+                            $refs.qDateGuaranteeContractExpirationDate[
+                              index
+                            ].hide();
+                            validDateGuaranteesContract($event, index);
+                          }
+                        "
+                      />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div> -->
+
+            <div class="col-4">
+              <q-input
+                ref="guaranteesContractExpirationDate"
+                outlined
+                dense
+                label="Дата истечения действия договора"
+                v-model="guarantee.ExpDate"
+                mask="##.##.####"
+                :rules="[
+                  (val) =>
+                    (val && val.length === 10) ||
+                    'Введите дату окончания действия документа',
+                  guarantee.StartDate
+                    ? (val) =>
+                        msecond(val) > msecond(guarantee.StartDate) ||
+                        'Неверная дата'
+                    : null
                 ]"
               >
                 <template v-slot:append>
