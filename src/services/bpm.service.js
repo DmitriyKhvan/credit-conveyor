@@ -32,7 +32,7 @@ export default class BpmService {
     const responce = await axios({
       method: "get",
       // url: `${this._digIdUrl}/DataSerial`
-      url: `http://localhost:50000//DataSerial`
+      url: `http://localhost:50000/DataSerial`
     });
 
     return responce.data;
