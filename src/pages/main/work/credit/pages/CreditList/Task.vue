@@ -728,7 +728,7 @@
               </div>
             </template> 
 
-              <div v-if="userRole === 'ROLE_CC'" class="row rowForm">
+              <div v-if="userRole !== 'ROLE_CCC'" class="row rowForm">
                 <div class="col-12 field">
                   <div class="btnBlock">
                     <q-btn
@@ -1601,7 +1601,7 @@
           </div>
         </div>
 
-        <div class="col-12" v-if="userRole !== 'ROLE_UrWr'">
+        <div class="col-12">
           <div class="clientInfo tab">
             <h4 class="titleForm">
               Информация о клиенте
