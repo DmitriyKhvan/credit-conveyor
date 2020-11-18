@@ -630,7 +630,7 @@ export const profile = {
             state.fullFormProfile.Customer.Document.Number == user.passNumber
           ) {
             state.fullFormProfile.Customer.LSBO = user.lsbo;
-            state.fullFormProfile.Customer.role = user.role;
+            state.fullFormProfile.Customer.role = CommonUtils.decoder(user.role);
             state.fullFormProfile.Customer.filial = user.filial;
           }
 
@@ -639,7 +639,7 @@ export const profile = {
           );
           // console.log('relative', relative)
           if (relative) {
-            relative.role = user.role;
+            relative.role = CommonUtils.decoder(user.role);
             relative.LSBO = user.lsbo;
             relative.filial = user.filial;
           }
