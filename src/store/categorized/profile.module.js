@@ -160,7 +160,7 @@ export const profile = {
         personal_id: "",
 
         Document: {
-          documentType: 8,
+          documentType: 6,
           Series: "",
           Number: null,
           ExpirationDate: "",
@@ -1173,7 +1173,7 @@ export const profile = {
           personal_id: "",
 
           Document: {
-            documentType: 8,
+            documentType: 6,
             Series: "",
             Number: null,
             ExpirationDate: "",
