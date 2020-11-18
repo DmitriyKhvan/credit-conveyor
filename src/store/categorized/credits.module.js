@@ -402,6 +402,7 @@ export const credits = {
           const client_resp = response.internal.find(i => i.name == 'client_resp')
           commit("setClientDataGCI", client_resp.data)
         } else if(code.data == 4) {
+          state.disableGCI = false
           // попробуйте снова
           commit("resetClientDataGCI")
           throw msg.data
