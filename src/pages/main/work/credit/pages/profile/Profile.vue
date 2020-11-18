@@ -196,7 +196,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
-                    disable
+                    :disable="disableField"
                     ref="documentType"
                     outlined
                     v-model="Customer.Document.documentType"
@@ -224,7 +224,7 @@
 
                 <div class="col-4">
                   <q-input
-                    disable
+                    :disable="disableField"
                     ref="DocumentSeries"
                     outlined
                     v-model="Customer.Document.Series"
@@ -242,7 +242,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    disable
+                    :disable="disableField"
                     ref="DocumentNumber"
                     outlined
                     v-model="Customer.Document.Number"
