@@ -413,6 +413,7 @@ export const credits = {
         } 
 
       } catch (error) {
+        state.disableGCI = false
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
         throw error

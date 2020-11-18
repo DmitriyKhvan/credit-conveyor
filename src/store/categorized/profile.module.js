@@ -575,7 +575,7 @@ export const profile = {
 
         if (response.data.input && response.data.input.length) {
 
-          if (response.data.name === "Get PayOrder data from front") {
+          if (response.data.name === "Get Payment data") {
             const payOrder = response.data.input.find(
               i => i.label === "payOrder"
             );

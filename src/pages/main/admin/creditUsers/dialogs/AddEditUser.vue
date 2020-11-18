@@ -210,7 +210,8 @@
           </div>
           </template>
 
-          <template v-if="details.role_name == 'CreditCommitteeMember' || details.role_name == 'CreditSecretary'">
+          <!-- <template v-if="details.role_name == 'CreditCommitteeMember' || details.role_name == 'CreditSecretary'"> -->
+          <template v-if="details.role_name == 'CreditCommitteeMember'">
           <div class="row">
             
               <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
