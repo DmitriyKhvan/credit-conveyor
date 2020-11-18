@@ -398,7 +398,7 @@ export const credits = {
         const msg = response.output.find(i => i.name == 'response')
 
         if (code.data == 0) {
-          state.disableGCI = true
+          state.disableGCI = false
           const client_resp = response.internal.find(i => i.name == 'client_resp')
           commit("setClientDataGCI", client_resp.data)
         } else if(code.data == 4) {
