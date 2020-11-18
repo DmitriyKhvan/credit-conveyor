@@ -1012,7 +1012,7 @@
               <div class="col-6">
                 ФИО работника банка, принявшего заявление
               </div>
-              <div class="col-6">{{ fullProfile.ClientManagerName }}</div>
+              <div class="col-6">{{ decoder(fullProfile.ClientManagerName) }}</div>
               <div class="col-6">
                 Должность кредитного специалиста
               </div>
@@ -1055,6 +1055,7 @@
 import { mapState } from  "vuex"
 import printJS from "print-js"
 import formatNumber from "../../filters/format_number.js";
+import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   props: ["currentDate"],
@@ -1155,6 +1156,10 @@ export default {
           i => i.value == district
         ).label
       }
+    },
+
+    decoder(str) {
+      return CommonUtils.decoder(str)
     }
   },
   filters: {
