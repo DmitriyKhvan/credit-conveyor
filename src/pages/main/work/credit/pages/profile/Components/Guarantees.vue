@@ -216,7 +216,7 @@
               />
             </div>
 
-            <div v-if="guarantee.Document.documentType == 7" class="col-4">
+            <div v-if="guarantee.Document.documentType == 9" class="col-4">
               <q-input
                 :disable="disableField"
                 ref="guaranteesDocumentDocumentName"
