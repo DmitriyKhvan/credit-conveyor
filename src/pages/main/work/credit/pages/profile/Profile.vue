@@ -196,7 +196,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-select
-                    disable
+                    :disable="disableField"
                     ref="documentType"
                     outlined
                     v-model="Customer.Document.documentType"
@@ -210,7 +210,7 @@
                   />
                 </div>
 
-                <div v-if="Customer.Document.documentType == 7" class="col-4">
+                <div v-if="Customer.Document.documentType == 9" class="col-4">
                   <q-input
                     :disable="disableField"
                     ref="DocumentName"
@@ -224,7 +224,7 @@
 
                 <div class="col-4">
                   <q-input
-                    disable
+                    :disable="disableField"
                     ref="DocumentSeries"
                     outlined
                     v-model="Customer.Document.Series"
@@ -242,7 +242,7 @@
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    disable
+                    :disable="disableField"
                     ref="DocumentNumber"
                     outlined
                     v-model="Customer.Document.Number"
@@ -943,7 +943,7 @@
                     />
                   </div>
 
-                  <div v-if="relative.Document.documentType == 7" class="col-4">
+                  <div v-if="relative.Document.documentType == 9" class="col-4">
                     <q-input
                       :disable="disableField"
                       ref="relativesDocumentDocumentName"
@@ -3099,7 +3099,7 @@ export default {
 
       this.$refs.documentType.validate();
 
-      if (this.Customer.documentType == 7) {
+      if (this.Customer.documentType == 9) {
         this.$refs.DocumentName.validate();
       } else {
         validItems(this.$refs, "DocumentName");
@@ -3141,7 +3141,7 @@ export default {
       );
 
       this.Customer.Relatives.items.forEach(i => {
-        if (i.Document.documentType == 7) {
+        if (i.Document.documentType == 9) {
           this.countRelativeDocumentName++;
           // console.log('relativesDocumentDocumentName', this.$refs.relativesDocumentDocumentName)
           validFilter(
@@ -3277,7 +3277,7 @@ export default {
         );
 
         this.fullProfile.Guarantee.RelatedPerson.items.forEach(i => {
-          if (i.Document.documentType == 7) {
+          if (i.Document.documentType == 9) {
             this.countGuaranteeDocumentName++;
             validFilter(
               this.$refs,

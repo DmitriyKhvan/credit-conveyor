@@ -404,6 +404,7 @@ export const credits = {
         } else if(code.data == 4) {
           state.disableGCI = false
           // попробуйте снова
+          state.disableGCI = false
           commit("resetClientDataGCI")
           throw msg.data
         } else {
