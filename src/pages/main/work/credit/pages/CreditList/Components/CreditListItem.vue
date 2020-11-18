@@ -10,7 +10,7 @@
         credit.taskName === 'Step: Создание заявки в iABS' ||
 				credit.taskId === null
       "
-      >{{ decoder(linkName) }}</span>
+      >{{ linkName }}</span>
     <router-link
       v-else
       :to="{
@@ -32,7 +32,7 @@
           status: credit.taskName,
         },
       }"
-      >{{ decoder(linkName) }}</router-link>
+      >{{ linkName }}</router-link>
   </div>
 </template>
 <script>
