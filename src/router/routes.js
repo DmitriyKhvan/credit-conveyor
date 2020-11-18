@@ -205,7 +205,7 @@ const routes = [{
         beforeEnter: ifAuthenticated
       },
       {
-        path: "payment/:id",
+        path: "sub/payment/:id",
         name: "Payment",
         component: CreditPayment,
         // beforeEnter: ifAuthenticatedCM

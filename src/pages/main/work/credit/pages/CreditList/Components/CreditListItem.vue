@@ -36,6 +36,8 @@
   </div>
 </template>
 <script>
+import CommonUtils from "@/shared/utils/CommonUtils";
+
 export default {
 	// props: {
 	// 	userRole: {
@@ -58,7 +60,19 @@ export default {
 		return {
 
 		}
-	}
+  },
+
+  methods: {
+    decoder(str) {
+      return CommonUtils.decoder(str)
+    }
+  },
+  
+  // computed:{
+  //   decoder(str) {
+  //     return CommonUtils.decoder(str)
+  //   }
+  // }
 };
 </script>
 <style lang="scss">

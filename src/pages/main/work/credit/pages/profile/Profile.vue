@@ -3433,6 +3433,7 @@ export default {
         validFilter(this.$refs, "priceGuaranteesValid3", "priceGuarantees3");
         
       } else {
+        console.log('this.$refs2', this.$refs)
         validItems(this.$refs, "priceGuaranteesValid3");
         validItems(this.$refs, "nameGuaranteesValid3");
         validItems(this.$refs, "innGuaranteesValid3");
@@ -4174,12 +4175,12 @@ export default {
     },
 
     fioValid(val) {
-      return val.match(/^[A-Z'`]+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
+      return val.match(/^[A-Z'`‘]+$/) || "Введите на латинице заглавными буквами"; // только латинские буквы
     },
 
     mValid(val) {
       return (
-        val.match(/^([A-Z'`]+\s)*[A-Z'`]+$/) ||
+        val.match(/^([A-Z'`‘]+\s)*[A-Z'`‘]+$/) ||
         "Введите на латинице заглавными буквами"
       ); // только латинские буквы
     },
