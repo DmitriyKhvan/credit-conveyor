@@ -130,7 +130,11 @@ export const credits = {
         const role = await dispatch("getUserRole", empId);
         console.log("userRole", role);
 
-        const userRole = role.value[0].authority
+        const userRole = role.value.map(i => {
+          return i.authority
+        }).join()
+
+        console.log('userRole', userRole)
 
         // запись роли в header запроса
         await dispatch("setHeaderRole", state.roles[userRole]);

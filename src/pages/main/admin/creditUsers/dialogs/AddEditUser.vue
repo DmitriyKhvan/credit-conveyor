@@ -58,6 +58,13 @@
             </div>
 
             <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+              <div class="creditBlock">
+                <p class="labelCredit">{{$t('tables.users.roles')}}</p>
+                <span class="valueCredit">{{ rolesU.join(", ") }}</span>
+              </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
               <q-select
                 outlined
                 v-model="details.mfos"
@@ -128,7 +135,7 @@
                 color="purple-12"
                 v-model.number="details.amount_min"
                 type="number"
-                label="Минимальная сумма кердита"
+                label="Минимальная сумма кредита"
                 @input="$v.details.amount_min.$touch()"
                 :rules="[
                   val => $v.details.amount_min.required || 'Введите минимальную сумму'
@@ -142,7 +149,7 @@
                 color="purple-12"
                 v-model.number="details.amount_max"
                 type="number"
-                label="Максимальная сумма кердита"
+                label="Максимальная сумма кредита"
                 @input="$v.details.amount_max.$touch()"
                 :rules="[
                   val => $v.details.amount_max.required || 'Введите максимальную сумму'
@@ -192,7 +199,8 @@
           </div>
 
           <template v-if="details.role_name == 'CreditCommitteeMember'">
-          <div class="row">
+          <!-- <template v-if="rolesU.find(i => i == 'CM')"> -->
+          <!-- <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
               <q-checkbox
                 v-model="details.is_chairman"
@@ -207,11 +215,11 @@
                 label="is_risk_manager"
               />
             </div>
-          </div>
-          </template>
+          </div> -->
+          <!-- </template> -->
 
           <!-- <template v-if="details.role_name == 'CreditCommitteeMember' || details.role_name == 'CreditSecretary'"> -->
-          <template v-if="details.role_name == 'CreditCommitteeMember'">
+          <!-- <template v-if="details.role_name == 'CreditCommitteeMember'"> -->
           <div class="row">
             
               <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
@@ -270,6 +278,7 @@ import {
 export default {
   data() {
     return {
+      rolesU: ['CM', 'CC', 'CCC'],
       searchUser: null,
       resultUser: [],
       
@@ -430,6 +439,10 @@ export default {
       
       this.resultUser = []
       this.searchUser = user.fio
+
+      // if(user.role_name.find("CCM")) {
+      //   this.details.groups = null
+      // }
    
     },
     clearUser () {
@@ -449,7 +462,23 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.creditBlock {
+    padding: 11px 9px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 16px;
+
+    .labelCredit {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 12px;
+      line-height: 11px;
+    }
+  }
+
 .title {
   margin: 0;
 }
