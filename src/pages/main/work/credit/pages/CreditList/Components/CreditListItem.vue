@@ -30,6 +30,7 @@
           filialName: credit.filialName,
           filial: credit.filial,
           status: credit.taskName,
+          creditRole: credit.assignedTo 
         },
       }"
       >{{ decoder(linkName) }}</router-link>

@@ -1835,15 +1835,21 @@ export default {
     };
   },
   async created() {
+    console.log('this.creditRole', this.creditRole)
+    debugger
     this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+    await this.$store.dispatch(
+        "credits/setHeaderRole",
+        this.creditRole
+      );
 
     // если перезагрузили страницу
     if (!axios.defaults.headers.common["BPMCSRFToken"]) {
-      this.userRole = sessionStorage.getItem("userRole");
-      await this.$store.dispatch(
-        "credits/setHeaderRole",
-        sessionStorage.getItem("userRole")
-      );
+      // this.userRole = sessionStorage.getItem("userRole");
+      // await this.$store.dispatch(
+      //   "credits/setHeaderRole",
+      //   sessionStorage.getItem("userRole")
+      // );
       await this.$store.dispatch(
         "credits/setHeaderBPM",
         sessionStorage.getItem("csrf_token")
@@ -1878,6 +1884,10 @@ export default {
     ...mapGetters({
         preapprove_num: "profile/preapprove_num"
     }), 
+
+    creditRole() {
+      return this.$route.query.creditRole;
+    },
 
     date() {
       return this.$route.query.date;
