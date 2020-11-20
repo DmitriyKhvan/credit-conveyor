@@ -134,7 +134,7 @@ export const credits = {
           return state.roles[i.authority]
         })
 
-        if(userRoles.find(i => i == creditRole)) {
+        if (userRoles.find(i => i == creditRole)) {
           debugger
           userRole = creditRole
         } else {
