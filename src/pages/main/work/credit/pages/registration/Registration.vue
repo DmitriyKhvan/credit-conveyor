@@ -537,17 +537,17 @@ export default {
       this.loaderForm = true;
       if (this.taskId) {
         this.$store.commit("credits/setTaskId", this.taskId);
-        await this.$store.dispatch(
-            "credits/setHeaderRole",
-            this.creditRole
-          );
+        // await this.$store.dispatch(
+        //     "credits/setHeaderRole",
+        //     this.creditRole
+        //   );
 
         if (!axios.defaults.headers.common["BPMCSRFToken"]) {
           // если перезагрузили страницу
-          // await this.$store.dispatch(
-          //   "credits/setHeaderRole",
-          //   sessionStorage.getItem("userRole")
-          // );
+          await this.$store.dispatch(
+            "credits/setHeaderRole",
+            sessionStorage.getItem("userRole")
+          );
           await this.$store.dispatch(
             "credits/setHeaderBPM",
             sessionStorage.getItem("csrf_token")
@@ -575,7 +575,7 @@ export default {
 
         this.loaderForm = false;
       } else {
-        const auth = await this.$store.dispatch("credits/authBpm", "ROLE_KM");
+        const auth = await this.$store.dispatch("credits/authBpm");
         console.log("auth", auth);
         const process = await this.$store.dispatch("credits/startProcess");
         console.log("process", process);

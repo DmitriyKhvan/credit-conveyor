@@ -46,7 +46,7 @@
             
           </div>
           <div class="row">
-            <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
+            <!-- <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
               <q-input
                 outlined
                 clearable
@@ -55,12 +55,12 @@
                 :label="$t('tables.users.roles')"
                 disable
               />
-            </div>
+            </div> -->
 
             <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
               <div class="creditBlock">
                 <p class="labelCredit">{{$t('tables.users.roles')}}</p>
-                <span class="valueCredit">{{ rolesU.join(", ") }}</span>
+                <span class="valueCredit">{{ details.role_names.join(", ") }}</span>
               </div>
             </div>
 
@@ -198,8 +198,8 @@
             </div>
           </div>
 
-          <template v-if="details.role_name == 'CreditCommitteeMember'">
-          <!-- <template v-if="rolesU.find(i => i == 'CM')"> -->
+          <!-- <template v-if="details.role_names == 'CreditCommitteeMember'"> -->
+          <template v-if="details.role_names.find(i => i == 'CreditCommitteeMember')">
           <!-- <div class="row">
             <div class="col-xs-12 col-sm-6 col-md-6 q-pa-sm">
               <q-checkbox
@@ -278,7 +278,6 @@ import {
 export default {
   data() {
     return {
-      rolesU: ['CM', 'CC', 'CCC'],
       searchUser: null,
       resultUser: [],
       
@@ -316,8 +315,9 @@ export default {
         mfos: [],
         amount_min: "",
         amount_max: "",
-        role_type: null,
-        role_name: null,
+        // role_type: null,
+        role_names: [],
+        roles: [],
         special: null,
         status: null,
         is_chairman: false,
@@ -428,8 +428,9 @@ export default {
       console.log('user',user)
       this.details.emp_id = user.emp_id
       this.details.emp_name = user.fio
-      this.details.role_name = user.role_name
-      this.details.role_type = user.role_type
+      this.details.role_names = user.role_names
+      // this.details.role_type = user.role_type
+      this.details.role_ids = user.role_ids
       if (user.mfo) {
         this.details.mfos = []
         this.details.mfos.push(user.mfo)
@@ -440,9 +441,9 @@ export default {
       this.resultUser = []
       this.searchUser = user.fio
 
-      // if(user.role_name.find("CCM")) {
-      //   this.details.groups = null
-      // }
+      if(user.role_names.find(i => i != 'CreditCommitteeMember')) {
+        this.details.groups = null
+      }
    
     },
     clearUser () {

@@ -2900,17 +2900,17 @@ export default {
     if (this.taskId) {
       this.loaderForm = true;
       this.$store.commit("credits/setTaskId", this.taskId);
-      await this.$store.dispatch(
-          "credits/setHeaderRole",
-          this.creditRole
-        );
+      // await this.$store.dispatch(
+      //     "credits/setHeaderRole",
+      //     this.creditRole
+      //   );
 
       // если перезагрузили страницу
       if (!axios.defaults.headers.common["BPMCSRFToken"]) {
-        // await this.$store.dispatch(
-        //   "credits/setHeaderRole",
-        //   sessionStorage.getItem("userRole")
-        // );
+        await this.$store.dispatch(
+          "credits/setHeaderRole",
+          sessionStorage.getItem("userRole")
+        );
         await this.$store.dispatch(
           "credits/setHeaderBPM",
           sessionStorage.getItem("csrf_token")

@@ -119,7 +119,8 @@ export const credits = {
 
   },
   actions: {
-    async authBpm({ state, dispatch, commit, getters, rootGetters }, creditRole = null) {
+    // async authBpm({ state, dispatch, commit, getters, rootGetters }, creditRole = null) {
+    async authBpm({ state, dispatch, commit, getters, rootGetters }) {
      
       try {
         let userRole = null
@@ -134,13 +135,15 @@ export const credits = {
           return state.roles[i.authority]
         })
 
-        if (userRoles.find(i => i == creditRole)) {
-          debugger
-          userRole = creditRole
-        } else {
-          debugger
-          userRole = userRoles.join()
-        }
+        // if (userRoles.find(i => i == creditRole)) {
+        //   debugger
+        //   userRole = creditRole
+        // } else {
+        //   debugger
+        //   userRole = userRoles.join()
+        // }
+
+        userRole = userRoles.join()
 
         console.log('userRole', userRole)
         debugger
@@ -148,7 +151,7 @@ export const credits = {
         // запись роли в header запроса
         // await dispatch("setHeaderRole", state.roles[userRole]);
         await dispatch("setHeaderRole", userRole);
-        commit("setUserRole", userRole)
+        commit("setUserRole", userRoles)
 
         // запись роли в sessionStore
         sessionStorage.setItem("userRole", userRole)
