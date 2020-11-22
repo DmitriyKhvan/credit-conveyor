@@ -3,8 +3,8 @@
     <span
       class="noLinkItem"
       v-if="
-        userRole === 'ROLE_CCS' ||
-        userRole === 'ROLE_PM' ||
+        credit.assignedTo === 'ROLE_CCS' ||
+        credit.assignedTo === 'ROLE_PM' ||
         credit.taskName === 'Создание Контракта в iABS' ||
         credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
         credit.taskName === 'Step: Создание заявки в iABS' ||
@@ -19,7 +19,7 @@
             ? 'Registration'
             : credit.taskName === 'Step: Заполнить ПП'
             ? 'Payment'
-            : userRole === 'ROLE_KM'
+            : credit.assignedTo === 'ROLE_KM'
             ? 'Profile'
             : 'CreditTask',
         params: { id: credit.id },
@@ -55,7 +55,7 @@ export default {
 	// 	}
 	// },
 
-	props: ['userRole', 'credit', 'linkName'],
+	props: ['credit', 'linkName'],
 
 	data() {
 		return {

@@ -537,17 +537,17 @@ export default {
       this.loaderForm = true;
       if (this.taskId) {
         this.$store.commit("credits/setTaskId", this.taskId);
-        // await this.$store.dispatch(
-        //     "credits/setHeaderRole",
-        //     this.creditRole
-        //   );
+        await this.$store.dispatch(
+            "credits/setHeaderRole",
+            this.creditRole
+          );
 
         if (!axios.defaults.headers.common["BPMCSRFToken"]) {
           // если перезагрузили страницу
-          await this.$store.dispatch(
-            "credits/setHeaderRole",
-            sessionStorage.getItem("userRole")
-          );
+          // await this.$store.dispatch(
+          //   "credits/setHeaderRole",
+          //   sessionStorage.getItem("userRole")
+          // );
           await this.$store.dispatch(
             "credits/setHeaderBPM",
             sessionStorage.getItem("csrf_token")
