@@ -293,6 +293,8 @@
 <script>
 import axios from "axios";
 import { mapState } from "vuex";
+
+import CommonUtils from "@/shared/utils/CommonUtils";
 import formatDate from "../filters/formatDate"
 
 export default {
@@ -357,7 +359,16 @@ export default {
       const res = await this.$store.dispatch("profile/getFullForm");
       this.loaderForm = false;
       console.log("res", res);
-    } catch (error) {}
+    } catch (error) {
+      setTimeout(() => {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+      }, 500)
+      
+      this.$router.go(-1);
+    }
   },
 
   watch: {

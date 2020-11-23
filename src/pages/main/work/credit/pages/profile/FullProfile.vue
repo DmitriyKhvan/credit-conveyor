@@ -1192,7 +1192,7 @@ export default {
     font-weight: bold;
   }
 
-  font-size: 12px;
+  font-size: 10px;
   // .q-dialog__inner--minimized > div {
   //   max-width: 50%;
   // }
@@ -1230,7 +1230,7 @@ export default {
     background-color: #ededed;
     color: #0e3475;
     // padding: 3px;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .profileSubTitle {

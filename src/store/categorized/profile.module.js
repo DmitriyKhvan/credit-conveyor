@@ -616,7 +616,7 @@ export const profile = {
         commit("credits/setMessage", errorMessage, { root: true });
         sessionStorage.clear();
         //this.$router.push("/work/credit");
-        this.$router.go(-1);
+        // this.$router.go(-1);
         throw error;
       }
     }
