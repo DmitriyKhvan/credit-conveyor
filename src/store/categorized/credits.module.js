@@ -6,7 +6,7 @@ export const credits = {
   state: {
     creditCount: 0,
     taskId: "",
-    userRole: "",
+    userRole: [],
     // fileId: null, 
     messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки

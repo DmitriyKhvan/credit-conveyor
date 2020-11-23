@@ -623,7 +623,9 @@ export default {
     }),
 
     creditRole() {
-      return this.$route.query.creditRole;
+      return this.$route.query.creditRole 
+              ? this.$route.query.creditRole
+              : 'ROLE_KM'
     },
 
     taskId() {

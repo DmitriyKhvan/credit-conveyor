@@ -317,7 +317,7 @@
               />
             </td>
 
-            <td v-if="credit.assignedTo === 'ROLE_CCS'" class="print">
+            <td v-if="credit.assignedRole === 'ROLE_CCS'" class="print">
               <div class="btnBlock">
                 
                 <!-- <template v-if="userRole === 'ROLE_CCS'"> -->
