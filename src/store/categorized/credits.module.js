@@ -146,7 +146,6 @@ export const credits = {
         userRole = userRoles.join()
 
         console.log('userRole', userRole)
-        debugger
 
         // запись роли в header запроса
         // await dispatch("setHeaderRole", state.roles[userRole]);
