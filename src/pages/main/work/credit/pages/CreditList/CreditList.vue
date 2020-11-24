@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="userRole === 'ROLE_CCS'" class="pullDocs">
+    <div v-if="userRole.find(i => i === 'ROLE_CCS')" class="pullDocs">
       <q-input
         outlined
         dense
@@ -238,7 +238,7 @@
                 Дата
               </button>
             </th>
-            <th v-if="userRole === 'ROLE_CCS'" class="text-left"></th>
+            <th v-if="userRole.find(i => i === 'ROLE_CCS')" class="text-left"></th>
           </tr>
         </thead>
         <tbody v-if="loaderList || loading">
@@ -255,16 +255,16 @@
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <appCreditListItem 
-                :userRole="userRole"
+              <appCreditListItem
+                :userRole="userRole" 
                 :credit="credit"
                 :linkName="index + 1"
               />
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <appCreditListItem 
-                :userRole="userRole"
+              <appCreditListItem
+                :userRole="userRole" 
                 :credit="credit"
                 :linkName="credit.applicationNumber"
               />
@@ -326,7 +326,7 @@
               />
             </td>
 
-            <td v-if="userRole === 'ROLE_CCS'" class="print">
+            <td v-if="credit.assignedRole === 'ROLE_CCS'" class="print">
               <div class="btnBlock">
                 
                 <!-- <template v-if="userRole === 'ROLE_CCS'"> -->

@@ -728,7 +728,7 @@
               </div>
             </template> 
 
-              <div v-if="userRole !== 'ROLE_CCC'" class="row rowForm">
+              <div v-if="creditRole !== 'ROLE_CCC'" class="row rowForm">
                 <div class="col-12 field">
                   <div class="btnBlock">
                     <q-btn
@@ -1504,7 +1504,7 @@
               </div>
             </template>
 
-            <template v-if="userRole === 'ROLE_CC'">
+            <template v-if="creditRole === 'ROLE_CC'">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Среднемесячная заработная плата(сум)
@@ -1639,7 +1639,7 @@
           />
         
           <q-btn
-            v-if="userRole != 'ROLE_UrWr'"
+            v-if="creditRole != 'ROLE_UrWr'"
             label="Отклонить"
             class="q-ml-md btnFailure"
             @click="
@@ -1693,7 +1693,7 @@
 
               <!-- <div v-if="reason === options.reason[3]" style="max-width: 100%"> -->
               <div
-                v-if="userRole == 'ROLE_CCC' || this.userRole == 'ROLE_UrWr'"
+                v-if="creditRole == 'ROLE_CCC' || this.creditRole == 'ROLE_UrWr'"
                 style="max-width: 100%"
               >
                 <q-input
@@ -1807,11 +1807,11 @@ export default {
       BODecision: true,
       FinalDecision: "",
       dataINPS: null,
-      userRole: this.$store.getters["credits/userRole"],
+      // userRole: this.$store.getters["credits/userRole"],
 
       commentBO: {
         Comment: "",
-        Type: this.$store.getters["credits/userRole"],
+        // Type: this.$store.getters["credits/userRole"],
         CommentPerson: this.$store.getters["auth/username"],
         CommentPersonFIO: this.$store.getters["auth/fullName"]
         //id: 0,
@@ -1835,15 +1835,20 @@ export default {
     };
   },
   async created() {
+    console.log('this.creditRole', this.creditRole)
     this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+    await this.$store.dispatch(
+        "credits/setHeaderRole",
+        this.creditRole
+      );
 
     // если перезагрузили страницу
     if (!axios.defaults.headers.common["BPMCSRFToken"]) {
-      this.userRole = sessionStorage.getItem("userRole");
-      await this.$store.dispatch(
-        "credits/setHeaderRole",
-        sessionStorage.getItem("userRole")
-      );
+      // this.userRole = sessionStorage.getItem("userRole");
+      // await this.$store.dispatch(
+      //   "credits/setHeaderRole",
+      //   sessionStorage.getItem("userRole")
+      // );
       await this.$store.dispatch(
         "credits/setHeaderBPM",
         sessionStorage.getItem("csrf_token")
@@ -1878,6 +1883,10 @@ export default {
     ...mapGetters({
         preapprove_num: "profile/preapprove_num"
     }), 
+
+    creditRole() {
+      return this.$route.query.creditRole;
+    },
 
     date() {
       return this.$route.query.date;
@@ -1920,15 +1929,15 @@ export default {
   methods: {
 
     messageApprove() {
-      return this.userRole == "ROLE_CCC"
+      return this.creditRole == "ROLE_CCC"
               ? 'Form approve'
-              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+              : this.creditRole == "ROLE_CC" || this.creditRole == "ROLE_UrWr"
                 ? 'Credit success'
                 : null
     },
     messageReject(Decision) {
-      console.log('Decision', this.userRole, Decision)
-      return this.userRole == "ROLE_CCC" && Decision == 'N'
+      console.log('Decision', this.creditRole, Decision)
+      return this.creditRole == "ROLE_CCC" && Decision == 'N'
               ? 'Form reject'
               : Decision == 'N'
                 ? 'Credit failure'
@@ -1952,12 +1961,12 @@ export default {
     },
 
     creditSuccess() {
-      console.log("userRole", this.userRole);
+      console.log("creditRole", this.creditRole);
       console.log("fulForm", this.fullProfile);
 
-      if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
+      if (this.creditRole == "ROLE_CCC" || this.creditRole == "ROLE_UrWr") {
         this.BODecision = true; // кредит одобрен
-      } else if (this.userRole == "ROLE_CC") {
+      } else if (this.creditRole == "ROLE_CC") {
         this.$store.commit("profile/addComment", {
           commentBlock: "CreditCommiteeDecisions",
           comment: this.commentCC
@@ -1983,7 +1992,7 @@ export default {
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
-        if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
+        if (this.creditRole == "ROLE_CCC" || this.creditRole == "ROLE_UrWr") {
           this.BODecision = false; // кредит на доработку
           this.FinalDecision = this.commentCC.Decision == 'N' 
                                   ? "Отказ"
@@ -1993,7 +2002,7 @@ export default {
             commentBlock: "ApplicationComment",
             comment: this.commentBO
           });
-        } else if (this.userRole == "ROLE_CC") {
+        } else if (this.creditRole == "ROLE_CC") {
           this.$store.commit("profile/addComment", {
             commentBlock: "CreditCommiteeDecisions",
             comment: this.commentCC
@@ -2004,7 +2013,7 @@ export default {
             comment: {
               Comment: this.commentCC.Comment,
               CommentPerson: this.$store.getters["auth/username"],
-              Type: this.$store.getters["credits/userRole"],
+              // Type: this.$store.getters["credits/userRole"],
               CommentPersonFIO: this.$store.getters["auth/fullName"]
             }
           });
@@ -2019,7 +2028,7 @@ export default {
     async sentData(message) {
       this.loader = true;
       let data = {};
-      if (this.userRole == "ROLE_CCC"  || this.userRole == "ROLE_UrWr") {
+      if (this.creditRole == "ROLE_CCC"  || this.creditRole == "ROLE_UrWr") {
         data = {
           output: [
              {
@@ -2040,7 +2049,7 @@ export default {
             }
           ]
         };
-      } else if (this.userRole == "ROLE_CC") {
+      } else if (this.creditRole == "ROLE_CC") {
         
         data = {
           output: [
@@ -2055,7 +2064,7 @@ export default {
                       {
                         Comment: this.commentCC.Comment,
                         CommentPerson: this.$store.getters["auth/username"],
-                        Type: this.$store.getters["credits/userRole"]
+                        // Type: this.$store.getters["credits/userRole"]
                       }
                     ]
             },

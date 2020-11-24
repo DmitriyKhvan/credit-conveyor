@@ -2900,13 +2900,17 @@ export default {
     if (this.taskId) {
       this.loaderForm = true;
       this.$store.commit("credits/setTaskId", this.taskId);
+      await this.$store.dispatch(
+          "credits/setHeaderRole",
+          this.creditRole
+        );
 
       // если перезагрузили страницу
       if (!axios.defaults.headers.common["BPMCSRFToken"]) {
-        await this.$store.dispatch(
-          "credits/setHeaderRole",
-          sessionStorage.getItem("userRole")
-        );
+        // await this.$store.dispatch(
+        //   "credits/setHeaderRole",
+        //   sessionStorage.getItem("userRole")
+        // );
         await this.$store.dispatch(
           "credits/setHeaderBPM",
           sessionStorage.getItem("csrf_token")
@@ -2920,20 +2924,28 @@ export default {
 
         this.loaderForm = false;
       } catch (error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
+        setTimeout(() => {
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
+        }, 500)
+        
         this.loaderForm = false;
+        this.$router.go(-1);
       }
     } else if (!axios.defaults.headers.common["BPMCSRFToken"]) {
       this.loaderForm = true;
 
       // если перезагрузили страницу
+      // await this.$store.dispatch(
+      //   "credits/setHeaderRole",
+      //   sessionStorage.getItem("userRole")
+      // );
       await this.$store.dispatch(
-        "credits/setHeaderRole",
-        sessionStorage.getItem("userRole")
-      );
+          "credits/setHeaderRole",
+          this.creditRole
+        );
       await this.$store.dispatch(
         "credits/setHeaderBPM",
         sessionStorage.getItem("csrf_token")
@@ -2993,6 +3005,12 @@ export default {
       preApprovalData: state => state.credits.preApprovalData,
       loadings: state => state.profile.loadings
     }),
+
+    creditRole() {
+      return this.$route.query.creditRole
+              ? this.$route.query.creditRole
+              : 'ROLE_KM'
+    },
 
     ...mapGetters({
       preapprove_num: "profile/preapprove_num"

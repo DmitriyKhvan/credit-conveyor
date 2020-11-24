@@ -47,7 +47,7 @@ const getters = {
     return state.authenticating;
   },
   fullName: state => {
-    return state.fullName;
+    return CommonUtils.decoder(state.fullName);
   },
   empId: state => {
     return state.empId;

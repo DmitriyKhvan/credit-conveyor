@@ -359,7 +359,7 @@ export default {
             this.itemsArray.push(element);
           });
 
-          //console.log('data', data)
+          // console.log('data', data)
           // sorting coloumns of table
           if (data.length > 0) {
             Object.keys(data[0]).map(async (k, index) => {
@@ -389,7 +389,19 @@ export default {
                       }
                     });
                     // return `${val}`
-                  } else {
+                  } 
+                  // else if (typeof val == 'object' && val != null) {
+                  //   const roles = val[Object.keys(val).find(i => i == 'role_names')]
+                  //   const lastIdx = roles.length - 1;
+                  //   return roles.map((i, idx) => {
+                  //       if (lastIdx !== idx) {
+                  //         return i + ", ";
+                  //       } else {
+                  //         return i;
+                  //       }
+                  //     })
+                  // }
+                  else {
                     return `${val}`;
                   }
                 },
