@@ -6,7 +6,7 @@ export const credits = {
   state: {
     creditCount: 0,
     taskId: "",
-    userRole: "",
+    userRole: [],
     // fileId: null, 
     messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки
@@ -119,10 +119,11 @@ export const credits = {
 
   },
   actions: {
+    // async authBpm({ state, dispatch, commit, getters, rootGetters }, creditRole = null) {
     async authBpm({ state, dispatch, commit, getters, rootGetters }) {
-
+     
       try {
-
+        let userRole = null
         const empId = rootGetters["auth/empId"];
         console.log('empId', empId)
 
@@ -130,14 +131,29 @@ export const credits = {
         const role = await dispatch("getUserRole", empId);
         console.log("userRole", role);
 
-        const userRole = role.value[0].authority
+        const userRoles = role.value.map(i => {
+          return state.roles[i.authority]
+        })
+
+        // if (userRoles.find(i => i == creditRole)) {
+        //   debugger
+        //   userRole = creditRole
+        // } else {
+        //   debugger
+        //   userRole = userRoles.join()
+        // }
+
+        userRole = userRoles.join()
+
+        console.log('userRole', userRole)
 
         // запись роли в header запроса
-        await dispatch("setHeaderRole", state.roles[userRole]);
-        commit("setUserRole", state.roles[userRole])
+        // await dispatch("setHeaderRole", state.roles[userRole]);
+        await dispatch("setHeaderRole", userRole);
+        commit("setUserRole", userRoles)
 
         // запись роли в sessionStore
-        sessionStorage.setItem("userRole", state.roles[userRole])
+        sessionStorage.setItem("userRole", userRole)
 
         // получение BPM token
         const csrf_token = await dispatch("getBPMToken");

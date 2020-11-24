@@ -445,11 +445,14 @@
     "mfos": "МФО",
     "amount_max": "Максимальная сумма",
     "amount_min": "Минимальная сумма",
+    "role_ids": "id ролей",
+    "role_names": "Роли",
     "isspecial": "Специальный",
     "status": "Статус",
     "is_risk_manager": "Управляющий рисками",
     "is_chairman": "Председатель",
-    "groups": "группы"
+    "groups": "id группы",
+    "gnames": "Группы"
   },
 
   "breadCrumbs" : {
