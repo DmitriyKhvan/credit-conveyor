@@ -61,7 +61,9 @@
               <td>{{ contract.fall_percent_summa | formatNumber}}</td>
 
               <td>{{ contract.percent_summa | formatNumber}}</td>
-              <td>{{ }}</td>
+              <td>{{ 
+                  contract.summa / (diffMonth(contract.contract_date, contract.contract_end_date).months - 3) + contract.summa * contract.percent / 365 * 30.5
+                }}</td>
               <!-- <td>{{ contract.claim_date }}</td> -->
               
               <td>{{ contract.contract_id }}</td>
@@ -96,6 +98,8 @@
   </div>
 </template>
 <script>
+import moment from 'moment'
+import "moment-precise-range-plugin";
 import formatNumber from "../../filters/format_number";
 
 export default {
@@ -110,6 +114,14 @@ export default {
       default: ""
     }
   }, 
+  methods: {
+    diffMonth(date1, date2) {
+      var m1 = moment(date1,'DD.MM.YYYY');
+      var m2 = moment(date2,'DD.MM.YYYY');
+      
+      return moment.preciseDiff(m1, m2, true);
+    }
+  },
   filters: {
     formatNumber,
   },
