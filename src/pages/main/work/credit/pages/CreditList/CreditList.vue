@@ -255,14 +255,16 @@
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <appCreditListItem 
+              <appCreditListItem
+                :userRole="userRole" 
                 :credit="credit"
                 :linkName="index + 1"
               />
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <appCreditListItem 
+              <appCreditListItem
+                :userRole="userRole" 
                 :credit="credit"
                 :linkName="credit.applicationNumber"
               />
@@ -270,6 +272,7 @@
 
             <td class="text-left client applicationRow">
               <appCreditListItem 
+                :userRole="userRole"
                 :credit="credit"
                 :linkName="credit.client"
               />
@@ -277,6 +280,7 @@
 
             <td class="text-left manager applicationRow">
               <appCreditListItem 
+                :userRole="userRole"
                 :credit="credit"
                 :linkName="credit.kmfio"
               />
@@ -284,6 +288,7 @@
 
             <td class="text-left MFO applicationRow">
               <appCreditListItem 
+                :userRole="userRole"
                 :credit="credit"
                 :linkName="credit.filial"
               />
@@ -291,6 +296,7 @@
 
             <td class="text-left filialName applicationRow">
               <appCreditListItem 
+                :userRole="userRole"
                 :credit="credit"
                 :linkName="credit.filialName"
               />
@@ -298,6 +304,7 @@
 
             <td class="text-left taskName applicationRow">
               <appCreditListItem 
+                :userRole="userRole"
                 :credit="credit"
                 :linkName="credit.taskName"
               />
@@ -305,6 +312,7 @@
 
             <td class="text-left taskStatus applicationRow">
               <appCreditListItem 
+                :userRole="userRole"
                 :credit="credit"
                 :linkName="credit.taskStatus"
               />
@@ -312,6 +320,7 @@
 
             <td class="text-left date applicationRow">
               <appCreditListItem 
+                :userRole="userRole"
                 :credit="credit"
                 :linkName="credit.date | formatDate('datetime')"
               />

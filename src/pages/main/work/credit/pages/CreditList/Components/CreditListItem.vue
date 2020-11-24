@@ -11,6 +11,16 @@
 				credit.taskId === null
       "
       >{{ decoder(linkName) }}</span>
+    <!-- <span
+      class="noLinkItem"
+      v-if="
+        userRole.find(i => i == 'ROLE_KM' || i == 'ROLE_CCC' || i == 'ROLE_CCS') ||
+        credit.taskName === 'Создание Контракта в iABS' ||
+        credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
+        credit.taskName === 'Step: Создание заявки в iABS' ||
+				credit.taskId === null
+      "
+      >{{ decoder(linkName) }}</span> -->
     <router-link
       v-else
       :to="{
@@ -55,7 +65,7 @@ export default {
 	// 	}
 	// },
 
-	props: ['credit', 'linkName'],
+	props: ['userRole', 'credit', 'linkName'],
 
 	data() {
 		return {
