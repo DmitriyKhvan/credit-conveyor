@@ -68,7 +68,11 @@
 
               <td>{{ contract.percent_summa | formatNumber }}</td>
               <td>
-                {{
+                {{ (asokiExpenses.find(i => i.label == contract.contract_id) 
+                      ? asokiExpenses.find(i => i.label == contract.contract_id).value 
+                      : 0) | formatNumber
+                }}
+                <!-- {{
                   contract.summa /
                     (diffMonth(
                       contract.contract_date,
@@ -76,7 +80,7 @@
                     ).months -
                       2) +
                   ((contract.summa * contract.percent) / 365) * 30.5 | formatNumber
-                }}
+                }} -->
               </td>
               <!-- <td>{{ contract.claim_date }}</td> -->
 
@@ -117,6 +121,11 @@ import formatNumber from "../../filters/format_number";
 export default {
   props: {
     data: {
+      type: Array,
+      default: [],
+    },
+
+    asokiExpenses: {
       type: Array,
       default: [],
     },
