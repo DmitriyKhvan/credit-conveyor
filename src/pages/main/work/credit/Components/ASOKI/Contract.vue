@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="data.length">
-      <q-markup-table  separator="cell" flat bordered>
+      <q-markup-table separator="cell" flat bordered>
         <thead>
           <tr>
             <!-- <th>Номер заявки</th> -->
@@ -20,7 +20,7 @@
             <th>Сумма начисленных процентов</th>
             <th>Сумма ежемесячного платежа</th>
             <!-- <th>Дата заявки</th> -->
-            
+
             <th>Номер договора</th>
             <!-- <th>Вид договора</th> -->
             <th>Дата заключения договора</th>
@@ -30,9 +30,7 @@
             <th>Процентная ставка</th>
             <!-- <th>Валюта договора</th> -->
             <!-- <th>Класс качества активов</th> -->
-            
-            
-            
+
             <!-- <th>Дата пересмотренной ссудной задолженности</th>
             
             <th>Дата просроченной задолженности </th>
@@ -51,21 +49,37 @@
               <td>{{ contract.branch }}</td>
               <td>{{ contract.summa | formatNumber }}</td>
               <td>{{ contract.loan_summa | formatNumber }}</td>
-              <td>{{ contract.revised_summa | formatNumber}}</td>
+              <td>{{ contract.revised_summa | formatNumber }}</td>
               <td>{{ contract.lawsuit_summa | formatNumber }}</td>
-              <td>{{ (contract.expired_summa + contract.expired_percent_summa + contract.fall_summa + contract.fall_percent_summa) | formatNumber}}</td>
-              <td>{{ contract.expired_summa | formatNumber}}</td>
-              <td>{{ contract.expired_percent_summa | formatNumber}}</td>
+              <td>
+                {{
+                  (contract.expired_summa +
+                    contract.expired_percent_summa +
+                    contract.fall_summa +
+                    contract.fall_percent_summa)
+                    | formatNumber
+                }}
+              </td>
+              <td>{{ contract.expired_summa | formatNumber }}</td>
+              <td>{{ contract.expired_percent_summa | formatNumber }}</td>
 
-              <td>{{ contract.fall_summa | formatNumber}}</td>
-              <td>{{ contract.fall_percent_summa | formatNumber}}</td>
+              <td>{{ contract.fall_summa | formatNumber }}</td>
+              <td>{{ contract.fall_percent_summa | formatNumber }}</td>
 
-              <td>{{ contract.percent_summa | formatNumber}}</td>
-              <td>{{ 
-                  contract.summa / (diffMonth(contract.contract_date, contract.contract_end_date).months - 3) + contract.summa * contract.percent / 365 * 30.5
-                }}</td>
+              <td>{{ contract.percent_summa | formatNumber }}</td>
+              <td>
+                {{
+                  contract.summa /
+                    (diffMonth(
+                      contract.contract_date,
+                      contract.contract_end_date
+                    ).months -
+                      2) +
+                  ((contract.summa * contract.percent) / 365) * 30.5 | formatNumber
+                }}
+              </td>
               <!-- <td>{{ contract.claim_date }}</td> -->
-              
+
               <td>{{ contract.contract_id }}</td>
               <!-- <td>{{ contract.contract_type }}</td> -->
               <td>{{ contract.contract_date }}</td>
@@ -75,9 +89,7 @@
               <td>{{ contract.percent }}</td>
               <!-- <td>{{ contract.currency }}</td> -->
               <!-- <td>{{ contract.quality }}</td> -->
-              
-              
-              
+
               <!-- <td>{{ contract.revised_date }}</td>
               
               <td>{{ contract.expired_date }}</td>
@@ -93,41 +105,40 @@
       </q-markup-table>
     </div>
     <div v-else>
-      <h2 class="messageTitle">{{status}}</h2>
+      <h2 class="messageTitle">{{ status }}</h2>
     </div>
   </div>
 </template>
 <script>
-import moment from 'moment'
+import moment from "moment";
 import "moment-precise-range-plugin";
 import formatNumber from "../../filters/format_number";
 
 export default {
-   props: {
+  props: {
     data: {
       type: Array,
-      default: []
+      default: [],
     },
 
     status: {
       type: String,
-      default: ""
-    }
-  }, 
+      default: "",
+    },
+  },
   methods: {
     diffMonth(date1, date2) {
-      var m1 = moment(date1,'DD.MM.YYYY');
-      var m2 = moment(date2,'DD.MM.YYYY');
-      
+      var m1 = moment(date1, "DD.MM.YYYY");
+      var m2 = moment(date2, "DD.MM.YYYY");
+
       return moment.preciseDiff(m1, m2, true);
-    }
+    },
   },
   filters: {
     formatNumber,
   },
-}
+};
 </script>
 
 <style lang="scss">
-
 </style>
