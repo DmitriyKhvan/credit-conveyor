@@ -49,7 +49,11 @@
                 transition-next="slide-up"
               >
                 <q-tab-panel name="innerContract">
-                  <appContract :data="contracts" :status="StatusASOKI" />
+                  <appContract 
+                    :data="contracts" 
+                    :status="StatusASOKI" 
+                    :asokiExpenses="asokiExpenses"
+                  />
                 </q-tab-panel>
 
                 <!-- <q-tab-panel name="innerApplication">
@@ -119,6 +123,14 @@ export default {
       }
 
       return null
+    },
+
+    asokiExpenses() {
+      if (this.data.output.find(i => i.name === 'asokiExpenses')) {
+        return this.data.output.find(i => i.name === 'asokiExpenses').data.items
+      }
+
+      return []
     },
 
     claims() {
