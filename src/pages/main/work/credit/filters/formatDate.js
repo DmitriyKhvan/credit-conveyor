@@ -15,7 +15,7 @@ export default function dateFilter(value, format = 'date') {
   }
 
   // Если формат данных dd.mm.yyyy
-  if (new Date(value.slice(-4) + value.slice(2, 6) + value.slice(0, 2)).toString() != 'Invalid Date') {
+  if (value && new Date(value.slice(-4) + value.slice(2, 6) + value.slice(0, 2)).toString() != 'Invalid Date') {
     return value
   } 
 

@@ -738,6 +738,10 @@ export default {
     },
 
     async printFile(taskId, idx, lang = 0) {
+      await this.$store.dispatch(
+          "credits/setHeaderRole",
+          'ROLE_CCS'
+        );
       
       let task = this.credits.find(i => i.taskId == taskId)
       
