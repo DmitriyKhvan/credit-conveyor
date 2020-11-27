@@ -190,7 +190,12 @@ export const credits = {
       return await state.bpmService.setHeaderBPM(payload);
     },
 
-    async startProcess({ state, commit }) {
+    async startProcess({ state, commit, dispatch }) {
+      await dispatch(
+        "setHeaderRole",
+        "ROLE_KM"
+      );
+
       try {
         const response = await state.bpmService.startProcess();
 
