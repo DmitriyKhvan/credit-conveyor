@@ -2924,6 +2924,7 @@ export default {
 
         this.loaderForm = false;
       } catch (error) {
+        debugger
         setTimeout(() => {
           this.$store.commit(
             "credits/setMessage",

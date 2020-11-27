@@ -9,7 +9,7 @@ export default function formatNumber(value, power) {
   
   if (power) {
     const digit = Math.pow(10, power)
-    number = Math.floor(value / digit) * digit
+    number = Math.floor(value * digit) / digit
   }
 
   return new Intl.NumberFormat().format(number)
