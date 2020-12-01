@@ -2774,6 +2774,12 @@
             @closeBar="$event => (INPSBar = $event)"
           />
 
+          <appGetDataINPS
+            v-else-if="dataINPS.wages.items.length"
+            :salaries="dataINPS"
+            @closeBar="$event => (INPSBar = $event)"
+          />
+
           <appSetDataINPS 
             v-else 
             @closeBar="$event => (INPSBar = $event)" 
@@ -2824,7 +2830,10 @@ export default {
       INPSBar: false,
       dataINPS: {
         code: null,
-        msg: ""
+        msg: "",
+        wages: {
+          items: []
+        }
       },
       clientInfo: null,
       countRelativeDocumentName: -1,
@@ -3104,6 +3113,7 @@ export default {
       this.countGuaranteeDocumentName = -1;
 
       console.log("fullProfile", this.$store.state.profile);
+      // console.log("fullProfile", JSON.stringify(this.fullProfile, null, 2));
       console.log("submit", submitForm);
 
       this.$refs.surname.validate();
@@ -3869,42 +3879,77 @@ export default {
     async getDataINPS() {
       this.bankLoading = true;
 
-      const data = {
-        input: [
-          {
-            name: "passSerial",
-            data: this.Customer.Document.Series
-          },
-          {
-            name: "passNumber",
-            data: this.Customer.Document.Number
-          },
-          {
-            name: "pin",
-            data: this.Customer.PINPP
-          },
-          {
-            name: "application_id",
-            data: this.preapprove_num
-          },
-          {
-            name: "from",
-            data: "getData"
-          }
-        ]
-      };
+      if (
+        this.fullProfile.BODecision == false || 
+        this.reworkCC != -1 ||
+        this.status === 'Step: Ввод данных с интеграциями'
+        ) {
+        const data = {
+          input: [
+            {
+              name: "application_id",
+              data: this.preapprove_num
+              // data: '00450.null.1.2020.124'
+            },
+            {
+              name: "from",
+              data: "viewData"
+            }
+          ]
+        };
+        console.log(JSON.stringify(data, null, 2))
 
-      try {
-        this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
-        this.bankLoading = false;
-        this.INPSBar = true;
-        this.INPSFlag = true;
-      } catch (error) {
-        this.$store.commit(
-          "credits/setMessage",
-          CommonUtils.filterServerError(error)
-        );
-        this.bankLoading = false;
+        try {
+          
+          this.dataINPS = await this.$store.dispatch("profile/viewDataINPS", data);
+          this.bankLoading = false;
+          this.INPSBar = true;
+        } catch (error) {
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
+          this.loader = false;
+          this.bankLoading = false;
+        }
+      } else {
+        const data = {
+          input: [
+            {
+              name: "passSerial",
+              data: this.Customer.Document.Series
+            },
+            {
+              name: "passNumber",
+              data: this.Customer.Document.Number
+            },
+            {
+              name: "pin",
+              data: this.Customer.PINPP
+            },
+            {
+              name: "application_id",
+              data: this.preapprove_num
+            },
+            {
+              name: "from",
+              data: "getData"
+            }
+          ]
+        };
+
+        try {
+          this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
+          this.bankLoading = false;
+          this.INPSBar = true;
+          this.INPSFlag = true;
+        } catch (error) {
+          this.$store.commit(
+            "credits/setMessage",
+            CommonUtils.filterServerError(error)
+          );
+          this.bankLoading = false;
+        }
       }
     },
 
