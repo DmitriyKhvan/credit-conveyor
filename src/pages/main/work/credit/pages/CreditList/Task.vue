@@ -2465,7 +2465,7 @@ export default {
 
 
 .failureCreditForm {
-  width: 600px;
+  // width: 600px;
 
   .q-field__control:after {
     border-radius: 5px!important;
