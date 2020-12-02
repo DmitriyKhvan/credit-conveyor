@@ -684,7 +684,6 @@ export default {
         let file = null
 
         if (this.protocolId) {
-          debugger
           file = await this.$store.dispatch(
             "credits/getFile",
             this.protocolId
