@@ -2637,6 +2637,18 @@
                   <q-spinner-facebook />
                 </template>
               </q-btn>
+
+              <q-btn
+                :loading="clientASOKILoading"
+                
+                label="Получить данные АСОКИ"
+                @click="getClientASOKI"
+                class="addItem"
+              >
+                <template v-slot:loading>
+                  <q-spinner-facebook />
+                </template>
+              </q-btn>
             </div>
           </div>
 
@@ -2827,6 +2839,7 @@ export default {
       bankLoading: false,
       LSBOLoading: false,
       clientInfoLoading: false,
+      clientASOKILoading: false,
       INPSBar: false,
       dataINPS: {
         code: null,
@@ -2933,7 +2946,7 @@ export default {
 
         this.loaderForm = false;
       } catch (error) {
-        debugger
+        // debugger
         setTimeout(() => {
           this.$store.commit(
             "credits/setMessage",
@@ -3987,6 +4000,20 @@ export default {
       }
     },
 
+    async getClientASOKI() {
+      this.clientASOKILoading = true
+      try {
+        await this.$store.dispatch("profile/clientASOKI")
+        this.clientASOKILoading = false;
+      } catch(error) {
+        this.$store.commit(
+          "credits/setMessage",
+          CommonUtils.filterServerError(error)
+        );
+        this.clientASOKILoading = false;
+      }
+    },
+
     validDatePerson(date) {
       if (this.Customer.Document.ExpirationDate) {
         this.$refs.DocumentExpirationDate.validate();
@@ -4102,10 +4129,9 @@ export default {
     },
 
     setRefs(refs) {
-      // this.$refs = {...this.$refs, ...refs}
       this.$refs = Object.assign({}, this.$refs, refs)
-      console.log('refffffs', refs)
-      console.log('AllRes', this.$refs)
+      // console.log('refffffs', refs)
+      // console.log('AllRes', this.$refs)
     },
 
     addProperty() {

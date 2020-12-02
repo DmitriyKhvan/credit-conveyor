@@ -481,7 +481,7 @@ export const profile = {
         ]
       };
 
-      console.log("lsbo", data);
+      console.log("lsbo", JSON.stringify(data, null, 2));
 
       try {
         const response = await state.bpmService.getDataLSBO(data);
@@ -523,6 +523,69 @@ export const profile = {
       try {
         const response = await state.bpmService.getClientInfo(data);
         return response;
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", errorMessage, { root: true });
+        throw error;
+      }
+    },
+
+    async clientASOKI({state, commit}) {
+      // console.log('dddd', state.BPMInput)
+      const application = state.BPMInput.find(i => i.label == 'application').data
+      const dictionaries = state.BPMInput.find(i => i.label == 'inputDictionaries').data
+      const preApplication_number = state.BPMInput.find(i => i.label == 'preapprove_num').data
+
+      function objectTransform(dictionaries) {
+        for (let item in dictionaries) {
+          // if(item == "Branches") continue
+          // if (item == "Insurance_company") continue;
+          
+          if (
+            typeof dictionaries[item] === "object" &&
+            dictionaries[item] != null
+          ) {
+            if (dictionaries[item].items) {
+              for (let value of dictionaries[item].items) {
+                if (!value.value) {
+                  objectTransform(value);
+                } else {
+                  value['name'] = value.label
+                  delete value.label
+                }
+                //value.value = Number(value.value)
+              }
+            }
+          }
+        }
+
+        return dictionaries;
+      }
+
+      const dictionariesTransform = objectTransform(dictionaries)
+      console.log('dictionariesTransform', dictionariesTransform)
+
+      const data = {
+        input: [
+          {
+            name: "application",
+            data: application
+          }, 
+          {
+            name: "dictionaries",
+            data: dictionariesTransform
+          }, 
+          {
+            name: "preApplication_number",
+            data: preApplication_number
+          }, 
+        ]
+      }
+
+      console.log(JSON.stringify(data, null, 2))
+
+      try {
+        await state.bpmService.getClientASOKI(data)
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
@@ -592,8 +655,9 @@ export const profile = {
               i => i.label === "inputDictionaries"
             ).data;
 
+            commit("setInput", JSON.parse(JSON.stringify(response.data.input))); // all input from BPM
             commit("setDictionaries", dictionaries);
-            commit("setInput", response.data.input); // all input from BPM
+            
 
             // кредит не оформлен
             if (

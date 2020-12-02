@@ -62,7 +62,7 @@
             <div class="col-5">
               <p class="scoringList__value">
                 <!-- Соответствует -->
-                Не найден
+                {{ statusGSZ }}
               </p>
             </div>
           </div>
@@ -212,6 +212,10 @@ export default {
     data: {
       type: Object,
       default: {}
+    },
+    statusGSZ: {
+      type: String,
+      default: ""
     }
   },
   data() {
