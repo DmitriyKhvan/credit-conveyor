@@ -2933,7 +2933,7 @@ export default {
 
         this.loaderForm = false;
       } catch (error) {
-        debugger
+        // debugger
         setTimeout(() => {
           this.$store.commit(
             "credits/setMessage",
