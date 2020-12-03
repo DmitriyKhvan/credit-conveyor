@@ -2628,7 +2628,7 @@
 
                <q-btn
                 :loading="clientInfoLoading"
-                
+                :disable="!resAsoki"
                 label="Получить данные клиента"
                 @click="getClientInfo"
                 class="addItem"
@@ -2639,6 +2639,7 @@
               </q-btn>
 
               <q-btn
+                v-if="!resAsoki"
                 :loading="clientASOKILoading"
                 
                 label="Получить данные АСОКИ"
@@ -2831,6 +2832,7 @@ export default {
   data() {
     return {
       // isValidNumCard: true,
+      resAsoki: null,
       LSBOFlag: false,
       INPSFlag: false,
       failureCredit: false,
@@ -2993,6 +2995,8 @@ export default {
       "profile/dictionaries"
     ].Countries.items;
 
+    this.resAsoki = this.$store.getters["profile/AsokiExists"]
+
   },
   mounted() {
     setTimeout(() => {
@@ -3071,6 +3075,10 @@ export default {
       const scoring_resutlts = this.profile.BPMInput.find(input => input.label == 'scoring_results')
       return scoring_resutlts ? scoring_resutlts : null
     },
+
+    // AsokiExists() {
+    //   return false
+    // },
 
     disableField() {
       return this.status === 'Step: Работа с документами'
@@ -3735,7 +3743,12 @@ export default {
           this.profile.confirmCredit = false;
         } else if (submitForm) {
 
-          if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями') {
+          if (!this.resAsoki) {
+            this.$store.commit(
+                "credits/setMessage",
+                "Получите данные АСОКИ"
+              );
+          } else if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями') {
             this.$store.commit(
                 "credits/setMessage",
                 "Получите данные клиента"
@@ -4003,7 +4016,9 @@ export default {
     async getClientASOKI() {
       this.clientASOKILoading = true
       try {
-        await this.$store.dispatch("profile/clientASOKI")
+        const res = await this.$store.dispatch("profile/clientASOKI")
+        console.log('resASOKI', res)
+        this.resAsoki = true
         this.clientASOKILoading = false;
       } catch(error) {
         this.$store.commit(

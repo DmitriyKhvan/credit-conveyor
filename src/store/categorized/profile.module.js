@@ -5,6 +5,7 @@ export const profile = {
   namespaced: true,
   state: {
     bpmService: new BpmService(),
+    resASOKI: null,
     payOrder: {
       doc_type: {
         items: []
@@ -536,7 +537,32 @@ export const profile = {
       const dictionaries = state.BPMInput.find(i => i.label == 'inputDictionaries').data
       const preApplication_number = state.BPMInput.find(i => i.label == 'preapprove_num').data
 
-      function objectTransform(dictionaries) {
+      const sleep = (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      const ASOKIInfo = async (processId) => {
+        let res = null
+        await sleep(2 * 60 * 1000)
+
+        res = await state.bpmService.getASOKIInfo(processId)
+        
+        // if (res.state != 'completed' || res.state != 'closed') {
+        //   ASOKIInfo(res.id)
+        // }
+
+        if (
+          res.state == 'completed' ||
+          res.state == 'closed' ||
+          res.state == 'finished'
+        ) {
+          return state.resASOKI = res
+        } else {
+          await ASOKIInfo(res.id)
+        }
+      }
+
+      const objectTransform = (dictionaries) => {
         for (let item in dictionaries) {
           // if(item == "Branches") continue
           // if (item == "Insurance_company") continue;
@@ -585,7 +611,10 @@ export const profile = {
       console.log(JSON.stringify(data, null, 2))
 
       try {
-        await state.bpmService.getClientASOKI(data)
+        const startASOKI = await state.bpmService.getClientASOKI(data)
+        await ASOKIInfo(startASOKI.id)
+        
+        return state.resASOKI
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("credits/setMessage", errorMessage, { root: true });
@@ -1461,6 +1490,11 @@ export const profile = {
   },
   getters: {
     dictionaries: state => state.dictionaries,
+    AsokiExists: state => {
+      const AsokiExists = state.BPMInput.find(i => i.label == 'AsokiExists')
+      return AsokiExists ? AsokiExists.data : null
+      // return false
+    },
     preapprove_num: state => {
       const preapprove_num = state.BPMInput.find(
         i => i.label === "preapprove_num"
@@ -1523,5 +1557,6 @@ export const profile = {
 
       return finalFileList;
     },
+
   }
 };
