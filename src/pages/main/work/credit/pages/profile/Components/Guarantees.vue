@@ -1302,6 +1302,23 @@
             </div>
           </div>
 
+          <div class="row q-col-gutter-md">
+            <div class="col-4">
+                <q-input
+                  ref="sec_payment"
+                  :disable="disableField"
+                  outlined
+                  v-model.number="guarantee.sec_payment"
+                  type="number"
+                  dense
+                  label="Страховой платёж"
+                  :rules="[
+                        (val) => !!val || 'Поле должно быть заполнено'
+                      ]"
+                />
+              </div>
+          </div>  
+
           <q-btn
             :disable="disableField"
             label="Удалить"

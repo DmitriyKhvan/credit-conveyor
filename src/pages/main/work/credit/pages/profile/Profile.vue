@@ -2287,6 +2287,38 @@
               </div>
 
               <div class="row q-col-gutter-md">
+                <div class="col-4">
+                  <q-input
+                    ref="loan_org_comission"
+                    :disable="disableField"
+                    outlined
+                    v-model.number="fullProfile.LoanInfo.loan_org_comission"
+                    type="number"
+                    dense
+                    label="Комиссия за организацию кредита"
+                    :rules="[
+                          (val) => !!val || 'Поле должно быть заполнено'
+                        ]"
+                  />
+                </div>
+
+                <div class="col-4">
+                  <q-input
+                    ref="other_services"
+                    :disable="disableField"
+                    outlined
+                    v-model.number="fullProfile.LoanInfo.other_services"
+                    type="number"
+                    dense
+                    label="Другие услуги"
+                    :rules="[
+                          (val) => !!val || 'Поле должно быть заполнено'
+                        ]"
+                  />
+                </div>
+              </div>
+
+              <div class="row q-col-gutter-md">
                 <div 
                   v-if="status == 'Step: Full Application Filling' && 
                                     this.fullProfile.BODecision == null &&
@@ -2348,11 +2380,10 @@
               </div>
 
 
-              <!-- для микрозайма и потребительского кредита -->
+              <!-- для микрозайма -->
               <template 
                 v-if="typeOfCharge == 2 || 
-                fullProfile.LoanInfo.microloan_details.bank_name ||
-                fullProfile.LoanInfo.LoanProduct == 136"
+                fullProfile.LoanInfo.microloan_details.bank_name"
               > 
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -2411,6 +2442,24 @@
               <template
                 v-if="fullProfile.LoanInfo.LoanProduct == 136"
               >
+                <div class="row q-col-gutter-md">
+                  <div class="col-4">
+                    <q-input
+                      :disable="disableField"
+                      ref="consumerBankMFO"
+                      outlined
+                      v-model="fullProfile.LoanInfo.microloan_details.mfo"
+                      dense
+                      label="МФО банка продавца"
+                      :rules="[
+                        val =>
+                          !!val ||
+                          'Введите МФО банка'
+                      ]"
+                    />
+                  </div>
+                </div>
+
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
                     <q-input
@@ -2626,9 +2675,10 @@
                 :scoring="fullProfile"
                />
 
+                
                <q-btn
+                v-if="AsokiExists"
                 :loading="clientInfoLoading"
-                :disable="!resAsoki"
                 label="Получить данные клиента"
                 @click="getClientInfo"
                 class="addItem"
@@ -2639,7 +2689,7 @@
               </q-btn>
 
               <q-btn
-                v-if="!resAsoki"
+                v-if="!AsokiExists"
                 :loading="clientASOKILoading"
                 
                 label="Получить данные АСОКИ"
@@ -3076,9 +3126,9 @@ export default {
       return scoring_resutlts ? scoring_resutlts : null
     },
 
-    // AsokiExists() {
-    //   return false
-    // },
+    AsokiExists() {
+      return this.$store.getters["profile/AsokiExists"]
+    },
 
     disableField() {
       return this.status === 'Step: Работа с документами'
@@ -3481,12 +3531,14 @@ export default {
         validFilter(this.$refs, "nameGuaranteesValid3", "nameGuarantees3");
         validFilter(this.$refs, "innGuaranteesValid3", "innGuarantees3");
         validFilter(this.$refs, "priceGuaranteesValid3", "priceGuarantees3");
+        validFilter(this.$refs, "sec_paymentValid", "sec_payment");
         
       } else {
         console.log('this.$refs2', this.$refs)
         validItems(this.$refs, "priceGuaranteesValid3");
         validItems(this.$refs, "nameGuaranteesValid3");
         validItems(this.$refs, "innGuaranteesValid3");
+        validItems(this.$refs, "sec_paymentValid");
       }
 
       if (
@@ -3524,6 +3576,9 @@ export default {
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
+      this.$refs.loan_org_comission.validate();
+      this.$refs.other_services.validate();
+
       if (
         this.status == 'Step: Full Application Filling' && 
         this.fullProfile.BODecision == null &&
@@ -3538,6 +3593,7 @@ export default {
       if (
         this.fullProfile.LoanInfo.LoanProduct == 136
       ) {
+        this.$refs.consumerBankMFO.validate();
         this.$refs.nameProduction.validate();
         this.$refs.productName.validate();
         this.$refs.nameBankProd.validate();
@@ -3545,6 +3601,7 @@ export default {
         this.$refs.agreementNumber.validate();
         this.$refs.agreementDate.validate();
       } else {
+        validItems(this.$refs, "consumerBankMFO");
         validItems(this.$refs, "nameProduction");
         validItems(this.$refs, "productName");
         validItems(this.$refs, "nameBankProd");
@@ -3578,8 +3635,7 @@ export default {
 
       // Если выбран расчетный счет!!!
       if (
-        this.typeOfCharge == 2 ||
-        this.fullProfile.LoanInfo.LoanProduct == 136
+        this.typeOfCharge == 2
       ) {
         this.$refs.mircoloanBankName.validate();
         this.$refs.mircoloanBankMFO.validate();
@@ -3682,6 +3738,7 @@ export default {
         this.$refs.innGuaranteesValid1.hasError ||
         this.$refs.innGuaranteesValid2.hasError ||
         this.$refs.innGuaranteesValid3.hasError ||
+        this.$refs.sec_paymentValid.hasError ||
         this.$refs.kindOfActivityGuaranteesValid.hasError ||
         this.$refs.pinppGuaranteesValid.hasError ||
         this.$refs.guaranteesDocumentDocumentTypeValid.hasError ||
@@ -3726,6 +3783,10 @@ export default {
         this.$refs.agreementNumber.hasError ||
         this.$refs.agreementDate.hasError ||
         this.$refs.sourceFinancs.hasError ||
+
+        this.$refs.loan_org_comission.hasError ||
+        this.$refs.other_services.hasError ||
+        
         this.$refs.typeOfCharge.hasError ||
         this.$refs.uploadFile.hasError ||
         this.$refs.guaranteesValid.hasError ||
@@ -3733,6 +3794,7 @@ export default {
         this.$refs.CardNumber.hasError ||
         this.$refs.mircoloanBankName.hasError ||
         this.$refs.mircoloanBankMFO.hasError ||
+        this.$refs.consumerBankMFO.hasError ||
         this.$refs.mircoloanCustomerBill.hasError
 
       ) {
@@ -3748,7 +3810,11 @@ export default {
                 "credits/setMessage",
                 "Получите данные АСОКИ"
               );
-          } else if (!this.clientInfoData && this.status == 'Step: Ввод данных с интеграциями') {
+          } else if (
+              !this.clientInfoData && 
+              this.status == 'Step: Ввод данных с интеграциями' &&
+              this.AsokiExists
+            ) {
             this.$store.commit(
                 "credits/setMessage",
                 "Получите данные клиента"
@@ -3805,6 +3871,8 @@ export default {
         Customer,
         Guarantee,
         LoanInfo,
+        loanAbilityClass,
+        loanKoeffCorr,
         ApplicationComment,
         AttachedDocuments
       } = this.fullProfile;
@@ -3854,6 +3922,8 @@ export default {
               Customer,
               Guarantee,
               LoanInfo,
+              loanAbilityClass,
+              loanKoeffCorr,
               ApplicationComment,
               AttachedDocuments
             }
@@ -4016,8 +4086,8 @@ export default {
     async getClientASOKI() {
       this.clientASOKILoading = true
       try {
-        const res = await this.$store.dispatch("profile/clientASOKI")
-        console.log('resASOKI', res)
+        this.clientInfo = await this.$store.dispatch("profile/clientASOKI")
+        // console.log('resASOKI', res)
         this.resAsoki = true
         this.clientASOKILoading = false;
       } catch(error) {

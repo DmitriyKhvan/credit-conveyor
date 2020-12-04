@@ -129,24 +129,39 @@
             </th>
 
             <th class="text-left taskName">
-              <q-select
+              <!-- <q-select
                 square
                 outlined
                 v-model="taskName"
                 :options="options.taskName"
                 dense
                 label="Задача"
+              /> -->
+
+              <q-input
+                square
+                outlined
+                v-model="taskName"
+                dense
+                label="Введите наименование задачи"
               />
             </th>
 
             <th class="text-left taskStatus">
-              <q-select
+              <!-- <q-select
                 square
                 outlined
                 v-model="taskStatus"
                 :options="options.taskStatus"
                 dense
                 label="Статус"
+              /> -->
+              <q-input
+                square
+                outlined
+                v-model="taskStatus"
+                dense
+                label="Введите наименование статуса"
               />
             </th>
             <th class="text-left date" colspan="2">
@@ -326,7 +341,7 @@
               />
             </td>
 
-            <td v-if="credit.assignedRole === 'ROLE_CCS'" class="print">
+            <td v-if="userRole.find(i => i === 'ROLE_CCS')" class="print">
               <div class="btnBlock">
                 
                 <!-- <template v-if="userRole === 'ROLE_CCS'"> -->
@@ -796,7 +811,8 @@ export default {
           if (response) {
             this.fileData.lang = lang
             this.fileData.data = dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
-          
+            this.fileData.data.protocol_secretary_fio = this.$store.getters["auth/fullName"]
+
             console.log(JSON.stringify(this.fileData, null, 2))
 
             file = await this.$store.dispatch(

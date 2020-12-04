@@ -336,6 +336,8 @@ export const profile = {
         //ProductName: "", // Наименование товара/работы/услуги
 
         FundingSource: null, // Источник финансирования
+        loan_org_comission: null, //Комиссия за организацию кредита
+        other_services: null, //Другие услуги
 
         FacilitiesForRepaymentDate: false,
 
@@ -360,6 +362,8 @@ export const profile = {
       },
 
       max_loan_sum: null,
+      loanAbilityClass: null,
+      loanKoeffCorr: null,
 
       ApplicationComment: {
         items: [
@@ -531,7 +535,7 @@ export const profile = {
       }
     },
 
-    async clientASOKI({state, commit}) {
+    async clientASOKI({ state, commit }) {
       // console.log('dddd', state.BPMInput)
       const application = state.BPMInput.find(i => i.label == 'application').data
       const dictionaries = state.BPMInput.find(i => i.label == 'inputDictionaries').data
@@ -546,7 +550,7 @@ export const profile = {
         await sleep(2 * 60 * 1000)
 
         res = await state.bpmService.getASOKIInfo(processId)
-        
+
         // if (res.state != 'completed' || res.state != 'closed') {
         //   ASOKIInfo(res.id)
         // }
@@ -556,6 +560,7 @@ export const profile = {
           res.state == 'closed' ||
           res.state == 'finished'
         ) {
+          commit('setASOKI', res)
           return state.resASOKI = res
         } else {
           await ASOKIInfo(res.id)
@@ -566,7 +571,7 @@ export const profile = {
         for (let item in dictionaries) {
           // if(item == "Branches") continue
           // if (item == "Insurance_company") continue;
-          
+
           if (
             typeof dictionaries[item] === "object" &&
             dictionaries[item] != null
@@ -596,15 +601,15 @@ export const profile = {
           {
             name: "application",
             data: application
-          }, 
+          },
           {
             name: "dictionaries",
             data: dictionariesTransform
-          }, 
+          },
           {
             name: "preApplication_number",
             data: preApplication_number
-          }, 
+          },
         ]
       }
 
@@ -613,7 +618,7 @@ export const profile = {
       try {
         const startASOKI = await state.bpmService.getClientASOKI(data)
         await ASOKIInfo(startASOKI.id)
-        
+
         return state.resASOKI
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
@@ -686,7 +691,7 @@ export const profile = {
 
             commit("setInput", JSON.parse(JSON.stringify(response.data.input))); // all input from BPM
             commit("setDictionaries", dictionaries);
-            
+
 
             // кредит не оформлен
             if (
@@ -715,6 +720,15 @@ export const profile = {
     }
   },
   mutations: {
+    setASOKI(state, ASOKI) {
+      const loanAbilityClass = ASOKI.output.find(i => i.name == 'loanAbilityClass')
+      const loanKoeffCorr = ASOKI.output.find(i => i.name == 'loanKoeffCorr')
+      const new_max_loan = ASOKI.output.find(i => i.name == 'new_max_loan')
+      state.fullFormProfile.LoanInfo.max_loan_sum_preapprove = new_max_loan ? new_max_loan.data : state.fullFormProfile.LoanInfo.max_loan_sum_preapprove
+      state.loanAbilityClass = loanAbilityClass ? loanAbilityClass.data : null,
+      state.loanKoeffCorr = loanKoeffCorr ? loanKoeffCorr.data : null
+    },
+
     setLSBO(state, dataLSBO) {
       dataLSBO.data.items.forEach(user => {
         // console.log("user", user)
@@ -781,8 +795,8 @@ export const profile = {
 
     setINNandNameOrg(state, payload) {
       // if (state.fullFormProfile.Customer.JobInfo.type == 1) {
-        state.fullFormProfile.Customer.JobInfo.employerName = payload.org_name;
-        state.fullFormProfile.Customer.JobInfo.INN = payload.inn;
+      state.fullFormProfile.Customer.JobInfo.employerName = payload.org_name;
+      state.fullFormProfile.Customer.JobInfo.INN = payload.inn;
       // }
     },
 
@@ -810,7 +824,7 @@ export const profile = {
 
       // state.fullFormProfile.Customer.Document.Districts = state.dictionaries.Districts
 
-      
+
       // state.fullFormProfile.Customer.Relatives.items.forEach(i => {
       //   i.Document.Districts = state.dictionaries.Districts
       // })
@@ -818,7 +832,7 @@ export const profile = {
       // state.fullFormProfile.Customer.AddressList.items.forEach(i => {
       //   i.Districts = state.dictionaries.Districts
       // })
-      
+
       state.fullFormProfile.Customer.FirstName = payload.Customer.FirstName;
       state.fullFormProfile.Customer.LastName = payload.Customer.LastName;
       state.fullFormProfile.Customer.MiddleName = payload.Customer.MiddleName;
@@ -836,8 +850,8 @@ export const profile = {
       state.fullFormProfile.Customer.Document.Number =
         payload.Customer.Document.Number;
 
-          // state.fullFormProfile.Customer.ResidentFlag =
-          //   payload.Customer.ResidentFlag;  
+      // state.fullFormProfile.Customer.ResidentFlag =
+      //   payload.Customer.ResidentFlag;  
 
       state.fullFormProfile.Customer.Document.GivenDate =
         payload.Customer.Document.GivenDate;
@@ -854,8 +868,8 @@ export const profile = {
 
       state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
         payload.Customer.MonthlyIncome.confirmMonthlyIncome;
-          // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-          //   payload.Customer.MonthlyExpenses.recurringExpenses;
+      // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+      //   payload.Customer.MonthlyExpenses.recurringExpenses;
       state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
         payload.Customer.MonthlyExpenses.allExpensesSum;
       state.fullFormProfile.Customer.MonthlyExpenses.obligations =
@@ -866,7 +880,7 @@ export const profile = {
         payload.Customer.MonthlyIncome.additionalIncome.sum;
       state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.incomeType =
         payload.Customer.MonthlyIncome.additionalIncome.incomeType;
-        
+
 
       state.fullFormProfile.LoanInfo.LoanProduct = payload.LoanInfo.LoanProduct;
       state.fullFormProfile.LoanInfo.RepaymentType =
@@ -922,6 +936,7 @@ export const profile = {
         INN: "",
         OrgName: "",
         Sum: 0,
+        sec_payment: null, //Страховой платёж
         ContractNumber: "", // Номер Страхового договора
         StartDate: "", // Дата начала действия договора
         ExpDate: "" //Дата истечения действия договора
@@ -960,7 +975,7 @@ export const profile = {
         CEOMiddleName: "",
         Sum: 0,
         Activity: "",
-        
+
         cardNumber: "",
         bank_name: "",
         mfo: "",
@@ -1441,6 +1456,8 @@ export const profile = {
           // ProductName: "", // Наименование товара/работы/услуги
 
           FundingSource: null, // Источник финансирования
+          loan_org_comission: null, //Комиссия за организацию кредита
+          other_services: null, //Другие услуги
 
           FacilitiesForRepaymentDate: false,
 
@@ -1465,6 +1482,8 @@ export const profile = {
         },
 
         max_loan_sum: null,
+        loanAbilityClass: null,
+        loanKoeffCorr: null,
 
         ApplicationComment: {
           items: [
@@ -1492,7 +1511,7 @@ export const profile = {
     dictionaries: state => state.dictionaries,
     AsokiExists: state => {
       const AsokiExists = state.BPMInput.find(i => i.label == 'AsokiExists')
-      return AsokiExists ? AsokiExists.data : null
+      return AsokiExists ? AsokiExists.data : true
       // return false
     },
     preapprove_num: state => {
