@@ -1308,12 +1308,13 @@
                   ref="sec_payment"
                   :disable="disableField"
                   outlined
-                  v-model.number="guarantee.sec_payment"
-                  type="number"
+                  v-model="guarantee.sec_payment"
+                  @input="formatNumberInsurence(index)"
                   dense
                   label="Страховой платёж"
                   :rules="[
-                        (val) => !!val || 'Поле должно быть заполнено'
+                        (val) => !!val || 'Поле должно быть заполнено',
+                        (val) => val != 0 || 'Некорректные данные',
                       ]"
                 />
               </div>
@@ -1386,6 +1387,10 @@ export default {
       }
     }
     console.log('this.guaranteeCount', this.guaranteeCount)
+
+    for (let insurence of this.fullProfile.Guarantee.Insurance.items) {
+      insurence.sec_payment = formatNumber(insurence.sec_payment)
+    }
 	},
 	
 	mounted() {
@@ -1428,6 +1433,10 @@ export default {
   },
 	
 	methods: {
+    formatNumberInsurence(idx) {
+      this.fullProfile.Guarantee.Insurance.items[idx].sec_payment = formatNumber(this.fullProfile.Guarantee.Insurance.items[idx].sec_payment)
+    }, 
+
 		addInsurance(guarantee) {
       this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addInsurance");

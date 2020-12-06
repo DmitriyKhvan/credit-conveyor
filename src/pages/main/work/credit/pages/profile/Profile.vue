@@ -2292,12 +2292,13 @@
                     ref="loan_org_comission"
                     :disable="disableField"
                     outlined
-                    v-model.number="fullProfile.LoanInfo.loan_org_comission"
-                    type="number"
+                    v-model="fullProfile.LoanInfo.loan_org_comission"
+                    @input="formatNumberItem('LoanInfo', 'loan_org_comission')"
                     dense
                     label="Комиссия за организацию кредита"
                     :rules="[
-                          (val) => !!val || 'Поле должно быть заполнено'
+                          (val) => !!val || 'Поле должно быть заполнено',
+                          (val) => val != 0 || 'Некорректные данные',
                         ]"
                   />
                 </div>
@@ -2307,12 +2308,13 @@
                     ref="other_services"
                     :disable="disableField"
                     outlined
-                    v-model.number="fullProfile.LoanInfo.other_services"
-                    type="number"
+                    v-model="fullProfile.LoanInfo.other_services"
+                    @input="formatNumberItem('LoanInfo', 'other_services')"
                     dense
                     label="Другие услуги"
                     :rules="[
-                          (val) => !!val || 'Поле должно быть заполнено'
+                          (val) => !!val || 'Поле должно быть заполнено',
+                          (val) => val != 0 || 'Некорректные данные',
                         ]"
                   />
                 </div>
@@ -2675,9 +2677,9 @@
                 :scoring="fullProfile"
                />
 
-                
+                <!-- v-if="AsokiExists" -->
                <q-btn
-                v-if="AsokiExists"
+                :disable="!resAsoki"
                 :loading="clientInfoLoading"
                 label="Получить данные клиента"
                 @click="getClientInfo"
@@ -2688,8 +2690,9 @@
                 </template>
               </q-btn>
 
+              <!-- v-if="!AsokiExists" -->
               <q-btn
-                v-if="!AsokiExists"
+                :disable="resAsoki"
                 :loading="clientASOKILoading"
                 
                 label="Получить данные АСОКИ"
@@ -3047,6 +3050,18 @@ export default {
 
     this.resAsoki = this.$store.getters["profile/AsokiExists"]
 
+    // формат чисел для имущества
+    for (let property in this.Customer.PropertyInformation) {
+      if(typeof this.Customer.PropertyInformation[property] == 'object') {
+        for (let i of this.Customer.PropertyInformation[property].items) {
+          i.MarketValue = formatNumber(i.MarketValue);
+        }
+      }
+    }
+
+    this.fullProfile.LoanInfo.loan_org_comission = formatNumber(this.fullProfile.LoanInfo.loan_org_comission)
+    this.fullProfile.LoanInfo.other_services = formatNumber(this.fullProfile.LoanInfo.other_services)
+
   },
   mounted() {
     setTimeout(() => {
@@ -3059,6 +3074,7 @@ export default {
 
       this.onSubmit("start");
     }, 1000);
+
   },
 
   beforeDestroy() {
@@ -3176,6 +3192,10 @@ export default {
     formatNumberItems(item, key, idx) {
       console.log(this.Customer.PropertyInformation.Realty_new.items)
       this.Customer.PropertyInformation[item].items[idx][key] = formatNumber(this.Customer.PropertyInformation[item].items[idx][key])
+    },
+
+    formatNumberItem(item1, item2) {
+      this.fullProfile[item1][item2] = formatNumber(this.fullProfile[item1][item2])
     },
 
     async onSubmit(submitForm = true) {
@@ -3813,7 +3833,8 @@ export default {
           } else if (
               !this.clientInfoData && 
               this.status == 'Step: Ввод данных с интеграциями' &&
-              this.AsokiExists
+              this.resAsoki
+              // this.AsokiExists
             ) {
             this.$store.commit(
                 "credits/setMessage",
@@ -3897,7 +3918,13 @@ export default {
         }
       }
 
+      for (let insurence of Guarantee.Insurance.items) {
+        insurence.sec_payment = +String(insurence.sec_payment).replace(/[^0-9]/gim, "")
+      }
+
       LoanInfo.Sum = +LoanInfo.Sum.replace(/[^0-9]/gim, "");
+      LoanInfo.loan_org_comission = +LoanInfo.loan_org_comission.replace(/[^0-9]/gim, "")
+      LoanInfo.other_services = +LoanInfo.other_services.replace(/[^0-9]/gim, "")
 
       // удалил из объекта - Date!!!
       const data = {
@@ -4086,7 +4113,8 @@ export default {
     async getClientASOKI() {
       this.clientASOKILoading = true
       try {
-        this.clientInfo = await this.$store.dispatch("profile/clientASOKI")
+        await this.$store.dispatch("profile/clientASOKI")
+        // this.clientInfo = await this.$store.dispatch("profile/clientASOKI")
         // console.log('resASOKI', res)
         this.resAsoki = true
         this.clientASOKILoading = false;

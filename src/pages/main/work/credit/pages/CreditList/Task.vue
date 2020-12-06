@@ -1252,6 +1252,7 @@
                   </div>
                 </div>
 
+
                 <div class="row rowForm">
                   <div class="col-6 field">ИНН страховой компании</div>
                   <div class="col-6 data">{{ guarantee.INN }}</div>
@@ -1260,6 +1261,12 @@
                   <div class="col-6 field">Сумма страхового полиса</div>
                   <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Страховой платёж</div>
+                  <div class="col-6 data">{{ guarantee.sec_payment | formatNumber }}</div>
+                </div>
+
 
                 <div class="row rowForm">
                   <div class="col-6 field">Номер страхового договора</div>
@@ -1451,7 +1458,70 @@
               </div>
             </div>
 
-            <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
+            <div class="row rowForm">
+                <div class="col-6 field">Комиссия за организацию кредита</div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.loan_org_comission | formatNumber }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">Другие услуги</div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.other_services | formatNumber }}
+                </div>
+              </div>
+
+            <template v-if="!!fullProfile.Customer.CardNumber && fullProfile.LoanInfo.LoanProduct != 136">
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Номер карты
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.Customer.CardNumber }}
+                </div>
+              </div>
+            </template>
+
+            <template v-else-if="fullProfile.LoanInfo.LoanProduct != 136">
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Наименование банка
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.microloan_details.bank_name }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  МФО банка
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.microloan_details.mfo }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Расчетный счет клиента
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.microloan_details.customer_bill }}
+                </div>
+              </div>
+            </template>
+
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 136">
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  МФО банка продавца
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.microloan_details.mfo }}
+                </div>
+              </div>
+
               <div class="row rowForm">
                 <div class="col-6 field">
                   Наименование продавца/производителя товара/работы/услуги
