@@ -158,6 +158,26 @@ export default class BpmService {
     return responce.data;
   }
 
+  getClientASOKI = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/startAsoki`,
+      data
+    })
+
+    return responce.data
+  }
+
+  getASOKIInfo = async (data) => {
+    const responce = await axios({
+      method: "post",
+      url: `${this._baseUrl}/bpm/credit/getAsokiInfo`,
+      data: { process_id: data }
+    })
+
+    return responce.data
+  }
+
   uploadFiles = async (data) => {
     //const fileName = "file full form profile"
     const responce = await axios({

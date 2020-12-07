@@ -74,7 +74,10 @@
         </q-tab-panel>
 
         <q-tab-panel name="scoring">
-          <appScoring :data="scoring"/>
+          <appScoring 
+            :data="scoring"
+            :statusGSZ="StatusGSZ"
+          />
         </q-tab-panel>
 
         <q-tab-panel name="deposits">
