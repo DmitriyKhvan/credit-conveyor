@@ -2691,8 +2691,9 @@
               </q-btn>
 
               <!-- v-if="!AsokiExists" -->
+              <!-- :disable="resAsoki" -->
               <q-btn
-                :disable="resAsoki"
+                v-if="!AsokiExists"
                 :loading="clientASOKILoading"
                 
                 label="Получить данные АСОКИ"
