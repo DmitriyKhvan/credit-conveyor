@@ -1303,19 +1303,21 @@
           </div>
 
           <div class="row q-col-gutter-md">
+            <!-- ref="sec_payment"
+            :rules="[
+                        (val) => !!val || 'Поле должно быть заполнено',
+                        (val) => val != 0 || 'Некорректные данные',
+                      ]" -->
             <div class="col-4">
                 <q-input
-                  ref="sec_payment"
+                  
                   :disable="disableField"
                   outlined
                   v-model="guarantee.sec_payment"
                   @input="formatNumberInsurence(index)"
                   dense
                   label="Страховой платёж"
-                  :rules="[
-                        (val) => !!val || 'Поле должно быть заполнено',
-                        (val) => val != 0 || 'Некорректные данные',
-                      ]"
+                  
                 />
               </div>
           </div>  
