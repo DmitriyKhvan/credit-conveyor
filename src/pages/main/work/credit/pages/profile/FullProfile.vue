@@ -895,12 +895,12 @@
                 <div class="col-3 fieldData">Другие услуги</div>
                 <div class="col-3">{{ fullProfile.LoanInfo.other_services | formatNumber }}</div>
 
-                <template v-if="!!fullProfile.Customer.CardNumber && (fullProfile.LoanInfo.LoanProduct != 136 || this.fullProfile.LoanInfo.LoanProduct != 1715)">
+                <template v-if="!!fullProfile.Customer.CardNumber && fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715">
                   <div class="col-3 fieldData">Номер карты</div>
                   <div class="col-3">{{ fullProfile.Customer.CardNumber }}</div>
                 </template>
 
-                <template v-else-if="fullProfile.LoanInfo.LoanProduct != 136 || this.fullProfile.LoanInfo.LoanProduct != 1715">
+                <template v-else-if="fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715">
                   <div class="col-3 fieldData">Наименование банка</div>
                   <div class="col-3">{{ fullProfile.LoanInfo.microloan_details.bank_name }}</div>
 

@@ -1472,7 +1472,7 @@
                 </div>
               </div>
 
-            <template v-if="!!fullProfile.Customer.CardNumber && (fullProfile.LoanInfo.LoanProduct != 136 || this.fullProfile.LoanInfo.LoanProduct != 1715)">
+            <template v-if="!!fullProfile.Customer.CardNumber && fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Номер карты
@@ -1483,7 +1483,7 @@
               </div>
             </template>
 
-            <template v-else-if="fullProfile.LoanInfo.LoanProduct != 136 || this.fullProfile.LoanInfo.LoanProduct != 1715">
+            <template v-else-if="fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Наименование банка
