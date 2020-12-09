@@ -28,8 +28,9 @@
               <td>{{ overdue_payment.id_contract }}</td>
               <td>{{ overdue.month }}</td>
               <td>{{ overdue.begin_sum | formatNumber }}</td>
-              <td>{{ overdue.overdue_sum | formatNumber }}</td>
+              <!-- Поменял местами по просбе розницы -->
               <td>{{ overdue.end_sum | formatNumber }}</td>
+              <td>{{ overdue.overdue_sum | formatNumber }}</td>
               <td>{{ overdue.overdue_percent | formatNumber }}</td>
               <td>{{ overdue.total_overdue | formatNumber }}</td>
             </tr>

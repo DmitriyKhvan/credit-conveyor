@@ -2286,36 +2286,40 @@
                 </div>
               </div>
 
+              <!-- ref="loan_org_comission"
+              :rules="[
+                          (val) => !!val || 'Поле должно быть заполнено',
+                          (val) => val != 0 || 'Некорректные данные',
+                        ]" -->
               <div class="row q-col-gutter-md">
                 <div class="col-4">
                   <q-input
-                    ref="loan_org_comission"
+                    
                     :disable="disableField"
                     outlined
                     v-model="fullProfile.LoanInfo.loan_org_comission"
                     @input="formatNumberItem('LoanInfo', 'loan_org_comission')"
                     dense
                     label="Комиссия за организацию кредита"
-                    :rules="[
-                          (val) => !!val || 'Поле должно быть заполнено',
-                          (val) => val != 0 || 'Некорректные данные',
-                        ]"
+                    
                   />
                 </div>
 
+                <!-- ref="other_services"
+                :rules="[
+                          (val) => !!val || 'Поле должно быть заполнено',
+                          (val) => val != 0 || 'Некорректные данные',
+                        ]" -->
                 <div class="col-4">
                   <q-input
-                    ref="other_services"
+                    
                     :disable="disableField"
                     outlined
                     v-model="fullProfile.LoanInfo.other_services"
                     @input="formatNumberItem('LoanInfo', 'other_services')"
                     dense
                     label="Другие услуги"
-                    :rules="[
-                          (val) => !!val || 'Поле должно быть заполнено',
-                          (val) => val != 0 || 'Некорректные данные',
-                        ]"
+                    
                   />
                 </div>
               </div>
@@ -2324,7 +2328,7 @@
                 <div 
                   v-if="status == 'Step: Full Application Filling' && 
                                     this.fullProfile.BODecision == null &&
-                                    this.fullProfile.LoanInfo.LoanProduct != 136" 
+                                    this.fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715"
                   class="col-4"
                 >
                   <q-select
@@ -2442,7 +2446,7 @@
 
               <!-- для потребительского кредита -->
               <template
-                v-if="fullProfile.LoanInfo.LoanProduct == 136"
+                v-if="fullProfile.LoanInfo.LoanProduct == 136 || fullProfile.LoanInfo.LoanProduct == 1715"
               >
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -3552,14 +3556,14 @@ export default {
         validFilter(this.$refs, "nameGuaranteesValid3", "nameGuarantees3");
         validFilter(this.$refs, "innGuaranteesValid3", "innGuarantees3");
         validFilter(this.$refs, "priceGuaranteesValid3", "priceGuarantees3");
-        validFilter(this.$refs, "sec_paymentValid", "sec_payment");
+        // validFilter(this.$refs, "sec_paymentValid", "sec_payment");
         
       } else {
         console.log('this.$refs2', this.$refs)
         validItems(this.$refs, "priceGuaranteesValid3");
         validItems(this.$refs, "nameGuaranteesValid3");
         validItems(this.$refs, "innGuaranteesValid3");
-        validItems(this.$refs, "sec_paymentValid");
+        // validItems(this.$refs, "sec_paymentValid");
       }
 
       if (
@@ -3597,13 +3601,13 @@ export default {
       this.$refs.purposeCredit.validate();
       this.$refs.sourceFinancs.validate();
 
-      this.$refs.loan_org_comission.validate();
-      this.$refs.other_services.validate();
+      // this.$refs.loan_org_comission.validate();
+      // this.$refs.other_services.validate();
 
       if (
         this.status == 'Step: Full Application Filling' && 
         this.fullProfile.BODecision == null &&
-        this.fullProfile.LoanInfo.LoanProduct != 136
+        this.fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715
       ) {
         this.$refs.typeOfCharge.validate();
       } else {
@@ -3612,7 +3616,7 @@ export default {
 
       //если потребительский
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 136
+        this.fullProfile.LoanInfo.LoanProduct == 136 || this.fullProfile.LoanInfo.LoanProduct == 1715
       ) {
         this.$refs.consumerBankMFO.validate();
         this.$refs.nameProduction.validate();
@@ -3759,7 +3763,7 @@ export default {
         this.$refs.innGuaranteesValid1.hasError ||
         this.$refs.innGuaranteesValid2.hasError ||
         this.$refs.innGuaranteesValid3.hasError ||
-        this.$refs.sec_paymentValid.hasError ||
+        // this.$refs.sec_paymentValid.hasError ||
         this.$refs.kindOfActivityGuaranteesValid.hasError ||
         this.$refs.pinppGuaranteesValid.hasError ||
         this.$refs.guaranteesDocumentDocumentTypeValid.hasError ||
@@ -3805,8 +3809,8 @@ export default {
         this.$refs.agreementDate.hasError ||
         this.$refs.sourceFinancs.hasError ||
 
-        this.$refs.loan_org_comission.hasError ||
-        this.$refs.other_services.hasError ||
+        // this.$refs.loan_org_comission.hasError ||
+        // this.$refs.other_services.hasError ||
         
         this.$refs.typeOfCharge.hasError ||
         this.$refs.uploadFile.hasError ||
