@@ -2324,7 +2324,7 @@
                 <div 
                   v-if="status == 'Step: Full Application Filling' && 
                                     this.fullProfile.BODecision == null &&
-                                    this.fullProfile.LoanInfo.LoanProduct != 136" 
+                                    (this.fullProfile.LoanInfo.LoanProduct != 136 || this.fullProfile.LoanInfo.LoanProduct != 1715)"
                   class="col-4"
                 >
                   <q-select
@@ -2442,7 +2442,7 @@
 
               <!-- для потребительского кредита -->
               <template
-                v-if="fullProfile.LoanInfo.LoanProduct == 136"
+                v-if="fullProfile.LoanInfo.LoanProduct == 136 || fullProfile.LoanInfo.LoanProduct == 1715"
               >
                 <div class="row q-col-gutter-md">
                   <div class="col-4">
@@ -3603,7 +3603,7 @@ export default {
       if (
         this.status == 'Step: Full Application Filling' && 
         this.fullProfile.BODecision == null &&
-        this.fullProfile.LoanInfo.LoanProduct != 136
+        (this.fullProfile.LoanInfo.LoanProduct != 136 || this.fullProfile.LoanInfo.LoanProduct != 1715)
       ) {
         this.$refs.typeOfCharge.validate();
       } else {
@@ -3612,7 +3612,7 @@ export default {
 
       //если потребительский
       if (
-        this.fullProfile.LoanInfo.LoanProduct == 136
+        this.fullProfile.LoanInfo.LoanProduct == 136 || this.fullProfile.LoanInfo.LoanProduct == 1715
       ) {
         this.$refs.consumerBankMFO.validate();
         this.$refs.nameProduction.validate();
