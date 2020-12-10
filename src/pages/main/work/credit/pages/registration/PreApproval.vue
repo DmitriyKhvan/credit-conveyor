@@ -40,6 +40,9 @@
             
           </div>
           <div class="creditBackground">
+            <h4 class="personName" v-if="credits.moratorium > 0">
+              На клиента наложен мораторий, который истечет через {{ credits.moratorium }} д.
+            </h4>
             <h4 class="personName">
               {{
                 `${personalData.surname} ${personalData.name} ${personalData.mname}`
@@ -144,7 +147,7 @@
                 class="preappBtnSuccess"
                 v-if="preApprovalData.maxSum > 0"
                 label="Отправить заявку"
-                :disable="disableBtn"
+                :disable="credits.moratorium > 0 ? true : false"
                 @click="successCredit"
               />
               <q-btn
@@ -221,7 +224,6 @@ export default {
   computed: {
     ...mapState({
       taskIdPreapp: (state) => state.credits.taskId,
-      disableBtn: (state) => state.credits.disableBtn,
       preApprovalData: (state) => state.credits.preApprovalData,
       personalData: (state) => state.credits.personalData,
       credits: (state) => state.credits,

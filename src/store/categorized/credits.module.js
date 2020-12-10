@@ -73,6 +73,7 @@ export const credits = {
 
     reasonsList: [], // причины отказа от кредита
     infoList: {}, // информационный лист данные
+    moratorium: 0,
 
     preApprovalData: {
       income: 0, // Сколько дохода учитываем
