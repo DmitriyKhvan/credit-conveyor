@@ -850,6 +850,10 @@ export default {
               (i) => i.label == "reasons_list"
             ).data.items;
 
+            this.credits.moratorium = response.nextTask.input.find(
+              (i) => i.label == "moratorium"
+            ).data;
+
             this.confirm = true;
             this.$store.commit("credits/creditConfirm", preApproval);
           }
