@@ -846,6 +846,11 @@ export default {
             this.credits.infoList = response.nextTask.input.find(
               (i) => i.label == "InfoList"
             ).data; // печатные формы
+
+            this.credits.infoList_uz = response.nextTask.input.find(
+              (i) => i.label == "InfoList_uz"
+            ).data; // печатные формы
+
             this.credits.reasonsList = response.nextTask.input.find(
               (i) => i.label == "reasons_list"
             ).data.items;

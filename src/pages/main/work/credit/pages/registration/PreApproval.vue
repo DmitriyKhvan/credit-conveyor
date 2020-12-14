@@ -27,7 +27,7 @@
                 flat
                 class="print"
                 icon="print"
-                @click="printFile(credits.infoList, 1)"
+                @click="printFile(credits.infoList_uz, 1)"
                 :loading="loading[1]"
               >
                 <div class="print__text">(узб.)</div>
