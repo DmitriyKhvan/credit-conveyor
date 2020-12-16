@@ -3,14 +3,23 @@
     <span
       class="noLinkItem"
       v-if="
-        userRole === 'ROLE_CCS' ||
-        userRole === 'ROLE_PM' ||
+        userRole.find(i => i === 'ROLE_CCS') ||
         credit.taskName === 'Создание Контракта в iABS' ||
         credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
         credit.taskName === 'Step: Создание заявки в iABS' ||
 				credit.taskId === null
       "
-      >{{ linkName }}</span>
+      >{{ decoder(linkName) }}</span>
+    <!-- <span
+      class="noLinkItem"
+      v-if="
+        userRole.find(i => i == 'ROLE_KM' || i == 'ROLE_CCC' || i == 'ROLE_CCS') ||
+        credit.taskName === 'Создание Контракта в iABS' ||
+        credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
+        credit.taskName === 'Step: Создание заявки в iABS' ||
+				credit.taskId === null
+      "
+      >{{ decoder(linkName) }}</span> -->
     <router-link
       v-else
       :to="{
@@ -19,7 +28,7 @@
             ? 'Registration'
             : credit.taskName === 'Step: Заполнить ПП'
             ? 'Payment'
-            : userRole === 'ROLE_KM'
+            : credit.assignedRole === 'ROLE_KM'
             ? 'Profile'
             : 'CreditTask',
         params: { id: credit.id },
@@ -30,12 +39,16 @@
           filialName: credit.filialName,
           filial: credit.filial,
           status: credit.taskName,
+          creditRole: credit.assignedRole 
         },
       }"
-      >{{ linkName }}</router-link>
+      >{{ decoder(linkName) }}</router-link>
   </div>
 </template>
 <script>
+import { mapState, mapGetters } from 'vuex'
+import CommonUtils from "@/shared/utils/CommonUtils";
+
 export default {
 	// props: {
 	// 	userRole: {
@@ -58,7 +71,19 @@ export default {
 		return {
 
 		}
-	}
+  },
+
+  methods: {
+    decoder(str) {
+      return CommonUtils.decoder(str)
+    }
+  },
+  
+  // computed:{
+  //   decoder(str) {
+  //     return CommonUtils.decoder(str)
+  //   }
+  // }
 };
 </script>
 <style lang="scss">

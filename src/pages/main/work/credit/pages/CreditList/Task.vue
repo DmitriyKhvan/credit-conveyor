@@ -728,7 +728,8 @@
               </div>
             </template> 
 
-              <div v-if="userRole === 'ROLE_CC'" class="row rowForm">
+              <!-- <div v-if="creditRole !== 'ROLE_CCC'" class="row rowForm"> -->
+              <div class="row rowForm">
                 <div class="col-12 field">
                   <div class="btnBlock">
                     <q-btn
@@ -1251,6 +1252,7 @@
                   </div>
                 </div>
 
+
                 <div class="row rowForm">
                   <div class="col-6 field">ИНН страховой компании</div>
                   <div class="col-6 data">{{ guarantee.INN }}</div>
@@ -1259,6 +1261,12 @@
                   <div class="col-6 field">Сумма страхового полиса</div>
                   <div class="col-6 data">{{ guarantee.Sum | formatNumber }}</div>
                 </div>
+
+                <div class="row rowForm">
+                  <div class="col-6 field">Страховой платёж</div>
+                  <div class="col-6 data">{{ guarantee.sec_payment | formatNumber }}</div>
+                </div>
+
 
                 <div class="row rowForm">
                   <div class="col-6 field">Номер страхового договора</div>
@@ -1450,7 +1458,70 @@
               </div>
             </div>
 
-            <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
+            <div class="row rowForm">
+                <div class="col-6 field">Комиссия за организацию кредита</div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.loan_org_comission | formatNumber }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">Другие услуги</div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.other_services | formatNumber }}
+                </div>
+              </div>
+
+            <template v-if="!!fullProfile.Customer.CardNumber && fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715">
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Номер карты
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.Customer.CardNumber }}
+                </div>
+              </div>
+            </template>
+
+            <template v-else-if="fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715">
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Наименование банка
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.microloan_details.bank_name }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  МФО банка
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.microloan_details.mfo }}
+                </div>
+              </div>
+
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  Расчетный счет клиента
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.microloan_details.customer_bill }}
+                </div>
+              </div>
+            </template>
+
+            <template v-if="fullProfile.LoanInfo.LoanProduct == 136 || this.fullProfile.LoanInfo.LoanProduct == 1715">
+              <div class="row rowForm">
+                <div class="col-6 field">
+                  МФО банка продавца
+                </div>
+                <div class="col-6 data">
+                  {{ fullProfile.LoanInfo.microloan_details.mfo }}
+                </div>
+              </div>
+
               <div class="row rowForm">
                 <div class="col-6 field">
                   Наименование продавца/производителя товара/работы/услуги
@@ -1504,7 +1575,7 @@
               </div>
             </template>
 
-            <template v-if="userRole === 'ROLE_CC'">
+            <template v-if="creditRole === 'ROLE_CC'">
               <div class="row rowForm">
                 <div class="col-6 field">
                   Среднемесячная заработная плата(сум)
@@ -1601,7 +1672,7 @@
           </div>
         </div>
 
-        <div class="col-12" v-if="userRole !== 'ROLE_UrWr'">
+        <div class="col-12">
           <div class="clientInfo tab">
             <h4 class="titleForm">
               Информация о клиенте
@@ -1639,7 +1710,7 @@
           />
         
           <q-btn
-            v-if="userRole != 'ROLE_UrWr'"
+            v-if="creditRole != 'ROLE_UrWr'"
             label="Отклонить"
             class="q-ml-md btnFailure"
             @click="
@@ -1693,7 +1764,7 @@
 
               <!-- <div v-if="reason === options.reason[3]" style="max-width: 100%"> -->
               <div
-                v-if="userRole == 'ROLE_CCC' || this.userRole == 'ROLE_UrWr'"
+                v-if="creditRole == 'ROLE_CCC' || this.creditRole == 'ROLE_UrWr'"
                 style="max-width: 100%"
               >
                 <q-input
@@ -1807,11 +1878,11 @@ export default {
       BODecision: true,
       FinalDecision: "",
       dataINPS: null,
-      userRole: this.$store.getters["credits/userRole"],
+      // userRole: this.$store.getters["credits/userRole"],
 
       commentBO: {
         Comment: "",
-        Type: this.$store.getters["credits/userRole"],
+        // Type: this.$store.getters["credits/userRole"],
         CommentPerson: this.$store.getters["auth/username"],
         CommentPersonFIO: this.$store.getters["auth/fullName"]
         //id: 0,
@@ -1835,15 +1906,20 @@ export default {
     };
   },
   async created() {
+    console.log('this.creditRole', this.creditRole)
     this.$store.commit("credits/setTaskId", this.$route.query.taskId);
+    await this.$store.dispatch(
+        "credits/setHeaderRole",
+        this.creditRole
+      );
 
     // если перезагрузили страницу
     if (!axios.defaults.headers.common["BPMCSRFToken"]) {
-      this.userRole = sessionStorage.getItem("userRole");
-      await this.$store.dispatch(
-        "credits/setHeaderRole",
-        sessionStorage.getItem("userRole")
-      );
+      // this.userRole = sessionStorage.getItem("userRole");
+      // await this.$store.dispatch(
+      //   "credits/setHeaderRole",
+      //   sessionStorage.getItem("userRole")
+      // );
       await this.$store.dispatch(
         "credits/setHeaderBPM",
         sessionStorage.getItem("csrf_token")
@@ -1878,6 +1954,10 @@ export default {
     ...mapGetters({
         preapprove_num: "profile/preapprove_num"
     }), 
+
+    creditRole() {
+      return this.$route.query.creditRole;
+    },
 
     date() {
       return this.$route.query.date;
@@ -1920,15 +2000,15 @@ export default {
   methods: {
 
     messageApprove() {
-      return this.userRole == "ROLE_CCC"
+      return this.creditRole == "ROLE_CCC"
               ? 'Form approve'
-              : this.userRole == "ROLE_CC" || this.userRole == "ROLE_UrWr"
+              : this.creditRole == "ROLE_CC" || this.creditRole == "ROLE_UrWr"
                 ? 'Credit success'
                 : null
     },
     messageReject(Decision) {
-      console.log('Decision', this.userRole, Decision)
-      return this.userRole == "ROLE_CCC" && Decision == 'N'
+      console.log('Decision', this.creditRole, Decision)
+      return this.creditRole == "ROLE_CCC" && Decision == 'N'
               ? 'Form reject'
               : Decision == 'N'
                 ? 'Credit failure'
@@ -1952,12 +2032,12 @@ export default {
     },
 
     creditSuccess() {
-      console.log("userRole", this.userRole);
+      console.log("creditRole", this.creditRole);
       console.log("fulForm", this.fullProfile);
 
-      if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
+      if (this.creditRole == "ROLE_CCC" || this.creditRole == "ROLE_UrWr") {
         this.BODecision = true; // кредит одобрен
-      } else if (this.userRole == "ROLE_CC") {
+      } else if (this.creditRole == "ROLE_CC") {
         this.$store.commit("profile/addComment", {
           commentBlock: "CreditCommiteeDecisions",
           comment: this.commentCC
@@ -1983,7 +2063,7 @@ export default {
       if (this.$refs.comment.hasError) {
         this.formHasError = true;
       } else {
-        if (this.userRole == "ROLE_CCC" || this.userRole == "ROLE_UrWr") {
+        if (this.creditRole == "ROLE_CCC" || this.creditRole == "ROLE_UrWr") {
           this.BODecision = false; // кредит на доработку
           this.FinalDecision = this.commentCC.Decision == 'N' 
                                   ? "Отказ"
@@ -1993,7 +2073,7 @@ export default {
             commentBlock: "ApplicationComment",
             comment: this.commentBO
           });
-        } else if (this.userRole == "ROLE_CC") {
+        } else if (this.creditRole == "ROLE_CC") {
           this.$store.commit("profile/addComment", {
             commentBlock: "CreditCommiteeDecisions",
             comment: this.commentCC
@@ -2004,7 +2084,7 @@ export default {
             comment: {
               Comment: this.commentCC.Comment,
               CommentPerson: this.$store.getters["auth/username"],
-              Type: this.$store.getters["credits/userRole"],
+              // Type: this.$store.getters["credits/userRole"],
               CommentPersonFIO: this.$store.getters["auth/fullName"]
             }
           });
@@ -2019,7 +2099,7 @@ export default {
     async sentData(message) {
       this.loader = true;
       let data = {};
-      if (this.userRole == "ROLE_CCC"  || this.userRole == "ROLE_UrWr") {
+      if (this.creditRole == "ROLE_CCC"  || this.creditRole == "ROLE_UrWr") {
         data = {
           output: [
              {
@@ -2040,7 +2120,7 @@ export default {
             }
           ]
         };
-      } else if (this.userRole == "ROLE_CC") {
+      } else if (this.creditRole == "ROLE_CC") {
         
         data = {
           output: [
@@ -2055,7 +2135,7 @@ export default {
                       {
                         Comment: this.commentCC.Comment,
                         CommentPerson: this.$store.getters["auth/username"],
-                        Type: this.$store.getters["credits/userRole"]
+                        // Type: this.$store.getters["credits/userRole"]
                       }
                     ]
             },
@@ -2455,7 +2535,7 @@ export default {
 
 
 .failureCreditForm {
-  width: 600px;
+  // width: 600px;
 
   .q-field__control:after {
     border-radius: 5px!important;

@@ -785,10 +785,13 @@
                       }} -->
                       {{ guarantee.OrgName }}
                       </div>
+                    
                     <div class="col-3 fieldData">ИНН страховой компании</div>
                     <div class="col-3">{{ guarantee.INN }}</div>
                     <div class="col-3 fieldData">Сумма страхового полиса</div>
                     <div class="col-3">{{ guarantee.Sum }}</div>
+                    <div class="col-3 fieldData">Страховой платёж</div>
+                    <div class="col-3">{{ guarantee.sec_payment | formatNumber}}</div>
                     <div class="col-3 fieldData">Номер страхового договора</div>
                     <div class="col-3">{{ guarantee.ContractNumber }}</div>
                     <div class="col-3 fieldData">Дата начала действия договора</div>
@@ -886,7 +889,32 @@
                   }}
                 </div>
 
-                <template v-if="fullProfile.LoanInfo.LoanProduct == 1 || fullProfile.LoanInfo.LoanProduct == 2">
+                <div class="col-3 fieldData">Комиссия за организацию кредита</div>
+                <div class="col-3">{{ fullProfile.LoanInfo.loan_org_comission | formatNumber }}</div>
+
+                <div class="col-3 fieldData">Другие услуги</div>
+                <div class="col-3">{{ fullProfile.LoanInfo.other_services | formatNumber }}</div>
+
+                <template v-if="!!fullProfile.Customer.CardNumber && fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715">
+                  <div class="col-3 fieldData">Номер карты</div>
+                  <div class="col-3">{{ fullProfile.Customer.CardNumber }}</div>
+                </template>
+
+                <template v-else-if="fullProfile.LoanInfo.LoanProduct != 136 && this.fullProfile.LoanInfo.LoanProduct != 1715">
+                  <div class="col-3 fieldData">Наименование банка</div>
+                  <div class="col-3">{{ fullProfile.LoanInfo.microloan_details.bank_name }}</div>
+
+                  <div class="col-3 fieldData">МФО банка</div>
+                  <div class="col-3">{{ fullProfile.LoanInfo.microloan_details.mfo }}</div>
+
+                  <div class="col-3 fieldData">Расчетный счет клиента</div>
+                  <div class="col-3">{{ fullProfile.LoanInfo.microloan_details.customer_bill }}</div>
+                </template>
+
+                <template v-if="fullProfile.LoanInfo.LoanProduct == 136 || this.fullProfile.LoanInfo.LoanProduct == 1715">
+                  <div class="col-3 fieldData">МФО банка продавца</div>
+                  <div class="col-3">{{ fullProfile.LoanInfo.microloan_details.mfo }}</div>
+
                   <div class="col-3 fieldData">Наименование продавца/производителя товара/работы/услуги</div>
                   <div class="col-3">{{ fullProfile.LoanInfo.consumerLoan.nameProduction }}</div>
 
@@ -904,7 +932,7 @@
                   <div class="col-3 fieldData">Номер договора с продавцом/поставщиком  товара/работы/услуги</div>
                   <div class="col-3">{{ fullProfile.LoanInfo.consumerLoan.agreementNumber }}</div>
 
-                  <div class="col-3">Дата договора с продавцом/поставщиком товара/работы/услуги</div>
+                  <div class="col-3 fieldData">Дата договора с продавцом/поставщиком товара/работы/услуги</div>
                   <div class="col-3">{{ fullProfile.LoanInfo.consumerLoan.agreementDate }}</div>
                 </template>
              
@@ -1012,7 +1040,7 @@
               <div class="col-6">
                 ФИО работника банка, принявшего заявление
               </div>
-              <div class="col-6">{{ fullProfile.ClientManagerName }}</div>
+              <div class="col-6">{{ decoder(fullProfile.ClientManagerName) }}</div>
               <div class="col-6">
                 Должность кредитного специалиста
               </div>
@@ -1055,6 +1083,7 @@
 import { mapState } from  "vuex"
 import printJS from "print-js"
 import formatNumber from "../../filters/format_number.js";
+import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
   props: ["currentDate"],
@@ -1155,6 +1184,10 @@ export default {
           i => i.value == district
         ).label
       }
+    },
+
+    decoder(str) {
+      return CommonUtils.decoder(str)
     }
   },
   filters: {
@@ -1187,7 +1220,7 @@ export default {
     font-weight: bold;
   }
 
-  font-size: 12px;
+  font-size: 10px;
   // .q-dialog__inner--minimized > div {
   //   max-width: 50%;
   // }
@@ -1225,7 +1258,7 @@ export default {
     background-color: #ededed;
     color: #0e3475;
     // padding: 3px;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .profileSubTitle {

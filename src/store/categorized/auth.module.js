@@ -1,4 +1,5 @@
 import { decode } from "jsonwebtoken";
+import CommonUtils from "@/shared/utils/CommonUtils";
 import axios from "axios";
 /**
  *  States
@@ -46,7 +47,7 @@ const getters = {
     return state.authenticating;
   },
   fullName: state => {
-    return state.fullName;
+    return CommonUtils.decoder(state.fullName);
   },
   empId: state => {
     return state.empId;

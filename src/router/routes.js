@@ -143,7 +143,7 @@ const routes = [{
       component: Chancellary,
     },
     {
-      path: "registration-document",
+      path: "sub/registration-document",
       name: "Registration Document",
       component: RegistrationChancellary,
     },
@@ -205,7 +205,7 @@ const routes = [{
         beforeEnter: ifAuthenticated
       },
       {
-        path: "payment/:id",
+        path: "sub/payment/:id",
         name: "Payment",
         component: CreditPayment,
         // beforeEnter: ifAuthenticatedCM

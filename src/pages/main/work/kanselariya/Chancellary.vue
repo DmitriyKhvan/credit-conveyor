@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     regLink(){
-      this.$router.push('./registration-document')
+      this.$router.push('sub/registration-document')
     }
   }
 };

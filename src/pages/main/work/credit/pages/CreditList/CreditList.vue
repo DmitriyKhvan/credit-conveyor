@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="userRole === 'ROLE_CCS'" class="pullDocs">
+    <div v-if="userRole.find(i => i === 'ROLE_CCS')" class="pullDocs">
       <q-input
         outlined
         dense
@@ -129,24 +129,39 @@
             </th>
 
             <th class="text-left taskName">
-              <q-select
+              <!-- <q-select
                 square
                 outlined
                 v-model="taskName"
                 :options="options.taskName"
                 dense
                 label="Задача"
+              /> -->
+
+              <q-input
+                square
+                outlined
+                v-model="taskName"
+                dense
+                label="Введите наименование задачи"
               />
             </th>
 
             <th class="text-left taskStatus">
-              <q-select
+              <!-- <q-select
                 square
                 outlined
                 v-model="taskStatus"
                 :options="options.taskStatus"
                 dense
                 label="Статус"
+              /> -->
+              <q-input
+                square
+                outlined
+                v-model="taskStatus"
+                dense
+                label="Введите наименование статуса"
               />
             </th>
             <th class="text-left date" colspan="2">
@@ -238,7 +253,7 @@
                 Дата
               </button>
             </th>
-            <th v-if="userRole === 'ROLE_CCS'" class="text-left"></th>
+            <th v-if="userRole.find(i => i === 'ROLE_CCS')" class="text-left"></th>
           </tr>
         </thead>
         <tbody v-if="loaderList || loading">
@@ -255,16 +270,16 @@
           >
             <!-- <tr v-for="(credit, index) of [1]" :key="index"> -->
             <td class="text-center number applicationRow">
-              <appCreditListItem 
-                :userRole="userRole"
+              <appCreditListItem
+                :userRole="userRole" 
                 :credit="credit"
                 :linkName="index + 1"
               />
             </td>
 
             <td class="text-left applicationNumber applicationRow">
-              <appCreditListItem 
-                :userRole="userRole"
+              <appCreditListItem
+                :userRole="userRole" 
                 :credit="credit"
                 :linkName="credit.applicationNumber"
               />
@@ -326,7 +341,7 @@
               />
             </td>
 
-            <td v-if="userRole === 'ROLE_CCS'" class="print">
+            <td v-if="userRole.find(i => i === 'ROLE_CCS')" class="print">
               <div class="btnBlock">
                 
                 <!-- <template v-if="userRole === 'ROLE_CCS'"> -->
@@ -684,7 +699,6 @@ export default {
         let file = null
 
         if (this.protocolId) {
-          debugger
           file = await this.$store.dispatch(
             "credits/getFile",
             this.protocolId
@@ -738,6 +752,10 @@ export default {
     },
 
     async printFile(taskId, idx, lang = 0) {
+      await this.$store.dispatch(
+          "credits/setHeaderRole",
+          'ROLE_CCS'
+        );
       
       let task = this.credits.find(i => i.taskId == taskId)
       
@@ -793,7 +811,8 @@ export default {
           if (response) {
             this.fileData.lang = lang
             this.fileData.data = dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
-          
+            this.fileData.data.protocol_secretary_fio = this.$store.getters["auth/fullName"]
+
             console.log(JSON.stringify(this.fileData, null, 2))
 
             file = await this.$store.dispatch(
