@@ -246,6 +246,11 @@ export default {
             this.confirmCreditData
           );
 
+          // const response = await this.$store.dispatch(
+          //   "credits/calculationCredit",
+          //   this.confirmCreditData
+          // );
+
           console.log("response", response);
 
           if (response) {
@@ -302,6 +307,11 @@ export default {
             "credits/confirmationCredit",
             this.confirmCreditData
           );
+
+          // const response = await this.$store.dispatch(
+          //   "credits/calculationCredit",
+          //   this.confirmCreditData
+          // );
           console.log("res", response);
 
           // if (res.requestedTask.state === "completed") {

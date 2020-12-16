@@ -833,8 +833,13 @@ export default {
         console.log(JSON.stringify(data, null, 2));
 
         try {
+          // const response = await this.$store.dispatch(
+          //   "credits/confirmationCredit",
+          //   data
+          // );
+
           const response = await this.$store.dispatch(
-            "credits/confirmationCredit",
+            "credits/calculationCredit",
             data
           );
 
