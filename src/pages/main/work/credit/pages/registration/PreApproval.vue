@@ -241,15 +241,15 @@ export default {
         this.$emit("toggleLoaderForm", true);
         console.log(JSON.stringify(this.confirmCreditData, null, 2));
         try {
-          const response = await this.$store.dispatch(
-            "credits/confirmationCredit",
-            this.confirmCreditData
-          );
-
           // const response = await this.$store.dispatch(
-          //   "credits/calculationCredit",
+          //   "credits/confirmationCredit",
           //   this.confirmCreditData
           // );
+
+          const response = await this.$store.dispatch(
+            "credits/calculationCredit",
+            this.confirmCreditData
+          );
 
           console.log("response", response);
 
@@ -277,13 +277,16 @@ export default {
             //this.$emit("toggleLoaderForm", false);
           }
         } catch (error) {
-          //this.$emit("toggleLoaderForm", false);
-          this.$store.commit(
-            "credits/setMessage",
-            CommonUtils.filterServerError(error)
-          );
-          sessionStorage.clear();
-          this.$router.push("/work/credit");
+          this.$emit("toggleLoaderForm", false);
+          setTimeout(() => {
+            this.$store.commit(
+              "credits/setMessage",
+              CommonUtils.filterServerError(error)
+            );
+          }, 500)
+          
+          // sessionStorage.clear();
+          // this.$router.push("/work/credit");
           setTimeout(() => {
             localStorage.removeItem(this.taskIdPreapp);
           }, 1000);
@@ -303,15 +306,15 @@ export default {
 
         console.log(JSON.stringify(this.confirmCreditData, null, 2));
         try {
-          const response = await this.$store.dispatch(
-            "credits/confirmationCredit",
-            this.confirmCreditData
-          );
-
           // const response = await this.$store.dispatch(
-          //   "credits/calculationCredit",
+          //   "credits/confirmationCredit",
           //   this.confirmCreditData
           // );
+
+          const response = await this.$store.dispatch(
+            "credits/calculationCredit",
+            this.confirmCreditData
+          );
           console.log("res", response);
 
           // if (res.requestedTask.state === "completed") {

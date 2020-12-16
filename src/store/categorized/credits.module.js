@@ -304,8 +304,8 @@ export const credits = {
         //   throw 'Next task id is undefined'
         // }
 
-        commit("setTaskId", response.nextTask.id);
-        sessionStorage.setItem("taskId", response.nextTask.id)
+        // commit("setTaskId", response.nextTask.id);
+        // sessionStorage.setItem("taskId", response.nextTask.id)
 
         return response;
       } catch (error) {
