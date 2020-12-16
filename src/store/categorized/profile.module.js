@@ -1577,5 +1577,52 @@ export const profile = {
       return finalFileList;
     },
 
+    fileList_uz: state => {
+      const fileList = state.BPMInput.filter(i => {
+        return (
+          i.label === "overdraft_uz" ||
+          i.label === "consumer_credit_uz" ||
+          i.label === "microloan_uz" ||
+          i.label === "payment_schedule_uz"
+        );
+      });
+
+      state.BPMInput
+        .filter(i => {
+          return (
+            i.label === "overdraft_guarantor_physical_uz" ||
+            i.label === "overdraft_guarantor_legal_uz" ||
+            i.label === "microloan_guarantor_physical_uz" ||
+            i.label === "microloan_guarantor_legal_uz" ||
+            i.label === "consumer_guarantor_physical_uz" ||
+            i.label === "consumer_guarantor_legal_uz"
+          );
+        })
+        .forEach(guarantee => guaranteeDoc(guarantee));
+
+      function guaranteeDoc(guarantee) {
+        guarantee.data.items.forEach((item, index) => {
+          const doc = {
+            data: item,
+            label: guarantee.label,
+            number: index
+          };
+          fileList.push(doc);
+        });
+      }
+
+      const finalFileList = fileList.map(item => {
+        return {
+          ...item,
+          loading: false,
+          loadingUz: false
+        }
+      })
+
+      console.log("fileList", finalFileList);
+
+      return finalFileList;
+    },
+
   }
 };

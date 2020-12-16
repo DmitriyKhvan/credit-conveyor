@@ -26,6 +26,7 @@
               <q-tooltip>Печать</q-tooltip>
             </q-btn>
 
+            
             <q-btn
               :disable="disable"
               class="printDoc"
@@ -33,8 +34,8 @@
               style="color: #74798c"
               icon="print"
               label="(узб.)"
-              @click="printFile(fileData, index + fileList.length, 1)"
-              :loading="fileData.loadingUz"
+              @click="printFile(fileList_uz.find(i => i.label == fileData.label+'_uz'), index + fileList.length, 1)"
+              :loading="fileList_uz.find(i => i.label == fileData.label+'_uz').loadingUz"
             >
               <template v-slot:loading>
                 <q-spinner-facebook />
@@ -69,6 +70,10 @@ export default {
       return this.$store.getters["profile/fileList"];
     },
 
+    fileList_uz() {
+      return this.$store.getters["profile/fileList_uz"];
+    },
+
     cacheDocId() {
       const cacheDocIdArr = [];
       for (let i = 0; i < this.fileList.length * 2; i++) {
@@ -89,7 +94,7 @@ export default {
 
       let file = null;
       this.fileData.lang = lang;
-      this.fileData.type = fileData.label;
+      this.fileData.type = fileData.label.replace('_uz', '');
       this.fileData.data = dataTransform(fileData.data);
       try {
         console.log(JSON.stringify(this.fileData, null, 2));
