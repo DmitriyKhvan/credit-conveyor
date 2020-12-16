@@ -810,7 +810,12 @@ export default {
           
           if (response) {
             this.fileData.lang = lang
-            this.fileData.data = dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
+            if (lang == 0) {
+              this.fileData.data = dataTransform((response.data.input.find(i => i.label == 'extractProtocol')).data)
+            } else {
+              this.fileData.data = dataTransform((response.data.input.find(i => i.label == 'extractProtocol_uz')).data)
+            }
+            
             this.fileData.data.protocol_secretary_fio = this.$store.getters["auth/fullName"]
 
             console.log(JSON.stringify(this.fileData, null, 2))

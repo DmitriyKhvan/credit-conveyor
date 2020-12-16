@@ -833,8 +833,13 @@ export default {
         console.log(JSON.stringify(data, null, 2));
 
         try {
+          // const response = await this.$store.dispatch(
+          //   "credits/confirmationCredit",
+          //   data
+          // );
+
           const response = await this.$store.dispatch(
-            "credits/confirmationCredit",
+            "credits/calculationCredit",
             data
           );
 
@@ -846,6 +851,11 @@ export default {
             this.credits.infoList = response.nextTask.input.find(
               (i) => i.label == "InfoList"
             ).data; // печатные формы
+
+            this.credits.infoList_uz = response.nextTask.input.find(
+              (i) => i.label == "InfoList_uz"
+            ).data; // печатные формы
+
             this.credits.reasonsList = response.nextTask.input.find(
               (i) => i.label == "reasons_list"
             ).data.items;
