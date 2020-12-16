@@ -6,7 +6,7 @@ export const credits = {
   state: {
     creditCount: 0,
     taskId: "",
-    userRole: "",
+    userRole: [],
     // fileId: null, 
     messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки
@@ -73,6 +73,7 @@ export const credits = {
 
     reasonsList: [], // причины отказа от кредита
     infoList: {}, // информационный лист данные
+    moratorium: 0,
 
     preApprovalData: {
       income: 0, // Сколько дохода учитываем
@@ -119,10 +120,11 @@ export const credits = {
 
   },
   actions: {
+    // async authBpm({ state, dispatch, commit, getters, rootGetters }, creditRole = null) {
     async authBpm({ state, dispatch, commit, getters, rootGetters }) {
-
+     
       try {
-
+        let userRole = null
         const empId = rootGetters["auth/empId"];
         console.log('empId', empId)
 
@@ -130,14 +132,29 @@ export const credits = {
         const role = await dispatch("getUserRole", empId);
         console.log("userRole", role);
 
-        const userRole = role.value[0].authority
+        const userRoles = role.value.map(i => {
+          return state.roles[i.authority]
+        })
+
+        // if (userRoles.find(i => i == creditRole)) {
+        //   debugger
+        //   userRole = creditRole
+        // } else {
+        //   debugger
+        //   userRole = userRoles.join()
+        // }
+
+        userRole = userRoles.join()
+
+        console.log('userRole', userRole)
 
         // запись роли в header запроса
-        await dispatch("setHeaderRole", state.roles[userRole]);
-        commit("setUserRole", state.roles[userRole])
+        // await dispatch("setHeaderRole", state.roles[userRole]);
+        await dispatch("setHeaderRole", userRole);
+        commit("setUserRole", userRoles)
 
         // запись роли в sessionStore
-        sessionStorage.setItem("userRole", state.roles[userRole])
+        sessionStorage.setItem("userRole", userRole)
 
         // получение BPM token
         const csrf_token = await dispatch("getBPMToken");
@@ -174,7 +191,12 @@ export const credits = {
       return await state.bpmService.setHeaderBPM(payload);
     },
 
-    async startProcess({ state, commit }) {
+    async startProcess({ state, commit, dispatch }) {
+      await dispatch(
+        "setHeaderRole",
+        "ROLE_KM"
+      );
+
       try {
         const response = await state.bpmService.startProcess();
 
@@ -198,7 +220,8 @@ export const credits = {
         const response = await state.bpmService.getDigIdNumber();
         console.log(response.Answere.AnswereComment)
         if (response.Answere.AnswereComment == "OK") {
-          commit("sentScannerSerialNumber", response.ServiceInfo.ScannerSerial);
+          // commit("sentScannerSerialNumber", response.ServiceInfo.ScannerSerial);
+          commit("sentScannerSerialNumber", 1);
         } else {
           throw "Сканер не определен"
         }
@@ -397,11 +420,13 @@ export const credits = {
         const msg = response.output.find(i => i.name == 'response')
 
         if (code.data == 0) {
-          state.disableGCI = true
+          state.disableGCI = false
           const client_resp = response.internal.find(i => i.name == 'client_resp')
           commit("setClientDataGCI", client_resp.data)
         } else if(code.data == 4) {
+          state.disableGCI = false
           // попробуйте снова
+          state.disableGCI = false
           commit("resetClientDataGCI")
           throw msg.data
         } else {
@@ -412,6 +437,7 @@ export const credits = {
         } 
 
       } catch (error) {
+        state.disableGCI = false
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
         throw error

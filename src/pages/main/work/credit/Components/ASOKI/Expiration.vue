@@ -11,28 +11,30 @@
             <th>ID договора</th>
             <th>Месяц</th>
             <th>Сумма срочной задолженности на начало месяца</th>
-            <th>Сумма просроченной задолженности</th>
-            <th>Сумма срочной задолженности на конец месяца</th>
-            <th>Сумма просроченной задолженности по процентам</th>
-            <th>Сумма просрочек</th>
+            <th>Сумма просроченного платежа</th>
+            <th>Остаток срочной задолженности на конец месяца</th>
+            <th>Сумма просроченного процента</th>
+            <th>Сумма просроченных платежей</th>
           </tr>
         </thead>
-        <tbody
-          v-for="(overdue_payment, index) of data" 
-          :key="'overdue_payment.id' + index"
-          v-if="overdue_payment.overdue.items.length && overdue_payment.id_contract"
-        >
-          <tr 
-            v-for="(overdue, index) of overdue_payment.overdue.items" :key="'overdue' + index"
+        <tbody>
+          <template
+            v-for="(overdue_payment, idx) of data" 
+            v-if="overdue_payment.overdue.items.length && overdue_payment.id_contract"
           >
-            <td>{{ overdue_payment.id_contract }}</td>
-            <td>{{ overdue.month }}</td>
-            <td>{{ overdue.begin_sum | formatNumber }}</td>
-            <td>{{ overdue.overdue_sum | formatNumber }}</td>
-            <td>{{ overdue.end_sum | formatNumber }}</td>
-            <td>{{ overdue.overdue_percent | formatNumber }}</td>
-            <td>{{ overdue.total_overdue | formatNumber }}</td>
-          </tr>
+            <tr 
+              v-for="(overdue, index) of overdue_payment.overdue.items" :key="'overdue' + idx + index"
+            >
+              <td>{{ overdue_payment.id_contract }}</td>
+              <td>{{ overdue.month }}</td>
+              <td>{{ overdue.begin_sum | formatNumber }}</td>
+              <!-- Поменял местами по просбе розницы -->
+              <td>{{ overdue.end_sum | formatNumber }}</td>
+              <td>{{ overdue.overdue_sum | formatNumber }}</td>
+              <td>{{ overdue.overdue_percent | formatNumber }}</td>
+              <td>{{ overdue.total_overdue | formatNumber }}</td>
+            </tr>
+          </template>
         </tbody>
       </q-markup-table>
     </div>

@@ -64,6 +64,7 @@ export default {
   },
   methods: {
     addEditRow(selected) {
+      console.log('selected', selected)
       GridService.addEditRecord(AddEditUser, selected, this.props, this)
         .then(
           ok => {

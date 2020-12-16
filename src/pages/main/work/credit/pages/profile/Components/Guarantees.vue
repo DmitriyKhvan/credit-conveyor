@@ -216,7 +216,7 @@
               />
             </div>
 
-            <div v-if="guarantee.Document.documentType == 7" class="col-4">
+            <div v-if="guarantee.Document.documentType == 9" class="col-4">
               <q-input
                 :disable="disableField"
                 ref="guaranteesDocumentDocumentName"
@@ -1206,7 +1206,7 @@
               </q-input>
             </div>
 
-            <div class="col-4">
+            <!-- <div class="col-4">
               <q-input
                 ref="guaranteesContractExpirationDate"
                 outlined
@@ -1255,8 +1255,72 @@
                   </q-icon>
                 </template>
               </q-input>
+            </div> -->
+
+            <div class="col-4">
+              <q-input
+                ref="guaranteesContractExpirationDate"
+                outlined
+                dense
+                label="Дата истечения действия договора"
+                v-model="guarantee.ExpDate"
+                mask="##.##.####"
+                :rules="[
+                  (val) =>
+                    (val && val.length === 10) ||
+                    'Введите дату окончания действия документа',
+                  guarantee.StartDate
+                    ? (val) =>
+                        msecond(val) > msecond(guarantee.StartDate) ||
+                        'Неверная дата'
+                    : null
+                ]"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      transition-show="scale"
+                      transition-hide="scale"
+                      ref="qDateGuaranteeContractExpirationDate"
+                    >
+                      <q-date
+                        mask="DD.MM.YYYY"
+                        v-model="guarantee.ExpDate"
+                        @input="
+                          ($event) => {
+                            $refs.qDateGuaranteeContractExpirationDate[
+                              index
+                            ].hide();
+                            validDateGuaranteesContract($event, index);
+                          }
+                        "
+                      />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
             </div>
           </div>
+
+          <div class="row q-col-gutter-md">
+            <!-- ref="sec_payment"
+            :rules="[
+                        (val) => !!val || 'Поле должно быть заполнено',
+                        (val) => val != 0 || 'Некорректные данные',
+                      ]" -->
+            <div class="col-4">
+                <q-input
+                  
+                  :disable="disableField"
+                  outlined
+                  v-model="guarantee.sec_payment"
+                  @input="formatNumberInsurence(index)"
+                  dense
+                  label="Страховой платёж"
+                  
+                />
+              </div>
+          </div>  
 
           <q-btn
             :disable="disableField"
@@ -1325,6 +1389,10 @@ export default {
       }
     }
     console.log('this.guaranteeCount', this.guaranteeCount)
+
+    for (let insurence of this.fullProfile.Guarantee.Insurance.items) {
+      insurence.sec_payment = formatNumber(insurence.sec_payment)
+    }
 	},
 	
 	mounted() {
@@ -1367,6 +1435,10 @@ export default {
   },
 	
 	methods: {
+    formatNumberInsurence(idx) {
+      this.fullProfile.Guarantee.Insurance.items[idx].sec_payment = formatNumber(this.fullProfile.Guarantee.Insurance.items[idx].sec_payment)
+    }, 
+
 		addInsurance(guarantee) {
       this.guaranteeCount.push(guarantee);
       this.$store.commit("profile/addInsurance");

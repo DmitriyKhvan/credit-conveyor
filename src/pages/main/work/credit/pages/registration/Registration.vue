@@ -109,7 +109,7 @@
                       :rules="[
                         (val) =>
                           (val && val.length === 9) ||
-                          'Введите Серию и номер паспорта',
+                          'Введите cерию на латинице и номер паспорта',
                         (val) =>
                           !val.match(/(?=(.))\1{7,}/) || 'Неверные данные',
                       ]"
@@ -537,13 +537,17 @@ export default {
       this.loaderForm = true;
       if (this.taskId) {
         this.$store.commit("credits/setTaskId", this.taskId);
+        await this.$store.dispatch(
+            "credits/setHeaderRole",
+            this.creditRole
+          );
 
         if (!axios.defaults.headers.common["BPMCSRFToken"]) {
           // если перезагрузили страницу
-          await this.$store.dispatch(
-            "credits/setHeaderRole",
-            sessionStorage.getItem("userRole")
-          );
+          // await this.$store.dispatch(
+          //   "credits/setHeaderRole",
+          //   sessionStorage.getItem("userRole")
+          // );
           await this.$store.dispatch(
             "credits/setHeaderBPM",
             sessionStorage.getItem("csrf_token")
@@ -617,6 +621,12 @@ export default {
       taskIdPreapp: (state) => state.credits.taskId,
       credits: (state) => state.credits,
     }),
+
+    creditRole() {
+      return this.$route.query.creditRole 
+              ? this.$route.query.creditRole
+              : 'ROLE_KM'
+    },
 
     taskId() {
       return this.$route.query.taskId;
@@ -840,6 +850,10 @@ export default {
               (i) => i.label == "reasons_list"
             ).data.items;
 
+            this.credits.moratorium = response.nextTask.input.find(
+              (i) => i.label == "moratorium"
+            ).data;
+
             this.confirm = true;
             this.$store.commit("credits/creditConfirm", preApproval);
           }
@@ -996,13 +1010,13 @@ export default {
 
     fioValid(val) {
       return (
-        val.match(/^[A-Z'`]+$/) || "Введите на латинице заглавными буквами"
+        val.match(/^[A-Z'`‘]+$/) || "Введите на латинице заглавными буквами"
       ); // только латинские буквы
     },
 
     mValid(val) {
       return (
-        val.match(/^([A-Z'`]+\s)*[A-Z'`]+$/) ||
+        val.match(/^([A-Z'`‘]+\s)*[A-Z'`‘]+$/) ||
         "Введите на латинице заглавными буквами"
       ); // только латинские буквы
     },

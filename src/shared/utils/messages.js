@@ -1,5 +1,5 @@
 export default {
-    'Client error! No such user role': 'Ошибка клиента. Нет такой роли.',
+    'Client error! No such user role': 'Роль не относится к кредитному конвееру.',
     'Network Error': 'Сервер не отвечает',
     'Data is null': 'Данные не пришли',
     'Next task id is undefined': 'Следующий таск неопределен',
