@@ -73,6 +73,7 @@ export const credits = {
 
     reasonsList: [], // причины отказа от кредита
     infoList: {}, // информационный лист данные
+    infoList_uz: {}, // информационный лист данные
     moratorium: 0,
 
     preApprovalData: {
@@ -278,9 +279,9 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-
-        sessionStorage.clear()
-        this.$router.push("/work/credit");
+        // sessionStorage.clear()
+        // this.$router.push("/work/credit");
+        throw error
       }
     },
 
