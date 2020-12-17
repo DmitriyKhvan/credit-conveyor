@@ -3982,7 +3982,7 @@ export default {
 
       try {
         const response = await this.$store.dispatch(
-          "credits/confirmationCredit",
+          "credits/calculationCredit",
           data
         );
         console.log("response", JSON.stringify(response, null, 2));
