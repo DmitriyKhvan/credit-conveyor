@@ -819,6 +819,7 @@ export const profile = {
       state.fullFormProfile.Branch = payload.Branch;
       state.fullFormProfile.BranchName = payload.BranchName;
       state.fullFormProfile.ClientManagerName = payload.ClientManagerName;
+      state.fullFormProfile.ClientManagerLogin = payload.ClientManagerLogin;
 
       // state.fullFormProfile.Customer = payload.Customer
 
