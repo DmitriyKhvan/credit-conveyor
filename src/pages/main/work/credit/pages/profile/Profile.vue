@@ -5,6 +5,15 @@
     </div>
     <div v-else class="row q-px-md">
       <div class="col-10">
+        <ul
+          v-if="fullProfile.rejectDetails.length || !fullProfile.rejectDetails" 
+          class="rejectDetails"
+        >
+          <li
+            v-for="(detail, index) of fullProfile.rejectDetails" 
+            :key="'detail' + index"
+          >{{ detail }}</li>
+        </ul>
         <form @submit.prevent.stop="onSubmit">
           <!-- Private data person -->
           <div class="privatData">
@@ -2723,6 +2732,7 @@
             />
 
             <q-btn
+              :disable="fullProfile.rejectDetails.length ? true : false"
               type="submit"
               :label="
                 fullProfile.BODecision == false || reworkCC != -1
@@ -3893,10 +3903,12 @@ export default {
         BOLogin,
         // Department,
         ClientManagerLogin,
+        ClientManagerName,
         CreditCommiteeDecisions,
         Customer,
         Guarantee,
         LoanInfo,
+        rejectDetails,
         loanAbilityClass,
         loanKoeffCorr,
         ApplicationComment,
@@ -3950,10 +3962,12 @@ export default {
               BOLogin,
               // Department,
               ClientManagerLogin,
+              ClientManagerName,
               CreditCommiteeDecisions,
               Customer,
               Guarantee,
               LoanInfo,
+              rejectDetails,
               loanAbilityClass,
               loanKoeffCorr,
               ApplicationComment,
@@ -4522,6 +4536,10 @@ export default {
 </script>
 <style lang="scss">
 .fullProfile {
+  .rejectDetails {
+    margin: 0 0 10px 0;
+  }
+
   .creditBlock {
     padding: 3px 9px;
     border: 1px solid #ccc;

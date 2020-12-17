@@ -358,9 +358,12 @@ export const profile = {
           mfo: "",
           bank_name: "",
           customer_bill: ""
-        }
-      },
+        },
 
+        collateral: null
+        
+      },
+      rejectDetails: [],
       max_loan_sum: null,
       loanAbilityClass: null,
       loanKoeffCorr: null,
@@ -895,8 +898,16 @@ export const profile = {
       state.fullFormProfile.LoanInfo.ProductMaxSum =
         payload.LoanInfo.ProductMaxSum;
 
+      state.fullFormProfile.LoanInfo.collateral = payload.LoanInfo.collateral
+      state.fullFormProfile.rejectDetails = payload.rejectDetails ? payload.rejectDetails : []
       // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
+
+    // setPreapprovData(state, payload) {
+    //   const fullFormProfile = JSON.parse(JSON.stringify(state.fullFormProfile))
+    //   state.fullFormProfile = {...fullFormProfile, ...payload}
+    //   console.log()
+    // },
 
     addPhone(state) {
       state.fullFormProfile.Customer.PhoneList.items.push({
@@ -1479,8 +1490,10 @@ export const profile = {
             mfo: "",
             bank_name: "",
             customer_bill: ""
-          }
+          },
+          collateral: null
         },
+        rejectDetails: [],
 
         max_loan_sum: null,
         loanAbilityClass: null,
