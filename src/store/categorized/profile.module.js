@@ -899,7 +899,7 @@ export const profile = {
         payload.LoanInfo.ProductMaxSum;
 
       state.fullFormProfile.LoanInfo.collateral = payload.LoanInfo.collateral
-      state.fullFormProfile.rejectDetails = payload.rejectDetails ? payload.rejectDetails : []
+      state.fullFormProfile.rejectDetails = payload.rejectDetails ? payload.rejectDetails : { items: [] }
       // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 

@@ -6,11 +6,11 @@
     <div v-else class="row q-px-md">
       <div class="col-10">
         <ul
-          v-if="fullProfile.rejectDetails.length || !fullProfile.rejectDetails" 
+          v-if="fullProfile.rejectDetails.items.length" 
           class="rejectDetails"
         >
           <li
-            v-for="(detail, index) of fullProfile.rejectDetails" 
+            v-for="(detail, index) of fullProfile.rejectDetails.items" 
             :key="'detail' + index"
           >{{ detail }}</li>
         </ul>
@@ -2732,7 +2732,7 @@
             />
 
             <q-btn
-              :disable="fullProfile.rejectDetails.length ? true : false"
+              :disable="fullProfile.rejectDetails.items.length ? true : false"
               type="submit"
               :label="
                 fullProfile.BODecision == false || reworkCC != -1
