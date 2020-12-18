@@ -3940,8 +3940,8 @@ export default {
       }
 
       LoanInfo.Sum = +LoanInfo.Sum.replace(/[^0-9]/gim, "");
-      LoanInfo.loan_org_comission = +LoanInfo.loan_org_comission.replace(/[^0-9]/gim, "")
-      LoanInfo.other_services = +LoanInfo.other_services.replace(/[^0-9]/gim, "")
+      LoanInfo.loan_org_comission = +String(LoanInfo.loan_org_comission).replace(/[^0-9]/gim, "")
+      LoanInfo.other_services = +String(LoanInfo.other_services).replace(/[^0-9]/gim, "")
 
       // удалил из объекта - Date!!!
       const data = {
@@ -3982,7 +3982,7 @@ export default {
 
       try {
         const response = await this.$store.dispatch(
-          "credits/calculationCredit",
+          "credits/confirmationCredit",
           data
         );
         console.log("response", JSON.stringify(response, null, 2));

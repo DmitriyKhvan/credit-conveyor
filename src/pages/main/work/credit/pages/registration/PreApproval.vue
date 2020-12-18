@@ -238,7 +238,8 @@ export default {
           "Распечатайте документ"
         );
       } else {
-        this.$emit("toggleLoaderForm", true);
+        // this.$emit("toggleLoaderForm", true);
+        this.$emit("toggleLoaderFullScreen", true);
         console.log(JSON.stringify(this.confirmCreditData, null, 2));
         try {
           // const response = await this.$store.dispatch(
@@ -277,7 +278,9 @@ export default {
             //this.$emit("toggleLoaderForm", false);
           }
         } catch (error) {
-          this.$emit("toggleLoaderForm", false);
+          debugger
+          // this.$emit("toggleLoaderForm", false);
+          this.$emit("toggleLoaderFullScreen", false);
           setTimeout(() => {
             this.$store.commit(
               "credits/setMessage",
