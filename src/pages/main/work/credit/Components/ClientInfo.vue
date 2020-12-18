@@ -10,7 +10,7 @@
         align="justify"
       >
         <q-tab name="asoki" label="АСОКИ" />
-        <q-tab name="gsz" label="ГСЗ" />
+        <!-- <q-tab name="gsz" label="ГСЗ" /> -->
         <q-tab name="scoring" label="Скоринг" />
         <q-tab name="deposits" label="Депозиты" />
       </q-tabs>
