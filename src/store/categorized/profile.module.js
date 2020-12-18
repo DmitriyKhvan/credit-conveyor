@@ -358,7 +358,9 @@ export const profile = {
           mfo: "",
           bank_name: "",
           customer_bill: ""
-        }
+        },
+
+        collateral: null
       },
 
       max_loan_sum: null,
@@ -819,6 +821,7 @@ export const profile = {
       state.fullFormProfile.Branch = payload.Branch;
       state.fullFormProfile.BranchName = payload.BranchName;
       state.fullFormProfile.ClientManagerName = payload.ClientManagerName;
+      state.fullFormProfile.ClientManagerLogin = payload.ClientManagerLogin;
 
       // state.fullFormProfile.Customer = payload.Customer
 
@@ -894,6 +897,7 @@ export const profile = {
       state.fullFormProfile.LoanInfo.ProductMaxSum =
         payload.LoanInfo.ProductMaxSum;
 
+      state.fullFormProfile.LoanInfo.collateral = payload.LoanInfo.collateral
       // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
@@ -1478,7 +1482,9 @@ export const profile = {
             mfo: "",
             bank_name: "",
             customer_bill: ""
-          }
+          },
+
+          collateral: null
         },
 
         max_loan_sum: null,
