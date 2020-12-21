@@ -60,20 +60,20 @@ router.beforeEach(async (to, from, next) => {
     store.dispatch("auth/setUserLogged");
     //store.state.idleVue.isIdle = true;
   }
-  // if (isLoggedIn) {
-  //   if (await TokenService.isKeyExist("menus")) {
-  //     let menus = JSON.parse(
-  //       decodeURIComponent(
-  //         escape(window.atob(await TokenService.getKey("menus")))
-  //       )
-  //     );
-  //     if (!CommonUtils.isValueExistInObject(menus, "url", to.path)) {
-  //       if (to.path !== "/404") return next("/404");
-  //     }
-  //   } else {
-  //     AuthService.logout();
-  //   }
-  // }
+  if (isLoggedIn) {
+    if (await TokenService.isKeyExist("menus")) {
+      let menus = JSON.parse(
+        decodeURIComponent(
+          escape(window.atob(await TokenService.getKey("menus")))
+        )
+      );
+      if (!CommonUtils.isValueExistInObject(menus, "url", to.path)) {
+        // if (to.path !== "/404") return next("/404");
+      }
+    } else {
+      AuthService.logout();
+    }
+  }
   //!! LAST
   //* check router path by user role
   // if (isLoggedIn) {
@@ -87,6 +87,9 @@ router.beforeEach(async (to, from, next) => {
   //     AuthService.logout();
   //   }
   // }
+  console.log({ to });
+  console.log({ mod: store.getters["auth/moderatorsList"] });
+
   next();
 });
 
