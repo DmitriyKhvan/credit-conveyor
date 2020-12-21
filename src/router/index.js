@@ -60,20 +60,32 @@ router.beforeEach(async (to, from, next) => {
     store.dispatch("auth/setUserLogged");
     //store.state.idleVue.isIdle = true;
   }
-  // if (isLoggedIn) {
-  //   if (await TokenService.isKeyExist("menus")) {
-  //     let menus = JSON.parse(
-  //       decodeURIComponent(
-  //         escape(window.atob(await TokenService.getKey("menus")))
-  //       )
-  //     );
-  //     if (!CommonUtils.isValueExistInObject(menus, "url", to.path)) {
-  //       if (to.path !== "/404") return next("/404");
-  //     }
-  //   } else {
-  //     AuthService.logout();
-  //   }
-  // }
+  if (isLoggedIn) {
+    if (await TokenService.isKeyExist("menus")) {
+      let menus = JSON.parse(
+        decodeURIComponent(
+          escape(window.atob(await TokenService.getKey("menus")))
+        )
+      );
+      // if (!CommonUtils.isValueExistInObject(menus, "url", to.path)) {
+      //   if (to.path !== "/404") return next("/404");
+      // } else {
+      let mod = store.getters["auth/moderatorsList"];
+      for (let i = 0; i < menus.length; i++) {
+        for (let j = 0; j < mod.length; j++) {
+          if (menus[i].menu_id == mod[j].menu_id) {
+            store.dispatch("auth/setBranchCode", mod[i].filial_code);
+            store.dispatch("auth/setFilialCode", mod[i].branch_code);
+            j = menus.length;
+            break;
+          }
+        }
+      }
+      //}
+    } else {
+      AuthService.logout();
+    }
+  }
   //!! LAST
   //* check router path by user role
   // if (isLoggedIn) {
@@ -87,6 +99,9 @@ router.beforeEach(async (to, from, next) => {
   //     AuthService.logout();
   //   }
   // }
+  console.log({ to });
+  console.log({ mod: store.getters["auth/moderatorsList"] });
+
   next();
 });
 
