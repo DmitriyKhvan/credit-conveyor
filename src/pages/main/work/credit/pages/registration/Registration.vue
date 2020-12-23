@@ -826,6 +826,7 @@ export default {
                 creditTerm: Number(periodCredit),
                 loanRate: Number(loanRate),
                 ProductMaxSum: Number(ProductMaxSum),
+                loanPurpose: loan_purpose, // цель кредитования
               },
             },
           ],

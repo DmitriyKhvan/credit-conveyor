@@ -86,7 +86,7 @@
         <div class="scoringList__block">
           <div class="row">
             <div class="col-7">
-              <h3 class="scoringList__title">4. ЛСБО:</h3>
+              <h3 class="scoringList__title">3. ЛСБО:</h3>
             </div>
             <div class="col-5">
               <q-checkbox v-model="data.Customer.LSBO" disable />
@@ -95,10 +95,10 @@
         </div>
 
         <div class="scoringList__block">
-          <h3 class="scoringList__title">5. Внутренняя кредитная история:</h3>
+          <h3 class="scoringList__title">4. Внутренняя кредитная история:</h3>
           <div class="row subList">
             <div class="col-7">
-              <p class="scoringList__field">5.1 Количество кредитов в НБУ</p>
+              <p class="scoringList__field">4.1 Количество кредитов в НБУ</p>
             </div>
 
             <div class="col-5">
@@ -109,7 +109,7 @@
           <div class="row subList">
             <div class="col-7">
               <p class="scoringList__field">
-                5.2 Общая сумма кредитов (неоплаченный остаток)
+                4.2 Общая сумма кредитов (неоплаченный остаток)
               </p>
             </div>
             <div class="col-5">
@@ -120,7 +120,7 @@
           <div class="row subList">
             <div class="col-7">
               <p class="scoringList__field">
-                5.3 Общая сумма ежемесячных платежей по кредитам
+                4.3 Общая сумма ежемесячных платежей по кредитам
               </p>
             </div>
             <div class="col-5">
