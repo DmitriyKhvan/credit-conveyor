@@ -1575,7 +1575,8 @@
               </div>
             </template>
 
-            <template v-if="creditRole === 'ROLE_CC'">
+            <!-- <template v-if="creditRole === 'ROLE_CC'"> -->
+            <template>
               <div class="row rowForm">
                 <div class="col-6 field">
                   Среднемесячная заработная плата(сум)
@@ -2161,13 +2162,13 @@ export default {
         console.log("response", JSON.stringify(response, null, 2));
 
         if (response) {
+          this.$store.commit("credits/removeTask", this.$route.query.taskId);
           setTimeout(() => {
             this.$store.commit("credits/setMessage", message);
+            this.$router.go(-1);
           }, 500)
           
-          this.$store.commit("credits/removeTask", this.$route.query.taskId);
-          
-          this.$router.go(-1);
+          // this.$router.go(-1);
           // this.$router.push("/work/credit");
         }
 
