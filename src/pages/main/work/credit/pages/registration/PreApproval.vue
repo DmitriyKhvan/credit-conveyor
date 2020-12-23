@@ -238,18 +238,19 @@ export default {
           "Распечатайте документ"
         );
       } else {
-        this.$emit("toggleLoaderForm", true);
+        // this.$emit("toggleLoaderForm", true);
+        this.$emit("toggleLoaderFullScreen", true);
         console.log(JSON.stringify(this.confirmCreditData, null, 2));
         try {
-          const response = await this.$store.dispatch(
-            "credits/confirmationCredit",
-            this.confirmCreditData
-          );
-
           // const response = await this.$store.dispatch(
-          //   "credits/calculationCredit",
+          //   "credits/confirmationCredit",
           //   this.confirmCreditData
           // );
+
+          const response = await this.$store.dispatch(
+            "credits/calculationCredit",
+            this.confirmCreditData
+          );
 
           console.log("response", response);
 
@@ -277,17 +278,19 @@ export default {
             //this.$emit("toggleLoaderForm", false);
           }
         } catch (error) {
-          //this.$emit("toggleLoaderForm", false);
-          this.$store.commit(
-            "credits/setMessage",
-            CommonUtils.filterServerError(error)
-          );
-          sessionStorage.clear();
-          this.$router.push("/work/credit");
+          debugger
+          // this.$emit("toggleLoaderForm", false);
+          this.$emit("toggleLoaderFullScreen", false);
           setTimeout(() => {
+            this.$store.commit(
+              "credits/setMessage",
+              CommonUtils.filterServerError(error)
+            );
             localStorage.removeItem(this.taskIdPreapp);
-          }, 1000);
-            
+          }, 1000)
+          
+          // sessionStorage.clear();
+          // this.$router.push("/work/credit");
         }
       }
     },
@@ -334,11 +337,12 @@ export default {
           }
         } catch (error) {
           this.$emit("toggleLoaderFullScreen", false);
-          this.$store.commit(
-            "credits/setMessage",
-            CommonUtils.filterServerError(error)
-          );
+          
           setTimeout(() => {
+            this.$store.commit(
+              "credits/setMessage",
+              CommonUtils.filterServerError(error)
+            );
             localStorage.removeItem(this.taskIdPreapp);
           }, 1000);
         }

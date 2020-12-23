@@ -5,6 +5,15 @@
     </div>
     <div v-else class="row q-px-md">
       <div class="col-10">
+        <ul
+          v-if="fullProfile.rejectDetails.items.length" 
+          class="rejectDetails"
+        >
+          <li
+            v-for="(detail, index) of fullProfile.rejectDetails.items" 
+            :key="'detail' + index"
+          >{{ detail }}</li>
+        </ul>
         <form @submit.prevent.stop="onSubmit">
           <!-- Private data person -->
           <div class="privatData">
@@ -2723,6 +2732,7 @@
             />
 
             <q-btn
+              :disable="fullProfile.rejectDetails.items.length ? true : false"
               type="submit"
               :label="
                 fullProfile.BODecision == false || reworkCC != -1
@@ -3894,10 +3904,12 @@ export default {
         // Department,
         ClientManagerName,
         ClientManagerLogin,
+        ClientManagerName,
         CreditCommiteeDecisions,
         Customer,
         Guarantee,
         LoanInfo,
+        rejectDetails,
         loanAbilityClass,
         loanKoeffCorr,
         ApplicationComment,
@@ -3929,8 +3941,8 @@ export default {
       }
 
       LoanInfo.Sum = +LoanInfo.Sum.replace(/[^0-9]/gim, "");
-      LoanInfo.loan_org_comission = +LoanInfo.loan_org_comission.replace(/[^0-9]/gim, "")
-      LoanInfo.other_services = +LoanInfo.other_services.replace(/[^0-9]/gim, "")
+      LoanInfo.loan_org_comission = +String(LoanInfo.loan_org_comission).replace(/[^0-9]/gim, "")
+      LoanInfo.other_services = +String(LoanInfo.other_services).replace(/[^0-9]/gim, "")
 
       // удалил из объекта - Date!!!
       const data = {
@@ -3952,10 +3964,12 @@ export default {
               // Department,
               ClientManagerName,
               ClientManagerLogin,
+              ClientManagerName,
               CreditCommiteeDecisions,
               Customer,
               Guarantee,
               LoanInfo,
+              rejectDetails,
               loanAbilityClass,
               loanKoeffCorr,
               ApplicationComment,
@@ -4524,6 +4538,10 @@ export default {
 </script>
 <style lang="scss">
 .fullProfile {
+  .rejectDetails {
+    margin: 0 0 10px 0;
+  }
+
   .creditBlock {
     padding: 3px 9px;
     border: 1px solid #ccc;
