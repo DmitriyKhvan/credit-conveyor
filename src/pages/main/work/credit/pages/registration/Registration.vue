@@ -786,7 +786,7 @@ export default {
                 //payment_id: Number(typeStepCredit),
                 loan_product_id: Number(typeCredit),
                 finance: {
-                  loanPurpose: loan_purpose, // цель кредитования
+                  loan_purpose, // цель кредитования
                   incomingOther: Number(
                     String(externalIncomeSize).replace(/[^0-9]/gim, "")
                   ), //доп. доход
@@ -826,6 +826,7 @@ export default {
                 creditTerm: Number(periodCredit),
                 loanRate: Number(loanRate),
                 ProductMaxSum: Number(ProductMaxSum),
+                loanPurpose: loan_purpose, // цель кредитования
               },
             },
           ],
