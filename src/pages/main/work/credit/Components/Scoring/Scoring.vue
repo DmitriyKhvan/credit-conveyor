@@ -60,10 +60,9 @@
               <h3 class="scoringList__title">2. ГСЗ:</h3>
             </div>
             <div class="col-5">
-              <p class="scoringList__value"> -->
-                <!-- Соответствует -->
-                <!-- {{ statusGSZ }} -->
-              <!-- </p>
+              <p class="scoringList__value">
+                {{ statusGSZ }}
+              </p>
             </div>
           </div>
         </div> -->
@@ -71,7 +70,7 @@
         <div class="scoringList__block">
           <div class="row">
             <div class="col-7">
-              <h3 class="scoringList__title">3. Черные списки:</h3>
+              <h3 class="scoringList__title">2. Черные списки:</h3>
             </div>
             <div class="col-5">
               <p class="scoringList__value">
