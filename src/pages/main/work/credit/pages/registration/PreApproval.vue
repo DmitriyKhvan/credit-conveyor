@@ -278,7 +278,6 @@ export default {
             //this.$emit("toggleLoaderForm", false);
           }
         } catch (error) {
-          debugger
           // this.$emit("toggleLoaderForm", false);
           this.$emit("toggleLoaderFullScreen", false);
           setTimeout(() => {
