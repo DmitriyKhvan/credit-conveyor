@@ -835,15 +835,15 @@ export default {
         console.log(JSON.stringify(data, null, 2));
 
         try {
-          const response = await this.$store.dispatch(
-            "credits/confirmationCredit",
-            data
-          );
-
           // const response = await this.$store.dispatch(
-          //   "credits/calculationCredit",
+          //   "credits/confirmationCredit",
           //   data
           // );
+
+          const response = await this.$store.dispatch(
+            "credits/calculationCredit",
+            data
+          );
 
           console.log("response", response);
           if (response) {
