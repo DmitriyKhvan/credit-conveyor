@@ -4000,7 +4000,8 @@ export default {
           }, 500)
          
           this.$store.commit("credits/removeTask", this.taskId);
-          this.$router.go(-1);
+          this.$router.push("/work/credit/applications");
+          // this.$router.go(-1);
           // window.location.href = 'work/credit/applications'
         }
 
