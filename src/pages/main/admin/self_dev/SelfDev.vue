@@ -1,10 +1,24 @@
 <template>
-  <router-view />
+  <div>
+    <sub-header-tab :path="path" />
+    <router-view />
+  </div>
 </template>
 
 <script>
-export default {};
+import SubHeaderTab from "@/components/SubHeaderTab";
+
+export default {
+  components: {
+    SubHeaderTab
+  },
+  computed: {
+    path() {
+      //console.log(this.$route.path);
+      return this.$route.path;
+    }
+  }
+};
 </script>
 
-<style>
-</style>
+<style></style>
