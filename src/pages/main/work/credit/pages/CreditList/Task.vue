@@ -2162,14 +2162,20 @@ export default {
         console.log("response", JSON.stringify(response, null, 2));
 
         if (response) {
-          this.$store.commit("credits/removeTask", this.$route.query.taskId);
+          const sleep = ms => {
+            return new Promise(resolve => setTimeout(resolve, ms))
+          }
+
+          await sleep(3000)
+          
           setTimeout(() => {
             this.$store.commit("credits/setMessage", message);
             this.$router.go(-1);
           }, 500)
           
-          // this.$router.go(-1);
-          // this.$router.push("/work/credit");
+          this.$store.commit("credits/removeTask", this.$route.query.taskId);
+          this.$router.go(-1);
+          // window.location.href = 'work/credit/applications'
         }
 
         this.loader = false;

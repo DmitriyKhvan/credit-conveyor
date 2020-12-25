@@ -3989,13 +3989,19 @@ export default {
         //console.log('nextTaskId', response.nextTask.id)
 
         if (response) {
+          const sleep = ms => {
+            return new Promise(resolve => setTimeout(resolve, ms))
+          }
+
+          await sleep(3000)
+
           setTimeout(() => {
              this.$store.commit("credits/setMessage", this.message);
           }, 500)
          
           this.$store.commit("credits/removeTask", this.taskId);
-          this.$router.push("/work/credit");
-          //this.$router.go(-1);
+          this.$router.go(-1);
+          // window.location.href = 'work/credit/applications'
         }
 
         this.loader = false;
