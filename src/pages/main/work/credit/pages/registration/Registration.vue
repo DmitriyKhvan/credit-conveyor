@@ -14,6 +14,16 @@
                 alt
                 class="personPhoto"
               />
+              <div class="photoComparison column justify-center items-center text-center" v-if="personalData.livePersonPhoto != null">
+                <div class="photoSimilarity q-pb-xs" :style="`color: ${personalData.matchPercent >= 75 ? '#47B881' : '#910E02' } `">
+                  Совпадение {{personalData.matchPercent}}%
+                </div>
+                <div class="showComparison row justify-center items-center no-wrap q-pb-sm q-px-3 text-blue-grey-2"
+                     @click="showRegulaInfo(regulaType='match', payload={personPhoto: personalData.personPhoto, livePersonPhoto: personalData.livePersonPhoto, matchPercent: personalData.matchPercent})">
+                  <q-icon name="visibility" class="q-mr-sm" size="xs"/>
+                  <span>Посмотреть сравнение</span>
+                </div>
+              </div>
             </div>
             <div v-else class="default_personPhoto_block">
               <img
@@ -21,6 +31,20 @@
                 alt
                 class="default_personPhoto"
               />
+            </div>
+            <div class="showBtns q-px-sm q-mt-sm">
+              <div class="row items-center no-wrap q-pb-xs text-blue-grey-3" v-if="personalData.livePersonVideo != null" @click="getBlobLiveVideo" >
+                <q-icon name="videocam" class="q-mr-sm" size="xs"/>
+                <span>Посмотреть лайв видео</span>
+              </div>
+<!--              <div class="row items-center no-wrap q-pb-xs text-blue-grey-3" v-if="personalData.livePersonVideo" @click="showRegulaInfo(regulaType='liveVideo', payload={livePersonVideo: personalData.livePersonVideo} )">-->
+<!--                <q-icon name="videocam" class="q-mr-sm" size="xs"/>-->
+<!--                <span>Посмотреть лайв видео</span>-->
+<!--              </div>-->
+              <div class="row items-center no-wrap q-pb-xs text-blue-grey-3" v-if="personalData.documentScan" @click="showRegulaInfo(regulaType='docScan', payload={docScan: personalData.documentScan})">
+                <q-icon name="crop_free" class="q-mr-sm" size="xs"/>
+                <span>Посмотреть скан паспорта</span>
+              </div>
             </div>
           </div>
 
@@ -137,7 +161,7 @@
 
                     <!-- Button auto complete person data -->
                     <app-auto-complete-data v-else-if="scannerSerialNumber" />
-                    
+
                   </div>
                 </div>
 
@@ -228,7 +252,7 @@
                       map-options
                       :rules="[(val) => !!val || 'Выберите семейное положение']"
                     />
-                    
+
                   </div>
                   <div class="col-4">
                     <q-select
@@ -490,20 +514,22 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import { mapState } from "vuex";
+import axios from 'axios'
+import { mapState } from 'vuex'
 
-import PreApproval from "./PreApproval";
-import AutoCompleteData from "./AutoCompleteData";
-import Loader from "@/components/Loader";
-import LoaderFullScreen from "@/components/LoaderFullScreen";
+import PreApproval from './PreApproval'
+import AutoCompleteData from './AutoCompleteData'
+import Loader from '@/components/Loader'
+import LoaderFullScreen from '@/components/LoaderFullScreen'
 
-import CommonUtils from "@/shared/utils/CommonUtils";
-import formatNumber from "../../filters/format_number.js";
-import { validItems } from "../../filters/valid_filter";
+import RegulaInfoPopup from './RegulaInfoPopup'
+
+import CommonUtils from '@/shared/utils/CommonUtils'
+import formatNumber from '../../filters/format_number.js'
+import { validItems } from '../../filters/valid_filter'
 
 export default {
-  data() {
+  data () {
     return {
       loadingGCI: false,
       loan_product_dict: null,
@@ -516,92 +542,92 @@ export default {
       loaderFullScreen: false,
       options: {
         family: [],
-        //наличие дополнительного дохода
+        // наличие дополнительного дохода
         additIncSourOption: [],
 
-        //источник дополнительного дохода
+        // источник дополнительного дохода
         typeCredits: [],
 
-        //тип графика гашения
+        // тип графика гашения
         typeStepCredits: [],
 
         // цель кредитования
-        loanPurpose: [],
-      },
-    };
+        loanPurpose: []
+      }
+    }
   },
-  async created() {
-    this.$store.commit("credits/resetPersonData");
+  async created () {
+    this.$store.commit('credits/resetPersonData')
 
     try {
-      this.loaderForm = true;
+      this.loaderForm = true
       if (this.taskId) {
-        this.$store.commit("credits/setTaskId", this.taskId);
+        this.$store.commit('credits/setTaskId', this.taskId)
         await this.$store.dispatch(
-            "credits/setHeaderRole",
-            this.creditRole
-          );
+          'credits/setHeaderRole',
+          this.creditRole
+        )
 
-        if (!axios.defaults.headers.common["BPMCSRFToken"]) {
+        if (!axios.defaults.headers.common['BPMCSRFToken']) {
           // если перезагрузили страницу
           // await this.$store.dispatch(
           //   "credits/setHeaderRole",
           //   sessionStorage.getItem("userRole")
           // );
           await this.$store.dispatch(
-            "credits/setHeaderBPM",
-            sessionStorage.getItem("csrf_token")
-          );
+            'credits/setHeaderBPM',
+            sessionStorage.getItem('csrf_token')
+          )
         }
 
         const response = await this.$store.dispatch(
-          "profile/getFullForm",
+          'profile/getFullForm',
           this.taskId
-        );
+        )
         if (response) {
-          this.getPreapprovData(response.data.input);
+          this.getPreapprovData(response.data.input)
         }
 
         if (localStorage.getItem(this.taskId)) {
           this.$store.commit(
-            "credits/setPersonalData",
+            'credits/setPersonalData',
             JSON.parse(localStorage.getItem(this.taskId))
-          );
+          )
           // чтоб не оставлять предыдущий taskId в случае перехода на полную форму (следующий taskId)
-          localStorage.removeItem(this.taskIdPreapp);
+          localStorage.removeItem(this.taskIdPreapp)
         }
 
-        this.setLoan(this.personalData.typeCredit);
+        this.setLoan(this.personalData.typeCredit)
 
-        this.loaderForm = false;
+        this.loaderForm = false
       } else {
-        const auth = await this.$store.dispatch("credits/authBpm");
-        console.log("auth", auth);
-        const process = await this.$store.dispatch("credits/startProcess");
-        console.log("process", process);
+        const auth = await this.$store.dispatch('credits/authBpm')
+        console.log('auth', auth)
+        const process = await this.$store.dispatch('credits/startProcess')
+        console.log('process', process)
 
         if (process) {
-          this.getPreapprovData(process.userTaskCreditDetailed.input);
-          this.loaderForm = false;
+          this.getPreapprovData(process.userTaskCreditDetailed.input)
+          this.loaderForm = false
         }
       }
     } catch (error) {
       this.$store.commit(
-        "credits/setMessage",
+        'credits/setMessage',
         CommonUtils.filterServerError(error)
-      );
-      this.loaderForm = false;
+      )
+      this.loaderForm = false
     }
 
     try {
-      await this.$store.dispatch("credits/getDigIdNumber");
-      this.loader = false;
+      await this.$store.dispatch('credits/getDigIdNumber')
+      this.loader = false
     } catch (error) {
-      console.log("DigId", error);
-      this.loader = false;
+      console.log('DigId', error)
+      this.loader = false
     }
   },
-  mounted() {
+  mounted () {
     // window.onunload = function() {
     //   localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
     // }
@@ -609,8 +635,8 @@ export default {
     //   localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
     // }
   },
-  beforeDestroy() {
-    localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData));
+  beforeDestroy () {
+    localStorage.setItem(this.taskIdPreapp, JSON.stringify(this.personalData))
   },
   computed: {
     ...mapState({
@@ -619,32 +645,32 @@ export default {
       scannerSerialNumber: (state) => state.credits.scannerSerialNumber,
       personalData: (state) => state.credits.personalData,
       taskIdPreapp: (state) => state.credits.taskId,
-      credits: (state) => state.credits,
+      credits: (state) => state.credits
     }),
 
-    creditRole() {
-      return this.$route.query.creditRole 
-              ? this.$route.query.creditRole
-              : 'ROLE_KM'
+    creditRole () {
+      return this.$route.query.creditRole
+        ? this.$route.query.creditRole
+        : 'ROLE_KM'
     },
 
-    taskId() {
-      return this.$route.query.taskId;
+    taskId () {
+      return this.$route.query.taskId
     }
   },
   watch: {
-    "personalData.children"(status) {
+    'personalData.children' (status) {
       if (!status) {
-        this.personalData.childrenCount = 0;
+        this.personalData.childrenCount = 0
       }
     },
 
-    "personalData.externalIncome"(status) {
+    'personalData.externalIncome' (status) {
       if (!status) {
-        this.personalData.externalIncomeSize = 0;
-        this.personalData.additionalIncomeSource = "";
+        this.personalData.externalIncomeSize = 0
+        this.personalData.additionalIncomeSource = ''
       }
-    },
+    }
     // Для форматирования чисeл
     // "personalData.income"(number) {
     //   console.log(formatNumber(number))
@@ -653,61 +679,88 @@ export default {
     // }
   },
   methods: {
-    formatNumber(item) {
+    getBlobLiveVideo () {
+      const base64 = `data:video/x-ms-wmv;base64,${this.personalData.livePersonVideo}`
+
+      fetch(base64).then(res => res.blob()).then(res => {
+        const fr = new FileReader()
+        fr.readAsDataURL(res)
+        fr.onload = function () {
+          Object.assign(document.createElement('a'), {
+            href: fr.result,
+            download: 'live-video'
+          }).click()
+        }
+      })
+    },
+    showRegulaInfo (regulaType, payload) {
+      // Открывает диалоговое окно просмотра
+      this.$q.dialog({
+        component: RegulaInfoPopup,
+        parent: this,
+        regulaInfo: {
+          regulaType: regulaType,
+          payload: payload
+        },
+        persistent: true
+      })
+    },
+
+    formatNumber (item) {
       // this.personalData[item] = this.personalData[item].replace(/[^0-9]/gim,'')
       // console.log('number', number)
       // this.personalData[item] = formatNumber((this.personalData[item]).replace(/\s+/g, ''))
-      this.personalData[item] = formatNumber(this.personalData[item]);
+      this.personalData[item] = formatNumber(this.personalData[item])
     },
 
-    async onSubmit() {
-      console.log("preapp", this.personalData);
-      this.$refs.surname.validate();
-      this.$refs.name.validate();
-      this.$refs.mname.validate();
-      this.$refs.birthday.validate();
-      this.$refs.inn.validate();
-      this.$refs.phone.validate();
-      this.$refs.pinpp.validate();
-      this.$refs.pasport.validate();
+    async onSubmit () {
+      console.log('preapp', this.personalData)
+      this.$refs.surname.validate()
+      this.$refs.name.validate()
+      this.$refs.mname.validate()
+      this.$refs.birthday.validate()
+      this.$refs.inn.validate()
+      this.$refs.phone.validate()
+      this.$refs.pinpp.validate()
+      this.$refs.pasport.validate()
 
-      this.$refs.typeCredit.validate();
+      this.$refs.typeCredit.validate()
 
       if (
         !!this.personalData.typeCredit &&
         this.personalData.typeCredit != 1095
       ) {
-        this.$refs.typeStepCredit.validate();
-        this.$refs.periodCredit.validate();
+        this.$refs.typeStepCredit.validate()
+        this.$refs.periodCredit.validate()
       } else {
-        validItems(this.$refs, "typeStepCredit");
-        validItems(this.$refs, "periodCredit");
+        validItems(this.$refs, 'typeStepCredit')
+        validItems(this.$refs, 'periodCredit')
       }
 
-      if (!!this.personalData.typeCredit) {
-        this.$refs.loan_purpose.validate();
+      if (this.personalData.typeCredit) {
+        this.$refs.loan_purpose.validate()
       } else {
-        validItems(this.$refs, "loan_purpose");
+        validItems(this.$refs, 'loan_purpose')
       }
 
-      this.$refs.familyStatus.validate();
+      this.$refs.familyStatus.validate()
 
       if (this.personalData.children) {
-        this.$refs.childrenCount.validate();
+        this.$refs.childrenCount.validate()
       } else {
-        validItems(this.$refs, "childrenCount");
+        validItems(this.$refs, 'childrenCount')
       }
 
-      this.$refs.income.validate();
-      this.$refs.expense.validate();
-      this.$refs.otherExpenses.validate();
+      this.$refs.income.validate()
+      this.$refs.expense.validate()
+      this.$refs.otherExpenses.validate()
 
       if (this.personalData.externalIncome) {
-        this.$refs.externalIncomeSize.validate();
-        this.$refs.additionalIncomeSource.validate();
+        this.$refs.externalIncomeSize.validate()
+        this.$refs.additionalIncomeSource.validate()
       } else {
-        validItems(this.$refs, "externalIncomeSize");
-        validItems(this.$refs, "additionalIncomeSource");
+        validItems(this.$refs, 'externalIncomeSize')
+        validItems(this.$refs, 'additionalIncomeSource')
       }
 
       if (
@@ -731,9 +784,9 @@ export default {
         this.$refs.externalIncomeSize.hasError ||
         this.$refs.additionalIncomeSource.hasError
       ) {
-        this.formHasError = true;
+        this.formHasError = true
       } else {
-        this.loaderFullScreen = true;
+        this.loaderFullScreen = true
         const {
           children,
           familyStatus,
@@ -764,12 +817,12 @@ export default {
           childCost,
           client_code,
           client_uid
-        } = this.personalData;
+        } = this.personalData
 
         const data = {
           output: [
             {
-              name: "preApp",
+              name: 'preApp',
               data: {
                 maritalInfo: {
                   childrens: children,
@@ -777,24 +830,24 @@ export default {
                     (i) => i.value == familyStatus
                   )
                     ? this.options.family.find((i) => i.value == familyStatus)
-                        .label
-                    : "",
+                      .label
+                    : '',
                   statusId: Number(familyStatus),
-                  childrenCount: Number(childrenCount),
+                  childrenCount: Number(childrenCount)
                 },
-                //payment_id: Number(typeStepCredit),
+                // payment_id: Number(typeStepCredit),
                 loan_product_id: Number(typeCredit),
                 finance: {
                   loan_purpose, // цель кредитования
                   incomingOther: Number(
-                    String(externalIncomeSize).replace(/[^0-9]/gim, "")
-                  ), //доп. доход
+                    String(externalIncomeSize).replace(/[^0-9]/gim, '')
+                  ), // доп. доход
                   expensesOther: Number(
-                    String(otherExpenses).replace(/[^0-9]/gim, "")
-                  ), //др. переод. расходы
-                  expensesPeriodic: Number(expense.replace(/[^0-9]/gim, "")), //переод. расходы
-                  incomingConfirm: Number(income.replace(/[^0-9]/gim, "")), //ежем. доход
-                  incomeType: additionalIncomeSource, //тип доп. дохода
+                    String(otherExpenses).replace(/[^0-9]/gim, '')
+                  ), // др. переод. расходы
+                  expensesPeriodic: Number(expense.replace(/[^0-9]/gim, '')), // переод. расходы
+                  incomingConfirm: Number(income.replace(/[^0-9]/gim, '')), // ежем. доход
+                  incomeType: additionalIncomeSource // тип доп. дохода
                 },
                 customer: {
                   firstName: name,
@@ -806,100 +859,100 @@ export default {
                     number: passport.slice(2),
                     series: passport.slice(0, 2),
                     givenDate,
-                    expDate,
+                    expDate
                   },
-                  mainPhone: phone.replace(/[\s()]/g, ""),
+                  mainPhone: phone.replace(/[\s()]/g, ''),
                   tin: inn,
                   pinpp,
                   client_code,
                   client_uid
-                },
-              },
+                }
+              }
             },
             {
-              name: "creditProduct",
+              name: 'creditProduct',
               data: {
                 repaymentType: Number(typeStepCredit),
                 spouseCost: Number(spouseCost),
                 childCost: Number(childCost),
                 creditTerm: Number(periodCredit),
                 loanRate: Number(loanRate),
-                ProductMaxSum: Number(ProductMaxSum),
-              },
-            },
-          ],
-        };
+                ProductMaxSum: Number(ProductMaxSum)
+              }
+            }
+          ]
+        }
 
-        console.log(JSON.stringify(data, null, 2));
+        console.log(JSON.stringify(data, null, 2))
 
         try {
           const response = await this.$store.dispatch(
-            "credits/confirmationCredit",
+            'credits/confirmationCredit',
             data
-          );
+          )
 
           // const response = await this.$store.dispatch(
           //   "credits/calculationCredit",
           //   data
           // );
 
-          console.log("response", response);
+          console.log('response', response)
           if (response) {
             const preApproval = response.nextTask.input.find(
-              (i) => i.label == "preApproval"
-            ).data;
+              (i) => i.label == 'preApproval'
+            ).data
             this.credits.infoList = response.nextTask.input.find(
-              (i) => i.label == "InfoList"
-            ).data; // печатные формы
+              (i) => i.label == 'InfoList'
+            ).data // печатные формы
 
             this.credits.infoList_uz = response.nextTask.input.find(
-              (i) => i.label == "InfoList_uz"
-            ).data; // печатные формы
+              (i) => i.label == 'InfoList_uz'
+            ).data // печатные формы
 
             this.credits.reasonsList = response.nextTask.input.find(
-              (i) => i.label == "reasons_list"
-            ).data.items;
+              (i) => i.label == 'reasons_list'
+            ).data.items
 
             this.credits.moratorium = response.nextTask.input.find(
-              (i) => i.label == "moratorium"
-            ).data;
+              (i) => i.label == 'moratorium'
+            ).data
 
-            this.confirm = true;
-            this.$store.commit("credits/creditConfirm", preApproval);
+            this.confirm = true
+            this.$store.commit('credits/creditConfirm', preApproval)
           }
 
-          this.loaderFullScreen = false;
+          this.loaderFullScreen = false
         } catch (error) {
           this.$store.commit(
-            "credits/setMessage",
+            'credits/setMessage',
             CommonUtils.filterServerError(error)
-          );
-          this.loaderFullScreen = false;
+          )
+          this.loaderFullScreen = false
           setTimeout(() => {
-            localStorage.removeItem(this.taskIdPreapp);
-          }, 1000);
+            localStorage.removeItem(this.taskIdPreapp)
+          }, 1000)
         }
       }
     },
 
-    async checkClient() {
-      this.loadingGCI = true;
+    async checkClient () {
+      this.loadingGCI = true
       const data = {
         input: [
           {
-            name: "method",
-            data: "GetCustomer"
+            name: 'method',
+            data: 'GetCustomer'
           },
           {
-            name: "client",
+            name: 'client',
             data: {
-              docType: "6",
-              series: this.personalData.passport.slice(0,2),
+              docType: '6',
+              series: this.personalData.passport.slice(0, 2),
               number: this.personalData.passport.slice(2),
               tin: this.personalData.inn,
               pnfl: this.personalData.pinpp,
               birthDate: this.personalData.birthDate,
-              branch: ""
+              branch: ''
             }
           }
         ]
@@ -913,129 +966,129 @@ export default {
           !this.personalData.pinpp ||
           !this.personalData.birthDate
         ) {
-          throw "Заполните персональные данные клиента";
+          throw 'Заполните персональные данные клиента'
         }
-        await this.$store.dispatch("credits/checkClient", data);
-        this.loadingGCI = false;
+        await this.$store.dispatch('credits/checkClient', data)
+        this.loadingGCI = false
       } catch (error) {
         this.$store.commit(
-          "credits/setMessage",
+          'credits/setMessage',
           CommonUtils.filterServerError(error)
-        );
-        this.loadingGCI = false;
+        )
+        this.loadingGCI = false
       }
     },
 
-    onChangeLoan(credit) {
-      console.log("credit", credit);
-      this.personalData.typeStepCredit = null;
-      this.options.typeStepCredits = [];
-      this.periodCreditMin = null;
-      this.periodCreditMax = null;
-      this.personalData.periodCredit = 0;
-      this.personalData.loanRate = 0;
-      this.personalData.loan_purpose = null;
+    onChangeLoan (credit) {
+      console.log('credit', credit)
+      this.personalData.typeStepCredit = null
+      this.options.typeStepCredits = []
+      this.periodCreditMin = null
+      this.periodCreditMax = null
+      this.personalData.periodCredit = 0
+      this.personalData.loanRate = 0
+      this.personalData.loan_purpose = null
 
-      this.setLoan(credit);
+      this.setLoan(credit)
     },
 
-    setLoan(creditId) {
-      console.log("creditIddd", creditId);
+    setLoan (creditId) {
+      console.log('creditIddd', creditId)
       if (creditId) {
         const { Loan_dict } = this.loan_product_dict.find(
           (i) => i.id === creditId
-        );
+        )
         this.options.loanPurpose = this.loanproduct_loancode[
           creditId
         ].items.map((i) => {
           return {
             label: i.label,
-            value: Number(i.value),
-          };
-        });
+            value: Number(i.value)
+          }
+        })
 
-        console.log(this.loanproduct_loancode[creditId]);
-        this.personalData.loanRate = Loan_dict.loan_rate_base;
-        this.personalData.ProductMaxSum = Loan_dict.productMaxSum;
+        console.log(this.loanproduct_loancode[creditId])
+        this.personalData.loanRate = Loan_dict.loan_rate_base
+        this.personalData.ProductMaxSum = Loan_dict.productMaxSum
         this.options.typeStepCredits = Loan_dict.payment_type.items.map((i) => {
           return {
             label: i.label,
-            value: Number(i.value),
-          };
-        });
+            value: Number(i.value)
+          }
+        })
 
         this.periodCreditMin = Number(
-          Loan_dict.terms_list.items.find((i) => i.label === "min").value
-        );
+          Loan_dict.terms_list.items.find((i) => i.label === 'min').value
+        )
 
         this.periodCreditMax = Number(
-          Loan_dict.terms_list.items.find((i) => i.label === "max").value
-        );
+          Loan_dict.terms_list.items.find((i) => i.label === 'max').value
+        )
 
-        this.personalData.periodCredit = this.periodCreditMin;
+        this.personalData.periodCredit = this.periodCreditMin
       }
     },
 
-    getPreapprovData(preAppData) {
+    getPreapprovData (preAppData) {
       this.personalData.spouseCost = preAppData.find(
-        (i) => i.label == "spouseCost"
-      ).data;
+        (i) => i.label == 'spouseCost'
+      ).data
       this.personalData.childCost = preAppData.find(
-        (i) => i.label == "childCost"
-      ).data;
+        (i) => i.label == 'childCost'
+      ).data
 
-      this.options.family = this.transformData(preAppData, "maritalStatus");
+      this.options.family = this.transformData(preAppData, 'maritalStatus')
 
       this.options.additIncSourOption = this.transformData(
         preAppData,
-        "incomeSource"
-      );
+        'incomeSource'
+      )
 
-      //this.options.loanPurpose = this.transformData(preAppData, "loanPupose")
+      // this.options.loanPurpose = this.transformData(preAppData, "loanPupose")
 
       this.options.typeCredits = this.transformData(
         preAppData,
-        "loan_product_list"
-      );
+        'loan_product_list'
+      )
 
       this.loan_product_dict = preAppData.find(
-        (i) => i.label == "loan_product_dict"
-      ).data.items;
+        (i) => i.label == 'loan_product_dict'
+      ).data.items
 
       this.loanproduct_loancode = preAppData.find(
-        (i) => i.label == "loanproduct_loancode"
-      ).data.items[0];
+        (i) => i.label == 'loanproduct_loancode'
+      ).data.items[0]
     },
 
-    transformData(preAppData, labelData) {
+    transformData (preAppData, labelData) {
       return preAppData
         .find((i) => i.label == labelData)
         .data.items.map((i) => {
           return {
             label: i.label,
-            value: Number(i.value),
-          };
-        });
+            value: Number(i.value)
+          }
+        })
     },
 
-    fioValid(val) {
+    fioValid (val) {
       return (
-        val.match(/^[A-Z'`‘]+$/) || "Введите на латинице заглавными буквами"
-      ); // только латинские буквы
+        val.match(/^[A-Z'`‘]+$/) || 'Введите на латинице заглавными буквами'
+      ) // только латинские буквы
     },
 
-    mValid(val) {
+    mValid (val) {
       return (
         val.match(/^([A-Z'`‘]+\s)*[A-Z'`‘]+$/) ||
-        "Введите на латинице заглавными буквами"
-      ); // только латинские буквы
+        'Введите на латинице заглавными буквами'
+      ) // только латинские буквы
     },
 
-    msecond(val) {
-      return new Date(val.slice(-4) + val.slice(2, 6) + val.slice(0, 2));
+    msecond (val) {
+      return new Date(val.slice(-4) + val.slice(2, 6) + val.slice(0, 2))
     },
 
-    adulthoodValid(date) {
+    adulthoodValid (date) {
       return (
         (this.msecond(CommonUtils.dateFilter(new Date())) -
           this.msecond(date) -
@@ -1046,20 +1099,20 @@ export default {
           24 /
           365 >
         18
-      ); // с учетом высокосных годов (4)
+      ) // с учетом высокосных годов (4)
     },
 
-    INNFizValid(val) {
-      return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || "Неверные данные";
-    },
+    INNFizValid (val) {
+      return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || 'Неверные данные'
+    }
   },
   components: {
     appPreApproval: PreApproval,
     appAutoCompleteData: AutoCompleteData,
     appLoader: Loader,
-    appLoaderFullScreen: LoaderFullScreen,
-  },
-};
+    appLoaderFullScreen: LoaderFullScreen
+  }
+}
 </script>
 
 <style lang="scss">
@@ -1086,6 +1139,37 @@ export default {
   .default_personPhoto_block {
     height: auto;
     border: 1px solid #e7e7e7;
+    position: relative;
+  }
+
+  .photoComparison {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  .photoSimilarity{
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.7px;
+    filter: drop-shadow(1px 1px 2px #333);
+    -webkit-filter: drop-shadow(1px 1px 2px #333);
+    text-shadow: none;
+    letter-spacing: 1.5px;
+  }
+  .showComparison {
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    filter: drop-shadow(1px 1px 2px #333);
+    -webkit-filter: drop-shadow(1px 1px 2px #333);
+    text-shadow: none;
+  }
+  .showBtns {
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 600;
   }
 
   .personPhoto,

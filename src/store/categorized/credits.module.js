@@ -7,7 +7,7 @@ export const credits = {
     creditCount: 0,
     taskId: "",
     userRole: [],
-    // fileId: null, 
+    // fileId: null,
     messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки
       message: null
@@ -21,8 +21,7 @@ export const credits = {
       CreditSecretary: "ROLE_CCS",
       UnderWriter: "ROLE_UrWr",
       CreditCommitteeChief: "ROLE_CCC",
-      ProcessManager: "ROLE_PM",
-
+      ProcessManager: "ROLE_PM"
     },
 
     messageBar: false,
@@ -42,10 +41,14 @@ export const credits = {
       pinpp: null,
       passport: "",
       personPhoto: "",
+      livePersonPhoto: "",
+      livePersonVideo: "",
+      documentScan: "",
+      matchPercent: null,
       birthDate: "",
       gender: null,
       givenDate: "", // дата выдачи паспорта
-      expDate: "",  // дата окончания паспорта
+      expDate: "", // дата окончания паспорта
       client_code: "",
       client_uid: "",
 
@@ -90,15 +93,15 @@ export const credits = {
     countRowList: [
       {
         label: 10,
-        value: 10,
+        value: 10
       },
       {
         label: 20,
-        value: 20,
+        value: 20
       },
       {
         label: 30,
-        value: 30,
+        value: 30
       },
       {
         label: "Все",
@@ -118,24 +121,22 @@ export const credits = {
         }
       ]
     }
-
   },
   actions: {
     // async authBpm({ state, dispatch, commit, getters, rootGetters }, creditRole = null) {
     async authBpm({ state, dispatch, commit, getters, rootGetters }) {
-     
       try {
-        let userRole = null
+        let userRole = null;
         const empId = rootGetters["auth/empId"];
-        console.log('empId', empId)
+        console.log("empId", empId);
 
         // получение ролей пользователя
         const role = await dispatch("getUserRole", empId);
         console.log("userRole", role);
 
         const userRoles = role.value.map(i => {
-          return state.roles[i.authority]
-        })
+          return state.roles[i.authority];
+        });
 
         // if (userRoles.find(i => i == creditRole)) {
         //   debugger
@@ -145,17 +146,17 @@ export const credits = {
         //   userRole = userRoles.join()
         // }
 
-        userRole = userRoles.join()
+        userRole = userRoles.join();
 
-        console.log('userRole', userRole)
+        console.log("userRole", userRole);
 
         // запись роли в header запроса
         // await dispatch("setHeaderRole", state.roles[userRole]);
         await dispatch("setHeaderRole", userRole);
-        commit("setUserRole", userRoles)
+        commit("setUserRole", userRoles);
 
         // запись роли в sessionStore
-        sessionStorage.setItem("userRole", userRole)
+        sessionStorage.setItem("userRole", userRole);
 
         // получение BPM token
         const csrf_token = await dispatch("getBPMToken");
@@ -170,9 +171,9 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.clear()
+        sessionStorage.clear();
         this.$router.push("/work/credit");
-        throw error
+        throw error;
       }
     },
 
@@ -193,10 +194,7 @@ export const credits = {
     },
 
     async startProcess({ state, commit, dispatch }) {
-      await dispatch(
-        "setHeaderRole",
-        "ROLE_KM"
-      );
+      await dispatch("setHeaderRole", "ROLE_KM");
 
       try {
         const response = await state.bpmService.startProcess();
@@ -210,47 +208,47 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.clear()
+        sessionStorage.clear();
         this.$router.push("/work/credit");
-        throw error
+        throw error;
       }
     },
 
     async getDigIdNumber({ state, commit }) {
       try {
         const response = await state.bpmService.getDigIdNumber();
-        console.log(response.Answere.AnswereComment)
+        console.log(response.Answere.AnswereComment);
         if (response.Answere.AnswereComment == "OK") {
           // commit("sentScannerSerialNumber", response.ServiceInfo.ScannerSerial);
           commit("sentScannerSerialNumber", 1);
         } else {
-          throw "Сканер не определен"
+          throw "Сканер не определен";
         }
       } catch (error) {
         // const errorMessage = CommonUtils.filterServerError(error);
         // commit("setMessage", errorMessage);
-        throw error
+        throw error;
       }
     },
 
     async getUserDataFromService({ state, commit }) {
       try {
-        state.disableInput = true
-        state.loadMessage = "Данные загружаются"
+        state.disableInput = true;
+        state.loadMessage = "Данные загружаются";
         const response = await state.bpmService.getUserDataFromService();
         if (response.answere.AnswereComment == "OK") {
-          commit("sentPersonData", response)
+          commit("sentPersonData", response);
           commit("sentScannerSerialNumber", null); //close button auto compleate
-          state.loadMessage = ""
+          state.loadMessage = "";
         } else {
-          throw response.answere.AnswereComment
+          throw response.answere.AnswereComment;
         }
       } catch (error) {
-        state.disableInput = false
-        state.loadMessage = ""
+        state.disableInput = false;
+        state.loadMessage = "";
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        throw error
+        throw error;
       }
     },
 
@@ -270,9 +268,9 @@ export const credits = {
         if (response.nextTask.id) {
           //sessionStorage.clear()
           commit("setTaskId", response.nextTask.id);
-          sessionStorage.setItem("taskId", response.nextTask.id)
+          sessionStorage.setItem("taskId", response.nextTask.id);
         } else {
-          throw 'Next task id is undefined'
+          throw "Next task id is undefined";
         }
 
         return response;
@@ -281,7 +279,7 @@ export const credits = {
         commit("setMessage", errorMessage);
         // sessionStorage.clear()
         // this.$router.push("/work/credit");
-        throw error
+        throw error;
       }
     },
 
@@ -313,7 +311,7 @@ export const credits = {
         commit("setMessage", errorMessage);
         // sessionStorage.clear()
         // this.$router.push("/work/credit");
-        throw error
+        throw error;
       }
     },
 
@@ -327,37 +325,37 @@ export const credits = {
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.clear()
+        sessionStorage.clear();
         this.$router.push("/work/credit");
-        throw error
+        throw error;
       }
     },
 
     async getUserTasks({ state, commit }, { page, count }) {
       try {
         const response = await state.bpmService.getUserTasks({ page, count });
-        console.log('res', response)
+        console.log("res", response);
         if (response.infoList.length) {
           commit("setCreditTasks", { response, count });
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        sessionStorage.clear()
+        sessionStorage.clear();
         this.$router.push("/work/credit");
-        throw error
+        throw error;
       }
     },
 
     async creatFile({ state }, fileData) {
       try {
-        const response = await state.bpmService.creatFile(fileData)
-        console.log('cccccc', response)
-        return response
+        const response = await state.bpmService.creatFile(fileData);
+        console.log("cccccc", response);
+        return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        throw error
+        throw error;
       }
     },
 
@@ -365,83 +363,82 @@ export const credits = {
       try {
         let response = null;
         let file = null;
-        if (typeof fileData == 'object') {
-          file = await dispatch('creatFile', fileData)
+        if (typeof fileData == "object") {
+          file = await dispatch("creatFile", fileData);
 
-          console.log('createFile', file)
-          
+          console.log("createFile", file);
+
           if (file.infos[0].id) {
-            response = await state.bpmService.getFile(file.infos[0].id)
+            response = await state.bpmService.getFile(file.infos[0].id);
             // commit("setFileId", file.infos[0].id)
           }
-
         } else {
-          response = await state.bpmService.getFile(fileData)
-          console.log('responsessssss', response)
+          response = await state.bpmService.getFile(fileData);
+          console.log("responsessssss", response);
         }
 
-        const blob = new Blob([response], { type: "application/pdf" })
+        const blob = new Blob([response], { type: "application/pdf" });
         // const blob = new Blob([response], { type: "application/octet-stream" })
-        console.log('infos')
+        console.log("infos");
         return {
           url: window.URL.createObjectURL(blob),
           id: file ? file.infos[0].id : fileData
           // fileName: file.infos[0].filename
-        }
-
+        };
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        throw error
+        throw error;
       }
     },
 
     async getProtocol({ state, commit, dispatch }, data) {
       try {
-        const file = await state.bpmService.getProtocol(data)
-        const response = await state.bpmService.getFile(file.infos[0].id)
-        const blob = new Blob([response], { type: "application/pdf" })
+        const file = await state.bpmService.getProtocol(data);
+        const response = await state.bpmService.getFile(file.infos[0].id);
+        const blob = new Blob([response], { type: "application/pdf" });
         return {
           url: window.URL.createObjectURL(blob),
           id: file ? file.infos[0].id : fileData
           // fileName: file.infos[0].filename
-        }
+        };
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        throw error
+        throw error;
       }
     },
 
     async checkClient({ state, commit, dispatch }, clientData) {
       try {
-        const response = await state.bpmService.checkClient(clientData)
-        console.log('GCI', response.internal)
-        const code = response.output.find(i => i.name == 'code')
-        const msg = response.output.find(i => i.name == 'response')
+        const response = await state.bpmService.checkClient(clientData);
+        console.log("GCI", response.internal);
+        const code = response.output.find(i => i.name == "code");
+        const msg = response.output.find(i => i.name == "response");
 
         if (code.data == 0) {
-          state.disableGCI = false
-          const client_resp = response.internal.find(i => i.name == 'client_resp')
-          commit("setClientDataGCI", client_resp.data)
-        } else if(code.data == 4) {
-          state.disableGCI = false
+          state.disableGCI = false;
+          const client_resp = response.internal.find(
+            i => i.name == "client_resp"
+          );
+          commit("setClientDataGCI", client_resp.data);
+        } else if (code.data == 4) {
+          state.disableGCI = false;
           // попробуйте снова
-          state.disableGCI = false
-          commit("resetClientDataGCI")
-          throw msg.data
+          state.disableGCI = false;
+          commit("resetClientDataGCI");
+          throw msg.data;
         } else {
           // разблокируем поля
-          state.disableGCI = false
-          commit("resetClientDataGCI")
-          throw msg.data
-        } 
-
+          state.disableGCI = false;
+          commit("resetClientDataGCI");
+          throw msg.data;
+        }
       } catch (error) {
-        state.disableGCI = false
+        state.disableGCI = false;
         const errorMessage = CommonUtils.filterServerError(error);
         commit("setMessage", errorMessage);
-        throw error
+        throw error;
       }
     }
   },
@@ -454,44 +451,56 @@ export const credits = {
       state.personalData.passport = "";
       state.personalData.pinpp = null;
       state.personalData.inn = null;
-      state.personalData.birthDate = ""
-      state.personalData.givenDate = ""
-      state.personalData.expDate = ""
-      state.personalData.expDate = ""
-      state.personalData.client_code = ""
-      state.personalData.client_uid = ""
-      state.personalData.phone = 998 
-      state.personalData.familyStatus = null 
+      state.personalData.birthDate = "";
+      state.personalData.givenDate = "";
+      state.personalData.expDate = "";
+      state.personalData.expDate = "";
+      state.personalData.client_code = "";
+      state.personalData.client_uid = "";
+      state.personalData.phone = 998;
+      state.personalData.familyStatus = null;
     },
 
-
     setClientDataGCI(state, payload) {
-        state.personalData.name = payload.responseBody.response.items[0].first_name;
-        state.personalData.surname = payload.responseBody.response.items[0].last_name;
-        state.personalData.mname = payload.responseBody.response.items[0].patronym;
-        state.personalData.gender = payload.responseBody.response.items[0].gender;
-        state.personalData.passport = payload.responseBody.response.items[0].series + payload.responseBody.response.items[0].number;
-        state.personalData.pinpp = payload.responseBody.response.items[0].pnfl;
-        state.personalData.inn = payload.responseBody.response.items[0].tin;
-        state.personalData.birthDate = payload.responseBody.response.items[0].birth_date
-        state.personalData.givenDate = payload.responseBody.response.items[0].doc_issue_date
-        state.personalData.expDate = payload.responseBody.response.items[0].doc_expire_date
-        state.personalData.client_code = payload.responseBody.response.items[0].client_code
-        state.personalData.client_uid = payload.responseBody.response.items[0].client_Uid
-        state.personalData.phone = payload.responseBody.response.items[0].mobile_phone
-                                    .replace(/[^0-9]/gim, "")
-                                    .slice(-9).length == 9 
-                                      ? "998" + payload.responseBody.response.items[0].mobile_phone
-                                          .replace(/[^0-9]/gim, "")
-                                          .slice(-9)
-                                      : 998
-        state.personalData.familyStatus = payload.responseBody.response.items[0].marital_status 
-                                           ? +payload.responseBody.response.items[0].marital_status + 1
-                                           : null
+      state.personalData.name =
+        payload.responseBody.response.items[0].first_name;
+      state.personalData.surname =
+        payload.responseBody.response.items[0].last_name;
+      state.personalData.mname =
+        payload.responseBody.response.items[0].patronym;
+      state.personalData.gender = payload.responseBody.response.items[0].gender;
+      state.personalData.passport =
+        payload.responseBody.response.items[0].series +
+        payload.responseBody.response.items[0].number;
+      state.personalData.pinpp = payload.responseBody.response.items[0].pnfl;
+      state.personalData.inn = payload.responseBody.response.items[0].tin;
+      state.personalData.birthDate =
+        payload.responseBody.response.items[0].birth_date;
+      state.personalData.givenDate =
+        payload.responseBody.response.items[0].doc_issue_date;
+      state.personalData.expDate =
+        payload.responseBody.response.items[0].doc_expire_date;
+      state.personalData.client_code =
+        payload.responseBody.response.items[0].client_code;
+      state.personalData.client_uid =
+        payload.responseBody.response.items[0].client_Uid;
+      state.personalData.phone =
+        payload.responseBody.response.items[0].mobile_phone
+          .replace(/[^0-9]/gim, "")
+          .slice(-9).length == 9
+          ? "998" +
+            payload.responseBody.response.items[0].mobile_phone
+              .replace(/[^0-9]/gim, "")
+              .slice(-9)
+          : 998;
+      state.personalData.familyStatus = payload.responseBody.response.items[0]
+        .marital_status
+        ? +payload.responseBody.response.items[0].marital_status + 1
+        : null;
     },
 
     setPersonalData(state, payload) {
-      state.personalData = payload
+      state.personalData = payload;
     },
 
     creditConfirm(state, payload) {
@@ -512,12 +521,18 @@ export const credits = {
       state.personalData.gender = payload.Person.Sex;
       state.personalData.passport = payload.Person.DocumentSerialNumber;
       state.personalData.pinpp = payload.Person.Pinpp;
-      state.personalData.inn = payload.Person.Inn ? payload.Person.Inn : payload.Additional.Inn;
+      state.personalData.inn = payload.Person.Inn
+        ? payload.Person.Inn
+        : payload.Additional.Inn;
       state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
-      state.personalData.birthDate = payload.Person.BirthDate
-      state.personalData.givenDate = payload.Person.DocumentDateIssue
-      state.personalData.expDate = payload.Person.DocumentDateValid
-      state.DigID = true
+      state.personalData.livePersonPhoto = payload.LivePersonPhoto.answere.AnswereComment === "OK" ? payload.LivePersonPhoto.PersonLivePhoto : null;
+      state.personalData.livePersonVideo = payload.LivePersonVideo.answere.AnswereComment === "OK" ? payload.LivePersonVideo.Video : null;
+      state.personalData.documentScan = payload.DocumentScan.Image;
+      state.personalData.matchPercent = payload.LivePersonPhoto.PercentValue;
+      state.personalData.birthDate = payload.Person.BirthDate;
+      state.personalData.givenDate = payload.Person.DocumentDateIssue;
+      state.personalData.expDate = payload.Person.DocumentDateValid;
+      state.DigID = true;
     },
     resetPersonData(state) {
       state.personalData = {
@@ -532,7 +547,7 @@ export const credits = {
         birthDate: "",
         gender: "",
         givenDate: "", // дата выдачи паспорта
-        expDate: "",  // дата окончания паспорта
+        expDate: "", // дата окончания паспорта
         client_code: "",
         client_uid: "",
 
@@ -558,15 +573,14 @@ export const credits = {
         externalIncomeSize: 0, //размер дополнительного дохода
         additionalIncomeSource: "" //источник дополнительного дохода
       };
-
     },
 
     resetMessageBar(state) {
-      state.messageBar = false
+      state.messageBar = false;
     },
 
     setMessage(state, message) {
-      console.log('setMsg', message)
+      console.log("setMsg", message);
       state.messageBlock.message = message;
       state.messageBlock.id = new Date();
     },
@@ -580,44 +594,46 @@ export const credits = {
     },
 
     setUserRole(state, payload) {
-      state.userRole = payload
+      state.userRole = payload;
     },
 
     setCreditTasks(state, payload) {
-      state.loadings = []
+      state.loadings = [];
       // количество заявок в списке
-      state.creditCount = payload.response.all < payload.count
-        ? payload.response.all
-        : payload.count
+      state.creditCount =
+        payload.response.all < payload.count
+          ? payload.response.all
+          : payload.count;
 
-      state.countRowList.find(i => i.label === 'Все').value = payload.response.all
+      state.countRowList.find(i => i.label === "Все").value =
+        payload.response.all;
 
-      state.pages = Math.ceil(payload.response.all / payload.count)
+      state.pages = Math.ceil(payload.response.all / payload.count);
 
       for (let i = 0; i < state.creditCount * 2; i++) {
-        state.loadings[i] = false
+        state.loadings[i] = false;
       }
 
       // state.creditTasks = payload.response.infoList
 
       state.creditTasks = payload.response.infoList.map(credit => {
-        // let creditCompleate = credit.taskName == "Step: Решение о выдаче" 
-        let creditCompleate = credit.taskName == "Step: Заполнить ПП"
-          ? true
-          : false
-        let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1 ||
+        // let creditCompleate = credit.taskName == "Step: Решение о выдаче"
+        let creditCompleate =
+          credit.taskName == "Step: Заполнить ПП" ? true : false;
+        let time =
+          (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1 ||
           credit.taskName == "ERROR: Ошибка создание Контракта в iABS" ||
           credit.taskName == "ERROR: Отправка в НИКИ - Ошибка" ||
           credit.taskName == "ERROR: Ошибка создание ПП в iABS"
-          ? true
-          : false
+            ? true
+            : false;
 
         return {
           ...credit,
           time,
           creditCompleate
-        }
-      })
+        };
+      });
 
       // state.creditTasks = payload.response.infoList.sort((a, b) => {
       //     if (b.date < a.date) {
@@ -634,10 +650,9 @@ export const credits = {
     },
 
     removeTask(state, taskId) {
-      const idx = state.creditTasks.findIndex(i => i.taskId == taskId)
-      state.creditTasks.splice(idx, 1)
+      const idx = state.creditTasks.findIndex(i => i.taskId == taskId);
+      state.creditTasks.splice(idx, 1);
     }
-
   },
   getters: {
     // credits: state => state,
@@ -645,7 +660,7 @@ export const credits = {
     messageId: state => state.messageBlock.id,
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
-    userRole: state => state.userRole,
+    userRole: state => state.userRole
     // creditTasks: state => {
     //   return state.creditTasks.map(credit => {
     //     let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
