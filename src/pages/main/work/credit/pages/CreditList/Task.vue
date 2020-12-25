@@ -2170,7 +2170,6 @@ export default {
           
           setTimeout(() => {
             this.$store.commit("credits/setMessage", message);
-            this.$router.go(-1);
           }, 500)
           
           this.$store.commit("credits/removeTask", this.$route.query.taskId);
