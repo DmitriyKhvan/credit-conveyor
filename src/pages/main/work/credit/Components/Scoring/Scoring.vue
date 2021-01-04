@@ -94,7 +94,7 @@
           </div>
         </div>
 
-        <div class="scoringList__block">
+        <!-- <div class="scoringList__block">
           <h3 class="scoringList__title">4. Внутренняя кредитная история:</h3>
           <div class="row subList">
             <div class="col-7">
@@ -127,7 +127,7 @@
               <p class="scoringList__value"></p>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- <div class="scoringList__block">
           <h3 class="scoringList__title">6. Внешняя кредитная история:</h3>
