@@ -2426,9 +2426,8 @@
                       dense
                       label="МФО банка"
                       :rules="[
-                        val =>
-                          !!val ||
-                          'Введите МФО банка'
+                        val => !!val || 'Введите МФО банка',
+                        val => val.match(/^[0-9]+$/) || 'Неверные данные'
                       ]"
                     />
                   </div>
@@ -2467,9 +2466,8 @@
                       dense
                       label="МФО банка продавца"
                       :rules="[
-                        val =>
-                          !!val ||
-                          'Введите МФО банка'
+                        val => !!val || 'Введите МФО банка', 
+                        val => val.match(/^[0-9]+$/) || 'Неверные данные'
                       ]"
                     />
                   </div>
@@ -2855,11 +2853,11 @@
             @closeBar="$event => (INPSBar = $event)"
           />
 
-          <appGetDataINPS
+          <!-- <appGetDataINPS
             v-else-if="dataINPS.wages.items.length"
             :salaries="dataINPS"
             @closeBar="$event => (INPSBar = $event)"
-          />
+          /> -->
 
           <appSetDataINPS 
             v-else 

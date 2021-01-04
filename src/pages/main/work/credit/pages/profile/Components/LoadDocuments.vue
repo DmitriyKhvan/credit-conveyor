@@ -276,10 +276,17 @@ export default {
     },
 
     handleFilesUpload() {
-      this.loaderFile = false;
-      let uploadedFiles = this.$refs.files.files;
-      console.log("uploadFile", uploadedFiles);
-      this.uploadFile(uploadedFiles);
+      if (Object.values(this.$refs.files.files).findIndex(i => i.type != 'application/pdf') != -1) {
+        this.$store.commit(
+            "credits/setMessage",
+            "Загрузите только PDF-файлы"
+          );
+      } else {
+        this.loaderFile = false;
+        let uploadedFiles = this.$refs.files.files;
+        console.log("uploadFile", uploadedFiles);
+        this.uploadFile(uploadedFiles);
+      }
     },
 
     dropFile(event) {
