@@ -1699,6 +1699,71 @@
             </div>
           </div>
         </div>
+
+        <div v-if="scoringResult" class="col-12">
+          <div class="clientInfo tab">
+            <h4 class="titleForm">
+              Результаты по скоринговой карте
+            </h4>
+            <div class="formBlock">
+
+              <q-markup-table class="scoringResult" separator="cell" flat bordered>
+                <thead>
+                  <tr>
+                    <th class="text-left">Параметр</th>
+                    <th class="text-left">Балл</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span>Возраст</span></td>
+                    <td>{{scoringResult.age}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Рейтинг работодателя</span></td>
+                    <td>{{scoringResult.companyClass}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Другие обязательства</span></td>
+                    <td>{{scoringResult.bills}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Семейное положение</span></td>
+                    <td>{{scoringResult.marital}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Наличие детей</span></td>
+                    <td>{{scoringResult.children}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Кредитная история</span></td>
+                    <td>{{scoringResult.loanHistory}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Наличие недвижимости</span></td>
+                    <td>{{scoringResult.realty}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Наличие транспорта</span></td>
+                    <td>{{scoringResult.vehicle}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Опыт работы</span></td>
+                    <td>{{scoringResult.jobPeriod}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Срок кредита</span></td>
+                    <td>{{scoringResult.loanPeriod}}</td>
+                  </tr>
+                  <tr>
+                    <td><span>Местоположение</span></td>
+                    <td>{{scoringResult.location}}</td>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="row q-col-gutter-md btn-decision">
@@ -1996,6 +2061,10 @@ export default {
           LoanMax: null,
         }
       }
+    }, 
+
+    scoringResult() {
+      return this.profile.allResponse.scoringResult
     }
   },
   methods: {

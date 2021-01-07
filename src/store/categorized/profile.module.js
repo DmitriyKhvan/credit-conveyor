@@ -15,6 +15,7 @@ export const profile = {
       }
     },
     BPMInput: null,
+    allResponse: null,
     // preapprove_num: "",
     percent: 25,
 
@@ -692,6 +693,7 @@ export const profile = {
               i => i.label === "inputDictionaries"
             ).data;
 
+            commit("setAllResponse", JSON.parse(JSON.stringify(response.data))); // all response from BPM
             commit("setInput", JSON.parse(JSON.stringify(response.data.input))); // all input from BPM
             commit("setDictionaries", dictionaries);
 
@@ -768,6 +770,10 @@ export const profile = {
 
     setInput(state, input) {
       state.BPMInput = input;
+    },
+
+    setAllResponse(state, allResponse) {
+      state.allResponse = allResponse
     },
 
     // setPreapproveNum(state, preapprove_num) {
