@@ -1,4 +1,6 @@
 import Vue from "vue";
+import * as Sentry from "@sentry/browser";
+import { Integrations } from "@sentry/tracing";
 import VueRouter from "vue-router";
 import TokenService from "@/services/storage.service";
 import MainService from "@/services/main.service"; //"/services/main.service";
@@ -6,6 +8,19 @@ import ApiService from "@/services/api.service";
 import routes from "./routes";
 import store from "@/store/index";
 import CommonUtils from "@/shared/utils/CommonUtils";
+
+Sentry.init({
+  Vue,
+  dsn: "https://0f7413614c1c4f2b9827c230b3bca8d3@o501424.ingest.sentry.io/5582698",
+  autoSessionTracking: true,
+  integrations: [
+    new Integrations.BrowserTracing(),
+  ],
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
 
 Vue.use(VueRouter);
 
