@@ -443,7 +443,10 @@
                 v-model="guarantee.mfo"
                 dense
                 label="МФО банка"
-                :rules="[(val) => !!val || 'Введите МФО банка']"
+                :rules="[
+                        val => !!val || 'Введите МФО банка',
+                        val => val.match(/^[0-9]+$/) || 'Неверные данные'
+                      ]"
               />
             </div>
 
@@ -502,7 +505,7 @@
             <div class="col-4">
               <q-select
                 :disable="disableField"
-                ref="regionGuarantees"
+                ref="regionGuarantees1"
                 outlined
                 v-model="guarantee.Address.Region"
                 :options="dictionaries.Region.items"
@@ -548,7 +551,7 @@
             <div class="col-4">
               <q-input
                 :disable="disableField"
-                ref="streetGuarantees"
+                ref="streetGuarantees1"
                 outlined
                 v-model="guarantee.Address.Street"
                 dense
@@ -612,7 +615,7 @@
               <div class="col-4">
                 <q-input
                   :disable="disableField"
-                  ref="phonesGuarantees"
+                  ref="phonesGuarantees1"
                   outlined
                   v-model="phone.Number"
                   dense
@@ -843,7 +846,10 @@
                 v-model="guarantee.mfo"
                 dense
                 label="МФО банка"
-                :rules="[(val) => !!val || 'Введите МФО банка']"
+                :rules="[
+                        val => !!val || 'Введите МФО банка',
+                        val => val.match(/^[0-9]+$/) || 'Неверные данные'
+                      ]"
               />
             </div>
           </div>
@@ -883,7 +889,7 @@
             <div class="col-4">
               <q-select
                 :disable="disableField"
-                ref="regionGuarantees"
+                ref="regionGuarantees2"
                 outlined
                 v-model="guarantee.Address.Region"
                 :options="dictionaries.Region.items"
@@ -939,7 +945,7 @@
             <div class="col-4">
               <q-input
                 :disable="disableField"
-                ref="streetGuarantees"
+                ref="streetGuarantees2"
                 outlined
                 v-model="guarantee.Address.Street"
                 dense
@@ -1003,7 +1009,7 @@
               <div class="col-4">
                 <q-input
                   :disable="disableField"
-                  ref="phonesGuarantees"
+                  ref="phonesGuarantees2"
                   outlined
                   v-model="phone.Number"
                   dense

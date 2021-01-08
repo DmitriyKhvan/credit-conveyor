@@ -3466,19 +3466,19 @@ export default {
           "CardNumberGuarantees1"
         );
 
-        validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
+        validFilter(this.$refs, "regionGuaranteesValid1", "regionGuarantees1");
         validFilter(
           this.$refs,
-          "districtGuaranteesValid",
+          "districtGuaranteesValid1",
           "districtGuarantees1"
         );
-        validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
+        validFilter(this.$refs, "streetGuaranteesValid1", "streetGuarantees1");
         validFilter(
           this.$refs,
-          "houseNumberGuaranteesValid",
+          "houseNumberGuaranteesValid1",
           "houseNumberGuarantees1"
         );
-        validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
+        validFilter(this.$refs, "phonesGuaranteesValid1", "phonesGuarantees1");
       } else {
         validItems(this.$refs, "customersAttitudeValid");
         validItems(this.$refs, "priceGuaranteesValid1");
@@ -3498,11 +3498,11 @@ export default {
         validItems(this.$refs, "guaranteesDocumentGivenPlaceValid");
         // validItems(this.$refs, "BankInpsGuaranteesValid");
         validItems(this.$refs, "CardNumberGuaranteesValid1");
-        validItems(this.$refs, "districtGuaranteesValid");
-        validItems(this.$refs, "regionGuaranteesValid");
-        validItems(this.$refs, "streetGuaranteesValid");
-        validItems(this.$refs, "houseNumberGuaranteesValid");
-        validItems(this.$refs, "phonesGuaranteesValid");
+        validItems(this.$refs, "districtGuaranteesValid1");
+        validItems(this.$refs, "regionGuaranteesValid1");
+        validItems(this.$refs, "streetGuaranteesValid1");
+        validItems(this.$refs, "houseNumberGuaranteesValid1");
+        validItems(this.$refs, "phonesGuaranteesValid1");
       }
 
       if (this.fullProfile.Guarantee.RelatedLegalPerson.items.length) {
@@ -3527,19 +3527,19 @@ export default {
         validFilter(this.$refs, "mfoGuaranteesValid", "mfoGuarantees");
         validFilter(this.$refs, "relatedLegalPersonBillGuaranteesValid", "relatedLegalPersonBillGuarantees");
 
-        validFilter(this.$refs, "regionGuaranteesValid", "regionGuarantees");
+        validFilter(this.$refs, "regionGuaranteesValid2", "regionGuarantees2");
         validFilter(
           this.$refs,
-          "districtGuaranteesValid",
+          "districtGuaranteesValid2",
           "districtGuarantees2"
         );
-        validFilter(this.$refs, "streetGuaranteesValid", "streetGuarantees");
+        validFilter(this.$refs, "streetGuaranteesValid2", "streetGuarantees2");
         validFilter(
           this.$refs,
-          "houseNumberGuaranteesValid",
+          "houseNumberGuaranteesValid2",
           "houseNumberGuarantees2"
         );
-        validFilter(this.$refs, "phonesGuaranteesValid", "phonesGuarantees");
+        validFilter(this.$refs, "phonesGuaranteesValid2", "phonesGuarantees2");
       } else {
         validItems(this.$refs, "priceGuaranteesValid2");
         validItems(this.$refs, "CEOLastNameGuaranteesValid");
@@ -3552,11 +3552,11 @@ export default {
         validItems(this.$refs, "bank_nameGuaranteesValid");
         validItems(this.$refs, "mfoGuaranteesValid");
         validItems(this.$refs, "relatedLegalPersonBillGuaranteesValid");
-        validItems(this.$refs, "regionGuaranteesValid");
-        validItems(this.$refs, "districtGuaranteesValid");
-        validItems(this.$refs, "streetGuaranteesValid");
-        validItems(this.$refs, "houseNumberGuaranteesValid");
-        validItems(this.$refs, "phonesGuaranteesValid");
+        validItems(this.$refs, "regionGuaranteesValid2");
+        validItems(this.$refs, "districtGuaranteesValid2");
+        validItems(this.$refs, "streetGuaranteesValid2");
+        validItems(this.$refs, "houseNumberGuaranteesValid2");
+        validItems(this.$refs, "phonesGuaranteesValid2");
       }
 
       if (this.fullProfile.Guarantee.Insurance.items.length) {
@@ -3793,11 +3793,16 @@ export default {
         this.$refs.mfoGuaranteesValid.hasError ||
         this.$refs.relatedLegalPersonBillGuaranteesValid.hasError ||
 
-        this.$refs.regionGuaranteesValid.hasError ||
-        this.$refs.districtGuaranteesValid.hasError ||
-        this.$refs.streetGuaranteesValid.hasError ||
-        this.$refs.houseNumberGuaranteesValid.hasError ||
-        this.$refs.phonesGuaranteesValid.hasError ||
+        this.$refs.regionGuaranteesValid1.hasError ||
+        this.$refs.regionGuaranteesValid2.hasError ||
+        this.$refs.districtGuaranteesValid1.hasError ||
+        this.$refs.districtGuaranteesValid2.hasError ||
+        this.$refs.streetGuaranteesValid1.hasError ||
+        this.$refs.streetGuaranteesValid2.hasError ||
+        this.$refs.houseNumberGuaranteesValid1.hasError ||
+        this.$refs.houseNumberGuaranteesValid2.hasError ||
+        this.$refs.phonesGuaranteesValid1.hasError ||
+        this.$refs.phonesGuaranteesValid2.hasError ||
         //info credit
         // this.$refs.productCredit.hasError ||
         this.$refs.priceCredit.hasError ||
