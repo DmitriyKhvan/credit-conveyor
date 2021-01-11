@@ -2853,12 +2853,6 @@
             @closeBar="$event => (INPSBar = $event)"
           />
 
-          <!-- <appGetDataINPS
-            v-else-if="dataINPS.wages.items.length"
-            :salaries="dataINPS"
-            @closeBar="$event => (INPSBar = $event)"
-          /> -->
-
           <appSetDataINPS 
             v-else 
             @closeBar="$event => (INPSBar = $event)" 

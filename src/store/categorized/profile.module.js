@@ -441,7 +441,12 @@ export const profile = {
         );
 
         if (dataINPS) {
-          return dataINPS.data
+          // return dataINPS.data
+          return {
+            salaries: dataINPS.data,
+            code: 0,
+            msg: ""
+          }
         } else {
           throw "Нет данных";
         }
