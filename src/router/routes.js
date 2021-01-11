@@ -91,6 +91,9 @@ const ChatPage = () => import("pages/main/chat/Chat");
 //test
 const NewLogin = () => import('pages/main/auth/newlogin')
 
+//UniversalManager
+const UniversalManager = () => import('pages/main/universalManager/UniversalManager')
+
 // Проверка на BPM token
 const ifAuthenticated = (to, from, next) => {
   if (sessionStorage.getItem("csrf_token")) {
@@ -378,6 +381,11 @@ const routes = [{
     path: "topic/:id",
     name: "Topic",
     component: Topic
+  },
+  {
+    path: "universal_manager", 
+    name: "Universal_manager", 
+    component: UniversalManager
   }
   ]
 },
