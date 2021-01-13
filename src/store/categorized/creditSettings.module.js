@@ -4,9 +4,10 @@ export const creditSettings = {
   namespaced: true,
   state: {
     creditSettingsService: new CreditSettingsService(),
+    allRefs: null,
     settings: {
-      app_card_age: [],
-      app_card_bills: [],
+      appCardAge: [],
+      appCardBills: [],
       app_card_children: [],
       app_card_last_job_period: [],
       app_card_loan_period: [],
@@ -41,6 +42,12 @@ export const creditSettings = {
   mutations: {
     setSettings(state, settings) {
       state.settings = settings;
+    }, 
+
+    setRefs(state, refs) {
+      state.allRefs = Object.assign({}, state.allRefs, refs);
+      console.log("currentRefs", refs);
+      console.log("AllRefs", state.allRefs);
     }
   },
   getters: {}

@@ -38,7 +38,7 @@
                     v-model="scoreСoefficient.minScore"
                     dense
                     :rules="[
-                      val => String(val).match(/^[0-9]+$/) || 'Неверные данные'
+                      val => floatValid(val)
                     ]"
                   />
                 </div>
@@ -49,7 +49,7 @@
                     v-model="scoreСoefficient.maxScore"
                     dense
                     :rules="[
-                      val => String(val).match(/^[0-9]+$/) || 'Неверные данные'
+                      val => floatValid(val)
                     ]"
                   />
                 </div>
@@ -61,7 +61,7 @@
                     v-model="scoreСoefficient.coefficient"
                     dense
                     :rules="[
-                      val => String(val).match(/^[0-9]+$/) || 'Неверные данные'
+                      val => floatValid(val)
                     ]"
                   />
                 </div>
@@ -75,25 +75,19 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters} from 'vuex'
+import creditSettings from '../mixins/creditSettings'
 
 export default {
-  props: ['title'],
+  mixins: [creditSettings],
   data() {
-    return {
-      expanded: true
-    };
+    return {};
   },
   mounted() {
     setTimeout(() => {
-      this.$emit("set-refs", this.$refs);
-    }, 100)
+			this.$store.commit("creditSettings/setRefs", this.$refs)
+		}, 100)
   }, 
-  computed: {
-    ...mapState({
-      settings: state => state.creditSettings.settings
-    })
-  }
+  computed: {},
 };
 </script>
 <style lang="scss">
@@ -108,7 +102,7 @@ export default {
 
     .scoreСoefficient {
       float: right;
-      width: 50%;
+      width: 70%;
     }
   }
 </style>

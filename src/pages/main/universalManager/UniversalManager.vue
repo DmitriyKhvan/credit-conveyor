@@ -3,9 +3,9 @@
     <div class="row q-col-gutter-md">
       <div class="col-9">
         <form @submit.prevent.stop="onSubmit">
-          <appSettingProcess @set-refs="setRefs" :title="titles[0]" />
-          <appSettingScorModel @set-refs="setRefs" :title="titles[1]" />
-          <appSettingScorBalls @set-refs="setRefs" :title="titles[2]" />
+          <!-- <appSettingsProcess :title="titles[0]" /> -->
+          <appSettingsScorModel :title="titles[1]" />
+          <appSettingsScorBalls :title="titles[2]" />
           <div class="btnBlock">
             <q-btn type="submit" label="Одобрить" class="btnSucces" />
           </div>
@@ -16,13 +16,14 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 import { validItems, validFilter } from "@/shared/utils/valid_filter";
 
-import SettingCreditProduct from "./Components/SettingCreditProduct";
-import SettingCreditRoleActive from "./Components/SettingCreditRoleActive";
-import SettingProcess from "./Components/SettingProcess";
-import SettingScorBalls from "./Components/SettingScorBalls";
-import SettingScorModel from "./Components/SettingScorModel";
+import SettingsCreditProduct from "./Components/SettingsCreditProduct";
+import SettingsCreditRoleActive from "./Components/SettingsCreditRoleActive";
+import SettingsProcess from "./Components/SettingsProcess";
+import SettingsScorBalls from "./Components/SettingsScorBalls";
+import SettingsScorModel from "./Components/SettingsScorModel";
 
 export default {
   data() {
@@ -43,18 +44,43 @@ export default {
       console.log(error)
     }
   },
+  computed: {
+    ...mapState({
+      refs: state => state.creditSettings.allRefs
+    })
+  },
   methods: {
     onSubmit() {
-			this.$refs.moratory.validate()
+			// this.refs.moratory.validate()
       
-      validFilter(this.$refs, "scoreСoefficientMinScoreValid", "scoreСoefficientMinScore")
-      validFilter(this.$refs, "scoreСoefficientMaxScoreValid", "scoreСoefficientMaxScore")
-      validFilter(this.$refs, "scoreСoefficientCoefficientValid", "scoreСoefficientCoefficient")
+      validFilter(this.refs, "scoreСoefficientMinScoreValid", "scoreСoefficientMinScore")
+      validFilter(this.refs, "scoreСoefficientMaxScoreValid", "scoreСoefficientMaxScore")
+      validFilter(this.refs, "scoreСoefficientCoefficientValid", "scoreСoefficientCoefficient")
+
+      validFilter(this.refs, "cardAgeMinAgeValid", "cardAgeMinAge")
+      validFilter(this.refs, "cardAgeMaxAgeValid", "cardAgeMaxAge")
+      validFilter(this.refs, "cardAgeScoreValid", "cardAgeScore")
+      
+      validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
+      validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
+
+      validFilter(this.refs, "сhildrenNumberValid", "сhildrenNumber")
+      validFilter(this.refs, "childrenScoreValid", "childrenScore")
 			if (
-          this.$refs.moratory.hasError ||
-          this.$refs.scoreСoefficientMinScoreValid.hasError ||
-          this.$refs.scoreСoefficientMaxScoreValid.hasError ||
-          this.$refs.scoreСoefficientCoefficientValid.hasError
+          // this.refs.moratory.hasError ||
+          this.refs.scoreСoefficientMinScoreValid.hasError ||
+          this.refs.scoreСoefficientMaxScoreValid.hasError ||
+          this.refs.scoreСoefficientCoefficientValid.hasError ||
+          
+          this.refs.cardAgeMinAgeValid.hasError ||
+          this.refs.cardAgeMaxAgeValid.hasError ||
+          this.refs.cardAgeScoreValid.hasError ||
+
+          this.refs.ratingCompanyRatingValid.hasError ||
+          this.refs.ratingCompanyScoreValid.hasError ||
+
+          this.refs.сhildrenNumberValid.hasError ||
+          this.refs.childrenScoreValid.hasError 
         ) {
 				this.formHasError = true;
 				console.log('validationError')
@@ -63,18 +89,18 @@ export default {
 			}
 		},
 
-		setRefs(refs) {
-      this.$refs = Object.assign({}, this.$refs, refs);
-      console.log("currentRefs", refs);
-      console.log("AllRefs", this.$refs);
-    },
+		// setRefs(refs) {
+    //   this.$refs = Object.assign({}, this.$refs, refs);
+    //   console.log("currentRefs", refs);
+    //   console.log("AllRefs", this.$refs);
+    // },
   },
   components: {
-    appSettingCreditProduct: SettingCreditProduct,
-    appSettingCreditRoleActive: SettingCreditRoleActive,
-    appSettingProcess: SettingProcess,
-    appSettingScorBalls: SettingScorBalls,
-    appSettingScorModel: SettingScorModel
+    appSettingsCreditProduct: SettingsCreditProduct,
+    appSettingsCreditRoleActive: SettingsCreditRoleActive,
+    appSettingsProcess: SettingsProcess,
+    appSettingsScorBalls: SettingsScorBalls,
+    appSettingsScorModel: SettingsScorModel
   }
 };
 </script>

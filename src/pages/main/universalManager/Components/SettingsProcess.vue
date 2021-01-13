@@ -49,7 +49,8 @@ export default {
   },
   mounted() {
     // console.log('refs', this.$refs)
-    this.$emit("set-refs", this.$refs);
+    // this.$emit("set-refs", this.$refs);
+    this.$store.commit("creditSettings/setRefs", this.$refs)
 	}, 
 	computed: {
 		...mapState({
