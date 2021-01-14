@@ -46,6 +46,7 @@ export default {
   },
   computed: {
     ...mapState({
+      settings: state => state.creditSettings.settings,
       refs: state => state.creditSettings.allRefs
     })
   },
@@ -64,7 +65,7 @@ export default {
       validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
       validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
 
-      validFilter(this.refs, "сhildrenNumberValid", "сhildrenNumber")
+      validFilter(this.refs, "childrenNumberValid", "childrenNumber")
       validFilter(this.refs, "childrenScoreValid", "childrenScore")
 
       validFilter(this.refs, "lastJobPeriodMinPeriodValid", "lastJobPeriodMinPeriod")
@@ -74,8 +75,12 @@ export default {
       validFilter(this.refs, "loanPeriodMinPeriodValid", "loanPeriodMinPeriod")
       validFilter(this.refs, "loanPeriodMaxPeriodValid", "loanPeriodMaxPeriod")
       validFilter(this.refs, "loanPeriodScoreValid", "loanPeriodScore")
+
+      validFilter(this.refs, "locationNameValid", "locationName")
+      validFilter(this.refs, "locationScoreValid", "locationScore")
 			if (
           // this.refs.moratory.hasError ||
+
           this.refs.scoreСoefficientMinScoreValid.hasError ||
           this.refs.scoreСoefficientMaxScoreValid.hasError ||
           this.refs.scoreСoefficientCoefficientValid.hasError ||
@@ -94,14 +99,18 @@ export default {
           this.refs.loanPeriodMinPeriodValid.hasError ||
           this.refs.loanPeriodMaxPeriodValid.hasError ||
           this.refs.loanPeriodScoreValid.hasError ||
+          
+          this.refs.locationNameValid.hasError ||
+          this.refs.locationScoreValid.hasError ||
 
-          this.refs.сhildrenNumberValid.hasError ||
+          this.refs.childrenNumberValid.hasError ||
           this.refs.childrenScoreValid.hasError 
         ) {
 				this.formHasError = true;
 				console.log('validationError')
 			} else {
-				console.log("submit")
+        console.log("submit")
+        // console.log(JSON.stringify(this.settings, null, 2))
 			}
 		},
 
