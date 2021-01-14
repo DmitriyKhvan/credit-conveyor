@@ -1908,8 +1908,8 @@
       <q-card class="INPSblock">
         <q-card-section>
           <appGetDataINPS
-            v-if="dataINPS"
-            :salaries="dataINPS"
+            v-if="dataINPS.code == 0"
+            :salaries="dataINPS.salaries"
             @closeBar="$event => (INPSBar = $event)"
           />
         </q-card-section>
@@ -1943,7 +1943,10 @@ export default {
       confirm: false,
       BODecision: true,
       FinalDecision: "",
-      dataINPS: null,
+      dataINPS: {
+        code: null,
+        msg: ""
+      },
       // userRole: this.$store.getters["credits/userRole"],
 
       commentBO: {
@@ -2404,6 +2407,7 @@ export default {
       try {
         
         this.dataINPS = await this.$store.dispatch("profile/viewDataINPS", data);
+        console.log('dataINPS', this.dataINPS)
         
         this.bankLoading = false;
         this.INPSBar = true;

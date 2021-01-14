@@ -1,60 +1,156 @@
 <template>
-    <div class="universalMagerBlock q-pa-md"> 
-			<div class="row q-col-gutter-md">
-				<div class="col-9">
-					<form @submit.prevent.stop="onSubmit">
-						<appSettingProcess :title="titles[0]"/>
-					</form>
-				</div>
-				<div class="col-3">
-
-				</div>
-			</div>
+  <div class="universalMagerBlock q-pa-md">
+    <div class="row q-col-gutter-md">
+      <div class="col-9">
+        <form @submit.prevent.stop="onSubmit">
+          <!-- <appSettingsProcess :title="titles[0]" /> -->
+          <appSettingsScorModel :title="titles[1]" />
+          <appSettingsScorBalls :title="titles[2]" />
+          <div class="btnBlock">
+            <q-btn type="submit" label="Одобрить" class="btnSucces" />
+          </div>
+        </form>
+      </div>
+      <div class="col-3"></div>
     </div>
+  </div>
 </template>
 <script>
-import SettingCreditProduct from './Components/SettingCreditProduct'
-import SettingCreditRoleActive from './Components/SettingCreditRoleActive'
-import SettingProcess from './Components/SettingProcess'
-import SettingScorBalls from './Components/SettingScorBalls'
-import SettingScorModel from './Components/SettingScorModel'
+import { mapState } from "vuex";
+import { validItems, validFilter } from "@/shared/utils/valid_filter";
+
+import SettingsCreditProduct from "./Components/SettingsCreditProduct";
+import SettingsCreditRoleActive from "./Components/SettingsCreditRoleActive";
+import SettingsProcess from "./Components/SettingsProcess";
+import SettingsScorBalls from "./Components/SettingsScorBalls";
+import SettingsScorModel from "./Components/SettingsScorModel";
 
 export default {
-    data() {
-        return {
-					titles: [
-						"Настройка процесса",
-						"Настройка скоринговой модели",
-						"Настройка балов скоркарты",
-						"Участие роли в кредитном конвейeре",
-						"Настройка кредитных продуктов"
-					]
-        }
-    }, 
-    components: {
-        appSettingCreditProduct: SettingCreditProduct,
-        appSettingCreditRoleActive: SettingCreditRoleActive,
-        appSettingProcess: SettingProcess,
-        appSettingScorBalls: SettingScorBalls,
-        appSettingScorModel: SettingScorModel
+  data() {
+    return {
+      titles: [
+        "Настройка процесса",
+        "Настройка скоринговой модели",
+        "Настройка баллов скоркарты",
+        "Участие роли в кредитном конвейeре",
+        "Настройка кредитных продуктов"
+      ]
+    };
+  },
+  async created() {
+    try {
+      const settings = await this.$store.dispatch("creditSettings/getSettings")
+    } catch (error) {
+      console.log(error)
     }
-}
+  },
+  computed: {
+    ...mapState({
+      refs: state => state.creditSettings.allRefs
+    })
+  },
+  methods: {
+    onSubmit() {
+			// this.refs.moratory.validate()
+      
+      validFilter(this.refs, "scoreСoefficientMinScoreValid", "scoreСoefficientMinScore")
+      validFilter(this.refs, "scoreСoefficientMaxScoreValid", "scoreСoefficientMaxScore")
+      validFilter(this.refs, "scoreСoefficientCoefficientValid", "scoreСoefficientCoefficient")
+
+      validFilter(this.refs, "ageMinAgeValid", "ageMinAge")
+      validFilter(this.refs, "ageMaxAgeValid", "ageMaxAge")
+      validFilter(this.refs, "ageScoreValid", "ageScore")
+      
+      validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
+      validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
+
+      validFilter(this.refs, "сhildrenNumberValid", "сhildrenNumber")
+      validFilter(this.refs, "childrenScoreValid", "childrenScore")
+
+      validFilter(this.refs, "lastJobPeriodMinPeriodValid", "lastJobPeriodMinPeriod")
+      validFilter(this.refs, "lastJobPeriodMaxPeriodValid", "lastJobPeriodMaxPeriod")
+      validFilter(this.refs, "lastJobPeriodScoreValid", "lastJobPeriodScore")
+
+      validFilter(this.refs, "loanPeriodMinPeriodValid", "loanPeriodMinPeriod")
+      validFilter(this.refs, "loanPeriodMaxPeriodValid", "loanPeriodMaxPeriod")
+      validFilter(this.refs, "loanPeriodScoreValid", "loanPeriodScore")
+			if (
+          // this.refs.moratory.hasError ||
+          this.refs.scoreСoefficientMinScoreValid.hasError ||
+          this.refs.scoreСoefficientMaxScoreValid.hasError ||
+          this.refs.scoreСoefficientCoefficientValid.hasError ||
+          
+          this.refs.ageMinAgeValid.hasError ||
+          this.refs.ageMaxAgeValid.hasError ||
+          this.refs.ageScoreValid.hasError ||
+
+          this.refs.ratingCompanyRatingValid.hasError ||
+          this.refs.ratingCompanyScoreValid.hasError ||
+
+          this.refs.lastJobPeriodMinPeriodValid.hasError ||
+          this.refs.lastJobPeriodMaxPeriodValid.hasError ||
+          this.refs.lastJobPeriodScoreValid.hasError ||
+
+          this.refs.loanPeriodMinPeriodValid.hasError ||
+          this.refs.loanPeriodMaxPeriodValid.hasError ||
+          this.refs.loanPeriodScoreValid.hasError ||
+
+          this.refs.сhildrenNumberValid.hasError ||
+          this.refs.childrenScoreValid.hasError 
+        ) {
+				this.formHasError = true;
+				console.log('validationError')
+			} else {
+				console.log("submit")
+			}
+		},
+
+		// setRefs(refs) {
+    //   this.$refs = Object.assign({}, this.$refs, refs);
+    //   console.log("currentRefs", refs);
+    //   console.log("AllRefs", this.$refs);
+    // },
+  },
+  components: {
+    appSettingsCreditProduct: SettingsCreditProduct,
+    appSettingsCreditRoleActive: SettingsCreditRoleActive,
+    appSettingsProcess: SettingsProcess,
+    appSettingsScorBalls: SettingsScorBalls,
+    appSettingsScorModel: SettingsScorModel
+  }
+};
 </script>
 <style lang="scss">
 .universalMagerBlock {
-	.settingBlock { 
-		background: #fff;
-		box-shadow: 0px 3px 7px #ddd;
+  .settingBlock {
+    margin-bottom: 30px;
+    background: #fff;
+    box-shadow: 0px 3px 7px #ddd;
 
-		.headerBlock {
-			font-size: 24px;
-			font-weight: bold;
-			box-shadow: 0px 3px 7px #ddd; color: #282D30;
-			margin-bottom: 7px;
-		}
+    .headerBlock {
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0px 3px 7px #ddd;
+      color: #282d30;
+      margin-bottom: 7px;
+    }
 
-		.contentBlock {
-		}
-	}
+    .contentBlock {
+      .titleSetting {
+        margin: 0 0 15px 0;
+        font-size: 20px;
+      }
+    }
+  }
+
+  .btnSucces {
+		display: flex;
+		justify-content: center;
+		justify-items: center;
+  }
+
+  .q-field__bottom {
+    padding: 0 12px;
+  }
 }
 </style>
