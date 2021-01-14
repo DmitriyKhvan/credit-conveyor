@@ -2905,10 +2905,7 @@ export default {
       INPSBar: false,
       dataINPS: {
         code: null,
-        msg: "",
-        wages: {
-          items: []
-        }
+        msg: ""
       },
       clientInfo: null,
       countRelativeDocumentName: -1,
