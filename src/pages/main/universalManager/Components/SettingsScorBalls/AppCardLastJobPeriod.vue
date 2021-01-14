@@ -7,14 +7,14 @@
 
     <div
       class="row q-col-gutter-md"
-      v-for="(period, index) of app_card_last_job_period"
-      :key="period.id"
+      v-for="(lastJobPeriod, index) of app_card_last_job_period"
+      :key="lastJobPeriod.id"
     >
       <div class="col-4">
         <q-input
-          ref="cardAgeMinAge"
+          ref="lastJobPeriodMinPeriod"
           outlined
-          v-model="period.minPeriod"
+          v-model="lastJobPeriod.minPeriod"
           dense
           label="от"
           :rules="[val => integerValid(val)]"
@@ -22,9 +22,9 @@
       </div>
       <div class="col-4">
         <q-input
-          ref="cardAgeMaxAge"
+          ref="lastJobPeriodMaxPeriod"
           outlined
-          v-model="period.maxPeriod"
+          v-model="lastJobPeriod.maxPeriod"
           dense
           label="до"
           :rules="[val => integerValid(val)]"
@@ -33,9 +33,9 @@
       <div class="col-4">
         <q-input
           class="scoreBall"
-          ref="cardAgeScore"
+          ref="lastJobPeriodScore"
           outlined
-          v-model="period.score"
+          v-model="lastJobPeriod.score"
           dense
           :rules="[val => floatValid(val)]"
         />

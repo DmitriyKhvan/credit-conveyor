@@ -57,27 +57,43 @@ export default {
       validFilter(this.refs, "scoreСoefficientMaxScoreValid", "scoreСoefficientMaxScore")
       validFilter(this.refs, "scoreСoefficientCoefficientValid", "scoreСoefficientCoefficient")
 
-      validFilter(this.refs, "cardAgeMinAgeValid", "cardAgeMinAge")
-      validFilter(this.refs, "cardAgeMaxAgeValid", "cardAgeMaxAge")
-      validFilter(this.refs, "cardAgeScoreValid", "cardAgeScore")
+      validFilter(this.refs, "ageMinAgeValid", "ageMinAge")
+      validFilter(this.refs, "ageMaxAgeValid", "ageMaxAge")
+      validFilter(this.refs, "ageScoreValid", "ageScore")
       
       validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
       validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
 
       validFilter(this.refs, "сhildrenNumberValid", "сhildrenNumber")
       validFilter(this.refs, "childrenScoreValid", "childrenScore")
+
+      validFilter(this.refs, "lastJobPeriodMinPeriodValid", "lastJobPeriodMinPeriod")
+      validFilter(this.refs, "lastJobPeriodMaxPeriodValid", "lastJobPeriodMaxPeriod")
+      validFilter(this.refs, "lastJobPeriodScoreValid", "lastJobPeriodScore")
+
+      validFilter(this.refs, "loanPeriodMinPeriodValid", "loanPeriodMinPeriod")
+      validFilter(this.refs, "loanPeriodMaxPeriodValid", "loanPeriodMaxPeriod")
+      validFilter(this.refs, "loanPeriodScoreValid", "loanPeriodScore")
 			if (
           // this.refs.moratory.hasError ||
           this.refs.scoreСoefficientMinScoreValid.hasError ||
           this.refs.scoreСoefficientMaxScoreValid.hasError ||
           this.refs.scoreСoefficientCoefficientValid.hasError ||
           
-          this.refs.cardAgeMinAgeValid.hasError ||
-          this.refs.cardAgeMaxAgeValid.hasError ||
-          this.refs.cardAgeScoreValid.hasError ||
+          this.refs.ageMinAgeValid.hasError ||
+          this.refs.ageMaxAgeValid.hasError ||
+          this.refs.ageScoreValid.hasError ||
 
           this.refs.ratingCompanyRatingValid.hasError ||
           this.refs.ratingCompanyScoreValid.hasError ||
+
+          this.refs.lastJobPeriodMinPeriodValid.hasError ||
+          this.refs.lastJobPeriodMaxPeriodValid.hasError ||
+          this.refs.lastJobPeriodScoreValid.hasError ||
+
+          this.refs.loanPeriodMinPeriodValid.hasError ||
+          this.refs.loanPeriodMaxPeriodValid.hasError ||
+          this.refs.loanPeriodScoreValid.hasError ||
 
           this.refs.сhildrenNumberValid.hasError ||
           this.refs.childrenScoreValid.hasError 

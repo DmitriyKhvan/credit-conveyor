@@ -12,7 +12,7 @@
     >
       <div class="col-4">
         <q-input
-          ref="cardAgeMinAge"
+          ref="loanPeriodMinPeriod"
           outlined
           v-model="loanPeriod.minPeriod"
           dense
@@ -22,7 +22,7 @@
       </div>
       <div class="col-4">
         <q-input
-          ref="cardAgeMaxAge"
+          ref="loanPeriodMaxPeriod"
           outlined
           v-model="loanPeriod.maxPeriod"
           dense
@@ -33,7 +33,7 @@
       <div class="col-4">
         <q-input
           class="scoreBall"
-          ref="cardAgeScore"
+          ref="loanPeriodScore"
           outlined
           v-model="loanPeriod.score"
           dense

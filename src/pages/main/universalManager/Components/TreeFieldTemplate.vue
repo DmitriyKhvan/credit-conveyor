@@ -1,20 +1,20 @@
 <template>
   <div>
     <div class="row q-col-gutter-md titleScor">
-      <div class="col-9 subTitleScor">Возраст заемщика</div>
+      <div class="col-9 subTitleScor">{{subTitleScor}}</div>
       <div class="col-3 text-right">Балл</div>
     </div>
 
     <div
       class="row q-col-gutter-md"
-      v-for="(age, index) of appCardAge"
-      :key="'cardAge' + index"
+      v-for="(item, index) of sortItems"
+      :key="item.id"
     >
       <div class="col-4">
         <q-input
-          ref="ageMinAge"
+          ref="itemMinPeriod"
           outlined
-          v-model="age.minAge"
+          v-model="item[periodFrom]"
           dense
           label="от"
           :rules="[val => integerValid(val)]"
@@ -22,9 +22,9 @@
       </div>
       <div class="col-4">
         <q-input
-          ref="ageMaxAge"
+          ref="itemMaxPeriod"
           outlined
-          v-model="age.maxAge"
+          v-model="item[periodTo]"
           dense
           label="до"
           :rules="[val => integerValid(val)]"
@@ -33,9 +33,9 @@
       <div class="col-4">
         <q-input
           class="scoreBall"
-          ref="ageScore"
+          ref="itemScore"
           outlined
-          v-model="age.score"
+          v-model="item.score"
           dense
           :rules="[val => floatValid(val)]"
         />
@@ -45,10 +45,11 @@
 </template>
 
 <script>
-import creditSettings from '../../mixins/creditSettings'
-import sortData from '../../filters/sortData'
+import creditSettings from '../mixins/creditSettings'
+import sortData from '../filters/sortData'
 
 export default {
+  props: ['subTitleScor', 'items', 'periodFrom', 'periodTo'], 
   mixins: [creditSettings],
   mounted() {
     setTimeout(() => {
@@ -56,8 +57,8 @@ export default {
 		}, 100)
   }, 
 	computed: {
-    appCardAge() {
-      return sortData(this.settings.appCardAge, 'minAge')
+    sortItems() {
+      return sortData(this.items, this.periodFrom)
     }
 	}
 };

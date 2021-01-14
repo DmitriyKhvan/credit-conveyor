@@ -10,11 +10,17 @@
         <q-card-section>
           <div class="row q-col-gutter-md">
             <div class="col-8">
-              <AppCardAge />
+              <appTreeFieldTemplate 
+                :subTitleScor="'Возраст заемщика'"
+                :items="settings.appCardAge"
+                :periodFrom="'minAge'"
+                :periodTo="'maxAge'"
+              />
+              <!-- <AppCardAge />
               <AppCardRatingCompany />
               <AppCardChildren />
               <AppCardLastJobPeriod />
-              <AppCardLoanPeriod />
+              <AppCardLoanPeriod /> -->
             </div>
           </div>
         </q-card-section>
@@ -25,11 +31,12 @@
 <script>
 import creditSettings from '../mixins/creditSettings'
 
-import AppCardAge from './SettingsScorBalls/AppCardAge'
-import AppCardRatingCompany from './SettingsScorBalls/AppCardRatingCompany'
-import AppCardChildren from './SettingsScorBalls/AppCardChildren'
-import AppCardLastJobPeriod from './SettingsScorBalls/AppCardLastJobPeriod'
-import AppCardLoanPeriod from './SettingsScorBalls/AppCardLoanPeriod'
+import TreeFieldTemplate from './TreeFieldTemplate'
+// import AppCardAge from './SettingsScorBalls/AppCardAge'
+// import AppCardRatingCompany from './SettingsScorBalls/AppCardRatingCompany'
+// import AppCardChildren from './SettingsScorBalls/AppCardChildren'
+// import AppCardLastJobPeriod from './SettingsScorBalls/AppCardLastJobPeriod'
+// import AppCardLoanPeriod from './SettingsScorBalls/AppCardLoanPeriod'
 
 export default {
   mixins: [creditSettings],
@@ -44,11 +51,12 @@ export default {
   computed: {}, 
   methods: {},
   components: {
-    AppCardAge,
-    AppCardRatingCompany,
-    AppCardChildren,
-    AppCardLastJobPeriod,
-    AppCardLoanPeriod
+    appTreeFieldTemplate: TreeFieldTemplate
+    // AppCardAge,
+    // AppCardRatingCompany,
+    // AppCardChildren,
+    // AppCardLastJobPeriod,
+    // AppCardLoanPeriod
   }
 };
 </script>
