@@ -6,6 +6,7 @@
           <!-- <appSettingsProcess :title="titles[0]" /> -->
           <appSettingsScorModel :title="titles[1]" />
           <appSettingsScorBalls :title="titles[2]" />
+          <appSettingsCreditProduct :title="titles[4]" />
           <div class="btnBlock">
             <q-btn type="submit" label="Одобрить" class="btnSucces" />
           </div>
@@ -78,6 +79,26 @@ export default {
 
       validFilter(this.refs, "locationNameValid", "locationName")
       validFilter(this.refs, "locationScoreValid", "locationScore")
+
+
+      validFilter(this.refs, "maritalStatusValid", "maritalStatus")
+      validFilter(this.refs, "maritalScoreValid", "maritalScore")
+
+      validFilter(this.refs, "positiveNbuHistoryValid", "positiveNbuHistory")
+      validFilter(this.refs, "positiveNbuHistoryScoreValid", "positiveNbuHistoryScore")
+
+      validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
+      validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
+
+      validFilter(this.refs, "hasRealityValid", "hasReality")
+      validFilter(this.refs, "realityScoreValid", "realityScore")
+
+      validFilter(this.refs, "hasVehicleValid", "hasVehicle")
+      validFilter(this.refs, "vehicleScoreValid", "vehicleScore")
+
+      validFilter(this.refs, "minBillValid", "minBill")
+      validFilter(this.refs, "maxBillValid", "maxBill")
+      validFilter(this.refs, "billsScoreValid", "billsScore")
 			if (
           // this.refs.moratory.hasError ||
 
@@ -102,6 +123,25 @@ export default {
           
           this.refs.locationNameValid.hasError ||
           this.refs.locationScoreValid.hasError ||
+
+          this.refs.maritalStatusValid.hasError ||
+          this.refs.maritalScoreValid.hasError ||
+
+          this.refs.positiveNbuHistoryValid.hasError ||
+          this.refs.positiveNbuHistoryScoreValid.hasError ||
+
+          this.refs.ratingCompanyRatingValid.hasError ||
+          this.refs.ratingCompanyScoreValid.hasError ||
+
+          this.refs.hasRealityValid.hasError ||
+          this.refs.realityScoreValid.hasError ||
+
+          this.refs.hasVehicleValid.hasError ||
+          this.refs.vehicleScoreValid.hasError ||
+
+          this.refs.minBillValid.hasError ||
+          this.refs.maxBillValid.hasError ||
+          this.refs.billsScoreValid.hasError ||
 
           this.refs.childrenNumberValid.hasError ||
           this.refs.childrenScoreValid.hasError 

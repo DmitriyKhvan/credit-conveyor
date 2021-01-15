@@ -18,7 +18,7 @@
                   v-if="item.typeTemplate == 1"
                   :subTitleScor="item.subTitleScor"
                   :items="item.items"
-                  :fieldsName="item.fieldsName"
+                  :fieldsSettings="item.fieldsSettings"
                   :sortBy="item.sortBy"
                   :refsName="item.refsName"
                 />
@@ -27,7 +27,7 @@
                   v-else-if="item.typeTemplate == 2"
                   :subTitleScor="item.subTitleScor"
                   :items="item.items"
-                  :fieldsName="item.fieldsName"
+                  :fieldsSettings="item.fieldsSettings"
                   :sortBy="item.sortBy"
                   :refsName="item.refsName"
                   :mask="item.mask"
@@ -50,21 +50,6 @@
                   score: 'ageScore'
                 }"
               /> -->
-              <!-- <appTreeFieldTemplate
-                :subTitleScor="'Стаж на последнем месте работы'"
-                :items="settings.app_card_last_job_period"
-                :fieldsName="{
-                  periodFrom: 'minPeriod',
-                  periodTo: 'maxPeriod'
-                }"
-                :sortBy="'minPeriod'"
-                :refsName="{
-                  periodMin: 'lastJobPeriodMinPeriod',
-                  periodMax: 'lastJobPeriodMaxPeriod',
-                  score: 'lastJobPeriodScore'
-                }"
-              /> -->
-
               <!-- <appTwoFieldTemplate
                 :subTitleScor="'Компания с рейтингом'"
                 :items="settings.app_card_rating_company"
@@ -76,6 +61,7 @@
                   score: 'ratingCompanyScore'
                 }"
               /> -->
+
               <!-- <AppCardChildren />
               <AppCardLastJobPeriod />
               <AppCardLoanPeriod /> -->
@@ -116,7 +102,7 @@ export default {
         {
           subTitleScor: "Возраст заемщика",
           items: this.settings.app_card_age,
-          fieldsName: {
+          fieldsSettings: {
             periodFrom: "minAge",
             periodTo: "maxAge"
           },
@@ -132,8 +118,10 @@ export default {
         {
           subTitleScor:"Количество детей",
           items: this.settings.app_card_children,
-          fieldsName: {
-            scoreName: "childrenNumber"
+          fieldsSettings: {
+            scoreName: {
+              name: "childrenNumber"
+            }
           },
           sortBy: "childrenNumber",
           refsName: {
@@ -143,13 +131,13 @@ export default {
           mask: '##',
           validFunc: this.integerValid,
           typeTemplate: 2,
-          order: 0
+          order: 1
         },
         
         {
           subTitleScor: "Стаж на последнем месте работы",
           items: this.settings.app_card_last_job_period,
-          fieldsName: {
+          fieldsSettings: {
             periodFrom: "minPeriod",
             periodTo: "maxPeriod"
           },
@@ -165,7 +153,7 @@ export default {
         {
           subTitleScor: "Период, на который оформляется кредит ",
           items: this.settings.app_card_loan_period,
-          fieldsName: {
+          fieldsSettings: {
             periodFrom: "minPeriod",
             periodTo: "maxPeriod"
           },
@@ -176,14 +164,65 @@ export default {
             score: "loanPeriodScore"
           },
           typeTemplate: 1,
-          order: 2
+          order: 3
         },
         //TwoFieldTemplate
         {
-          subTitleScor:"Компания с рейтингом",
+          subTitleScor:"Бал по локации клиента ",
+          items: this.settings.app_card_location,
+          fieldsSettings: {
+            scoreName: {
+              name: "name"
+            }
+          },
+          // sortBy: "name",
+          refsName: {
+            scoreName: "locationName",
+            score: "locationScore"
+          },
+          typeTemplate: 2,
+          order: 4
+        },
+        {
+          subTitleScor:"Семейное положение",
+          items: this.settings.app_card_marital,
+          fieldsSettings: {
+            scoreName: {
+              name: "status",
+              disable: true
+            }
+          },
+          refsName: {
+            scoreName: "maritalStatus",
+            score: "maritalScore"
+          },
+          typeTemplate: 2,
+          order: 5
+        },
+        {
+          subTitleScor:"Внутренняя кредитная история",
+          items: this.settings.app_card_positive_nbu_history,
+          fieldsSettings: {
+            scoreName: {
+              name: "hasPositiveNbuHistory",
+              disable: true
+            }
+          },
+          refsName: {
+            scoreName: "positiveNbuHistory",
+            score: "positiveNbuHistoryScore"
+          },
+          validFunc: this.integerValid,
+          typeTemplate: 2,
+          order: 6
+        },
+        {
+          subTitleScor:"Рейтинг Работодателя",
           items: this.settings.app_card_rating_company,
-          fieldsName: {
-            scoreName: "rating"
+          fieldsSettings: {
+            scoreName: {
+              name: "rating"
+            }
           },
           sortBy: "rating",
           refsName: {
@@ -192,22 +231,58 @@ export default {
           },
           mask: 'A',
           typeTemplate: 2,
-          order: 1
+          order: 7
         },
         {
-          subTitleScor:"Бал по локации клиента ",
-          items: this.settings.app_card_location,
-          fieldsName: {
-            scoreName: "name"
+          subTitleScor:"Недвижимость в имуществе",
+          items: this.settings.app_card_reality,
+          fieldsSettings: {
+            scoreName: {
+              name: "hasReality",
+              disable: true
+            }
           },
-          sortBy: "name",
           refsName: {
-            scoreName: "locationName",
-            score: "locationScore"
+            scoreName: "hasReality",
+            score: "realityScore"
           },
+          validFunc: this.integerValid,
           typeTemplate: 2,
-          order: 1
-        }
+          order: 8
+        },
+        {
+          subTitleScor:"Автотранспорт в имуществе",
+          items: this.settings.app_card_vehicle,
+          fieldsSettings: {
+            scoreName: {
+              name: "hasVehicle",
+              disable: true
+            }
+          },
+          refsName: {
+            scoreName: "hasVehicle",
+            score: "vehicleScore"
+          },
+          validFunc: this.integerValid,
+          typeTemplate: 2,
+          order: 9
+        },
+        {
+          subTitleScor: "Депозит в банке",
+          items: this.settings.app_card_bills,
+          fieldsSettings: {
+            periodFrom: "minBill",
+            periodTo: "maxBill"
+          },
+          sortBy: "minBill",
+          refsName: {
+            periodMin: "minBill",
+            periodMax: "maxBill",
+            score: "billsScore"
+          }, 
+          typeTemplate: 1,
+          order: 10
+        },
       ], 'order');
     }
   },

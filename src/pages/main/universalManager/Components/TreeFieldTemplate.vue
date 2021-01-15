@@ -14,7 +14,7 @@
         <q-input
           :ref="refsName.periodMin"
           outlined
-          v-model="item[fieldsName.periodFrom]"
+          v-model="item[fieldsSettings.periodFrom]"
           dense
           label="от"
           :rules="[val => integerValid(val)]"
@@ -24,7 +24,7 @@
         <q-input
           :ref="refsName.periodMax"
           outlined
-          v-model="item[fieldsName.periodTo]"
+          v-model="item[fieldsSettings.periodTo]"
           dense
           label="до"
           :rules="[val => integerValid(val)]"
@@ -63,7 +63,7 @@ export default {
         return []
       }
     },
-    fieldsName: {
+    fieldsSettings: {
       type: Object,
       default() {
         return {}
@@ -95,8 +95,8 @@ export default {
     addItem() {
       const obj = {}
       obj.id = null
-      obj[this.fieldsName.periodFrom] = null
-      obj[this.fieldsName.periodTo] = null
+      obj[this.fieldsSettings.periodFrom] = null
+      obj[this.fieldsSettings.periodTo] = null
       obj.score = null
 
       this.items.push(obj)

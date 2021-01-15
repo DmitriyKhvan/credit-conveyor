@@ -13,8 +13,9 @@
       <div class="col-8">
         <q-input
           :ref="refsName.scoreName"
+          :disable="fieldsSettings.scoreName.disable"
           outlined
-          v-model="item[fieldsName.scoreName]"
+          v-model="item[fieldsSettings.scoreName.name]"
           dense
           :mask="mask"
           :rules="[val => validFunc(val)]"
@@ -31,7 +32,7 @@
         />
       </div>
     </div>
-    <div class="btnBlock">
+    <div v-if="!fieldsSettings.scoreName.disable" class="btnBlock">
       <q-btn label="Добавить параметр" class="addItem" @click="addItem"/>
     </div>
   </div>
@@ -54,7 +55,7 @@ export default {
         return []
       }
     },
-    fieldsName: {
+    fieldsSettings: {
       type: Object,
       default() {
         return {}
@@ -96,7 +97,7 @@ export default {
     addItem() {
       const obj = {}
       obj.id = null
-      obj[this.fieldsName.scoreName] = null
+      obj[this.fieldsSettings.scoreName] = null
       obj.score = null
 
       this.items.push(obj)
