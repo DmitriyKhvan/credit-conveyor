@@ -2,7 +2,8 @@
   <div class="TwoFieldTemplate">
     <div class="row q-col-gutter-md titleScor">
       <div class="col-9 subTitleScor">{{subTitleScor}}</div>
-      <div class="col-3 text-right">Балл</div>
+      <div class="col-2 text-right">Балл</div>
+      <div class="col-1"></div>
     </div>
 
     <div
@@ -21,7 +22,7 @@
           :rules="[val => validFunc(val)]"
         />
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <q-input
           class="scoreBall"
           :ref="refsName.score"
@@ -31,9 +32,12 @@
           :rules="[val => floatValid(val)]"
         />
       </div>
+      <div v-if="!fieldsSettings.scoreName.disable" class="col-1 removeItem">
+        <q-btn flat round icon="close" @click="removeItem(index)"/>
+      </div>
     </div>
     <div v-if="!fieldsSettings.scoreName.disable" class="btnBlock">
-      <q-btn label="Добавить параметр" class="addItem" @click="addItem"/>
+      <q-btn unelevated label="Добавить параметр" class="addItem" @click="addItem"/>
     </div>
   </div>
 </template>

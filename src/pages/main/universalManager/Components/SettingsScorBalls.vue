@@ -307,5 +307,16 @@ export default {
     float: right;
     width: 60%;
   }
+  .removeItem {
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+    height: 56px;
+    padding-left: 0;
+
+    .q-btn .q-icon, .q-btn .q-spinner {
+      font-size: 15px;
+    }
+  }
 }
 </style>

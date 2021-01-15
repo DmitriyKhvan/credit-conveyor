@@ -150,7 +150,7 @@ export default {
 				console.log('validationError')
 			} else {
         console.log("submit")
-        // console.log(JSON.stringify(this.settings, null, 2))
+        console.log(JSON.stringify(this.settings, null, 2))
 			}
 		},
 
@@ -200,6 +200,16 @@ export default {
 
   .q-field__bottom {
     padding: 0 12px;
+  }
+}
+
+.btnBlock {
+  button {
+    background: #4AB8FF;
+
+    .q-btn__content {
+      color: #fff
+    }
   }
 }
 </style>

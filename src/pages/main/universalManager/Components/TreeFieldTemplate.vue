@@ -2,7 +2,8 @@
   <div class="TreeFieldTemplate">
     <div class="row q-col-gutter-md titleScor">
       <div class="col-9 subTitleScor">{{subTitleScor}}</div>
-      <div class="col-3 text-right">Балл</div>
+      <div class="col-2 text-right">Балл</div>
+      <div class="col-1"></div>
     </div>
     <!-- :key="refsName.score + index" -->
     <div
@@ -30,7 +31,7 @@
           :rules="[val => integerValid(val)]"
         />
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <q-input
           class="scoreBall"
           :ref="refsName.score"
@@ -40,9 +41,12 @@
           :rules="[val => floatValid(val)]"
         />
       </div>
+      <div class="col-1 removeItem">
+        <q-btn flat round icon="close" @click="removeItem(index)"/>
+      </div>
     </div>
     <div class="btnBlock">
-      <q-btn label="Добавить параметр" class="addItem" @click="addItem"/>
+      <q-btn unelevated label="Добавить параметр" class="addItem" @click="addItem"/>
     </div>
   </div>
 </template>
@@ -100,6 +104,10 @@ export default {
       obj.score = null
 
       this.items.push(obj)
+    },
+
+    removeItem(idx) {
+      this.items.splice(idx, 1)
     }
   }
 };
