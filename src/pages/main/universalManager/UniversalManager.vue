@@ -6,6 +6,7 @@
           <!-- <appSettingsProcess :title="titles[0]" /> -->
           <appSettingsScorModel :title="titles[1]" />
           <appSettingsScorBalls :title="titles[2]" />
+          <appSettingsCreditProduct :title="titles[4]" />
           <div class="btnBlock">
             <q-btn type="submit" label="Одобрить" class="btnSucces" />
           </div>
@@ -46,6 +47,7 @@ export default {
   },
   computed: {
     ...mapState({
+      settings: state => state.creditSettings.settings,
       refs: state => state.creditSettings.allRefs
     })
   },
@@ -64,7 +66,7 @@ export default {
       validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
       validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
 
-      validFilter(this.refs, "сhildrenNumberValid", "сhildrenNumber")
+      validFilter(this.refs, "childrenNumberValid", "childrenNumber")
       validFilter(this.refs, "childrenScoreValid", "childrenScore")
 
       validFilter(this.refs, "lastJobPeriodMinPeriodValid", "lastJobPeriodMinPeriod")
@@ -74,8 +76,32 @@ export default {
       validFilter(this.refs, "loanPeriodMinPeriodValid", "loanPeriodMinPeriod")
       validFilter(this.refs, "loanPeriodMaxPeriodValid", "loanPeriodMaxPeriod")
       validFilter(this.refs, "loanPeriodScoreValid", "loanPeriodScore")
+
+      validFilter(this.refs, "locationNameValid", "locationName")
+      validFilter(this.refs, "locationScoreValid", "locationScore")
+
+
+      validFilter(this.refs, "maritalStatusValid", "maritalStatus")
+      validFilter(this.refs, "maritalScoreValid", "maritalScore")
+
+      validFilter(this.refs, "positiveNbuHistoryValid", "positiveNbuHistory")
+      validFilter(this.refs, "positiveNbuHistoryScoreValid", "positiveNbuHistoryScore")
+
+      validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
+      validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
+
+      validFilter(this.refs, "hasRealityValid", "hasReality")
+      validFilter(this.refs, "realityScoreValid", "realityScore")
+
+      validFilter(this.refs, "hasVehicleValid", "hasVehicle")
+      validFilter(this.refs, "vehicleScoreValid", "vehicleScore")
+
+      validFilter(this.refs, "minBillValid", "minBill")
+      validFilter(this.refs, "maxBillValid", "maxBill")
+      validFilter(this.refs, "billsScoreValid", "billsScore")
 			if (
           // this.refs.moratory.hasError ||
+
           this.refs.scoreСoefficientMinScoreValid.hasError ||
           this.refs.scoreСoefficientMaxScoreValid.hasError ||
           this.refs.scoreСoefficientCoefficientValid.hasError ||
@@ -94,14 +120,37 @@ export default {
           this.refs.loanPeriodMinPeriodValid.hasError ||
           this.refs.loanPeriodMaxPeriodValid.hasError ||
           this.refs.loanPeriodScoreValid.hasError ||
+          
+          this.refs.locationNameValid.hasError ||
+          this.refs.locationScoreValid.hasError ||
 
-          this.refs.сhildrenNumberValid.hasError ||
+          this.refs.maritalStatusValid.hasError ||
+          this.refs.maritalScoreValid.hasError ||
+
+          this.refs.positiveNbuHistoryValid.hasError ||
+          this.refs.positiveNbuHistoryScoreValid.hasError ||
+
+          this.refs.ratingCompanyRatingValid.hasError ||
+          this.refs.ratingCompanyScoreValid.hasError ||
+
+          this.refs.hasRealityValid.hasError ||
+          this.refs.realityScoreValid.hasError ||
+
+          this.refs.hasVehicleValid.hasError ||
+          this.refs.vehicleScoreValid.hasError ||
+
+          this.refs.minBillValid.hasError ||
+          this.refs.maxBillValid.hasError ||
+          this.refs.billsScoreValid.hasError ||
+
+          this.refs.childrenNumberValid.hasError ||
           this.refs.childrenScoreValid.hasError 
         ) {
 				this.formHasError = true;
 				console.log('validationError')
 			} else {
-				console.log("submit")
+        console.log("submit")
+        // console.log(JSON.stringify(this.settings, null, 2))
 			}
 		},
 
