@@ -521,9 +521,7 @@ export const credits = {
       state.personalData.gender = payload.Person.Sex;
       state.personalData.passport = payload.Person.DocumentSerialNumber;
       state.personalData.pinpp = payload.Person.Pinpp;
-      state.personalData.inn = payload.Person.Inn
-        ? payload.Person.Inn
-        : payload.Additional.Inn;
+      state.personalData.inn = payload.Person.Inn;
       state.personalData.personPhoto = payload.ModelPersonPhoto.PersonPhoto;
       state.personalData.livePersonPhoto = payload.LivePersonPhoto.answere.AnswereComment === "OK" ? payload.LivePersonPhoto.PersonLivePhoto : null;
       state.personalData.livePersonVideo = payload.LivePersonVideo.answere.AnswereComment === "OK" ? payload.LivePersonVideo.Video : null;

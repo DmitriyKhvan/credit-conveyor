@@ -1,33 +1,24 @@
 <template>
-  <div class="TreeFieldTemplate">
+  <div class="TwoFieldTemplate">
     <div class="row q-col-gutter-md titleScor">
       <div class="col-9 subTitleScor">{{subTitleScor}}</div>
       <div class="col-3 text-right">Балл</div>
     </div>
-    <!-- :key="refsName.score + index" -->
+
     <div
       class="row q-col-gutter-md"
-      v-for="(item, index) of sortItems"
+      v-for="item of sortItems"
       :key="item.id"
     >
-      <div class="col-4">
+      <div class="col-8">
         <q-input
-          :ref="refsName.periodMin"
+          :ref="refsName.scoreName"
+          :disable="fieldsSettings.scoreName.disable"
           outlined
-          v-model="item[fieldsSettings.periodFrom]"
+          v-model="item[fieldsSettings.scoreName.name]"
           dense
-          label="от"
-          :rules="[val => integerValid(val)]"
-        />
-      </div>
-      <div class="col-4">
-        <q-input
-          :ref="refsName.periodMax"
-          outlined
-          v-model="item[fieldsSettings.periodTo]"
-          dense
-          label="до"
-          :rules="[val => integerValid(val)]"
+          :mask="mask"
+          :rules="[val => validFunc(val)]"
         />
       </div>
       <div class="col-4">
@@ -41,11 +32,12 @@
         />
       </div>
     </div>
-    <div class="btnBlock">
+    <div v-if="!fieldsSettings.scoreName.disable" class="btnBlock">
       <q-btn label="Добавить параметр" class="addItem" @click="addItem"/>
     </div>
   </div>
 </template>
+
 
 <script>
 import creditSettings from '../mixins/creditSettings'
@@ -78,6 +70,16 @@ export default {
       default() {
         return {}
       }
+    },
+    mask: {
+      type: String, 
+      default: ""
+    }, 
+    validFunc: {
+      type: Function, 
+      default(val) {
+        return !!val || 'Введите данные'
+      }
     }
   },
   mixins: [creditSettings],
@@ -95,8 +97,7 @@ export default {
     addItem() {
       const obj = {}
       obj.id = null
-      obj[this.fieldsSettings.periodFrom] = null
-      obj[this.fieldsSettings.periodTo] = null
+      obj[this.fieldsSettings.scoreName] = null
       obj.score = null
 
       this.items.push(obj)
@@ -106,7 +107,7 @@ export default {
 </script>
 
 <style lang="scss">
-  .TreeFieldTemplate {
+  .TwoFieldTemplate {
     margin-bottom: 30px;
   }
 </style>
