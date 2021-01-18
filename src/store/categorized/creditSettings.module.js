@@ -6,8 +6,8 @@ export const creditSettings = {
     creditSettingsService: new CreditSettingsService(),
     allRefs: null,
     settings: {
-      appCardAge: [],
-      appCardBills: [],
+      app_card_age: [],
+      app_card_bills: [],
       app_card_children: [],
       app_card_last_job_period: [],
       app_card_loan_period: [],
@@ -24,7 +24,8 @@ export const creditSettings = {
       loan_product_char: [],
       loan_product_financial_source: [],
       loan_product_loan_code: []
-    }
+    },
+    loanProductId: null,
   },
   actions: {
     async getSettings({ state, commit }) {
@@ -37,9 +38,37 @@ export const creditSettings = {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    async updateSettings({state, dispatch, commit}, settings) {
+      try {
+        const response = await state.creditSettingsService.updateSettings(settings);
+
+        if (response) {
+          dispatch("getSettings")
+        }
+      } catch(error) {
+        console.log(error)
+      }
+    }, 
+
+    async removeItem({state, commit}, payload) {
+      try {
+        // const responce = await state.creditSettingsService.removeItem(payload)
+        // if(response) {
+          commit("removeItem", payload)
+        // }
+      } catch(error) {
+        console.log(error)
+      }
     }
   },
   mutations: {
+    removeItem(state, payload) {
+      const idx = state.settings[payload.tableName].findIndex(i => i.id == payload.idItem)
+      state.settings[payload.tableName].splice(idx, 1)
+    },
+
     setSettings(state, settings) {
       state.settings = settings;
     }, 

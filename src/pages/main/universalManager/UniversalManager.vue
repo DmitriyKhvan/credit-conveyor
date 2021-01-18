@@ -7,8 +7,8 @@
           <appSettingsScorModel :title="titles[1]" />
           <appSettingsScorBalls :title="titles[2]" />
           <appSettingsCreditProduct :title="titles[4]" />
-          <div class="btnBlock">
-            <q-btn type="submit" label="Одобрить" class="btnSucces" />
+          <div class="submitBtn">
+            <q-btn unelevated type="submit" label="Одобрить" class="btnSucces" />
           </div>
         </form>
       </div>
@@ -47,12 +47,13 @@ export default {
   },
   computed: {
     ...mapState({
+      creditSettings: state => state.creditSettings,
       settings: state => state.creditSettings.settings,
       refs: state => state.creditSettings.allRefs
     })
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
 			// this.refs.moratory.validate()
       
       validFilter(this.refs, "scoreСoefficientMinScoreValid", "scoreСoefficientMinScore")
@@ -99,6 +100,32 @@ export default {
       validFilter(this.refs, "minBillValid", "minBill")
       validFilter(this.refs, "maxBillValid", "maxBill")
       validFilter(this.refs, "billsScoreValid", "billsScore")
+
+      // loan product char
+      if (this.creditSettings.loanProductId) {
+        this.refs.loanProductCharProductId.validate()
+        this.refs.loanProductCharMaxSum.validate()
+        this.refs.loanProductCharMinTerm.validate()
+        this.refs.loanProductCharMaxTerm.validate()
+        this.refs.loanProductCharGracePeriodMin.validate()
+        this.refs.loanProductCharGracePeriodMax.validate()
+        this.refs.loanProductCharInterestRateMax.validate()
+        this.refs.loanProductCharExpiredInterestRateMax.validate()
+        this.refs.loanProductCharFirstPayPercentMin.validate()
+        this.refs.loanProductCharFirstPayPercentMax.validate()
+      } else {
+        validItems(this.refs, "loanProductCharProductId");
+        validItems(this.refs, "loanProductCharMaxSum");
+        validItems(this.refs, "loanProductCharMinTerm");
+        validItems(this.refs, "loanProductCharMaxTerm");
+        validItems(this.refs, "loanProductCharGracePeriodMin");
+        validItems(this.refs, "loanProductCharGracePeriodMax");
+        validItems(this.refs, "loanProductCharInterestRateMax");
+        validItems(this.refs, "loanProductCharExpiredInterestRateMax");
+        validItems(this.refs, "loanProductCharFirstPayPercentMin");
+        validItems(this.refs, "loanProductCharFirstPayPercentMax");
+      }
+      
 			if (
           // this.refs.moratory.hasError ||
 
@@ -144,13 +171,30 @@ export default {
           this.refs.billsScoreValid.hasError ||
 
           this.refs.childrenNumberValid.hasError ||
-          this.refs.childrenScoreValid.hasError 
+          this.refs.childrenScoreValid.hasError ||
+
+          // loan product char
+          this.refs.loanProductCharProductId.hasError ||
+          this.refs.loanProductCharMaxSum.hasError ||
+          this.refs.loanProductCharMinTerm.hasError ||
+          this.refs.loanProductCharMaxTerm.hasError ||
+          this.refs.loanProductCharGracePeriodMin.hasError ||
+          this.refs.loanProductCharGracePeriodMax.hasError ||
+          this.refs.loanProductCharInterestRateMax.hasError ||
+          this.refs.loanProductCharExpiredInterestRateMax.hasError ||
+          this.refs.loanProductCharFirstPayPercentMin.hasError ||
+          this.refs.loanProductCharFirstPayPercentMax.hasError
         ) {
 				this.formHasError = true;
 				console.log('validationError')
 			} else {
         console.log("submit")
         console.log(JSON.stringify(this.settings, null, 2))
+        try {
+          await this.$store.dispatch("creditSettings/updateSettings", this.settings)
+        } catch(error) {
+          console.log(error)
+        }
 			}
 		},
 
@@ -201,6 +245,22 @@ export default {
   .q-field__bottom {
     padding: 0 12px;
   }
+
+  .submitBtn {
+    display: flex;
+    justify-content: center;
+
+    button {
+    background: #47B881;
+
+    .q-btn__content {
+      width: 227px;
+      height: 47px;
+      font-size: 14px;
+      color: #fff
+    }
+  }
+  }
 }
 
 .btnBlock {
@@ -208,8 +268,17 @@ export default {
     background: #4AB8FF;
 
     .q-btn__content {
+      width: 350px;
+      height: 47px;
+      font-size: 14px;
       color: #fff
     }
   }
 }
+
+.removeItem {
+    .q-btn .q-icon, .q-btn .q-spinner {
+      font-size: 15px;
+    }
+  }
 </style>

@@ -15,7 +15,7 @@
                   <q-select
                     ref="loanProductСhar"
                     outlined
-                    v-model="loanProductId"
+                    v-model="creditSettings.loanProductId"
                     :options="settings.loan_product_char"
                     option-value="id"
                     option-label="name"
@@ -28,10 +28,10 @@
                   />
                 </div>
                 <div class="col-6"></div>
-                <template v-if="loanProductId">
+                <template v-if="creditSettings.loanProductId">
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharProductId"
                       outlined
                       v-model="settings.loan_product_char[index].productId"
                       dense
@@ -42,6 +42,7 @@
                   <div class="col-6"></div>
                   <div class="col-6">
                     <q-input
+                      disable
                       ref=""
                       outlined
                       value="0"
@@ -52,100 +53,102 @@
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharMaxSum"
                       outlined
                       v-model="settings.loan_product_char[index].maxSum"
                       dense
                       label="Максимальная сумма"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharMinTerm"
                       outlined
                       v-model="settings.loan_product_char[index].minTerm"
                       dense
                       label="Срок от"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharMaxTerm"
                       outlined
                       v-model="settings.loan_product_char[index].maxTerm"
                       dense
                       label="Срок до"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharGracePeriodMin"
                       outlined
                       v-model="settings.loan_product_char[index].gracePeriodMin"
                       dense
                       label="Льготный период от"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharGracePeriodMax"
                       outlined
                       v-model="settings.loan_product_char[index].gracePeriodMax"
                       dense
                       label="Льготный период до"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharInterestRateMax"
                       outlined
                       v-model="
                         settings.loan_product_char[index].interestRateMax
                       "
+                      @input="setSameData($event, index, 'interestRateMin')"
                       dense
                       label="Процентная ставка"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharExpiredInterestRateMax"
                       outlined
                       v-model="
                         settings.loan_product_char[index].expiredInterestRateMax
                       "
+                      @input="setSameData($event, index, 'expiredInterestRateMin')"
                       dense
                       label="Процентная ставка за просрочку"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharFirstPayPercentMin"
                       outlined
                       v-model="
                         settings.loan_product_char[index].firstPayPercentMin
                       "
                       dense
                       label="Первоначальный платеж от"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
                   <div class="col-6">
                     <q-input
-                      ref=""
+                      ref="loanProductCharFirstPayPercentMax"
                       outlined
                       v-model="
                         settings.loan_product_char[index].firstPayPercentMax
                       "
                       dense
                       label="Первоначальный платеж до"
-                      :rules="[val => !!val || 'Введите данные']"
+                      :rules="[val => integerValid(val)]"
                     />
                   </div>
 
@@ -213,7 +216,6 @@ export default {
   mixins: [creditSettings],
   data() {
     return {
-      loanProductId: null,
       index: null,
       options: [
         { label: 'Да', value: 1 },
@@ -224,15 +226,27 @@ export default {
   mounted() {
     setTimeout(() => {
       this.$store.commit("creditSettings/setRefs", this.$refs);
-    }, 100);
+    }, 1000);
   },
-  computed: {},
+  computed: {
+    // startIdProduct() {
+    //   return this.settings.loan_product_char[0].id
+    // }
+  },
   watch: {
-    loanProductId(loanProductId) {
-      console.log(loanProductId);
+    "creditSettings.loanProductId"() {
+      console.log(this.creditSettings.loanProductId);
       this.index = this.settings.loan_product_char.findIndex(
-        i => i.id == loanProductId
+        i => i.id == this.creditSettings.loanProductId
       );
+      setTimeout(() => {
+      this.$store.commit("creditSettings/setRefs", this.$refs);
+    }, 3000);
+    }
+  },
+  methods: {
+    setSameData(event, index, item) {
+      this.settings.loan_product_char[index][item] = event
     }
   }
 };

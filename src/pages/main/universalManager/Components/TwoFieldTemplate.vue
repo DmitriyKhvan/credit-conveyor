@@ -45,7 +45,10 @@
 
 <script>
 import creditSettings from '../mixins/creditSettings'
-import sortData from '../filters/sortData'
+
+import AlertMessage from '../Components/AlertMessage'
+
+// import sortData from '../filters/sortData'
 
 export default {
   props: {
@@ -53,11 +56,9 @@ export default {
       type: String,
       default: ""
     },
-    items: {
-      type: Array,
-      default() {
-        return []
-      }
+    tableName: {
+      type: String,
+      default: ""
     },
     fieldsSettings: {
       type: Object,
@@ -87,24 +88,45 @@ export default {
     }
   },
   mixins: [creditSettings],
+  data() {
+    return {
+      // sortItems: sortData(this.settings[this.tableName], this.sortBy)
+    }
+  },
   mounted() {
     setTimeout(() => {
 			this.$store.commit("creditSettings/setRefs", this.$refs)
-		}, 100)
+    }, 3000)
+
+    // this.settings[this.tableName] = sortData(this.settings[this.tableName], this.sortBy)
   }, 
 	computed: {
     sortItems() {
-      return sortData(this.items, this.sortBy)
+      return this.sortData(this.settings[this.tableName], this.sortBy)
     }
   }, 
   methods: {
     addItem() {
       const obj = {}
       obj.id = null
-      obj[this.fieldsSettings.scoreName] = null
+      obj[this.fieldsSettings.scoreName.name] = null
       obj.score = null
 
-      this.items.push(obj)
+      this.settings[this.tableName].push(obj)
+    },
+
+    removeItem(idx) {
+      // this.items.splice(idx, 1)
+
+      this.$q.dialog({
+        component: AlertMessage,
+        parent: this,
+        data: {
+          tableName: this.tableName,
+          idItem: this.settings[this.tableName][idx].id
+        }
+        // persistent: true
+      })
     }
   }
 };

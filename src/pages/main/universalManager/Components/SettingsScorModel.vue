@@ -20,15 +20,17 @@
               <div
                 class="row q-col-gutter-md" 
                 v-for="(scoreСoefficient, index) of settings.app_card_score_coefficient"
-                :key="'score_coefficient' + index"
+                :key="scoreСoefficient.id"
               >
                 <div class="col-3">
                   <q-input
-                    disable
+                    :disable="scoreСoefficient.id ? true : false"
                     ref="scoreСoefficientСlass"
                     outlined
                     v-model="scoreСoefficient.class"
                     dense
+                    mask="A"
+                    :rules="[val => !!val || 'Введите данные']"
                   />
                 </div>
                 <div class="col-3">
@@ -53,7 +55,7 @@
                     ]"
                   />
                 </div>
-                <div class="col-3 text-right">
+                <div class="col-2 text-right">
                   <q-input
                     class="scoreСoefficient"
                     ref="scoreСoefficientCoefficient"
@@ -65,6 +67,12 @@
                     ]"
                   />
                 </div>
+                <div class="col-1 removeItem">
+                  <q-btn flat round icon="close" @click="removeItem(index)"/>
+                </div>
+              </div>
+              <div class="btnBlock">
+                <q-btn unelevated label="Добавить параметр" class="addItem" @click="addItem"/>
               </div>
             </div>
             
@@ -85,9 +93,24 @@ export default {
   mounted() {
     setTimeout(() => {
 			this.$store.commit("creditSettings/setRefs", this.$refs)
-		}, 100)
+		}, 3000)
   }, 
   computed: {},
+  methods: {
+    addItem() {
+      this.settings.app_card_score_coefficient.push({
+        id: null,
+        class: "",
+        coefficient: null,
+        minScore: null,
+        maxScore: null
+      })
+    },
+
+    removeItem(idx) {
+      this.settings.app_card_score_coefficient.splice(idx, 1)
+    }
+  }
 };
 </script>
 <style lang="scss">

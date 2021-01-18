@@ -2,6 +2,8 @@ import { mapState } from "vuex";
 
 import { floatValid, integerValid } from '../filters/validations'
 
+import sortData from '../filters/sortData'
+
 export default {
   props: ["title"],
   data() {
@@ -11,6 +13,7 @@ export default {
   },
   computed: {
     ...mapState({
+      creditSettings: state => state.creditSettings,
       settings: state => state.creditSettings.settings
 		})
 	},
@@ -21,6 +24,9 @@ export default {
     },
     integerValid(val) {
       return integerValid(val)
+    },
+    sortData(arr, sortBy) {
+      return sortData(arr, sortBy)
     }
   }
 };

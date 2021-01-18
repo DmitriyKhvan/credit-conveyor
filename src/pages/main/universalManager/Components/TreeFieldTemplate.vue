@@ -53,7 +53,10 @@
 
 <script>
 import creditSettings from '../mixins/creditSettings'
-import sortData from '../filters/sortData'
+
+import AlertMessage from '../Components/AlertMessage'
+
+// import sortData from '../filters/sortData'
 
 export default {
   props: {
@@ -66,6 +69,10 @@ export default {
       default() {
         return []
       }
+    },
+    tableName: {
+      type: String,
+      default: ""
     },
     fieldsSettings: {
       type: Object,
@@ -88,11 +95,11 @@ export default {
   mounted() {
     setTimeout(() => {
 			this.$store.commit("creditSettings/setRefs", this.$refs)
-		}, 100)
+		}, 3000)
   }, 
 	computed: {
     sortItems() {
-      return sortData(this.items, this.sortBy)
+      return this.sortData(this.settings[this.tableName], this.sortBy)
     }
   }, 
   methods: {
@@ -103,11 +110,21 @@ export default {
       obj[this.fieldsSettings.periodTo] = null
       obj.score = null
 
-      this.items.push(obj)
+      this.settings[this.tableName].push(obj)
     },
 
     removeItem(idx) {
-      this.items.splice(idx, 1)
+      // this.items.splice(idx, 1)
+
+      this.$q.dialog({
+        component: AlertMessage,
+        parent: this,
+        data: {
+          tableName: this.tableName,
+          idItem: this.settings[this.tableName][idx].id
+        }
+        // persistent: true
+      })
     }
   }
 };
