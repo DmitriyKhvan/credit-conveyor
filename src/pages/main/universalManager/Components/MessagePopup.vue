@@ -1,27 +1,48 @@
 <template>
-  <q-dialog persistent ref="alertMessage" @hide="onDialogHide">
+  <q-dialog ref="alertMessage" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      <p class="message">Вы действительно хотите удалить?</p>
-      <!-- {{ data.tableName }}
-        {{ data.idItem }} -->
-      <!-- buttons example -->
-      <q-card-actions align="right">
+      <q-btn flat round icon="close" class="closeBtn" @click="onOKClick" />
+      <div class="message">
+        <q-icon 
+          v-if="data.code == 1" 
+          name="check_circle" 
+          class="text-green" 
+          style="font-size: 4rem;"
+        />
+        <q-icon 
+          v-else-if="data.code == 0" 
+          name="error" 
+          class="text-red" 
+          style="font-size: 4rem;"
+        />
+        <q-icon 
+          v-else 
+          name="warning"  
+          class="text-orange" 
+          style="font-size: 4rem;"
+        />
+        <p>{{data.message}}</p>
+      </div>
+      <!-- <q-card-actions align="right">
         <q-btn color="red" label="Удалить" @click="onOKClick" />
         <q-btn color="blue" label="Отмена" @click="onCancelClick" />
-      </q-card-actions>
+      </q-card-actions> -->
     </q-card>
   </q-dialog>
 </template>
 
 <script>
-import MessagePopup from "../Components/MessagePopup"
+
 
 export default {
   props: {
     data: {
       type: Object,
       default() {
-        return {};
+        return {
+          message: "",
+          code: 99,
+        };
       }
     }
   },
@@ -44,32 +65,7 @@ export default {
       this.$emit("hide");
     },
 
-    async onOKClick() {
-      try {
-        const responce = await this.$store.dispatch("creditSettings/removeItem", this.data);
-        
-        this.$q.dialog({
-          component: MessagePopup,
-          parent: this,
-          data: {
-            message: responce.message,
-            code: responce.code
-          }
-          // persistent: true
-        })
-      } catch (error) {
-        this.$q.dialog({
-          component: MessagePopup,
-          parent: this,
-          data: {
-            message: error.message,
-            code: error.code
-          }
-          // persistent: true
-        })
-      }
-      
-
+    onOKClick() {
       // on OK, it is REQUIRED to
       // emit "ok" event (with optional payload)
       // before hiding the QDialog
@@ -93,5 +89,12 @@ export default {
   text-align: center;
   padding: 20px;
   font-size: 20px;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #A0A5BA
 }
 </style>

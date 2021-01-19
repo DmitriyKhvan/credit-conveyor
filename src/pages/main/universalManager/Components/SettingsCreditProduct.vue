@@ -1,9 +1,9 @@
 <template>
-  <div class="settingsCreditProduct">
+  <div class="settingsCreditProduct" :id="title.id">
     <q-expansion-item
       class="settingBlock"
       :header-class="'headerBlock'"
-      :label="title"
+      :label="title.name"
       v-model="expanded"
     >
       <q-card class="contentBlock">
@@ -16,7 +16,7 @@
                     ref="loanProductСhar"
                     outlined
                     v-model="creditSettings.loanProductId"
-                    :options="settings.loan_product_char"
+                    :options="settings.LOAN_PRODUCT_CHAR"
                     option-value="id"
                     option-label="name"
                     emit-value
@@ -33,7 +33,7 @@
                     <q-input
                       ref="loanProductCharProductId"
                       outlined
-                      v-model="settings.loan_product_char[index].productId"
+                      v-model="settings.LOAN_PRODUCT_CHAR[index].productId"
                       dense
                       label="Код в ИАБС"
                       :rules="[val => !!val || 'Введите данные']"
@@ -55,7 +55,7 @@
                     <q-input
                       ref="loanProductCharMaxSum"
                       outlined
-                      v-model="settings.loan_product_char[index].maxSum"
+                      v-model="settings.LOAN_PRODUCT_CHAR[index].maxSum"
                       dense
                       label="Максимальная сумма"
                       :rules="[val => integerValid(val)]"
@@ -65,7 +65,7 @@
                     <q-input
                       ref="loanProductCharMinTerm"
                       outlined
-                      v-model="settings.loan_product_char[index].minTerm"
+                      v-model="settings.LOAN_PRODUCT_CHAR[index].minTerm"
                       dense
                       label="Срок от"
                       :rules="[val => integerValid(val)]"
@@ -75,7 +75,7 @@
                     <q-input
                       ref="loanProductCharMaxTerm"
                       outlined
-                      v-model="settings.loan_product_char[index].maxTerm"
+                      v-model="settings.LOAN_PRODUCT_CHAR[index].maxTerm"
                       dense
                       label="Срок до"
                       :rules="[val => integerValid(val)]"
@@ -85,7 +85,7 @@
                     <q-input
                       ref="loanProductCharGracePeriodMin"
                       outlined
-                      v-model="settings.loan_product_char[index].gracePeriodMin"
+                      v-model="settings.LOAN_PRODUCT_CHAR[index].gracePeriodMin"
                       dense
                       label="Льготный период от"
                       :rules="[val => integerValid(val)]"
@@ -95,7 +95,7 @@
                     <q-input
                       ref="loanProductCharGracePeriodMax"
                       outlined
-                      v-model="settings.loan_product_char[index].gracePeriodMax"
+                      v-model="settings.LOAN_PRODUCT_CHAR[index].gracePeriodMax"
                       dense
                       label="Льготный период до"
                       :rules="[val => integerValid(val)]"
@@ -106,7 +106,7 @@
                       ref="loanProductCharInterestRateMax"
                       outlined
                       v-model="
-                        settings.loan_product_char[index].interestRateMax
+                        settings.LOAN_PRODUCT_CHAR[index].interestRateMax
                       "
                       @input="setSameData($event, index, 'interestRateMin')"
                       dense
@@ -119,7 +119,7 @@
                       ref="loanProductCharExpiredInterestRateMax"
                       outlined
                       v-model="
-                        settings.loan_product_char[index].expiredInterestRateMax
+                        settings.LOAN_PRODUCT_CHAR[index].expiredInterestRateMax
                       "
                       @input="setSameData($event, index, 'expiredInterestRateMin')"
                       dense
@@ -132,7 +132,7 @@
                       ref="loanProductCharFirstPayPercentMin"
                       outlined
                       v-model="
-                        settings.loan_product_char[index].firstPayPercentMin
+                        settings.LOAN_PRODUCT_CHAR[index].firstPayPercentMin
                       "
                       dense
                       label="Первоначальный платеж от"
@@ -144,7 +144,7 @@
                       ref="loanProductCharFirstPayPercentMax"
                       outlined
                       v-model="
-                        settings.loan_product_char[index].firstPayPercentMax
+                        settings.LOAN_PRODUCT_CHAR[index].firstPayPercentMax
                       "
                       dense
                       label="Первоначальный платеж до"
@@ -163,7 +163,7 @@
                         inline 
                         :options="options"
                         type="radio"
-                        v-model="settings.loan_product_char[index].collateralGuarantor" 
+                        v-model="settings.LOAN_PRODUCT_CHAR[index].collateralGuarantor" 
                       />
                       
                     </div>
@@ -178,7 +178,7 @@
                         inline 
                         :options="options"
                         type="radio"
-                        v-model="settings.loan_product_char[index].collateralInsurance"
+                        v-model="settings.LOAN_PRODUCT_CHAR[index].collateralInsurance"
                       />
                       
                     </div>
@@ -193,7 +193,7 @@
                         inline 
                         :options="options"
                         type="radio"
-                        v-model="settings.loan_product_char[index].collateralPledge" 
+                        v-model="settings.LOAN_PRODUCT_CHAR[index].collateralPledge" 
                       />
                       
                     </div>
@@ -236,7 +236,7 @@ export default {
   watch: {
     "creditSettings.loanProductId"() {
       console.log(this.creditSettings.loanProductId);
-      this.index = this.settings.loan_product_char.findIndex(
+      this.index = this.settings.LOAN_PRODUCT_CHAR.findIndex(
         i => i.id == this.creditSettings.loanProductId
       );
       setTimeout(() => {
@@ -246,7 +246,7 @@ export default {
   },
   methods: {
     setSameData(event, index, item) {
-      this.settings.loan_product_char[index][item] = event
+      this.settings.LOAN_PRODUCT_CHAR[index][item] = event
     }
   }
 };

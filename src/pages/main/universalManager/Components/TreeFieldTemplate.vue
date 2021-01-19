@@ -42,7 +42,9 @@
         />
       </div>
       <div class="col-1 removeItem">
-        <q-btn flat round icon="close" @click="removeItem(index)"/>
+        <q-btn flat round icon="close" @click="removeItem(index)">
+          <q-tooltip>Удалить</q-tooltip>
+        </q-btn>
       </div>
     </div>
     <div class="btnBlock">
@@ -99,7 +101,8 @@ export default {
   }, 
 	computed: {
     sortItems() {
-      return this.sortData(this.settings[this.tableName], this.sortBy)
+      // return this.sortData(this.settings[this.tableName], this.sortBy)
+      return this.sortData(this.settings[this.tableName], "")
     }
   }, 
   methods: {
@@ -114,17 +117,20 @@ export default {
     },
 
     removeItem(idx) {
-      // this.items.splice(idx, 1)
-
-      this.$q.dialog({
-        component: AlertMessage,
-        parent: this,
-        data: {
-          tableName: this.tableName,
-          idItem: this.settings[this.tableName][idx].id
-        }
-        // persistent: true
-      })
+      const rowId = this.settings[this.tableName][idx].id
+      if (rowId) {
+        this.$q.dialog({
+          component: AlertMessage,
+          parent: this,
+          data: {
+            tableName: this.tableName,
+            rowId
+          }
+          // persistent: true
+        })
+      } else {
+        this.settings[this.tableName].splice(idx, 1)
+      }
     }
   }
 };

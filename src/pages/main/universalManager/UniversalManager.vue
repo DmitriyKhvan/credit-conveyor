@@ -1,6 +1,8 @@
 <template>
   <div class="universalMagerBlock q-pa-md">
-    <div class="row q-col-gutter-md">
+    <appLoaderFullScreen v-if="loader" />
+    <!-- <appLoader v-if="loader" /> -->
+    <div v-else class="row q-col-gutter-md">
       <div class="col-9">
         <form @submit.prevent.stop="onSubmit">
           <!-- <appSettingsProcess :title="titles[0]" /> -->
@@ -8,11 +10,23 @@
           <appSettingsScorBalls :title="titles[2]" />
           <appSettingsCreditProduct :title="titles[4]" />
           <div class="submitBtn">
-            <q-btn unelevated type="submit" label="Одобрить" class="btnSucces" />
+            <q-btn unelevated type="submit" label="Сохранить" class="btnSucces" />
           </div>
         </form>
       </div>
-      <div class="col-3"></div>
+      <div class="col-3">
+        <ul class="navMenu">
+          <li v-for="title of titles" :key="title.id">
+            <a 
+              class="active" 
+              :href="title.id" 
+              @click.prevent.stop="goToBlock"
+            >
+              {{title.name}}
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -25,6 +39,9 @@ import SettingsCreditRoleActive from "./Components/SettingsCreditRoleActive";
 import SettingsProcess from "./Components/SettingsProcess";
 import SettingsScorBalls from "./Components/SettingsScorBalls";
 import SettingsScorModel from "./Components/SettingsScorModel";
+import MessagePopup from "./Components/MessagePopup"
+import LoaderFullScreen from "@/components/LoaderFullScreen"
+// import Loader from "@/components/Loader"
 
 export default {
   data() {
@@ -35,15 +52,51 @@ export default {
         "Настройка баллов скоркарты",
         "Участие роли в кредитном конвейeре",
         "Настройка кредитных продуктов"
-      ]
+      ],
+      titles: [
+        {
+          name: "Настройка процесса",
+          id: "settingsProcess"
+        },
+        {
+          name: "Настройка скоринговой модели",
+          id: "settingsScorModel"
+        },
+        {
+          name: "Настройка баллов скоркарты",
+          id: "settingsScorBalls"
+        },
+        {
+          name: "Участие роли в кредитном конвейeре",
+          id: "settingsCreditRoleActive"
+        },
+        {
+          name: "Настройка кредитных продуктов",
+          id: "settingsCreditProduct"
+        }
+      ],
+      loader: true
     };
   },
   async created() {
+    this.loader = true
     try {
       const settings = await this.$store.dispatch("creditSettings/getSettings")
+      this.loader = false
     } catch (error) {
       console.log(error)
+      this.loader = false
     }
+  },
+  mounted() {
+    // setTimeout(() => {
+    //   document.querySelectorAll(".navMenu a")
+    //         .forEach(el => {
+    //           el.addEventListener("click", () => this.goToBlock(el))
+    //           console.log(el)
+    //         })
+    //   console.log('DOM!!!', document.querySelectorAll(".navMenu a"))
+    // }, 1000)
   },
   computed: {
     ...mapState({
@@ -186,30 +239,59 @@ export default {
           this.refs.loanProductCharFirstPayPercentMax.hasError
         ) {
 				this.formHasError = true;
-				console.log('validationError')
+        console.log('validationError')
+        this.$q.dialog({
+          component: MessagePopup,
+          parent: this,
+          data: {
+            message: "Некорректные данные.",
+            code: 99
+          }
+          // persistent: true
+        })
 			} else {
         console.log("submit")
-        console.log(JSON.stringify(this.settings, null, 2))
+        // console.log(JSON.stringify(this.settings, null, 2))
         try {
-          await this.$store.dispatch("creditSettings/updateSettings", this.settings)
+          const responce = await this.$store.dispatch("creditSettings/updateSettings", this.settings)
+
+          this.$q.dialog({
+            component: MessagePopup,
+            parent: this,
+            data: {
+              message: responce.message,
+              code: responce.code
+            }
+            // persistent: true
+          })
         } catch(error) {
-          console.log(error)
+          this.$q.dialog({
+            component: MessagePopup,
+            parent: this,
+            data: {
+              message: error.message,
+              code: error.code
+            }
+            // persistent: true
+          })
         }
 			}
 		},
-
-		// setRefs(refs) {
-    //   this.$refs = Object.assign({}, this.$refs, refs);
-    //   console.log("currentRefs", refs);
-    //   console.log("AllRefs", this.$refs);
-    // },
+    goToBlock(event) {
+      // event.preventDefault()
+      console.log(event.target)
+      let link = event.target.getAttribute("href")
+      document.getElementById(link).scrollIntoView({ behavior: "smooth", block: "start" })
+    }
   },
   components: {
     appSettingsCreditProduct: SettingsCreditProduct,
     appSettingsCreditRoleActive: SettingsCreditRoleActive,
     appSettingsProcess: SettingsProcess,
     appSettingsScorBalls: SettingsScorBalls,
-    appSettingsScorModel: SettingsScorModel
+    appSettingsScorModel: SettingsScorModel,
+    appLoaderFullScreen: LoaderFullScreen,
+    // appLoader: Loader,
   }
 };
 </script>
@@ -261,6 +343,10 @@ export default {
     }
   }
   }
+
+  .navMenu {
+    position: fixed;
+  }
 }
 
 .btnBlock {
@@ -277,6 +363,7 @@ export default {
 }
 
 .removeItem {
+    padding-left: 0;
     .q-btn .q-icon, .q-btn .q-spinner {
       font-size: 15px;
     }

@@ -1,9 +1,9 @@
 <template>
-  <div class="settingsScorBalls">
+  <div class="settingsScorBalls" :id="title.id"> 
     <q-expansion-item
       class="settingBlock"
       :header-class="'headerBlock'"
-      :label="title"
+      :label="title.name"
       v-model="expanded"
     >
       <q-card class="contentBlock">
@@ -101,7 +101,7 @@ export default {
         //TreeFieldTemplate
         {
           subTitleScor: "Возраст заемщика",
-          tableName: 'app_card_age',
+          tableName: 'APPCARD_AGE',
           fieldsSettings: {
             periodFrom: "minAge",
             periodTo: "maxAge"
@@ -118,7 +118,7 @@ export default {
         {
           subTitleScor:"Количество детей",
           // items: this.settings.app_card_children,
-          tableName:'app_card_children',
+          tableName:'APPCARD_CHILDREN',
           fieldsSettings: {
             scoreName: {
               name: "childrenNumber"
@@ -138,7 +138,7 @@ export default {
         {
           subTitleScor: "Стаж на последнем месте работы",
           // items: this.settings.app_card_last_job_period,
-          tableName: 'app_card_last_job_period',
+          tableName: 'APPCARD_LASTJOBPERIOD',
           fieldsSettings: {
             periodFrom: "minPeriod",
             periodTo: "maxPeriod"
@@ -155,7 +155,7 @@ export default {
         {
           subTitleScor: "Период, на который оформляется кредит ",
           // items: this.settings.app_card_loan_period,
-          tableName: 'app_card_loan_period',
+          tableName: 'APPCARD_LOANPERIOD',
           fieldsSettings: {
             periodFrom: "minPeriod",
             periodTo: "maxPeriod"
@@ -173,7 +173,7 @@ export default {
         {
           subTitleScor:"Бал по локации клиента ",
           // items: this.settings.app_card_location,
-          tableName: 'app_card_location',
+          tableName: 'APPCARD_LOCATION',
           fieldsSettings: {
             scoreName: {
               name: "name"
@@ -190,7 +190,7 @@ export default {
         {
           subTitleScor:"Семейное положение",
           // items: this.settings.app_card_marital,
-          tableName: 'app_card_marital',
+          tableName: 'APPCARD_MARITAL',
           fieldsSettings: {
             scoreName: {
               name: "status",
@@ -207,7 +207,7 @@ export default {
         {
           subTitleScor:"Внутренняя кредитная история",
           // items: this.settings.app_card_positive_nbu_history,
-          tableName: 'app_card_positive_nbu_history',
+          tableName: 'APPCARD_POSITIVENBUHISTORY',
           fieldsSettings: {
             scoreName: {
               name: "hasPositiveNbuHistory",
@@ -225,7 +225,7 @@ export default {
         {
           subTitleScor:"Рейтинг Работодателя",
           // items: this.settings.app_card_rating_company,
-          tableName: 'app_card_rating_company',
+          tableName: 'APPCARD_RATINGCOMPANY',
           fieldsSettings: {
             scoreName: {
               name: "rating"
@@ -243,7 +243,7 @@ export default {
         {
           subTitleScor:"Недвижимость в имуществе",
           // items: this.settings.app_card_reality,
-          tableName: 'app_card_reality',
+          tableName: 'APPCARD_REALTY',
           fieldsSettings: {
             scoreName: {
               name: "hasReality",
@@ -261,7 +261,7 @@ export default {
         {
           subTitleScor:"Автотранспорт в имуществе",
           // items: this.settings.app_card_vehicle,
-          tableName: 'app_card_vehicle',
+          tableName: 'APPCARD_VEHICLE',
           fieldsSettings: {
             scoreName: {
               name: "hasVehicle",
@@ -279,7 +279,7 @@ export default {
         {
           subTitleScor: "Депозит в банке",
           // items: this.settings.app_card_bills,
-          tableName: 'app_card_bills',
+          tableName: 'APPCARD_BILLS',
           fieldsSettings: {
             periodFrom: "minBill",
             periodTo: "maxBill"

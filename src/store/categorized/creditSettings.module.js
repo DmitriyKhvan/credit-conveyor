@@ -6,24 +6,24 @@ export const creditSettings = {
     creditSettingsService: new CreditSettingsService(),
     allRefs: null,
     settings: {
-      app_card_age: [],
-      app_card_bills: [],
-      app_card_children: [],
-      app_card_last_job_period: [],
-      app_card_loan_period: [],
-      app_card_location: [],
-      app_card_marital: [],
-      app_card_model: null,
-      app_card_positive_nbu_history: [],
-      app_card_rating_company: [],
-      app_card_reality: [],
-      app_card_score_coefficient: [],
-      app_card_vehicle: [],
-      app_setting: null,
-      app_setting_role: null,
-      loan_product_char: [],
-      loan_product_financial_source: [],
-      loan_product_loan_code: []
+      APPCARD_AGE: [],
+      APPCARD_BILLS: [],
+      APPCARD_CHILDREN: [],
+      APPCARD_LASTJOBPERIOD: [],
+      APPCARD_LOANPERIOD: [],
+      APPCARD_LOCATION: [],
+      APPCARD_MARITAL: [],
+      APPCARD_MODEL: null,
+      APPCARD_POSITIVENBUHISTORY: [],
+      APPCARD_RATINGCOMPANY: [],
+      APPCARD_REALTY: [],
+      APPCARD_SCOREKOEFFICIENT: [],
+      APPCARD_VEHICLE: [],
+      APP_SETTING: null,
+      APP_SETTINGROLE: null,
+      LOAN_PRODUCT_CHAR: [],
+      LOANPRODUCT_FINSOURCE: [],
+      LOANPRODUCT_LOANCODE: []
     },
     loanProductId: null,
   },
@@ -32,40 +32,55 @@ export const creditSettings = {
       try {
         const settings = await state.creditSettingsService.getSettings();
         // console.log("settings", JSON.stringify(settings, null, 2));
-        if (settings) {
+        if ( settings ) {
           commit("setSettings", settings);
+        } else {
+          throw "Не удалось получить данные!"
         }
       } catch (error) {
         console.log(error);
+        throw error
       }
     },
 
     async updateSettings({state, dispatch, commit}, settings) {
       try {
-        const response = await state.creditSettingsService.updateSettings(settings);
+        const responce = await state.creditSettingsService.updateSettings(settings);
 
-        if (response) {
+        if ( responce.code == 1 ) {
           dispatch("getSettings")
+        } else {
+          throw responce
         }
+
+        return responce
       } catch(error) {
         console.log(error)
+        throw error
       }
     }, 
 
     async removeItem({state, commit}, payload) {
+      console.log('payload', payload)
       try {
-        // const responce = await state.creditSettingsService.removeItem(payload)
-        // if(response) {
+        const responce = await state.creditSettingsService.removeItem(payload)
+        console.log('res', responce)
+        if ( responce.code == 1 ) {
           commit("removeItem", payload)
-        // }
+        } else {
+          throw responce
+        }
+        return responce
       } catch(error) {
         console.log(error)
+        throw error
       }
     }
   },
   mutations: {
     removeItem(state, payload) {
-      const idx = state.settings[payload.tableName].findIndex(i => i.id == payload.idItem)
+      console.log('payload', payload)
+      const idx = state.settings[payload.tableName].findIndex(i => i.id == payload.rowId)
       state.settings[payload.tableName].splice(idx, 1)
     },
 

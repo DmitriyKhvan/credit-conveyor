@@ -1,9 +1,9 @@
 <template>
-  <div class="settingsScorModel">
+  <div class="settingsScorModel" :id="title.id">
     <q-expansion-item
       class="settingBlock"
       :header-class="'headerBlock'"
-      :label="title"
+      :label="title.name"
       v-model="expanded"
     >
       <q-card class="contentBlock">
@@ -14,12 +14,13 @@
               <div class="row q-col-gutter-md titleScor">
                 <div class="col-3">Класс кредитоспособности</div>
                 <div class="col-6">Диапазон баллов</div>
-                <div class="col-3 text-right">Коэффицент корректировки</div>
+                <div class="col-2 text-right">Коэффицент корректировки</div>
+                <div class="col-1"></div>
               </div>
 
               <div
                 class="row q-col-gutter-md" 
-                v-for="(scoreСoefficient, index) of settings.app_card_score_coefficient"
+                v-for="(scoreСoefficient, index) of settings.APPCARD_SCOREKOEFFICIENT"
                 :key="scoreСoefficient.id"
               >
                 <div class="col-3">
@@ -68,7 +69,9 @@
                   />
                 </div>
                 <div class="col-1 removeItem">
-                  <q-btn flat round icon="close" @click="removeItem(index)"/>
+                  <q-btn flat round icon="close" @click="removeItem(index)">
+                    <q-tooltip>Удалить</q-tooltip>
+                  </q-btn>
                 </div>
               </div>
               <div class="btnBlock">
@@ -84,6 +87,7 @@
 </template>
 <script>
 import creditSettings from '../mixins/creditSettings'
+import AlertMessage from '../Components/AlertMessage'
 
 export default {
   mixins: [creditSettings],
@@ -98,7 +102,7 @@ export default {
   computed: {},
   methods: {
     addItem() {
-      this.settings.app_card_score_coefficient.push({
+      this.settings.APPCARD_SCOREKOEFFICIENT.push({
         id: null,
         class: "",
         coefficient: null,
@@ -108,7 +112,16 @@ export default {
     },
 
     removeItem(idx) {
-      this.settings.app_card_score_coefficient.splice(idx, 1)
+      // this.settings.APPCARD_SCOREKOEFFICIENT.splice(idx, 1)
+
+      this.$q.dialog({
+        component: AlertMessage,
+        parent: this,
+        data: {
+          tableName: 'APPCARD_SCOREKOEFFICIENT',
+          rowId: this.settings.APPCARD_SCOREKOEFFICIENT[idx].id
+        }
+      })
     }
   }
 };

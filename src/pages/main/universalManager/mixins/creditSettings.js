@@ -1,11 +1,19 @@
 import { mapState } from "vuex";
 
-import { floatValid, integerValid } from '../filters/validations'
+import MessagePopup from "../Components/MessagePopup"
 
+import { floatValid, integerValid } from '../filters/validations'
 import sortData from '../filters/sortData'
 
 export default {
-  props: ["title"],
+  props: {
+    title: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
+  },
   data() {
     return {
       expanded: true
@@ -28,5 +36,9 @@ export default {
     sortData(arr, sortBy) {
       return sortData(arr, sortBy)
     }
+  },
+
+  components: {
+    MessagePopup
   }
 };
