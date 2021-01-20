@@ -1592,6 +1592,7 @@
                 </div>
                 <div class="col-6 data">
                   {{ processInfo.profit }}
+                  <!-- {{ fullProfile.profit }} -->
                 </div>
               </div>
 

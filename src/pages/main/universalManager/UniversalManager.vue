@@ -6,9 +6,9 @@
       <div class="col-9">
         <form @submit.prevent.stop="onSubmit">
           <!-- <appSettingsProcess :title="titles[0]" /> -->
-          <appSettingsScorModel :title="titles[1]" />
-          <appSettingsScorBalls :title="titles[2]" />
-          <appSettingsCreditProduct :title="titles[4]" />
+          <appSettingsScorModel :title="titles[0]" />
+          <appSettingsScorBalls :title="titles[1]" />
+          <appSettingsCreditProduct :title="titles[2]" />
           <div class="submitBtn">
             <q-btn unelevated type="submit" label="Сохранить" class="btnSucces" />
           </div>
@@ -16,9 +16,9 @@
       </div>
       <div class="col-3">
         <ul class="navMenu">
-          <li v-for="title of titles" :key="title.id">
+          <li v-for="(title, index) of titles" :key="title.id">
             <a 
-              class="active" 
+              :class="index == 0 ? 'active' : ''" 
               :href="title.id" 
               @click.prevent.stop="goToBlock"
             >
@@ -31,8 +31,10 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { validItems, validFilter } from "@/shared/utils/valid_filter";
+
+import creditSettings from "./mixins/creditSettings";
 
 import SettingsCreditProduct from "./Components/SettingsCreditProduct";
 import SettingsCreditRoleActive from "./Components/SettingsCreditRoleActive";
@@ -44,6 +46,7 @@ import LoaderFullScreen from "@/components/LoaderFullScreen"
 // import Loader from "@/components/Loader"
 
 export default {
+  mixins: [creditSettings],
   data() {
     return {
       titles: [
@@ -56,25 +59,30 @@ export default {
       titles: [
         {
           name: "Настройка процесса",
-          id: "settingsProcess"
+          id: "settingsProcess",
+          disable: true
         },
         {
           name: "Настройка скоринговой модели",
-          id: "settingsScorModel"
+          id: "settingsScorModel",
+          disable: false
         },
         {
           name: "Настройка баллов скоркарты",
-          id: "settingsScorBalls"
+          id: "settingsScorBalls",
+          disable: false
         },
         {
           name: "Участие роли в кредитном конвейeре",
-          id: "settingsCreditRoleActive"
+          id: "settingsCreditRoleActive",
+          disable: true
         },
         {
           name: "Настройка кредитных продуктов",
-          id: "settingsCreditProduct"
+          id: "settingsCreditProduct",
+          disable: false
         }
-      ],
+      ].filter(i => i.disable == false),
       loader: true
     };
   },
@@ -89,22 +97,13 @@ export default {
     }
   },
   mounted() {
-    // setTimeout(() => {
-    //   document.querySelectorAll(".navMenu a")
-    //         .forEach(el => {
-    //           el.addEventListener("click", () => this.goToBlock(el))
-    //           console.log(el)
-    //         })
-    //   console.log('DOM!!!', document.querySelectorAll(".navMenu a"))
-    // }, 1000)
+    setTimeout(() => {
+      document
+          .querySelectorAll(".scroll")[1]
+          .addEventListener("scroll", this.handleScroll);
+    }, 1000)
   },
-  computed: {
-    ...mapState({
-      creditSettings: state => state.creditSettings,
-      settings: state => state.creditSettings.settings,
-      refs: state => state.creditSettings.allRefs
-    })
-  },
+  computed: {},
   methods: {
     async onSubmit() {
 			// this.refs.moratory.validate()
@@ -282,7 +281,28 @@ export default {
       console.log(event.target)
       let link = event.target.getAttribute("href")
       document.getElementById(link).scrollIntoView({ behavior: "smooth", block: "start" })
-    }
+    },
+
+    handleScroll(event) {
+      let scrollTop = event.target.scrollTop;
+
+      document.querySelectorAll(".navMenu a").forEach(node => {
+        let selector = node.getAttribute("href");
+        // debugger
+        let blockTop = document.getElementById(selector).offsetTop - 100;
+        
+        let blockBottom =
+          document.getElementById(selector).offsetTop +
+          document.getElementById(selector).getBoundingClientRect().height;
+
+        if (scrollTop >= blockTop && scrollTop <= blockBottom) {
+          document
+            .querySelector(".navMenu a.active")
+            .classList.remove("active");
+          node.classList.add("active");
+        }
+      });
+    },
   },
   components: {
     appSettingsCreditProduct: SettingsCreditProduct,
@@ -346,6 +366,24 @@ export default {
 
   .navMenu {
     position: fixed;
+    margin: 0;
+    padding-left: 14px;
+    li {
+      list-style: none;
+      margin: 7px 0;
+      a {
+        display: block;
+        text-decoration: none;
+        color: #999a9b;
+        padding: 5px 10px;
+        border-radius: 5px;
+
+        &.active {
+        color: #1976d2;
+        background: #e6f1fc;
+      }
+      }
+    }
   }
 }
 

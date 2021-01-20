@@ -35,7 +35,10 @@
                 />
 
               </div>
+
+              <p class="maxSumScorCardBall">Сумма баллов: <span>{{ maxSumScorCardBall }}</span></p>
               
+              <p class="warning" v-if="maxSumScorCardBall > 100">Сумма максимального балла не равна 100</p>
               <!-- <appTreeFieldTemplate
                 :subTitleScor="'Возраст заемщика'"
                 :items="settings.app_card_age"
@@ -316,6 +319,25 @@ export default {
   .scoreBall {
     float: right;
     width: 60%;
+  }
+  .maxSumScorCardBall {
+    float: right;
+    margin: 0 35px 35px 0;
+    font-weight: bold;
+    span {
+      background: #F5F6FA;
+      border: 1px solid #E7E7E7;
+      border-radius: 5px;
+      margin-left: 5px;
+      padding: 14px 20px 14px 38px;
+    }
+  }
+
+  .warning {
+    clear: both;
+    font-weight: bold;
+    color: rgb(221, 19, 19);
+
   }
 }
 </style>

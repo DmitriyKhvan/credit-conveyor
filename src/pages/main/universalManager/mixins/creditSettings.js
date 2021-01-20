@@ -1,4 +1,4 @@
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 import MessagePopup from "../Components/MessagePopup"
 
@@ -22,8 +22,13 @@ export default {
   computed: {
     ...mapState({
       creditSettings: state => state.creditSettings,
-      settings: state => state.creditSettings.settings
-		})
+      settings: state => state.creditSettings.settings,
+      refs: state => state.creditSettings.allRefs
+    }),
+    
+    ...mapGetters({
+      maxSumScorCardBall: "creditSettings/maxSumScorCardBall"
+    })
 	},
 
 	methods: {

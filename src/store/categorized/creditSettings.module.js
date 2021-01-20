@@ -1,4 +1,5 @@
 import CreditSettingsService from "../../services/creditSettings.service";
+import sortData from "@/pages/main/universalManager/filters/sortData"
 
 export const creditSettings = {
   namespaced: true,
@@ -94,5 +95,33 @@ export const creditSettings = {
       console.log("AllRefs", state.allRefs);
     }
   },
-  getters: {}
+  getters: {
+    maxSumScorCardBall: state => {
+      // debugger
+      // const settings = JSON.parse(JSON.stringify(state.settings))
+
+      return Object.keys(state.settings)
+                      .filter(key => !key.indexOf('APPCARD'))
+                      .map(key => {
+                        if (state.settings[key]) {
+                          // debugger
+                          let sortBy = 'score'
+                          if (key == 'APPCARD_SCOREKOEFFICIENT') {
+                            sortBy = 'coefficient'
+                          }
+                          return (
+                                  sortData(state.settings[key].slice(), sortBy)
+                                  )
+                                  .slice(-1)[0]
+                        }
+                      })
+                      .reduce((sum, current) => {
+                        if (current) {
+                          // debugger
+                          return sum + +current.score || sum + +current.coefficient
+                        } 
+                        return sum
+                      }, 0)
+    }
+  }
 };

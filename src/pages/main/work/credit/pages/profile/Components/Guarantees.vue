@@ -1212,7 +1212,7 @@
               </q-input>
             </div>
 
-            <!-- <div class="col-4">
+            <div class="col-4">
               <q-input
                 ref="guaranteesContractExpirationDate"
                 outlined
@@ -1261,9 +1261,9 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div> -->
+            </div>
 
-            <div class="col-4">
+            <!-- <div class="col-4">
               <q-input
                 ref="guaranteesContractExpirationDate"
                 outlined
@@ -1305,7 +1305,7 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div>
+            </div> -->
           </div>
 
           <div class="row q-col-gutter-md">
