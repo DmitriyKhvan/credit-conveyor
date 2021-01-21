@@ -5,10 +5,11 @@
     <div v-else class="row q-col-gutter-md">
       <div class="col-9">
         <form @submit.prevent.stop="onSubmit">
-          <!-- <appSettingsProcess :title="titles[0]" /> -->
-          <appSettingsScorModel :title="titles[0]" />
-          <appSettingsScorBalls :title="titles[1]" />
-          <appSettingsCreditProduct :title="titles[2]" />
+          <appSettingsProcess v-if="settingsProcess" :title="settingsProcess" />
+          <appSettingsScorModel v-if="settingsScorModel" :title="settingsScorModel" />
+          <appSettingsScorBalls v-if="settingsScorBalls" :title="settingsScorBalls" />
+          <appSettingsCreditRoleActive v-if="settingsCreditRoleActive" :title="settingsCreditRoleActive" />
+          <appSettingsCreditProduct v-if="settingsCreditProduct" :title="settingsCreditProduct" />
           <div class="submitBtn">
             <q-btn unelevated type="submit" label="Сохранить" class="btnSucces" />
           </div>
@@ -49,18 +50,18 @@ export default {
   mixins: [creditSettings],
   data() {
     return {
-      titles: [
-        "Настройка процесса",
-        "Настройка скоринговой модели",
-        "Настройка баллов скоркарты",
-        "Участие роли в кредитном конвейeре",
-        "Настройка кредитных продуктов"
-      ],
+      // titles: [
+      //   "Настройка процесса",
+      //   "Настройка скоринговой модели",
+      //   "Настройка баллов скоркарты",
+      //   "Участие роли в кредитном конвейeре",
+      //   "Настройка кредитных продуктов"
+      // ],
       titles: [
         {
           name: "Настройка процесса",
           id: "settingsProcess",
-          disable: true
+          disable: false
         },
         {
           name: "Настройка скоринговой модели",
@@ -75,7 +76,7 @@ export default {
         {
           name: "Участие роли в кредитном конвейeре",
           id: "settingsCreditRoleActive",
-          disable: true
+          disable: false
         },
         {
           name: "Настройка кредитных продуктов",
@@ -103,7 +104,31 @@ export default {
           .addEventListener("scroll", this.handleScroll);
     }, 1000)
   },
-  computed: {},
+  beforeDestroy() {
+    if(!!document.querySelectorAll(".scroll")[1]) {
+      document
+        .querySelectorAll(".scroll")[1]
+        .removeEventListener("scroll", this.handleScroll);
+    }
+  },
+  computed: {
+    settingsProcess() {
+      return this.titles.find(i => i.id == 'settingsProcess' && i.disable == false)
+    },
+    settingsScorBalls() {
+      return this.titles.find(i => i.id == 'settingsScorBalls' && i.disable == false)
+    },
+    settingsScorModel() {
+      return this.titles.find(i => i.id == 'settingsScorModel' && i.disable == false)
+    },
+    settingsCreditRoleActive() {
+      return this.titles.find(i => i.id == 'settingsCreditRoleActive' && i.disable == false)
+    },
+    settingsCreditProduct() {
+      return this.titles.find(i => i.id == 'settingsCreditProduct' && i.disable == false)
+    }
+    
+  },
   methods: {
     async onSubmit() {
 			// this.refs.moratory.validate()
@@ -378,10 +403,10 @@ export default {
         padding: 5px 10px;
         border-radius: 5px;
 
-        &.active {
-        color: #1976d2;
-        background: #e6f1fc;
-      }
+        &.active, &:hover {
+          color: #1976d2;
+          background: #e6f1fc;
+        }
       }
     }
   }
@@ -397,6 +422,10 @@ export default {
       font-size: 14px;
       color: #fff
     }
+
+    .q-btn__wrapper {
+      padding: 0;
+    }
   }
 }
 
@@ -406,4 +435,20 @@ export default {
       font-size: 15px;
     }
   }
+
+  .blueBtn .q-btn__content,  .redBtn .q-btn__content{
+      width: 173px;
+      height: 47px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .blueBtn {
+      background: #4AB8FF;
+    }
+
+    .redBtn {
+      background: #FF4A4A;
+      margin-left: 24px!important;
+    }
 </style>

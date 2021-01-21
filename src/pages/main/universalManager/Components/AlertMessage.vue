@@ -1,13 +1,13 @@
 <template>
-  <q-dialog persistent ref="alertMessage" @hide="onDialogHide">
+  <q-dialog :content-class="'alertMessage'" persistent ref="alertMessage" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
       <p class="message">Вы действительно хотите удалить?</p>
       <!-- {{ data.tableName }}
         {{ data.idItem }} -->
       <!-- buttons example -->
-      <q-card-actions align="right">
-        <q-btn color="red" label="Удалить" @click="onOKClick" />
-        <q-btn color="blue" label="Отмена" @click="onCancelClick" />
+      <q-card-actions align="center">
+        <q-btn class="blueBtn add" label="Удалить" @click="onOKClick" />
+        <q-btn class="redBtn add" label="Отмена" @click="onCancelClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -89,9 +89,28 @@ export default {
 </script>
 
 <style lang="scss">
-.message {
-  text-align: center;
-  padding: 20px;
-  font-size: 20px;
+.alertMessage {
+  .message {
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+  }
+
+  .q-dialog-plugin{
+    padding: 0 20px 20px;
+    width: 500px;
+  }
+
+  .q-dialog__inner--minimized > div {
+    max-width: 500px;
+  }
+
+  // .redBtn.add, .blueBtn.add{
+  // }
+
+  // .redBtn.add {
+
+  // }
 }
+
 </style>

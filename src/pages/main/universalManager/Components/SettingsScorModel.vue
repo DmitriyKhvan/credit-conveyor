@@ -112,16 +112,20 @@ export default {
     },
 
     removeItem(idx) {
-      // this.settings.APPCARD_SCOREKOEFFICIENT.splice(idx, 1)
-
-      this.$q.dialog({
-        component: AlertMessage,
-        parent: this,
-        data: {
-          tableName: 'APPCARD_SCOREKOEFFICIENT',
-          rowId: this.settings.APPCARD_SCOREKOEFFICIENT[idx].id
-        }
-      })
+      
+      const rowId = this.settings.APPCARD_SCOREKOEFFICIENT[idx].id
+      if (rowId) {
+        this.$q.dialog({
+          component: AlertMessage,
+          parent: this,
+          data: {
+            tableName: 'APPCARD_SCOREKOEFFICIENT',
+            rowId
+          }
+        })
+      } else {
+        this.settings.APPCARD_SCOREKOEFFICIENT.splice(idx, 1)
+      }
     }
   }
 };

@@ -199,6 +199,10 @@
                     </div>
                   </div>
                   
+                   <div class="btnBlock">
+                    <q-btn unelevated label="Список целей" class="targetList" @click="getTargetList"/>
+                  </div>
+
                 </template>
               </div>
             </div>
@@ -211,6 +215,8 @@
 </template>
 <script>
 import creditSettings from "../mixins/creditSettings";
+
+import TargetList from "./TargetList";
 
 export default {
   mixins: [creditSettings],
@@ -247,6 +253,14 @@ export default {
   methods: {
     setSameData(event, index, item) {
       this.settings.LOAN_PRODUCT_CHAR[index][item] = event
+    }, 
+
+    getTargetList() {
+      this.$q.dialog({
+        component: TargetList,
+        parent: this,
+        data: {}
+      })
     }
   }
 };
