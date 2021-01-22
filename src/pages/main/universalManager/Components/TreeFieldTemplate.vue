@@ -2,7 +2,8 @@
   <div class="TreeFieldTemplate">
     <div class="row q-col-gutter-md titleScor">
       <div class="col-9 subTitleScor">{{subTitleScor}}</div>
-      <div class="col-3 text-right">Балл</div>
+      <div class="col-2 text-right">Балл</div>
+      <div class="col-1"></div>
     </div>
     <!-- :key="refsName.score + index" -->
     <div
@@ -30,7 +31,7 @@
           :rules="[val => integerValid(val)]"
         />
       </div>
-      <div class="col-4">
+      <div class="col-3">
         <q-input
           class="scoreBall"
           :ref="refsName.score"
@@ -40,16 +41,24 @@
           :rules="[val => floatValid(val)]"
         />
       </div>
+      <div class="col-1 removeItem">
+        <q-btn flat round icon="close" @click="removeItem(index)">
+          <q-tooltip>Удалить</q-tooltip>
+        </q-btn>
+      </div>
     </div>
     <div class="btnBlock">
-      <q-btn label="Добавить параметр" class="addItem" @click="addItem"/>
+      <q-btn unelevated label="Добавить параметр" class="addItem" @click="addItem"/>
     </div>
   </div>
 </template>
 
 <script>
 import creditSettings from '../mixins/creditSettings'
-import sortData from '../filters/sortData'
+
+import AlertMessage from '../Components/AlertMessage'
+
+// import sortData from '../filters/sortData'
 
 export default {
   props: {
@@ -62,6 +71,10 @@ export default {
       default() {
         return []
       }
+    },
+    tableName: {
+      type: String,
+      default: ""
     },
     fieldsSettings: {
       type: Object,
@@ -84,11 +97,12 @@ export default {
   mounted() {
     setTimeout(() => {
 			this.$store.commit("creditSettings/setRefs", this.$refs)
-		}, 100)
+		}, 3000)
   }, 
 	computed: {
     sortItems() {
-      return sortData(this.items, this.sortBy)
+      // return this.sortData(this.settings[this.tableName], this.sortBy)
+      return this.sortData(this.settings[this.tableName], "")
     }
   }, 
   methods: {
@@ -99,7 +113,24 @@ export default {
       obj[this.fieldsSettings.periodTo] = null
       obj.score = null
 
-      this.items.push(obj)
+      this.settings[this.tableName].push(obj)
+    },
+
+    removeItem(idx) {
+      const rowId = this.settings[this.tableName][idx].id
+      if (rowId) {
+        this.$q.dialog({
+          component: AlertMessage,
+          parent: this,
+          data: {
+            tableName: this.tableName,
+            rowId
+          }
+          // persistent: true
+        })
+      } else {
+        this.settings[this.tableName].splice(idx, 1)
+      }
     }
   }
 };

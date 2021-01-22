@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="settingsProcess" :id="title.id">
     <q-expansion-item
       class="settingBlock"
       :header-class="'headerBlock'"
-      :label="title"
+      :label="title.name"
       v-model="expanded"
     >
       <q-card class="contentBlock">
@@ -31,32 +31,209 @@
               />
             </div>
           </div>
+
+
+          <div class="row q-col-gutter-md">
+              <div class="col-8 toogleBtn">
+                <p>Банк ИНПС по умолчанию</p>
+
+                <q-toggle
+                  class="customeToggle"
+                  :false-value="false"
+                  :label="options[blueModel]"
+                  :true-value="true"
+                  v-model="blueModel2"
+                />
+              </div>
+              <div class="col-4">
+                <q-input
+                  class="customInput"
+                  ref=""
+                  outlined
+                  dense
+                  label="ИНПС"
+                  :rules="[val => !!val || 'Введите данные']"
+                />
+              </div>
+              <div class="borderRow"></div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-8 toogleBtn">
+                <p>Разрешить повторный запрос в Халк Банк</p>
+
+                <q-toggle
+                  class="customeToggle"
+                  :false-value="false"
+                  :label="options[blueModel]"
+                  :true-value="true"
+                  v-model="blueModel2"
+                />
+              </div>
+              <div class="col-4">
+                
+              </div>
+              <div class="borderRow"></div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-8 toogleBtn">
+                <p>Разрешить Ручной ввод ЗП на уточнение </p>
+
+                <q-toggle
+                  class="customeToggle"
+                  :false-value="false"
+                  :label="options[blueModel]"
+                  :true-value="true"
+                  v-model="blueModel2"
+                />
+              </div>
+              <div class="col-4">
+                <q-input
+                  class="customInput"
+                  ref=""
+                  outlined
+                  dense
+                  label="Для кого"
+                  :rules="[val => !!val || 'Введите данные']"
+                />
+              </div>
+              <div class="borderRow"></div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-4">
+                <q-input
+                  ref=""
+                  outlined
+                  dense
+                  label="Филиал"
+                  :rules="[val => !!val || 'Введите данные']"
+                />
+              </div>
+              <div class="col-4">
+                <q-input
+                  ref=""
+                  outlined
+                  dense
+                  label="№ заявки"
+                  :rules="[val => !!val || 'Введите данные']"
+                />
+              </div>
+              <div class="col-4"></div>
+              <div class="borderRow"></div>
+            </div>
+
+            <div class="row q-col-gutter-x-md">
+              <div class="col-4"></div>
+              <div class="col-4">
+                <p class="interval">Диапазон для удобного числа погашения кредита </p>
+              </div>
+              <div class="col-4"></div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-4">
+                <q-input
+                  ref=""
+                  outlined
+                  dense
+                  label="Количество обязательных родственников"
+                  :rules="[val => !!val || 'Введите данные']"
+                />
+              </div>
+              <div class="col-4">
+                <div class="row q-col-gutter-md">
+                  <div class="col-6">
+                    <q-input
+                      ref=""
+                      outlined
+                      dense
+                      label="От"
+                      :rules="[val => !!val || 'Введите данные']"
+                    />                  
+                  </div>
+                  <div class="col-6">
+                    <q-input
+                      ref=""
+                      outlined
+                      dense
+                      label="До"
+                      :rules="[val => !!val || 'Введите данные']"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="col-4"></div>
+              <div class="borderRow"></div>
+            </div>
+
+            <div class="row q-col-gutter-md">
+              <div class="col-8 toogleBtn">
+                <p>Разрешить повторный запрос в АСОКИ</p>
+
+                <q-toggle
+                  class="customeToggle"
+                  :false-value="false"
+                  :label="options[blueModel]"
+                  :true-value="true"
+                  v-model="blueModel2"
+                />
+              </div>
+              <div class="col-4"></div>
+            </div>
         </q-card-section>
       </q-card>
     </q-expansion-item>
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from "vuex";
+import creditSettings from "../mixins/creditSettings";
 
 export default {
-  props: ["title"],
+  mixins: [creditSettings],
   data() {
     return {
-      expanded: true,
-      moratory: null
+      moratory: null,
+      blueModel: true,
+      blueModel2: true,
+      options: {
+        true: 'Вкл',
+        false: 'Выкл'
+      } 
     };
   },
   mounted() {
-    // console.log('refs', this.$refs)
-    // this.$emit("set-refs", this.$refs);
-    this.$store.commit("creditSettings/setRefs", this.$refs)
+    setTimeout(() => {
+      this.$store.commit("creditSettings/setRefs", this.$refs);
+    }, 3000);
 	}, 
-	computed: {
-		...mapState({
-			settings: state => state.creditSettings.settings
-		})
-	}
+	computed: {}
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+  .settingsProcess {
+    .borderRow {
+      width: 100%;
+      height: 1px;
+      border-bottom: 1px solid #E7E7E7;
+      margin-left: 16px;
+      margin-bottom: 12px;
+    }
+
+    .toogleBtn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .interval {
+      font-size: 13px;
+      line-height: 19px;
+    }
+
+    .customInput {
+      padding-bottom: 0;
+    }
+  }
+</style>

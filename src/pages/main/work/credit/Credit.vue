@@ -2,7 +2,7 @@
 <div class="creditConveyor">
   <!-- {{$route.fullPath + Math.random(1)}} -->
   <appSubHeader :path="path" />
-  <router-view :key="$route.fullPath + Math.random(1)"></router-view>
+  <router-view></router-view>
 
   <!-- Server error message -->
   <errorMessage />
