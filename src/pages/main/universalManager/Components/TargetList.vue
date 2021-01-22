@@ -20,7 +20,7 @@
               type="textarea"
             />
           </div>
-          <div class="btnBlock">
+          <div class="btnBlockAdmin">
             <q-btn
               unelevated
               label="Добавить новую цель"
