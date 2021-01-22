@@ -199,7 +199,7 @@
                     </div>
                   </div>
                   
-                   <div class="btnBlock">
+                   <div class="btnBlockAdmin">
                     <q-btn unelevated label="Список целей" class="targetList" @click="getTargetList"/>
                   </div>
 
