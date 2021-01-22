@@ -360,6 +360,10 @@ export default {
         margin: 0 0 15px 0;
         font-size: 20px;
       }
+
+      .q-card__section--vert {
+        padding: 40px;
+      }
     }
   }
 
@@ -451,4 +455,46 @@ export default {
       background: #FF4A4A;
       margin-left: 24px!important;
     }
+
+  .customeToggle {
+    .q-toggle__inner {
+      width: 1.5em;
+      min-width: 1.5em;
+      height: 1em;
+      padding: 0.187em .2em;
+    }
+
+    .q-toggle__track {
+      height: 0.65em;
+      border-radius: .375em;
+    }
+
+    .q-toggle__inner--truthy .q-toggle__thumb {
+        left: 0.71em;
+        color: #fff;
+    }
+
+    .q-toggle__thumb {
+      top: .26em;
+      left: .26em;
+
+      &::after {
+        background: #A0A5BA;
+      }
+    }
+
+    .q-toggle__inner--truthy .q-toggle__thumb:after {
+      background: #fff;
+    }
+
+    .q-toggle__track {
+      background: #ccc;
+      // border: 1px solid #b9b9b9;
+    }
+
+    .q-toggle__inner--truthy .q-toggle__track {
+      background: #0054FE;
+      opacity: 1
+    }
+  }
 </style>

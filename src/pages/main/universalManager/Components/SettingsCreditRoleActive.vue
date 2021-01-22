@@ -14,10 +14,10 @@
             </div>
             <div class="col-6">
               <q-toggle
+                class="customeToggle"
                 :false-value="false"
                 :label="options[blueModel]"
                 :true-value="true"
-                color="blue"
                 v-model="blueModel"
               />
             </div>
@@ -29,10 +29,10 @@
             </div>
             <div class="col-6">
               <q-toggle
+                class="customeToggle"
                 :false-value="false"
                 :label="options[blueModel2]"
                 :true-value="true"
-                color="blue"
                 v-model="blueModel2"
               />
             </div>

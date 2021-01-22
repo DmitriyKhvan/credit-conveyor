@@ -655,7 +655,7 @@
             </div>
 
             <div class="row rowForm">
-              <div class="col-6 field">Подвержденный ежемесячный доход</div>
+              <div class="col-6 field">Подтвержденный ежемесячный доход</div>
               <div class="col-6 data">
                 {{ Customer.MonthlyIncome.confirmMonthlyIncome | formatNumber }}
               </div>
@@ -1577,22 +1577,22 @@
 
             <!-- <template v-if="creditRole === 'ROLE_CC'"> -->
             <template>
-              <div class="row rowForm">
+              <!-- <div class="row rowForm">
                 <div class="col-6 field">
                   Среднемесячная заработная плата(сум)
                 </div>
                 <div class="col-6 data">
                   {{ processInfo.avgSalary }}
                 </div>
-              </div>
+              </div> -->
 
               <div class="row rowForm">
                 <div class="col-6 field">
                   Профит
                 </div>
                 <div class="col-6 data">
-                  {{ processInfo.profit }}
-                  <!-- {{ fullProfile.profit }} -->
+                  <!-- {{ processInfo.profit }} -->
+                  {{ fullProfile.profit }}
                 </div>
               </div>
 

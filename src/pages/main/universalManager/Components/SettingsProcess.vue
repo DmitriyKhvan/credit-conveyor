@@ -38,10 +38,10 @@
                 <p>Банк ИНПС по умолчанию</p>
 
                 <q-toggle
+                  class="customeToggle"
                   :false-value="false"
                   :label="options[blueModel]"
                   :true-value="true"
-                  color="blue"
                   v-model="blueModel2"
                 />
               </div>
@@ -63,10 +63,10 @@
                 <p>Разрешить повторный запрос в Халк Банк</p>
 
                 <q-toggle
+                  class="customeToggle"
                   :false-value="false"
                   :label="options[blueModel]"
                   :true-value="true"
-                  color="blue"
                   v-model="blueModel2"
                 />
               </div>
@@ -81,10 +81,10 @@
                 <p>Разрешить Ручной ввод ЗП на уточнение </p>
 
                 <q-toggle
+                  class="customeToggle"
                   :false-value="false"
                   :label="options[blueModel]"
                   :true-value="true"
-                  color="blue"
                   v-model="blueModel2"
                 />
               </div>
@@ -173,10 +173,10 @@
                 <p>Разрешить повторный запрос в АСОКИ</p>
 
                 <q-toggle
+                  class="customeToggle"
                   :false-value="false"
                   :label="options[blueModel]"
                   :true-value="true"
-                  color="blue"
                   v-model="blueModel2"
                 />
               </div>
