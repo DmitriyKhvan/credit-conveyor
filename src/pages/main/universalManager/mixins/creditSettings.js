@@ -1,9 +1,19 @@
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
+
+import MessagePopup from "../Components/MessagePopup"
 
 import { floatValid, integerValid } from '../filters/validations'
+import sortData from '../filters/sortData'
 
 export default {
-  props: ["title"],
+  props: {
+    title: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
+  },
   data() {
     return {
       expanded: true
@@ -11,8 +21,14 @@ export default {
   },
   computed: {
     ...mapState({
-      settings: state => state.creditSettings.settings
-		})
+      creditSettings: state => state.creditSettings,
+      settings: state => state.creditSettings.settings,
+      refs: state => state.creditSettings.allRefs
+    }),
+    
+    ...mapGetters({
+      maxSumScorCardBall: "creditSettings/maxSumScorCardBall"
+    })
 	},
 
 	methods: {
@@ -21,6 +37,13 @@ export default {
     },
     integerValid(val) {
       return integerValid(val)
+    },
+    sortData(arr, sortBy) {
+      return sortData(arr, sortBy)
     }
+  },
+
+  components: {
+    MessagePopup
   }
 };
