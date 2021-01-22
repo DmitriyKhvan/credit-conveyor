@@ -38,7 +38,7 @@
         </q-btn>
       </div>
     </div>
-    <div v-if="!fieldsSettings.scoreName.disable" class="btnBlock">
+    <div v-if="!fieldsSettings.scoreName.disable" class="btnBlockAdmin">
       <q-btn unelevated label="Добавить параметр" class="addItem" @click="addItem"/>
     </div>
   </div>
