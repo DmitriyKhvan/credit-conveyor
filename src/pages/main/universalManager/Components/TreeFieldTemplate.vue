@@ -47,7 +47,7 @@
         </q-btn>
       </div>
     </div>
-    <div class="btnBlock">
+    <div class="btnBlockAdmin">
       <q-btn unelevated label="Добавить параметр" class="addItem" @click="addItem"/>
     </div>
   </div>

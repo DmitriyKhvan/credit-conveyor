@@ -416,7 +416,7 @@ export default {
   }
 }
 
-.btnBlock {
+.btnBlockAdmin {
   button {
     background: #4AB8FF;
 
