@@ -1725,7 +1725,7 @@
                     <td>{{scoringResult.companyClass}}</td>
                   </tr>
                   <tr>
-                    <td><span>Другие обязательства</span></td>
+                    <td><span>Наличие у клиента банковских счетов в НБУ</span></td>
                     <td>{{scoringResult.bills}}</td>
                   </tr>
                   <tr>

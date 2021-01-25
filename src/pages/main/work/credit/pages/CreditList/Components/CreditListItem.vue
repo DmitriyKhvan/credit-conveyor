@@ -3,7 +3,8 @@
     <span
       class="noLinkItem"
       v-if="
-        userRole.find(i => i === 'ROLE_CCS') ||
+        userRole.find(i => i === 'ROLE_CCS' && credit.assignedRole !== 'ROLE_UrWr') ||
+        userRole.find(i => i === 'ROLE_PM' && credit.assignedRole !== 'ROLE_UrWr') ||
         credit.taskName === 'Создание Контракта в iABS' ||
         credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
         credit.taskName === 'Step: Создание заявки в iABS' ||
