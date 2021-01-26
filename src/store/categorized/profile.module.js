@@ -364,6 +364,7 @@ export const profile = {
         collateral: null
         
       },
+      profit: null,
       rejectDetails: [],
       max_loan_sum: null,
       loanAbilityClass: null,
@@ -1504,6 +1505,7 @@ export const profile = {
           },
           collateral: null
         },
+        profit: null,
         rejectDetails: [],
 
         max_loan_sum: null,
