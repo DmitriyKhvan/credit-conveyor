@@ -1976,7 +1976,6 @@ export default {
     };
   },
   async created() {
-    console.log('this.creditRole', this.creditRole)
     this.$store.commit("credits/setTaskId", this.$route.query.taskId);
     await this.$store.dispatch(
         "credits/setHeaderRole",
