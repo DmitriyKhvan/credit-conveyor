@@ -714,7 +714,13 @@ export default {
         this.protocol = false
       } catch(error) {
         this.protocol = false
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$store.commit(
+          "credits/setMessage", 
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
+        );
         this.loaderFullScreen = false;
       }
     },
@@ -740,13 +746,25 @@ export default {
         console.log('response', JSON.stringify(response, null, 2))
 
         if (response) {
-          this.$store.commit("credits/setMessage", "Credit signed");
+          this.$store.commit(
+            "credits/setMessage",
+            {
+              message: "Credit signed",
+              code: 1
+            } 
+          );
           this.$store.commit("credits/removeTask", taskId)
         }
 
         this.loaderFullScreen = false;
       } catch (error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$store.commit(
+          "credits/setMessage",
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
+        );
         this.loaderFullScreen = false;
       }
     },
@@ -830,7 +848,13 @@ export default {
         this.loadings.splice(idx, 1, false)
         return file
       } catch(error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$store.commit(
+          "credits/setMessage", 
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
+        );
         this.disable = false
         this.loadings.splice(idx, 1, false)
       }

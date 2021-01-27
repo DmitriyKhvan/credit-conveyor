@@ -235,7 +235,9 @@ export default {
       if (Object.keys(this.fileData.data).length == 0) {
         this.$store.commit(
           "credits/setMessage",
-          "Распечатайте документ"
+          {
+            message: "Распечатайте документ"
+          }
         );
       } else {
         // this.$emit("toggleLoaderForm", true);
@@ -283,7 +285,10 @@ export default {
           setTimeout(() => {
             this.$store.commit(
               "credits/setMessage",
-              CommonUtils.filterServerError(error)
+              {
+                message: CommonUtils.filterServerError(error),
+                code: 0
+              }
             );
             localStorage.removeItem(this.taskIdPreapp);
           }, 1000)
@@ -326,7 +331,13 @@ export default {
           // }
 
           if (response) {
-            this.$store.commit("credits/setMessage", "Credit failure");
+            this.$store.commit(
+              "credits/setMessage", 
+              {
+                message: "Credit failure"
+              }
+              
+            );
             sessionStorage.clear();
             this.$router.push("/work/credit");
             // чтоб удаление произошло после метода beforeDestroy в родительском компоненте
@@ -340,7 +351,10 @@ export default {
           setTimeout(() => {
             this.$store.commit(
               "credits/setMessage",
-              CommonUtils.filterServerError(error)
+              {
+                message: CommonUtils.filterServerError(error),
+                code: 0
+              }
             );
             localStorage.removeItem(this.taskIdPreapp);
           }, 1000);
@@ -386,7 +400,10 @@ export default {
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
         this.loading.splice(language, 1, false);
       }

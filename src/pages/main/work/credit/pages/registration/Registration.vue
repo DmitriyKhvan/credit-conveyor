@@ -615,7 +615,10 @@ export default {
     } catch (error) {
       this.$store.commit(
         'credits/setMessage',
-        CommonUtils.filterServerError(error)
+        {
+          message: CommonUtils.filterServerError(error),
+          code: 0
+        }
       )
       this.loaderForm = false
     }
@@ -927,7 +930,10 @@ export default {
         } catch (error) {
           this.$store.commit(
             'credits/setMessage',
-            CommonUtils.filterServerError(error)
+            {
+              message: CommonUtils.filterServerError(error),
+              code: 0
+            }
           )
           this.loaderFullScreen = false
           setTimeout(() => {
@@ -975,7 +981,10 @@ export default {
       } catch (error) {
         this.$store.commit(
           'credits/setMessage',
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         )
         this.loadingGCI = false
       }

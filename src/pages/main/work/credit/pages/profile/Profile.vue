@@ -2811,7 +2811,7 @@
       </q-dialog>
 
       <!-- alert -->
-      <q-dialog v-model="bar" persistent>
+      <!-- <q-dialog v-model="bar" persistent>
         <q-card>
           <q-bar>
             <h6>Внимание!!!</h6>
@@ -2827,7 +2827,7 @@
             Заполните все обязательные поля!!!
           </q-card-section>
         </q-card>
-      </q-dialog>
+      </q-dialog> -->
 
       <!-- credit result -->
       <appFullProfile 
@@ -2920,7 +2920,7 @@ export default {
       itemName: "",
       itemFunc: null,
       payload: {},
-      bar: false,
+      // bar: false,
       GracePeriodMin: null,
       GracePeriodMax: null,
       creditManagerComment: "",
@@ -3009,7 +3009,10 @@ export default {
         setTimeout(() => {
           this.$store.commit(
             "credits/setMessage",
-            CommonUtils.filterServerError(error)
+            {
+              message: CommonUtils.filterServerError(error),
+              code: 0
+            }
           );
         }, 500)
         
@@ -3041,7 +3044,10 @@ export default {
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
         this.loaderForm = false;
       }
@@ -3828,7 +3834,13 @@ export default {
 
       ) {
         this.formHasError = true;
-        this.bar = true;
+        // this.bar = true;
+        this.$store.commit(
+                "credits/setMessage",
+                {
+                  message: "Заполните все обязательные поля"
+                }
+              );
       } else {
         if (submitForm === "start") {
           this.profile.confirmCredit = false;
@@ -3837,7 +3849,9 @@ export default {
           if (!this.resAsoki) {
             this.$store.commit(
                 "credits/setMessage",
-                "Получите данные АСОКИ"
+                {
+                  message: "Получите данные АСОКИ"
+                }
               );
           } else if (
               !this.clientInfoData && 
@@ -3847,24 +3861,32 @@ export default {
             ) {
             this.$store.commit(
                 "credits/setMessage",
-                "Получите данные клиента"
+                {
+                  message: "Получите данные клиента"
+                }
               );
           } else if (!this.printForm && 
                   this.status == 'Step: Ввод данных с интеграциями'
                   ) {
             this.$store.commit(
                 "credits/setMessage",
-                "Распечатайте анкету"
+                {
+                  message: "Распечатайте анкету"
+                }
               );
           } else if (!this.LSBOFlag && this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
             this.$store.commit(
                 "credits/setMessage",
-                "Получите данные с ЛСБО"
+                {
+                  message: "Получите данные с ЛСБО"
+                }
               );
           } else if (!this.INPSFlag && this.status == 'Step: Full Application Filling' && this.fullProfile.BODecision == null) {
             this.$store.commit(
                 "credits/setMessage",
-                "Получите данные с Халк банка"
+                {
+                  message: "Получите данные с Халк банка"
+                }
               );
           } else {
             this.sentDataForm()
@@ -3974,7 +3996,6 @@ export default {
       };
 
       console.log(JSON.stringify(data, null, 2));
-      // this.$store.commit("credits/setMessage", this.message);
 
       try {
         const response = await this.$store.dispatch(
@@ -3992,7 +4013,13 @@ export default {
           await sleep(3000)
 
           setTimeout(() => {
-             this.$store.commit("credits/setMessage", this.message);
+             this.$store.commit(
+               "credits/setMessage", 
+               {
+                 message: this.message,
+                 code: 1
+               }
+            );
           }, 500)
          
           this.$store.commit("credits/removeTask", this.taskId);
@@ -4005,7 +4032,10 @@ export default {
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
         this.loader = false;
       }
@@ -4052,7 +4082,10 @@ export default {
         } catch (error) {
           this.$store.commit(
             "credits/setMessage",
-            CommonUtils.filterServerError(error)
+            {
+              message: CommonUtils.filterServerError(error),
+              code: 0
+            }
           );
           this.loader = false;
           this.bankLoading = false;
@@ -4089,9 +4122,13 @@ export default {
           this.INPSBar = true;
           this.INPSFlag = true;
         } catch (error) {
+          
           this.$store.commit(
             "credits/setMessage",
-            CommonUtils.filterServerError(error)
+            { 
+              message: CommonUtils.filterServerError(error),
+              code: 0
+            }
           );
           this.bankLoading = false;
         }
@@ -4106,12 +4143,18 @@ export default {
         this.LSBOFlag = true;
         this.$store.commit(
           "credits/setMessage",
-          "Данные получены"
+          {
+            message: "Данные получены",
+            code: 1
+          }
         );
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
         this.LSBOLoading = false;
       }
@@ -4126,7 +4169,10 @@ export default {
       } catch(error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
         this.clientInfoLoading = false;
       }
@@ -4143,7 +4189,10 @@ export default {
       } catch(error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
         this.clientASOKILoading = false;
       }
@@ -4459,7 +4508,10 @@ export default {
       } catch(error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
       }
     },

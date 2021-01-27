@@ -429,7 +429,8 @@ export const profile = {
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, { root: true });
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        
         throw error;
       }
     },
@@ -453,7 +454,7 @@ export const profile = {
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, { root: true });
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
         throw error;
       }
     },
@@ -508,7 +509,7 @@ export const profile = {
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, { root: true });
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
         throw error;
       }
     },
@@ -540,7 +541,7 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, { root: true });
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
         throw error;
       }
     },
@@ -632,7 +633,7 @@ export const profile = {
         return state.resASOKI
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, { root: true });
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
         throw error;
       }
     },
@@ -646,7 +647,7 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, { root: true });
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
         throw error;
       }
     },
@@ -659,7 +660,7 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, { root: true });
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
         throw error;
       }
     },
@@ -722,7 +723,7 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", errorMessage, { root: true });
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
         sessionStorage.clear();
         //this.$router.push("/work/credit");
         // this.$router.go(-1);

@@ -363,7 +363,10 @@ export default {
       setTimeout(() => {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
       }, 500)
       
