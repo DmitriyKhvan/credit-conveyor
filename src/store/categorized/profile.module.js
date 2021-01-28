@@ -366,7 +366,7 @@ export const profile = {
       },
       profit: null,
       rejectDetails: [],
-      max_loan_sum: null,
+      // max_loan_sum: null,
       loanAbilityClass: null,
       loanKoeffCorr: null,
 
@@ -1509,7 +1509,7 @@ export const profile = {
         profit: null,
         rejectDetails: [],
 
-        max_loan_sum: null,
+        // max_loan_sum: null,
         loanAbilityClass: null,
         loanKoeffCorr: null,
 
