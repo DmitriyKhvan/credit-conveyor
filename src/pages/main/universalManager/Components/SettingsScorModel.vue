@@ -8,6 +8,8 @@
     >
       <q-card class="contentBlock">
         <q-card-section>
+          <appSettingsModel />
+
           <h4 class="titleSetting">Коэффициент корректировки</h4>
           <div class="row q-col-gutter-md">
             <div class="col-9">
@@ -87,6 +89,8 @@
 </template>
 <script>
 import creditSettings from '../mixins/creditSettings'
+
+import SettingsModel from '../Components/SettingsScorModel/SettingsModel'
 import AlertMessage from '../Components/AlertMessage'
 
 export default {
@@ -127,6 +131,10 @@ export default {
         this.settings.APPCARD_SCOREKOEFFICIENT.splice(idx, 1)
       }
     }
+  },
+
+  components: {
+    appSettingsModel: SettingsModel
   }
 };
 </script>

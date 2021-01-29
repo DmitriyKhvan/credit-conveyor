@@ -262,7 +262,13 @@ export default {
             this.$emit('closeBar', false)
           }
         } catch(error) {
-          this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+          this.$store.commit(
+            "credits/setMessage", 
+            {
+              message: CommonUtils.filterServerError(error),
+              code: 0
+            }
+          );
           this.loader = false;
         }
       }

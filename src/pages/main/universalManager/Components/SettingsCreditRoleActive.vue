@@ -8,22 +8,26 @@
     >
       <q-card class="contentBlock">
         <q-card-section> 
-          <div class="row rowRole">
+          <div 
+            v-for="role of settings.APPSETTING_ROLE" 
+            :key="role.id"
+            class="row rowRole"
+          >
             <div class="col-6">
-              <p>Юрист</p>
+              <p>{{ roleName[role.roleName] }}</p>
             </div>
             <div class="col-6">
               <q-toggle
                 class="customeToggle"
-                :false-value="false"
-                :label="options[blueModel]"
-                :true-value="true"
-                v-model="blueModel"
+                :false-value=0
+                :label="options[role.applied]"
+                :true-value=1
+                v-model="role.applied"
               />
             </div>
           </div>
 
-          <div class="row rowRole">
+          <!-- <div class="row rowRole">
             <div class="col-6">
               <p>Начальник кредитного комитета</p>
             </div>
@@ -36,7 +40,7 @@
                 v-model="blueModel2"
               />
             </div>
-          </div>
+          </div> -->
           
         </q-card-section>
       </q-card>
@@ -52,12 +56,18 @@ export default {
   mixins: [creditSettings],
   data() {
     return {
-      blueModel: true,
-      blueModel2: true,
       options: {
-        true: 'Вкл',
-        false: 'Выкл'
-      } 
+        1: 'Вкл',
+        0: 'Выкл'
+      },
+      
+      roleName: {
+        ROLE_UrWr: "Андерайтер",
+        ROLE_KM: "Кредитный менеджер",
+        ROLE_CCC: "Начальник кредитного комитета",
+        ROLE_CC: "Кредитный комитет",
+        ROLE_LEGAL: "Юрист"
+      }
     }
   },
   mounted() {

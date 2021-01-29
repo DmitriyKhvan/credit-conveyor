@@ -18,7 +18,14 @@
       </q-header> -->
       
 
-      <q-page-container v-if="path === '/work/credit/sub/profile' || path === '/work/credit/applications' || path === '/universal_manager'">
+      <q-page-container 
+        v-if="
+          path === '/work/credit/sub/profile' || 
+          path === '/work/credit/applications' || 
+          path === '/universal_manager' ||
+          path.indexOf('/work/credit/sub/task') == 0 
+        "
+      >
         <q-layout
           view="hHh lpR fFf"
           container

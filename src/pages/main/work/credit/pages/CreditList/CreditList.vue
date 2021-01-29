@@ -564,7 +564,7 @@ export default {
             conditions.push(false)
           } else {
             conditions.push(
-              task.applicationNumber.indexOf(this.applicationNumber) > -1
+              task.applicationNumber.toLowerCase().indexOf(this.applicationNumber.toLowerCase()) > -1
             );
           }
         }
@@ -573,7 +573,7 @@ export default {
           if (!task.client) {
             conditions.push(false)
           } else {
-            conditions.push(task.client.indexOf(this.client) > -1);
+            conditions.push(task.client.toLowerCase().indexOf(this.client.toLowerCase()) > -1);
           }
         }
 
@@ -581,7 +581,7 @@ export default {
           if (!task.kmfio) {
             conditions.push(false)
           } else {
-            conditions.push(task.kmfio.indexOf(this.manager) > -1);
+            conditions.push(task.kmfio.toLowerCase().indexOf(this.manager.toLowerCase()) > -1);
           }
         }
 
@@ -589,7 +589,7 @@ export default {
           if (!task.filial) {
             conditions.push(false)
           } else {
-            conditions.push(task.filial.indexOf(this.MFO) > -1);
+            conditions.push(task.filial.toLowerCase().indexOf(this.MFO.toLowerCase()) > -1);
           }
         }
 
@@ -597,7 +597,7 @@ export default {
           if (!task.filialName) {
             conditions.push(false)
           } else {
-            conditions.push(task.filialName.indexOf(this.filialName) > -1);
+            conditions.push(task.filialName.toLowerCase().indexOf(this.filialName.toLowerCase()) > -1);
           }
         }
 
@@ -605,7 +605,7 @@ export default {
           if (!task.taskName) {
             conditions.push(false)
           } else {
-            conditions.push(task.taskName.indexOf(this.taskName) > -1);
+            conditions.push(task.taskName.toLowerCase().indexOf(this.taskName.toLowerCase()) > -1);
           }
         }
 
@@ -613,7 +613,7 @@ export default {
           if (!task.taskStatus) {
             conditions.push(false)
           } else {
-            conditions.push(task.taskStatus.indexOf(this.taskStatus) > -1);
+            conditions.push(task.taskStatus.toLowerCase().indexOf(this.taskStatus.toLowerCase()) > -1);
           }
         }
 
@@ -714,7 +714,13 @@ export default {
         this.protocol = false
       } catch(error) {
         this.protocol = false
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$store.commit(
+          "credits/setMessage", 
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
+        );
         this.loaderFullScreen = false;
       }
     },
@@ -740,13 +746,25 @@ export default {
         console.log('response', JSON.stringify(response, null, 2))
 
         if (response) {
-          this.$store.commit("credits/setMessage", "Credit signed");
+          this.$store.commit(
+            "credits/setMessage",
+            {
+              message: "Credit signed",
+              code: 1
+            } 
+          );
           this.$store.commit("credits/removeTask", taskId)
         }
 
         this.loaderFullScreen = false;
       } catch (error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$store.commit(
+          "credits/setMessage",
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
+        );
         this.loaderFullScreen = false;
       }
     },
@@ -830,7 +848,13 @@ export default {
         this.loadings.splice(idx, 1, false)
         return file
       } catch(error) {
-        this.$store.commit("credits/setMessage", CommonUtils.filterServerError(error));
+        this.$store.commit(
+          "credits/setMessage", 
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
+        );
         this.disable = false
         this.loadings.splice(idx, 1, false)
       }
