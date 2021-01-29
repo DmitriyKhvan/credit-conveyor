@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     error() {
-      return this.$store.getters["credits/messageId"]
+      return this.$store.getters["credits/messageBlock"].id
     },
     path() {
       //console.log(this.$route.path);

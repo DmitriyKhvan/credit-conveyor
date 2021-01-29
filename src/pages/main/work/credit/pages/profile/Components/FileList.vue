@@ -126,7 +126,10 @@ export default {
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
         this.disable = false;
         if (lang == 0) {

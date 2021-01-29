@@ -227,7 +227,10 @@ export default {
         } catch (error) {
           this.$store.commit(
             "credits/setMessage",
-            CommonUtils.filterServerError(error)
+            {
+              message: CommonUtils.filterServerError(error),
+              code: 0
+            }
           );
         }
       }
@@ -270,7 +273,10 @@ export default {
       } catch (error) {
         this.$store.commit(
           "credits/setMessage",
-          CommonUtils.filterServerError(error)
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
         );
       }
     },
@@ -279,7 +285,9 @@ export default {
       if (Object.values(this.$refs.files.files).findIndex(i => i.type != 'application/pdf') != -1) {
         this.$store.commit(
             "credits/setMessage",
-            "Загрузите только PDF-файлы"
+            {
+              message: "Загрузите только PDF-файлы"
+            }
           );
       } else {
         this.loaderFile = false;

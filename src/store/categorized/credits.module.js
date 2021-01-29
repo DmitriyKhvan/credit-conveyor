@@ -10,7 +10,8 @@ export const credits = {
     // fileId: null,
     messageBlock: {
       id: null, // чтоб различать две одинаковые ошибки
-      message: null
+      message: null,
+      code: null
     },
     roles: {
       //Admin: "CRM",
@@ -577,9 +578,10 @@ export const credits = {
       state.messageBar = false;
     },
 
-    setMessage(state, message) {
-      console.log("setMsg", message);
-      state.messageBlock.message = message;
+    setMessage(state, payload) {
+      console.log("setMsg", payload.message);
+      state.messageBlock.message = payload.message;
+      state.messageBlock.code = payload.code
       state.messageBlock.id = new Date();
     },
 
@@ -617,7 +619,10 @@ export const credits = {
       state.creditTasks = payload.response.infoList.map(credit => {
         // let creditCompleate = credit.taskName == "Step: Решение о выдаче"
         let creditCompleate =
-          credit.taskName == "Step: Заполнить ПП" ? true : false;
+          credit.taskName == "Step: Заполнить ПП" || 
+          credit.taskName == "Контрак в iABS: Успешно! - АСОКИ"
+                              ? true 
+                              : false;
         let time =
           (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1 ||
           credit.taskName == "ERROR: Ошибка создание Контракта в iABS" ||
@@ -654,22 +659,11 @@ export const credits = {
   },
   getters: {
     // credits: state => state,
-    message: state => state.messageBlock.message,
-    messageId: state => state.messageBlock.id,
+    // message: state => state.messageBlock.message,
+    // messageId: state => state.messageBlock.id,
+    messageBlock: state => state.messageBlock,
     messageBar: state => state.messageBar,
     taskId: state => state.taskId,
     userRole: state => state.userRole
-    // creditTasks: state => {
-    //   return state.creditTasks.map(credit => {
-    //     let time = (new Date() - new Date(credit.date)) / (60 * 60 * 24 * 1000) > 1
-    //             ? true
-    //             : false
-
-    //     return {
-    //       ...credit,
-    //       time
-    //     }
-    //   })
-    // }
   }
 };
