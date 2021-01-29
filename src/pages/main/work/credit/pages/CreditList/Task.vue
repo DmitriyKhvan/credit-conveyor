@@ -1686,7 +1686,7 @@
                     >
                       <div class="row rowForm">
                         <div class="col-3 field">
-                          {{ comment.CommentPerson }}
+                          {{ comment.CommentPersonFIO }}
                         </div>
                         <div class="col-9 data">
                           {{ comment.Comment }}
@@ -2326,7 +2326,6 @@ export default {
                 code: 1
               }
             );
-            this.$router.go(-1);
           }, 500)
           
           this.$store.commit("credits/removeTask", this.$route.query.taskId);

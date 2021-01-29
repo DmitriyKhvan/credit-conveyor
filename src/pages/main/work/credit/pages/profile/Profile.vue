@@ -2641,7 +2641,7 @@
                     .items"
                   :key="'comment' + index"
                 >
-                  <h6 class="tab-content_title">{{ comment.CommentPerson }}</h6>
+                  <h6 class="tab-content_title">{{ comment.CommentPersonFIO }}</h6>
                   <!-- <span>{{comment.CommentDate}}</span> -->
                   <p>{{ comment.Comment }}</p>
                 </div>

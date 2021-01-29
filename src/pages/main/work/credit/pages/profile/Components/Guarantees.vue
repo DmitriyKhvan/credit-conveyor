@@ -1152,7 +1152,10 @@
           </div>
 
           <div
-            v-if="status === 'Step: Работа с документами'"
+            v-if="
+              status === 'Step: Работа с документами' ||
+              status === 'Step: Создание заявки в iABS'
+            "
             class="row q-col-gutter-md"
           >
             <div class="col-4">

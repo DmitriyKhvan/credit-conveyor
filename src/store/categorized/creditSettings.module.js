@@ -101,7 +101,7 @@ export const creditSettings = {
       // const settings = JSON.parse(JSON.stringify(state.settings))
 
       return Object.keys(state.settings)
-                      .filter(key => !key.indexOf('APPCARD') && key.indexOf('APPCARD_SCOREKOEFFICIENT'))
+                      .filter(key => !key.indexOf('APPCARD') && key.indexOf('APPCARD_SCOREKOEFFICIENT') && key.indexOf('APPCARD_MODEL'))
                       .map(key => {
                         if (state.settings[key]) {
                           // debugger

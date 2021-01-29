@@ -131,7 +131,15 @@ export default {
   },
   methods: {
     async onSubmit() {
-			// this.refs.moratory.validate()
+			this.refs.MORATORIUM_PERIODD.validate()
+			this.refs.APPLIFE_PERIOD.validate()
+			this.refs.REQ_RELATIVES_COUNT.validate()
+			this.refs.CONVENIENT_REPAYMENT_MIN.validate()
+      this.refs.CONVENIENT_REPAYMENT_MAX.validate()
+      
+      this.refs.MIN_MONTH_SALARYY.validate()
+			this.refs.CORR_KOEF.validate()
+			this.refs.SCORE_CARD_MIN.validate()
       
       validFilter(this.refs, "scoreСoefficientMinScoreValid", "scoreСoefficientMinScore")
       validFilter(this.refs, "scoreСoefficientMaxScoreValid", "scoreСoefficientMaxScore")
@@ -204,7 +212,15 @@ export default {
       }
       
 			if (
-          // this.refs.moratory.hasError ||
+          this.refs.MORATORIUM_PERIODD.hasError ||
+          this.refs.APPLIFE_PERIOD.hasError ||
+          this.refs.REQ_RELATIVES_COUNT.hasError ||
+          this.refs.CONVENIENT_REPAYMENT_MIN.hasError ||
+          this.refs.CONVENIENT_REPAYMENT_MAX.hasError ||
+
+          this.refs.MIN_MONTH_SALARYY.hasError ||
+          this.refs.CORR_KOEF.hasError ||
+          this.refs.SCORE_CARD_MIN.hasError ||
 
           this.refs.scoreСoefficientMinScoreValid.hasError ||
           this.refs.scoreСoefficientMaxScoreValid.hasError ||
