@@ -75,18 +75,5 @@ export default {
 };
 </script>
 <style lang="scss">
-  .settingsScorModel{
-    .titleScor {
-      font-size: 14px;
-    }
-
-    .scoreСoefficientСlass > div {
-      background: #F5F6FA;
-    }
-
-    .scoreСoefficient {
-      float: right;
-      width: 70%;
-    }
-  }
+  
 </style>

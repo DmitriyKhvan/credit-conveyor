@@ -11,6 +11,7 @@
           :key="'status' + index"
         >
           <!-- <p>{{status.date}}</p> -->
+          <p>{{ status.date }}</p>
           <p><span>Код ошибки:</span> {{ status.code }}</p>
           <p>{{ status.label }}</p>
           <p>{{ status.value }}</p>
