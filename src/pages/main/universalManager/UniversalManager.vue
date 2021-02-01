@@ -411,8 +411,9 @@ export default {
 
   .navMenu {
     position: fixed;
+    width: 23%;
     margin: 0;
-    padding-left: 14px;
+    padding-left: 0;
     li {
       list-style: none;
       margin: 7px 0;
