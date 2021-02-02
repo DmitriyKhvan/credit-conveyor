@@ -52,7 +52,8 @@ export default {
     .q-btn--rectangle {
       background: $blue;
       color: #fff;
-      margin-right: 15px;
+      // margin-right: 15px;
+      margin: 0 7px;
     }
     .ellipsis {
       // font-size: 1rem

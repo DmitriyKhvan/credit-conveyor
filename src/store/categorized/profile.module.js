@@ -6,14 +6,17 @@ export const profile = {
   state: {
     bpmService: new BpmService(),
     resASOKI: null,
-    payOrder: {
-      doc_type: {
-        items: []
-      },
-      pay_code: {
-        items: []
-      }
-    },
+    payOrder: [
+      // {
+      //   doc_type: {
+      //     items: []
+      //   },
+      //   pay_code: {
+      //     items: []
+      //   }
+      // }
+    ],
+    payOrders: [],
     BPMInput: null,
     allResponse: null,
     // preapprove_num: "",
@@ -788,7 +791,10 @@ export const profile = {
     // },
 
     setPayOrder(state, payOrder) {
+      state.payOrders = []
+      const paymentOrder = JSON.parse(JSON.stringify(payOrder)) 
       state.payOrder = payOrder;
+      state.payOrders.splice(0, 1, paymentOrder);
     },
 
     // setProcessInfo(state, processInfo) {
