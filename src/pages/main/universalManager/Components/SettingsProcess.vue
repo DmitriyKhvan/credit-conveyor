@@ -16,7 +16,7 @@
                 v-model="MORATORIUM_PERIODD.baseValue"
                 dense
                 label="Срок моратория по отказанным клиентам"
-                :rules="[val => integerValid(val)]"
+                :rules="[val => integerPositiveValid(val)]"
               />
             </div>
 
@@ -27,7 +27,7 @@
                 v-model="APPLIFE_PERIOD.baseValue"
                 dense
                 label="Срок жизни заявки"
-                :rules="[val => integerValid(val)]"
+                :rules="[val => integerPositiveValid(val)]"
               />
             </div>
           </div>
@@ -142,7 +142,7 @@
                   v-model="REQ_RELATIVES_COUNT.baseValue"
                   dense
                   label="Количество обязательных родственников"
-                  :rules="[val => integerValid(val)]"
+                  :rules="[val => integerPositiveValid(val)]"
                 />
               </div>
               <div class="col-4">
@@ -154,7 +154,7 @@
                       v-model="CONVENIENT_REPAYMENT.minValue"
                       dense
                       label="От"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />                  
                   </div>
                   <div class="col-6">
@@ -164,7 +164,7 @@
                       v-model="CONVENIENT_REPAYMENT.maxValue"
                       dense
                       label="До"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                 </div>

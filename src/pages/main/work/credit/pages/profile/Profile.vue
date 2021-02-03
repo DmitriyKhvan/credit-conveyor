@@ -252,7 +252,8 @@
                     mask="AA"
                     :rules="[
                       val =>
-                        (val && val.length === 2) || 'Введите серию документа'
+                        (val && val.length === 2) || 'Введите серию документа',
+                      val => passportValid()
                     ]"
                   />
                 </div>
@@ -271,7 +272,8 @@
                     lazy-rules
                     :rules="[
                       val =>
-                        (val && val.length === 7) || 'Введите номер документа'
+                        (val && val.length === 7) || 'Введите номер документа',
+                        val => passportValid()
                     ]"
                   />
                 </div>
@@ -4482,6 +4484,24 @@ export default {
 
     pinppValid(val) {
       return !val.match(/(?=(.))\1{14,}/) || "Неверные данные";
+    },
+
+    passportValid() {
+      let flag = true
+      for (let i of this.fullProfile.Guarantee.RelatedPerson.items) {
+        if (i.Document.Series + i.Document.Number != this.Customer.Document.Series + this.Customer.Document.Number) {
+          flag = true
+        } else {
+          flag = false
+          break
+        }
+      }
+
+      if (flag) {
+        return true
+      } else {
+        return 'Неверные данные'
+      }
     },
 
     // cardNumber(val) {

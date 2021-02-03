@@ -58,7 +58,7 @@
                       v-model="settings.LOAN_PRODUCT_CHAR[index].maxSum"
                       dense
                       label="Максимальная сумма"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                   <div class="col-6">
@@ -68,7 +68,7 @@
                       v-model="settings.LOAN_PRODUCT_CHAR[index].minTerm"
                       dense
                       label="Срок от"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                   <div class="col-6">
@@ -78,7 +78,7 @@
                       v-model="settings.LOAN_PRODUCT_CHAR[index].maxTerm"
                       dense
                       label="Срок до"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                   <div class="col-6">
@@ -88,7 +88,7 @@
                       v-model="settings.LOAN_PRODUCT_CHAR[index].gracePeriodMin"
                       dense
                       label="Льготный период от"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                   <div class="col-6">
@@ -98,7 +98,7 @@
                       v-model="settings.LOAN_PRODUCT_CHAR[index].gracePeriodMax"
                       dense
                       label="Льготный период до"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                   <div class="col-6">
@@ -111,7 +111,7 @@
                       @input="setSameData($event, index, 'interestRateMin')"
                       dense
                       label="Процентная ставка"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                   <div class="col-6">
@@ -124,7 +124,7 @@
                       @input="setSameData($event, index, 'expiredInterestRateMin')"
                       dense
                       label="Процентная ставка за просрочку"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                   <div class="col-6">
@@ -136,7 +136,7 @@
                       "
                       dense
                       label="Первоначальный платеж от"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
                   <div class="col-6">
@@ -148,7 +148,7 @@
                       "
                       dense
                       label="Первоначальный платеж до"
-                      :rules="[val => integerValid(val)]"
+                      :rules="[val => integerPositiveValid(val)]"
                     />
                   </div>
 

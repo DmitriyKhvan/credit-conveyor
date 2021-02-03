@@ -103,9 +103,10 @@
                 square
                 outlined
                 v-model="payOrder.summ"
+                @input="formatNumber(index)" 
                 dense
                 label="Сумма кредита"
-                :rules="[val => !!val || 'Введите данные']"
+                :rules="[val => val != 0 || 'Неверные данные']"
               />
             </div>
           </div>
@@ -145,7 +146,7 @@
                 v-model="payOrder.client_bank_mfo"
                 dense
                 label="МФО банка клиента"
-                :rules="[val => !!val || 'Введите МФО банка получателя']"
+                :rules="[val => numeralValid(val)]"
               />
             </div>
             <div class="col-12">
@@ -170,7 +171,7 @@
                 v-model="payOrder.client_acc"
                 dense
                 label="Счет клиента"
-                :rules="[val => !!val || 'Введите счет получателя']"
+                :rules="[val => numeralValid(val)]"
               />
             </div>
           </div>
@@ -287,7 +288,7 @@
                       <q-date
                         mask="DD.MM.YYYY"
                         v-model="payOrder.pay_date"
-                        @input="() => $refs.qDate.hide()"
+                        @input="() => $refs.qDate[index].hide()"
                       />
                     </q-popup-proxy>
                   </q-icon>
@@ -314,10 +315,14 @@ import { mapState } from "vuex";
 import AlertMessage from "@/components/AlertMessage";
 import CommonUtils from "@/shared/utils/CommonUtils";
 
+import validMixin from "@/shared/mixins/validMixin";
+
+import formatNumber from "@/shared/filters/formatNumber"
 import { validItems, validFilter } from "../filters/valid_filter"
 import formatDate from "../filters/formatDate"
 
 export default {
+  mixins: [validMixin],
   data() {
     return {
     //   documentType: "",
@@ -444,56 +449,24 @@ export default {
         this.$refs.dateValid.hasError 
       ) {
         this.formHasError = true
+        this.$store.commit("credits/setMessage", {
+          message: "Заполните все обязательные поля"
+        });
       } else {
         console.log('Success')
-        const {
-          budgetRecipient_acc,
-          budgetRecipient_bank,
-          budgetRecipient_name,
-          client_acc,
-          client_bank_mfo,
-          client_bank_name,
-          client_inn,
-          client_uid,
-          contract_number,
-          filial,
-          pay_date,
-          pay_detail,
-          po_number,
-          product_code,
-          summ,
-          doc_type_selected,
-          pay_code_selected
-        } = this.payOrder
+        
+        this.payOrders.forEach(i => i.summ = +i.summ.replace(/[^0-9]/gim, ''))
 
         const data = {
           output: [
             {
               name: "payOrder",
-              data: {
-                budgetRecipient_acc,
-                budgetRecipient_bank,
-                budgetRecipient_name,
-                client_acc,
-                client_bank_mfo,
-                client_bank_name,
-                client_inn,
-                client_uid,
-                contract_number,
-                filial,
-                pay_date,
-                pay_detail,
-                po_number,
-                product_code,
-                summ,
-                doc_type_selected,
-                pay_code_selected
-              }
+              data: this.payOrders
             }
           ]
         };
 
-        console.log('this.payOrders', this.payOrders)
+        console.log('data', data)
         // this.$router.push("/work/credit/applications");
         try{
 
@@ -523,6 +496,10 @@ export default {
           }
           // persistent: true
         })
+    },
+
+    formatNumber(idx) {
+      this.payOrders[idx].summ = formatNumber(this.payOrders[idx].summ)
     }
   }
 };
