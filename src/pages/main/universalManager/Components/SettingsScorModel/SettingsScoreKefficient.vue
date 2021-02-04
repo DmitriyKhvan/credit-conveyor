@@ -32,7 +32,7 @@
               outlined
               v-model="scoreСoefficient.minScore"
               dense
-              :rules="[val => floatValid(val)]"
+              :rules="[val => floatPositiveValid(val)]"
             />
           </div>
           <div class="col-3">
@@ -41,7 +41,7 @@
               outlined
               v-model="scoreСoefficient.maxScore"
               dense
-              :rules="[val => floatValid(val)]"
+              :rules="[val => floatPositiveValid(val)]"
             />
           </div>
           <div class="col-2 text-right">
@@ -51,7 +51,7 @@
               outlined
               v-model="scoreСoefficient.coefficient"
               dense
-              :rules="[val => floatValid(val)]"
+              :rules="[val => floatPositiveValid(val)]"
             />
           </div>
           <div class="col-1 removeItem">

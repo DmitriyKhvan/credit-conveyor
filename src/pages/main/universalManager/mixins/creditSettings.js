@@ -2,10 +2,12 @@ import { mapState, mapGetters } from "vuex";
 
 import MessagePopup from "../Components/MessagePopup"
 
-import { floatValid, integerValid } from '../filters/validations'
+import validMixin from "@/shared/mixins/validMixin"
+
 import sortData from '../filters/sortData'
 
 export default {
+  mixins: [validMixin],
   props: {
     title: {
       type: Object,
@@ -32,12 +34,6 @@ export default {
 	},
 
 	methods: {
-    floatValid(val) {
-      return floatValid(val)
-    },
-    integerValid(val) {
-      return integerValid(val)
-    },
     sortData(arr, sortBy) {
       return sortData(arr, sortBy)
     }

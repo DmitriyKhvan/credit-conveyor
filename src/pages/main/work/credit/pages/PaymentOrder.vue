@@ -1,7 +1,18 @@
 <template>
   <div class="paymentOrder q-pa-md">
+    <!-- <pre>
+      {{payOrders}}
+    </pre> -->
+    
     <form @submit.prevent.stop="onSubmit">
-      <div class="row q-col-gutter-md">
+      <div 
+        v-for="(payOrder, index) of payOrders" 
+        :key="'payOrder' + index"
+        class="row q-col-gutter-md payOrderBlock"
+      >
+        <div v-if="index > 0" class="col-12 text-right">
+          <q-btn label="Удалить" @click="removePayOrder(index)" class="redBtn" />
+        </div> 
         <div class="col-4">
           <div class="row paymentBlock">
             <div class="col-12">
@@ -31,7 +42,7 @@
               />
             </div>
 
-            <div class="col-12">
+            <!-- <div class="col-12">
               <q-input
                 disable
                 square
@@ -41,9 +52,9 @@
                 label="МФО филиала"
                 :rules="[]"
               />
-            </div>
+            </div> -->
 
-            <div class="col-12">
+            <!-- <div class="col-12">
               <q-input
                 disable
                 square
@@ -53,7 +64,7 @@
                 label="Код кредитного продукта"
                 :rules="[]"
               />
-            </div>
+            </div> -->
 
             <div class="col-12">
               <!-- <q-input
@@ -88,13 +99,14 @@
               /> -->
 
               <q-input
-                disable
+                ref="payOrderSumm"
                 square
                 outlined
                 v-model="payOrder.summ"
+                @input="formatNumber(index)" 
                 dense
                 label="Сумма кредита"
-                :rules="[]"
+                :rules="[val => val != 0 || 'Неверные данные']"
               />
             </div>
           </div>
@@ -102,7 +114,7 @@
 
         <div class="col-4">
           <div class="row paymentBlock">
-            <div class="col-12">
+            <!-- <div class="col-12">
               <q-input
                 disable
                 square
@@ -112,9 +124,9 @@
                 label="UID клиента"
                 :rules="[]"
               />
-            </div>
+            </div> -->
 
-            <div class="col-12">
+            <!-- <div class="col-12">
               <q-input
                 disable
                 square
@@ -124,19 +136,8 @@
                 label="ИНН клиента"
                 :rules="[]"
               />
-            </div>
+            </div> -->
 
-            <div class="col-12">
-              <q-input
-                ref="recipientAccount"
-                square
-                outlined
-                v-model="payOrder.client_acc"
-                dense
-                label="Счет клиента"
-                :rules="[val => !!val || 'Введите счет получателя']"
-              />
-            </div>
             <div class="col-12">
               <q-input
                 ref="MFOBank"
@@ -145,7 +146,7 @@
                 v-model="payOrder.client_bank_mfo"
                 dense
                 label="МФО банка клиента"
-                :rules="[val => !!val || 'Введите МФО банка получателя']"
+                :rules="[val => numeralValid(val)]"
               />
             </div>
             <div class="col-12">
@@ -159,6 +160,18 @@
                 :rules="[
                   val => !!val || 'Введите наименование банка получателя'
                 ]"
+              />
+            </div>
+
+            <div class="col-12">
+              <q-input
+                ref="recipientAccount"
+                square
+                outlined
+                v-model="payOrder.client_acc"
+                dense
+                label="Счет клиента"
+                :rules="[val => numeralValid(val)]"
               />
             </div>
           </div>
@@ -183,12 +196,13 @@
 
             <div class="col-12">
               <q-input
+                ref="payOrderPayPurpose"
                 square
                 outlined
                 v-model="payOrder.pay_purpose"
                 dense
                 label="Назначение платежа"
-                :rules="[]"
+                :rules="[val => !! val || 'Введите данные']"
               />
             </div>
 
@@ -240,7 +254,7 @@
               </div>
             </template>
 
-            <div class="col-12">
+            <!-- <div class="col-12">
               <q-input
                 ref="detailsPayment"
                 square
@@ -250,7 +264,7 @@
                 label="Детали платежа"
                 :rules="[val => !!val || 'Выберите детали платежа']"
               />
-            </div>
+            </div> -->
             <div class="col-12">
               <q-input
                 ref="date"
@@ -261,7 +275,7 @@
                 v-model="payOrder.pay_date"
                 mask="##.##.####"
                 :rules="[
-                  val => (val && val.length === 10) || 'Введите дату'
+                  val => !!val  || 'Введите дату'
                 ]"
               >
                 <template v-slot:append>
@@ -274,7 +288,7 @@
                       <q-date
                         mask="DD.MM.YYYY"
                         v-model="payOrder.pay_date"
-                        @input="() => $refs.qDate.hide()"
+                        @input="() => $refs.qDate[index].hide()"
                       />
                     </q-popup-proxy>
                   </q-icon>
@@ -285,7 +299,11 @@
         </div>
       </div>
 
-      <q-btn type="submit" color="primary" label="Сформировать платёжку" class="paymentBtn" />
+      <div class="text-center">
+        <q-btn label="Добавление платежа" @click="addPayOrder" class="blueBtn" />
+        <q-btn type="submit" label="Сформировать платёжку" class="blueBtn" />
+      </div>
+      
     </form>
 
   </div>
@@ -294,10 +312,17 @@
 import axios from "axios";
 import { mapState } from "vuex";
 
+import AlertMessage from "@/components/AlertMessage";
 import CommonUtils from "@/shared/utils/CommonUtils";
+
+import validMixin from "@/shared/mixins/validMixin";
+
+import formatNumber from "@/shared/filters/formatNumber"
+import { validItems, validFilter } from "../filters/valid_filter"
 import formatDate from "../filters/formatDate"
 
 export default {
+  mixins: [validMixin],
   data() {
     return {
     //   documentType: "",
@@ -375,104 +400,106 @@ export default {
   },
 
   watch: {
-    "payOrder.pay_code_selected"(val) {
-       this.payOrder.pay_detail = ""
-      if (val == "09510") {
-        this.payOrder.pay_detail = `${val}~${this.payOrder.client_acc}~${this.payOrder.client_inn}~${this.payOrder.pay_purpose}`
-      } else {
-        this.payOrder.pay_detail = `${val}~${this.payOrder.pay_purpose}~`
-      }
-    }
+    // "payOrder.pay_code_selected"(val) {
+    //    this.payOrder.pay_detail = ""
+    //   if (val == "09510") {
+    //     this.payOrder.pay_detail = `${val}~${this.payOrder.client_acc}~${this.payOrder.client_inn}~${this.payOrder.pay_purpose}`
+    //   } else {
+    //     this.payOrder.pay_detail = `${val}~${this.payOrder.pay_purpose}~`
+    //   }
+    // }
   },
 
   computed: {
     ...mapState({
       // fullProfile: state => state.profile.fullFormProfile,
       payOrder: state => state.profile.payOrder,
+      payOrders: state => state.profile.payOrders,
       // Customer: state => state.profile.fullFormProfile.Customer,
       // dictionaries: state => state.profile.dictionaries,
       // credits: state => state.credits
-    })
+    }),
+
+    // paymentOrders() {
+    //   return 
+    // }
   },
   methods: {
     async onSubmit() {
-      this.$refs.documentType.validate()
-      this.$refs.numberPP.validate()
-      this.$refs.recipientAccount.validate()
-      this.$refs.MFOBank.validate()
-      this.$refs.BankName.validate()
-      this.$refs.codePayment.validate()
-      this.$refs.detailsPayment.validate()
-      this.$refs.date.validate()
+      validFilter(this.$refs, "documentTypeValid", "documentType");
+      validFilter(this.$refs, "payOrderSummValid", "payOrderSumm");
+      validFilter(this.$refs, "numberPPValid", "numberPP");
+      validFilter(this.$refs, "recipientAccountValid", "recipientAccount");
+      validFilter(this.$refs, "MFOBankValid", "MFOBank");
+      validFilter(this.$refs, "BankNameValid", "BankName");
+      validFilter(this.$refs, "codePaymentValid", "codePayment");
+      validFilter(this.$refs, "payOrderPayPurposeValid", "payOrderPayPurpose");
+      validFilter(this.$refs, "dateValid", "date");
 
       if (
-        this.$refs.documentType.hasError ||
-        this.$refs.numberPP.hasError ||
-        this.$refs.recipientAccount.hasError ||
-        this.$refs.MFOBank.hasError ||
-        this.$refs.BankName.hasError ||
-        this.$refs.codePayment.hasError ||
-        this.$refs.detailsPayment.hasError ||
-        this.$refs.date.hasError 
+        this.$refs.documentTypeValid.hasError ||
+        this.$refs.payOrderSummValid.hasError ||
+        this.$refs.numberPPValid.hasError ||
+        this.$refs.recipientAccountValid.hasError ||
+        this.$refs.MFOBankValid.hasError ||
+        this.$refs.BankNameValid.hasError ||
+        this.$refs.codePaymentValid.hasError ||
+        // this.$refs.detailsPayment.hasError ||
+        this.$refs.payOrderPayPurposeValid.hasError ||
+        this.$refs.dateValid.hasError 
       ) {
         this.formHasError = true
+        this.$store.commit("credits/setMessage", {
+          message: "Заполните все обязательные поля"
+        });
       } else {
         console.log('Success')
-        const {
-          budgetRecipient_acc,
-          budgetRecipient_bank,
-          budgetRecipient_name,
-          client_acc,
-          client_bank_mfo,
-          client_bank_name,
-          client_inn,
-          client_uid,
-          contract_number,
-          filial,
-          pay_date,
-          pay_detail,
-          po_number,
-          product_code,
-          summ,
-          doc_type_selected,
-          pay_code_selected
-        } = this.payOrder
+        
+        this.payOrders.forEach(i => i.summ = +i.summ.replace(/[^0-9]/gim, ''))
 
         const data = {
           output: [
             {
               name: "payOrder",
-              data: {
-                budgetRecipient_acc,
-                budgetRecipient_bank,
-                budgetRecipient_name,
-                client_acc,
-                client_bank_mfo,
-                client_bank_name,
-                client_inn,
-                client_uid,
-                contract_number,
-                filial,
-                pay_date,
-                pay_detail,
-                po_number,
-                product_code,
-                summ,
-                doc_type_selected,
-                pay_code_selected
-              }
+              data: this.payOrders
             }
           ]
         };
 
-        console.log(data)
-        this.$router.push("/work/credit/applications");
+        console.log('data', data)
+        // this.$router.push("/work/credit/applications");
         try{
 
         } catch (error) {
 
         }
       }
+    },
+
+    addPayOrder() {
+      const payOrder = JSON.parse(JSON.stringify(this.payOrder))
+      this.payOrders.push(payOrder)
+      console.log('this.payOrders', this.payOrders)
+    },
+
+    removePayOrder(idx) {
+      // this.payOrders.splice(idx, 1)
+      this.$q.dialog({
+          component: AlertMessage,
+          parent: this,
+          data: {
+            idx,
+            item: this.payOrders,
+            itemName: `платежку ${idx + 1}`
+            // message: error.message,
+            // code: error.code
+          }
+          // persistent: true
+        })
+    },
+
+    formatNumber(idx) {
+      this.payOrders[idx].summ = formatNumber(this.payOrders[idx].summ)
     }
   }
 };
@@ -486,6 +513,10 @@ export default {
       padding: 20px 20px 0px 20px;
     }
 
+    .payOrderBlock {
+      margin-bottom: 20px;
+    }
+
     .paymentBtn {
       margin-top: 10px;
     }
@@ -493,5 +524,23 @@ export default {
     .q-field__bottom {
       padding: 0;
     }
+
+    .blueBtn .q-btn__content,
+  .redBtn .q-btn__content {
+    // width: 173px;
+    // height: 47px;
+    padding: 5px 10px;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  .blueBtn {
+    background: #4ab8ff;
+  }
+
+  .redBtn {
+    background: #ff4a4a;
+    margin-left: 24px !important;
+  }
   }
 </style>
