@@ -12,7 +12,7 @@
               outlined
               v-model="MIN_MONTH_SALARYY.paramValue"
               dense
-              :rules="[val => integerValid(val)]"
+              :rules="[val => integerPositiveValid(val)]"
             />
           </div>
 
@@ -25,7 +25,7 @@
               outlined
               v-model="CORR_KOEF.paramValue"
               dense
-              :rules="[val => integerValid(val)]"
+              :rules="[val => integerPositiveValid(val)]"
             />
           </div>
 
@@ -38,7 +38,7 @@
               outlined
               v-model="SCORE_CARD_MIN.paramValue"
               dense
-              :rules="[val => integerValid(val)]"
+              :rules="[val => integerPositiveValid(val)]"
             />
           </div>
         </div>

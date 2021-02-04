@@ -82,11 +82,6 @@ import TreeFieldTemplate from "./TreeFieldTemplate";
 import TwoFieldTemplate from "./TwoFieldTemplate";
 
 import sortData from '../filters/sortData'
-// import AppCardAge from './SettingsScorBalls/AppCardAge'
-// import AppCardRatingCompany from './SettingsScorBalls/AppCardRatingCompany'
-// import AppCardChildren from './SettingsScorBalls/AppCardChildren'
-// import AppCardLastJobPeriod from './SettingsScorBalls/AppCardLastJobPeriod'
-// import AppCardLoanPeriod from './SettingsScorBalls/AppCardLoanPeriod'
 
 export default {
   mixins: [creditSettings],
@@ -303,11 +298,6 @@ export default {
   components: {
     appTreeFieldTemplate: TreeFieldTemplate,
     appTwoFieldTemplate: TwoFieldTemplate
-    // AppCardAge,
-    // AppCardRatingCompany,
-    // AppCardChildren,
-    // AppCardLastJobPeriod,
-    // AppCardLoanPeriod
   }
 };
 </script>

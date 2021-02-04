@@ -8,7 +8,7 @@
     <!-- :key="refsName.score + index" -->
     <div
       class="row q-col-gutter-md"
-      v-for="(item, index) of sortItems"
+      v-for="(item, index) of settings[tableName]"
       :key="item.id"
     >
       <div class="col-4">
@@ -18,7 +18,7 @@
           v-model="item[fieldsSettings.periodFrom]"
           dense
           label="от"
-          :rules="[val => integerValid(val)]"
+          :rules="[val => integerPositiveValid(val)]"
         />
       </div>
       <div class="col-4">
@@ -28,7 +28,7 @@
           v-model="item[fieldsSettings.periodTo]"
           dense
           label="до"
-          :rules="[val => integerValid(val)]"
+          :rules="[val => integerPositiveValid(val)]"
         />
       </div>
       <div class="col-3">
@@ -38,7 +38,7 @@
           outlined
           v-model="item.score"
           dense
-          :rules="[val => floatValid(val)]"
+          :rules="[val => floatPositiveValid(val)]"
         />
       </div>
       <div class="col-1 removeItem">
@@ -95,15 +95,15 @@ export default {
   },
   mixins: [creditSettings],
   mounted() {
+    this.sortData(this.settings[this.tableName], this.sortBy)
     setTimeout(() => {
 			this.$store.commit("creditSettings/setRefs", this.$refs)
 		}, 3000)
   }, 
 	computed: {
-    sortItems() {
-      // return this.sortData(this.settings[this.tableName], this.sortBy)
-      return this.sortData(this.settings[this.tableName], "")
-    }
+    // sortItems() {
+    //   return this.sortData(this.settings[this.tableName], this.sortBy)
+    // }
   }, 
   methods: {
     addItem() {

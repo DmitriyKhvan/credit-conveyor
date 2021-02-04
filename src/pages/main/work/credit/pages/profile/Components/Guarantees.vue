@@ -165,6 +165,8 @@
                     (val && val.length === 9) ||
                     'Количество цифр должно быть 9',
                   (val) => INNFizValid(val),
+                  (val) => (val != fullProfile.Customer.INN) ||
+                    'Неверные данные'
                 ]"
               />
             </div>
@@ -180,6 +182,8 @@
                 :rules="[
                   (val) => (val && val.length === 14) || 'Введите ПНФЛ',
                   (val) => pinppValid(val),
+                  (val) => (val != fullProfile.Customer.PINPP) ||
+                    'Неверные данные'
                 ]"
               />
             </div>
@@ -242,6 +246,8 @@
                 :rules="[
                   (val) =>
                     (val && val.length === 2) || 'Введите Серию документа',
+                  (val) => ((guarantee.Document.Series + guarantee.Document.Number) != (fullProfile.Customer.Document.Series + fullProfile.Customer.Document.Number)) ||
+                    'Неверные данные'
                 ]"
               />
             </div>
@@ -258,6 +264,8 @@
                   (val) =>
                     (val && val.length === 7) || 'Введите Номер документа',
                   (val) => docNumberValid(val),
+                  (val) => ((guarantee.Document.Series + guarantee.Document.Number) != (fullProfile.Customer.Document.Series + fullProfile.Customer.Document.Number)) ||
+                    'Неверные данные'
                 ]"
               />
             </div>
