@@ -240,4 +240,11 @@ export default class BpmService {
     return responce.data;
   };
 
+  // getHistoryTask = async () => {
+  //   const responce = await axios({
+  //     method: 'get',
+  //     url: `${this._baseUrl}/bpm/`,
+  //   })
+  // }
+
 }
