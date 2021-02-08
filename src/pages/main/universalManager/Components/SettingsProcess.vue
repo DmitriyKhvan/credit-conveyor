@@ -1,5 +1,6 @@
 <template>
   <div class="settingsProcess" :id="title.id">
+    <!-- {{filials}} -->
     <q-expansion-item
       class="settingBlock"
       :header-class="'headerBlock'"
@@ -104,16 +105,42 @@
             </div>
 
             <div class="row q-col-gutter-md">
-              <div class="col-4">
-                <q-input
+              <div class="col-6">
+                <!-- <q-input
                   ref=""
                   outlined
                   dense
                   label="Филиал"
                   :rules="[val => !!val || 'Введите данные']"
-                />
+                /> -->
+                
+                <q-select
+                  outlined
+                  clearable
+                  v-model="model"
+                  use-input
+                  :options="Filials"
+                  @filter="filterFn"
+                  label="Филиал"
+                  options-selected-class="text-deep-blue"
+                    
+                >
+                  <template v-slot:option="scope">
+                  <q-item
+                    v-bind="scope.itemProps"
+                    v-on="scope.itemEvents"
+                  >
+                    <q-item-section>
+                      <div :class="scope.opt.class">
+                         <q-item-label v-html="scope.opt.label" />
+                      </div>
+                    </q-item-section>
+                  </q-item>
+                </template>
+                </q-select>
               </div>
-              <div class="col-4">
+
+              <!-- <div class="col-4">
                 <q-input
                   ref=""
                   outlined
@@ -121,8 +148,26 @@
                   label="№ заявки"
                   :rules="[val => !!val || 'Введите данные']"
                 />
+              </div> -->
+
+              <div class="col-6">
+                <!-- {{modelMultiple}} -->
+                <q-select
+                  outlined
+                  v-model="modelMultiple"
+                  multiple
+                  :options="settings.LOAN_PRODUCT_CHAR"
+                    :option-value="(item) => item === null ? null : {productId: item.id, productName: item.name}"
+                    option-label="name"
+                    emit-value
+                    map-options
+                  use-chips
+                  stack-label
+                  label="Вид кредита"
+                />
               </div>
-              <div class="col-4"></div>
+
+              <!-- <div class="col-4"></div> -->
               <div class="borderRow"></div>
             </div>
 
@@ -199,14 +244,19 @@ export default {
   mixins: [creditSettings],
   data() {
     return {
-      moratory: null,
-      blueModel: true,
-      blueModel2: true,
+      model: null,
+      modelMultiple: [],
       options: {
         1: 'Вкл',
         0: 'Выкл'
-      } 
+      },
+      Filials: this.$store.getters["creditsAdmin/getFilials"]
     };
+  },
+  async created() {
+    try {
+      await this.$store.dispatch("creditsAdmin/getFilials")
+    } catch(error) {}
   },
   mounted() {
     setTimeout(() => {
@@ -237,11 +287,32 @@ export default {
     },
     REPEAT_ASOKI() {
       return this.settings.APPSETTING.find(i => i.paramName == 'REPEAT_ASOKI')
+    },
+    filials() {
+      // console.log(JSON.stringify(this.$store.getters["creditsAdmin/getFilials"], null, 2))
+      return this.$store.getters["creditsAdmin/getFilials"]
+    },
+  },
+  methods: {
+    filterFn (val, update) {
+      
+      if (val === '') {
+        update(() => {
+          this.Filials = this.filials
+        })
+        
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.Filials = this.filials.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      })
     }
   }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .settingsProcess {
     .borderRow {
       width: 100%;
@@ -265,5 +336,20 @@ export default {
     .customInput {
       padding-bottom: 0;
     }
+
+    
+  }
+
+  .parent {
+    font-weight: 600;
+  }
+
+  .child {
+    padding-left: 20px;
+  }
+
+  .q-item{
+    min-height: 15px;
+    padding: 6px 16px;
   }
 </style>
