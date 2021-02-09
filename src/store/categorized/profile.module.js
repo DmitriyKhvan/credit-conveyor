@@ -732,6 +732,20 @@ export const profile = {
         // this.$router.go(-1);
         throw error;
       }
+    }, 
+
+    async getHistoryTask({ state, commit }, applicationNumber) {
+      try {
+        const response = await state.bpmService.getHistoryTask(applicationNumber)
+        return response
+      } catch (error) {
+        commit("credits/setMessage", {
+          message: CommonUtils.filterServerError(error),
+          code: 0}, { root: true }
+        );
+        
+        throw error;
+      }
     }
   },
   mutations: {

@@ -372,14 +372,14 @@ export default {
     }
   },
   mixins: [dialogMix],
-  created() {
+  async created() {
     this.searchUser = this.details.emp_name
     try {
-      this.$store.dispatch("creditsAdmin/getFilials")
+      await this.$store.dispatch("creditsAdmin/getFilials")
     } catch(error) {}
 
     try {
-      this.$store.dispatch("creditsAdmin/getCommitteeGroups")
+      await this.$store.dispatch("creditsAdmin/getCommitteeGroups")
     } catch(error) {}
   },
   computed: {

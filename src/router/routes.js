@@ -52,8 +52,10 @@ const CreditProfile = () =>
   import("pages/main/work/credit/pages/profile/Profile.vue");
 const CreditPayment = () =>
   import("pages/main/work/credit/pages/PaymentOrder.vue");
+const HistoryTasks = () =>
+  import("pages/main/work/credit/pages/CreditList/HistoryTasks.vue");
 const HistoryTask = () =>
-  import("pages/main/work/credit/pages/HistoryTask.vue");
+  import("pages/main/work/credit/pages/CreditList/HistoryTask.vue");
 // const CreditProfileRework = () =>
 //   import("pages/main/work/credit/pages/profile/ProfileRework.vue");
 const CreditApplications = () =>
@@ -216,7 +218,12 @@ const routes = [{
         // beforeEnter: ifAuthenticatedCM
       },
       {
-        path: "sub/history/:id",
+        path: "historyTasks",
+        name: "HistoryTasks",
+        component: HistoryTasks
+      },
+      {
+        path: "sub/historyTask/:id",
         name: "HistoryTask",
         component: HistoryTask,
         // beforeEnter: ifAuthenticatedCM

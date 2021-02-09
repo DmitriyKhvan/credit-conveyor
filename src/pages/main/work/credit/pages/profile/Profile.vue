@@ -4500,7 +4500,7 @@ export default {
       if (flag) {
         return true
       } else {
-        return 'Неверные данные'
+        return 'Данные заёмщика и поручителя не могут быть одинаковыми'
       }
     },
 
