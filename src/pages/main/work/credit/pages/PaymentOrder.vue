@@ -455,7 +455,7 @@ export default {
       } else {
         console.log('Success')
         
-        this.payOrders.forEach(i => i.summ = +i.summ.replace(/[^0-9]/gim, ''))
+        this.payOrders.forEach(i => i.summ = +String(i.summ).replace(/[^0-9]/gim, ''))
 
         const data = {
           output: [
@@ -466,7 +466,7 @@ export default {
           ]
         };
 
-        console.log('data', data)
+        console.log('data', JSON.stringify(data, null, 2))
         // this.$router.push("/work/credit/applications");
         try{
 
