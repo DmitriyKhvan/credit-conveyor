@@ -43,7 +43,8 @@
           filialName: credit.filialName,
           filial: credit.filial,
           status: credit.taskName,
-          creditRole: credit.assignedRole 
+          creditRole: credit.assignedRole,
+          applicationId: credit.applicationId 
         },
       }"
       >{{ decoder(linkName) }}</router-link>

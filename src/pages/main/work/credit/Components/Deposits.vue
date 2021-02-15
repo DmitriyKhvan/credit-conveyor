@@ -7,7 +7,7 @@
             <th>Название депозита</th>
             <th>Валюта депозита</th>
             <th>Сумма депозита</th>
-            <th>Минимальный платеж</th>
+            <!-- <th>Минимальный платеж</th> -->
             <th>Проценты</th>
             <th>Номер счета</th>
             <th>МФО филиала</th>
@@ -21,7 +21,7 @@
             <td>{{ deposit.name }}</td>
             <td>{{ deposit.currency }}</td>
             <td>{{ deposit.amount | formatNumber }}</td>
-            <td>{{ deposit.min_payment | formatNumber }}</td>
+            <!-- <td>{{ deposit.min_payment | formatNumber }}</td> -->
             <td>{{ deposit.percent }}</td>
             <td>{{ deposit.number }}</td>
             <td>{{ deposit.mfo }}</td>

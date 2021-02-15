@@ -91,7 +91,7 @@
                   v-model="MANUAL_SALARY_INPUT.applied"
                 />
               </div>
-              <div class="col-4">
+              <!-- <div class="col-4">
                 <q-input
                   class="customInput"
                   ref=""
@@ -100,20 +100,12 @@
                   label="Для кого"
                   :rules="[val => !!val || 'Введите данные']"
                 />
-              </div>
+              </div> -->
               <div class="borderRow"></div>
             </div>
 
             <div class="row q-col-gutter-md">
               <div class="col-6">
-                <!-- <q-input
-                  ref=""
-                  outlined
-                  dense
-                  label="Филиал"
-                  :rules="[val => !!val || 'Введите данные']"
-                /> -->
-                
                 <q-select
                   outlined
                   clearable
@@ -140,18 +132,7 @@
                 </q-select>
               </div>
 
-              <!-- <div class="col-4">
-                <q-input
-                  ref=""
-                  outlined
-                  dense
-                  label="№ заявки"
-                  :rules="[val => !!val || 'Введите данные']"
-                />
-              </div> -->
-
               <div class="col-6">
-                <!-- {{modelMultiple}} -->
                 <q-select
                   outlined
                   v-model="modelMultiple"
@@ -246,6 +227,7 @@ export default {
     return {
       model: null,
       modelMultiple: [],
+      
       options: {
         1: 'Вкл',
         0: 'Выкл'

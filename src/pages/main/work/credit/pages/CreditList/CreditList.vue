@@ -462,6 +462,7 @@ export default {
   data() {
     return {
       current: 1,
+      // current: sessionStorage.getItem('currentPage') ? +sessionStorage.getItem('currentPage') : 1,
       countRow: 10,
       maxPage: 6,
       loading: false,
@@ -875,6 +876,7 @@ export default {
 
     async pagination() {
       try {
+        //sessionStorage.setItem('currentPage', this.current)
         this.loading = true
         await this.$store.dispatch(`credits/${this.getTasks}`, {page: this.current, count: this.countRow})
         this.loading = false
