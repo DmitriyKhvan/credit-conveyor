@@ -18,10 +18,11 @@ export default function dateFilter(value, format = 'date') {
       options.second = '2-digit'
   }
 
-  // Если формат данных dd.mm.yyyy
-  if (value && new Date(value.slice(-4) + value.slice(2, 6) + value.slice(0, 2)).toString() != 'Invalid Date') {
-    return value
-  } 
+  // // Если формат данных dd.mm.yyyy
+  // if (value && new Date(value.slice(-4) + value.slice(2, 6) + value.slice(0, 2)).toString() != 'Invalid Date') {
+  //   // debugger
+  //   return value
+  // } 
 
   return new Intl.DateTimeFormat('ru-RU', options).format(new Date(value));
 }
