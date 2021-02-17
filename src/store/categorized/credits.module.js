@@ -348,6 +348,22 @@ export const credits = {
       }
     },
 
+    async getHistoryTasks({ state, commit }, { page, count }) {
+      try {
+        const response = await state.bpmService.getHistoryTasks({ page, count });
+        console.log("res", response);
+        if (response.infoList.length) {
+          commit("setCreditTasks", { response, count });
+        }
+      } catch (error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("setMessage", errorMessage);
+        sessionStorage.clear();
+        // this.$router.push("/work/credit");
+        throw error;
+      }
+    },
+
     async creatFile({ state }, fileData) {
       try {
         const response = await state.bpmService.creatFile(fileData);

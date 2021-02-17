@@ -440,10 +440,10 @@ export default {
       
       this.resultUser = []
       this.searchUser = user.fio
-
-      if(user.role_names.find(i => i != 'CreditCommitteeMember')) {
-        this.details.groups = null
-      }
+      this.details.groups = user.group_ids
+      // if(user.role_names.find(i => i != 'CreditCommitteeMember')) {
+      //   this.details.groups = null
+      // }
    
     },
     clearUser () {
