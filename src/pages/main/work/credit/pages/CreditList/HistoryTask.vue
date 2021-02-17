@@ -23,8 +23,8 @@
           <!-- <td>{{ history.changeUser }}</td> -->
           <td>{{ history.fio }}</td>
           <td>{{ history.currentStatus }}</td>
-          <td>{{ history.dateTimeCreate | formData("datetime") }}</td>
-          <td>{{ history.dateTimeChange | formData("datetime") }}</td>
+          <td>{{ history.dateTimeCreate | formatDate('datetime') }}</td>
+          <td>{{ history.dateTimeChange | formatDate('datetime') }}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -36,7 +36,7 @@ import axios from "axios";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
 
-import formData from "../../filters/formatDate";
+import formatDate from "../../filters/formatDate";
 import sortData from "@/shared/filters/sortData"
 
 export default {
@@ -80,7 +80,7 @@ export default {
     appLoader: Loader
   },
   filters: {
-    formData,
+    formatDate,
     sortData
   }
 };
