@@ -1,6 +1,6 @@
 <template>
   <div class="settingsProcess" :id="title.id">
-    <!-- {{filials}} -->
+    
     <q-expansion-item
       class="settingBlock"
       :header-class="'headerBlock'"
@@ -58,8 +58,10 @@
                   :rules="[val => !!val || 'Введите данные']"
                 />
               </div>
-              <div class="borderRow"></div>
+              
             </div>
+
+            <div class="borderRow"></div>
 
             <div class="row q-col-gutter-md">
               <div class="col-8 toogleBtn">
@@ -76,8 +78,10 @@
               <div class="col-4">
                 
               </div>
-              <div class="borderRow"></div>
+              
             </div>
+
+            <div class="borderRow"></div>
 
             <div class="row q-col-gutter-md">
               <div class="col-8 toogleBtn">
@@ -101,57 +105,82 @@
                   :rules="[val => !!val || 'Введите данные']"
                 />
               </div> -->
-              <div class="borderRow"></div>
+              
             </div>
 
-            <div class="row q-col-gutter-md">
-              <div class="col-6">
-                <q-select
-                  outlined
-                  clearable
-                  v-model="model"
-                  use-input
-                  :options="Filials"
-                  @filter="filterFn"
-                  label="Филиал"
-                  options-selected-class="text-deep-blue"
-                    
-                >
-                  <template v-slot:option="scope">
-                  <q-item
-                    v-bind="scope.itemProps"
-                    v-on="scope.itemEvents"
-                  >
-                    <q-item-section>
-                      <div :class="scope.opt.class">
-                         <q-item-label v-html="scope.opt.label" />
-                      </div>
-                    </q-item-section>
-                  </q-item>
-                </template>
-                </q-select>
-              </div>
+            <div class="borderRow"></div>
+            <template v-if="MANUAL_SALARY_INPUT.applied == 0">
+              <div 
+                v-for="(filial, index) of filialsAllowSalary" 
+                :key="'filial' + index" 
+                class="row q-col-gutter-md add2"
+              >
+                
+                  <div class="col-6">
+                    <q-select
+                      ref="filials"
+                      outlined
+                      clearable
+                      v-model="filial.MFO"
+                      use-input
+                      :options="Filials"
+                      :option-value="(item) => item === null ? null : item.value"
+                      :option-disable="(item) => item.value === '99999' ? true : false"
+                      :option-label="(item) => filial.MFO != '' && filials.length
+                                  ? fil(filial.MFO)
+                                  : item.label"
+                      @filter="filterFn"
+                      label="Филиал"
+                      
+                      emit-value
+                      map-options
+                      options-selected-class="text-deep-blue"
+                        
+                    >
+                      <template v-slot:option="scope">
+                      <q-item
+                        v-bind="scope.itemProps"
+                        v-on="scope.itemEvents"
+                      >
+                        <q-item-section>
+                          <div :class="scope.opt.class">
+                            <q-item-label v-html="scope.opt.label" />
+                          </div>
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                    </q-select>
+                  </div>
 
-              <div class="col-6">
-                <q-select
-                  outlined
-                  v-model="modelMultiple"
-                  multiple
-                  :options="settings.LOAN_PRODUCT_CHAR"
-                    :option-value="(item) => item === null ? null : {productId: item.id, productName: item.name}"
-                    option-label="name"
-                    emit-value
-                    map-options
-                  use-chips
-                  stack-label
-                  label="Вид кредита"
+                  <div class="col-6">
+                    <q-select
+                      outlined
+                      v-model="filial.PROD_ID"
+                      multiple
+                      :options="settings.LOAN_PRODUCT_CHAR"
+                        :option-value="(item) => item === null ? null : item.id"
+                        option-label="name"
+                        emit-value
+                        map-options
+                      use-chips
+                      stack-label
+                      label="Вид кредита"
+                    />
+                  </div>
+                
+              </div>
+              <div class="btnBlockAdmin">
+                <q-btn
+                  unelevated
+                  label="Добавить филиал"
+                  class="addItem add"
+                  @click="addFilial"
                 />
               </div>
-
-              <!-- <div class="col-4"></div> -->
+            
               <div class="borderRow"></div>
-            </div>
-
+            </template>
+            
             <div class="row q-col-gutter-x-md">
               <div class="col-4"></div>
               <div class="col-4">
@@ -196,8 +225,10 @@
                 </div>
               </div>
               <div class="col-4"></div>
-              <div class="borderRow"></div>
+              
             </div>
+
+            <div class="borderRow"></div>
 
             <div class="row q-col-gutter-md">
               <div class="col-8 toogleBtn">
@@ -228,6 +259,13 @@ export default {
       model: null,
       modelMultiple: [],
       
+      filialsAllowSalary: [
+        {
+          MFO: '00407',
+          PROD_ID: [1,2]
+        }
+      ],
+
       options: {
         1: 'Вкл',
         0: 'Выкл'
@@ -243,7 +281,10 @@ export default {
   mounted() {
     setTimeout(() => {
       this.$store.commit("creditSettings/setRefs", this.$refs);
+      // console.log('this.$refs.filials', this.$refs.filials[0])
+      // this.$refs.filials[0].focus()
     }, 3000);
+
 	}, 
 	computed: {
     MORATORIUM_PERIODD() {
@@ -290,6 +331,19 @@ export default {
         const needle = val.toLowerCase()
         this.Filials = this.filials.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
       })
+    },
+
+    fil(MFO) {
+      console.log(777)
+      return this.filials.find(i => i.value === MFO).label
+    },
+
+    addFilial() {
+      console.log(this.filialsAllowSalary)
+      this.filialsAllowSalary.push({
+          MFO: '',
+          PROD_ID: []
+        })
     }
   }
 };
@@ -300,8 +354,7 @@ export default {
       width: 100%;
       height: 1px;
       border-bottom: 1px solid #E7E7E7;
-      margin-left: 16px;
-      margin-bottom: 12px;
+      margin: 12px 0;
     }
 
     .toogleBtn {
@@ -319,7 +372,14 @@ export default {
       padding-bottom: 0;
     }
 
-    
+    .add {
+      margin-top: 12px;
+    }
+
+    .add2 {
+      margin-top: 0px;
+    }
+
   }
 
   .parent {

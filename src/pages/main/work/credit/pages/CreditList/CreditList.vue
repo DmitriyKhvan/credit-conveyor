@@ -141,7 +141,7 @@
               <q-input
                 square
                 outlined
-                v-model="taskName"
+                v-model.lazy="taskName"
                 dense
                 label="Введите наименование задачи"
               />

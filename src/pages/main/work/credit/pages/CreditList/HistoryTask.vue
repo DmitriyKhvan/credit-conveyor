@@ -20,7 +20,8 @@
           <td>{{ history.applicationId }}</td>
           <td>{{ history.taskName }}</td>
           <td>{{ history.branch }}</td>
-          <td>{{ history.changeUser }}</td>
+          <!-- <td>{{ history.changeUser }}</td> -->
+          <td>{{ history.fio }}</td>
           <td>{{ history.currentStatus }}</td>
           <td>{{ history.dateTimeCreate | formData("datetime") }}</td>
           <td>{{ history.dateTimeChange | formData("datetime") }}</td>
