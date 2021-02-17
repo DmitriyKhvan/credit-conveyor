@@ -7,7 +7,7 @@
         credit.taskName === 'Создание Контракта в iABS' ||
         credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
         credit.taskStatus === 'Отклонена' ||
-				credit.taskId === null
+				credit.taskId === null && !credit.pm 
       "
       >{{ decoder(linkName) }}</span>
     <!-- <span
