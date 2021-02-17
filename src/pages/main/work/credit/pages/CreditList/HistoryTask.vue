@@ -16,14 +16,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(history, index) of historys" :key="'history' + index">
-          <td>{{ history.applicationNumber }}</td>
+        <tr v-for="(history, index) of histories" :key="'history' + index">
+          <td>{{ history.applicationId }}</td>
           <td>{{ history.taskName }}</td>
-          <td>{{ history.filial }}</td>
-          <td>{{ history.kmfio }}</td>
-          <td>{{ history.taskStatus }}</td>
-          <td>{{ history.date | formData("datetime") }}</td>
-          <td>{{ history.date | formData("datetime") }}</td>
+          <td>{{ history.branch }}</td>
+          <!-- <td>{{ history.changeUser }}</td> -->
+          <td>{{ history.fio }}</td>
+          <td>{{ history.currentStatus }}</td>
+          <td>{{ history.dateTimeCreate | formData("datetime") }}</td>
+          <td>{{ history.dateTimeChange | formData("datetime") }}</td>
         </tr>
       </tbody>
     </q-markup-table>
@@ -31,62 +32,36 @@
 </template>
 
 <script>
+import axios from "axios";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import Loader from "@/components/Loader";
 
 import formData from "../../filters/formatDate";
+import sortData from "@/shared/filters/sortData"
 
 export default {
   data() {
     return {
       loader: true,
-      historys: [
-        {
-          applicationNumber: "00887.132.2021.1152",
-          applicationStatus: null,
-          assignedRole: "ROLE_KM",
-          assignedTo: "ROLE_KM",
-          assignedType: "group",
-          bpmTaskName: null,
-          businessStatus: null,
-          client: "FARKHODJON BOLTABOEV KOZIMJONOVICH",
-          date: "2021-02-02 17:39:05.684",
-          filial: "00887",
-          filialName: null,
-          id: "4640",
-          kmfio: "Мамиржон Джўраев Мамаджонович",
-          taskId: "194297",
-          taskName: "Step: Full Application Filling",
-          taskStatus: "Received"
-        },
-        {
-          applicationNumber: "00887.132.2021.1152",
-          applicationStatus: null,
-          assignedRole: "ROLE_KM",
-          assignedTo: "ROLE_KM",
-          assignedType: "group",
-          bpmTaskName: null,
-          businessStatus: null,
-          client: "FARKHODJON BOLTABOEV KOZIMJONOVICH",
-          date: "2021-02-02 17:39:05.684",
-          filial: "00887",
-          filialName: null,
-          id: "4640",
-          kmfio: "Мамиржон Джўраев Мамаджонович",
-          taskId: "194297",
-          taskName: "Step: Full Application Filling",
-          taskStatus: "Received"
-        }
-      ]
+      histories: []
     };
   },
   async created() {
+    // если перезагрузили страницу
+    if (!axios.defaults.headers.common["BPMCSRFToken"]) {
+      this.userRole = sessionStorage.getItem("userRole");
+      await this.$store.dispatch(
+        "credits/setHeaderRole",
+        sessionStorage.getItem("userRole")
+      );
+      await this.$store.dispatch(
+        "credits/setHeaderBPM",
+        sessionStorage.getItem("csrf_token")
+      );
+    }
     try {
-      const sleep = ms => {
-        return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(5000)
-      // this.historys = await this.dispatch("profilt/getHistoryTask", this.$route.query.applicationNumber);
+      this.histories = (await this.$store.dispatch("profile/getHistoryTask", this.$route.query.applicationId)).history_details;
+      this.histories = sortData(this.histories, 'id')
       this.loader = false;
     } catch (error) {
       this.loader = false;
@@ -105,7 +80,8 @@ export default {
     appLoader: Loader
   },
   filters: {
-    formData
+    formData,
+    sortData
   }
 };
 </script>

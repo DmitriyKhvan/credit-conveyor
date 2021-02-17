@@ -6,7 +6,7 @@
     
     <form @submit.prevent.stop="onSubmit">
       <div 
-        v-for="(payOrder, index) of payOrders" 
+        v-for="(payOrder, index) of payOrders.items" 
         :key="'payOrder' + index"
         class="row q-col-gutter-md payOrderBlock"
       >
@@ -21,7 +21,7 @@
                 square
                 outlined
                 v-model="payOrder.doc_type_selected"
-                :options="payOrder.doc_type.items"
+                :options="payOrder.payMethod"
                 dense
                 label="Тип документа"
                 :rules="[val => !!val || 'Выберите тип документа']"
@@ -35,7 +35,7 @@
                 ref="numberPP"
                 square
                 outlined
-                v-model="payOrder.po_number"
+                v-model="payOrder.transactionId"
                 dense
                 label="Номер ПП"
                 :rules="[val => !!val || 'Введите номер ПП']"
@@ -80,7 +80,7 @@
                 disable
                 square
                 outlined
-                v-model="payOrder.contract_number"
+                v-model="payOrder.loanId"
                 dense
                 label="Номер кредитного договора"
                 :rules="[]"
@@ -102,7 +102,7 @@
                 ref="payOrderSumm"
                 square
                 outlined
-                v-model="payOrder.summ"
+                v-model="payOrder.amount"
                 @input="formatNumber(index)" 
                 dense
                 label="Сумма кредита"
@@ -143,7 +143,7 @@
                 ref="MFOBank"
                 square
                 outlined
-                v-model="payOrder.client_bank_mfo"
+                v-model="payOrder.codeFilial"
                 dense
                 label="МФО банка клиента"
                 :rules="[val => numeralValid(val)]"
@@ -168,7 +168,7 @@
                 ref="recipientAccount"
                 square
                 outlined
-                v-model="payOrder.client_acc"
+                v-model="payOrder.account"
                 dense
                 label="Счет клиента"
                 :rules="[val => numeralValid(val)]"
@@ -185,7 +185,7 @@
                 square
                 outlined
                 v-model="payOrder.pay_code_selected"
-                :options="payOrder.pay_code.items"
+                :options="payOrder.codePurpose"
                 dense
                 label="Код назначения платежа"
                 :rules="[val => !!val || 'Выберите код платежа']"
@@ -199,7 +199,7 @@
                 ref="payOrderPayPurpose"
                 square
                 outlined
-                v-model="payOrder.pay_purpose"
+                v-model="payOrder.purpose"
                 dense
                 label="Назначение платежа"
                 :rules="[val => !! val || 'Введите данные']"
@@ -265,7 +265,7 @@
                 :rules="[val => !!val || 'Выберите детали платежа']"
               />
             </div> -->
-            <div class="col-12">
+            <!-- <div class="col-12">
               <q-input
                 ref="date"
                 outlined
@@ -294,7 +294,8 @@
                   </q-icon>
                 </template>
               </q-input>
-            </div>
+            </div> -->
+
           </div>
         </div>
       </div>
@@ -431,10 +432,10 @@ export default {
       validFilter(this.$refs, "numberPPValid", "numberPP");
       validFilter(this.$refs, "recipientAccountValid", "recipientAccount");
       validFilter(this.$refs, "MFOBankValid", "MFOBank");
-      validFilter(this.$refs, "BankNameValid", "BankName");
+      // validFilter(this.$refs, "BankNameValid", "BankName");
       validFilter(this.$refs, "codePaymentValid", "codePayment");
       validFilter(this.$refs, "payOrderPayPurposeValid", "payOrderPayPurpose");
-      validFilter(this.$refs, "dateValid", "date");
+      // validFilter(this.$refs, "dateValid", "date");
 
       if (
         this.$refs.documentTypeValid.hasError ||
@@ -442,11 +443,11 @@ export default {
         this.$refs.numberPPValid.hasError ||
         this.$refs.recipientAccountValid.hasError ||
         this.$refs.MFOBankValid.hasError ||
-        this.$refs.BankNameValid.hasError ||
+        // this.$refs.BankNameValid.hasError ||
         this.$refs.codePaymentValid.hasError ||
         // this.$refs.detailsPayment.hasError ||
-        this.$refs.payOrderPayPurposeValid.hasError ||
-        this.$refs.dateValid.hasError 
+        this.$refs.payOrderPayPurposeValid.hasError
+        // this.$refs.dateValid.hasError 
       ) {
         this.formHasError = true
         this.$store.commit("credits/setMessage", {
@@ -455,7 +456,7 @@ export default {
       } else {
         console.log('Success')
         
-        this.payOrders.forEach(i => i.summ = +i.summ.replace(/[^0-9]/gim, ''))
+        this.payOrders.forEach(i => i.summ = +String(i.summ).replace(/[^0-9]/gim, ''))
 
         const data = {
           output: [
@@ -466,7 +467,7 @@ export default {
           ]
         };
 
-        console.log('data', data)
+        console.log('data', JSON.stringify(data, null, 2))
         // this.$router.push("/work/credit/applications");
         try{
 
@@ -478,7 +479,7 @@ export default {
 
     addPayOrder() {
       const payOrder = JSON.parse(JSON.stringify(this.payOrder))
-      this.payOrders.push(payOrder)
+      this.payOrders.items.push(payOrder)
       console.log('this.payOrders', this.payOrders)
     },
 
@@ -489,7 +490,7 @@ export default {
           parent: this,
           data: {
             idx,
-            item: this.payOrders,
+            item: this.payOrders.items,
             itemName: `платежку ${idx + 1}`
             // message: error.message,
             // code: error.code

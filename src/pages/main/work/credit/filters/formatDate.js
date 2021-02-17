@@ -1,4 +1,8 @@
 export default function dateFilter(value, format = 'date') {
+
+  if (!value) {
+    return null
+  }
   //console.log(format);
   const options = {}; 
 

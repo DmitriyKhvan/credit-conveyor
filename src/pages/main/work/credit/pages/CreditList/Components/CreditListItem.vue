@@ -4,7 +4,6 @@
       class="noLinkItem"
       v-if="
         userRole.find(i => i === 'ROLE_CCS' && credit.assignedRole !== 'ROLE_UrWr') ||
-        userRole.find(i => i === 'ROLE_PM' && credit.assignedRole !== 'ROLE_UrWr') ||
         credit.taskName === 'Создание Контракта в iABS' ||
         credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
         credit.taskStatus === 'Отклонена' ||
@@ -27,7 +26,9 @@
       v-else
       :to="{
         name:
-          credit.taskName === 'PreApprove'
+          credit.pm
+            ? 'HistoryTask'
+            : credit.taskName === 'PreApprove'
             ? 'Registration'
             : credit.taskName === 'Step: Заполнить ПП'
             ? 'Payment'
@@ -42,7 +43,8 @@
           filialName: credit.filialName,
           filial: credit.filial,
           status: credit.taskName,
-          creditRole: credit.assignedRole 
+          creditRole: credit.assignedRole,
+          applicationId: credit.applicationId 
         },
       }"
       >{{ decoder(linkName) }}</router-link>

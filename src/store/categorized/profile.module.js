@@ -6,17 +6,10 @@ export const profile = {
   state: {
     bpmService: new BpmService(),
     resASOKI: null,
-    payOrder: [
-      // {
-      //   doc_type: {
-      //     items: []
-      //   },
-      //   pay_code: {
-      //     items: []
-      //   }
-      // }
-    ],
-    payOrders: [],
+    payOrder: null,
+    payOrders: {
+      items: []
+    },
     BPMInput: null,
     allResponse: null,
     // preapprove_num: "",
@@ -687,14 +680,14 @@ export const profile = {
         if (response.data.input && response.data.input.length) {
 
           if (response.data.name === "Get Payment data") {
-            const payOrder = response.data.input.find(
+            const payOrders = response.data.input.find(
               i => i.label === "payOrder"
             );
 
-            console.log(JSON.stringify(payOrder.data, null, 2))
+            console.log(JSON.stringify(payOrders.data, null, 2))
 
 
-            commit("setPayOrder", payOrder.data);
+            commit("setPayOrder", payOrders.data);
 
           } else {
             const data = response.data.input.find(i => i.label === "application")
@@ -734,9 +727,9 @@ export const profile = {
       }
     }, 
 
-    async getHistoryTask({ state, commit }, applicationNumber) {
+    async getHistoryTask({ state, commit }, applicationId) {
       try {
-        const response = await state.bpmService.getHistoryTask(applicationNumber)
+        const response = await state.bpmService.getHistoryTask(applicationId)
         return response
       } catch (error) {
         commit("credits/setMessage", {
@@ -804,11 +797,11 @@ export const profile = {
     //   state.preapprove_num = preapprove_num;
     // },
 
-    setPayOrder(state, payOrder) {
+    setPayOrder(state, payOrders) {
       state.payOrders = []
-      const paymentOrder = JSON.parse(JSON.stringify(payOrder)) 
-      state.payOrder = payOrder;
-      state.payOrders.splice(0, 1, paymentOrder);
+      // const paymentOrder = JSON.parse(JSON.stringify(payOrder)) 
+      state.payOrder = payOrders.items[0];
+      state.payOrders = payOrders
     },
 
     // setProcessInfo(state, processInfo) {

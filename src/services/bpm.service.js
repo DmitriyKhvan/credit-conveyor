@@ -240,11 +240,22 @@ export default class BpmService {
     return responce.data;
   };
 
-  // getHistoryTask = async () => {
-  //   const responce = await axios({
-  //     method: 'get',
-  //     url: `${this._baseUrl}/bpm/`,
-  //   })
-  // }
+  getHistoryTasks = async ({page, count}) => {
+    const responce = await axios({
+      method: 'get',
+      url: `${this._baseUrl}/bpm/credit/historytasks?page=${page}&count=${count}`,
+    })
+
+    return responce.data
+  }
+
+  getHistoryTask = async (applicationId) => {
+    const responce = await axios({
+      method: 'get',
+      url: `${this._baseUrl}/bpm/credit/history-fullform/${applicationId}`
+    })
+
+    return responce.data
+  }
 
 }

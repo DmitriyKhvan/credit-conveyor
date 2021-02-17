@@ -1,7 +1,7 @@
 <template>
   <AppCreditList 
     :loaderList="loaderList" 
-    getTasks="getUserTasks"
+    getTasks="getHistoryTasks"
   />
 </template>
 
@@ -11,7 +11,7 @@ import creditListMixin from '../../mixins/creditList'
 export default {
   mixins: [creditListMixin],
   async created() {
-    this.getCreditsList("getRoleTasks")
+    this.getCreditsList("getHistoryTasks")
   }
 }
 </script>
