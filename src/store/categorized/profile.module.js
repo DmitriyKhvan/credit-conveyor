@@ -6,6 +6,7 @@ export const profile = {
   state: {
     bpmService: new BpmService(),
     resASOKI: null,
+    payOrdersInput: null,
     payOrder: null,
     payOrders: {
       items: []
@@ -680,14 +681,12 @@ export const profile = {
         if (response.data.input && response.data.input.length) {
 
           if (response.data.name === "Get Payment data") {
-            const payOrders = response.data.input.find(
-              i => i.label === "payOrder"
-            );
+            const payOrdersInput = response.data.input
 
-            console.log(JSON.stringify(payOrders.data, null, 2))
+            console.log(JSON.stringify(payOrdersInput, null, 2))
 
 
-            commit("setPayOrder", payOrders.data);
+            commit("setPayOrder", payOrdersInput);
 
           } else {
             const data = response.data.input.find(i => i.label === "application")
@@ -797,11 +796,12 @@ export const profile = {
     //   state.preapprove_num = preapprove_num;
     // },
 
-    setPayOrder(state, payOrders) {
+    setPayOrder(state, payOrdersInput) {
       state.payOrders = []
-      // const paymentOrder = JSON.parse(JSON.stringify(payOrder)) 
-      state.payOrder = payOrders.items[0];
-      state.payOrders = payOrders
+      state.payOrders = payOrdersInput.find(i => i.label === 'payOrder').data
+      state.payOrder = JSON.parse(JSON.stringify(state.payOrders.items[0]))
+      state.payOrdersInput = payOrdersInput
+      
     },
 
     // setProcessInfo(state, processInfo) {

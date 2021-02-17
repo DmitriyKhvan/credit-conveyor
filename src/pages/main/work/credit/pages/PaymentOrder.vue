@@ -1,27 +1,32 @@
 <template>
   <div class="paymentOrder q-pa-md">
     <!-- <pre>
-      {{payOrders}}
+      {{payOrdersInput}}
     </pre> -->
-    
+
     <form @submit.prevent.stop="onSubmit">
-      <div 
-        v-for="(payOrder, index) of payOrders.items" 
+      <div
+        v-for="(payOrder, index) of payOrders.items"
         :key="'payOrder' + index"
         class="row q-col-gutter-md payOrderBlock"
       >
-        <div v-if="index > 0" class="col-12 text-right">
-          <q-btn label="Удалить" @click="removePayOrder(index)" class="redBtn" />
-        </div> 
+        <div v-if="index > 0 && payOrder.status == ''" class="col-12 text-right">
+          <q-btn
+            label="Удалить"
+            @click="removePayOrder(index)"
+            class="redBtn"
+          />
+        </div>
         <div class="col-4">
           <div class="row paymentBlock">
             <div class="col-12">
               <q-select
+                :disable="payOrder.status=='success' ? true : false"
                 ref="documentType"
                 square
                 outlined
-                v-model="payOrder.doc_type_selected"
-                :options="payOrder.payMethod"
+                v-model="payOrder.payMethod"
+                :options="pay_method.items"
                 dense
                 label="Тип документа"
                 :rules="[val => !!val || 'Выберите тип документа']"
@@ -32,10 +37,11 @@
 
             <div class="col-12">
               <q-input
+                :disable="payOrder.status=='success' ? true : false"
                 ref="numberPP"
                 square
                 outlined
-                v-model="payOrder.transactionId"
+                v-model="payOrder.transactionID"
                 dense
                 label="Номер ПП"
                 :rules="[val => !!val || 'Введите номер ПП']"
@@ -67,17 +73,8 @@
             </div> -->
 
             <div class="col-12">
-              <!-- <q-input
-                disable
-                square
-                outlined
-                v-model="numberCredit"
-                dense
-                label="Номер кредитного договора"
-                :rules="[]"
-              /> -->
               <q-input
-                disable
+                :disable="payOrder.status=='success' ? true : false"
                 square
                 outlined
                 v-model="payOrder.loanId"
@@ -88,22 +85,13 @@
             </div>
 
             <div class="col-12">
-              <!-- <q-input
-                disable
-                square
-                outlined
-                v-model="amountCredit"
-                dense
-                label="Сумма кредита"
-                :rules="[]"
-              /> -->
-
               <q-input
+                :disable="payOrder.status=='success' ? true : false"
                 ref="payOrderSumm"
                 square
                 outlined
                 v-model="payOrder.amount"
-                @input="formatNumber(index)" 
+                @input="formatNumber(index)"
                 dense
                 label="Сумма кредита"
                 :rules="[val => val != 0 || 'Неверные данные']"
@@ -140,6 +128,7 @@
 
             <div class="col-12">
               <q-input
+                :disable="payOrder.status=='success' ? true : false"
                 ref="MFOBank"
                 square
                 outlined
@@ -151,10 +140,11 @@
             </div>
             <div class="col-12">
               <q-input
+                :disable="payOrder.status=='success' ? true : false"
                 ref="BankName"
                 square
                 outlined
-                v-model="payOrder.client_bank_name"
+                v-model="client_bank_name[index]"
                 dense
                 label="Наименование банка клиента"
                 :rules="[
@@ -165,6 +155,7 @@
 
             <div class="col-12">
               <q-input
+                :disable="payOrder.status=='success' ? true : false"
                 ref="recipientAccount"
                 square
                 outlined
@@ -181,11 +172,12 @@
           <div class="row paymentBlock">
             <div class="col-12">
               <q-select
+                :disable="payOrder.status=='success' ? true : false"
                 ref="codePayment"
                 square
                 outlined
-                v-model="payOrder.pay_code_selected"
-                :options="payOrder.codePurpose"
+                v-model="payOrder.codePurpose"
+                :options="purpose_code.items"
                 dense
                 label="Код назначения платежа"
                 :rules="[val => !!val || 'Выберите код платежа']"
@@ -196,13 +188,14 @@
 
             <div class="col-12">
               <q-input
+                :disable="payOrder.status=='success' ? true : false"
                 ref="payOrderPayPurpose"
                 square
                 outlined
                 v-model="payOrder.purpose"
                 dense
                 label="Назначение платежа"
-                :rules="[val => !! val || 'Введите данные']"
+                :rules="[val => !!val || 'Введите данные']"
               />
             </div>
 
@@ -229,7 +222,7 @@
                   :rules="[]"
                 />
               </div>
-              
+
               <div class="col-12">
                 <q-input
                   disable
@@ -295,18 +288,20 @@
                 </template>
               </q-input>
             </div> -->
-
           </div>
         </div>
       </div>
 
       <div class="text-center">
-        <q-btn label="Добавление платежа" @click="addPayOrder" class="blueBtn" />
+        <q-btn
+          label="Добавление платежа"
+          @click="addPayOrder"
+          class="blueBtn"
+        />
         <q-btn type="submit" label="Сформировать платёжку" class="blueBtn" />
       </div>
-      
     </form>
-
+    <appLoaderFullScreen v-if="loader" />
   </div>
 </template>
 <script>
@@ -318,51 +313,52 @@ import CommonUtils from "@/shared/utils/CommonUtils";
 
 import validMixin from "@/shared/mixins/validMixin";
 
-import formatNumber from "@/shared/filters/formatNumber"
-import { validItems, validFilter } from "../filters/valid_filter"
-import formatDate from "../filters/formatDate"
+import formatNumber from "@/shared/filters/formatNumber";
+import { validItems, validFilter } from "../filters/valid_filter";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 
 export default {
   mixins: [validMixin],
   data() {
     return {
-    //   documentType: "",
-    //   numberPP: "",
-    //   MFO: "00887",
-    //   codeCredit: "132",
-    //   codePayment: "",
-    //   numberCredit: "",
-    //   amountCredit: "",
-    //   UIDClient: "10945828",
-    //   INNClient: "500439371",
-    //   recipientAccount: "",
-    //   MFOBank: "00887",
-    //   BankName: "НБУ Бош филлиали",
-    //   detailsPayment: "",
-    //   date: formatDate(new Date()),
-    //   options: {
-    //     documentType: [
-    //       {
-    //         label: "PayOrder",
-    //         value: 1
-    //       },
-    //       // {
-    //       //   label: "Тип документа 2",
-    //       //   value: 2
-    //       // }
-    //     ],
+      loader: false,
+      // client_bank_name: [
+      //   {
+      //     name: ""
+      //   }
+      // ],
 
-    //     codePayment: [
-    //       {
-    //         label: "Код 1",
-    //         value: 1
-    //       },
-    //       {
-    //         label: "Код 2",
-    //         value: 2
-    //       }
-    //     ]
-    //   }
+      // payOrders: {
+      //   items: [
+      //     {
+      //       amount: 15000000,
+      //       codeFilial: "111",
+      //       purpose: "444",
+      //       payMethod: "06",
+      //       inn: "497803022",
+      //       id: 0,
+      //       loanId: "555",
+      //       account: "666",
+      //       codePurpose: "01007",
+      //       transactionID: "222",
+      //       status: "success"
+      //     },
+      //     {
+      //       amount: 15000000,
+      //       codeFilial: "777",
+      //       purpose: "123",
+      //       payMethod: "06",
+      //       inn: "497803022",
+      //       id: 0,
+      //       loanId: "456",
+      //       account: "789",
+      //       codePurpose: "01007",
+      //       transactionID: "888",
+      //       status: "Счет не найден"
+      //     }
+      //   ]
+      // }
+
     };
   },
   async created() {
@@ -387,15 +383,12 @@ export default {
       console.log("res", res);
     } catch (error) {
       setTimeout(() => {
-        this.$store.commit(
-          "credits/setMessage",
-          {
-            message: CommonUtils.filterServerError(error),
-            code: 0
-          }
-        );
-      }, 500)
-      
+        this.$store.commit("credits/setMessage", {
+          message: CommonUtils.filterServerError(error),
+          code: 0
+        });
+      }, 500);
+
       this.$router.go(-1);
     }
   },
@@ -413,17 +406,22 @@ export default {
 
   computed: {
     ...mapState({
-      // fullProfile: state => state.profile.fullFormProfile,
       payOrder: state => state.profile.payOrder,
       payOrders: state => state.profile.payOrders,
-      // Customer: state => state.profile.fullFormProfile.Customer,
-      // dictionaries: state => state.profile.dictionaries,
-      // credits: state => state.credits
+      payOrdersInput: state => state.profile.payOrdersInput
     }),
 
-    // paymentOrders() {
-    //   return 
-    // }
+    purpose_code() {
+      return this.payOrdersInput.find(i => i.label === "purpose_code").data;
+    },
+
+    pay_method() {
+      return this.payOrdersInput.find(i => i.label === "pay_method").data;
+    },
+
+    client_bank_name() {
+      return new Array(this.payOrders.items.length)
+    }
   },
   methods: {
     async onSubmit() {
@@ -447,86 +445,135 @@ export default {
         this.$refs.codePaymentValid.hasError ||
         // this.$refs.detailsPayment.hasError ||
         this.$refs.payOrderPayPurposeValid.hasError
-        // this.$refs.dateValid.hasError 
+        // this.$refs.dateValid.hasError
       ) {
-        this.formHasError = true
+        this.formHasError = true;
         this.$store.commit("credits/setMessage", {
           message: "Заполните все обязательные поля"
         });
       } else {
-        console.log('Success')
-        
-        this.payOrders.forEach(i => i.summ = +String(i.summ).replace(/[^0-9]/gim, ''))
+        console.log("Success");
+
+        this.loader = true;
+
+        const payOrderFilter = this.payOrders.items
+            .filter(i => i.status != 'success')
+            .map(i => {
+              i.amount = +String(i.amount).replace(/[^0-9]/gim, "")
+              return {...i}
+            })
+
+        // payOrderFilter.forEach(
+        //   i => (i.amount = +String(i.amount).replace(/[^0-9]/gim, ""))
+        // )
+
+        console.log("data1", JSON.stringify(payOrderFilter, null, 2));
 
         const data = {
           output: [
             {
               name: "payOrder",
-              data: this.payOrders
+              data: payOrderFilter
             }
           ]
         };
 
-        console.log('data', JSON.stringify(data, null, 2))
-        // this.$router.push("/work/credit/applications");
-        try{
+        console.log("data", JSON.stringify(data, null, 2));
+        this.$router.push("/work/credit/applications");
+        try {
+          const response = await this.$store.dispatch(
+            "credits/confirmationCredit",
+            data
+          );
+          console.log("response", JSON.stringify(response, null, 2));
 
+          if (response) {
+            const sleep = ms => {
+              return new Promise(resolve => setTimeout(resolve, ms));
+            };
+
+            await sleep(3000);
+
+            setTimeout(() => {
+              this.$store.commit("credits/setMessage", {
+                message: "Платежка оформлена",
+                code: 1
+              });
+            }, 500);
+
+            this.$router.push("/work/credit/applications");
+            // this.$router.go(-1);
+          }
+
+          this.loader = false;
         } catch (error) {
+          this.loader = false;
+          setTimeout(() => {
+            this.$store.commit("credits/setMessage", {
+              message: CommonUtils.filterServerError(error),
+              code: 0
+            });
+          }, 500);
 
+          this.$router.push("/work/credit/applications");
         }
       }
     },
 
     addPayOrder() {
-      const payOrder = JSON.parse(JSON.stringify(this.payOrder))
-      this.payOrders.items.push(payOrder)
-      console.log('this.payOrders', this.payOrders)
+      const payOrder = JSON.parse(JSON.stringify(this.payOrder));
+      this.payOrders.items.push(payOrder);
+      this.client_bank_name.push({ name: "" });
+      console.log("this.payOrders", this.payOrders);
     },
 
     removePayOrder(idx) {
       // this.payOrders.splice(idx, 1)
       this.$q.dialog({
-          component: AlertMessage,
-          parent: this,
-          data: {
-            idx,
-            item: this.payOrders.items,
-            itemName: `платежку ${idx + 1}`
-            // message: error.message,
-            // code: error.code
-          }
-          // persistent: true
-        })
+        component: AlertMessage,
+        parent: this,
+        data: {
+          idx,
+          item: this.payOrders.items,
+          itemName: `платежку ${idx + 1}`
+          // message: error.message,
+          // code: error.code
+        }
+        // persistent: true
+      });
     },
 
     formatNumber(idx) {
-      this.payOrders[idx].summ = formatNumber(this.payOrders[idx].summ)
+      this.payOrders.items[idx].amount = formatNumber(this.payOrders.items[idx].amount);
     }
+  },
+  components: {
+    appLoaderFullScreen: LoaderFullScreen
   }
 };
 </script>
 <style lang="scss">
-  .paymentOrder {
-    background: #ffffff;
-    .paymentBlock {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 20px 20px 0px 20px;
-    }
+.paymentOrder {
+  background: #ffffff;
+  .paymentBlock {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px 20px 0px 20px;
+  }
 
-    .payOrderBlock {
-      margin-bottom: 20px;
-    }
+  .payOrderBlock {
+    margin-bottom: 20px;
+  }
 
-    .paymentBtn {
-      margin-top: 10px;
-    }
+  .paymentBtn {
+    margin-top: 10px;
+  }
 
-    .q-field__bottom {
-      padding: 0;
-    }
+  .q-field__bottom {
+    padding: 0;
+  }
 
-    .blueBtn .q-btn__content,
+  .blueBtn .q-btn__content,
   .redBtn .q-btn__content {
     // width: 173px;
     // height: 47px;
@@ -543,5 +590,5 @@ export default {
     background: #ff4a4a;
     margin-left: 24px !important;
   }
-  }
+}
 </style>
