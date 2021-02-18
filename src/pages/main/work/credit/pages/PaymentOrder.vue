@@ -1,7 +1,7 @@
 <template>
   <div class="paymentOrder q-pa-md">
     <!-- <pre>
-      {{payOrdersInput}}
+      {{client_bank_name}}
     </pre> -->
 
     <form @submit.prevent.stop="onSubmit">
@@ -10,11 +10,12 @@
         :key="'payOrder' + index"
         class="row q-col-gutter-md payOrderBlock"
       >
-        <div v-if="index > 0 && payOrder.status == ''" class="col-12 text-right">
+        <div v-if="index > 0" class="col-12 status">
+          <p v-if="payOrder.status != 'success'">{{payOrder.status}}</p>
           <q-btn
             label="Удалить"
             @click="removePayOrder(index)"
-            class="redBtn"
+            class="redBtn text-right"
           />
         </div>
         <div class="col-4">
@@ -74,7 +75,7 @@
 
             <div class="col-12">
               <q-input
-                :disable="payOrder.status=='success' ? true : false"
+                disable
                 square
                 outlined
                 v-model="payOrder.loanId"
@@ -132,7 +133,8 @@
                 ref="MFOBank"
                 square
                 outlined
-                v-model="payOrder.codeFilial"
+                v-model.lazy="payOrder.codeFilial"
+                @change="getBankBranches($event.target.value, index)"
                 dense
                 label="МФО банка клиента"
                 :rules="[val => numeralValid(val)]"
@@ -140,7 +142,7 @@
             </div>
             <div class="col-12">
               <q-input
-                :disable="payOrder.status=='success' ? true : false"
+                disable
                 ref="BankName"
                 square
                 outlined
@@ -148,7 +150,7 @@
                 dense
                 label="Наименование банка клиента"
                 :rules="[
-                  val => !!val || 'Введите наименование банка получателя'
+                  val => !!val || 'Выберите наименование банка'
                 ]"
               />
             </div>
@@ -322,6 +324,20 @@ export default {
   data() {
     return {
       loader: false,
+      client_bank_name: []
+      // payOrderTemp: {
+      //     "amount": null,
+      //     "codeFilial": "",
+      //     "purpose": "",
+      //     "payMethod": "",
+      //     "inn": "",
+      //     "id": 0,
+      //     "loanId": null,
+      //     "account": "",
+      //     "codePurpose": "",
+      //     "transactionID": 0,
+      //     "status": ""
+      //   }
       // client_bank_name: [
       //   {
       //     name: ""
@@ -391,7 +407,22 @@ export default {
 
       this.$router.go(-1);
     }
+
+    // this.payOrders.items[0].status = 'success'
+    // this.payOrders.items[1].status = 'Ошибка в ИАБС'
+    
+    for (let i = 0; i < this.payOrders.items.length; i++) {
+      if (this.payOrders.items[i].codeFilial !== "") {
+        await this.getBankBranches(this.payOrders.items[i].codeFilial, i)
+      } else {
+        break
+      }
+    }
   },
+
+  mounted() {
+    this.client_bank_name = new Array(this.payOrders.length)
+  }, 
 
   watch: {
     // "payOrder.pay_code_selected"(val) {
@@ -417,10 +448,6 @@ export default {
 
     pay_method() {
       return this.payOrdersInput.find(i => i.label === "pay_method").data;
-    },
-
-    client_bank_name() {
-      return new Array(this.payOrders.items.length)
     }
   },
   methods: {
@@ -430,7 +457,7 @@ export default {
       validFilter(this.$refs, "numberPPValid", "numberPP");
       validFilter(this.$refs, "recipientAccountValid", "recipientAccount");
       validFilter(this.$refs, "MFOBankValid", "MFOBank");
-      // validFilter(this.$refs, "BankNameValid", "BankName");
+      validFilter(this.$refs, "BankNameValid", "BankName");
       validFilter(this.$refs, "codePaymentValid", "codePayment");
       validFilter(this.$refs, "payOrderPayPurposeValid", "payOrderPayPurpose");
       // validFilter(this.$refs, "dateValid", "date");
@@ -441,7 +468,7 @@ export default {
         this.$refs.numberPPValid.hasError ||
         this.$refs.recipientAccountValid.hasError ||
         this.$refs.MFOBankValid.hasError ||
-        // this.$refs.BankNameValid.hasError ||
+        this.$refs.BankNameValid.hasError ||
         this.$refs.codePaymentValid.hasError ||
         // this.$refs.detailsPayment.hasError ||
         this.$refs.payOrderPayPurposeValid.hasError
@@ -479,7 +506,7 @@ export default {
         };
 
         console.log("data", JSON.stringify(data, null, 2));
-        this.$router.push("/work/credit/applications");
+        
         try {
           const response = await this.$store.dispatch(
             "credits/confirmationCredit",
@@ -523,12 +550,13 @@ export default {
     addPayOrder() {
       const payOrder = JSON.parse(JSON.stringify(this.payOrder));
       this.payOrders.items.push(payOrder);
-      this.client_bank_name.push({ name: "" });
+      this.client_bank_name.push(null)
       console.log("this.payOrders", this.payOrders);
     },
 
     removePayOrder(idx) {
       // this.payOrders.splice(idx, 1)
+      this.client_bank_name.splice(idx, 1)
       this.$q.dialog({
         component: AlertMessage,
         parent: this,
@@ -545,6 +573,23 @@ export default {
 
     formatNumber(idx) {
       this.payOrders.items[idx].amount = formatNumber(this.payOrders.items[idx].amount);
+    },
+
+    async getBankBranches(MFO, idx) {
+      console.log(MFO)
+      try {
+        const response = await this.$store.dispatch('profile/getBankBranches', MFO)
+        console.log(response)
+        if (response.length) {
+          this.client_bank_name.splice(idx, 1, response[0].filialName)
+        } else {
+          this.client_bank_name.splice(idx, 1)
+        }
+        
+        console.log(response)
+      } catch(error) {
+
+      }
     }
   },
   components: {
@@ -589,6 +634,14 @@ export default {
   .redBtn {
     background: #ff4a4a;
     margin-left: 24px !important;
+  }
+
+  .status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: red;
   }
 }
 </style>
