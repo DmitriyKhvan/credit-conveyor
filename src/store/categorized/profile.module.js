@@ -913,10 +913,10 @@ export const profile = {
 
       state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
         payload.Customer.MonthlyIncome.confirmMonthlyIncome;
-      // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-      //   payload.Customer.MonthlyExpenses.recurringExpenses;
       state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-        payload.Customer.MonthlyExpenses.allExpensesSum;
+        payload.Customer.MonthlyExpenses.recurringExpenses;
+      // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+      //   payload.Customer.MonthlyExpenses.allExpensesSum;
       state.fullFormProfile.Customer.MonthlyExpenses.obligations =
         payload.Customer.MonthlyExpenses.obligations;
       state.fullFormProfile.Customer.MonthlyIncome.hasAdditionalIncome =

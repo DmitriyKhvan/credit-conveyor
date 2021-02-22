@@ -116,7 +116,7 @@
                 class="row q-col-gutter-md add2"
               >
                 
-                  <div class="col-6">
+                  <div class="col-5">
                     <q-select
                       ref="filials"
                       outlined
@@ -166,6 +166,11 @@
                       stack-label
                       label="Вид кредита"
                     />
+                  </div>
+                  <div class="col-1 removeItem">
+                    <q-btn flat round icon="close" @click="removeItem(index)">
+                      <q-tooltip>Удалить</q-tooltip>
+                    </q-btn>
                   </div>
                 
               </div>
@@ -344,7 +349,11 @@ export default {
           MFO: '',
           PROD_ID: []
         })
-    }
+    },
+
+    removeItem(idx) {
+      this.filialsAllowSalary.splice(idx, 1)
+    } 
   }
 };
 </script>
@@ -378,6 +387,11 @@ export default {
 
     .add2 {
       margin-top: 0px;
+    }
+    
+    .removeItem {
+      display: flex;
+      align-items: center;
     }
 
   }
