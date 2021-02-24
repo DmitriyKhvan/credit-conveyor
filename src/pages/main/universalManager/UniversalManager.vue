@@ -314,18 +314,18 @@ export default {
         console.log("submit")
         // console.log(JSON.stringify(this.settings, null, 2))
         try {
-          //const responce = await this.$store.dispatch("creditSettings/updateFilialsAllowSalary", this.addEditFilials)
-          // const responce = await this.$store.dispatch("creditSettings/updateSettings", this.settings)
+          await this.$store.dispatch("creditSettings/updateFilialsAllowSalary", this.addEditFilials)
+          const responce = await this.$store.dispatch("creditSettings/updateSettings", this.settings)
 
-          // this.$q.dialog({
-          //   component: MessagePopup,
-          //   parent: this,
-          //   data: {
-          //     message: responce.message,
-          //     code: responce.code
-          //   }
-          //   // persistent: true
-          // })
+          this.$q.dialog({
+            component: MessagePopup,
+            parent: this,
+            data: {
+              message: responce.message,
+              code: responce.code
+            }
+            // persistent: true
+          })
         } catch(error) {
           this.$q.dialog({
             component: MessagePopup,

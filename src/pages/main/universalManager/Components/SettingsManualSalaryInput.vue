@@ -1,10 +1,12 @@
 <template>
   <div class="settingsProcess" :id="title.id">
-    <pre>
+    <!-- <pre>
       {{filialsAllowSalary}}
       ________________________________
       {{addEditFilials}}
-    </pre>
+
+      {{typeof addEditFilials.find(i => i.mfo !== '00869')}}
+    </pre> -->
     
     <q-expansion-item
       class="settingBlock"
@@ -51,6 +53,7 @@
                   <div class="col-5">
                     <q-select
                       ref="filials"
+                      :disable="filial.id !== null ? true : false"
                       outlined
                       clearable
                       v-model="filial.mfo"
@@ -226,6 +229,7 @@ export default {
     addFilial() {
       console.log(this.filialsAllowSalary)
       this.filialsAllowSalary.push({
+          id: null,
           mfo: '',
           product_ids: []
         })
@@ -252,7 +256,6 @@ export default {
       }
 
       if (MFO && product_ids.length) {
-        debugger
         this.$q.dialog({
           component: AlertMessage,
           parent: this,
