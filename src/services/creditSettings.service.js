@@ -32,4 +32,32 @@ export default class CreditSettings {
 
     return responce.data
   }
+
+  getFilialsAllowSalary = async () => {
+    const responce = await axios({
+      method: 'get',
+      url: `${this._personalUrl}/inps/access`
+    })
+
+    return responce.data
+  }
+
+  updateFilialsAllowSalary = async (data) => {
+    const responce = await axios({
+      method: 'post',
+      url: `${this._personalUrl}/inps/access`,
+      data
+    })
+
+    return responce.data
+  }
+
+  removeFilialsAllowSalary = async (mfo) => {
+    const responce = await axios({
+      method: 'delete',
+      url: `${this._personalUrl}/inps/access?mfo=${mfo}`
+    })
+
+    return responce.data
+  }
 }

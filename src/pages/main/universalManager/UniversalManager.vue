@@ -6,6 +6,7 @@
       <div class="col-9">
         <form @submit.prevent.stop="onSubmit">
           <appSettingsProcess v-if="settingsProcess" :title="settingsProcess" />
+          <appSettingsManualSalaryInput v-if="settingsManualSalaryInput" :title="settingsManualSalaryInput" />
           <appSettingsScorModel v-if="settingsScorModel" :title="settingsScorModel" />
           <appSettingsScorBalls v-if="settingsScorBalls" :title="settingsScorBalls" />
           <appSettingsCreditRoleActive v-if="settingsCreditRoleActive" :title="settingsCreditRoleActive" />
@@ -32,7 +33,6 @@
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from "vuex";
 import { validItems, validFilter } from "@/shared/utils/valid_filter";
 
 import creditSettings from "./mixins/creditSettings";
@@ -40,6 +40,7 @@ import creditSettings from "./mixins/creditSettings";
 import SettingsCreditProduct from "./Components/SettingsCreditProduct";
 import SettingsCreditRoleActive from "./Components/SettingsCreditRoleActive";
 import SettingsProcess from "./Components/SettingsProcess";
+import SettingsManualSalaryInput from "./Components/SettingsManualSalaryInput";
 import SettingsScorBalls from "./Components/SettingsScorBalls";
 import SettingsScorModel from "./Components/SettingsScorModel";
 import MessagePopup from "./Components/MessagePopup"
@@ -61,6 +62,11 @@ export default {
         {
           name: "Настройка процесса",
           id: "settingsProcess",
+          disable: false
+        },
+        {
+          name: "Настройка ручного ввода зарплаты",
+          id: "settingsManualSalaryInput",
           disable: false
         },
         {
@@ -115,6 +121,9 @@ export default {
     settingsProcess() {
       return this.titles.find(i => i.id == 'settingsProcess' && i.disable == false)
     },
+    settingsManualSalaryInput() {
+      return this.titles.find(i => i.id == 'settingsManualSalaryInput' && i.disable == false)
+    },
     settingsScorBalls() {
       return this.titles.find(i => i.id == 'settingsScorBalls' && i.disable == false)
     },
@@ -126,8 +135,10 @@ export default {
     },
     settingsCreditProduct() {
       return this.titles.find(i => i.id == 'settingsCreditProduct' && i.disable == false)
+    },
+    MANUAL_SALARY_INPUT() {
+      return this.settings.APPSETTING.find(i => i.paramName == 'MANUAL_SALARY_INPUT')
     }
-    
   },
   methods: {
     async onSubmit() {
@@ -186,6 +197,14 @@ export default {
       validFilter(this.refs, "maxBillValid", "maxBill")
       validFilter(this.refs, "billsScoreValid", "billsScore")
 
+      if (this.MANUAL_SALARY_INPUT.applied == 0) {
+        validFilter(this.refs, "filialsValid", "filials")
+        validFilter(this.refs, "productIdsValid", "productIds")
+      } else {
+        validItems(this.refs, "filialsValid");
+        validItems(this.refs, "productIdsValid");
+      }
+      
       // loan product char
       if (this.creditSettings.loanProductId) {
         this.refs.loanProductCharProductId.validate()
@@ -210,7 +229,7 @@ export default {
         validItems(this.refs, "loanProductCharFirstPayPercentMin");
         validItems(this.refs, "loanProductCharFirstPayPercentMax");
       }
-      
+
 			if (
           this.refs.MORATORIUM_PERIODD.hasError ||
           this.refs.APPLIFE_PERIOD.hasError ||
@@ -276,7 +295,9 @@ export default {
           this.refs.loanProductCharInterestRateMax.hasError ||
           this.refs.loanProductCharExpiredInterestRateMax.hasError ||
           this.refs.loanProductCharFirstPayPercentMin.hasError ||
-          this.refs.loanProductCharFirstPayPercentMax.hasError
+          this.refs.loanProductCharFirstPayPercentMax.hasError ||
+          this.refs.filialsValid.hasError ||
+          this.refs.productIdsValid.hasError
         ) {
 				this.formHasError = true;
         console.log('validationError')
@@ -293,6 +314,7 @@ export default {
         console.log("submit")
         // console.log(JSON.stringify(this.settings, null, 2))
         try {
+          await this.$store.dispatch("creditSettings/updateFilialsAllowSalary", this.addEditFilials)
           const responce = await this.$store.dispatch("creditSettings/updateSettings", this.settings)
 
           this.$q.dialog({
@@ -349,6 +371,7 @@ export default {
     appSettingsCreditProduct: SettingsCreditProduct,
     appSettingsCreditRoleActive: SettingsCreditRoleActive,
     appSettingsProcess: SettingsProcess,
+    appSettingsManualSalaryInput: SettingsManualSalaryInput,
     appSettingsScorBalls: SettingsScorBalls,
     appSettingsScorModel: SettingsScorModel,
     appLoaderFullScreen: LoaderFullScreen,

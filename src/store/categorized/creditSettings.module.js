@@ -6,6 +6,8 @@ export const creditSettings = {
   state: {
     creditSettingsService: new CreditSettingsService(),
     allRefs: null,
+    filialsAllowSalary: [],
+    addEditFilials: [],
     settings: {
       APPCARD_AGE: [],
       APPCARD_BILLS: [],
@@ -64,13 +66,56 @@ export const creditSettings = {
     async removeItem({state, commit}, payload) {
       console.log('payload', payload)
       try {
-        const responce = await state.creditSettingsService.removeItem(payload)
-        console.log('res', responce)
+        let responce = null
+        if (!payload.tableName) {
+          responce = await state.creditSettingsService.removeFilialsAllowSalary(payload.mfo)
+          console.log('res', responce)
+          if ( responce.code == 1 ) {
+            commit("removeFilialsAllowSalary", payload.mfo)
+          } else {
+            throw responce
+          }
+        } else {
+          responce = await state.creditSettingsService.removeItem(payload)
+          console.log('res', responce)
+          if ( responce.code == 1 ) {
+            commit("removeItem", payload)
+          } else {
+            throw responce
+          }
+        }
+        
+        return responce
+      } catch(error) {
+        console.log(error)
+        throw error
+      }
+    },
+
+    async getFilialsAllowSalary({state, commit}) {
+      try {
+        const responce = await state.creditSettingsService.getFilialsAllowSalary()
+        if (responce.length) {
+          commit("setFilialsAllowSalary", responce)
+        }
+      } catch(error) {
+        console.log(error)
+        throw error
+      }
+    },
+
+    async updateFilialsAllowSalary({state, dispatch}, addEditFilials) {
+      console.log('addEditFilials', addEditFilials)
+      try {
+        const responce = await state.creditSettingsService.updateFilialsAllowSalary(addEditFilials);
+
         if ( responce.code == 1 ) {
-          commit("removeItem", payload)
+          state.addEditFilials = []
+          dispatch("getFilialsAllowSalary")
         } else {
           throw responce
         }
+
         return responce
       } catch(error) {
         console.log(error)
@@ -85,6 +130,11 @@ export const creditSettings = {
       state.settings[payload.tableName].splice(idx, 1)
     },
 
+    removeFilialsAllowSalary(state, mfo) {
+      const idx = state.filialsAllowSalary.findIndex(i => i.mfo === mfo)
+      state.filialsAllowSalary.splice(idx, 1)
+    },
+
     setSettings(state, settings) {
       state.settings = settings;
     }, 
@@ -93,6 +143,10 @@ export const creditSettings = {
       state.allRefs = Object.assign({}, state.allRefs, refs);
       console.log("currentRefs", refs);
       console.log("AllRefs", state.allRefs);
+    },
+
+    setFilialsAllowSalary(state, filialsAllowSalary) {
+      state.filialsAllowSalary = filialsAllowSalary
     }
   },
   getters: {
