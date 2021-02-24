@@ -183,7 +183,7 @@ export default {
 	}, 
 	computed: {
     MORATORIUM_PERIODD() {
-      return this.settings.APPSETTING.find(i => i.paramName == 'MORATORIUM_PERIODD')
+      return this.settings.APPSETTING.find(i => i.paramName == 'MORATORIUM_PERIOD')
     },
     APPLIFE_PERIOD() {
       return this.settings.APPSETTING.find(i => i.paramName == 'APPLIFE_PERIOD')
