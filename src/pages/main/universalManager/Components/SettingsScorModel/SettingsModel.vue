@@ -62,7 +62,7 @@ export default {
   }, 
   computed: {
     MIN_MONTH_SALARYY() {
-      return this.settings.APPCARD_MODEL.find(i => i.paramName == 'MIN_MONTH_SALARYY')
+      return this.settings.APPCARD_MODEL.find(i => i.paramName == 'MIN_MONTH_SALARY')
     },
     CORR_KOEF() {
       return this.settings.APPCARD_MODEL.find(i => i.paramName == 'CORR_KOEF')
