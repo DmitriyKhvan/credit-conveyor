@@ -25,7 +25,9 @@ export default {
     ...mapState({
       creditSettings: state => state.creditSettings,
       settings: state => state.creditSettings.settings,
-      refs: state => state.creditSettings.allRefs
+      refs: state => state.creditSettings.allRefs,
+      filialsAllowSalary: state => state.creditSettings.filialsAllowSalary,
+      addEditFilials: state => state.creditSettings.addEditFilials
     }),
     
     ...mapGetters({

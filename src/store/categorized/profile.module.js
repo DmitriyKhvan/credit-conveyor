@@ -635,6 +635,17 @@ export const profile = {
       }
     },
 
+    async getBankBranches({state, commit}, MFO) {
+      try {
+        const response = await state.bpmService.getBankBranches(MFO)
+        return response
+      } catch(error) {
+        const errorMessage = CommonUtils.filterServerError(error);
+        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        throw error;
+      }
+    },
+
     async uploadFiles({ state, commit }, data) {
       console.log("uploadFiles", data);
       try {
@@ -799,7 +810,11 @@ export const profile = {
     setPayOrder(state, payOrdersInput) {
       state.payOrders = []
       state.payOrders = payOrdersInput.find(i => i.label === 'payOrder').data
-      state.payOrder = JSON.parse(JSON.stringify(state.payOrders.items[0]))
+
+      state.payOrder = payOrdersInput.find(i => i.label === 'payOrderTemplate').data
+      if (!state.payOrders.items.length) {
+        state.payOrders.items.push(JSON.parse(JSON.stringify(payOrdersInput.find(i => i.label === 'payOrderTemplate').data)))
+      }
       state.payOrdersInput = payOrdersInput
       
     },
@@ -898,10 +913,10 @@ export const profile = {
 
       state.fullFormProfile.Customer.MonthlyIncome.confirmMonthlyIncome =
         payload.Customer.MonthlyIncome.confirmMonthlyIncome;
-      // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-      //   payload.Customer.MonthlyExpenses.recurringExpenses;
       state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
-        payload.Customer.MonthlyExpenses.allExpensesSum;
+        payload.Customer.MonthlyExpenses.recurringExpenses;
+      // state.fullFormProfile.Customer.MonthlyExpenses.recurringExpenses =
+      //   payload.Customer.MonthlyExpenses.allExpensesSum;
       state.fullFormProfile.Customer.MonthlyExpenses.obligations =
         payload.Customer.MonthlyExpenses.obligations;
       state.fullFormProfile.Customer.MonthlyIncome.hasAdditionalIncome =

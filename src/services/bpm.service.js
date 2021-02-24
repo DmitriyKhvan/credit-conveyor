@@ -258,4 +258,13 @@ export default class BpmService {
     return responce.data
   }
 
+  getBankBranches = async (MFO) => {
+    const responce = await axios({
+      method: 'get',
+      url: `${this._baseUrl}/bpm/credit/get-bank-branches/${MFO}`
+    })
+
+    return responce.data
+  }
+
 }
