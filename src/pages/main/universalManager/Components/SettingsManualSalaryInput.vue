@@ -97,7 +97,7 @@
                       v-model="filial.product_ids"
                       multiple
                       :options="settings.LOAN_PRODUCT_CHAR"
-                        :option-value="(item) => item === null ? null : item.id"
+                        :option-value="(item) => item === null ? null : item.productId"
                         option-label="name"
                         emit-value
                         map-options

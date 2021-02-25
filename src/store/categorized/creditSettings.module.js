@@ -121,7 +121,16 @@ export const creditSettings = {
         console.log(error)
         throw error
       }
-    }
+    }, 
+
+    async getINPSSalaryInput({state}, creditId) {
+      try {
+        const responce = await state.getINPSSalaryInput(creditId)
+        return responce
+      } catch(error) {
+        throw error
+      }
+    } 
   },
   mutations: {
     removeItem(state, payload) {

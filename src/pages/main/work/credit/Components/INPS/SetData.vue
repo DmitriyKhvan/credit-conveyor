@@ -1,11 +1,21 @@
 <template>
   <div class="addSalary">
-    <!-- <q-btn @click="closeModal" icon="close" round /> -->
+    <q-btn class="close" @click="closeModel" icon="close" round>
+      <q-tooltip>Закрыть</q-tooltip>
+    </q-btn>
     <div class="salaryMessage">
       <!-- <p>Данные по клиенту в базе данных Халк Банка отсутствуют. Необходимо ввести данные вручную со справки о заработной плате с места работы клиента.</p> -->
       <p>{{ msg }}</p>
     </div>
-    <form @submit.prevent.stop="onSubmit">
+
+    <q-btn
+      v-if="decision.code !== 1"
+      label="Ввести заработные поступления вручную"
+      class="getDataBtn"
+      @click="getINPSSalaryInput"
+    />
+
+    <form v-else-if="decision.code === 1" @submit.prevent.stop="onSubmit">
       <!-- <q-field
         ref="salaries"
         :value="salaries.length >= 1"
@@ -115,13 +125,6 @@
 
         <div class="btnBlock">
           <q-btn
-            color="red"
-            label="Закрыть"
-            class="q-ml-sm"
-            @click="closeModel"
-          />
-
-          <q-btn
             color="green"
             label="Добавить месяц"
             class="q-ml-sm"
@@ -137,6 +140,11 @@
         </div>
       <!-- </q-field> -->
     </form>
+
+    <div v-else>
+      <p>Ручной ввод запрещен!</p>
+    </div>
+
 
     <appLoaderFullScreen v-if="loader" />
   </div>
@@ -157,6 +165,10 @@ export default {
   },
   data() {
     return {
+      decision: {
+        code: 0,
+        message: ""
+      },
       dataINPS: null,
       loader: false,
       salaries: [
@@ -171,7 +183,8 @@ export default {
   },
   computed: {
     ...mapState({
-      profile: state => state.profile
+      profile: state => state.profile,
+      fullProfile: state => state.profile.fullFormProfile,
     }),
     ...mapGetters({
       preapprove_num: "profile/preapprove_num"
@@ -276,6 +289,23 @@ export default {
 
     closeModel() {
       this.$emit('closeBar', false)
+    },
+
+    async getINPSSalaryInput() {
+      this.loader = true
+      try {
+        this.decision = await this.dispatch("creditSettings/getINPSSalaryInput", this.fullProfile.LoanInfo.LoanProduct)
+        this.loader = false
+      } catch(error) {
+        this.$store.commit(
+          "credits/setMessage", 
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          }
+        );
+        this.loader = false
+      }
     }
       
   },
@@ -288,6 +318,18 @@ export default {
 
 <style lang="scss">
 .addSalary {
+  padding: 5px;
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 10px;
+
+    i {
+      font-size: 1.4em;
+    }
+  }
+
   .q-btn__wrapper:before {
       box-shadow: none;
   }
@@ -336,6 +378,16 @@ export default {
     height: auto;
     top: 0;
     background: none;
+  }
+
+  .getDataBtn {
+    background: #4AB8FF;
+
+    .q-btn__content {
+      padding: 7px;
+      font-size: 14px;
+      color: #fff;
+    }
   }
 }
 </style>

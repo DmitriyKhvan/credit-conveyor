@@ -61,4 +61,11 @@ export default class CreditSettings {
 
     return responce.data
   }
+
+  getINPSSalaryInput = async (creditId) => {
+    const responce = await axios({
+      method: 'post',
+      url: `${this._baseUrl}/bpm/${creditId}`
+    })
+  }
 }
