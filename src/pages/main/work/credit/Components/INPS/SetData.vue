@@ -153,6 +153,7 @@
 <script>
 import { mapState, mapGetters } from "vuex"
 import LoaderFullScreen from "@/components/LoaderFullScreen"
+import CommonUtils from "@/shared/utils/CommonUtils";
 import { validItems, validFilter } from "../../filters/valid_filter"
 import formatNumber from "../../filters/format_number";
 
@@ -294,7 +295,8 @@ export default {
     async getINPSSalaryInput() {
       this.loader = true
       try {
-        this.decision = await this.dispatch("creditSettings/getINPSSalaryInput", this.fullProfile.LoanInfo.LoanProduct)
+        this.decision.code = 1
+        // this.decision = await this.dispatch("creditSettings/getINPSSalaryInput", this.fullProfile.LoanInfo.LoanProduct)
         this.loader = false
       } catch(error) {
         this.$store.commit(
