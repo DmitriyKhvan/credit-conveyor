@@ -100,7 +100,7 @@
                 label="Сумма кредита"
                 :rules="[
                   val => payOrder.status !=='success' 
-                      ? (creditAmount - totalAmount >= 0) || 'Превышен лимит выделенного кредита'
+                      ? (fullAmount - totalAmount >= 0) || 'Превышен лимит выделенного кредита'
                       : null
                 ]"
               />
@@ -340,7 +340,7 @@ export default {
       loader: false,
       loaderForm: false,
       client_bank_name: [],
-      creditAmount: 35000000,
+      // creditAmount: 35000000,
       totalAmount: 0
       // payOrderTemp: {
       //     "amount": null,
@@ -464,6 +464,7 @@ export default {
     ...mapState({
       payOrder: state => state.profile.payOrder,
       payOrders: state => state.profile.payOrders,
+      fullAmount: state => state.profile.fullAmount,
       payOrdersInput: state => state.profile.payOrdersInput
     }),
 
@@ -574,8 +575,10 @@ export default {
 
     addPayOrder() {
       const payOrder = JSON.parse(JSON.stringify(this.payOrder));
+      // payOrder.codeFilial = null
       this.payOrders.items.push(payOrder);
       this.client_bank_name.push(null)
+      this.getBankBranches(payOrder.codeFilial, this.client_bank_name.length - 1)
       console.log("this.payOrders", this.payOrders);
     },
 

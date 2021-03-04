@@ -8,12 +8,16 @@
       <p>{{ msg }}</p>
     </div>
 
-    <q-btn
-      v-if="decision.code !== 1"
-      label="Ввести заработные поступления вручную"
-      class="getDataBtn"
-      @click="getINPSSalaryInput"
-    />
+    <div v-if="decision.code !== 1">
+      <div class="salaryMessage" v-if="decision.code == 0">
+        <p>Ручной ввод запрещен!</p>
+      </div>
+      <q-btn
+        label="Ввести заработные поступления вручную"
+        class="getDataBtn"
+        @click="getINPSSalaryInput"
+      />
+    </div>
 
     <form v-else-if="decision.code === 1" @submit.prevent.stop="onSubmit">
       <!-- <q-field
@@ -21,140 +25,133 @@
         :value="salaries.length >= 1"
         :rules="[val => val || 'Заполните минимум 12 месяцев']"
       > -->
-        <q-markup-table separator="cell" flat bordered>
-          <thead>
-            <tr>
-              <th>№</th>
-              <th>ИНН организации</th>
-              <th>Название организации</th>
-              <th>Период</th>
-              <th colspan="2">Начисленно</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(salary, index) of salaries" :key="index + 'salary'">
-              <td>{{ index + 1 }}</td>
-              <td>
-                <q-input
-                  ref="INN"
-                  square
-                  outlined
-                  v-model="salary.inn"
-                  dense
-                  mask="#########"
-                  :rules="[
-                    val =>
-                      (val && val.length === 9) ||
-                      'Количество цифр должно быть 9',
-                    val => innValid(val)
-                  ]"
-                />
-              </td>
-              <td>
-                <q-input
-                  ref="org_name"
-                  square
-                  outlined
-                  v-model="salary.name"
-                  dense
-                  :rules="[val => !!val || 'Введите название']"
-                />
-              </td>
-              <td>
-                <q-input
-                  ref="period"
-                  outlined
-                  square
-                  dense
-                  v-model="salary.month"
-                  mask="##.##.####"
-                  :rules="[
-                    val => (val && val.length === 10) || 'Введите период'
-                  ]"
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        transition-show="scale"
-                        transition-hide="scale"
-                        ref="qDate"
-                      >
-                        <q-date
-                          mask="DD.MM.YYYY"
-                          v-model="salary.month"
-                          @input="
-                            $event => {
-                              $refs.qDate[index].hide();
-                            }
-                          "
-                        />
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </td>
-              <td>
-                <q-input
-                  ref="salary"
-                  square
-                  outlined
-                  v-model="salary.sum"
-                  @input="formatNumberSalary(index)"
-                  dense
-                  :rules="[
-                    val => !!val || 'Введите сумму',
-                    val => val != 0 || 'Некорректные данные'
-                  ]"
-                />
-              </td>
-              <td>
-                <q-btn
-                  v-if="index + 1 == salaries.length && salaries.length != 1"
-                  flat
-                  round
-                  color="black"
-                  icon="clear"
-                  @click.prevent="removeSalary(index)"
-                >
-                  <q-tooltip>Удалить</q-tooltip>
-                </q-btn>
-              </td>
-            </tr>
-          </tbody>
-        </q-markup-table>
+      <q-markup-table separator="cell" flat bordered>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>ИНН организации</th>
+            <th>Название организации</th>
+            <th>Период</th>
+            <th colspan="2">Начисленно</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(salary, index) of salaries" :key="index + 'salary'">
+            <td>{{ index + 1 }}</td>
+            <td>
+              <q-input
+                ref="INN"
+                square
+                outlined
+                v-model="salary.inn"
+                dense
+                mask="#########"
+                :rules="[
+                  val =>
+                    (val && val.length === 9) ||
+                    'Количество цифр должно быть 9',
+                  val => innValid(val)
+                ]"
+              />
+            </td>
+            <td>
+              <q-input
+                ref="org_name"
+                square
+                outlined
+                v-model="salary.name"
+                dense
+                :rules="[val => !!val || 'Введите название']"
+              />
+            </td>
+            <td>
+              <q-input
+                ref="period"
+                outlined
+                square
+                dense
+                v-model="salary.month"
+                mask="##.##.####"
+                :rules="[val => (val && val.length === 10) || 'Введите период']"
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      transition-show="scale"
+                      transition-hide="scale"
+                      ref="qDate"
+                    >
+                      <q-date
+                        mask="DD.MM.YYYY"
+                        v-model="salary.month"
+                        @input="
+                          $event => {
+                            $refs.qDate[index].hide();
+                          }
+                        "
+                      />
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </td>
+            <td>
+              <q-input
+                ref="salary"
+                square
+                outlined
+                v-model="salary.sum"
+                @input="formatNumberSalary(index)"
+                dense
+                :rules="[
+                  val => !!val || 'Введите сумму',
+                  val => val != 0 || 'Некорректные данные'
+                ]"
+              />
+            </td>
+            <td>
+              <q-btn
+                v-if="index + 1 == salaries.length && salaries.length != 1"
+                flat
+                round
+                color="black"
+                icon="clear"
+                @click.prevent="removeSalary(index)"
+              >
+                <q-tooltip>Удалить</q-tooltip>
+              </q-btn>
+            </td>
+          </tr>
+        </tbody>
+      </q-markup-table>
 
-        <div class="btnBlock">
-          <q-btn
-            color="green"
-            label="Добавить месяц"
-            class="q-ml-sm"
-            @click="addSalary"
-          />
+      <div class="btnBlock">
+        <q-btn
+          color="green"
+          label="Добавить месяц"
+          class="q-ml-sm"
+          @click="addSalary"
+        />
 
-          <q-btn
-            type="submit"
-            color="primary"
-            label="Сохранить"
-            class="q-ml-sm"
-          />
-        </div>
+        <q-btn
+          type="submit"
+          color="primary"
+          label="Сохранить"
+          class="q-ml-sm"
+        />
+      </div>
       <!-- </q-field> -->
     </form>
-
-    <div v-else>
-      <p>Ручной ввод запрещен!</p>
-    </div>
-
 
     <appLoaderFullScreen v-if="loader" />
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex"
-import LoaderFullScreen from "@/components/LoaderFullScreen"
+import { mapState, mapGetters } from "vuex";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 import CommonUtils from "@/shared/utils/CommonUtils";
-import { validItems, validFilter } from "../../filters/valid_filter"
+import { validItems, validFilter } from "../../filters/valid_filter";
 import formatNumber from "../../filters/format_number";
 
 export default {
@@ -167,7 +164,7 @@ export default {
   data() {
     return {
       decision: {
-        code: 0,
+        code: null,
         message: ""
       },
       dataINPS: null,
@@ -185,23 +182,23 @@ export default {
   computed: {
     ...mapState({
       profile: state => state.profile,
-      fullProfile: state => state.profile.fullFormProfile,
+      fullProfile: state => state.profile.fullFormProfile
     }),
     ...mapGetters({
       preapprove_num: "profile/preapprove_num"
-    }),
+    })
   },
   methods: {
     formatNumberSalary(idx) {
-      this.salaries[idx].sum = formatNumber(this.salaries[idx].sum)
-    }, 
+      this.salaries[idx].sum = formatNumber(this.salaries[idx].sum);
+    },
 
     innValid(val) {
       return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
     },
 
     addSalary() {
-      console.log('salaries', this.salaries)
+      console.log("salaries", this.salaries);
 
       validFilter(this.$refs, "INNValid", "INN");
       validFilter(this.$refs, "org_nameValid", "org_name");
@@ -235,81 +232,80 @@ export default {
       validFilter(this.$refs, "periodValid", "period");
       validFilter(this.$refs, "salaryValid", "salary");
       //this.$refs.salaries.validate();
-      
 
       if (
         this.$refs.INNValid.hasError ||
         this.$refs.org_nameValid.hasError ||
         this.$refs.periodValid.hasError ||
-        this.$refs.salaryValid.hasError 
+        this.$refs.salaryValid.hasError
         // this.$refs.salaries.hasError
       ) {
         this.formHasError = true;
       } else {
         this.loader = true;
 
-        this.salaries.forEach(salary => salary.sum = +salary.sum.replace(/[^0-9]/gim, ""))
+        this.salaries.forEach(
+          salary => (salary.sum = +salary.sum.replace(/[^0-9]/gim, ""))
+        );
 
-         const data = {
-            input: [
-              {
-                name: "application_id",
-                data: this.preapprove_num
-              },
-              {
-                name: "from",
-                data: "setData"
-              },
-              {
-                name: "setData",
-                data: this.salaries
-              }
-            ]
-          }   
-          
-        console.log('dataSaler', data)
+        const data = {
+          input: [
+            {
+              name: "application_id",
+              data: this.preapprove_num
+            },
+            {
+              name: "from",
+              data: "setData"
+            },
+            {
+              name: "setData",
+              data: this.salaries
+            }
+          ]
+        };
+
+        console.log("dataSaler", data);
 
         try {
-          this.dataINPS = await this.$store.dispatch("profile/dataINPS", data)
+          this.dataINPS = await this.$store.dispatch("profile/dataINPS", data);
           if (this.dataINPS) {
             this.loader = false;
-            this.$emit('closeBar', false)
+            this.$emit("closeBar", false);
           }
-        } catch(error) {
-          this.$store.commit(
-            "credits/setMessage", 
-            {
-              message: CommonUtils.filterServerError(error),
-              code: 0
-            }
-          );
+        } catch (error) {
+          this.$store.commit("credits/setMessage", {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          });
           this.loader = false;
         }
       }
     },
 
     closeModel() {
-      this.$emit('closeBar', false)
+      this.$emit("closeBar", false);
     },
 
     async getINPSSalaryInput() {
-      this.loader = true
+      this.loader = true;
       try {
-        this.decision.code = 1
-        // this.decision = await this.dispatch("creditSettings/getINPSSalaryInput", this.fullProfile.LoanInfo.LoanProduct)
-        this.loader = false
-      } catch(error) {
-        this.$store.commit(
-          "credits/setMessage", 
+        this.decision = await this.$store.dispatch(
+          "creditSettings/getINPSSalaryInput",
           {
-            message: CommonUtils.filterServerError(error),
-            code: 0
+            creditId: this.fullProfile.LoanInfo.LoanProduct,
+            applicationId: this.fullProfile.ApplicationID
           }
         );
-        this.loader = false
+        this.loader = false;
+      } catch (error) {
+        this.$store.commit("credits/setMessage", {
+          message: CommonUtils.filterServerError(error),
+          code: 0
+        });
+        this.loader = false;
       }
     }
-      
   },
 
   components: {
@@ -333,7 +329,7 @@ export default {
   }
 
   .q-btn__wrapper:before {
-      box-shadow: none;
+    box-shadow: none;
   }
 
   .closeModel {
@@ -372,7 +368,8 @@ export default {
     flex-direction: column;
   }
 
-  .q-field--auto-height .q-field__control, .q-field--auto-height .q-field__native {
+  .q-field--auto-height .q-field__control,
+  .q-field--auto-height .q-field__native {
     min-height: 42px;
   }
 
@@ -383,7 +380,7 @@ export default {
   }
 
   .getDataBtn {
-    background: #4AB8FF;
+    background: #4ab8ff;
 
     .q-btn__content {
       padding: 7px;

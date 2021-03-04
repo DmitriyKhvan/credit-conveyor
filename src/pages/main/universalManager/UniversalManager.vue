@@ -6,25 +6,45 @@
       <div class="col-9">
         <form @submit.prevent.stop="onSubmit">
           <appSettingsProcess v-if="settingsProcess" :title="settingsProcess" />
-          <appSettingsManualSalaryInput v-if="settingsManualSalaryInput" :title="settingsManualSalaryInput" />
-          <appSettingsScorModel v-if="settingsScorModel" :title="settingsScorModel" />
-          <appSettingsScorBalls v-if="settingsScorBalls" :title="settingsScorBalls" />
-          <appSettingsCreditRoleActive v-if="settingsCreditRoleActive" :title="settingsCreditRoleActive" />
-          <appSettingsCreditProduct v-if="settingsCreditProduct" :title="settingsCreditProduct" />
+          <appSettingsManualSalaryInput
+            v-if="settingsManualSalaryInput"
+            :title="settingsManualSalaryInput"
+          />
+          <appSettingsScorModel
+            v-if="settingsScorModel"
+            :title="settingsScorModel"
+          />
+          <appSettingsScorBalls
+            v-if="settingsScorBalls"
+            :title="settingsScorBalls"
+          />
+          <appSettingsCreditRoleActive
+            v-if="settingsCreditRoleActive"
+            :title="settingsCreditRoleActive"
+          />
+          <appSettingsCreditProduct
+            v-if="settingsCreditProduct"
+            :title="settingsCreditProduct"
+          />
           <div class="submitBtn">
-            <q-btn unelevated type="submit" label="Сохранить" class="btnSucces" />
+            <q-btn
+              unelevated
+              type="submit"
+              label="Сохранить"
+              class="btnSucces"
+            />
           </div>
         </form>
       </div>
       <div class="col-3">
         <ul class="navMenu">
           <li v-for="(title, index) of titles" :key="title.id">
-            <a 
-              :class="index == 0 ? 'active' : ''" 
-              :href="title.id" 
+            <a
+              :class="index == 0 ? 'active' : ''"
+              :href="title.id"
               @click.prevent.stop="goToBlock"
             >
-              {{title.name}}
+              {{ title.name }}
             </a>
           </li>
         </ul>
@@ -43,8 +63,8 @@ import SettingsProcess from "./Components/SettingsProcess";
 import SettingsManualSalaryInput from "./Components/SettingsManualSalaryInput";
 import SettingsScorBalls from "./Components/SettingsScorBalls";
 import SettingsScorModel from "./Components/SettingsScorModel";
-import MessagePopup from "./Components/MessagePopup"
-import LoaderFullScreen from "@/components/LoaderFullScreen"
+import MessagePopup from "./Components/MessagePopup";
+import LoaderFullScreen from "@/components/LoaderFullScreen";
 // import Loader from "@/components/Loader"
 
 export default {
@@ -94,24 +114,24 @@ export default {
     };
   },
   async created() {
-    this.loader = true
+    this.loader = true;
     try {
-      const settings = await this.$store.dispatch("creditSettings/getSettings")
-      this.loader = false
+      const settings = await this.$store.dispatch("creditSettings/getSettings");
+      this.loader = false;
     } catch (error) {
-      console.log(error)
-      this.loader = false
+      console.log(error);
+      this.loader = false;
     }
   },
   mounted() {
     setTimeout(() => {
       document
-          .querySelectorAll(".scroll")[1]
-          .addEventListener("scroll", this.handleScroll);
-    }, 1000)
+        .querySelectorAll(".scroll")[1]
+        .addEventListener("scroll", this.handleScroll);
+    }, 1000);
   },
   beforeDestroy() {
-    if(!!document.querySelectorAll(".scroll")[1]) {
+    if (!!document.querySelectorAll(".scroll")[1]) {
       document
         .querySelectorAll(".scroll")[1]
         .removeEventListener("scroll", this.handleScroll);
@@ -119,104 +139,141 @@ export default {
   },
   computed: {
     settingsProcess() {
-      return this.titles.find(i => i.id == 'settingsProcess' && i.disable == false)
+      return this.titles.find(
+        i => i.id == "settingsProcess" && i.disable == false
+      );
     },
     settingsManualSalaryInput() {
-      return this.titles.find(i => i.id == 'settingsManualSalaryInput' && i.disable == false)
+      return this.titles.find(
+        i => i.id == "settingsManualSalaryInput" && i.disable == false
+      );
     },
     settingsScorBalls() {
-      return this.titles.find(i => i.id == 'settingsScorBalls' && i.disable == false)
+      return this.titles.find(
+        i => i.id == "settingsScorBalls" && i.disable == false
+      );
     },
     settingsScorModel() {
-      return this.titles.find(i => i.id == 'settingsScorModel' && i.disable == false)
+      return this.titles.find(
+        i => i.id == "settingsScorModel" && i.disable == false
+      );
     },
     settingsCreditRoleActive() {
-      return this.titles.find(i => i.id == 'settingsCreditRoleActive' && i.disable == false)
+      return this.titles.find(
+        i => i.id == "settingsCreditRoleActive" && i.disable == false
+      );
     },
     settingsCreditProduct() {
-      return this.titles.find(i => i.id == 'settingsCreditProduct' && i.disable == false)
+      return this.titles.find(
+        i => i.id == "settingsCreditProduct" && i.disable == false
+      );
     },
     MANUAL_SALARY_INPUT() {
-      return this.settings.APPSETTING.find(i => i.paramName == 'MANUAL_SALARY_INPUT')
+      return this.settings.APPSETTING.find(
+        i => i.paramName == "MANUAL_SALARY_INPUT"
+      );
     }
   },
   methods: {
     async onSubmit() {
-			this.refs.MORATORIUM_PERIODD.validate()
-			this.refs.APPLIFE_PERIOD.validate()
-			this.refs.REQ_RELATIVES_COUNT.validate()
-			this.refs.CONVENIENT_REPAYMENT_MIN.validate()
-      this.refs.CONVENIENT_REPAYMENT_MAX.validate()
-      
-      this.refs.MIN_MONTH_SALARYY.validate()
-			this.refs.CORR_KOEF.validate()
-			this.refs.SCORE_CARD_MIN.validate()
-      
-      validFilter(this.refs, "scoreСoefficientMinScoreValid", "scoreСoefficientMinScore")
-      validFilter(this.refs, "scoreСoefficientMaxScoreValid", "scoreСoefficientMaxScore")
-      validFilter(this.refs, "scoreСoefficientCoefficientValid", "scoreСoefficientCoefficient")
+      this.refs.MORATORIUM_PERIODD.validate();
+      this.refs.APPLIFE_PERIOD.validate();
+      this.refs.REQ_RELATIVES_COUNT.validate();
+      this.refs.CONVENIENT_REPAYMENT_MIN.validate();
+      this.refs.CONVENIENT_REPAYMENT_MAX.validate();
 
-      validFilter(this.refs, "ageMinAgeValid", "ageMinAge")
-      validFilter(this.refs, "ageMaxAgeValid", "ageMaxAge")
-      validFilter(this.refs, "ageScoreValid", "ageScore")
-      
-      validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
-      validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
+      this.refs.MIN_MONTH_SALARYY.validate();
+      this.refs.CORR_KOEF.validate();
+      this.refs.SCORE_CARD_MIN.validate();
 
-      validFilter(this.refs, "childrenNumberValid", "childrenNumber")
-      validFilter(this.refs, "childrenScoreValid", "childrenScore")
+      validFilter(
+        this.refs,
+        "scoreСoefficientMinScoreValid",
+        "scoreСoefficientMinScore"
+      );
+      validFilter(
+        this.refs,
+        "scoreСoefficientMaxScoreValid",
+        "scoreСoefficientMaxScore"
+      );
+      validFilter(
+        this.refs,
+        "scoreСoefficientCoefficientValid",
+        "scoreСoefficientCoefficient"
+      );
 
-      validFilter(this.refs, "lastJobPeriodMinPeriodValid", "lastJobPeriodMinPeriod")
-      validFilter(this.refs, "lastJobPeriodMaxPeriodValid", "lastJobPeriodMaxPeriod")
-      validFilter(this.refs, "lastJobPeriodScoreValid", "lastJobPeriodScore")
+      validFilter(this.refs, "ageMinAgeValid", "ageMinAge");
+      validFilter(this.refs, "ageMaxAgeValid", "ageMaxAge");
+      validFilter(this.refs, "ageScoreValid", "ageScore");
 
-      validFilter(this.refs, "loanPeriodMinPeriodValid", "loanPeriodMinPeriod")
-      validFilter(this.refs, "loanPeriodMaxPeriodValid", "loanPeriodMaxPeriod")
-      validFilter(this.refs, "loanPeriodScoreValid", "loanPeriodScore")
+      validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating");
+      validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore");
 
-      validFilter(this.refs, "locationNameValid", "locationName")
-      validFilter(this.refs, "locationScoreValid", "locationScore")
+      validFilter(this.refs, "childrenNumberValid", "childrenNumber");
+      validFilter(this.refs, "childrenScoreValid", "childrenScore");
 
+      validFilter(
+        this.refs,
+        "lastJobPeriodMinPeriodValid",
+        "lastJobPeriodMinPeriod"
+      );
+      validFilter(
+        this.refs,
+        "lastJobPeriodMaxPeriodValid",
+        "lastJobPeriodMaxPeriod"
+      );
+      validFilter(this.refs, "lastJobPeriodScoreValid", "lastJobPeriodScore");
 
-      validFilter(this.refs, "maritalStatusValid", "maritalStatus")
-      validFilter(this.refs, "maritalScoreValid", "maritalScore")
+      validFilter(this.refs, "loanPeriodMinPeriodValid", "loanPeriodMinPeriod");
+      validFilter(this.refs, "loanPeriodMaxPeriodValid", "loanPeriodMaxPeriod");
+      validFilter(this.refs, "loanPeriodScoreValid", "loanPeriodScore");
 
-      validFilter(this.refs, "positiveNbuHistoryValid", "positiveNbuHistory")
-      validFilter(this.refs, "positiveNbuHistoryScoreValid", "positiveNbuHistoryScore")
+      validFilter(this.refs, "locationNameValid", "locationName");
+      validFilter(this.refs, "locationScoreValid", "locationScore");
 
-      validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating")
-      validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore")
+      validFilter(this.refs, "maritalStatusValid", "maritalStatus");
+      validFilter(this.refs, "maritalScoreValid", "maritalScore");
 
-      validFilter(this.refs, "hasRealityValid", "hasReality")
-      validFilter(this.refs, "realityScoreValid", "realityScore")
+      validFilter(this.refs, "positiveNbuHistoryValid", "positiveNbuHistory");
+      validFilter(
+        this.refs,
+        "positiveNbuHistoryScoreValid",
+        "positiveNbuHistoryScore"
+      );
 
-      validFilter(this.refs, "hasVehicleValid", "hasVehicle")
-      validFilter(this.refs, "vehicleScoreValid", "vehicleScore")
+      validFilter(this.refs, "ratingCompanyRatingValid", "ratingCompanyRating");
+      validFilter(this.refs, "ratingCompanyScoreValid", "ratingCompanyScore");
 
-      validFilter(this.refs, "minBillValid", "minBill")
-      validFilter(this.refs, "maxBillValid", "maxBill")
-      validFilter(this.refs, "billsScoreValid", "billsScore")
+      validFilter(this.refs, "hasRealityValid", "hasReality");
+      validFilter(this.refs, "realityScoreValid", "realityScore");
 
-      if (this.MANUAL_SALARY_INPUT.applied == 0) {
-        validFilter(this.refs, "filialsValid", "filials")
-        validFilter(this.refs, "productIdsValid", "productIds")
+      validFilter(this.refs, "hasVehicleValid", "hasVehicle");
+      validFilter(this.refs, "vehicleScoreValid", "vehicleScore");
+
+      validFilter(this.refs, "minBillValid", "minBill");
+      validFilter(this.refs, "maxBillValid", "maxBill");
+      validFilter(this.refs, "billsScoreValid", "billsScore");
+
+      if (this.filialsAllowSalary.length) {
+        validFilter(this.refs, "filialsValid", "filials");
+        validFilter(this.refs, "productIdsValid", "productIds");
       } else {
         validItems(this.refs, "filialsValid");
         validItems(this.refs, "productIdsValid");
       }
-      
+
       // loan product char
       if (this.creditSettings.loanProductId) {
-        this.refs.loanProductCharProductId.validate()
-        this.refs.loanProductCharMaxSum.validate()
-        this.refs.loanProductCharMinTerm.validate()
-        this.refs.loanProductCharMaxTerm.validate()
-        this.refs.loanProductCharGracePeriodMin.validate()
-        this.refs.loanProductCharGracePeriodMax.validate()
-        this.refs.loanProductCharInterestRateMax.validate()
-        this.refs.loanProductCharExpiredInterestRateMax.validate()
-        this.refs.loanProductCharFirstPayPercentMin.validate()
-        this.refs.loanProductCharFirstPayPercentMax.validate()
+        this.refs.loanProductCharProductId.validate();
+        this.refs.loanProductCharMaxSum.validate();
+        this.refs.loanProductCharMinTerm.validate();
+        this.refs.loanProductCharMaxTerm.validate();
+        this.refs.loanProductCharGracePeriodMin.validate();
+        this.refs.loanProductCharGracePeriodMax.validate();
+        this.refs.loanProductCharInterestRateMax.validate();
+        this.refs.loanProductCharExpiredInterestRateMax.validate();
+        this.refs.loanProductCharFirstPayPercentMin.validate();
+        this.refs.loanProductCharFirstPayPercentMax.validate();
       } else {
         validItems(this.refs, "loanProductCharProductId");
         validItems(this.refs, "loanProductCharMaxSum");
@@ -230,77 +287,62 @@ export default {
         validItems(this.refs, "loanProductCharFirstPayPercentMax");
       }
 
-			if (
-          this.refs.MORATORIUM_PERIODD.hasError ||
-          this.refs.APPLIFE_PERIOD.hasError ||
-          this.refs.REQ_RELATIVES_COUNT.hasError ||
-          this.refs.CONVENIENT_REPAYMENT_MIN.hasError ||
-          this.refs.CONVENIENT_REPAYMENT_MAX.hasError ||
-
-          this.refs.MIN_MONTH_SALARYY.hasError ||
-          this.refs.CORR_KOEF.hasError ||
-          this.refs.SCORE_CARD_MIN.hasError ||
-
-          this.refs.scoreСoefficientMinScoreValid.hasError ||
-          this.refs.scoreСoefficientMaxScoreValid.hasError ||
-          this.refs.scoreСoefficientCoefficientValid.hasError ||
-          
-          this.refs.ageMinAgeValid.hasError ||
-          this.refs.ageMaxAgeValid.hasError ||
-          this.refs.ageScoreValid.hasError ||
-
-          this.refs.ratingCompanyRatingValid.hasError ||
-          this.refs.ratingCompanyScoreValid.hasError ||
-
-          this.refs.lastJobPeriodMinPeriodValid.hasError ||
-          this.refs.lastJobPeriodMaxPeriodValid.hasError ||
-          this.refs.lastJobPeriodScoreValid.hasError ||
-
-          this.refs.loanPeriodMinPeriodValid.hasError ||
-          this.refs.loanPeriodMaxPeriodValid.hasError ||
-          this.refs.loanPeriodScoreValid.hasError ||
-          
-          this.refs.locationNameValid.hasError ||
-          this.refs.locationScoreValid.hasError ||
-
-          this.refs.maritalStatusValid.hasError ||
-          this.refs.maritalScoreValid.hasError ||
-
-          this.refs.positiveNbuHistoryValid.hasError ||
-          this.refs.positiveNbuHistoryScoreValid.hasError ||
-
-          this.refs.ratingCompanyRatingValid.hasError ||
-          this.refs.ratingCompanyScoreValid.hasError ||
-
-          this.refs.hasRealityValid.hasError ||
-          this.refs.realityScoreValid.hasError ||
-
-          this.refs.hasVehicleValid.hasError ||
-          this.refs.vehicleScoreValid.hasError ||
-
-          this.refs.minBillValid.hasError ||
-          this.refs.maxBillValid.hasError ||
-          this.refs.billsScoreValid.hasError ||
-
-          this.refs.childrenNumberValid.hasError ||
-          this.refs.childrenScoreValid.hasError ||
-
-          // loan product char
-          this.refs.loanProductCharProductId.hasError ||
-          this.refs.loanProductCharMaxSum.hasError ||
-          this.refs.loanProductCharMinTerm.hasError ||
-          this.refs.loanProductCharMaxTerm.hasError ||
-          this.refs.loanProductCharGracePeriodMin.hasError ||
-          this.refs.loanProductCharGracePeriodMax.hasError ||
-          this.refs.loanProductCharInterestRateMax.hasError ||
-          this.refs.loanProductCharExpiredInterestRateMax.hasError ||
-          this.refs.loanProductCharFirstPayPercentMin.hasError ||
-          this.refs.loanProductCharFirstPayPercentMax.hasError ||
-          this.refs.filialsValid.hasError ||
-          this.refs.productIdsValid.hasError
-        ) {
-				this.formHasError = true;
-        console.log('validationError')
+      if (
+        this.refs.MORATORIUM_PERIODD.hasError ||
+        this.refs.APPLIFE_PERIOD.hasError ||
+        this.refs.REQ_RELATIVES_COUNT.hasError ||
+        this.refs.CONVENIENT_REPAYMENT_MIN.hasError ||
+        this.refs.CONVENIENT_REPAYMENT_MAX.hasError ||
+        this.refs.MIN_MONTH_SALARYY.hasError ||
+        this.refs.CORR_KOEF.hasError ||
+        this.refs.SCORE_CARD_MIN.hasError ||
+        this.refs.scoreСoefficientMinScoreValid.hasError ||
+        this.refs.scoreСoefficientMaxScoreValid.hasError ||
+        this.refs.scoreСoefficientCoefficientValid.hasError ||
+        this.refs.ageMinAgeValid.hasError ||
+        this.refs.ageMaxAgeValid.hasError ||
+        this.refs.ageScoreValid.hasError ||
+        this.refs.ratingCompanyRatingValid.hasError ||
+        this.refs.ratingCompanyScoreValid.hasError ||
+        this.refs.lastJobPeriodMinPeriodValid.hasError ||
+        this.refs.lastJobPeriodMaxPeriodValid.hasError ||
+        this.refs.lastJobPeriodScoreValid.hasError ||
+        this.refs.loanPeriodMinPeriodValid.hasError ||
+        this.refs.loanPeriodMaxPeriodValid.hasError ||
+        this.refs.loanPeriodScoreValid.hasError ||
+        this.refs.locationNameValid.hasError ||
+        this.refs.locationScoreValid.hasError ||
+        this.refs.maritalStatusValid.hasError ||
+        this.refs.maritalScoreValid.hasError ||
+        this.refs.positiveNbuHistoryValid.hasError ||
+        this.refs.positiveNbuHistoryScoreValid.hasError ||
+        this.refs.ratingCompanyRatingValid.hasError ||
+        this.refs.ratingCompanyScoreValid.hasError ||
+        this.refs.hasRealityValid.hasError ||
+        this.refs.realityScoreValid.hasError ||
+        this.refs.hasVehicleValid.hasError ||
+        this.refs.vehicleScoreValid.hasError ||
+        this.refs.minBillValid.hasError ||
+        this.refs.maxBillValid.hasError ||
+        this.refs.billsScoreValid.hasError ||
+        this.refs.childrenNumberValid.hasError ||
+        this.refs.childrenScoreValid.hasError ||
+        // loan product char
+        this.refs.loanProductCharProductId.hasError ||
+        this.refs.loanProductCharMaxSum.hasError ||
+        this.refs.loanProductCharMinTerm.hasError ||
+        this.refs.loanProductCharMaxTerm.hasError ||
+        this.refs.loanProductCharGracePeriodMin.hasError ||
+        this.refs.loanProductCharGracePeriodMax.hasError ||
+        this.refs.loanProductCharInterestRateMax.hasError ||
+        this.refs.loanProductCharExpiredInterestRateMax.hasError ||
+        this.refs.loanProductCharFirstPayPercentMin.hasError ||
+        this.refs.loanProductCharFirstPayPercentMax.hasError ||
+        this.refs.filialsValid.hasError ||
+        this.refs.productIdsValid.hasError
+      ) {
+        this.formHasError = true;
+        console.log("validationError");
         this.$q.dialog({
           component: MessagePopup,
           parent: this,
@@ -309,13 +351,19 @@ export default {
             code: 99
           }
           // persistent: true
-        })
-			} else {
-        console.log("submit")
+        });
+      } else {
+        console.log("submit");
         // console.log(JSON.stringify(this.settings, null, 2))
         try {
-          await this.$store.dispatch("creditSettings/updateFilialsAllowSalary", this.addEditFilials)
-          const responce = await this.$store.dispatch("creditSettings/updateSettings", this.settings)
+          await this.$store.dispatch(
+            "creditSettings/updateFilialsAllowSalary",
+            this.addEditFilials
+          );
+          const responce = await this.$store.dispatch(
+            "creditSettings/updateSettings",
+            this.settings
+          );
 
           this.$q.dialog({
             component: MessagePopup,
@@ -325,8 +373,8 @@ export default {
               code: responce.code
             }
             // persistent: true
-          })
-        } catch(error) {
+          });
+        } catch (error) {
           this.$q.dialog({
             component: MessagePopup,
             parent: this,
@@ -335,15 +383,17 @@ export default {
               code: error.code
             }
             // persistent: true
-          })
+          });
         }
-			}
-		},
+      }
+    },
     goToBlock(event) {
       // event.preventDefault()
-      console.log(event.target)
-      let link = event.target.getAttribute("href")
-      document.getElementById(link).scrollIntoView({ behavior: "smooth", block: "start" })
+      console.log(event.target);
+      let link = event.target.getAttribute("href");
+      document
+        .getElementById(link)
+        .scrollIntoView({ behavior: "smooth", block: "start" });
     },
 
     handleScroll(event) {
@@ -353,7 +403,7 @@ export default {
         let selector = node.getAttribute("href");
         // debugger
         let blockTop = document.getElementById(selector).offsetTop - 100;
-        
+
         let blockBottom =
           document.getElementById(selector).offsetTop +
           document.getElementById(selector).getBoundingClientRect().height;
@@ -365,7 +415,7 @@ export default {
           node.classList.add("active");
         }
       });
-    },
+    }
   },
   components: {
     appSettingsCreditProduct: SettingsCreditProduct,
@@ -374,7 +424,7 @@ export default {
     appSettingsManualSalaryInput: SettingsManualSalaryInput,
     appSettingsScorBalls: SettingsScorBalls,
     appSettingsScorModel: SettingsScorModel,
-    appLoaderFullScreen: LoaderFullScreen,
+    appLoaderFullScreen: LoaderFullScreen
     // appLoader: Loader,
   }
 };
@@ -407,9 +457,9 @@ export default {
   }
 
   .btnSucces {
-		display: flex;
-		justify-content: center;
-		justify-items: center;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
   }
 
   .q-field__bottom {
@@ -421,15 +471,15 @@ export default {
     justify-content: center;
 
     button {
-    background: #47B881;
+      background: #47b881;
 
-    .q-btn__content {
-      width: 227px;
-      height: 47px;
-      font-size: 14px;
-      color: #fff
+      .q-btn__content {
+        width: 227px;
+        height: 47px;
+        font-size: 14px;
+        color: #fff;
+      }
     }
-  }
   }
 
   .navMenu {
@@ -447,7 +497,8 @@ export default {
         padding: 5px 10px;
         border-radius: 5px;
 
-        &.active, &:hover {
+        &.active,
+        &:hover {
           color: #1976d2;
           background: #e6f1fc;
         }
@@ -458,13 +509,13 @@ export default {
 
 .btnBlockAdmin {
   button {
-    background: #4AB8FF;
+    background: #4ab8ff;
 
     .q-btn__content {
       width: 350px;
       height: 47px;
       font-size: 14px;
-      color: #fff
+      color: #fff;
     }
 
     .q-btn__wrapper {
@@ -474,67 +525,69 @@ export default {
 }
 
 .removeItem {
-    padding-left: 0;
-    .q-btn .q-icon, .q-btn .q-spinner {
-      font-size: 15px;
+  padding-left: 0;
+  .q-btn .q-icon,
+  .q-btn .q-spinner {
+    font-size: 15px;
+  }
+}
+
+.blueBtn .q-btn__content,
+.redBtn .q-btn__content {
+  width: 173px;
+  height: 47px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.blueBtn {
+  background: #4ab8ff;
+}
+
+.redBtn {
+  background: #ff4a4a;
+  margin-left: 24px !important;
+}
+
+.customeToggle {
+  .q-toggle__inner {
+    width: 1.5em;
+    min-width: 1.5em;
+    height: 1em;
+    padding: 0.187em 0.2em;
+  }
+
+  .q-toggle__track {
+    height: 0.65em;
+    border-radius: 0.375em;
+  }
+
+  .q-toggle__inner--truthy .q-toggle__thumb {
+    left: 0.71em;
+    color: #fff;
+  }
+
+  .q-toggle__thumb {
+    top: 0.26em;
+    left: 0.26em;
+
+    &::after {
+      background: #a0a5ba;
     }
   }
 
-  .blueBtn .q-btn__content,  .redBtn .q-btn__content{
-      width: 173px;
-      height: 47px;
-      font-size: 14px;
-      color: #fff;
-    }
-
-    .blueBtn {
-      background: #4AB8FF;
-    }
-
-    .redBtn {
-      background: #FF4A4A;
-      margin-left: 24px!important;
-    }
-
-  .customeToggle {
-    .q-toggle__inner {
-      width: 1.5em;
-      min-width: 1.5em;
-      height: 1em;
-      padding: 0.187em .2em;
-    }
-
-    .q-toggle__track {
-      height: 0.65em;
-      border-radius: .375em;
-    }
-
-    .q-toggle__inner--truthy .q-toggle__thumb {
-        left: 0.71em;
-        color: #fff;
-    }
-
-    .q-toggle__thumb {
-      top: .26em;
-      left: .26em;
-
-      &::after {
-        background: #A0A5BA;
-      }
-    }
-
-    .q-toggle__inner--truthy .q-toggle__thumb:after {
-      background: #fff;
-    }
-
-    .q-toggle__track {
-      background: #ccc;
-      // border: 1px solid #b9b9b9;
-    }
-
-    .q-toggle__inner--truthy .q-toggle__track {
-      background: #0054FE;
-      opacity: 1
-    }
+  .q-toggle__inner--truthy .q-toggle__thumb:after {
+    background: #fff;
   }
+
+  .q-toggle__track {
+    background: #ccc;
+    // border: 1px solid #b9b9b9;
+  }
+
+  .q-toggle__inner--truthy .q-toggle__track {
+    background: #0054fe;
+    opacity: 1;
+  }
+}
 </style>
