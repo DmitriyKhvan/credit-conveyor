@@ -1,5 +1,5 @@
 import CreditSettingsService from "../../services/creditSettings.service";
-import sortData from "@/pages/main/universalManager/filters/sortData"
+import sortData from "@/pages/main/universalManager/filters/sortData";
 
 export const creditSettings = {
   namespaced: true,
@@ -29,115 +29,169 @@ export const creditSettings = {
       LOANPRODUCT_LOANCODE: []
     },
     loanProductId: null,
+    dataAllowSallaryInput: [
+      {
+        manualInpsInput: 0,
+        manualInpsLogin: null,
+        manualInpsDate: null
+      }
+    ]
   },
   actions: {
     async getSettings({ state, commit }) {
       try {
         const settings = await state.creditSettingsService.getSettings();
         // console.log("settings", JSON.stringify(settings, null, 2));
-        if ( settings ) {
+        if (settings) {
           commit("setSettings", settings);
         } else {
-          throw "Не удалось получить данные!"
+          throw "Не удалось получить данные!";
         }
       } catch (error) {
         console.log(error);
-        throw error
+        throw error;
       }
     },
 
-    async updateSettings({state, dispatch, commit}, settings) {
+    async updateSettings({ state, dispatch, commit }, settings) {
       try {
-        const responce = await state.creditSettingsService.updateSettings(settings);
+        const responce = await state.creditSettingsService.updateSettings(
+          settings
+        );
 
-        if ( responce.code == 1 ) {
-          dispatch("getSettings")
+        if (responce.code == 1) {
+          dispatch("getSettings");
         } else {
-          throw responce
+          throw responce;
         }
 
-        return responce
-      } catch(error) {
-        console.log(error)
-        throw error
+        return responce;
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
-    }, 
+    },
 
-    async removeItem({state, commit}, payload) {
-      console.log('payload', payload)
+    async removeItem({ state, commit }, payload) {
+      console.log("payload", payload);
       try {
-        let responce = null
+        let responce = null;
         if (!payload.tableName) {
-          responce = await state.creditSettingsService.removeFilialsAllowSalary(payload.mfo)
-          console.log('res', responce)
-          if ( responce.code == 1 ) {
-            commit("removeFilialsAllowSalary", payload.mfo)
+          responce = await state.creditSettingsService.removeFilialsAllowSalary(
+            payload.mfo
+          );
+          console.log("res", responce);
+          if (responce.code == 1) {
+            commit("removeFilialsAllowSalary", payload.mfo);
           } else {
-            throw responce
+            throw responce;
           }
         } else {
-          responce = await state.creditSettingsService.removeItem(payload)
-          console.log('res', responce)
-          if ( responce.code == 1 ) {
-            commit("removeItem", payload)
+          responce = await state.creditSettingsService.removeItem(payload);
+          console.log("res", responce);
+          if (responce.code == 1) {
+            commit("removeItem", payload);
           } else {
-            throw responce
+            throw responce;
           }
         }
-        
-        return responce
-      } catch(error) {
-        console.log(error)
-        throw error
+
+        return responce;
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
     },
 
-    async getFilialsAllowSalary({state, commit}) {
+    async getFilialsAllowSalary({ state, commit }) {
       try {
-        const responce = await state.creditSettingsService.getFilialsAllowSalary()
+        const responce = await state.creditSettingsService.getFilialsAllowSalary();
         if (responce.length) {
-          commit("setFilialsAllowSalary", responce)
+          commit("setFilialsAllowSalary", responce);
         }
-      } catch(error) {
-        console.log(error)
-        throw error
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
     },
 
-    async updateFilialsAllowSalary({state, dispatch}, addEditFilials) {
-      console.log('addEditFilials', addEditFilials)
+    async updateFilialsAllowSalary({ state, dispatch }, addEditFilials) {
+      console.log("addEditFilials", addEditFilials);
       try {
-        const responce = await state.creditSettingsService.updateFilialsAllowSalary(addEditFilials);
+        const responce = await state.creditSettingsService.updateFilialsAllowSalary(
+          addEditFilials
+        );
 
-        if ( responce.code == 1 ) {
-          state.addEditFilials = []
-          dispatch("getFilialsAllowSalary")
+        if (responce.code == 1) {
+          state.addEditFilials = [];
+          dispatch("getFilialsAllowSalary");
         } else {
-          throw responce
+          throw responce;
         }
 
-        return responce
-      } catch(error) {
-        console.log(error)
-        throw error
+        return responce;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+
+    async getINPSSalaryInput({ state }, payload) {
+      try {
+        const responce = await state.creditSettingsService.getINPSSalaryInput(
+          payload
+        );
+        return responce;
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    async setDataAllowSallaryInput({ state, dispatch }, payload) {
+      try {
+        const responce = await state.creditSettingsService.setDataAllowSallaryInput(
+          payload
+        );
+        if (responce.code == 1) {
+          dispatch("getDataAllowSallaryInput", payload.applicationId);
+        }
+
+        return responce;
+      } catch (error) {
+        throw error;
+      }
+    },
+
+    async getDataAllowSallaryInput({ state, commit }, applicationId) {
+      try {
+        const responce = await state.creditSettingsService.getDataAllowSallaryInput(
+          applicationId
+        );
+        if (responce.length) {
+          commit("setDataAllowSallaryInput", responce);
+        }
+      } catch (error) {
+        throw error;
       }
     }
   },
   mutations: {
     removeItem(state, payload) {
-      console.log('payload', payload)
-      const idx = state.settings[payload.tableName].findIndex(i => i.id == payload.rowId)
-      state.settings[payload.tableName].splice(idx, 1)
+      console.log("payload", payload);
+      const idx = state.settings[payload.tableName].findIndex(
+        i => i.id == payload.rowId
+      );
+      state.settings[payload.tableName].splice(idx, 1);
     },
 
     removeFilialsAllowSalary(state, mfo) {
-      const idx = state.filialsAllowSalary.findIndex(i => i.mfo === mfo)
-      state.filialsAllowSalary.splice(idx, 1)
+      const idx = state.filialsAllowSalary.findIndex(i => i.mfo === mfo);
+      state.filialsAllowSalary.splice(idx, 1);
     },
 
     setSettings(state, settings) {
       state.settings = settings;
-    }, 
+    },
 
     setRefs(state, refs) {
       state.allRefs = Object.assign({}, state.allRefs, refs);
@@ -146,7 +200,11 @@ export const creditSettings = {
     },
 
     setFilialsAllowSalary(state, filialsAllowSalary) {
-      state.filialsAllowSalary = filialsAllowSalary
+      state.filialsAllowSalary = filialsAllowSalary;
+    },
+
+    setDataAllowSallaryInput(state, payload) {
+      state.dataAllowSallaryInput = payload;
     }
   },
   getters: {
@@ -155,28 +213,30 @@ export const creditSettings = {
       // const settings = JSON.parse(JSON.stringify(state.settings))
 
       return Object.keys(state.settings)
-                      .filter(key => !key.indexOf('APPCARD') && key.indexOf('APPCARD_SCOREKOEFFICIENT') && key.indexOf('APPCARD_MODEL'))
-                      .map(key => {
-                        if (state.settings[key]) {
-                          // debugger
-                          let sortBy = 'score'
-                          // if (key == 'APPCARD_SCOREKOEFFICIENT') {
-                          //   sortBy = 'coefficient'
-                          // }
-                          return (
-                                  sortData(state.settings[key].slice(), sortBy)
-                                  )
-                                  .slice(-1)[0]
-                        }
-                      })
-                      .reduce((sum, current) => {
-                        if (current) {
-                          // debugger
-                          // return sum + +current.score || sum + +current.coefficient
-                          return sum + +current.score
-                        } 
-                        return sum
-                      }, 0)
+        .filter(
+          key =>
+            !key.indexOf("APPCARD") &&
+            key.indexOf("APPCARD_SCOREKOEFFICIENT") &&
+            key.indexOf("APPCARD_MODEL")
+        )
+        .map(key => {
+          if (state.settings[key]) {
+            // debugger
+            let sortBy = "score";
+            // if (key == 'APPCARD_SCOREKOEFFICIENT') {
+            //   sortBy = 'coefficient'
+            // }
+            return sortData(state.settings[key].slice(), sortBy).slice(-1)[0];
+          }
+        })
+        .reduce((sum, current) => {
+          if (current) {
+            // debugger
+            // return sum + +current.score || sum + +current.coefficient
+            return sum + +current.score;
+          }
+          return sum;
+        }, 0);
     }
   }
 };

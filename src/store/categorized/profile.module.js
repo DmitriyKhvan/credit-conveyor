@@ -11,6 +11,7 @@ export const profile = {
     payOrders: {
       items: []
     },
+    fullAmount: 0,
     BPMInput: null,
     allResponse: null,
     // preapprove_num: "",
@@ -812,6 +813,8 @@ export const profile = {
       state.payOrders = payOrdersInput.find(i => i.label === 'payOrder').data
 
       state.payOrder = payOrdersInput.find(i => i.label === 'payOrderTemplate').data
+
+      state.fullAmount = payOrdersInput.find(i => i.label == 'fullAmount').data
       if (!state.payOrders.items.length) {
         state.payOrders.items.push(JSON.parse(JSON.stringify(payOrdersInput.find(i => i.label === 'payOrderTemplate').data)))
       }

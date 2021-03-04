@@ -58,6 +58,17 @@ export default {
     .ellipsis {
       // font-size: 1rem
     }
+
+    .queryDataBtn {
+      background: #4AB8FF;
+      margin: 0;
+
+      .q-btn__content {
+        padding: 7px;
+        font-size: 14px;
+        color: #fff;
+      }
+    }
   }
   
   .loaderForm {
