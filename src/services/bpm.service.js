@@ -9,7 +9,7 @@ export default class BpmService {
   // _baseUrl = "http://10.1.4.10:8070" //local
   // _baseUrl = "http://10.8.7.76:8070" //local
   _baseUrl = "http://10.8.8.86:8070"; //prod
-  
+
   getBPMToken = async () => {
     const responce = await axios({
       method: "post",
@@ -74,7 +74,7 @@ export default class BpmService {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/confirmation/${taskId}`,
-      data,
+      data
     });
 
     return responce.data;
@@ -128,7 +128,7 @@ export default class BpmService {
   //   return axios.headers.common["NBU-BPM-Role"]
   // }
 
-  getDataINPS = async (data) => {
+  getDataINPS = async data => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/startInps`,
@@ -138,47 +138,47 @@ export default class BpmService {
     return responce.data;
   };
 
-  getDataLSBO = async (data) => {
+  getDataLSBO = async data => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/startLsbo`,
       data
-    })
+    });
 
     return responce.data;
-  }
+  };
 
-  getClientInfo = async (data) => {
+  getClientInfo = async data => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/startInteg`,
       data
-    })
+    });
 
     return responce.data;
-  }
+  };
 
-  getClientASOKI = async (data) => {
+  getClientASOKI = async data => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/startAsoki`,
       data
-    })
+    });
 
-    return responce.data
-  }
+    return responce.data;
+  };
 
-  getASOKIInfo = async (data) => {
+  getASOKIInfo = async data => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/getAsokiInfo`,
       data: { process_id: data }
-    })
+    });
 
-    return responce.data
-  }
+    return responce.data;
+  };
 
-  uploadFiles = async (data) => {
+  uploadFiles = async data => {
     //const fileName = "file full form profile"
     const responce = await axios({
       method: "post",
@@ -204,7 +204,7 @@ export default class BpmService {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/document/edocument`,
-      data,
+      data
     });
 
     return responce.data;
@@ -220,7 +220,7 @@ export default class BpmService {
     return responce.data;
   };
 
-  getProtocol = async (data) => {
+  getProtocol = async data => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/document/edocument/protocol_form`,
@@ -230,7 +230,7 @@ export default class BpmService {
     return responce.data;
   };
 
-  checkClient = async (data) => {
+  checkClient = async data => {
     const responce = await axios({
       method: "post",
       url: `${this._baseUrl}/bpm/credit/startGci`,
@@ -240,31 +240,30 @@ export default class BpmService {
     return responce.data;
   };
 
-  getHistoryTasks = async ({page, count}) => {
+  getHistoryTasks = async ({ page, count }) => {
     const responce = await axios({
-      method: 'get',
-      url: `${this._baseUrl}/bpm/credit/historytasks?page=${page}&count=${count}`,
-    })
+      method: "get",
+      url: `${this._baseUrl}/bpm/credit/historytasks?page=${page}&count=${count}`
+    });
 
-    return responce.data
-  }
+    return responce.data;
+  };
 
-  getHistoryTask = async (applicationId) => {
+  getHistoryTask = async applicationId => {
     const responce = await axios({
-      method: 'get',
+      method: "get",
       url: `${this._baseUrl}/bpm/credit/history-fullform/${applicationId}`
-    })
+    });
 
-    return responce.data
-  }
+    return responce.data;
+  };
 
-  getBankBranches = async (MFO) => {
+  getBankBranches = async MFO => {
     const responce = await axios({
-      method: 'get',
+      method: "get",
       url: `${this._baseUrl}/bpm/credit/get-bank-branches/${MFO}`
-    })
+    });
 
-    return responce.data
-  }
-
+    return responce.data;
+  };
 }

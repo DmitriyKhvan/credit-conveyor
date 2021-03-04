@@ -1,10 +1,13 @@
 <template>
   <div class="paymentOrder q-pa-md">
     <!-- <pre>
-      {{client_bank_name}}
+      {{payOrders}}
     </pre> -->
+     <div class="loaderForm" v-if="loaderForm">
+      <appLoader />
+    </div>
 
-    <form @submit.prevent.stop="onSubmit">
+    <form v-else @submit.prevent.stop="onSubmit">
       <div
         v-for="(payOrder, index) of payOrders.items"
         :key="'payOrder' + index"
@@ -92,10 +95,14 @@
                 square
                 outlined
                 v-model="payOrder.amount"
-                @input="formatNumber(index)"
+                @input="validAmount(index)"
                 dense
                 label="Сумма кредита"
-                :rules="[val => val != 0 || 'Неверные данные']"
+                :rules="[
+                  val => payOrder.status !=='success' 
+                      ? (fullAmount - totalAmount >= 0) || 'Превышен лимит выделенного кредита'
+                      : null
+                ]"
               />
             </div>
           </div>
@@ -164,7 +171,13 @@
                 v-model="payOrder.account"
                 dense
                 label="Счет клиента"
-                :rules="[val => numeralValid(val)]"
+                mask="####################"
+                :rules="[
+                  val =>
+                    (val && val.length === 20) ||
+                    'Количество символов должно быт ровно 20',
+                  val => !val.match(/(?=(.))\1{20,}/) || 'Неверные данные'
+                ]"
               />
             </div>
           </div>
@@ -310,6 +323,7 @@
 import axios from "axios";
 import { mapState } from "vuex";
 
+import Loader from "@/components/Loader";
 import AlertMessage from "@/components/AlertMessage";
 import CommonUtils from "@/shared/utils/CommonUtils";
 
@@ -324,7 +338,10 @@ export default {
   data() {
     return {
       loader: false,
-      client_bank_name: []
+      loaderForm: false,
+      client_bank_name: [],
+      // creditAmount: 35000000,
+      totalAmount: 0
       // payOrderTemp: {
       //     "amount": null,
       //     "codeFilial": "",
@@ -394,9 +411,12 @@ export default {
     }
 
     try {
+      this.loaderForm = true
+      // await new Promise(resolve => setTimeout(resolve, 3000))
       const res = await this.$store.dispatch("profile/getFullForm");
       this.loaderForm = false;
       console.log("res", res);
+      this.loaderForm = false
     } catch (error) {
       setTimeout(() => {
         this.$store.commit("credits/setMessage", {
@@ -405,6 +425,7 @@ export default {
         });
       }, 500);
 
+      this.loaderForm = false
       this.$router.go(-1);
     }
 
@@ -414,9 +435,13 @@ export default {
     for (let i = 0; i < this.payOrders.items.length; i++) {
       if (this.payOrders.items[i].codeFilial !== "") {
         await this.getBankBranches(this.payOrders.items[i].codeFilial, i)
-      } else {
-        break
-      }
+      } 
+      // else {
+      //   break
+      // }
+
+      this.formatNumber(i)
+      
     }
   },
 
@@ -439,6 +464,7 @@ export default {
     ...mapState({
       payOrder: state => state.profile.payOrder,
       payOrders: state => state.profile.payOrders,
+      fullAmount: state => state.profile.fullAmount,
       payOrdersInput: state => state.profile.payOrdersInput
     }),
 
@@ -549,8 +575,10 @@ export default {
 
     addPayOrder() {
       const payOrder = JSON.parse(JSON.stringify(this.payOrder));
+      // payOrder.codeFilial = null
       this.payOrders.items.push(payOrder);
       this.client_bank_name.push(null)
+      this.getBankBranches(payOrder.codeFilial, this.client_bank_name.length - 1)
       console.log("this.payOrders", this.payOrders);
     },
 
@@ -569,6 +597,18 @@ export default {
         }
         // persistent: true
       });
+    },
+
+    validAmount(idx) {
+      this.totalAmount = 0
+      this.payOrders.items.forEach(payOrder => {
+        this.totalAmount += Number(String(payOrder.amount).replace(/[^0-9]/gim, ""))
+      })
+      
+      console.log('totalAmount2', this.totalAmount)
+      this.formatNumber(idx) 
+      
+      validFilter(this.$refs, "payOrderSummValid", "payOrderSumm");
     },
 
     formatNumber(idx) {
@@ -593,7 +633,8 @@ export default {
     }
   },
   components: {
-    appLoaderFullScreen: LoaderFullScreen
+    appLoaderFullScreen: LoaderFullScreen,
+    appLoader: Loader
   }
 };
 </script>
