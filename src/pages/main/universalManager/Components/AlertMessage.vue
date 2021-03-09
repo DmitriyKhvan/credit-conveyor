@@ -1,5 +1,10 @@
 <template>
-  <q-dialog :content-class="'alertMessage'" persistent ref="alertMessage" @hide="onDialogHide">
+  <q-dialog
+    :content-class="'alertMessage'"
+    persistent
+    ref="alertMessage"
+    @hide="onDialogHide"
+  >
     <q-card class="q-dialog-plugin">
       <p class="message">Вы действительно хотите удалить?</p>
       <!-- {{ data.tableName }}
@@ -14,7 +19,7 @@
 </template>
 
 <script>
-import MessagePopup from "../Components/MessagePopup"
+import MessagePopup from "../Components/MessagePopup";
 
 export default {
   props: {
@@ -46,17 +51,21 @@ export default {
 
     async onOKClick() {
       try {
-        const responce = await this.$store.dispatch("creditSettings/removeItem", this.data);
-        
+        const responce = await this.$store.dispatch(
+          "creditSettings/removeItem",
+          this.data
+        );
+
         this.$q.dialog({
           component: MessagePopup,
           parent: this,
           data: {
             message: responce.message,
+            // message: this.$t(`alertMessage.${responce.message}`),
             code: responce.code
           }
           // persistent: true
-        })
+        });
       } catch (error) {
         this.$q.dialog({
           component: MessagePopup,
@@ -66,9 +75,8 @@ export default {
             code: error.code
           }
           // persistent: true
-        })
+        });
       }
-      
 
       // on OK, it is REQUIRED to
       // emit "ok" event (with optional payload)
@@ -96,7 +104,7 @@ export default {
     font-size: 20px;
   }
 
-  .q-dialog-plugin{
+  .q-dialog-plugin {
     padding: 0 20px 20px;
     width: 500px;
   }
@@ -112,5 +120,4 @@ export default {
 
   // }
 }
-
 </style>

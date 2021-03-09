@@ -243,7 +243,7 @@ export default {
         this.addEditFilials.splice(idx, 1);
       }
 
-      if (MFO && product_ids.length) {
+      if (MFO || product_ids.length) {
         this.$q.dialog({
           component: AlertMessage,
           parent: this,

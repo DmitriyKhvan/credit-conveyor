@@ -438,7 +438,7 @@
     }
   },
 
-  "creditUsers" : {
+  "creditUsers": {
     "role_name": "Роль",
     "role_type": "id роли",
     "emp_name": "ФИО",
@@ -455,13 +455,13 @@
     "gnames": "Группы"
   },
 
-  "breadCrumbs" : {
+  "breadCrumbs": {
     "Main": "Главная",
     "Work": "Работа",
     "Credit": "Кредит"
   },
 
-  "printForms" : {
+  "printForms": {
     "overdraft": "Овердрафт",
     "consumer_credit": "Потребительский кредит",
     "microloan": "Кредитный договор",
@@ -472,5 +472,10 @@
     "microloan_guarantor_legal": "Договор на поручительство микрозайм юр. лица",
     "consumer_guarantor_physical": "Договор на поручительство потреб кредит физ. лица",
     "consumer_guarantor_legal": "Договор на поручительство потреб кредит юр. лица"
+  },
+
+  "alertMessage": {
+    "Successfully deleted": "Успешно удаленно",
+    "Data succesfully deleted": "Данные успешно удалились"
   }
 }
