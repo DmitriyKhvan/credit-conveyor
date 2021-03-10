@@ -476,6 +476,11 @@
 
   "alertMessage": {
     "Successfully deleted": "Успешно удаленно",
-    "Data succesfully deleted": "Данные успешно удалились"
+    "Data deleted successfully": "Данные успешно удалились",
+    "Data updated/inserted successfully": "Данные успешно обновились/записались",
+    "Could not update/insert": "Данные не обновились",
+    "Could not delete": "Данные не удалились",
+    "Manual input is allowed": "Разрешение на ручной ввод предоставлено",
+    "Mfnual input is not allowed": "Разрешение на ручной ввод запрещено"
   }
 }

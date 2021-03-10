@@ -273,7 +273,7 @@
                     :rules="[
                       val =>
                         (val && val.length === 7) || 'Введите номер документа',
-                        val => passportValid()
+                      val => passportValid()
                     ]"
                   />
                 </div>
@@ -1482,7 +1482,7 @@
                         :rules="[
                           val =>
                             (val && val.length == 9) ||
-                            'Введите ИНН работодателя',
+                            'Введите ИНН организации',
                           val => INNYurValid(val)
                         ]"
                       />
@@ -2644,7 +2644,9 @@
                     .items"
                   :key="'comment' + index"
                 >
-                  <h6 class="tab-content_title">{{ comment.CommentPersonFIO }}</h6>
+                  <h6 class="tab-content_title">
+                    {{ comment.CommentPersonFIO }}
+                  </h6>
                   <!-- <span>{{comment.CommentDate}}</span> -->
                   <p>{{ comment.Comment }}</p>
                 </div>
@@ -4487,20 +4489,23 @@ export default {
     },
 
     passportValid() {
-      let flag = true
+      let flag = true;
       for (let i of this.fullProfile.Guarantee.RelatedPerson.items) {
-        if (i.Document.Series + i.Document.Number != this.Customer.Document.Series + this.Customer.Document.Number) {
-          flag = true
+        if (
+          i.Document.Series + i.Document.Number !=
+          this.Customer.Document.Series + this.Customer.Document.Number
+        ) {
+          flag = true;
         } else {
-          flag = false
-          break
+          flag = false;
+          break;
         }
       }
 
       if (flag) {
-        return true
+        return true;
       } else {
-        return 'Данные заёмщика и поручителя не могут быть одинаковыми'
+        return "Данные заёмщика и поручителя не могут быть одинаковыми";
       }
     },
 
@@ -4616,7 +4621,6 @@ export default {
 </script>
 <style lang="scss">
 .fullProfile {
-  
   .rejectDetails,
   .iABSContractStatus {
     margin: 0 0 10px 0;

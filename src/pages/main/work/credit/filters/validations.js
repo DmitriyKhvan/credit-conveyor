@@ -18,11 +18,17 @@ function docNumberValid(val) {
 }
 
 function INNFizValid(val) {
-  return (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) || 'Неверные данные'
+  return (
+    (+val[0] > 3 && +val[0] < 7 && !val.match(/(?=(.))\1{8,}/)) ||
+    "Неверные данные"
+  );
 }
 
 function INNYurValid(val) {
-  return (+val[0] > 1 && +val[0] < 4 && !val.match(/(?=(.))\1{8,}/)) || 'Неверные данные'
+  return (
+    (+val[0] > 1 && +val[0] < 4 && !val.match(/(?=(.))\1{8,}/)) ||
+    "Неверные данные"
+  );
 }
 
 function pinppValid(val) {
@@ -34,6 +40,7 @@ function msecond(val) {
 }
 
 function adulthoodValid(date) {
+  debugger;
   return (
     (this.msecond(this.currentDate) - this.msecond(date) - 432000000) /
       1000 /
@@ -55,4 +62,4 @@ export {
   pinppValid,
   msecond,
   adulthoodValid
-}
+};
