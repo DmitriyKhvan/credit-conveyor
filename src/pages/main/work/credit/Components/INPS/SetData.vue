@@ -20,11 +20,6 @@
     </div>
 
     <form v-else-if="decision.code === 1" @submit.prevent.stop="onSubmit">
-      <!-- <q-field
-        ref="salaries"
-        :value="salaries.length >= 1"
-        :rules="[val => val || 'Заполните минимум 12 месяцев']"
-      > -->
       <q-markup-table separator="cell" flat bordered>
         <thead>
           <tr>
@@ -50,7 +45,7 @@
                   val =>
                     (val && val.length === 9) ||
                     'Количество цифр должно быть 9',
-                  val => innValid(val)
+                  val => INNYurValid(val)
                 ]"
               />
             </td>
@@ -140,7 +135,11 @@
           class="q-ml-sm"
         />
       </div>
-      <!-- </q-field> -->
+      <q-field
+        ref="salaries"
+        :value="salaries.length >= 3 && salaries.length <= 12"
+        :rules="[val => val || 'Заполните от 3 до 12 месяцев']"
+      />
     </form>
 
     <appLoaderFullScreen v-if="loader" />
@@ -153,8 +152,10 @@ import LoaderFullScreen from "@/components/LoaderFullScreen";
 import CommonUtils from "@/shared/utils/CommonUtils";
 import { validItems, validFilter } from "../../filters/valid_filter";
 import formatNumber from "../../filters/format_number";
+import validations from "../../mixins/validations";
 
 export default {
+  mixins: [validations],
   props: {
     msg: {
       type: String,
@@ -193,9 +194,9 @@ export default {
       this.salaries[idx].sum = formatNumber(this.salaries[idx].sum);
     },
 
-    innValid(val) {
-      return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
-    },
+    // innValid(val) {
+    //   return !val.match(/(?=(.))\1{9,}/) || "Неверные данные";
+    // },
 
     addSalary() {
       console.log("salaries", this.salaries);
@@ -231,14 +232,14 @@ export default {
       validFilter(this.$refs, "org_nameValid", "org_name");
       validFilter(this.$refs, "periodValid", "period");
       validFilter(this.$refs, "salaryValid", "salary");
-      //this.$refs.salaries.validate();
+      this.$refs.salaries.validate();
 
       if (
         this.$refs.INNValid.hasError ||
         this.$refs.org_nameValid.hasError ||
         this.$refs.periodValid.hasError ||
-        this.$refs.salaryValid.hasError
-        // this.$refs.salaries.hasError
+        this.$refs.salaryValid.hasError ||
+        this.$refs.salaries.hasError
       ) {
         this.formHasError = true;
       } else {
