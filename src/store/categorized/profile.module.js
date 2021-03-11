@@ -360,7 +360,6 @@ export const profile = {
         },
 
         collateral: null
-        
       },
       profit: null,
       rejectDetails: [],
@@ -395,12 +394,9 @@ export const profile = {
       try {
         const response = await state.bpmService.getDataINPS(data);
         console.log("getDataINPS", response.input);
-        const code = response.input.find(
-          i => i.label === "code"
-        );
+        const code = response.input.find(i => i.label === "code");
 
         if (code && response.input) {
-
           const dataINPS = response.input.find(
             i => i.label === "clientWagesData"
           );
@@ -417,18 +413,22 @@ export const profile = {
             salaries: dataINPS.data,
             code: code.data,
             msg: response.input.find(i => i.label === "msg").data
-          }
+          };
         } else {
           // throw "Network Error";
           return {
             code: null,
             msg: "Не удалось получить данные от ИНПС сервиса"
-          }
+          };
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
-        
+        commit(
+          "credits/setMessage",
+          { message: errorMessage, code: 0 },
+          { root: true }
+        );
+
         throw error;
       }
     },
@@ -446,39 +446,46 @@ export const profile = {
             salaries: dataINPS.data,
             code: 0,
             msg: ""
-          }
+          };
         } else {
           throw "Нет данных";
         }
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        commit(
+          "credits/setMessage",
+          { message: errorMessage, code: 0 },
+          { root: true }
+        );
         throw error;
       }
     },
 
     async dataLSBO({ state, commit, getters }) {
       let users = [];
-      users.push({
-        // pin: state.fullFormProfile.Customer.PINPP, //ИНПС
-        pin: "", //ИНПС
-        passNumber: state.fullFormProfile.Customer.Document.Number,
-        passSerial: state.fullFormProfile.Customer.Document.Series
-      });
 
       state.fullFormProfile.Customer.Relatives.items.forEach(relative => {
         if (!relative.Document.Number || !relative.Document.Series) {
-          throw "Заполните все данные родственников!";
+          throw {
+            message: "Заполните все данные родственников!",
+            code: 2
+          };
         }
-        relative.role = "";
-        relative.LSBO = false;
-        relative.filial = "";
 
         users.push({
           pin: "",
           passNumber: relative.Document.Number,
           passSerial: relative.Document.Series
         });
+      });
+
+      debugger;
+
+      users.push({
+        // pin: state.fullFormProfile.Customer.PINPP, //ИНПС
+        pin: "", //ИНПС
+        passNumber: state.fullFormProfile.Customer.Document.Number,
+        passSerial: state.fullFormProfile.Customer.Document.Series
       });
 
       const data = {
@@ -506,8 +513,6 @@ export const profile = {
           commit("setLSBO", dataLSBO);
         }
       } catch (error) {
-        const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
         throw error;
       }
     },
@@ -539,44 +544,53 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        commit(
+          "credits/setMessage",
+          { message: errorMessage, code: 0 },
+          { root: true }
+        );
         throw error;
       }
     },
 
     async clientASOKI({ state, commit }) {
       // console.log('dddd', state.BPMInput)
-      const application = state.BPMInput.find(i => i.label == 'application').data
-      const dictionaries = state.BPMInput.find(i => i.label == 'inputDictionaries').data
-      const preApplication_number = state.BPMInput.find(i => i.label == 'preapprove_num').data
+      const application = state.BPMInput.find(i => i.label == "application")
+        .data;
+      const dictionaries = state.BPMInput.find(
+        i => i.label == "inputDictionaries"
+      ).data;
+      const preApplication_number = state.BPMInput.find(
+        i => i.label == "preapprove_num"
+      ).data;
 
-      const sleep = (ms) => {
+      const sleep = ms => {
         return new Promise(resolve => setTimeout(resolve, ms));
-      }
+      };
 
-      const ASOKIInfo = async (processId) => {
-        let res = null
-        await sleep(2 * 60 * 1000)
+      const ASOKIInfo = async processId => {
+        let res = null;
+        await sleep(2 * 60 * 1000);
 
-        res = await state.bpmService.getASOKIInfo(processId)
+        res = await state.bpmService.getASOKIInfo(processId);
 
         // if (res.state != 'completed' || res.state != 'closed') {
         //   ASOKIInfo(res.id)
         // }
 
         if (
-          res.state == 'completed' ||
-          res.state == 'closed' ||
-          res.state == 'finished'
+          res.state == "completed" ||
+          res.state == "closed" ||
+          res.state == "finished"
         ) {
-          commit('setASOKI', res)
-          return state.resASOKI = res
+          commit("setASOKI", res);
+          return (state.resASOKI = res);
         } else {
-          await ASOKIInfo(res.id)
+          await ASOKIInfo(res.id);
         }
-      }
+      };
 
-      const objectTransform = (dictionaries) => {
+      const objectTransform = dictionaries => {
         for (let item in dictionaries) {
           // if(item == "Branches") continue
           // if (item == "Insurance_company") continue;
@@ -590,8 +604,8 @@ export const profile = {
                 if (!value.value) {
                   objectTransform(value);
                 } else {
-                  value['name'] = value.label
-                  delete value.label
+                  value["name"] = value.label;
+                  delete value.label;
                 }
                 //value.value = Number(value.value)
               }
@@ -600,10 +614,10 @@ export const profile = {
         }
 
         return dictionaries;
-      }
+      };
 
-      const dictionariesTransform = objectTransform(dictionaries)
-      console.log('dictionariesTransform', dictionariesTransform)
+      const dictionariesTransform = objectTransform(dictionaries);
+      console.log("dictionariesTransform", dictionariesTransform);
 
       const data = {
         input: [
@@ -618,31 +632,39 @@ export const profile = {
           {
             name: "preApplication_number",
             data: preApplication_number
-          },
+          }
         ]
-      }
+      };
 
-      console.log(JSON.stringify(data, null, 2))
+      console.log(JSON.stringify(data, null, 2));
 
       try {
-        const startASOKI = await state.bpmService.getClientASOKI(data)
-        await ASOKIInfo(startASOKI.id)
+        const startASOKI = await state.bpmService.getClientASOKI(data);
+        await ASOKIInfo(startASOKI.id);
 
-        return state.resASOKI
+        return state.resASOKI;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        commit(
+          "credits/setMessage",
+          { message: errorMessage, code: 0 },
+          { root: true }
+        );
         throw error;
       }
     },
 
-    async getBankBranches({state, commit}, MFO) {
+    async getBankBranches({ state, commit }, MFO) {
       try {
-        const response = await state.bpmService.getBankBranches(MFO)
-        return response
-      } catch(error) {
+        const response = await state.bpmService.getBankBranches(MFO);
+        return response;
+      } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        commit(
+          "credits/setMessage",
+          { message: errorMessage, code: 0 },
+          { root: true }
+        );
         throw error;
       }
     },
@@ -656,7 +678,11 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        commit(
+          "credits/setMessage",
+          { message: errorMessage, code: 0 },
+          { root: true }
+        );
         throw error;
       }
     },
@@ -669,7 +695,11 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        commit(
+          "credits/setMessage",
+          { message: errorMessage, code: 0 },
+          { root: true }
+        );
         throw error;
       }
     },
@@ -691,18 +721,16 @@ export const profile = {
         console.log("response", response);
 
         if (response.data.input && response.data.input.length) {
-
           if (response.data.name === "Get Payment data") {
-            const payOrdersInput = response.data.input
+            const payOrdersInput = response.data.input;
 
-            console.log(JSON.stringify(payOrdersInput, null, 2))
-
+            console.log(JSON.stringify(payOrdersInput, null, 2));
 
             commit("setPayOrder", payOrdersInput);
-
           } else {
-            const data = response.data.input.find(i => i.label === "application")
-              .data;
+            const data = response.data.input.find(
+              i => i.label === "application"
+            ).data;
             const dictionaries = response.data.input.find(
               i => i.label === "inputDictionaries"
             ).data;
@@ -710,7 +738,6 @@ export const profile = {
             commit("setAllResponse", JSON.parse(JSON.stringify(response.data))); // all response from BPM
             commit("setInput", JSON.parse(JSON.stringify(response.data.input))); // all input from BPM
             commit("setDictionaries", dictionaries);
-
 
             // кредит не оформлен
             if (
@@ -721,7 +748,6 @@ export const profile = {
             } else {
               commit("setFullForm", data);
             }
-
           }
         } else {
           throw "Data is null";
@@ -730,59 +756,72 @@ export const profile = {
         return response;
       } catch (error) {
         const errorMessage = CommonUtils.filterServerError(error);
-        commit("credits/setMessage", {message: errorMessage, code: 0}, { root: true });
+        commit(
+          "credits/setMessage",
+          { message: errorMessage, code: 0 },
+          { root: true }
+        );
         sessionStorage.clear();
         //this.$router.push("/work/credit");
         // this.$router.go(-1);
         throw error;
       }
-    }, 
+    },
 
     async getHistoryTask({ state, commit }, applicationId) {
       try {
-        const response = await state.bpmService.getHistoryTask(applicationId)
-        return response
+        const response = await state.bpmService.getHistoryTask(applicationId);
+        return response;
       } catch (error) {
-        commit("credits/setMessage", {
-          message: CommonUtils.filterServerError(error),
-          code: 0}, { root: true }
+        commit(
+          "credits/setMessage",
+          {
+            message: CommonUtils.filterServerError(error),
+            code: 0
+          },
+          { root: true }
         );
-        
+
         throw error;
       }
     }
   },
   mutations: {
     setASOKI(state, ASOKI) {
-      const loanAbilityClass = ASOKI.output.find(i => i.name == 'loanAbilityClass')
-      const loanKoeffCorr = ASOKI.output.find(i => i.name == 'loanKoeffCorr')
-      const new_max_loan = ASOKI.output.find(i => i.name == 'new_max_loan')
-      state.fullFormProfile.LoanInfo.max_loan_sum_preapprove = new_max_loan ? new_max_loan.data : state.fullFormProfile.LoanInfo.max_loan_sum_preapprove
-      state.loanAbilityClass = loanAbilityClass ? loanAbilityClass.data : null,
-      state.loanKoeffCorr = loanKoeffCorr ? loanKoeffCorr.data : null
+      const loanAbilityClass = ASOKI.output.find(
+        i => i.name == "loanAbilityClass"
+      );
+      const loanKoeffCorr = ASOKI.output.find(i => i.name == "loanKoeffCorr");
+      const new_max_loan = ASOKI.output.find(i => i.name == "new_max_loan");
+      state.fullFormProfile.LoanInfo.max_loan_sum_preapprove = new_max_loan
+        ? new_max_loan.data
+        : state.fullFormProfile.LoanInfo.max_loan_sum_preapprove;
+      (state.loanAbilityClass = loanAbilityClass
+        ? loanAbilityClass.data
+        : null),
+        (state.loanKoeffCorr = loanKoeffCorr ? loanKoeffCorr.data : null);
     },
 
     setLSBO(state, dataLSBO) {
       dataLSBO.data.items.forEach(user => {
-        // console.log("user", user)
-        if (user.lsbo) {
-          if (
-            state.fullFormProfile.Customer.Document.Number == user.passNumber
-          ) {
-            state.fullFormProfile.Customer.LSBO = user.lsbo;
-            state.fullFormProfile.Customer.role = CommonUtils.decoder(user.role);
-            state.fullFormProfile.Customer.filial = user.filial;
-          }
+        if (state.fullFormProfile.Customer.Document.Number == user.passNumber) {
+          state.fullFormProfile.Customer.LSBO = user.lsbo ? user.lsbo : false;
+          state.fullFormProfile.Customer.role = user.role
+            ? CommonUtils.decoder(user.role)
+            : "";
+          state.fullFormProfile.Customer.filial = user.filial
+            ? user.filial
+            : "";
+        }
 
-          let relative = state.fullFormProfile.Customer.Relatives.items.find(
-            rel => rel.Document.Number == user.passNumber
-          );
-          // console.log('relative', relative)
-          if (relative) {
-            relative.role = CommonUtils.decoder(user.role);
-            relative.LSBO = user.lsbo;
-            relative.filial = user.filial;
-          }
+        let relative = state.fullFormProfile.Customer.Relatives.items.find(
+          rel => rel.Document.Number == user.passNumber
+        );
+        // console.log('relative', relative)
+        if (relative) {
+          relative.role = user.role ? CommonUtils.decoder(user.role) : "";
+          relative.LSBO = user.lsbo ? user.lsbo : false;
+          relative.filial = user.filial ? user.filial : "";
         }
       });
 
@@ -801,7 +840,7 @@ export const profile = {
     },
 
     setAllResponse(state, allResponse) {
-      state.allResponse = allResponse
+      state.allResponse = allResponse;
     },
 
     // setPreapproveNum(state, preapprove_num) {
@@ -809,17 +848,24 @@ export const profile = {
     // },
 
     setPayOrder(state, payOrdersInput) {
-      state.payOrders = []
-      state.payOrders = payOrdersInput.find(i => i.label === 'payOrder').data
+      state.payOrders = [];
+      state.payOrders = payOrdersInput.find(i => i.label === "payOrder").data;
 
-      state.payOrder = payOrdersInput.find(i => i.label === 'payOrderTemplate').data
+      state.payOrder = payOrdersInput.find(
+        i => i.label === "payOrderTemplate"
+      ).data;
 
-      state.fullAmount = payOrdersInput.find(i => i.label == 'fullAmount').data
+      state.fullAmount = payOrdersInput.find(i => i.label == "fullAmount").data;
       if (!state.payOrders.items.length) {
-        state.payOrders.items.push(JSON.parse(JSON.stringify(payOrdersInput.find(i => i.label === 'payOrderTemplate').data)))
+        state.payOrders.items.push(
+          JSON.parse(
+            JSON.stringify(
+              payOrdersInput.find(i => i.label === "payOrderTemplate").data
+            )
+          )
+        );
       }
-      state.payOrdersInput = payOrdersInput
-      
+      state.payOrdersInput = payOrdersInput;
     },
 
     // setProcessInfo(state, processInfo) {
@@ -872,7 +918,6 @@ export const profile = {
 
       // state.fullFormProfile.Customer.Document.Districts = state.dictionaries.Districts
 
-
       // state.fullFormProfile.Customer.Relatives.items.forEach(i => {
       //   i.Document.Districts = state.dictionaries.Districts
       // })
@@ -899,7 +944,7 @@ export const profile = {
         payload.Customer.Document.Number;
 
       // state.fullFormProfile.Customer.ResidentFlag =
-      //   payload.Customer.ResidentFlag;  
+      //   payload.Customer.ResidentFlag;
 
       state.fullFormProfile.Customer.Document.GivenDate =
         payload.Customer.Document.GivenDate;
@@ -929,7 +974,6 @@ export const profile = {
       state.fullFormProfile.Customer.MonthlyIncome.additionalIncome.incomeType =
         payload.Customer.MonthlyIncome.additionalIncome.incomeType;
 
-
       state.fullFormProfile.LoanInfo.LoanProduct = payload.LoanInfo.LoanProduct;
       state.fullFormProfile.LoanInfo.RepaymentType =
         payload.LoanInfo.RepaymentType;
@@ -942,8 +986,10 @@ export const profile = {
       state.fullFormProfile.LoanInfo.ProductMaxSum =
         payload.LoanInfo.ProductMaxSum;
 
-      state.fullFormProfile.LoanInfo.collateral = payload.LoanInfo.collateral
-      state.fullFormProfile.rejectDetails = payload.rejectDetails ? payload.rejectDetails : { items: [] }
+      state.fullFormProfile.LoanInfo.collateral = payload.LoanInfo.collateral;
+      state.fullFormProfile.rejectDetails = payload.rejectDetails
+        ? payload.rejectDetails
+        : { items: [] };
       // state.fullFormProfile.max_loan_sum = Math.min(state.fullFormProfile.LoanInfo.ProductMaxSum, state.fullFormProfile.LoanInfo.max_loan_sum_preapprove);
     },
 
@@ -1569,8 +1615,8 @@ export const profile = {
   getters: {
     dictionaries: state => state.dictionaries,
     AsokiExists: state => {
-      const AsokiExists = state.BPMInput.find(i => i.label == 'AsokiExists')
-      return AsokiExists ? AsokiExists.data : true
+      const AsokiExists = state.BPMInput.find(i => i.label == "AsokiExists");
+      return AsokiExists ? AsokiExists.data : true;
       // return false
     },
     preapprove_num: state => {
@@ -1585,8 +1631,8 @@ export const profile = {
       return preapprove_num
         ? preapprove_num.data
         : preApplicationNum
-          ? preApplicationNum.data
-          : null
+        ? preApplicationNum.data
+        : null;
     },
 
     fileList: state => {
@@ -1599,18 +1645,16 @@ export const profile = {
         );
       });
 
-      state.BPMInput
-        .filter(i => {
-          return (
-            i.label === "overdraft_guarantor_physical" ||
-            i.label === "overdraft_guarantor_legal" ||
-            i.label === "microloan_guarantor_physical" ||
-            i.label === "microloan_guarantor_legal" ||
-            i.label === "consumer_guarantor_physical" ||
-            i.label === "consumer_guarantor_legal"
-          );
-        })
-        .forEach(guarantee => guaranteeDoc(guarantee));
+      state.BPMInput.filter(i => {
+        return (
+          i.label === "overdraft_guarantor_physical" ||
+          i.label === "overdraft_guarantor_legal" ||
+          i.label === "microloan_guarantor_physical" ||
+          i.label === "microloan_guarantor_legal" ||
+          i.label === "consumer_guarantor_physical" ||
+          i.label === "consumer_guarantor_legal"
+        );
+      }).forEach(guarantee => guaranteeDoc(guarantee));
 
       function guaranteeDoc(guarantee) {
         guarantee.data.items.forEach((item, index) => {
@@ -1628,8 +1672,8 @@ export const profile = {
           ...item,
           loading: false,
           loadingUz: false
-        }
-      })
+        };
+      });
 
       console.log("fileList", finalFileList);
 
@@ -1646,18 +1690,16 @@ export const profile = {
         );
       });
 
-      state.BPMInput
-        .filter(i => {
-          return (
-            i.label === "overdraft_guarantor_physical_uz" ||
-            i.label === "overdraft_guarantor_legal_uz" ||
-            i.label === "microloan_guarantor_physical_uz" ||
-            i.label === "microloan_guarantor_legal_uz" ||
-            i.label === "consumer_guarantor_physical_uz" ||
-            i.label === "consumer_guarantor_legal_uz"
-          );
-        })
-        .forEach(guarantee => guaranteeDoc(guarantee));
+      state.BPMInput.filter(i => {
+        return (
+          i.label === "overdraft_guarantor_physical_uz" ||
+          i.label === "overdraft_guarantor_legal_uz" ||
+          i.label === "microloan_guarantor_physical_uz" ||
+          i.label === "microloan_guarantor_legal_uz" ||
+          i.label === "consumer_guarantor_physical_uz" ||
+          i.label === "consumer_guarantor_legal_uz"
+        );
+      }).forEach(guarantee => guaranteeDoc(guarantee));
 
       function guaranteeDoc(guarantee) {
         guarantee.data.items.forEach((item, index) => {
@@ -1675,13 +1717,12 @@ export const profile = {
           ...item,
           loading: false,
           loadingUz: false
-        }
-      })
+        };
+      });
 
       console.log("fileList", finalFileList);
 
       return finalFileList;
-    },
-
+    }
   }
 };

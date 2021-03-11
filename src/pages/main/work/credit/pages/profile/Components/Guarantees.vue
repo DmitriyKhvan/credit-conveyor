@@ -635,6 +635,17 @@
         ></q-btn>
 
         <q-btn
+          :loading="GCIRelatedPersonLoading"
+          label="Получить данные поручителя"
+          @click="checkRelatedPerson(index)"
+          class="addItem"
+        >
+          <template v-slot:loading>
+            <q-spinner-facebook />
+          </template>
+        </q-btn>
+
+        <q-btn
           :disable="disableField"
           label="Удалить"
           @click="
@@ -1338,8 +1349,8 @@
 </template>
 
 <script>
+import CommonUtils from "@/shared/utils/CommonUtils";
 import validations from "../../../mixins/validations";
-
 import formatNumber from "../../../filters/format_number";
 
 export default {
@@ -1356,7 +1367,8 @@ export default {
   ],
   data() {
     return {
-      guaranteeCount: []
+      guaranteeCount: [],
+      GCIRelatedPersonLoading: false
     };
   },
   created() {
@@ -1386,6 +1398,42 @@ export default {
   },
 
   methods: {
+    async checkRelatedPerson(idx) {
+      this.GCIRelatedPersonLoading = true;
+      try {
+        if (
+          !this.fullProfile.Guarantee.RelatedPerson.items[idx].Document
+            .Series ||
+          !this.fullProfile.Guarantee.RelatedPerson.items[idx].Document.Number
+        ) {
+          this.$store.commit("credits/setMessage", {
+            message: "Заполните паспортные данные поручителя",
+            code: 2
+          });
+        } else {
+          const data = {
+            series: this.fullProfile.Guarantee.RelatedPerson.items[idx].Document
+              .Series,
+            number: this.fullProfile.Guarantee.RelatedPerson.items[idx].Document
+              .Number
+          };
+          await this.$store.dispatch("credits/checkPerson", {
+            data,
+            methodName: "RelatedPersonDataGCI",
+            idx
+          });
+        }
+
+        this.GCIRelatedPersonLoading = false;
+      } catch (error) {
+        this.$store.commit("credits/setMessage", {
+          message: CommonUtils.filterServerError(error),
+          code: 0
+        });
+        this.GCIRelatedPersonLoading = false;
+      }
+    },
+
     formatNumberInsurence(idx) {
       this.fullProfile.Guarantee.Insurance.items[
         idx
