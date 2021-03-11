@@ -1203,6 +1203,17 @@
                   "
                   class="removeItem"
                 ></q-btn>
+
+                <q-btn
+                  :loading="GCIRelativeLoading"
+                  label="Получить данные родственника"
+                  @click="checkRelative(index)"
+                  class="addItem"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-facebook />
+                  </template>
+                </q-btn>
               </div>
 
               <q-btn
@@ -2917,6 +2928,7 @@ export default {
       printForm: false,
       bankLoading: false,
       LSBOLoading: false,
+      GCIRelativeLoading: false,
       clientInfoLoading: false,
       clientASOKILoading: false,
       INPSBar: false,
@@ -4159,10 +4171,45 @@ export default {
         });
       } catch (error) {
         this.$store.commit("credits/setMessage", {
+          message: CommonUtils.filterServerError(
+            error.message ? error.message : error
+          ),
+          code: error.code ? error.code : 0
+        });
+        this.LSBOLoading = false;
+      }
+    },
+
+    async checkRelative(idx) {
+      this.GCIRelativeLoading = true;
+      try {
+        if (
+          !this.Customer.Relatives.items[idx].Document.Series ||
+          !this.Customer.Relatives.items[idx].Document.Number
+        ) {
+          this.$store.commit("credits/setMessage", {
+            message: "Заполните паспортные данные родственника",
+            code: 2
+          });
+        } else {
+          const data = {
+            series: this.Customer.Relatives.items[idx].Document.Series,
+            number: this.Customer.Relatives.items[idx].Document.Number
+          };
+          await this.$store.dispatch("credits/checkPerson", {
+            data,
+            methodName: "RelativeDataGCI",
+            idx
+          });
+        }
+
+        this.GCIRelativeLoading = false;
+      } catch (error) {
+        this.$store.commit("credits/setMessage", {
           message: CommonUtils.filterServerError(error),
           code: 0
         });
-        this.LSBOLoading = false;
+        this.GCIRelativeLoading = false;
       }
     },
 
