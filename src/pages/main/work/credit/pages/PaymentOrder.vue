@@ -3,7 +3,7 @@
     <!-- <pre>
       {{payOrders}}
     </pre> -->
-     <div class="loaderForm" v-if="loaderForm">
+    <div class="loaderForm" v-if="loaderForm">
       <appLoader />
     </div>
 
@@ -14,7 +14,7 @@
         class="row q-col-gutter-md payOrderBlock"
       >
         <div v-if="index > 0" class="col-12 status">
-          <p v-if="payOrder.status != 'success'">{{payOrder.status}}</p>
+          <p v-if="payOrder.status != 'success'">{{ payOrder.status }}</p>
           <q-btn
             label="Удалить"
             @click="removePayOrder(index)"
@@ -25,7 +25,7 @@
           <div class="row paymentBlock">
             <div class="col-12">
               <q-select
-                :disable="payOrder.status=='success' ? true : false"
+                :disable="payOrder.status == 'success' ? true : false"
                 ref="documentType"
                 square
                 outlined
@@ -41,7 +41,7 @@
 
             <div class="col-12">
               <q-input
-                :disable="payOrder.status=='success' ? true : false"
+                :disable="payOrder.status == 'success' ? true : false"
                 ref="numberPP"
                 square
                 outlined
@@ -90,7 +90,7 @@
 
             <div class="col-12">
               <q-input
-                :disable="payOrder.status=='success' ? true : false"
+                :disable="payOrder.status == 'success' ? true : false"
                 ref="payOrderSumm"
                 square
                 outlined
@@ -99,8 +99,10 @@
                 dense
                 label="Сумма кредита"
                 :rules="[
-                  val => payOrder.status !=='success' 
-                      ? (fullAmount - totalAmount >= 0) || 'Превышен лимит выделенного кредита'
+                  val =>
+                    payOrder.status !== 'success'
+                      ? fullAmount - totalAmount >= 0 ||
+                        'Превышен лимит выделенного кредита'
                       : null
                 ]"
               />
@@ -136,7 +138,7 @@
 
             <div class="col-12">
               <q-input
-                :disable="payOrder.status=='success' ? true : false"
+                :disable="payOrder.status == 'success' ? true : false"
                 ref="MFOBank"
                 square
                 outlined
@@ -156,15 +158,13 @@
                 v-model="client_bank_name[index]"
                 dense
                 label="Наименование банка клиента"
-                :rules="[
-                  val => !!val || 'Выберите наименование банка'
-                ]"
+                :rules="[val => !!val || 'Выберите наименование банка']"
               />
             </div>
 
             <div class="col-12">
               <q-input
-                :disable="payOrder.status=='success' ? true : false"
+                :disable="payOrder.status == 'success' ? true : false"
                 ref="recipientAccount"
                 square
                 outlined
@@ -187,7 +187,7 @@
           <div class="row paymentBlock">
             <div class="col-12">
               <q-select
-                :disable="payOrder.status=='success' ? true : false"
+                :disable="payOrder.status == 'success' ? true : false"
                 ref="codePayment"
                 square
                 outlined
@@ -203,7 +203,7 @@
 
             <div class="col-12">
               <q-input
-                :disable="payOrder.status=='success' ? true : false"
+                :disable="payOrder.status == 'success' ? true : false"
                 ref="payOrderPayPurpose"
                 square
                 outlined
@@ -309,6 +309,7 @@
 
       <div class="text-center">
         <q-btn
+          :disable="payOrders.items.length > 4 ? true : false"
           label="Добавление платежа"
           @click="addPayOrder"
           class="blueBtn"
@@ -391,7 +392,6 @@ export default {
       //     }
       //   ]
       // }
-
     };
   },
   async created() {
@@ -411,12 +411,12 @@ export default {
     }
 
     try {
-      this.loaderForm = true
+      this.loaderForm = true;
       // await new Promise(resolve => setTimeout(resolve, 3000))
       const res = await this.$store.dispatch("profile/getFullForm");
       this.loaderForm = false;
       console.log("res", res);
-      this.loaderForm = false
+      this.loaderForm = false;
     } catch (error) {
       setTimeout(() => {
         this.$store.commit("credits/setMessage", {
@@ -425,29 +425,28 @@ export default {
         });
       }, 500);
 
-      this.loaderForm = false
+      this.loaderForm = false;
       this.$router.go(-1);
     }
 
     // this.payOrders.items[0].status = 'success'
     // this.payOrders.items[1].status = 'Ошибка в ИАБС'
-    
+
     for (let i = 0; i < this.payOrders.items.length; i++) {
       if (this.payOrders.items[i].codeFilial !== "") {
-        await this.getBankBranches(this.payOrders.items[i].codeFilial, i)
-      } 
+        await this.getBankBranches(this.payOrders.items[i].codeFilial, i);
+      }
       // else {
       //   break
       // }
 
-      this.formatNumber(i)
-      
+      this.formatNumber(i);
     }
   },
 
   mounted() {
-    this.client_bank_name = new Array(this.payOrders.length)
-  }, 
+    this.client_bank_name = new Array(this.payOrders.length);
+  },
 
   watch: {
     // "payOrder.pay_code_selected"(val) {
@@ -510,11 +509,11 @@ export default {
         this.loader = true;
 
         const payOrderFilter = this.payOrders.items
-            .filter(i => i.status != 'success')
-            .map(i => {
-              i.amount = +String(i.amount).replace(/[^0-9]/gim, "")
-              return {...i}
-            })
+          .filter(i => i.status != "success")
+          .map(i => {
+            i.amount = +String(i.amount).replace(/[^0-9]/gim, "");
+            return { ...i };
+          });
 
         // payOrderFilter.forEach(
         //   i => (i.amount = +String(i.amount).replace(/[^0-9]/gim, ""))
@@ -532,7 +531,7 @@ export default {
         };
 
         console.log("data", JSON.stringify(data, null, 2));
-        
+
         try {
           const response = await this.$store.dispatch(
             "credits/confirmationCredit",
@@ -577,14 +576,17 @@ export default {
       const payOrder = JSON.parse(JSON.stringify(this.payOrder));
       // payOrder.codeFilial = null
       this.payOrders.items.push(payOrder);
-      this.client_bank_name.push(null)
-      this.getBankBranches(payOrder.codeFilial, this.client_bank_name.length - 1)
+      this.client_bank_name.push(null);
+      this.getBankBranches(
+        payOrder.codeFilial,
+        this.client_bank_name.length - 1
+      );
       console.log("this.payOrders", this.payOrders);
     },
 
     removePayOrder(idx) {
       // this.payOrders.splice(idx, 1)
-      this.client_bank_name.splice(idx, 1)
+      this.client_bank_name.splice(idx, 1);
       this.$q.dialog({
         component: AlertMessage,
         parent: this,
@@ -600,36 +602,41 @@ export default {
     },
 
     validAmount(idx) {
-      this.totalAmount = 0
+      this.totalAmount = 0;
       this.payOrders.items.forEach(payOrder => {
-        this.totalAmount += Number(String(payOrder.amount).replace(/[^0-9]/gim, ""))
-      })
-      
-      console.log('totalAmount2', this.totalAmount)
-      this.formatNumber(idx) 
-      
+        this.totalAmount += Number(
+          String(payOrder.amount).replace(/[^0-9]/gim, "")
+        );
+      });
+
+      console.log("totalAmount2", this.totalAmount);
+      this.formatNumber(idx);
+
       validFilter(this.$refs, "payOrderSummValid", "payOrderSumm");
     },
 
     formatNumber(idx) {
-      this.payOrders.items[idx].amount = formatNumber(this.payOrders.items[idx].amount);
+      this.payOrders.items[idx].amount = formatNumber(
+        this.payOrders.items[idx].amount
+      );
     },
 
     async getBankBranches(MFO, idx) {
-      console.log(MFO)
+      console.log(MFO);
       try {
-        const response = await this.$store.dispatch('profile/getBankBranches', MFO)
-        console.log(response)
+        const response = await this.$store.dispatch(
+          "profile/getBankBranches",
+          MFO
+        );
+        console.log(response);
         if (response.length) {
-          this.client_bank_name.splice(idx, 1, response[0].filialName)
+          this.client_bank_name.splice(idx, 1, response[0].filialName);
         } else {
-          this.client_bank_name.splice(idx, 1)
+          this.client_bank_name.splice(idx, 1);
         }
-        
-        console.log(response)
-      } catch(error) {
 
-      }
+        console.log(response);
+      } catch (error) {}
     }
   },
   components: {
