@@ -569,6 +569,8 @@ export const credits = {
         payload.data.responseBody.response.items[0].doc_issue_date;
       Relatives.items[payload.idx].Document.ExpirationDate =
         payload.data.responseBody.response.items[0].doc_expire_date;
+      Relatives.items[payload.idx].Document.documentType = +payload.data
+        .responseBody.response.items[0].doc_type;
     },
 
     resetRelatedPersonDataGCI(state, idx) {
@@ -604,6 +606,8 @@ export const credits = {
         payload.data.responseBody.response.items[0].doc_issue_date;
       RelatedPerson.items[payload.idx].Document.ExpirationDate =
         payload.data.responseBody.response.items[0].doc_expire_date;
+      RelatedPerson.items[payload.idx].Document.documentType = +payload.data
+        .responseBody.response.items[0].doc_type;
       RelatedPerson.items[payload.idx].PhoneList.items[0].Number =
         payload.data.responseBody.response.items[0].mobile_phone
           .replace(/[^0-9]/gim, "")

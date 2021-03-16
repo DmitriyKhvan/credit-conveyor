@@ -3,13 +3,16 @@
     <span
       class="noLinkItem"
       v-if="
-        userRole.find(i => i === 'ROLE_CCS' && credit.assignedRole !== 'ROLE_UrWr') ||
-        credit.taskName === 'Создание Контракта в iABS' ||
-        credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
-        credit.taskStatus === 'Отклонена' ||
-				credit.taskId === null && !credit.pm 
+        userRole.find(
+          i => i === 'ROLE_CCS' && credit.assignedRole !== 'ROLE_UrWr'
+        ) ||
+          credit.taskName === 'Создание Контракта в iABS' ||
+          credit.taskName === 'Ожидание отправки контракта в НИКИ' ||
+          credit.taskStatus === 'Отклонена' ||
+          (credit.taskId === null && !credit.pm)
       "
-      >{{ decoder(linkName) }}</span>
+      >{{ decoder(linkName) }}</span
+    >
     <!-- <span
       class="noLinkItem"
       v-if="
@@ -25,16 +28,16 @@
     <router-link
       v-else
       :to="{
-        name:
-          credit.pm
-            ? 'HistoryTask'
-            : credit.taskName === 'PreApprove'
-            ? 'Registration'
-            : credit.taskName === 'Step: Заполнить ПП'
-            ? 'Payment'
-            : credit.assignedRole === 'ROLE_KM'
-            ? 'Profile'
-            : 'CreditTask',
+        name: credit.pm
+          ? 'HistoryTask'
+          : credit.taskName === 'PreApprove'
+          ? 'Registration'
+          : credit.taskName === 'Step: Заполнить ПП' ||
+            credit.taskName.indexOf('Статус платежа iABS:') !== -1
+          ? 'Payment'
+          : credit.assignedRole === 'ROLE_KM'
+          ? 'Profile'
+          : 'CreditTask',
         params: { id: credit.id },
         query: {
           taskId: credit.taskId,
@@ -44,46 +47,45 @@
           filial: credit.filial,
           status: credit.taskName,
           creditRole: credit.assignedRole,
-          applicationId: credit.applicationId 
-        },
+          applicationId: credit.applicationId
+        }
       }"
-      >{{ decoder(linkName) }}</router-link>
+      >{{ decoder(linkName) }}</router-link
+    >
   </div>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from "vuex";
 import CommonUtils from "@/shared/utils/CommonUtils";
 
 export default {
-	// props: {
-	// 	userRole: {
-	// 		type: String,
-	// 		default: ""
-	// 	},
-	// 	credit: {
-	// 		type: Object,
-	// 		default: {}
-	// 	},
-	// 	linkName: {
-	// 		type: String,
-	// 		default: ""
-	// 	}
-	// },
+  // props: {
+  // 	userRole: {
+  // 		type: String,
+  // 		default: ""
+  // 	},
+  // 	credit: {
+  // 		type: Object,
+  // 		default: {}
+  // 	},
+  // 	linkName: {
+  // 		type: String,
+  // 		default: ""
+  // 	}
+  // },
 
-	props: ['userRole', 'credit', 'linkName'],
+  props: ["userRole", "credit", "linkName"],
 
-	data() {
-		return {
-
-		}
+  data() {
+    return {};
   },
 
   methods: {
     decoder(str) {
-      return CommonUtils.decoder(str)
+      return CommonUtils.decoder(str);
     }
-  },
-  
+  }
+
   // computed:{
   //   decoder(str) {
   //     return CommonUtils.decoder(str)
@@ -92,13 +94,13 @@ export default {
 };
 </script>
 <style lang="scss">
-  .creditListItem {
-    width: 100%;
-    height: 100%;
+.creditListItem {
+  width: 100%;
+  height: 100%;
 
-    .noLinkItem {
-      display: flex;
-      padding-right: 20px;
-    }
+  .noLinkItem {
+    display: flex;
+    padding-right: 20px;
   }
+}
 </style>
