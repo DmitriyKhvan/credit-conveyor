@@ -1,6 +1,6 @@
 <template>
   <div class="timeBlock">
-    <h3 class="titleTime">{{$t('tables.education.test.time_left')}}</h3>
+    <h3 class="titleTime">{{ $t("tables.education.test.time_left") }}</h3>
     <span class="time">{{ time }}</span>
   </div>
 </template>

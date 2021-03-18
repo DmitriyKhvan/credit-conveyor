@@ -1,16 +1,18 @@
 <template>
   <div class="topicsBlock">
-    <h4 class="titleAllTest">{{$t('tables.education.test.choose_test')}}</h4>
+    <h4 class="titleAllTest">{{ $t("tables.education.test.choose_test") }}</h4>
     <div class="row q-col-gutter-md">
       <div class="col-6">
-        <ul>
+        <ul class="topicList">
           <li
             ref="topicLi"
             v-for="topic of topics"
             :key="topic.id"
             @click="getIdTopic(topic.id, topic.name, $event.target)"
             class="topic"
-          >{{ topic.name }}</li>
+          >
+            {{ topic.name }}
+          </li>
         </ul>
       </div>
       <div class="col-6"></div>
@@ -28,7 +30,6 @@
   </div>
 </template>
 <script>
-
 export default {
   data() {
     return {
@@ -39,10 +40,9 @@ export default {
     };
   },
   async created() {
-
     try {
-      this.topics = await this.$store.dispatch("education/getTopics")
-    } catch(error) {}
+      this.topics = await this.$store.dispatch("education/getTopics");
+    } catch (error) {}
 
     // Promise.all([this.getTopics()])
     //   .then(
@@ -77,10 +77,15 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .topicsBlock {
   /* display: flex;
   flex-direction: column; */
+
+  .topicList {
+    height: 75vh;
+    overflow-y: scroll;
+  }
 }
 
 .titleAllTest {

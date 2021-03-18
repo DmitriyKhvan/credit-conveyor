@@ -40,7 +40,6 @@ function msecond(val) {
 }
 
 function adulthoodValid(date) {
-  debugger;
   return (
     (this.msecond(this.currentDate) - this.msecond(date) - 432000000) /
       1000 /
