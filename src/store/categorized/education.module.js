@@ -11,18 +11,19 @@ export const education = {
     async getTopics() {
       try {
         return (await ApiService.get("/test/cat")).data;
-      } catch(error) {
-        console.log(error)
+      } catch (error) {
+        console.log(error);
       }
     },
 
-    async getTests({commit}, id) {
+    async getTests({ commit }, id) {
       try {
         const { data } = await ApiService.get(`/test/get?id=${id}`);
 
         if (data.data.duration) {
           //Timer
-          const targetDate = new Date().getTime() + 1000 * data.data.duration;
+          const targetDate =
+            new Date().getTime() + 1000 * data.data.duration * 60;
           commit("setTargetDate", targetDate);
         }
 
@@ -32,7 +33,7 @@ export const education = {
       }
     },
 
-    async sentTestAnswers({commit}, answers) {
+    async sentTestAnswers({ commit }, answers) {
       try {
         const { data } = await ApiService.post("/test/answer", answers);
 
@@ -42,8 +43,8 @@ export const education = {
         }
 
         //return data;
-      } catch(error) {
-        console.log(error)
+      } catch (error) {
+        console.log(error);
       }
     }
   },

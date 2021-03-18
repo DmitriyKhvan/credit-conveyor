@@ -2,9 +2,7 @@
   <div class="topicBlock">
     <div class="headTopic">
       <h2 class="titleTopic">{{ topicName }}</h2>
-      <appTimer 
-        @completeTest="sentTestAnswers"
-      />
+      <appTimer @completeTest="sentTestAnswers" />
     </div>
 
     <q-card>
@@ -34,12 +32,20 @@
 
       <q-separator />
 
-      <q-tab-panels v-for="(test, index) of topic.questions" :key="test.id" v-model="tab">
+      <q-tab-panels
+        v-for="(test, index) of topic.questions"
+        :key="test.id"
+        v-model="tab"
+      >
         <q-tab-panel :name="index">
-          <div class="text-h6">{{index + 1}}. {{ test.question_text }}</div>
+          <div class="text-h6">{{ index + 1 }}. {{ test.question_text }}</div>
 
           <!-- <q-form @submit="onSubmit(1)" class="q-gutter-md"> -->
-          <q-item tag="label" v-for="(variant, i) of test.variants" :key="variant.id">
+          <q-item
+            tag="label"
+            v-for="(variant, i) of test.variants"
+            :key="variant.id"
+          >
             <q-item-section avatar class="radioBlock">
               <q-radio
                 v-model="answerTest[index].variant_text"
@@ -50,7 +56,7 @@
                     test.id,
                     test.topic_id,
                     variant.id,
-                    variant.answer_text,
+                    variant.answer_text
                   )
                 "
               />
@@ -75,11 +81,17 @@
     <div class="answer_block">
       <div>
         <span class="typeAnswer blue"></span>
-        <p class="typeAnswerText">{{$t('tables.education.test.marked_questions')}}</p>
+        <p class="typeAnswerText">
+          {{ $t("tables.education.test.marked_questions") }}
+        </p>
         <span class="typeAnswer green"></span>
-        <p class="typeAnswerText">{{$t('tables.education.test.not_marked_questions')}}</p>
+        <p class="typeAnswerText">
+          {{ $t("tables.education.test.not_marked_questions") }}
+        </p>
         <span class="typeAnswer white"></span>
-        <p class="typeAnswerText">{{$t('tables.education.test.not_visited_questions')}}</p>
+        <p class="typeAnswerText">
+          {{ $t("tables.education.test.not_visited_questions") }}
+        </p>
       </div>
     </div>
 
@@ -144,13 +156,14 @@ export default {
   },
   async created() {
     try {
-      const res = await this.$store.dispatch("education/getTests", this.id)
+      const res = await this.$store.dispatch("education/getTests", this.id);
 
       this.data.session_id = "" + Math.round(Math.random() * 100000000);
       this.data.test_id = res.data.test_id;
       this.data.start_time = this.curDate();
       this.data.end_time = null;
-      this.data.ques_amount = res.data.ques_amount - 1;
+      // this.data.ques_amount = res.data.ques_amount - 1;
+      this.data.ques_amount = res.data.ques_amount;
 
       this.topic = res;
 
@@ -168,8 +181,7 @@ export default {
           answered: false
         });
       }
-
-    } catch(error) {}                    
+    } catch (error) {}
   },
   mounted() {
     const tabover = document.getElementsByClassName("q-tabs__content");
@@ -265,7 +277,7 @@ export default {
           persistent: true
         })
         .onOk(() => {
-          this.sentTestAnswers()
+          this.sentTestAnswers();
         })
         .onCancel(() => {
           // console.log('>>>> Cancel')
@@ -277,8 +289,8 @@ export default {
       this.data.end_time = this.curDate();
 
       try {
-        await this.$store.dispatch("education/sentTestAnswers", this.data)
-      } catch(error) {}
+        await this.$store.dispatch("education/sentTestAnswers", this.data);
+      } catch (error) {}
     },
 
     curDate() {
