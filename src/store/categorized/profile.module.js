@@ -225,32 +225,32 @@ export const profile = {
 
         Relatives: {
           items: [
-            {
-              FirstName: "",
-              // FullName: "",
-              FamilyConnectionType: null,
-              LastName: "",
-              MiddleName: "",
-              BirthDate: "",
-              LSBO: false,
-              role: "",
-              filial: "",
-              personal_id: "",
-              Document: {
-                documentType: null,
-                Series: "",
-                Number: null,
-                ExpirationDate: "",
-                GivenDate: "",
-                GUID: "",
-                Country: "",
-                DocLink: "",
-                DocumentName: "",
-                Region: null,
-                Districts: [],
-                GivenPlace: null
-              }
-            }
+            // {
+            //   FirstName: "",
+            //   // FullName: "",
+            //   FamilyConnectionType: null,
+            //   LastName: "",
+            //   MiddleName: "",
+            //   BirthDate: "",
+            //   LSBO: false,
+            //   role: "",
+            //   filial: "",
+            //   personal_id: "",
+            //   Document: {
+            //     documentType: null,
+            //     Series: "",
+            //     Number: null,
+            //     ExpirationDate: "",
+            //     GivenDate: "",
+            //     GUID: "",
+            //     Country: "",
+            //     DocLink: "",
+            //     DocumentName: "",
+            //     Region: null,
+            //     Districts: [],
+            //     GivenPlace: null
+            //   }
+            // }
           ]
         },
 
@@ -478,9 +478,6 @@ export const profile = {
           passSerial: relative.Document.Series
         });
       });
-
-      debugger;
-
       users.push({
         // pin: state.fullFormProfile.Customer.PINPP, //ИНПС
         pin: "", //ИНПС
@@ -1448,32 +1445,32 @@ export const profile = {
 
           Relatives: {
             items: [
-              {
-                FirstName: "",
-                // FullName: "",
-                FamilyConnectionType: null,
-                LastName: "",
-                MiddleName: "",
-                BirthDate: "",
-                LSBO: false,
-                role: "",
-                filial: "",
-                personal_id: "",
-                Document: {
-                  documentType: null,
-                  Series: "",
-                  Number: null,
-                  ExpirationDate: "",
-                  GivenDate: "",
-                  GUID: "",
-                  Country: "",
-                  DocLink: "",
-                  DocumentName: "",
-                  Region: null,
-                  Districts: [],
-                  GivenPlace: null
-                }
-              }
+              // {
+              //   FirstName: "",
+              //   // FullName: "",
+              //   FamilyConnectionType: null,
+              //   LastName: "",
+              //   MiddleName: "",
+              //   BirthDate: "",
+              //   LSBO: false,
+              //   role: "",
+              //   filial: "",
+              //   personal_id: "",
+              //   Document: {
+              //     documentType: null,
+              //     Series: "",
+              //     Number: null,
+              //     ExpirationDate: "",
+              //     GivenDate: "",
+              //     GUID: "",
+              //     Country: "",
+              //     DocLink: "",
+              //     DocumentName: "",
+              //     Region: null,
+              //     Districts: [],
+              //     GivenPlace: null
+              //   }
+              // }
             ]
           },
 

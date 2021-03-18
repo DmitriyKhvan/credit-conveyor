@@ -1191,7 +1191,6 @@
 
                 <q-btn
                   :disable="disableField"
-                  v-if="index > 0"
                   label="Удалить"
                   @click="
                     confirmDeleteItem(
@@ -1216,12 +1215,12 @@
                 </q-btn>
               </div>
 
-              <q-btn
+              <!-- <q-btn
                 :disable="disableField"
                 label="Добавить родственника"
                 @click="addRelative"
                 class="addItem"
-              ></q-btn>
+              ></q-btn> -->
 
               <q-btn
                 v-if="preapprove_num"
@@ -3289,64 +3288,82 @@ export default {
       validFilter(this.$refs, "houseNumberValid", "houseNumber");
 
       // Relatives
-      validFilter(this.$refs, "relativesValid", "relatives");
-      validFilter(this.$refs, "relativesSurnameValid", "relatives_surname");
-      validFilter(this.$refs, "relativesNameValid", "relatives_name");
-      validFilter(this.$refs, "relativesMnameValid", "relatives_mname");
-      validFilter(this.$refs, "relativesBirthdayValid", "relatives_birthday");
+      if (this.Customer.Relatives.items.length) {
+        validFilter(this.$refs, "relativesValid", "relatives");
+        validFilter(this.$refs, "relativesSurnameValid", "relatives_surname");
+        validFilter(this.$refs, "relativesNameValid", "relatives_name");
+        validFilter(this.$refs, "relativesMnameValid", "relatives_mname");
+        validFilter(this.$refs, "relativesBirthdayValid", "relatives_birthday");
 
-      validFilter(
-        this.$refs,
-        "relativesDocumentDocumentTypeValid",
-        "relativesDocumentDocumentType"
-      );
+        validFilter(
+          this.$refs,
+          "relativesDocumentDocumentTypeValid",
+          "relativesDocumentDocumentType"
+        );
 
-      this.Customer.Relatives.items.forEach(i => {
-        if (i.Document.documentType == 9) {
-          this.countRelativeDocumentName++;
-          // console.log('relativesDocumentDocumentName', this.$refs.relativesDocumentDocumentName)
-          validFilter(
-            this.$refs,
-            "relativesDocumentDocumentNameValid",
-            "relativesDocumentDocumentName",
-            true,
-            this.countRelativeDocumentName
-          );
-        } else {
-          validItems(this.$refs, "relativesDocumentDocumentNameValid");
-        }
-      });
+        this.Customer.Relatives.items.forEach(i => {
+          if (i.Document.documentType == 9) {
+            this.countRelativeDocumentName++;
+            // console.log('relativesDocumentDocumentName', this.$refs.relativesDocumentDocumentName)
+            validFilter(
+              this.$refs,
+              "relativesDocumentDocumentNameValid",
+              "relativesDocumentDocumentName",
+              true,
+              this.countRelativeDocumentName
+            );
+          } else {
+            validItems(this.$refs, "relativesDocumentDocumentNameValid");
+          }
+        });
 
-      validFilter(
-        this.$refs,
-        "relativesDocumentSeriesValid",
-        "relativesDocumentSeries"
-      );
-      validFilter(
-        this.$refs,
-        "relativesDocumentNumberValid",
-        "relativesDocumentNumber"
-      );
-      validFilter(
-        this.$refs,
-        "relativesDocumentGivenDateValid",
-        "relativesDocumentGivenDate"
-      );
-      validFilter(
-        this.$refs,
-        "relativesDocumentExpirationDateValid",
-        "relativesDocumentExpirationDate"
-      );
-      validFilter(
-        this.$refs,
-        "relativesDocumentRegionsGivenPlaceValid",
-        "relativesDocumentRegionsGivenPlace"
-      );
-      validFilter(
-        this.$refs,
-        "relativesDocumentGivenPlaceValid",
-        "relativesDocumentGivenPlace"
-      );
+        validFilter(
+          this.$refs,
+          "relativesDocumentSeriesValid",
+          "relativesDocumentSeries"
+        );
+        validFilter(
+          this.$refs,
+          "relativesDocumentNumberValid",
+          "relativesDocumentNumber"
+        );
+        validFilter(
+          this.$refs,
+          "relativesDocumentGivenDateValid",
+          "relativesDocumentGivenDate"
+        );
+        validFilter(
+          this.$refs,
+          "relativesDocumentExpirationDateValid",
+          "relativesDocumentExpirationDate"
+        );
+        validFilter(
+          this.$refs,
+          "relativesDocumentRegionsGivenPlaceValid",
+          "relativesDocumentRegionsGivenPlace"
+        );
+        validFilter(
+          this.$refs,
+          "relativesDocumentGivenPlaceValid",
+          "relativesDocumentGivenPlace"
+        );
+      } else {
+        validItems(this.$refs, "relativesValid");
+        validItems(this.$refs, "relativesSurnameValid");
+        validItems(this.$refs, "relativesNameValid");
+        validItems(this.$refs, "relativesMnameValid");
+        validItems(this.$refs, "relativesBirthdayValid");
+        validItems(this.$refs, "relativesDocumentDocumentTypeValid");
+        validItems(this.$refs, "relativesDocumentDocumentNameValid");
+        validItems(this.$refs, "relativesDocumentSeriesValid");
+        validItems(this.$refs, "relativesDocumentNumberValid");
+        validItems(this.$refs, "relativesDocumentGivenDateValid");
+        validItems(this.$refs, "relativesDocumentExpirationDateValid");
+        validItems(this.$refs, "relativesDocumentRegionsGivenPlaceValid");
+        validItems(this.$refs, "relativesDocumentGivenPlaceValid");
+      }
+
+      // Relatives End
 
       this.$refs.kindOfActivity.validate();
 
