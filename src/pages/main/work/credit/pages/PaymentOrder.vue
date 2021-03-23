@@ -138,6 +138,24 @@
 
             <div class="col-12">
               <q-input
+                ref="INNRecipient"
+                square
+                outlined
+                v-model="payOrder.inn"
+                dense
+                label="ИНН получателя"
+                mask="#########"
+                :rules="[
+                  val =>
+                    (val && val.length === 9) ||
+                    'Количество символов должно быт ровно 9',
+                  val => !val.match(/(?=(.))\1{9,}/) || 'Неверные данные'
+                ]"
+              />
+            </div>
+
+            <div class="col-12">
+              <q-input
                 :disable="payOrder.status == 'success' ? true : false"
                 ref="MFOBank"
                 square
@@ -210,6 +228,18 @@
                 v-model="payOrder.purpose"
                 dense
                 label="Назначение платежа"
+                :rules="[val => !!val || 'Введите данные']"
+              />
+            </div>
+
+            <div class="col-12">
+              <q-input
+                ref="creditNameRecipient"
+                square
+                outlined
+                v-model="payOrder.creditName"
+                dense
+                label="Наименование получателя"
                 :rules="[val => !!val || 'Введите данные']"
               />
             </div>
@@ -481,10 +511,16 @@ export default {
       validFilter(this.$refs, "payOrderSummValid", "payOrderSumm");
       validFilter(this.$refs, "numberPPValid", "numberPP");
       validFilter(this.$refs, "recipientAccountValid", "recipientAccount");
+      validFilter(this.$refs, "INNRecipientValid", "INNRecipient");
       validFilter(this.$refs, "MFOBankValid", "MFOBank");
       validFilter(this.$refs, "BankNameValid", "BankName");
       validFilter(this.$refs, "codePaymentValid", "codePayment");
       validFilter(this.$refs, "payOrderPayPurposeValid", "payOrderPayPurpose");
+      validFilter(
+        this.$refs,
+        "creditNameRecipientValid",
+        "creditNameRecipient"
+      );
       // validFilter(this.$refs, "dateValid", "date");
 
       if (
@@ -492,11 +528,13 @@ export default {
         this.$refs.payOrderSummValid.hasError ||
         this.$refs.numberPPValid.hasError ||
         this.$refs.recipientAccountValid.hasError ||
+        this.$refs.INNRecipientValid.hasError ||
         this.$refs.MFOBankValid.hasError ||
         this.$refs.BankNameValid.hasError ||
         this.$refs.codePaymentValid.hasError ||
         // this.$refs.detailsPayment.hasError ||
-        this.$refs.payOrderPayPurposeValid.hasError
+        this.$refs.payOrderPayPurposeValid.hasError ||
+        this.$refs.creditNameRecipientValid.hasError
         // this.$refs.dateValid.hasError
       ) {
         this.formHasError = true;
