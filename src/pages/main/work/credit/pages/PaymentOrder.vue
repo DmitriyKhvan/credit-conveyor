@@ -39,7 +39,7 @@
               />
             </div>
 
-            <div class="col-12">
+            <!-- <div class="col-12">
               <q-input
                 :disable="payOrder.status == 'success' ? true : false"
                 ref="numberPP"
@@ -50,7 +50,7 @@
                 label="Номер ПП"
                 :rules="[val => !!val || 'Введите номер ПП']"
               />
-            </div>
+            </div> -->
 
             <!-- <div class="col-12">
               <q-input
