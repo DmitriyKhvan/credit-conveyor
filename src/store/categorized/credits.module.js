@@ -134,9 +134,11 @@ export const credits = {
         const role = await dispatch("getUserRole", empId);
         console.log("userRole", role);
 
-        const userRoles = role.value.map(i => {
-          return state.roles[i.authority];
-        });
+        const userRoles = role.value
+          .map(i => {
+            return state.roles[i.authority];
+          })
+          .filter(i => i != undefined);
 
         // if (userRoles.find(i => i == creditRole)) {
         //   debugger
